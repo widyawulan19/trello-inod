@@ -1,0 +1,121 @@
+.assig-container{
+    /* border: 1px solid blue; */
+}
+.assig-container h5{
+    /* border: 1px solid blue; */
+    width: 100%;
+    color: #5e5e5e;
+    font-size: 12px;
+    margin: 5px 0px;
+}
+
+.input-box{
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px 8px;
+    transition: all 0.3s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+.input-box input {
+    border: 1px solid white;
+    outline: none;
+    flex: 1;
+    font-size: 12px;
+    margin-left: 2px;
+}
+.input-box input:hover{
+    background-color: white;
+}
+
+.input-box:focus-within {
+    border-color: #9b2fad;
+    /* border-color: #f4d2fa; */
+    box-shadow: 0 0 5px rgba(157, 0, 255, 0.5);
+}
+
+/* DROPDOWN  */
+.dropdown{
+    /* border: 1px solid #eee; */
+    border-radius: 4px;
+    padding: 10px 0px;
+    /* height: 120px; */
+    height: 100%;
+    min-height: 80px;
+    width: 100%;
+    overflow-y: auto;
+}
+
+.dropdown-box{
+    /* border: 1px solid #eee; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 5px 8px;
+    font-size: 12px;
+    border-radius: 4px;
+    gap: 5%;
+    cursor: pointer;
+    width: 90%;
+}
+.dropdown-box:hover{
+    background-color: #eee;
+}
+.dropdown-box img{
+    width: 25px;
+    height: 25px;
+    border: 1px solid #5D12EB;
+    border-radius: 50%;
+}
+.wuser{
+    /* border: 1px solid #eee; */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 8px;
+    font-size: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.wuser:hover{
+    background-color: #eee;
+}
+
+.wuser-pof{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+.wuser-pof img{
+    /* width: 50px;
+    height: 25px;
+    border: 1px solid #5D12EB;
+    border-radius: 50%; */
+}
+
+.wuser-user{
+    /* border: 1px solid red; */
+    margin: 0px;
+    margin-left: 5px;
+    width: 100%;
+    text-align: left;
+}
+
+.wuser-action{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap:5px;
+}
+.wuser-action .prof-acc,
+.wuser-action .remove-btn
+{
+    background-color: white;
+    border: 1px solid white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 15px;
+    color: #5e5e5e;
+}
+/* END DROPDOWN  */

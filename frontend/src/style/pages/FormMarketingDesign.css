@@ -1,0 +1,116 @@
+.fmd-container{
+    width: 100%;
+}
+.fmd-form-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* border: 1px solid green;  */
+    height: 85vh;
+    overflow-y: auto;
+    width: 100% !important;
+    padding: 10px 0px;
+}
+.fmd-header{
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+}
+.fmd-header h4{
+    margin: 0px;
+    font-size: 12px;
+}
+.fmd-icon{
+    cursor: pointer;
+    font-size: 20px;
+    border: 1px solid white;
+    border-radius: 4px;
+}
+
+.fmd-main-info,
+.fmd-detail-pesan,
+.fmd-detail-design,
+.fmd-detail-price,
+.fmd-reference,
+.fmd-detail-order
+{
+    /* border: 1px solid red; */
+    width: 95%;
+    padding: 5px;
+    /* gap: 5px; */
+}
+.fmd-info-content{
+    /* border: 1px solid #eee; */
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(3, 150px);
+    /* margin-bottom: 5px; */
+    /* width: 80%; */
+}
+.fmd-info-content .box{
+    /* border: 1px solid #333; */
+}
+.box label,
+.detail-box label
+{
+    font-size: 10px;
+    color: grey;
+}
+.box input{
+    border: 1px solid #ddd ;
+}
+.box input:hover{
+    border: 1px solid #6E30DC;
+}
+.box input:focus{
+    border: 1px solid #9b7fca;
+    box-shadow: 0px 4px 8px #6f30dc7c;
+}
+
+/* DETAIL ORDER  */
+.fmd-info-content .detail-box{
+    /* border: 1px solid red; */
+    width: fit-content ;
+    padding: 0px;
+
+}
+.detail-box textarea{
+    width: 33vw;
+    height: 10vh;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+}
+.detail-box textarea:hover{
+    border: 1px solid #6E30DC;   
+}
+.detail-box textarea:focus{
+    outline: none;
+    border: 1px solid #9b7fca;
+    box-shadow: 0px 4px 8px #6f30dc7c;   
+}
+
+/* BUTTON SUBMIT  */
+.btn-fmd{
+    /* border: 1px solid green; */
+    width: 95%;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.btn-fmd button{
+    background: linear-gradient(to bottom, #6E30DC, #5D12EB);
+    color: white;
+}
+.btn-fmd button:hover{
+    background: linear-gradient(to bottom, #5D12EB, #6E30DC);
+}
+/* .fmd-submit */

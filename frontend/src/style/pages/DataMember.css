@@ -1,0 +1,444 @@
+.de-panel-container{
+    position: relative;
+    background-color: white;
+    margin-left: 10px;
+    margin-top: 10px;
+    border-radius: 8px;
+    height: 90vh;
+}
+
+/* HEADER  */
+.de-panel{
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+/* LEFT  */
+.de-panel .dep-right{
+    /* border: 1px solid blue; */
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    justify-content: flex-start;
+    width: 70%;
+}
+.dep-right h3{
+    font-weight: bold;
+    font-size: 20px;
+    /* border: 1px solid green; */
+}
+.dep-right .dep-desc{
+    /* border: 1px solid blue; */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+.dep-desc p{
+    font-size: 12px;
+    margin: 0px;
+}
+
+/* RIGHT  */
+.de-panel .dep-left{
+    /* border: 1px solid violet; */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 30%;
+    position: relative;
+}
+.dep-left .dep-btn{
+    /* border: 1px solid green; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+}
+.dep-btn button{
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    cursor: pointer;
+    background-color: #6E30DC;
+    border: 1px solid #6E30DC;
+    border-radius: 4px;
+    color: white;
+    padding: 5px;
+}
+.dep-btn button:hover{
+    box-shadow: 0px 4px 8px #6f30dc7c;
+}
+
+/* DROPDOWN FILTER  */
+.dep-left .dropdown-menu{
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    top: 50%;
+    width: 50%;
+}
+.dm-title{
+    /* border: 1px solid green; */
+    font-size: 12px;
+    color: #5e5e5e;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.dropdown-menu li{
+    border: 1px solid white;
+    border-radius: 4px;
+    padding: 2px;
+    font-size: 12px;
+    cursor: pointer;
+}
+.dropdown-menu li:hover{
+    border: 1px solid #ddd;
+    background-color: #c2a4f77c;
+}
+
+/* PANEL SEARCH  */
+.dep-left .dep-search{
+    border: 1px solid white;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+.dep-search .dep-search-box{
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+.dep-search-box:hover{
+    border: 1px solid #6E30DC;
+}
+.dep-search-box input{
+    border: 1px solid white;
+    padding: 2px;
+    font-size: 10px;
+    background-color: white;
+}
+.dep-search-box input:focus{
+    outline: none;
+}
+/* END HEADER  */
+
+/* TOGGLE VIEW  */
+.view-toggle{
+    /* border: 1px solid green; */
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+.view-toggle button{
+    border: 1px solid #5e5e5e;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 5px;
+    gap:3px 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+}
+.view-toggle button:hover{
+    border: 1px solid #6E30DC;
+    color: #5D12EB;
+}
+.view-toggle button.active{
+    border: 1px solid #6E30DC;
+    color: #5D12EB;
+    background-color: white !important;
+}
+/* END TOGGLE VIEW  */
+
+/* TABEL DATA EMPLOYEE  */
+.employee-table-wrapper{
+    /* border: 1px solid #6E30DC; */
+    padding: 10px;
+    overflow-x: auto; 
+    height: 76vh;
+    position: relative !important;
+}
+.employee-table {
+  overflow-x: auto;
+}
+
+.employee-table-wrapper table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  /* border: 1px solid red; */
+}
+
+.employee-table-wrapper th,
+.employee-table-wrapper td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+  /* width: 10vw; */
+}
+
+.employee-table-wrapper th {
+  /* background-color: #f4f4f4; */
+  background: linear-gradient(to bottom, #6E30DC, #5D12EB);
+  color: white;
+  font-weight: normal;
+  font-size: 15px;
+  text-align: center;
+}
+.employee-table-wrapper tr:hover{
+    /* background-color: #f5f5f5; */
+    background-color: #d3c0f446;
+}
+.employee-table-wrapper .th{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+.employee-table-wrapper td{
+    font-size: 12px;
+}
+
+.delete-btn {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 5px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background-color: #d32f2f;
+  /* color: #c9e7f3;
+  color: #2c66ec; */
+}
+
+/* EXTRA ATRIBUTE */
+.email-cont{
+    border: 1px solid #c9e7f3;
+    border-radius: 8px;
+    color: #2c66ec;
+    background-color: #c9e7f3;
+    padding: 2px 10px;
+    width: fit-content;
+}
+
+/* MODAL */
+/* 1. EDIT MODAL  */
+.edit-form-modal{
+    position: fixed;
+    top: 0%;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 99;
+    padding: 0px;
+    background-color: rgba(0, 0, 0, 0.5); /* transparan hitam */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.edit-cont-modal{
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 50vw;
+    margin-top: 5%;
+    height: fit-content;
+}
+
+/* 2. ADD NEW DATA MODAL  */
+.form-modal{
+    position: fixed;
+    top: 0%;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 99;
+    padding: 0px;
+    background-color: rgba(0, 0, 0, 0.5); /* transparan hitam */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.form-modal-box{
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 50vw;
+    margin-top: 5%;
+    height: fit-content;
+}
+
+/* END ADD NEW DATA MODAL  */
+
+/* CARD CONTAINER DATA EMPLOYEE  */
+.employee-container{
+    /* border: 1px solid green; */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10;
+    padding: 10px;
+    gap: 10px;
+    height: 70vh;
+    overflow-y: auto;
+}
+
+.employee-card{
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    height: 30vh;
+    cursor: pointer;
+}
+.employee-card:hover{
+    border: 1px solid #5D12EB;
+    box-shadow: 0px 4px 8px #5e12eb46;
+}
+.employee-card .card-header{
+    /* border: 1px solid blue; */
+    border-bottom: 0.5px solid #ddd;
+    display: flex;
+    /* align-items:first baseline; */
+    justify-content: space-between;
+    padding: 10px;
+}
+.card-header .ch-left{
+    
+}
+.ch-left h4{
+    font-weight: bold;
+    font-size: 15px;
+    margin: 0px;
+}
+.ch-left p{
+    margin: 0px;
+    font-size: 10px;
+    color: #5e5e5e;
+}
+.ch-left img{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid #5D12EB;
+}
+.card-header .ch-right{
+    /* border: 1px solid red; */
+    position: relative;
+}
+
+.ch-right .chr-icon{
+    border: 1px solid white;
+    border-radius: 4px;
+    background-color: white;
+    /* padding: 5px; */
+    cursor: pointer;
+    font-size: 20px;
+}
+
+/* ACTION MODALS  */
+.card-setting-menu{
+    position: absolute;
+  top: 20%; /* di bawah ikon */
+  right: 0;  /* rata kanan */
+  background-color: white;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  border-radius: 6px;
+  z-index: 10;
+  padding: 8px 12px;
+  min-width: 10vw;
+}
+.card-setting-menu button{
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    gap: 5px;
+    cursor: pointer;
+    border: 1px solid white;
+}
+.card-setting-menu button:hover{
+    background-color: #eee;
+    border: 1px solid #eee;
+}
+
+/* DELETE SETTING */
+.card-setting-menu .csm-delete{
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    gap: 5px;
+    cursor: pointer;
+    border: 1px solid white;
+    color: red;
+}
+.card-setting-menu .csm-delete:hover{
+    background-color: #eee;
+    border: 1px solid #eee;
+}
+/* END ACTION MODALS  */
+
+.chr-icon:hover{
+    border: 1px solid #eee;
+    background-color: #eee;
+}
+
+/* CARD body */
+.employee-card-body{
+    /* border:1px solid blue; */
+    padding: 10px;
+    padding-top: 5px;
+}
+.ecb-box {
+    color: #5e5e5e;
+    gap: 0px;
+}
+.ecb-box h5 {
+    font-size: 10px;
+    margin: 0px;
+    font-weight: normal;
+}
+.ecb-box p{
+    margin: 0px;
+    font-size: 12px;
+}
+.employee-card-body .more-info{
+    /* border: 1px solid red; */
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    justify-content: flex-start;
+    gap: 3px;
+    padding: 0px;
+    margin-top: 10px;
+}
+.more-info .ecb-box-email{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
+    /* margin-top: 10px; */
+    /* border: 1px solid blue; */
+}
+.ecb-box-email p{
+    margin: 0px;
+    padding: 0px;
+    font-size: 10px;
+    font-weight: normal;
+}

@@ -1,0 +1,206 @@
+.view-md-container{
+    position: relative;
+}
+.vmd-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #5D12EB;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    padding: 10px;
+    font-size: 12px;
+    position: sticky;
+    color: white;
+    background: linear-gradient(to bottom, #6E30DC, #5D12EB);
+}
+.vmd-left{
+    /* color: #5D12EB; */
+    color: white;
+}
+.vmd-left h4{
+    margin: 0px;
+    color: white;
+    font-weight: bold;
+}
+.vmd-icon{
+    cursor: pointer;
+    font-size: 20px;
+}
+.vmd-icon:hover{
+    color: #051937;
+}
+
+.vmd-right .create-btn{
+    border: 1px solid #6E30DC;
+    background: linear-gradient(to bottom, #042887, #051937);
+    color: white;
+    font-weight: bold;
+    padding: 7px;
+    gap: 5px;
+    font-size: 10px;
+    border-radius: 6px;
+    position: relative;
+    cursor: pointer;
+    margin: 0px 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.vmd-right .create-btn:hover{
+    background: linear-gradient(to bottom, #051937, #5D12EB);
+    box-shadow: 0px 4px 8px #5e12eb46;
+}
+
+.vmd-right{
+    /* border: 1px solid blue; */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.card-status .created{
+    border: 1px solid #5380EB;
+    border-radius: 6px;
+    font-weight: bold;
+    padding: 5px 8px;
+    color: #5380EB;
+    /* background-color: #bec9e2; */
+    background-color: white;
+}
+.card-status .uncreated{
+    border: 1px solid #d9534f;
+    padding: 5px 8px;
+    font-weight: normal;
+    border-radius: 6px;
+    color: #d9534f;
+    background-color: #FFCDD2;
+    /* background-color: white; */
+}
+
+/* BODY Tabel */
+.view-md-container .vmd-body{
+    /* border: 1px solid red; */
+    height: 80vh;
+    padding: 10px;
+    overflow-y: auto;
+}
+.vmd-body p,
+.vmd-body h4{
+    margin: 0px;
+    font-size: 12px;
+}
+.sec-informasi
+.sec-detail-pesanan,
+.sec-detail-design,
+.sec-price,
+.sec-reference,
+.sec-detail-project
+{
+    margin: 10px 0px;
+    color: #333;
+}
+.vmd-content{
+    /* border: 1px solid #eee; */
+    /* background: linear-gradient(to bottom, #6f30dc44, #5e12eb44); */
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    display: grid;
+    /* grid-template-columns: repeat(3, 15vw); */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    margin-bottom: 10px;
+    /* min-height: 20vh; */
+    height: 100%;
+}
+.vmd-content .box-content{
+    /* border: 1px solid blue; */
+    margin: 5px 0px;
+}
+.vmd-ref-content{
+    /* border: 1px solid grey; */
+    border-radius: 4px;
+    display: flex;
+    /* flex-direction: row; */
+    align-items: center;
+    padding: 5px;
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+}
+.vmd-ref-content .box-content{
+    width: 100%;
+    margin: 5px 0px;
+    /* border: 1px solid blue; */
+}
+
+.box-content .box-ref{
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    margin-top: 3px;
+    width: 95%;
+    /* width: 300px; */
+}
+.box-content .box-detail{
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px 2px;
+    margin-top: 3px;
+    word-wrap: break-word; /* Memastikan kata panjang bisa dipotong */
+    white-space: normal; /* Mengizinkan teks turun ke bawah */
+    overflow-wrap: break-word; /* Memastikan teks panjang tetap dalam batas */
+    max-width: 100%; /* Menghindari teks melebar keluar container */
+    line-height: 1.5;
+}
+.box-content{
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    justify-content: left;
+    /* border: 1px solid blue; */
+    margin: 0px 4px;
+    width: 100%;
+}
+.box-content p{
+    font-size: 10px;
+    color: grey;
+}
+.box-content .box-box{
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    margin-top: 3px;
+    width: 170px;
+}
+.box-box:hover{
+    border: 1px solid #6f30dc47;
+    box-shadow: 0px 4px 8px #6f30dc54;
+}
+.box-ref:hover{
+    border: 1px solid #6f30dc47;
+    box-shadow: 0px 4px 8px #6f30dc54;
+}
+.box-box p{
+    color: #333;
+    font-size: 12px;
+}
+.box-ref p{
+    word-wrap: break-word;
+    white-space: normal;
+    overflow-wrap: break-word;
+    max-width: 100%;
+    color: #333;
+    font-size: 12px;
+    /* height: 10vh; */
+}
+
+.vmd-form{
+    padding: 2px;
+    border-radius: 4px;
+    /* background-color: #333; */
+    position: absolute;
+    z-index: 100;
+    right: 0;
+    width: 400px;
+    height: 500px;
+}

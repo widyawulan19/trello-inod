@@ -1,0 +1,740 @@
+.new-card-detail{
+    border: 1px solid #ddd;
+    width: 98%;
+    min-width: 60vw;
+    height: 100%;
+    min-height: 100vh;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+    /* margin: px 0px; */
+    background-color: white;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    color: #333;
+    position: relative;
+}
+.ncd-header{
+    border-bottom: 1px solid #ddd;
+    padding: 5px;
+    /* width: 100%; */
+    min-width: 650px;
+    /* padding-right: 20px; */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+.ncd-left{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    color: #333;
+    cursor: pointer;
+    margin-left: 10px;
+    padding: 2px;
+    /* border: 1px solid green; */
+}
+.ncd-icon{
+    margin-right: 5px;
+    color: #333;
+    cursor: pointer;
+}
+.ncd-left button{
+    padding: 5px 7px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #fff;
+    border-radius: 4px;
+    background-color: white;
+    cursor: pointer;
+}
+.ncd-left button:hover{
+    background: linear-gradient(to right, #6b11cb3f, #2574fc38);
+    color: white;
+}
+.ncd-active{
+   color:#6a11cb;
+   font-weight: bold;
+}
+
+.ncd-header .ncd-right{
+     /* border: 1px solid grey; */
+     display: flex;
+     align-items: center;
+     justify-content: flex-start;
+     /* width: fit-content; */
+}
+
+.ncd-right button{
+    padding: 5px;
+    border: 0.5px solid #333;
+    border-radius: 4px;
+    /* background-color: white; */
+    background: linear-gradient(to right, #6a11cb, #2575fc);
+    color: white;
+    font-size: 13px;
+    /* font-weight: bold; */
+    margin: 0px 2px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.nr-icon{
+    margin-right: 5px;
+}
+
+
+/* LABEL  */
+
+
+/* CARD MAIN BOX  */
+.card-main-box{
+    /* border: 1px solid blue; */
+    display: flex;
+    width: 100%;
+}
+
+/* LEFT SIDE  */
+.cmb-left{
+    border-top: 1px solid #ddd;
+    /* border-right: 0.5px solid #ddd; */
+    width: 75%;
+}
+.cmb-left button.active {
+    background-color: #007bff;
+    color: #fff;
+  }
+  
+.cmb-left button {
+    background-color: #f0f0f0;
+    color: #333;
+    border: none;
+    padding: 8px 16px;
+    margin-right: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  /* Hover state */
+  .cmb-left button:hover {
+    background-color: #dcdcdc;
+    color: #000;
+  }
+  
+  /* Active state (when clicked) */
+  .cmb-left button:active {
+    background-color: #c0c0c0;
+    transform: scale(0.98);
+  }
+  
+
+/* RIGHT SIDE  */
+.cmb-right{
+    border: 1px solid #ddd;
+    /* border: 1px solid red; */
+    width: 25%;
+    height: 75vh;
+    position: relative;
+    /* overflow-y: auto; */
+}
+.cmb-right .c-info{
+    border-bottom: 1px solid #ddd;
+    /* border: 1px solid blue; */
+    padding: 0px 10px;
+    /* margin-bottom: 5px; */
+    position: relative;
+}
+.c-info-title{
+    /* border: 1px solid green; */
+    display: flex;
+    justify-content: space-between;
+}
+
+/* BUTTON ACTION  */
+.c-info-title button{
+    padding: 2px;
+    color: #5e5e5e;
+    border: 1px solid #fff;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.c-info-title button:hover{
+    border: 1px solid #ddd;
+    background-color: #ddd;
+}
+.acm-container{
+    position: absolute;
+    background-color: #00000000;
+    border: 1px solid #5e12eb00;
+    top: 20%;
+    right: 0px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;  
+}
+.action-card-modal{
+   background-color: white;
+   border-radius: 4px;
+   border: 1px solid #5e12eb46;
+   box-shadow: 0px 4px 8px #5e12eb46; 
+   padding: 5px;
+   width: 15vw;
+   /* width: 50%; */
+}
+.action-card-modal button{
+    width: 100%;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 3px;
+    margin: 3px 0px;
+    padding: 5px 8px;
+    cursor: pointer;
+    border: 1px solid white;
+}
+.action-card-modal button:hover{
+    border: 1px solid #5e12eb46;
+    border-radius: 4px;
+    background-color: #5e12eb46;
+}
+
+/* END BUTTON ACTION  */
+.c-info p{
+    margin: 0px;
+    font-weight: bold;
+    font-size: 12px;
+}
+.c-create{
+    /* border: 1px solid blue; */
+    margin: 5px;
+    display: flex;
+    /* align-items:center; */
+    justify-content: flex-start;
+    font-size: 12px;
+}
+.cc-icon{
+    font-size: 17px;
+    color: grey;
+    margin-right: 10px;
+}
+.cc-date{
+    font-size: 11px;
+}
+.c-create p{
+    font-size: 10px;
+    margin: 0px;
+    font-weight: normal;
+}
+
+.cmb-container{
+    border: 1px solid blue;
+    height: 45vh;
+    overflow-y: auto;
+    margin-bottom: 10px;
+}
+
+/* ATTACHMENT  */
+.cmb-attachment{
+    border-bottom: 1px solid #ddd;
+    /* border: 1px solid red; */
+    margin: 0px;
+    padding: 10px;
+    padding-top: 5px;
+}
+
+.attach-header{
+    /* border: 1px solid #ddd; */
+    /* padding: 0px; */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    width: 100%;
+}
+.ah-left h5{
+    /* color: #333; */
+    font-weight: bold;
+    margin: 0px;
+}
+.attach-header .ah-right p{
+    margin: 0px;
+    color: grey;
+    font-size: 8px;
+}
+
+.attach-body{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.attach-body button{
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px 10px;
+    color: #5D12EB;
+    cursor: pointer;
+    background-color: white;
+    width: 100%;
+    /* margin: 0px; */
+    margin-top: 20px;
+    font-size: 10px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.attach-body button:hover{
+    /* background-color: #eee; */
+    border: 1px solid #5D12EB;
+    box-shadow: 0px 4px 8px #5e12eb46;
+}
+.ab-icon{
+    margin-right: 10px;
+}
+/* END ATTACHMENT  */
+
+/* USER ASSIGMENT  */
+.cmb-assign{
+    border-bottom: 1px solid #ddd;
+    margin: 0px;
+    padding: 10px;
+    padding-top: 5px;
+    position: relative;
+}
+.assign-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #333;
+}
+.assign-header .ah-left{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-weight: bold;
+    /* color: #5e5e5e; */
+}
+.assign-header .ah-icon{
+    margin-right: 7px;
+
+}
+.ah-right p{
+    font-size: 8px;
+    color: grey;
+    margin: 0px;
+}
+
+.cmb-assign .assign-btn-add{
+    /* background-color: white; */
+    /* border: 1px solid red; */
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.assign-btn-add button{
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px 10px;
+    color: #5D12EB;
+    cursor: pointer;
+    background-color: white;
+    width: 100%;
+    margin-top: 10px;
+    font-weight: bold;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.assign-btn-add button:hover{
+    border: 1px solid #5D12EB;
+    box-shadow: 0px 4px 8px #5e12eb46;
+}
+/* END USER ASSIGMENT  */
+
+/* BODY  */
+.ncd-body{
+    /* border: 1px solid grey; */
+    /* padding-top: 5px; */
+    padding: 0px !important;
+}
+
+.cdl-header{
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.card-title{
+    position: sticky;
+    z-index: 100;
+    /* border: 1px solid blue; */
+    margin-top: 0px;
+    /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); */
+    /* margin-top: 5px; */
+    padding: 5px 10px;
+    display: flex;
+    flex-wrap: wrap; /* This allows the title to break onto the next line if needed */
+    justify-content: space-between; /* Space between title and other elements */
+    align-items: center;
+}
+.ct-icon{
+    margin-right: 5px;
+}
+.ct-box{
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.ct-box input{
+    border: 0.5px solid #6a11cb;
+    border-radius: 4px;
+    padding: 5px;
+    width:33vw ;
+}
+.ct-box input:focus{
+    outline: none;
+    border: 0.5px solid #6a11cb;
+}
+.ct-box h5{
+    white-space: normal; /* Allow text to wrap */
+    word-wrap: break-word; /* Break long words to fit container */
+    flex: 1; /* Allows title to take up available space */
+    padding-right: 10px;
+    margin: 0px;
+    font-size: 15px;
+    width: 30vw;
+    font-weight: bold;
+    /* border: 1px solid red; */
+
+}
+
+.cdl-right{
+    /* border: 1px solid blue; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
+    position: relative;
+}
+.cdl-right button{
+    background-color: white;
+    /* border: 1px solid #ddd; */
+    border: 1px solid #7B2FF7;
+    border-radius: 4px;
+    cursor: pointer;
+    /* color: #333; */
+    color: #7B2FF7;
+    padding: 3px 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* width: 10vw; */
+    font-size: 10px;
+    /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); */
+}
+.cdl-right button:hover{
+    /* background-color: #eee; */
+    box-shadow: 0px 4px 8px #5e12eb46;
+}
+.cdl-right .cdl-icon{
+    /* margin-right: 5px; */
+    font-size: 15px;
+}
+
+/* BODY MAIN CONTENT  */
+.cm-conten{
+    /* border: 1px solid red; */
+}
+.cm-button{
+    border-bottom: 1px solid #ddd;
+    /* border: 1px solid red; */
+    padding:0px;
+    /* padding-top: 5px; */
+    gap: 0px;
+    font-size: 12px;
+    /* padding-left: 10px; */
+}
+.cm-button button{
+    background-color: white;
+    border: 2px solid white;
+    border-radius: 0px;
+    color: #5e5e5e;
+    font-weight: normal;
+    cursor: pointer;
+}
+.cm-button button:hover{
+    border-bottom: 2px solid #5D12EB;
+    background-color: white;
+    color: #5D12EB;
+    font-weight: normal;
+}
+.cm-button button.active{
+    border-bottom: 2px solid #5D12EB;
+    color: #5D12EB;
+    background-color: white;
+}
+
+.tab-content{
+    /* background-color: #f9f9f9; */
+    /* background-color: red; */
+    /* border: 1px solid green; */
+    /* border: 1px solid #ddd; */
+    border-radius: 8px;
+    padding: 10px;
+    padding-bottom: 0px;
+    width: 99%;
+    /* height: 100%; */
+    /* min-height: 71vh; */
+    height: 70vh;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: baseline;
+    /* align-items: center; */
+    justify-content: flex-start;
+    /* overflow-y: auto; */
+}
+/* END BODY MAIN CONTENT  */
+
+/* END BODY  */
+
+/* SPIT LAYOUT  */
+.ncd-container{
+    /* border: 1px solid blue !important; */
+    display: flex;
+    padding: 0px;
+    transition: all 0.3s ease;
+}
+
+.card-detail-left {
+    flex: 1;
+    padding: 5px !important;
+    height: 100%;
+    min-height: 85vh;
+    border: 1px solid white !important;
+    /* border: 1px solid red !important; */
+  }
+  
+
+/* SHOW COVER  */
+.cover-modal{
+    position: absolute;
+    top: 12%;
+    right: 0px;
+    z-index: 99;
+    border: 1px solid #5e12eb46;
+    border-radius: 6px;
+    background-color: white;
+    box-shadow: 0px 4px 8px #5e12eb46;
+}
+
+.assign-modal{
+    position: absolute;
+    top: 0%;
+    right: 0%;
+    z-index: 99;
+    border: 1px solid #5e12eb46;
+    box-shadow: 0px 4px 8px #5e12eb46;
+    background-color: white;
+}
+
+.label-modals{
+    position: absolute;
+    top: 12%;
+    right: 0px;
+    z-index: 99;
+    border: 1px solid #5e12eb46;
+    border-radius: 6px;
+    background-color: white;
+    box-shadow: 0px 4px 8px #5e12eb46;
+    height: fit-content;
+}
+
+
+/* ACTION  */
+.cmb-action{
+    /* border-top: ; */
+    /* border: 0.5px solid blue; */
+    /* height: 22vh; */
+    padding: 5px;
+
+    position: relative;
+    /* overflow-y: auto; */
+}
+.cmba-header{
+    /* border: 1px solid grey; */
+    padding-left: 5px;
+}
+.cmba-header h5{
+    margin: 0px;
+    font-size: 12px;
+    color: #5e5e5e;
+}
+
+.cmb-action .cmba-body{
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    justify-content: flex-start;
+    /* border: 1px solid green; */
+    gap: 5px;
+    padding: 2px 0px;
+}
+.cmba-body button{
+    width: 100%;
+    border: 1px solid white;
+    border-radius: 4px;
+    background-color: white;
+    cursor: pointer;
+    padding: 8px;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+.cmba-body button:hover{
+    background-color: #eee;
+    border: 1px solid #eee;
+}
+
+.cmba-body .cmba-remove{
+    color: red;
+    width: 100%;
+    border: 1px solid white;
+    border-radius: 4px;
+    background-color: white;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+.cmba-body .cmba-remove:hover{
+    background-color: #eee;
+    border: 1px solid #eee;
+}
+
+.cmba-body .cmba-icon{
+    margin-right: 5px;
+    font-size: 12px;
+}
+
+/* ACTION MODAL  */
+.duplicate-modal
+{
+    position: absolute;
+    top: 0%;
+    right: 0%;
+    z-index: 100;
+    padding: 5px;
+    width: 100%;
+    /* width: fit-content; */
+    height: 30vh;
+    /* background-color: red; */
+    display: flex;
+    align-items:baseline;
+    justify-content: center;
+}
+
+.cd-move-modal{
+    position: absolute;
+    top: 0%;
+    right: 0%;
+    z-index: 100;
+    padding: 5px;
+    width: 100%;
+    /* width: fit-content; */
+    height: 30vh;
+    /* background-color: red; */
+    display: flex;
+    align-items:baseline;
+    justify-content: center;
+}
+
+
+/* RIGHT & ROOM CHAT  */
+
+.cdr-container {
+    padding: 0px;
+    border: 0.5px solid #ddd;
+  }
+  
+  .chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* background: linear-gradient(to top, #2575fc, #6a11cb); */
+    background-image: linear-gradient(to right top, #2575fc, #3963f3, #4c4fe8, #5c38db, #6a11cb);
+    /* background-color: white; */
+    box-shadow: 0 4px 8px #6b11cb3d;
+    margin: 0px;
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+  .chat-title{
+    color: white;
+  }
+  .chat-title h4{
+    margin: 0px;
+    font-weight: bold;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+  }
+  
+  .chat-title p{
+    /* color: #5D12EB; */
+    color: white;
+    margin: 0px;
+  }
+  .split-view .card-detail-left {
+    width: 60%;
+  }
+
+  /* CHAT BUTTON  */
+.btn-header button{
+    background-color: rgba(255, 255, 255, 0);
+    border:1px solid rgba(255, 255, 255, 0);
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 5px;
+    font-size: 15px;
+    color: white;
+  }
+  .btn-header button:hover{
+    border: 1px solid #fff;
+    background-color: #fff;
+    color: #5D12EB;
+  }
+
+  /* END CHAT BUTTON  */
+
+  /* CHAT ROOM BODY  */
+  .chat-body{
+    /* border: 1px solid blue; */
+    margin: 5px 0px;
+    /* height: 100%; */
+  }
+
+
+/* END SPLIT LAYOUT  */
+
+.color{
+    color:#c0deff;
+    color: #dbffe9;
+}

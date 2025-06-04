@@ -1,0 +1,396 @@
+.profile-setting button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: none;
+    border: none;
+    padding: 10px 15px;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    font-size: 16px;
+    color: #555;
+    transition: background 0.3s, color 0.3s;
+    border-radius: 8px;
+}
+
+.profile-setting button:hover {
+    background: #f0f0f0;
+}
+
+.profile-setting button.active {
+    background: #007bff;
+    color: white;
+    font-weight: bold;
+}
+
+/* Animasi halus untuk bagian kanan */
+.pcb-right .fade {
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+
+/* MARKETING DESIGN  */
+.md-container{
+    height: 100%;
+    /* width: 93vw; */
+    min-width: 80vw;
+    /* border: 1px solid blue; */
+    position: relative;
+    background-color: white;
+    /* background-color: #e9deff; */
+    margin-left: 10px;
+    margin-top: 10px;
+    border-radius: 8px;
+}
+.md-header{
+    /* border: 0.5px solid #ddd; */
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* width: 100%; */
+}
+.mdh-left{
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    justify-content: space-between;
+    gap: 10px;
+}
+.mdh-title{
+    /* border: 1px solid green; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+.mdh-left p{
+    margin: 0px;
+    font-size: 10px;
+    gap: 5px;
+    /* border: 1px solid green; */
+}
+.mdh-title h4{
+    margin: 0px;
+    font-weight: bold;
+}
+.mdh-desc{
+    border: 1px solid blue;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+.mdh-right{
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    justify-content: flex-end;
+    /* border: 1px solid blue; */
+    position: relative;
+    gap: 10px; 
+}
+.mdhr-btn{
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.mdh-header-icon{
+    margin-right: 5px;
+    font-weight: bold;
+    color: #333;
+}
+.mdh-icon{
+    margin-right: 5px;
+    font-weight: bold;
+    color: white;
+    background-color: none;
+}
+/* FORM  */
+.mdhr-btn button{
+    background: linear-gradient(to bottom, #6E30DC, #5D12EB);
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border: 0.5px solid #6E30DC;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-left: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.mdhr-btn button:hover{
+    background: linear-gradient(to bottom,#5D12EB,#6E30DC);
+    box-shadow: 0px 4px 8px #6f30dc7c;
+}
+
+/* SEARCH  */
+.mdh-search-container{
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+.mdh-search{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    border: 0.5px solid #ddd;
+    border-radius: 4px;
+    /* width: 50%; */
+    width: fit-content;
+    /* padding: 2px; */
+}
+.mdh-search:hover{
+    border: 0.5px solid #6E30DC;
+}
+.mdh-search input{
+    padding: 4px 5px;
+    font-size: 10px;
+    border: 1px solid white;
+    background-color: white;
+    border-radius: 4px;
+    color: #6E30DC;
+}
+.mdh-search input:focus{
+    outline: none;
+}
+.mdh-search-icon{
+    background-color: white;
+    padding: 4px;
+    font-size: 25px;
+    border-top-right-radius: 4px ;
+    border-bottom-right-radius: 4px;
+}
+
+/* BODY TABLE */
+.md-body{
+    border: 1px solid #ddd;
+    /* border: 1px solid #6E30DC; */
+    border-radius: 8px;
+    margin: 10px;
+    /* width: 92vw; */
+    min-width: 80vw;
+    height: 85vh;
+    /* height: 20vh; */
+    overflow-y: auto;
+    position: relative;
+}
+.md-container table{
+    /* margin-top: 20px; */
+    width: 100%;
+    position: relative;
+}
+
+.md-container  th{
+  /* padding: 12px; */
+  text-align: center;
+  border-bottom: 1px solid green;
+}
+
+.md-container  td {
+  /* padding: 12px; */
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+.md-container  th {
+    /* background-color: white; */
+    /* border: 1px solid green; */
+    background: linear-gradient(to bottom, #6E30DC, #5D12EB);
+    /* color: #333; */
+    color: white;
+    padding: 8px;
+    font-size: 12px;
+    font-weight: bold;
+    position: sticky;
+    z-index: 10;
+    top: 0;
+}
+.md-container td{
+    color: #333;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: normal;
+    /* background-color: white; */
+}
+.md-container tr:nth-child(even){
+    background-color: #eee;
+}
+.md-container tr:hover{
+    background-color: #e9deff;
+}
+.md-container td:hover{
+    color: #5e12eb47;
+    /* background-color: #eee; */
+}
+
+
+/* .action-table */
+.action-table button{
+    border: 1px solid #5D12EB;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+    background: linear-gradient(to bottom, #6E30DC, #5D12EB);
+    cursor: pointer;
+    /* z-index: 99; */
+}
+.action-table button:hover{
+    color: white !important;
+}
+.detail-design{
+    position: absolute;
+    top: 0%;
+    right: 0;
+    z-index: 100;
+    padding: 2px;
+    background-color: rgba(0, 0, 0, 0.024);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: end;
+    /* border: 1px solid green; */
+}
+
+.detail-cont{
+    background-color: white;
+    border: 1px solid #5D12EB;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    width: 50vw;
+    min-height: 84vh;
+    height: 100%;
+}
+
+/* Edit tabel  */
+.edit-design{
+    position: absolute;
+    top: 0%;
+    right: 0;
+    z-index: 100;
+    padding: 2px;
+    background-color: rgba(0, 0, 0, 0.024);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: end;
+    /* border: 1px solid green; */
+}
+
+.edit-cont{
+    background-color: white;
+    border: 1px solid #5D12EB;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    width: 50vw;
+    min-height: 84vh;
+    height: 100%;
+}
+
+
+/* FORM CREATE DESIGN MARKETING */
+.md-form{
+    position: absolute;
+    top: 0%;
+    right: 0%;
+    z-index: 100;
+    padding: 0px;
+    background-color: rgba(0, 0, 0, 0.206);
+    /* border: 1px solid #5D12EB; */
+    width: 100%;
+    height: 100%;
+    display: flex;
+    /* align-items: center; */
+    justify-content: end;
+}
+.md-content{
+    background-color: white;
+    border: 1px solid #5D12EB;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    padding: 0px;
+    /* margin: 0px; */
+    width: 50%;
+    height: 95vh;
+    /* position: relative; */
+    /* margin-right: 8px; */
+}
+
+.tr-body{
+    /* border: 1px solid red; */
+}
+
+
+/* RECOMENDATION CSS TABLE  */
+.new-data {
+  padding: 1rem;
+  font-family: Arial, sans-serif;
+}
+
+.data-accept-design {
+  overflow-x: auto; /* Untuk scrolling jika tabel terlalu lebar */
+  background-color: #f9f9f9;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.data-accept-design table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 1200px; /* agar tidak terlalu sempit */
+  background-color: white;
+  border: 1px solid #ddd;
+}
+
+.data-accept-design thead {
+  background-color: #f1f1f1;
+}
+
+.data-accept-design th,
+.data-accept-design td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  font-size: 0.9rem;
+}
+
+.data-accept-design th {
+  font-weight: bold;
+  color: #333;
+}
+
+.data-accept-design tbody tr:hover {
+  background-color: #f5f5f5;
+}
+
+.data-accept-design td.action-table {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.data-accept-design .action-table button {
+  background-color: #007bff;
+  border: none;
+  padding: 6px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.data-accept-design .action-table button:hover {
+  background-color: #0056b3;
+}

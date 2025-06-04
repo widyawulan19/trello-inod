@@ -1,0 +1,74 @@
+.cp-container{
+    /* border: 1px solid #ddd; */
+    border-radius: 4px;
+    padding: 10px;
+}
+.scp-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.scp-header h4{
+    margin: 0px;
+    font-size: 12px;
+    color: #5e5e5e;
+    font-weight: bold;
+}
+.scp-content{
+    margin-top: 5px;
+    /* border: 1px solid blue; */
+}
+.cp-select{
+   
+}
+.cps-box{
+    /* border: 1px solid red; */
+    width: 100%;
+}
+
+.scp-container{
+    /* border: 1px solid grey; */
+    margin-top: 10px;
+    /* list-style: none; */
+}
+.scp-container button{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #5D12EB;
+    border-radius: 4px;
+    font-size: 12px;
+    padding: 5px !important;
+    background: linear-gradient(to right, #6a11cb, #2575fc);
+    color: white !important;
+    font-weight: bold;
+    cursor: pointer;
+}
+.scp-container button:hover{
+    background: linear-gradient(to right, #2575fc, #6a11cb);
+    box-shadow: 0px 4px 8px #5e12eb46;   
+}
+.scp-list{
+    list-style: none;
+    /* border: 1px solid red; */
+    padding: 0px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+.scp-list li{
+    border: 1px solid white;
+    width: 100%;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.scp-list li:hover{
+    border: 1px solid #eee;
+    background-color: #eee;
+}

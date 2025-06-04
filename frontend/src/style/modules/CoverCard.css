@@ -1,0 +1,180 @@
+.cover-container{
+    /* border: 1px solid green; */
+}
+.cover-container button{
+    padding: 5px;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.cover-container button:hover{
+    border: 1px solid #eee;
+    background-color: #eee;
+}
+.cover-icon{
+    margin-right: 5px;
+}
+.show-cover{
+    border-radius: 4px;
+    /* border: 1px solid #eee; */
+    /* border: 1px solid red; */
+    /* background-color: #fff; */
+    padding: 10px;
+    width: 500px;
+}
+.cover{
+    width: 100%;
+    position: relative;
+}
+.selected-cover{
+    /* border: 1px solid red; */
+}
+.button-cover{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-left: 5px;
+    /* border: 1px solid red; */
+    padding: 5px 0px;
+    height: fit-content;
+    cursor: pointer;
+}
+.bc-left{
+    /* border: 1px solid blue; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
+}
+.bc-left h5{
+    margin: 0px;
+    font-size: 12px;
+    color: #333;
+    letter-spacing: 1px;
+    font-weight: bold;
+}
+.button-cover .bc-rigth{
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.bc-rigth .bc-delete{
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: white;
+    gap: 5px;
+    color: red;
+    font-size: 10px;
+    /* letter-spacing: 0.5px; */
+    cursor: pointer;
+    font-weight: normal;
+}
+.bc-delete:hover{
+    background-color: #ddd;
+}
+.bc-rigth .btn-close{
+    border: 1px solid white;
+    cursor: pointer;
+    border-radius: 4px;
+    font-weight: bold;
+}
+.btn-close:hover{
+    border: 1px solid #ddd;
+    background-color: #ddd;
+}
+
+
+    /* background: linear-gradient(to bottom, #6E30DC, #5D12EB); */
+
+.sc-container{
+    /* position: absolute; */
+    top: 100%;
+    left: 0;
+    width: 37vw;
+    /* width: 100%; */
+    /* border: 1px solid #ddd; */
+    /* box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); */
+    border-radius: 4px;
+    background-color: #fff;
+    padding: 10px;
+}
+.sc-container h5{
+    margin: 0px;
+    color: grey;
+}
+.image-cover{
+    /* border: 1px solid blue; */
+}
+.image-cover .ci{
+    margin-bottom: 10px;
+    padding: 2px 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.image-cover h5{
+    font-weight: normal;
+    font-size: 13px;
+    color: #333;
+    /* border: 1px solid red; */
+}
+.image-cover h4{
+    margin: 0px;
+}
+.image-content{
+    /* border: 1px solid green; */
+    min-width: 25vw;
+    width: 97%; 
+    height: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-x: auto; /* Memungkinkan scroll horizontal */
+    gap: 10px; /* Jarak antar elemen */
+    padding: 5px; /* Tambahkan padding agar lebih rapi */
+}
+
+.check-icon{
+    color: #9b2fad;
+}
+.default-color .cw{
+    margin-bottom: 10px;
+    padding: 2px 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.default-color h5{
+    font-weight: normal;
+    font-size: 13px;
+    color: #333;
+}
+.default-content {
+    /* border: 1px solid green; */
+    min-width: 25vw;
+    width: 97%; 
+    height: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-x: auto; /* Scroll horizontal jika elemen lebih banyak */
+    gap: 10px; /* Menambah jarak antar elemen */
+    padding: 5px;
+}
+
+.default-content div {
+    flex-shrink: 0; /* Mencegah item mengecil saat overflow */
+    transition: transform 0.2s ease-in-out, border 0.2s;
+}
+
+/* COVER SELECT  -> FILE COVER SELECT*/
+/* .card-cover-display{
+    border: 1px solid blue;
+} */
+/* END COVER SELECT  */

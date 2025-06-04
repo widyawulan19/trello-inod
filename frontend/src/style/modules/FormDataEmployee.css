@@ -1,0 +1,64 @@
+.form-data-container{
+    /* border: 1px solid green; */
+    border-radius: 8px;
+    /* display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; */
+}
+.fdc-header{
+    /* border:1px solid red; */
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    background: linear-gradient(to bottom, #6E30DC, #5D12EB);
+}
+.fdc-header h2{
+    font-weight: bold;
+    color: white;
+}
+.fdc-icon{
+    color: white;
+    cursor: pointer;
+}
+
+.form-data-container .form-content{
+    /* border: 1px solid red; */
+    height: 60vh;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+.form-content .form-box{
+    /* border: 1px solid green; */
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    justify-content: flex-start;
+    gap: 5px;
+    margin: 5px 0px;
+}
+
+.form-box label{
+    color: #5e5e5e;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.form-box input{
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    font-size: 12px;
+}
+.form-box input:hover{
+    border: 1px solid #5D12EB;
+    background: linear-gradient(to bottom, #6f30dc45, #5e12eb45);
+}

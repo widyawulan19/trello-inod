@@ -1,0 +1,405 @@
+.cd-container  {
+    border: 1px solid #ddd;
+    width: 70%;
+    min-width: 60vw;
+    height: 100%;
+    min-height: 100vh;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    margin: 5px 0px;
+    background-color: white;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    color: #333;
+    position: relative;
+}
+.cd-header{
+    border-bottom: 1px solid #ddd;
+    padding: 5px;
+    /* width: 100%; */
+    min-width: 650px;
+    /* padding-right: 20px; */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+.cd-nav{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    color: #333;
+    cursor: pointer;
+    margin-left: 10px;
+    padding: 2px;
+    /* border: 1px solid green; */
+}
+.cdnav-icon{
+    margin-right: 5px;
+    color: #333;
+    cursor: pointer;
+}
+.cd-nav button{
+    padding: 5px 7px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #fff;
+    border-radius: 4px;
+    background-color: white;
+    /* cursor: pointer; */
+}
+.cd-nav button:hover{
+    /* background-color: #eee; */
+    /* background: linear-gradient(to right, #6b11cb41, #2574fc41); */
+}
+.cdn-active{
+    color:#6a11cb;
+    font-weight: bold;
+}
+
+.cd-header .nav-right{
+    /* border: 1px solid grey; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 170px;
+}
+.nav-right button{
+    padding: 5px;
+    border: 0.5px solid #333;
+    border-radius: 4px;
+    /* background-color: white; */
+    background: linear-gradient(to right, #6a11cb, #2575fc);
+    color: white;
+    font-weight: bold;
+    margin: 0px 2px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.nav-right button:hover{
+    /* border: 0.5px solid #333; */
+    background-color: #ddd;
+}
+.nr-icon{
+    margin-right: 5px;
+}
+.nr-btn{
+    font-size: 20px;
+    /* padding: 2px 5px; */
+    /* border: 0.5px solid #333; */
+    border-radius: 4px;
+    background-color: white;
+    margin: 0px 2px;
+    cursor: pointer;
+}
+.nr-btn:hover{
+    /* border: 0.5px solid #333; */
+    background-color: #ddd;   
+}
+
+.cd-body{
+    /* border: 1px solid #ddd; */
+}
+.cd-title{
+    /* border: 1px solid #333; */
+    position: sticky;
+    z-index: 100;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-top: 5px;
+    padding: 5px 10px;
+    display: flex;
+    flex-wrap: wrap; /* This allows the title to break onto the next line if needed */
+    justify-content: space-between; /* Space between title and other elements */
+    align-items: center;
+}
+.ct-box input{
+    border: 0.5px solid #6a11cb;
+    border-radius: 4px;
+    padding: 5px;
+    width:33vw ;
+}
+.ct-box input:focus{
+    outline: none;
+    border: 0.5px solid #6a11cb;
+}
+.ct-box h5{
+    white-space: normal; /* Allow text to wrap */
+    word-wrap: break-word; /* Break long words to fit container */
+    flex: 1; /* Allows title to take up available space */
+    padding-right: 10px;
+    margin: 0px;
+    font-size: 15px;
+    width: 30vw;
+    /* border: 1px solid red; */
+
+}
+.cd-title button{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.more-title{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    position: relative;
+}
+/* BUTTON COVER AND CHAT  */
+.more-title button{
+    padding: 5px;
+    border: 0.5px solid #333;
+    border-radius: 4px;
+    background-color: white;
+    margin: 0px 2px;
+    cursor: pointer;
+}
+.more-title button:hover{
+    border: 0.5px solid #333;
+    background-color: #ddd;
+}
+/* END BUTTON COVER AND CHAT  */
+.s-cover{
+    position: absolute;
+    top: 22%;
+    right: 0;
+    background-color: white;
+    z-index: 100;
+}
+.t-icon{
+    margin-right: 10px;
+}
+
+/* LABEL  */
+.cd-label{
+    padding: 5px;
+    margin: 0px 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/* MAIN CONTENT  */
+.cd-main-container{
+    /* height: 70vh; */
+    /* border: 1px solid grey; */
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+.cmc-left{
+    /* border: 1px solid blue; */
+    width: 75%;
+    height: 65vh;
+    overflow-y: auto;
+    padding: 5px 15px;
+}
+.cmc-left .cmc-action1{
+    /* border: 1px solid red; */
+    margin: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.action-box1{
+    border: 1px solid #ddd;
+    background-color: #f8f8f8;
+    border-radius: 4px;
+    width: 40%;
+    height: 5vh;
+    padding: 15px 10px;
+    box-shadow: 0px 4px 8px #9b9b9b46;
+}
+.ab-content{
+    /* border: 1px solid yellow; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    /* margin: 7px 0px; */
+    margin-bottom: 7px;
+}
+.abc-icon{
+    color: #6a11cb;
+    margin-right: 5px;
+    font-size: 13px;
+}
+.ab-content h5{
+    margin: 0px;
+    color: #5b5b5b;
+}
+
+
+/* DESCRIPTION  */
+.description-con{
+    /* border: 1px solid blue; */
+    margin: 10px 0px;
+}
+.desc-header{
+    /* border: 1px solid green; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 5px;
+}
+.desc-header h5{
+    margin: 0px;
+    font-size: 12px;
+}
+.desc-header .dh-icon{
+    font-size: 12px;
+    color: #6a11cb;
+}
+.desc-content{
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    /* margin: 5px; */
+}
+.des-main .div-p{
+    margin: 0px;
+    font-size: 11px;
+    /* border: 1px solid red; */
+    height: 20vh;
+    overflow-y: auto;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+}
+.des-main .ta-cont{
+    /* border: 1px solid magenta; */
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    justify-content: flex-start;
+}
+.ta-cont .text-muted{
+    font-size: 8px;
+    color: #6a11cb;
+}
+.des-main textarea{
+    border: 1px solid #dddddd02;
+    width: 97%;
+    height: 20vh;
+    padding: 5px;
+    overflow-y: auto;
+    /* min-height: ; */
+}
+.des-main textarea:focus{
+    outline: none;
+    border: 1px solid #dddddd02;
+    border-radius: 4px;
+    height: 20vh;
+}
+
+
+/* ACTION RIGHT  */
+.cmc-right{
+    /* border: 1px solid green; */
+    width: 25%;
+    /* min-height: 55vh; */
+    height: 100%;
+    padding: 15px 10px;
+    /* padding-left: 5px; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.action-box2{
+    border: 1px solid #ddd;
+    /* background-color: #f8f8f8; */
+    background-color: #fff;
+    border-radius: 4px;
+    width: 88%;
+    /* height: 5vh; */
+    padding: 15px 10px;
+    /* box-shadow: 0px 4px 8px #9b9b9b46; */
+}
+.ab2-header{
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.abh-left{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start
+}
+.abh-left h5{
+    margin: 0px;
+    color: #5b5b5b;
+}
+.abh-right button{
+    background-color: #eee;
+    color: #333;
+    border: 1px solid #eee;
+    border-radius: 2px;
+    padding: 3px 5px;
+}
+
+.ab2-cont {
+    /* border: 1px solid #eee; */
+    margin-top: 3vh;
+}
+.ab2-cont button{
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: rgb(247, 246, 246);
+    width: 100%;
+    padding: 10px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #6a11cb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.ab2-cont .ca-btn{
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: rgb(247, 246, 246);
+    width: 100%;
+    padding: 10px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #6a11cb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+/* ASSIGNED  */
+.assign-modal{
+    position: absolute;
+    top: 5vh;
+    right: 0vw;
+    padding: 5px;
+    height: fit-content;
+    width: fit-content;
+    border: 1px solid grey;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    z-index: 99; 
+  }
+  
+
+  /* ROOM CHAT  */
+  .cr-container{
+    position: absolute;
+    top: 0px;
+    left: 0;
+    right: 0;
+    z-index: 99;
+    padding: 5pzx;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    width: 35vw;
+    height: 85vh;
+  }

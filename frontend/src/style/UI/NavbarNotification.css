@@ -1,0 +1,104 @@
+.navNotif-container{
+    /* border: 1px solid red; */
+    width: 30vw;
+    height: fit-content;
+    /* padding: 8px; */
+    /* gap: 10px; */
+}
+
+/* HEADER  */
+.navNotif-header{
+    /* border: 1px solid blue; */
+    background-color: #6a11cb;
+    color: white;
+    /* border: 1px solid #6a11cb; */
+    border-bottom: 1px solid #ddd;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    padding: 5px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom:5px; 
+    margin-bottom: 5px;   
+}
+.navNotif-header .navNotif-left{
+    /* border: 1px solid red; */
+    gap: 0px;
+}
+.navNotif-left h4{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
+    margin: 0px;
+    font-weight: bold;
+}
+.navNotif-left p{
+    margin: 0px;
+    font-size: 12px;
+    color: white;
+}
+
+.close-header{
+    cursor: pointer;
+}
+
+/* END HEADER  */
+
+/* BUTTON  */
+.btn-nav-notif{
+    /* border: 1px solid green; */
+    margin-bottom: 10px;
+    padding: 0px 8px;
+    /* gap: 10px; */
+}
+.btn-nav-notif .navNotif-btn{
+    background-color: white !important;
+    border: 2px solid #fff;
+    border-radius: 0px;
+    /* border: 1px solid blue; */
+    /* border-bottom: 1px solid #ddd !important; */
+    padding: 5px;
+    font-size: 12px;
+    cursor: pointer;
+    color: #333;
+    width: 8vw;
+}
+.navNotif-btn:hover{
+    color: #6a11cb;
+    border-bottom: 2px solid #6a11cb;
+}
+.navNotif-btn.active{
+    color: #6a11cb;
+    border-bottom: 2px solid #6a11cb;
+}
+/* END BUTTON  */
+
+
+/* BODY */
+.navNotif-body{
+    /* border: 1px solid #ddd; */
+    border-radius: 4px;
+    padding: 8px;
+    height: 35vh;
+    overflow-y: auto;
+}
+/* END BODY  */
+
+
+/* NOTIF BADGE  */
+.notif-badge{
+    background-color: red;
+    color: white;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    margin-left: 6px;
+}
+
+/* MODAL SHOW SYSTEM  */
+.show-system{
+    /* border: 1px solid red; */
+    /* height: 35vh; */
+}

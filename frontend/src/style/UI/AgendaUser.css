@@ -1,0 +1,88 @@
+.agenda-main-container{
+    /* border: 1px solid red; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
+    height: 32vh;
+}
+.agenda-container{
+    /* border: 1px solid red; */
+    border: 1px solid #ddd;
+    border-left: 2px solid #6a11cb;
+    border-radius: 4px;
+    padding: 0px 10px;
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    justify-content: flex-start;
+}
+
+.agenda-container .ac-header{
+    border: 1px solid white;
+    /* border: 1px solid blue; */
+    margin-bottom: 0px;
+
+
+}
+.ach-left .ac-icon{
+    font-size: 10px;
+    margin-top: 5px;
+}
+
+.ac-header .ach-right{
+    /* border: 1px solid green; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.ach-right h3{
+    font-size: 25px;
+    margin: 0px;
+}
+.ach-right p{
+    margin: 0px;
+    font-size: 10px;
+    color: grey;
+}
+
+.agenda-container h3{
+    font-weight: normal;
+    font-size: 15px;
+    letter-spacing: 1px;
+    color: #333;
+    margin: 0px;
+}
+.agenda-container .ac-icon{
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
+}
+
+.agenda-desc p{
+    margin: 0px;
+    font-size: 12px;
+    border:1px solid white;
+    padding-left: 5px;
+}
+
+.agenda-container button{
+    padding: 5px;
+    color: #6a11cb;
+    border: 1px solid white;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.color{
+    color: orange;
+}

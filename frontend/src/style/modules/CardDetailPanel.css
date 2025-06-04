@@ -1,0 +1,184 @@
+.card-details-panel{
+  /* border: 1px solid blue; */
+  padding: 5px 0px;
+  /* padding-left: 10px; */
+}
+.card-details-panel h5{
+  margin: 0px;
+  font-size: 12px;
+  /* border: 1px solid blue; */
+}
+.button-container {
+  display: flex;
+  /* flex-direction: column; */
+  gap: 2px; /* Jarak antar tombol */
+  align-items: flex-start; /* Menyusun tombol ke kiri (opsional, bisa diganti dengan center) */
+  padding: 10px 0px;
+  padding-top: 5px;
+  position: relative;
+  /* border: 1px solid green; */
+}
+
+.button-container button {
+  width: 100%; /* Supaya tombol memiliki lebar penuh dari container */
+  padding: 5px;
+  border: 1px solid #ddd;
+  background-color: white;
+  border-radius: 4px;
+  font-weight: bold;
+  color: #5b5b5b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  transition: background-color 0.2s ease;
+}
+
+.button-container button:hover {
+  background-color: #f0f0f0;
+}
+
+.button-container button.active {
+  background-color: #b3d4fc;
+  font-weight: bold;
+}
+
+.bc-icon{
+  margin-right: 5px;
+  font-size: 12px;
+  color: #5D12EB;
+
+}
+
+/* MODAL  */
+.due-modal{
+  position: absolute;
+  top: 5vh;
+  left: 0px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  z-index: 99;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+}
+.prio-modal{
+  position: absolute;
+  top: 5vh;
+  left: 7vw;
+  border: 1px solid grey;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  z-index: 99;
+}
+.label-modal{
+  position: absolute;
+  top: 5vh;
+  right: 0vw;
+  min-height: 50vh;
+  /* width: 25vw; */
+  width: fit-content;
+  /* overflow-y: auto; */
+  /* height: 100%; */
+  border: 1px solid grey;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  z-index: 99;
+}
+.status-modal{
+  position: absolute;
+  top: 5vh;
+  right: 0vw;
+  padding: 10px;
+  height: fit-content;
+  min-width: 15vw;
+  /* width: 100%; */
+  border: 1px solid #eee;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  z-index: 99; 
+}
+
+.assign-modal{
+  position: absolute;
+  top: 5vh;
+  right: 0vw;
+  padding-bottom: 10px;
+  height: fit-content;
+  width: 15vw;
+  border: 1px solid #eee;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  z-index: 99; 
+}
+
+/* .card-details-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    width: 100%;
+    position: relative;
+  }
+  
+  .button-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    border: 1px solid grey;
+  }
+  
+  .button-container button {
+    padding: 8px 12px;
+    border: 1px solid white;
+    background-color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+    font-size: 10px;
+  }
+  
+  .button-container button:hover {
+    background-color: #ddd;
+  }
+  
+  .button-container button.active {
+    background-color: #ddd;
+    color: #333;
+    border-color: #ddd;
+  }
+
+  
+  .cd-detail{
+    position: absolute;
+    top: 60px;
+    left: 0;
+    z-index: 100;
+    background-color: #fff;
+  }
+
+   .button-container button {
+    padding: 8px 12px;
+    border: 1px solid white;
+    background-color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+    font-size: 10px;
+  }
+  
+  .button-container button:hover {
+    background-color: #ddd;
+  }
+  
+  .button-container button.active {
+    background-color: #ddd;
+    color: #333;
+    border-color: #ddd;
+  } */

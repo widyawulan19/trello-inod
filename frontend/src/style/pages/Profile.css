@@ -1,0 +1,250 @@
+.profile-container{
+    /* border: 1px solid #ddd; */
+    background-color: white;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.pc-container{
+    background-color: white;
+    /* border: 1px solid #ddd; */
+    border-radius: 4px;
+    width: 80%;
+    height: 90%;
+    /* box-shadow: 0px 4px 8px rgba(0,0,0,0.1); */
+}
+.pc-header{
+    /* border: 1px solid red; */
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    min-width: 50vh;
+    /* align-items: center; */
+    justify-content: flex-start;
+    margin-bottom: 10px;
+}
+.pch-left{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    /* border: 1px solid yellow; */
+}
+.pch-left h2{
+    margin: 0px;
+    color: #333;
+}
+.pchl-icon{
+    margin-right: 5px;
+    font-size: 20px;
+    color: #333;
+}
+.pc-header p{
+    margin: 0px;
+    margin-top: 5px;
+    color: #333;
+}
+
+/* BODY  */
+.pc-body{
+    /* border: 1px solid grey; */
+    width: 100%;
+    /* min-width: 50vw; */
+    height: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap:20px;
+}
+
+/* LEFT  */
+.pcb-left{
+    border: 1px solid #ddd;
+    box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    height: 100%;
+    width: 30%;
+}
+
+.profile-photo{
+    /* border: 1px solid blue; */
+    /* border-bottom: 1px solid #ddd; */
+    display: flex;
+    flex-direction:column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 30px;
+    position: relative;
+}
+.profile-photo img{
+    height: 40%;
+    width: 40%;
+}
+.profile-photo h3{
+    margin:3px  0px;
+}
+.profile-photo p{
+    margin: 0px;
+    font-size: 12px;
+}
+.profile-photo button{
+    margin-top: 20px ;
+    margin-bottom: 10px;
+    padding: 10px;
+    width: 50%;
+    border: 1px solid #5e12eb8e;
+    border-radius: 4px;
+    background-color: white;
+    color: #5D12EB;
+    font-weight: bold;
+    cursor: pointer;
+}
+.profile-photo button:hover{
+    border: 1px solid #5D12EB;
+    background: linear-gradient(to right, #6b11cb41, #2574fc41);
+}
+
+.ps-icon{
+    margin-right: 10px;
+}
+
+/* END LEFT  */
+
+.pcb-right{
+    border: 1px solid #ddd;
+    box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    height: 100%;
+    width: 70%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-setting{
+    border: 1px solid white;
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding:10px ;
+}
+
+.profile-setting button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: none;
+    border: none;
+    padding: 10px;
+    width: 80%;
+    text-align: left;
+    cursor: pointer;
+    font-size: 12px;
+    color: #555;
+    transition: background 0.3s, color 0.3s;
+    border-radius: 8px;
+}
+
+.fade .activity{
+    /* border: 1px solid red; */
+    height: 75vh;
+    padding: 10px;
+    overflow-y: auto;
+}
+.fade .notif{
+    /* border: 1px solid green; */
+    height: 75vh;
+    width: 50vw; 
+    padding: 10px;
+    /* overflow-y: auto; */
+}
+
+.profile-setting button:hover {
+    background: linear-gradient(to right, #6b11cb41, #2574fc41);
+}
+
+.profile-setting button.active {
+    background: linear-gradient(to right, #6b11cb41, #2574fc41);
+}
+
+/* Animasi halus untuk bagian kanan */
+.pcb-right .fade {
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* AVATAR */
+.ava-container{ /* ada hubungan dengan class profile-photo */
+    position: absolute;
+    top: 100%;
+    left: 0%;
+    z-index: 99;
+    min-width: 20vw;
+    width: 100%;
+    height: 30vh;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    box-shadow: 0px 4px 8px #5e12eb46;
+}
+
+.all-profile-container .apc-header{
+    /* border: 1px solid #ddd; */
+    padding: 10px;
+    padding-bottom: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.apc-icon{
+    border: 1px solid white;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 3px;
+}
+.apc-icon:hover{
+    border: 1px solid #eee;
+    background-color: #eee;
+}
+.apc-header h5{
+    margin: 5px;
+    /* font-weight: normal; */
+    font-size: 12px;
+    color: grey;
+}
+.apc-body{
+    /* border: 1px solid red; */
+    gap: 15px 10px;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: repeat(5, 3vw);
+}
+.apc-body img{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    /* border: 3px solid green; */
+}
+
+.apc-btn{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.apc-btn button{
+    background: linear-gradient(to right, #6a11cb, #2575fc);
+    cursor: pointer;
+    border: 1px solid #5D12EB;
+    color: white;
+    font-weight: bold;
+}
+.apc-btn button:hover{
+    background: linear-gradient(to right,#2575fc, #6a11cb);
+}
