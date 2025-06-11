@@ -53,9 +53,14 @@ const PersonalInformation=({fetchUserSettingData,userData, userId})=> {
     
   return (
     <div className='personal-container'>
-        <div className="pc-header">
+        <div className="pc-title">
             <h3>Personal Information</h3>
+            <p>Atur informasi dasar akunmu di sini untuk memaksimalkan fitur aplikasi.</p>
         </div>
+        {/* <div className="pc-header">
+            <h3>Personal Information</h3>
+            <p>Atur informasi dasar akunmu di sini untuk memaksimalkan fitur aplikasi.</p>
+        </div> */}
         <div className="pc-body">
             <div className="pi">
                 {/* <h4>Informasi Umum</h4> */}

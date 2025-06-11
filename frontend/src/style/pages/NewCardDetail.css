@@ -14,9 +14,15 @@
     border-top-right-radius: 8px;
     color: #333;
     position: relative;
+    /* display: flex;
+    flex-direction: column;
+    align-items: center; */
 }
 .ncd-header{
-    border-bottom: 1px solid #ddd;
+    /* border-bottom: 1px solid #ddd; */
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    background-image: linear-gradient(to right, #6d5aea, #715cea, #755eea, #7861ea, #7c63ea, #8266ea, #8768ea, #8c6bea, #946fea, #9b72ea, #a276ea, #a87aea);
     padding: 5px;
     /* width: 100%; */
     min-width: 650px;
@@ -39,26 +45,32 @@
 }
 .ncd-icon{
     margin-right: 5px;
-    color: #333;
+    /* color: #333; */
+    color: white;
     cursor: pointer;
 }
 .ncd-left button{
-    padding: 5px 7px;
+    padding: 5px;
     font-size: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid #fff;
-    border-radius: 4px;
-    background-color: white;
+    /* border: 1px solid #ffffff00; */
+    border: 1px solid rgba(255, 255, 255, 0);
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0);
+    /* background: linear-gradient(to right, #6b11cb3f, #2574fc38); */
     cursor: pointer;
+    color: white;
 }
 .ncd-left button:hover{
     background: linear-gradient(to right, #6b11cb3f, #2574fc38);
     color: white;
+    border: 1px solid #ddd;
 }
 .ncd-active{
-   color:#6a11cb;
+   /* color:#6a11cb; */
+      color:white;
    font-weight: bold;
 }
 
@@ -95,13 +107,14 @@
 
 /* CARD MAIN BOX  */
 .card-main-box{
-    /* border: 1px solid blue; */
+    border: 1px solid blue;
     display: flex;
     width: 100%;
 }
 
 /* LEFT SIDE  */
 .cmb-left{
+    border: 1px solid blue;
     border-top: 1px solid #ddd;
     /* border-right: 0.5px solid #ddd; */
     width: 75%;
@@ -138,7 +151,7 @@
 /* RIGHT SIDE  */
 .cmb-right{
     border: 1px solid #ddd;
-    /* border: 1px solid red; */
+    border: 1px solid red;
     width: 25%;
     height: 75vh;
     position: relative;
@@ -366,10 +379,147 @@
 
 /* BODY  */
 .ncd-body{
-    /* border: 1px solid grey; */
+    border: 1px solid red;
     /* padding-top: 5px; */
-    padding: 0px !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    width: 100%;
+    height: fit-content;
 }
+.ncd-main-header{
+    border-radius: 8px;
+    background-color: white;
+    color: white;
+    width: 90%;
+    /* padding: 10px; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* TITLE & LABEL  */
+
+.ncd-main-header .ncd-title-btn{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* border: 1px solid red; */
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #5c38db;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    background-image: linear-gradient(to right, #2d66e7, #3863e7, #425fe8, #4c5be7, #5557e7, #5d54e7, #6551e7, #6d4de7, #764ae7, #7e47e7, #8743e7, #8f3fe6);
+}
+
+.title-label{
+    /* border: 1px solid black; */
+    width: 80%;
+}
+
+.ct-box{
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+.title-label .ct-box input{
+    border: 0.5px solid #6a11cb;
+    background-color: #00000000;
+    border-radius: 4px;
+    padding: 0px;
+    width:100% ;
+    font-size: 15px;
+}
+.title-label .ct-box input:focus{
+    outline: none;
+    border: 0.5px solid #6a11cb;
+}
+.title-label .ct-box input:hover{
+    background-color: rgba(255, 255, 255, 0);
+}
+
+
+.ct-box h5{
+    white-space: normal; /* Allow text to wrap */
+    word-wrap: break-word; /* Break long words to fit container */
+    flex: 1; /* Allows title to take up available space */
+    padding-right: 10px;
+    margin: 0px;
+    font-size: 15px;
+    width: 100%;
+    font-weight: bold;
+    /* border: 1px solid red; */
+
+}
+
+/* HEADER BUTTON  */
+.main-header-btn{
+    /* border: 1px solid blue; */
+    display: flex;
+    align-items:baseline;
+    justify-content: flex-end;
+    gap: 5px;
+    position: relative;
+    width: 20%;
+    height: 100%;
+}
+.main-header-btn button{
+    background-color: rgba(255, 255, 255, 0.284);
+    border: 1px solid rgba(255, 255, 255, 0.284);
+    border-radius: 6px;
+    cursor: pointer;
+    color: white;
+    padding: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+}
+
+.main-header-btn button:hover{
+    background-color: #5e12eb46;
+    border: 1px solid #5e12eb46;
+    box-shadow: 0px 4px 8px #5e12eb46;
+}
+
+/* STATUS  */
+.ncd-status{
+    border: 1px solid #ddd;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    padding: 10px 20px;
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    gap: 10px;
+    display: grid;
+    grid-template-columns: repeat(3, 25%);
+    align-items:baseline;
+    justify-content: center;
+}
+
+.ncd-status-container{
+    /* border: 1px solid #ddd; */
+    height: fit-content;
+    /* width: 30%; */
+}
+.ncd-status-priority{
+    /* border: 1px solid #ddd; */
+     height: fit-content;
+    /* width: 30%; */
+}
+.ncd-status-due{
+    /* border: 1px solid #ddd; */
+     height: fit-content;
+    /* width: 30%; */
+}
+/* END STATUS  */
 
 .cdl-header{
     /* border: 1px solid red; */
@@ -391,38 +541,263 @@
     justify-content: space-between; /* Space between title and other elements */
     align-items: center;
 }
+
+
+/* CARD CONTENT , DESC, ATTACH  */
+.ncd-main-content{
+    /* border: 1px solid green; */
+    width: 90%;
+    gap: 15px;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.ncd-main-content .ncd-main-left{
+    /* border: 1px solid #E2E8F0; */
+    /* border: 1px solid blue; */
+    width: 70%;
+    height: 57vh;
+    overflow-y: auto;
+    padding: 10px 5px;
+    /* gap: 15px; */
+}
+/* CARD DESCRIPTION  */
+.ncd-main-left .ncd-desc{
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    padding: 15px;
+    gap: 5px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+.ncd-desc .des-header{
+    /* border: 1px solid grey; */
+    border-left: 3px solid #4085F3;
+    padding-left: 10px;
+    width: 100%;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.ncd-desc .des-content{
+    /* border: 1px solid red; */
+    padding: 5px;
+    color: #333;
+    font-size: 12px;
+    /* color: ; */
+}
+
+/* RIGHT  */
+.ncd-main-content .ncd-main-right{
+    /* border: 1px solid green; */
+    width: 30%;
+    padding: 10px 0px;
+    height: 57vh;
+    /* gap: 10px; */
+    overflow-y: auto;
+    /* gap: 10px; */
+}
+.ncd-main-right .ncd-cover-detail{
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    padding: 5px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* CARD DETAIL  */
+.ncd-detail .ncd-detail-header{
+    /* border: 1px solid #ddd; */
+    margin-top: 10px;
+    border-left: 3px solid #28a12c;
+    padding-left: 10px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #333;
+}
+
+.ncd-detail .ncd-detail-con{
+    /* border: 1px solid red; */
+}
+.ncd-detail-con .c-create{
+    margin: 5px;
+    display: flex;
+    justify-content: flex-start;
+    font-size: 12px;
+}
+.cc-icon{
+    font-size: 17px;
+    color: #6551e7;
+    margin-right: 10px;
+}
+.cc-date{
+    font-size: 11px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* border: 1px solid red; */
+}
+.c-create p{
+    font-size: 10px;
+    margin: 0px;
+    font-weight: normal;
+}
+
+/* USER ASSIGMNE  */
+.ncd-user-assign{
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    padding: 10px 5px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+.ncd-user-assign .ncd-assign-header{
+    /* border: 1px solid grey; */
+    border-left: 3px solid #646BED;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding-left: 10px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.ncd-assign-header button{
+    font-size: 10px;
+    padding: 2px 8px;
+    cursor: pointer;
+    border: 1px solid #ABBAFA;
+    border-radius: 4px;
+    background-color: #EEF2FE;
+    color: #646BED;
+}
+.ncd-user-assign .ncd-assign-content{
+    /* border: 1px solid red; */
+    margin: 5px 0px; 
+}
+.ncd-user-assign .ncd-add-btn{
+    /* border: 1px solid blue; */
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.ncd-add-btn button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    gap: 5px;
+    border: 1.5px dashed #4c5be7;
+    border-radius: 8px;
+    width: 90%;
+    color: #4c4fe8;
+}
+
+/* CARD ACTIVITY  */
+.ncd-card-activity{
+    margin-top: 10px;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    padding: 10px 5px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.ncd-card-activity .ncd-activity-header{
+    /* border: 1px solid grey; */
+    border-left: 3px solid orange;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding-left: 10px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* ATTACHMENT  */
+.ncd-main-left .ncd-attach{
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+} 
+.ncd-attach .attach-header-cont{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-left: 3px solid #5c38db;
+    padding-left: 10px;
+    width: 100%;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.attach-header-cont button{
+    border: 1px solid #987df9; 
+    padding: 3px 5px;
+    font-size: 10px;
+    background-color: #d5cafd;
+    color:#5c38db;
+}
+
+.attach-content{
+    border: 2px dashed #8688fa;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 20px;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+/* BUTTON UPLOAD */
+.attach-content .attach-upload{
+    border: 0.5px solid white;
+    border-radius: 50%;
+    padding: 10px;
+    color: #5c38db;
+    background: linear-gradient(135deg, #5b38db77, #4085f377);
+
+}
+.attach-content p{
+    font-size: 12px;
+    color: #5e5e5e;
+    font-weight: bold;
+}
+
+.attach-content .add-attach{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+    font-size: 12px;
+    color: #fff;
+    cursor: pointer;
+    border: 0.5px solid #fff;
+    border-radius: 8px;
+    background-image: linear-gradient(to right, #2d66e7, #3863e7, #425fe8, #4c5be7, #5557e7, #5d54e7, #6551e7, #6d4de7, #764ae7, #7e47e7, #8743e7, #8f3fe6);
+}
+.attach-content .add-attach:hover{
+    /* border: 1px solid #6a11cb; */
+    background-image: linear-gradient(to left, #2d66e7, #3863e7, #425fe8, #4c5be7, #5557e7, #5d54e7, #6551e7, #6d4de7, #764ae7, #7e47e7, #8743e7, #8f3fe6);
+    box-shadow: 0px 4px 8px #5e12eb46;
+}
+
+/*  ================ NEW CARD DETAIL STYLE =================== */
+
+
 .ct-icon{
     margin-right: 5px;
 }
-.ct-box{
-    /* border: 1px solid red; */
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-}
 
-.ct-box input{
-    border: 0.5px solid #6a11cb;
-    border-radius: 4px;
-    padding: 5px;
-    width:33vw ;
-}
-.ct-box input:focus{
-    outline: none;
-    border: 0.5px solid #6a11cb;
-}
-.ct-box h5{
-    white-space: normal; /* Allow text to wrap */
-    word-wrap: break-word; /* Break long words to fit container */
-    flex: 1; /* Allows title to take up available space */
-    padding-right: 10px;
-    margin: 0px;
-    font-size: 15px;
-    width: 30vw;
-    font-weight: bold;
-    /* border: 1px solid red; */
-
-}
 
 .cdl-right{
     /* border: 1px solid blue; */
@@ -738,3 +1113,15 @@
     color:#c0deff;
     color: #dbffe9;
 }
+
+/* BREAKPOINT QUERY  */
+/* ukuran handpone kecil  */
+@media (min-width:375px) and (max-width:575px){
+    .wf-create{
+        /* border: 1px solid green; */
+        width:70%;
+    }
+}
+
+/* END BREAKPOINT QUERY  */
+

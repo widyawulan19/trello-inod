@@ -121,7 +121,7 @@ const Profile=()=> {
     const renderContent = () => {
         switch (activeSection) {
             case 'personal':
-                return <div className="fade"><><PersonalInformation fetchUserSettingData={fetchUserSettingData} userData={userData} userId={userId}/></></div>;
+                return <div className="fade"><PersonalInformation fetchUserSettingData={fetchUserSettingData} userData={userData} userId={userId}/></div>;
             case 'activity':
                 return <div className="fade"><div className='activity'><ActivityPage/></div></div>;
             case 'notification':
@@ -175,34 +175,37 @@ const Profile=()=> {
                             onClick={() => setActiveSection('personal')}
                         >
                             <HiMiniUser className='ps-icon' />
-                            Personal Info
+                            <span className="ps-label">Personal Info</span>
                         </button>
                         <button 
                             className={activeSection === 'activity' ? 'active' : ''} 
                             onClick={() => setActiveSection('activity')}
                         >
                             <FaRegChartBar className='ps-icon' />
-                            Activity & Schedule
+                            <span className="ps-label">Activity & Schedule</span>
                         </button>
                         <button 
                             className={activeSection === 'notification' ? 'active' : ''} 
                             onClick={() => setActiveSection('notification')}
                         >
                             <HiBellAlert className='ps-icon' />
-                            Notification
+                            <span className="ps-label">Notification</span>
                         </button>
                         <button 
                             className={activeSection === 'security' ? 'active' : ''} 
                             onClick={() => setActiveSection('security')}
                         >
                             <HiLockClosed className='ps-icon' />
-                            Security
+                            <span className="ps-label">Security</span>
                         </button>
                     </div>
                 </div>
                 
                 <div className="pcb-right">
-                   {renderContent()}
+                    <div className="pcb-content">
+                         {renderContent()}
+                    </div>
+                  
                 </div>
             </div>
         </div>

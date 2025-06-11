@@ -3,15 +3,21 @@ import { getActivityForUserId } from '../services/ApiServices';
 import '../style/pages/ActivityPage.css'
 import { HiMiniCalendarDateRange } from 'react-icons/hi2';
 import OutsideClick from '../hook/OutsideClick';
+import { useUser } from '../context/UserContext';
 
 const ActivityPage = () => {
-  const userId = 3;
+  const {user} = useUser();
+  const userId = user.id;
+  // const userId = 3;
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedDate, setSelectedDate] = useState('');
   const [showFilterDate, setShowFIlterDate] = useState(false);
   const filterData = OutsideClick(()=>setShowFIlterDate(false)); 
+
+  //debug
+  console.log('FIle activity page ini menerima user id:', userId);
 
   //ACTION BACKGROUND COLOR
   const ACTION_COLORS={

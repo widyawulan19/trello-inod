@@ -1,5 +1,6 @@
 .home-container{
-    border: 1px solid #ddd;
+    /* border: 1px solid #ddd; */
+    border:1px solid #6a11cb;
     height: 100vh;
     margin-bottom: 10px;
     margin: 15px;
@@ -61,6 +62,7 @@
     align-items: center;
     justify-content: space-between;
 }
+
 .home-btn button{
     border: 1px solid #6a11cb;
     font-size: 12px;
@@ -72,6 +74,7 @@
     padding: 5px;
     background: linear-gradient(to right,#6a11cb, #2575fc);
 }
+
 .home-btn button:hover{
     background: linear-gradient(to right, #2575fc, #6a11cb);
 }
@@ -87,6 +90,8 @@
     color: #ddd;
 }
 
+
+
 /* FORM CREATE WORKSPACE  */
 .wf-create{
     width: 20vw;
@@ -95,11 +100,13 @@
     right: 0;
     z-index: 100;
     background-color: white;
-    border-radius: 4px;
+    border-radius: 6px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
     border:1px solid #ddd;
+    /* border:1px solid red; */
     font-size: 15px;
 }
+
 .wf-header{
     padding: 10px 15px;
     border-bottom: 1px solid #eee;
@@ -114,6 +121,8 @@
 }
 .wf-header h5{
     margin: 0px;
+    font-weight: bold;
+    font-size: 12px;
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -165,11 +174,12 @@
     border: 1px solid #9b2fad;
 }
 .wf-content button{
-    padding:10px;
+    padding:5px 10px;
     font-weight: bold;
     width: 100%;
     border: 1px solid #eee;
-    border-radius: 4px;
+    border-radius: 6px;
+    font-size: 12px;
     /* background-image: linear-gradient(to left bottom, #783fbf, #9b2fad, #b31d98, #c40a82, #ce086c, #d61c5f, #db2d53, #de3e47, #e45041, #e9623b, #ec7336, #ee8432); */
     /* background-color: #9b2fad; */
     margin-top: 5px;
@@ -190,9 +200,13 @@
 }
 /* END FORM CREATE  */
 
+.greeting{
+    /* border: 1px solid yellow; */
+}
+
 .home-body{
-    /* border: 1px solid #ddd; */
-    height: 75vh;
+    /* border: 1px solid red; */
+    height: 78vh;
     padding: 20px;
     padding-top: 5px;
     margin: 10px;
@@ -200,10 +214,11 @@
     grid-template-columns: repeat(2,1fr);
     grid-template-rows: auto auto;
     gap: 20px;
-    overflow-x: auto;
+    overflow-y: auto;
 }
 .home-body .section{
     border: 1px solid #ddd;
+    /* border: 1px solid blue; */
     border-radius: 8px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     height: 40vh;
@@ -262,9 +277,157 @@
 
 
 
+  /* NEW SECTION BODY  */
+  .home-body .section-body{
+    border: 1px solid #5320be;
+    height: 45vh;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px #6b11cb40;
+  }
+  .section-body .sb-header{
+    /* border: 1px solid blue; */
+    border-radius: 6px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+    background-image: linear-gradient(to left bottom, #5e166d, #64137d, #69108d, #6c0d9f, #6d0db1, #6912b7, #6317be, #5d1bc4, #5320be, #4a23b8, #4125b2, #3827ab);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px;
+  }
+  .sb-header .sbh-left{
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
+  }
+
+  .sbh-left h4{
+    font-weight: bold;
+    font-size: 15px;
+  }
+
+  .sbh-right{
+    /* border:1px solid green; */
+    gap: 5px;
+  }
+
+  .sbh-right button{
+    background-color: rgba(255, 255, 255, 0);
+    border: 1px solid #ffffff00;
+    /* border: 1px solid white; */
+    color: white;
+    cursor: pointer;
+    padding: 2px;
+  }
+
+  .sb-body{
+    padding: 10px;
+    /* border: 1px solid #3827ab; */
+    margin: 0px;
+    height: 40vh;
+    /* height: fit-content; */
+  }
+  /* END NEW SECTION BODY  */
+
 /* AGENDA  */
 .section .sec-body{
     /* border: 1px solid #ddd; */
 }
 
 /* END AGENDA  */
+
+
+/* BREAK POINT  */
+
+/* Extra large devices (large desktops, ≥1200px) */
+@media (min-width: 1200px) and (max-width:1400px) {
+  /* CSS monitor besar */
+  .wf-create{
+     /* border: 1px solid orangered; */
+     width:20%;
+   }
+
+   .home-body{
+    /* border: 1px solid red; */
+   }
+}
+
+
+/* Large devices (desktops, ≥992px) */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  /* CSS laptop biasa */
+  .wf-create{
+     /* border: 1px solid orangered; */
+     width:30%;
+   }
+   .home-body{
+    /* border: 1px solid blue; */
+   }
+}
+
+/* Medium devices (tablets, ≥768px) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .wf-create{
+     /* border: 1px solid orangered; */
+     width:40%;
+   }
+   .home-body{
+    /* border: 1px solid yellow; */
+   }
+   .sbh-left h4{
+    font-size: 12px;
+   }
+  /* CSS tablet atau iPad */
+}
+
+/* ukuran handpone besar  */
+@media (min-width: 576px) and (max-width: 767.98px){
+   .wf-create{
+     /* border: 1px solid blue; */
+     width:50%;
+   }
+   .home-body{
+    /* border: 1px solid green; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* justify-content: center; */
+    padding-top: 20px;
+    overflow-y: auto;
+   }
+   .home-body .section-body{
+    width: 100%;
+   }
+}
+
+/* ukuran handpone kecil  */
+@media (min-width:375px) and (max-width:575px){
+    .wf-create{
+        /* border: 1px solid green; */
+        width:70%;
+    }
+    .home-body{
+        /* border: 1px solid violet; */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        /* justify-content: center; */
+        padding-top: 20px;
+        overflow-y: auto;
+   }
+
+   .home-body .section-body{
+        width: 100%;
+   }
+
+    .home-header .home-btn{
+        min-width: 150px;
+        justify-content: flex-end;
+    }
+    .home-btn button {
+        font-size: 8px;
+    }
+}

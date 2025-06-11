@@ -376,7 +376,7 @@ const handleNavigateToWorkspace = () =>{
             <HiOutlineSquaresPlus className='nav-icon'/>
             {workspace.name}
           </button>
-          <HiOutlineChevronRight size={15}/>
+          <HiOutlineChevronRight className='nav-arrow'/>
           <button className='nav-active'>
             {/* <HiOutlineChartBar className='nav-icon'/> */}
             <CiAlignTop className='ni-active'/>

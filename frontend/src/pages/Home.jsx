@@ -108,20 +108,20 @@ const Home=()=> {
           </div>
           <p className="nav-subtext">Overview & Quick Access</p>
         </div>
-
-          <div className="home-btn" >
-            <button onClick={handleShowForm}>
-              <HiOutlinePlus className='btn-icon'/>
-                CREATE A WORKSPACE
-            </button>
-            <p>
-              | <HiOutlineCog8Tooth 
-                  className='nav-icon' 
-                  style={{marginLeft:'5px'}}
-                  onClick={handleGreeting}
-                />
-            </p>
-          </div>
+        
+        <div className="home-btn" >
+          <button onClick={handleShowForm}>
+            <HiOutlinePlus className='btn-icon'/>
+              CREATE A WORKSPACE
+          </button>
+          <p>
+            | <HiOutlineCog8Tooth 
+                className='nav-icon' 
+                style={{marginLeft:'5px'}}
+                onClick={handleGreeting}
+              />
+          </p>
+        </div>
   
           {/* CREATE WORKSPACE FORM  */}
           <CustomAlert
@@ -177,14 +177,13 @@ const Home=()=> {
         </div>
         <div className="home-body">
           {/* RECENT SECTION  */}
-          <div className="section">
-            {/* <h5>Recent</h5> */}
-            <div className="header">
-              <div className="left">
-                <HiClipboardDocumentList  size={15} style={{color:'grey'}}/>
+          <div className="section-body">
+            <div className="sb-header">
+              <div className="sbh-left">
+                <HiClipboardDocumentList/>
                 <h4>WORKSPACE SUMMARY</h4>
               </div>
-              <div className="right">
+              <div className="sbh-right">
                 <BootstrapTooltip title='View in full screen' placement='top'>
                     <button onClick={navigateToRecent}>
                       <HiOutlineArrowsPointingOut/>
@@ -205,46 +204,83 @@ const Home=()=> {
                     </button>
                   </div>
                 )}
-                
               </div>
             </div>
-            <WorkspaceSummary userId={userId}/>
+            <div className="sb-body">
+              <WorkspaceSummary userId={userId}/>
+            </div>
           </div>
 
           {/* AGENDA SECTION  */}
-          <div className="section" >
-            <div className="header" style={{padding:'8px'}}>
-              <div className="left">
-                <HiMiniCalendarDateRange size={15} style={{color:'grey'}}/>
-                <h4>AGENDA</h4>
+          <div className="section-body">
+            <div className="sb-header">
+              <div className="sbh-left">
+                <HiMiniCalendarDateRange/>
+                <h4>YOUR AGENDA</h4>
               </div>
-              <div className="right">
-                <BootstrapTooltip title="view in full screen" placement="top">
-                  <HiOutlineArrowsPointingOut className='action-icon'/>
+              <div className="sbh-right">
+                <BootstrapTooltip title='View in full screen' placement='top'>
+                    <button onClick={navigateToRecent}>
+                      <HiOutlineArrowsPointingOut/>
+                    </button>
                 </BootstrapTooltip>
+
                 <BootstrapTooltip title='More setting' placement='top'>
-                  <HiOutlineEllipsisHorizontal className='action-icon'/>
+                   <button onClick={handleShowSetting}>
+                    <HiOutlineEllipsisHorizontal/>
+                  </button>
                 </BootstrapTooltip>
                 
+                {showSetting && (
+                  <div className="setting-icon" ref={settingRef}>
+                    <button>
+                      <HiOutlineTrash/>
+                      <p>Remove Card</p>
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
-
-            <div className="sec-body">
-               <AgendaUser/>
+            <div className="sb-body">
+              <AgendaUser/>
             </div>
           </div>
-          <div className="section">
-            <h5>ASSIGN TO ME</h5>
+
+          {/* NOTE SECTION  */}
+          <div className="section-body">
+            <div className="sb-header">
+              <div className="sbh-left">
+                <HiMiniCalendarDateRange/>
+                <h4>PERSONAL NOTE</h4>
+              </div>
+              <div className="sbh-right">
+                <BootstrapTooltip title='View in full screen' placement='top'>
+                    <button onClick={navigateToRecent}>
+                      <HiOutlineArrowsPointingOut/>
+                    </button>
+                </BootstrapTooltip>
+
+                <BootstrapTooltip title='More setting' placement='top'>
+                   <button onClick={handleShowSetting}>
+                    <HiOutlineEllipsisHorizontal/>
+                  </button>
+                </BootstrapTooltip>
+                
+                {showSetting && (
+                  <div className="setting-icon" ref={settingRef}>
+                    <button>
+                      <HiOutlineTrash/>
+                      <p>Remove Card</p>
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="sb-body">
+              <AgendaUser/>
+            </div>
           </div>
-          <div className="section">
-            <h5>Personal List</h5>
-          </div>
-          <div className="section">
-            <h5>Assign to me</h5>
-          </div>
-          <div className="section">
-            <h5>Mention</h5>
-          </div>
+
         </div>
     </div>
   )

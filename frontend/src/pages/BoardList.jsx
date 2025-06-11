@@ -331,7 +331,7 @@ const handleNavigateToBoard = (workspaceId,boardId) =>{
                     <HiOutlineChartBar className='blnav-icon'/>
                     {boards.name}
                 </button>
-                <HiOutlineChevronRight/>
+                <HiOutlineChevronRight className='blnav-arrow'/>
                 <button className='bln-active'>
                     <HiOutlineListBullet className='bln-icon'/>
                     Board List
@@ -341,7 +341,7 @@ const handleNavigateToBoard = (workspaceId,boardId) =>{
                 <button
                     className='btn-create-list'
                     onClick={handleShowListForm}
-                >CREATE LIST</button>
+                >CREATE NEW LIST</button>
                 {/* <button onClick={handleRefetchBoard}>REFRESH</button> */}
             </div>
             {showListForm && (

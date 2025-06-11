@@ -51,6 +51,9 @@
     /* border: 1px solid green; */
     margin-bottom: 10px;
     padding: 0px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
     /* gap: 10px; */
 }
 .btn-nav-notif .navNotif-btn{
@@ -101,4 +104,58 @@
 .show-system{
     /* border: 1px solid red; */
     /* height: 35vh; */
+}
+
+
+/* BREAK POIN QUERY  */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  /* CSS laptop biasa */
+  .navNotif-container{
+    /* border: 1px solid green; */
+    width: 100%;
+  }
+}
+
+@media (min-width:768px) and (max-width:991.98px){
+    .btn-nav-notif{
+        justify-content: center;
+    }
+    .btn-nav-notif .navNotif-btn{
+        width: 10vw;
+    }
+    .navNotif-container{
+        /* border: 1px solid red; */
+         /* width: 35vw; */
+        width: 100%;
+    }
+}
+
+/* ukuran handpone besar  */
+@media (min-width: 576px) and (max-width: 767.98px){
+    .btn-nav-notif{
+        justify-content: center;
+    }
+    .btn-nav-notif .navNotif-btn{
+        width: 10vw;
+    }
+    .navNotif-container{
+        /* border: 1px solid blue; */
+         /* width: 50vw; */
+        width: 100%;
+    }
+}
+
+/* ukuran handpone kecil  */
+@media (min-width:375px) and (max-width:575px){
+    .btn-nav-notif{
+        justify-content: flex-start;
+    }
+    .btn-nav-notif .navNotif-btn{
+        width: 15vw;
+    }
+   .navNotif-container{
+        /* border: 1px solid violet; */
+         /* width: 50vw; */
+        width: 100%;
+    }
 }

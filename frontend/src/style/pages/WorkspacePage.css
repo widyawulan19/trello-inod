@@ -1,5 +1,6 @@
 .wp-container{
     border: 1px solid #ddd;
+    /* border: 1px solid green; */
     height: 100vh;
     margin-bottom: 10px;
     margin: 15px;
@@ -40,6 +41,9 @@
     cursor: pointer;
     font-size: 13px;
 }
+.nav-arrow{
+    font-size: 15px;
+}
 .ni-active{
     color: #5D12EB;
     margin-right: 5px;
@@ -56,6 +60,7 @@
     color: white;
     font-weight: bold;
     font-size: 12px;
+    padding: 5px;
 }
 .more-action .create-board-btn:hover{
     background: linear-gradient(to right, #2575fc, #6a11cb);
@@ -65,7 +70,7 @@
     position: absolute;
     top: 40px; 
     left: 88%;
-    /* right: 0; */
+    /* right: 20%; */
     transform: translateX(-50%);
     background: white;
     border: 1px solid #ddd;
@@ -216,8 +221,10 @@
 }
 .wp-card{
     border: 1px solid #e1d3fb;
+    /* border: 1px solid orangered; */
     background-color: #eeeeee41;
     min-height:15vh ;
+    /* width: 20%; */
     border-radius: 8px;
     position: relative;
     box-shadow: 0px 4px 8px #5e12eb46;
@@ -227,7 +234,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px;
+    padding: 10px 5px;
     /* border: 1px solid blue; */
     /* position: relative; */
 }
@@ -334,7 +341,7 @@
     border: 1px solid #ddd;
     /* border: 1px solid red; */
     border-radius: 8px;
-    margin: 5px 10px;
+    margin: 5px;
     padding: 10px;
 }
 .wp-body textarea{
@@ -527,3 +534,84 @@
     z-index: 150;/ */
 }
 /* END MOVE  */
+
+
+/* MEDIA QUERY */
+/* Laptop (notebook, device besar) */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  /* CSS untuk layar laptop */
+  .bform-workspace{
+    /* border: 1px solid red; */
+    left: 85%;
+    /* right: 0; */
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px){
+    .bform-workspace{
+        /* border: 1px solid green; */
+        left: 80%;
+  }
+}
+
+/* Tablet (iPad, device medium) */
+@media (min-width: 576px) and (max-width: 767.98px){
+  /* CSS untuk layar tablet */
+  .bform-workspace{
+    /* border: 1px solid blue; */
+    left: 78%;
+  }
+}
+
+/* Ukuran layar iPhone 7 adalah 375px x 667px (atau 375 x 667) */
+@media (min-width: 375px) and (max-width:575px){
+    .wp-body-container{
+        padding: 5px;
+    }
+    .bform-workspace{
+        /* border: 1px solid orangered; */
+        left: 60%;
+  }
+    .wp-container{
+        /* border: 1px solid red; */
+    }
+    .wp-header{
+        /* border: 1px solid blue; */
+        padding: 0px 2px;
+    }
+    .wp-header .nav{
+        /* border: 1px solid green; */
+        margin-left: 0px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 0px 3px;
+    }
+    .wp-header .nav button{
+        /* border: 1px solid blue; */
+        padding: 3px;
+        text-align: left;
+        font-size: 10px;
+        /* font-weight: bold; */
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+    }
+    .nav-icon{
+        font-size: 12px;
+    }
+    .nav-arrow{
+        display: none;
+    }
+    .more-action .create-board-btn{
+        font-size: 8px;
+        /* text-align: left; */
+        /* border: 1px solid red; */
+        padding: 5px;
+        
+    }
+
+}
+/* END MEDIA QUERY */

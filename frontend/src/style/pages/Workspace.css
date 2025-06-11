@@ -32,6 +32,7 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
+    gap: 2px;
 }
 .nav-icon{
     margin-right: 5px;
@@ -528,3 +529,40 @@
 }
 
 /* END USER TOTAL */ 
+
+/* MEDIA QUERY BREAKPOINT  */
+
+/* Ukuran layar iPhone 7 adalah 375px x 667px (atau 375 x 667) */
+@media (min-width: 375px) and (max-width:667px){
+    .workspace-header{
+        /* border: 1px solid red; */
+        padding: 0px;
+    }
+    .wnav{
+        /* border: 1px solid blue; */
+        margin-left: 0px;
+        padding-left: 5px;
+    }
+    .wnav h3{
+        font-size: 13px;
+    }
+    .wnav-btn{
+        /* border: 1px solid green; */
+    }
+    .wnav-btn button{
+        font-size: 10px;
+    }
+
+    .wform button{
+        font-size: 12px;
+    }
+    .wform-icon{
+        display: none;
+    }
+
+    .workspace-body{
+        padding: 5px;
+    }
+}
+
+/* END MEDIA QUERY BREAKPOINT  */

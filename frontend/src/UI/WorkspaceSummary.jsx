@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import '../style/UI/WorkspaceSummary.css'
-import { getWorkspaceSummary, getBoardsByWorkspaceId, getBoardsWorkspace } from '../services/ApiServices';
-import { RxDragHandleDots2 } from 'react-icons/rx';
+import '../style/UI/WorkspaceSummary.css';
+import { getWorkspaceSummary, getBoardsWorkspace } from '../services/ApiServices';
 import { HiOutlineArrowTopRightOnSquare } from 'react-icons/hi2';
 import { HiLink } from 'react-icons/hi';
 import BootstrapTooltip from '../components/Tooltip';
@@ -12,14 +11,23 @@ const WorkspaceSummary = ({ userId }) => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  console.log('Halaman workspace summary menerima userId:', userId);
+
   useEffect(() => {
     const fetchSummary = async () => {
-      try {
-        if(userId) return ;
+      console.log('Fetching summary for userId:', userId);
+
+      if (!userId) {
+        console.warn('userId belum ada, fetch dibatalkan');
+        return;
+      }
+
+     try {
         const response = await getWorkspaceSummary(userId);
-        setSummaries(response.data);
+        console.log('Hasil summary:', response.data);
+        setSummaries(response.data); // langsung data array, bukan response.data.data
       } catch (error) {
-        console.error('Error fetching workspace summary:', error);
+        console.error('Gagal fetch summary:', error);
       } finally {
         setLoading(false);
       }
@@ -30,7 +38,6 @@ const WorkspaceSummary = ({ userId }) => {
 
   if (loading) return <p className="summary-loading">Loading workspace summaries...</p>;
 
-  // Navigate to first board in the workspace
   const navigateToFirstBoard = async (workspaceId) => {
     try {
       const response = await getBoardsWorkspace(workspaceId);
@@ -38,7 +45,6 @@ const WorkspaceSummary = ({ userId }) => {
 
       if (boards.length > 0) {
         const firstBoardId = boards[0].id;
-        // navigate(`/workspaces/${workspaceId}/board/${firstBoardId}`);
         navigate(`/workspaces/${workspaceId}`);
       } else {
         alert('No boards found in this workspace.');
@@ -51,31 +57,29 @@ const WorkspaceSummary = ({ userId }) => {
 
   return (
     <div className="summary-container">
-      {summaries.map((workspace) => (
+      {Array.isArray(summaries) && summaries.map((workspace) => (
         <div className="sec-body" key={workspace.workspace_id}>
-          <div className='sec-item'>
-            <div className="item-left">
-              <RxDragHandleDots2 size={17} />
-              <div className="sc-content">
-                <h4 className="summary-title">{workspace.workspace_name}</h4>
-                <div className="sc-p">
-                  <button>🧩 Boards: {workspace.board_count}</button>
-                  <button>📑 Lists: {workspace.list_count}</button>
-                  <button>🗂️ Cards: {workspace.card_count}</button>
-                </div>
-              </div>
-            </div>
-            <div className="item-right">
+          <div className="item-header">
+            <h4 className="summary-title">{workspace.workspace_name}</h4>
+            <div className="summary-btn">
               <BootstrapTooltip title='Open in new tab' placement='top'>
                 <button onClick={() => navigateToFirstBoard(workspace.workspace_id)}>
-                    <HiOutlineArrowTopRightOnSquare/>
+                  <HiOutlineArrowTopRightOnSquare />
                 </button>
               </BootstrapTooltip>
               <BootstrapTooltip title='Get link' placement='top'>
                 <button>
-                  <HiLink/>
+                  <HiLink />
                 </button>
               </BootstrapTooltip>
+            </div>
+          </div>
+
+          <div className="item-left">
+            <div className="sc-p">
+              <button>🧩 Boards: {workspace.board_count}</button>
+              <button>📑 Lists: {workspace.list_count}</button>
+              <button>🗂️ Cards: {workspace.card_count}</button>
             </div>
           </div>
         </div>

@@ -6,6 +6,7 @@ const cors = require('cors')
 const moment = require('moment')
 const bcrypt = require('bcrypt');
 const {logActivity} = require('./ActivityLogger');
+const {logCardActivity} = require('./CardLogActivity');
 require('./CronJob')
 const {SystemNotification} = require('./SystemNotification');
 
@@ -18,7 +19,8 @@ const app = express();
 app.use(express.json());
 const PORT = process.env.PORT || 3002; // Gunakan port dari .env atau default 3002
 app.use(cors({
-    origin: "http://localhost:3000",
+    origin: "http://localhost:3000", // Untuk development
+    // origin: "https://5eae-118-96-151-188.ngrok-free.app", // untuk test backend url dari ngrok
     methods: ["GET", "POST", "PUT", "DELETE","PATCH"], 
     allowedHeaders: ["Content-Type", "Authorization"], 
   }));
@@ -2324,13 +2326,39 @@ app.get('/api/cards/:cardId/users', async (req, res) => {
 app.put('/api/cards/:id/title', async(req,res)=>{
     const {id} = req.params;
     const {title} = req.body;
+    const userId = req.user.id;
+
+    console.log('Endpoin update ini menerima data userId:', userId);
     try {
-            const result = await client.query("UPDATE cards SET title = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *", [title, id]);
-            if (result.rows.length === 0) return res.status(404).json({ error: "Card not found" });
-            res.json(result.rows[0]);
-        } catch (error) {
-            res.status(500).json({ error: error.message });
-        }
+        // Ambil data lama dulu buat dicatat di log
+        const oldResult = await client.query("SELECT title FROM cards WHERE id = $1", [id]);
+        if (oldResult.rows.length === 0) return res.status(404).json({ error: "Card not found" });
+    
+        const oldTitle = oldResult.rows[0].title;
+    
+        const result = await client.query(
+          "UPDATE cards SET title = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *",
+          [title, id]
+        );
+    
+        // ✅ Tambahkan log aktivitas
+        await logCardActivity({
+          action: 'update',
+          card_id: parseInt(id),
+          user_id: userId,
+          entity: 'title',
+          entity_id: null,
+          details: {
+            old_title: oldTitle,
+            new_title: title
+          }
+        });
+    
+        res.json(result.rows[0]);
+      } catch (error) {
+        console.error("Error updating card title:", error);
+        res.status(500).json({ error: error.message });
+      }
 })
 //2. update title description
 app.put('/api/cards/:id/desc', async(req,res)=>{
@@ -4787,7 +4815,7 @@ app.put('/api/profile-user/:userId', async(req,res)=>{
     }
 })
 
-//LOG ACTIVITY
+//LOG ACTIVITY USER
 //1. menampilkan semua activity berdasarkan userId
 app.get('/api/activity-logs/user/:userId', async (req, res) => {
   const { userId } = req.params;
@@ -4812,6 +4840,29 @@ app.get('/api/activity-logs/user/:userId', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+//LOG ACTIVITY CARD
+app.get('/api/activity-card/card/:cardId', async(req,res)=>{
+    const {cardId} = req.params;
+
+    try{
+        const result = await client.query(
+            `SELECT * FROM card_activities WHERE card_id = $1`,
+            [cardId]
+        );
+
+        if(result.rowCount === 0){
+            return res.status(400).json({message:`No activity found for this card with this id ${cardId}`});
+        }
+
+        res.status(200).json({
+            message: `Activities for card ID ${cardId}`,
+            activities: result.rows,
+        })
+    }catch(error){
+        res.status(500).json({error: error.message})
+    }
+})
 
 app.post('/api/activity-log', async (req, res) => {
     const { entityType, entityId, action, userId, details, parentEntity, parentEntityId } = req.body;

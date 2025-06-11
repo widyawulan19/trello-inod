@@ -1,5 +1,5 @@
 .profile-container{
-    /* border: 1px solid #ddd; */
+    /* border: 1px solid red; */
     background-color: white;
     height: 100%;
     display: flex;
@@ -8,15 +8,15 @@
 }
 .pc-container{
     background-color: white;
-    /* border: 1px solid #ddd; */
-    border-radius: 4px;
+    /* border: 1px solid red; */
+    border-radius: 8px;
     width: 80%;
     height: 90%;
     /* box-shadow: 0px 4px 8px rgba(0,0,0,0.1); */
 }
 .pc-header{
     /* border: 1px solid red; */
-    padding: 5px;
+    padding: 5px 10px;
     display: flex;
     flex-direction: column;
     min-width: 50vh;
@@ -32,16 +32,19 @@
 }
 .pch-left h2{
     margin: 0px;
-    color: #333;
+    font-weight: bold;
+    font-size: 20px;
+    color: #5D12EB;
 }
 .pchl-icon{
     margin-right: 5px;
-    font-size: 20px;
-    color: #333;
+    font-size: 25px;
+    color: #5D12EB;
 }
 .pc-header p{
     margin: 0px;
-    margin-top: 5px;
+    /* margin-top: 5px; */
+    font-size: 12px;
     color: #333;
 }
 
@@ -81,7 +84,9 @@
     width: 40%;
 }
 .profile-photo h3{
-    margin:3px  0px;
+    margin:0px;
+    color: #5D12EB;
+    font-weight: bold;
 }
 .profile-photo p{
     margin: 0px;
@@ -90,12 +95,13 @@
 .profile-photo button{
     margin-top: 20px ;
     margin-bottom: 10px;
-    padding: 10px;
+    padding: 5px 10px;
     width: 50%;
     border: 1px solid #5e12eb8e;
     border-radius: 4px;
     background-color: white;
     color: #5D12EB;
+    font-size: 12px;
     font-weight: bold;
     cursor: pointer;
 }
@@ -119,6 +125,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
 }
 
 .profile-setting{
@@ -145,6 +152,13 @@
     color: #555;
     transition: background 0.3s, color 0.3s;
     border-radius: 8px;
+}
+.fade .personal-info{
+    border: 1px solid #ddd;
+    height: 75vh;
+    width: 100%;
+    padding: 10px;
+    overflow-y: auto;
 }
 
 .fade .activity{
@@ -247,4 +261,124 @@
 }
 .apc-btn button:hover{
     background: linear-gradient(to right,#2575fc, #6a11cb);
+}
+
+
+/* MEDIA QUERY  */
+
+/* Medium devices (tablets, ≥768px) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+   .pc-container{
+        /* border: 1px solid green; */
+        width: 90%;
+   }
+   .profile-photo button{
+        width: 80%;
+   }
+
+   .profile-setting button{
+        width: 90%;
+        gap: 5px;
+   }
+
+   .pcb-right{
+        /* border:1px solid blue; */
+   }
+  /* CSS tablet atau iPad */
+}
+
+/* ukuran handpone besar  */
+@media (min-width: 576px) and (max-width: 767.98px){
+    .pcb-left{
+         /* border: 1px solid #5D12EB; */
+    }
+
+    .profile-photo button{
+        width: 95%;
+   }
+   .profile-photo p{
+    font-size: 8px;
+   }
+
+    .profile-setting{
+        width: 100%;
+        gap: 5px;
+        /* border: 1px solid orangered; */
+   }
+
+   .profile-setting button{
+        width: 100%;
+        gap: 5px;
+        font-size: 8px;
+        /* border: 1px solid orangered; */
+   }
+   .ps-icon{
+       display: none;
+   }
+
+   .ps-label{
+        font-size: 12px;
+        font-weight: normal;
+   }
+
+   .pcb-right{
+        width: 80%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        /* border: 1px solid green; */
+   }
+   .pcb-content{
+        width: 100%;
+   }
+}
+/* ukuran handpone kecil  */
+@media (min-width:375px) and (max-width:575px){
+
+    .pc-container{
+        width: 95%;
+        /* border: 1px solid green; */
+    }
+
+    .profile-photo img{
+        height: 50%;
+        width: 50%;
+    }
+    .profile-photo h3{
+        /* border: 1px solid green; */
+        text-align: center;
+        margin-top: 5px;
+    }
+    .profile-photo p{
+        text-align: center;
+        /* border: 1px solid green; */
+        padding: 5px;
+    }
+
+    .profile-photo button{
+        width: 80%;
+        font-size: 11px;
+        border: 1px solid #5D12EB;
+    }
+
+   .profile-photo p{
+    font-size: 8px;
+   }
+    .profile-setting button{
+        width: 100%;
+        gap: 5px;
+        font-size: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* border: 1px solid orangered; */
+   }
+   .ps-icon{
+     font-size: 15px;
+     margin: 0px;
+   }
+
+   .ps-label{
+        display: none;
+   }
 }

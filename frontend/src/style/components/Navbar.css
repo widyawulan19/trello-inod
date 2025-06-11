@@ -1,24 +1,19 @@
 .navbar-container{
+    /* border: 1px solid red; */
     position: sticky;
     width: 100vw;
+    /* height: 5vw; */
     top: 0;
     z-index: 100;
-    /* border-radius: 4px; */
-    /* border: 1px solid red; */
     padding: 0px;
     box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
-    /* margin-bottom: 10px; */
     display: flex;
-    /* flex-direction: column; */
     align-items: center;
     justify-content: space-between;
-    /* background: linear-gradient(90deg, #a34dff, #8e6bff); */
-    /* background: linear-gradient(to right, #6a11cb, #2575fc); */
     background-image: linear-gradient(to right bottom, #051937, #00235f, #042887, #3827ab, #6a11cb);
 }
 .logo{
-    /* border: 1px solid #eee; */
-    /* padding: 5px; */
+    /* border: 1px solid green; */
     width: 10vw;
     height: 5vh;
     margin-left: 10px;
@@ -42,14 +37,16 @@
     /* background-color: white; */
     background: rgba(255, 255, 255, 0.15);
     color: white;
+    width: 15vw;
     padding: 3px 5px;
-    margin-right: 10px;
+    /* margin-right: 10px; */
     border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: flex-start;
     transition: border 0.3s ease, box-shadow 0.3s ease;
 }
+
 .more-fiture .input:focus-within {
     border: 1px solid transparent;
     box-shadow: 0 0 15px 5px rgba(120, 63, 191, 0.1),
@@ -68,12 +65,18 @@ input:hover
 .input-icon{
     /* color: grey; */
     color: rgba(255, 255, 255, 0.7);
+    /* border: 1px solid red; */
+    width: 20%;
+    font-size: 20px;
 }
 .input input{
+    /* width: ; */
     outline: none;
+    width: 80%;
     padding: 2px;
     margin-left: 2px;
     font-size: 13px;
+    /* border: 1px solid red; */
     border: 1px solid rgba(255, 255, 255, 0);
     background-color: rgba(255, 255, 255, 0);
 }
@@ -108,7 +111,7 @@ input:hover
 
 /* profil  */
 .profil .icon-wrapper{
-    padding: 5px;
+    padding: 0px;
     color: white;
     /* border: 1px solid blue; */
 }
@@ -116,9 +119,10 @@ input:hover
     width: 30px;
     height: 30px;
     border-radius: 50%;
+    
 }
 .icon-wrapper button{
-    padding: 5px;
+    /* padding: 5px; */
     border: 1px solid #eeeeee00;
     /* box-shadow: 0px 4px 8px rgba(0,0,0,0.1); */
     background-color: rgba(255, 0, 0, 0);
@@ -150,7 +154,110 @@ input:hover
     background-color: white;
     border-radius: 6px;
     top: 140%;
-    right: 0%;
+    right: 5%;
     box-shadow: 0px 4px 8px #6b11cb40;
 }
 /* END NOTIFICATION  */
+
+/* MEDIA QUERY  */
+
+@media (min-width:768px) and (max-width: 991.98px){
+    .navbar-container .logo{
+        width: 80%;
+        /* padding: 5px 0px; */
+    }
+    .logo img{
+        width: 50%;
+        height: 100%;
+    }
+    .notif-modal{
+        width: 40vw;
+    }
+}
+
+@media (min-width:576px) and (max-width: 768px) {
+    .navbar-container .logo{
+        width: 80%;
+        /* padding: 5px 0px; */
+    }
+    .logo img{
+        width: 50%;
+        height: 100%;
+    }
+    .notif-modal{
+        width: 40vw;
+    }
+}
+
+@media(min-width: 375px) and (max-width:575px){
+    .navbar-container .logo{
+        width: 80%;
+        /* padding: 5px 0px; */
+    }
+    .logo img{
+        width: 80%;
+        height: 100%;
+    }
+    .more-fiture{
+        /* border: 1px solid green; */
+        margin-right: 0px;
+    }
+    .more-fiture .input input{
+        /* width: 2vh; */
+        display: none;
+    }
+    .more-fiture .input{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 3vh;
+        padding: 0px;
+        border: 1px solid #00235f00;
+        background-color: #00235f00;
+    }
+    .input .input-icon {
+        font-size: 22px;
+        width: 100%;
+        padding: 0px;
+        margin: 0px;
+        margin-right: 0px;
+        /* border: 1px solid blue; */
+    }
+
+  /* PROFIL  */
+     .profil {
+        width: auto;
+        height: auto;
+    }
+
+    .profil .icon-wrapper {
+        padding: 0px;
+        border: none;
+        /* border: 1px solid green; */
+        /* display: flex;
+        align-items: center;
+        justify-content: center; */
+    }
+
+    .icon-wrapper button {
+        width: 50px;
+        height: 30px; 
+        /* margin: 0px; */
+        /* padding: 5px; */
+        background-color: transparent;
+        /* border: none; */
+        /* border: 1px solid yellow; */
+    }
+
+    .icon-wrapper img {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        object-fit: cover;
+        /* border: 1px solid red; */
+        margin: 0px;
+    }
+    .notif-modal{
+        width: 60vw;
+    }
+}

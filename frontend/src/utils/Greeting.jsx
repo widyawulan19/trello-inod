@@ -29,12 +29,12 @@ const Greeting = () => {
   const year = currentDate.getFullYear();
 
   return (
-    <div style={{ textAlign: 'left',padding:'10px',marginTop:'0px' , fontSize: '24px' }}>
-      <h3 style={{margin:'0px'}}>
+    <div style={{ textAlign: 'left',padding:'0px 10px',marginTop:'0px' , fontSize: '20px' }}>
+      <h4 style={{margin:'0px', padding:'0px'}}>
         <span className="gradient-text">{greetingText}</span>{' '}
         <span>{greetingIcon}</span>
-      </h3>
-      <p style={{marginTop:'0',marginBottom:'0', fontSize:'10px'}}>
+      </h4>
+      <p style={{marginTop:'0',marginBottom:'0', fontSize:'10px', padding:'0px'}}>
         Today is {dayName}, {date} {monthName} {year} | Hope you have a great day!
       </p>
     </div>

@@ -206,13 +206,14 @@
 
 /* SELECTED LABEL CARD  */
 .selected-labels{
-    /* border: 1px solid blue; */
+    /* border: 1px solid black; */
     display: flex;
     flex-wrap: wrap; /* Memungkinkan label pindah ke baris bawah jika tidak cukup */
     gap: 4px; /* Jarak antar label */
-    padding: 4px;
+    padding: 4px 0px;
     max-width: 100%; /* Pastikan container tidak melewati batas parent */
     overflow: hidden;
+    margin-top: 5px;
 }
 .label-item{
     padding: 5px;

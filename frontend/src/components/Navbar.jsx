@@ -192,8 +192,7 @@ const Navbar=()=> {
                     {profilUser && (
                         <div className='icon-wrapper'>
                              <button onClick={navigateToProfile}>
-                                <img src={profilUser.photo_url} alt={profilUser.username} /> 
-                                {/* <HiOutlineChevronDown  /> */}
+                                <img src={profilUser.photo_url} alt={profilUser.username} />
                             </button>
                         </div>
                     )}

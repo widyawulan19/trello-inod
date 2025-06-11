@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { FiUsers } from "react-icons/fi";
-import { HiCog8Tooth, HiMiniArrowLeftStartOnRectangle, HiMiniChatBubbleLeftRight, HiMiniListBullet, HiMiniPhoto, HiOutlineArchiveBox, HiOutlineArrowsPointingOut, HiOutlineCalendar, HiOutlineChevronRight, HiOutlineCreditCard, HiOutlineListBullet, HiOutlineSquare2Stack, HiOutlineTrash, HiPaperClip, HiPlus, HiTag, HiXMark } from 'react-icons/hi2';
+import { HiChevronDown, HiChevronUp, HiCog8Tooth, HiMiniArrowLeftStartOnRectangle, HiMiniChatBubbleLeftRight, HiMiniListBullet, HiMiniPhoto, HiOutlineArchiveBox, HiOutlineArrowsPointingOut, HiOutlineCalendar, HiOutlineChevronRight, HiOutlineCreditCard, HiOutlineListBullet, HiOutlineSquare2Stack, HiOutlineTrash, HiPaperClip, HiPlus, HiTag, HiXMark } from 'react-icons/hi2';
 import { useNavigate, useParams } from 'react-router-dom'
 import '../style/pages/NewCardDetail.css'
 import BootstrapTooltip from '../components/Tooltip';
-import { AiOutlineLineChart } from 'react-icons/ai';
-import { archiveCard, deleteUserFromCard, getAllCardUsers, getAllDueDateByCardId, getAllStatus, getAllUserAssignToCard, getCardById, getCardPriority, getCoverByCard, getLabelByCard, getListById, getStatusByCardId, updateTitleCard } from '../services/ApiServices';
+import { GiCloudUpload } from "react-icons/gi";
+import { archiveCard, deleteUserFromCard, getAllCardUsers, getAllDueDateByCardId, getAllStatus, getAllUserAssignToCard, getCardById, getCardPriority, getCoverByCard, getLabelByCard, getListById, getStatusByCardId, updateDescCard, updateTitleCard } from '../services/ApiServices';
 import SelectedLabels from '../UI/SelectedLabels';
 import CardDetailPanel from '../modules/CardDetailPanel';
 import DetailCard from '../modules/DetailCard';
@@ -26,6 +26,9 @@ import { useUser } from '../context/UserContext';
 import Label from '../modules/Label';
 import DetailOrder from '../modules/DetailOrder';
 import OutsideClick from '../hook/OutsideClick';
+import StatusDisplay from '../UI/StatusDisplay';
+import SelectPriority from '../UI/SelectPriority';
+import DueDateDisplay from '../UI/DueDateDisplay';
 
 const NewCardDetail=()=> {
     //STATE
@@ -40,6 +43,11 @@ const NewCardDetail=()=> {
     //EDIT CARD TITLE
     const [editingTitle, setEditingTitle] = useState(null)
     const [newTitle, setNewTitle] = useState('')
+    //EDIT DESCRIPTION
+    const [editingDescription, setEditingDescription] = useState(null);
+    const [newDescription, setNewDescription] = useState('');
+    const [showMore, setShowMore] = useState(false);
+    const maxChars = 1000;
     //LABEL
     const [labels, setLabels] = useState([]);
     const [selectedProperties, setSelectedProperties] = useState([]);
@@ -70,6 +78,32 @@ const NewCardDetail=()=> {
     //SHOW ACTION/SETTING CARD
     const [showAction, setShowAction] = useState(false);
     const refShowAction = OutsideClick(()=>setShowAction(false));
+    
+
+    //text long description
+    const toggleShowMore = () => setShowMore(!showMore);
+
+    const renderDescription = (desc) => {
+        const textToRender = showMore || desc.length <= maxChars ? desc : desc.slice(0, maxChars) + '...';
+        
+        return textToRender.split('\n').map((line, index) => (
+        <div key={index}>
+            {line.trim() === '' ? (
+            <>&nbsp;</>
+            ) : (
+            line.split(/(https?:\/\/[^\s]+)/g).map((part, i) =>
+                part.match(/https?:\/\/[^\s]+/) ? (
+                <a key={i} href={part} target="_blank" rel="noopener noreferrer" style={{ color: '#007bff', textDecoration: 'underline' }}>
+                    {part}
+                </a>
+                ) : (
+                <React.Fragment key={i}>{part}</React.Fragment>
+                )
+            )
+            )}
+        </div>
+        ));
+    };
 
     //DEBUG
     // console.log('file new card detail menerima workspaceId:', workspaceId);
@@ -100,6 +134,34 @@ const NewCardDetail=()=> {
                 fetchCardById(cardId);
             }
         },[cardId])
+    //edit card desc
+    const handleEditDescription = (e, cardId, currentCardDesc) => {
+        console.log("handleEditDescription triggered", { cardId, currentCardDesc });
+        if (!cardId) {
+        console.warn("Card ID is invalid");
+        return;
+        }
+        e.stopPropagation();
+        setEditingDescription(cardId);
+        setNewDescription(currentCardDesc);
+    };
+
+    const handleSaveDescription = async(cardId)=>{
+        try{
+          await updateDescCard(cardId, {description:newDescription})
+          setEditingDescription(null);
+          fetchCardById(cardId)
+        }catch(error){
+          console.error('Error updating card description:', error)
+        }
+      }
+      const handleKeyPressDescription = (e, cardId) =>{
+        if(e.key === 'Enter' && !e.shiftKey){
+          handleSaveDescription(cardId)
+          e.stopPropagation();
+        }
+      }
+
     //2. edit card title
         const handleEditingTitle = (e, cardId, currentCardTitle) =>{
           console.log('HandleEdit title triggered', {cardId, currentCardTitle});
@@ -382,48 +444,60 @@ const NewCardDetail=()=> {
                     <HiOutlineListBullet className='ncd-icon'/>
                     Board Lists
                 </button>
-                <HiOutlineChevronRight/>
+                <HiOutlineChevronRight className='ncd-icon'/>
                 <button className='ncd-active'>
                     Card Detail
                 </button>
             </div>  
-           <div className="ncd-right">
+           {/* <div className="ncd-right">
             <BootstrapTooltip title="View Data Marketing" placement='top'>
                 <button >
                     <AiOutlineLineChart className='nr-icon'/>
                     View Data Marketing
                 </button>
             </BootstrapTooltip>
-           </div>
+           </div> */}
         </div>
 
         {/* BODY  */}
         <div className="ncd-body">
-            <div className={`ncd-container ${layoutOpen ? 'split-view' : ''}`}>
-                <div className="card-detail-left">
-                    <div className='cdl-header'>
-                        <div className="card-title">
-                            {/* {cards.title} */}
-                        {cards && cardId && (
-                            <div className="ct-box">
-                                <HiOutlineCreditCard className='ct-icon'/>
-                                {editingTitle === cardId ? (
-                                <input
-                                    value={newTitle}
-                                    onChange={(e) => setNewTitle(e.target.value)}
-                                    onBlur={()=> handleSaveTitle(cardId)}
-                                    onKeyDown={(e) =>handleKeyPressTitle(e, cardId)}
-                                    autoFocus
-                                />
-                                ):(
-                                <h5 onClick={(e)=>handleEditingTitle(e, cardId, cards.title)}>
-                                    {cards.title}
-                                </h5>
-                                )}
-                            </div>
+                <div className="ncd-main-header">
+                    <div className="ncd-title-btn">
+                        {/* HEADER TITLE AND LABLE  */}
+                        <div className="title-label">
+                            {/* HEADER TITLE  */}
+                            {cards && cardId && (
+                                <div className="ct-box">
+                                    {/* <HiOutlineCreditCard className='ct-icon'/> */}
+                                    {editingTitle === cardId ? (
+                                    <input
+                                        value={newTitle}
+                                        onChange={(e) => setNewTitle(e.target.value)}
+                                        onBlur={()=> handleSaveTitle(cardId)}
+                                        onKeyDown={(e) =>handleKeyPressTitle(e, cardId)}
+                                        autoFocus
+                                    />
+                                    ):(
+                                    <h5 onClick={(e)=>handleEditingTitle(e, cardId, cards.title)}>
+                                        {cards.title}
+                                    </h5>
+                                    )}
+                                </div>
                             )}
+
+                            {/* HEADER LABEL  */}
+                        <div className="ncd-label">
+                            <SelectedLabels
+                                cardId={cardId}
+                                fetchCardDetail={fetchCardById}
+                                labels={labels}
+                                fetchLabels={fetchLabels}
+                            />
                         </div>
-                        <div className="cdl-right">
+                        </div>
+
+                        {/* HEADER BUTTON  */}
+                        <div className="main-header-btn">
                             <BootstrapTooltip title='Select Cover' placement='top'>
                                 <button onClick={handleShowCover}> 
                                     <HiMiniPhoto className='cdl-icon'/>
@@ -436,313 +510,190 @@ const NewCardDetail=()=> {
                                     {/* SELECT LABEL */}
                                 </button>
                             </BootstrapTooltip>
-                             <BootstrapTooltip title='Open Room Chat' placement='top'>
+                            <BootstrapTooltip title='Open Room Chat' placement='top'>
                                 <button onClick={() => setLayoutOpen(true)}>
                                     <HiMiniChatBubbleLeftRight className='cdl-icon'/>
                                     {/* ROOM CHAT */}
                                 </button>
-                             </BootstrapTooltip>
-                        </div>
-
-                        {/* SHOW COVER  */}
-                        {showCover && (
-                            <div className='cover-modal'>
-                                <CoverCard
-                                    cardId={cardId}
-                                    fetchCardDetail={fetchCardById}
-                                    selectedCover={selectedCover}
-                                    setSelectedCover={setSelectedCover}
-                                    fetchCardCover={fetchCardCover}
-                                    onClose={handleCloseCover}
-                                />
-                            </div>
-                        )}
-                        {/* END SHOW COVER  */}
-
-                        {/* SHOW LABEL  */}
-                        {showLabel && (
-                            <div className="label-modals">
-                                <Label
-                                    cardId={cardId}
-                                    labels={labels}
-                                    setLabels={setLabels}
-                                    fetchLabels={fetchLabels}
-                                    onClose={handleCloseLabel}
-                                    fetchCardDetail={fetchCardById}
-                                />
-                            </div>
-                        )}
-                        {/* END SHOW LABEL  */}
-                   </div>
-                   <div className="card-label">
-                    <SelectedLabels
-                        cardId={cardId}
-                        fetchCardDetail={fetchCardById}
-                        labels={labels}
-                        fetchLabels={fetchLabels}
-                    />
-                   </div>
-
-                   <div className="card-main-box">
-
-                    {/* LEFT  */}
-                    <div className="cmb-left">
-                        <div className="cm-conten">
-                            <div className="cm-button">
-                            {['Detail','Activity','Checklist'].map((tab) =>(
-                                <button 
-                                    key={tab}
-                                    className={activeTab === tab ? 'active' : ''}
-                                    onClick={() => setActiveTab(tab)}
-                                >
-                                    {tab}
-                                </button>
-                            ))}
-                            </div>
-                    
-                            <div className="tab-content">
-                                {activeTab === 'Detail' && <DetailCard 
-                                                                cards={cards}
-                                                                cardId={cardId}
-                                                                fetchCardById={fetchCardById} 
-                                                                currentStatus={currentStatus}
-                                                                setCurrentStatus={setCurrentStatus}
-                                                                allStatuses={allStatuses}
-                                                                setAllStatuses={setAllStatuses}
-                                                                selectedStatus={selectedStatus}
-                                                                setSelectedStatus={setSelectedStatus}
-                                                                fetchCardStatus={fetchCardStatus}
-                                                                fetchAllStatuses={fetchAllStatuses}
-                                                                //PRIORITY
-                                                                selectedProperties={selectedProperties}
-                                                                setSelectedProperties={setSelectedProperties}
-                                                                selectedPriority={selectedPriority}
-                                                                refreshPriority={fetchPriority}
-                                                                //DUE DATE
-                                                                dueDates= {dueDates}
-                                                                setDueDates={setDueDates}
-                                                                selectedDate={selectedDate}
-                                                                setSelectedDate={setSelectedDate}
-                                                                selectedDueDateId={selectedDueDateId}
-                                                                setSelectedDueDateId={setSelectedDueDateId}
-                                                                loading={loading}
-                                                                setLoading={setLoading}
-                                                                fetchDueDates={fetchDueDates}
-                                                            />
-                                }
-                                {/* {activeTab === 'Detail Order' && <DetailOrder cardId={cardId}/>} */}
-                                {activeTab === 'Checklist' && <Checklist cardId={cardId}/>}
-                                {activeTab === 'Activity' && <CardActivity/>}
-                            </div>
+                            </BootstrapTooltip>
                         </div>
                     </div>
-
                     
-
-                    {/* RIGHT  */}
-                    <div className="cmb-right">
-                        <div className="cmb-label">
-                            <CoverSelect cardId={cardId} fetchCardDetail={fetchCardById} selectedCover={selectedCover} />
+                    {/* STATUS  */}
+                    <div className="ncd-status">
+                        <div className="ncd-status-container">
+                            <StatusDisplay 
+                                cardId={cardId} 
+                                // onClose={handleCloseStatus}
+                                currentStatus={currentStatus}
+                                setCurrentStatus={setCurrentStatus}
+                                allStatuses={allStatuses}
+                                setAllStatuses={setAllStatuses}
+                                selectedStatus={selectedStatus}
+                                setSelectedStatus={setSelectedStatus}
+                                fetchCardStatus={fetchCardStatus}
+                                fetchAllStatuses={fetchAllStatuses}
+                            />
                         </div>
-                        <div className="c-info">
-                            <div className="c-info-title">
-                                <p>Card Information</p>
-                                <BootstrapTooltip title='Card Setting' placement='top'>
-                                 <button onClick={handleShowAction}>
-                                    <HiCog8Tooth/>
-                                </button>
-                                </BootstrapTooltip>
-                            </div>
-                            
-                            <div className="c-create">
-                                <HiOutlineCalendar className='cc-icon'/>
-                                <div className="cc-date">
-                                    <p>Created</p>
-                                    {cards.create_at && formatTimestamp(cards.create_at)}
-                                </div>
-                           </div>
-                           <div className="c-create">
-                                <HiMiniListBullet className='cc-icon'/>
-                                <div className="cc-date" style={{fontWeight:'bold'}}>
-                                    <p>List</p>
-                                    {listName}
-                                </div>
-                           </div>
-
-                           {/* SHOW ACTION CARD  */}
-                            {showAction && (
-                                <div className='acm-container' >
-                                    <div className='action-card-modal' ref={refShowAction}>
-                                        <button onClick={()=> handleDuplicateCard(cardId)}>
-                                            <HiOutlineSquare2Stack className='cmba-icon'/>
-                                            DUPLICATE CARD
-                                        </button>
-                                        <button onClick={()=> handleMoveCard(cardId)}>
-                                            <HiMiniArrowLeftStartOnRectangle className='cmba-icon'/>
-                                            MOVE CARD
-                                        </button>
-                                        <button onClick={()=> handleArchiveCard(cardId)}>
-                                            <HiOutlineArchiveBox className='cmba-icon'/>
-                                            ARCHIVE CARD
-                                        </button>
-
-                                        {showDuplicate[cardId] && (
-                                            <div className='duplicate-modal'>
-                                                <CardDetailDuplicate cardId={cardId} boardId={boardId} listId={listId} workspaceId={workspaceId} onClose={()=> handleCloseDuplicate(cardId)}/>
-                                            </div>
-                                        )}
-                                        {showMove[cardId]&&(
-                                            <div className='cd-move-modal'>
-                                                <CardDetailMove cardId={cardId} currentBoardId={boardId} listId={listId} workspaceId={workspaceId} onClose={()=> handleCloseMove(cardId)}/>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            )}
-                           {/* END SHOW ACTION CARD  */}
+                        <div className="ncd-status-priority">
+                           <SelectPriority 
+                                cardId={cardId} 
+                                selectedProperties={selectedProperties} 
+                                setSelectedProperties={setSelectedProperties} 
+                                selectedPriority={selectedPriority}
+                                refreshPriority={fetchPriority}
+                            />
                         </div>
-
-                        {/* <div className="cmb-container"> */}
-                            {/* ATTACHMENT  */}
-                            <div className="cmb-attachment">
-                                <div className="attach-header">
-                                    <div className="ah-left">
-                                        {/* <HiPaperClip className='ah-icon'/> */}
-                                        <h5>Attachment</h5>
-                                    </div>
-                                    <div className="ah-right">
-                                        <p>0 Files</p>
-                                    </div>
-                                </div>
-                                <div className="attach-body">
-                                    <button>
-                                        <IoCloudUploadOutline className='ab-icon'/>
-                                        Add Attachment
-                                    </button>
-                                </div>
-                            </div>
-
-                             {/* ASSIGN  */}
-                            <div className="cmb-assign">
-                                <div className="assign-header">
-                                    <div className="ah-left">
-                                        {/* <FiUsers className='ah-icon'/> */}
-                                        Assigned To
-                                    </div>
-                                    <div className="ah-right">
-                                        <p>{assignedUsers.length}  users
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="assign-body">
-                                    <CardAssignedUsers 
-                                         cardId={cardId}
-                                         onClose={handleCloseAssign}
-                                         assignedUsers={assignedUsers}
-                                         setAssignedUsers={setAssignedUsers}
-                                         fetchAssignedUsers={fetchAssignedUsers}
-                                         assignableUsers={assignableUsers}
-                                         setAssignableUsers={setAssignableUsers}
-                                         fetchAssignableUsers={fetchAssignableUsers}
-                                         handleRemoveUser={handleRemoveUser}
-                                    />
-                                </div>
-                                <div className="assign-btn-add">
-                                    <button onClick={handleShowAssign}>
-                                        <HiPlus className='ab-icon'/>
-                                        Add Assignee
-                                    </button>
-                                </div>
-
-                                {/* SHOW USER ASSIGMENT  */}
-                                {showAssigment && (
-                                    <div className='assign-modal'>
-                                        <CardAssigment
-                                            cardId={cardId}
-                                            onClose={handleCloseAssign}
-                                            assignedUsers={assignedUsers}
-                                            setAssignedUsers={setAssignedUsers}
-                                            fetchAssignedUsers={fetchAssignedUsers}
-                                            assignableUsers={assignableUsers}
-                                            setAssignableUsers={setAssignableUsers}
-                                            fetchAssignableUsers={fetchAssignableUsers}
-                                        />
-                                    </div>   
-                                )}
-                            </div>
-
-                           
-                            {/* <div className="cmb-action">
-                                <div className="cmba-header">
-                                    <h5>Action</h5>
-                                </div>
-                                <div className="cmba-body">
-                                    <button onClick={()=> handleDuplicateCard(cardId)}>
-                                        <HiOutlineSquare2Stack className='cmba-icon'/>
-                                        DUPLICATE CARD
-                                    </button>
-                                    <button onClick={()=> handleMoveCard(cardId)}>
-                                        <HiMiniArrowLeftStartOnRectangle className='cmba-icon'/>
-                                        MOVE CARD
-                                    </button>
-                                    <button onClick={()=> handleArchiveCard(cardId)}>
-                                        <HiOutlineArchiveBox className='cmba-icon'/>
-                                        ARCHIVE CARD
-                                    </button>
-                                    
-                                </div>
-
-                                {showDuplicate[cardId] && (
-                                    <div className='duplicate-modal'>
-                                        <CardDetailDuplicate cardId={cardId} boardId={boardId} listId={listId} workspaceId={workspaceId} onClose={()=> handleCloseDuplicate(cardId)}/>
-                                    </div>
-                                )}
-                                {showMove[cardId]&&(
-                                    <div className='cd-move-modal'>
-                                        <CardDetailMove cardId={cardId} currentBoardId={boardId} listId={listId} workspaceId={workspaceId} onClose={()=> handleCloseMove(cardId)}/>
-                                    </div>
-                                )}
-                                 
-                            </div> */}
-
-                        {/* </div>  */}
+                        <div className="ncd-status-due">
+                            <DueDateDisplay
+                                cardId={cardId}
+                                dueDates={dueDates}
+                                setDueDates={setDueDates}
+                                selectedDate={selectedDate}
+                                setSelectedDate={setSelectedDate}
+                                selectedDueDateId={selectedDueDateId}
+                                setSelectedDueDateId={setSelectedDueDateId}
+                                loading={loading}
+                                setLoading={setLoading}
+                                fetchDueDates={fetchDueDates}
+                            />
+                        </div>
                     </div>
-                   </div>
                 </div>
 
+                <div className="ncd-main-content">
+                    <div className="ncd-main-left">
 
-
-                {layoutOpen && (
-                    <div className="cdr-container">
-                        <div className="chat-header">
-                            <div className="chat-title">
-                                <h4>ROOM CHAT</h4>
-                                <p>{cards.title}</p>
+                        {/* DESCRIPTION CARD  */}
+                        <div className="ncd-desc">
+                            <div className="des-header">
+                                Description
+                                {/* <button>Edit</button> */}
                             </div>
-                            
-                            <div className="btn-header">
-                                <BootstrapTooltip title='Open Roomchat' placement='top'>
-                                    <button>
-                                        <HiOutlineArrowsPointingOut/>
-                                    </button>
-                                </BootstrapTooltip>
-                                <BootstrapTooltip title='Close Roomchat' placement='top'>
-                                     <button onClick={() => setLayoutOpen(false)}>
-                                        <HiXMark/>
-                                    </button>
-                                </BootstrapTooltip>
-                               
+                            <div className="des-content">
+                                {cards && cardId && (
+                                    <div className="des-content">
+                                    {editingDescription === cardId ? (
+                                        <div className="ta-cont">
+                                        <textarea
+                                            value={newDescription}
+                                            onChange={(e) => setNewDescription(e.target.value)}
+                                            onBlur={() => handleSaveDescription(cardId)}
+                                            onKeyDown={(e) => handleKeyPressDescription(e, cardId)}
+                                            autoFocus
+                                            rows={5}
+                                        />
+                                        <small className="text-muted">
+                                            **Tekan Enter untuk simpan || Shift + Enter untuk baris baru
+                                        </small>
+                                        </div>
+                                    ) : (
+                                        <div
+                                        onClick={(e) => handleEditDescription(e, cardId, cards.description)}
+                                        style={{ whiteSpace: "pre-wrap", cursor: "pointer" }}
+                                        className="div-p"
+                                        >
+                                        {cards.description && renderDescription(cards.description)}
+                                        
+                                        {cards.description && cards.description.length > maxChars && (
+                                            <span
+                                            onClick={(e) => {
+                                                e.stopPropagation(); // biar gak masuk ke edit mode
+                                                toggleShowMore();
+                                            }}
+                                            style={{ color: '#5557e7', fontWeight: '500', cursor: 'pointer', display: 'flex', alignItems:'center', justifyContent:'flex-start', marginTop: '8px', gap:'5px' }}
+                                            >
+                                            {/* {showMore ? 'Show Less ▲' : 'Show More ▼'} */}
+                                                {showMore ? 'Show Less' : 'Show More'}
+                                                {showMore ? <HiChevronUp /> : <HiChevronDown />}
+                                            </span>
+                                        )}
+                                        </div>
+                                    )}
+                                    </div>
+                                )}
                             </div>
-                            
                         </div>
-                    {/* ...isi chat */}
-                    {/* <div className="chat-body">Chat messages here...</div> */}
-                        <div className="chat-body">
-                            <RoomCardChat cards={cards} cardId={cardId} userId={userId} assignedUsers={assignedUsers} assignableUsers={assignableUsers}/>
+                        <div className="ncd-attach">
+                            <div className="attach-header-cont">
+                                <h5>Attachment</h5>
+                                <button>0 Files</button>
+                            </div>
+                            <div className="attach-content">
+                                <button className='attach-upload'><GiCloudUpload/></button>
+                                <p>Drop files here or tap to browse</p>
+                                <button className='add-attach'> <HiPlus/> Add Attachment</button>
+                            </div>
                         </div>
                     </div>
-                )}
-            </div>
+
+
+                    <div className="ncd-main-right">
+
+                        {/* COVER & DETAIL  */}
+                        <div className="ncd-cover-detail">
+                            <CoverSelect cardId={cardId} fetchCardDetail={fetchCardById} selectedCover={selectedCover}/>
+                            <div className="ncd-detail">
+                                <div className="ncd-detail-header">
+                                    Card Information
+                                </div>
+                                <div className="ncd-detail-con">
+                                    <div className="c-create">
+                                         <HiOutlineCalendar className='cc-icon'/>
+                                         <div className="cc-date" style={{borderBottom:'0.5px solid #ddd'}}>
+                                             <p>Created</p>
+                                             {cards.create_at && formatTimestamp(cards.create_at)}
+                                         </div>
+                                    </div>
+                                    <div className="c-create">
+                                         <HiMiniListBullet className='cc-icon'/>
+                                         <div className="cc-date" style={{fontWeight:'bold'}}>
+                                             <p>List</p>
+                                             {listName}
+                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* USER ASSIGMENT  */}
+                        <div className="ncd-user-assign">
+                            <div className="ncd-assign-header">
+                                Assigned To
+                                <button>{assignedUsers.length} users</button>
+                            </div>
+                            <div className="ncd-assign-content">
+                                <CardAssignedUsers 
+                                     cardId={cardId}
+                                     onClose={handleCloseAssign}
+                                     assignedUsers={assignedUsers}
+                                     setAssignedUsers={setAssignedUsers}
+                                     fetchAssignedUsers={fetchAssignedUsers}
+                                     assignableUsers={assignableUsers}
+                                     setAssignableUsers={setAssignableUsers}
+                                     fetchAssignableUsers={fetchAssignableUsers}
+                                     handleRemoveUser={handleRemoveUser}
+                                />
+                            </div>
+                            <div className="ncd-add-btn">
+                                <button onClick={handleShowAssign}>
+                                    <HiPlus className='ab-icon'/>
+                                    Add Assignee
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* CARD ACTIVITY */}
+                        <div className="ncd-card-activity">
+                            <div className="ncd-activity-header">
+                                Recent Card Activity
+                            </div>
+                            <div className="ncd-activiy-content">
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
         </div>
     </div>
   )

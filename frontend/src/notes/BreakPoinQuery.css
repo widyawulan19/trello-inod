@@ -1,0 +1,46 @@
+
+/* HOME  */
+
+/* Extra large devices (large desktops, ≥1200px) */
+@media (min-width: 1200px) and (max-width:1400px) {
+  /* CSS monitor besar */
+  .wf-create{
+     /* border: 1px solid orangered; */
+     width:20%;
+   }
+}
+
+
+/* Large devices (desktops, ≥992px) */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  /* CSS laptop biasa */
+  .wf-create{
+     /* border: 1px solid orangered; */
+     width:30%;
+   }
+}
+
+/* Medium devices (tablets, ≥768px) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .wf-create{
+     /* border: 1px solid orangered; */
+     width:40%;
+   }
+  /* CSS tablet atau iPad */
+}
+
+/* ukuran handpone besar  */
+@media (min-width: 576px) and (max-width: 767.98px){
+   .wf-create{
+     /* border: 1px solid blue; */
+     width:50%;
+   }
+}
+
+/* ukuran handpone kecil  */
+@media (min-width:375px) and (max-width:575px){
+    .wf-create{
+        /* border: 1px solid green; */
+        width:70%;
+    }
+}

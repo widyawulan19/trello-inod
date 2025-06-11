@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3002/api';
-// const API_URL = 'https://26ff-139-195-233-211.ngrok-free.app/api';
+const API_URL = 'http://localhost:3002/api'; //untuk development
+// const API_URL = 'https://5eae-118-96-151-188.ngrok-free.app/api'; //kalau pakai ngrok
 
 //WORKSPACE
 export const getWorkspaces = () => axios.get(`${API_URL}/workspace`)
@@ -283,10 +283,14 @@ export const deleteUserProfile = (userId) => axios.delete(`${API_URL}/profile-us
 export const updateProfileUser = (userId, data) => axios.put(`${API_URL}/profile-user/${userId}`,data)
 
 
-//LOG ACTIVITY
+//LOG ACTIVITY FOR USER
 export const getActivityForUserId = (userId) => axios.get(`${API_URL}/activity-logs/user/${userId}`)
 
+//LOG ACTIVITY FOR CARD
+export const getActivityCard = (cardId) => axios.get(`${API_URL}/activity-card/card/${cardId}`)
+
 //'/api/activity-logs/user/:userId'
+
 
 //CHAT ROOM
 export const getAllCardChat = (cardId) => axios.get(`${API_URL}/cards/${cardId}/chats`);

@@ -125,18 +125,29 @@
 /* DISPLAY DATE  */
 
 .date-show{
-    border:1px solid transparent;
+    /* border:1px solid transparent; */
     padding: 0px;
     /* border: 1px solid red; */
     border-radius: 4px;
-    width: 10vw;
+    width: 100%;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: flex-start;
+    /* position: relative; */
+}
+.date-show .ds-header{
+  /* border: 1px solid blue; */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  /* position: relative; */
 }
 .date{
     /* border: 1px solid grey; */
-    font-size: 7px;
+    margin-top: 5px;
+    font-size: 10px;
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -148,7 +159,7 @@
 }
 .time{
     /* border: 1px solid grey; */
-    font-size: 8px;
+    font-size: 10px;
     display: flex;
     align-items: center;
     justify-content: flex-start;
