@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { deleteLabels, getAllLabels, getLabelByCard, createLabel, addLabelToCard, updateLabelName, deleteLabelFromLabels } from '../services/ApiServices';
-import { HiEllipsisVertical, HiMiniAdjustmentsHorizontal, HiMiniAdjustmentsVertical, HiMiniPencilSquare, HiMiniTag, HiOutlineTrash, HiXMark } from "react-icons/hi2";
+import { HiEllipsisVertical, HiMiniTag, HiOutlineTrash, HiXMark } from "react-icons/hi2";
 import '../style/modules/Labels.css'
 import OutsideClick from '../hook/OutsideClick';
 import BootstrapTooltip from '../components/Tooltip';
@@ -41,8 +41,10 @@ const Label = ({ cardId, fetchCardDetail, labels, setLabels, fetchLabels, onClos
             const response = await createLabel({ name: newLabel.name });
             setAllLabels([...allLabels, response.data]);
             setNewLabel({ name: '' });
+            showSnackbar('successfully created label','success');
         } catch (error) {
             console.error('Error creating label:', error);
+            showSnackbar('Failed creating label','error');
         }
     };
 
@@ -51,8 +53,10 @@ const Label = ({ cardId, fetchCardDetail, labels, setLabels, fetchLabels, onClos
         try {
             await deleteLabels(cardId, labelId);
             setLabels(labels.filter(label => label.id !== labelId));
+            showSnackbar('Successfully delete label from card','success');
         } catch (error) {
             console.error('Error deleting label:', error);
+            showSnackbar('Failed to deleting label','error');
         }
     };
 
@@ -62,8 +66,10 @@ const Label = ({ cardId, fetchCardDetail, labels, setLabels, fetchLabels, onClos
             await addLabelToCard(cardId, label.id);
             setLabels([...labels, label]);
             fetchCardDetail(cardId);
+            showSnackbar('Successfully adding label to card', 'success');
         } catch (error) {
             console.error('Error adding label to card:', error);
+            showSnackbar('Failed adding label to card','error');
         }
     };
 

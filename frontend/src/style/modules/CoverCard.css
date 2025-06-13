@@ -1,3 +1,99 @@
+
+/* ================ NEW COVER CARD ================  */
+.card-cover-container{
+    width: 30vw;
+    padding: 0px;
+    background-color: white;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.card-cover-header{
+    /* border: 1px solid red; */
+    border-radius: 8px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+    padding: 5px 10px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: white;
+    background-image: linear-gradient(to right, #2d66e7, #3863e7, #425fe8, #4c5be7, #5557e7, #5d54e7, #6551e7, #6d4de7, #764ae7, #7e47e7, #8743e7, #8f3fe6);
+}
+.card-cover-header .cch-title{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
+}
+.cch-title h5{
+    font-size: 12px;
+    font-weight: bold;
+}
+.card-cover-header .cch-btn{
+    
+}
+.cch-btn button{
+    border: 1px solid rgba(255, 255, 255, 0);
+    border-radius: 6px;
+    cursor: pointer;
+    background-color: #4c5ce700;
+    color: white;
+    padding: 3px;
+}
+.cch-btn button:hover{
+    border: 1px solid #ddd;
+    background-color: #dddddd60;
+}
+
+
+.card-cover-body {
+    top: 100%;
+    left: 0;
+    border-radius: 8px;
+    background-color: #fff;
+    padding: 10px;
+    /* border: 1px solid red; */
+    width: 100%;
+}
+.image-cover{
+    /* border: 1px solid blue; */
+}
+.image-cover .ci{
+    margin-bottom: 10px;
+    padding: 2px 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.image-cover h5{
+    font-weight: normal;
+    font-size: 13px;
+    color: #333;
+    /* border: 1px solid red; */
+}
+.image-cover h4{
+    margin: 0px;
+}
+.image-content{
+    /* border: 1px solid green; */
+    min-width: 25vw;
+    width: 97%; 
+    height: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-x: auto; /* Memungkinkan scroll horizontal */
+    gap: 10px; /* Jarak antar elemen */
+    padding: 5px; /* Tambahkan padding agar lebih rapi */
+}
+/* ================ END COVER CARD ================  */
+
+
 .cover-container{
     /* border: 1px solid green; */
 }
@@ -38,7 +134,7 @@
     align-items: center;
     justify-content: space-between;
     margin-left: 5px;
-    /* border: 1px solid red; */
+    border: 1px solid red;
     padding: 5px 0px;
     height: fit-content;
     cursor: pointer;
@@ -91,53 +187,7 @@
 
     /* background: linear-gradient(to bottom, #6E30DC, #5D12EB); */
 
-.sc-container{
-    /* position: absolute; */
-    top: 100%;
-    left: 0;
-    width: 37vw;
-    /* width: 100%; */
-    /* border: 1px solid #ddd; */
-    /* box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); */
-    border-radius: 4px;
-    background-color: #fff;
-    padding: 10px;
-}
-.sc-container h5{
-    margin: 0px;
-    color: grey;
-}
-.image-cover{
-    /* border: 1px solid blue; */
-}
-.image-cover .ci{
-    margin-bottom: 10px;
-    padding: 2px 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-.image-cover h5{
-    font-weight: normal;
-    font-size: 13px;
-    color: #333;
-    /* border: 1px solid red; */
-}
-.image-cover h4{
-    margin: 0px;
-}
-.image-content{
-    /* border: 1px solid green; */
-    min-width: 25vw;
-    width: 97%; 
-    height: fit-content;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    overflow-x: auto; /* Memungkinkan scroll horizontal */
-    gap: 10px; /* Jarak antar elemen */
-    padding: 5px; /* Tambahkan padding agar lebih rapi */
-}
+
 
 .check-icon{
     color: #9b2fad;
@@ -178,3 +228,30 @@
     border: 1px solid blue;
 } */
 /* END COVER SELECT  */
+
+
+
+/* MEDIA QUERY  */
+/* Medium devices (tablets, ≥768px) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .card-cover-container{
+        width: 45vw;
+        /* border: 1px solid red; */
+    }
+  /* CSS tablet atau iPad */
+}
+
+@media (min-width: 576px) and (max-width: 767.98px){
+    .card-cover-container{
+        width: 50vw;
+        /* border: 1px solid blue; */
+    }
+}
+
+/* ukuran handpone kecil  */
+@media (min-width:375px) and (max-width:575px){
+    .card-cover-container{
+        width: 70vw;
+        /* border: 1px solid green; */
+    }
+}

@@ -2343,7 +2343,7 @@ app.put('/api/cards/:id/title', async(req,res)=>{
     
         // ✅ Tambahkan log aktivitas
         await logCardActivity({
-          action: 'update',
+          action: 'updated_title',
           card_id: parseInt(id),
           user_id: userId,
           entity: 'title',
@@ -2571,23 +2571,65 @@ app.post('/api/card-due-dates', async(req,res)=>{
     }
 })
 //5.update due date by id
-app.put('/api/card-due-date/:id', async(req,res)=>{
-    const { id } = req.params;
-    const { due_date } = req.body;
-    try {
-        const result = await client.query(
-            "UPDATE card_due_dates SET due_date = $1, updated_at = NOW() WHERE id = $2 RETURNING *",
-            [due_date, id]
-        );
-        if (result.rows.length === 0) {
-            return res.status(404).json({ error: "Due date not found" });
-        }
-        res.json(result.rows[0]);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send("Server Error");
+//5. update due date by id
+app.put('/api/card-due-date/:id', async (req, res) => {
+  const { id } = req.params;
+  const { due_date } = req.body;
+  const userId = req.user.id;
+
+  try {
+    // Ambil cardId dan due date lama
+    const existing = await client.query(
+      "SELECT * FROM card_due_dates WHERE id = $1",
+      [id]
+    );
+
+    if (existing.rows.length === 0) {
+      return res.status(404).json({ error: "Due date not found" });
     }
-})
+
+    const oldDueDate = existing.rows[0].due_date;
+    const cardId = existing.rows[0].card_id;
+
+    // Update due date
+    const result = await client.query(
+      "UPDATE card_due_dates SET due_date = $1, updated_at = NOW() WHERE id = $2 RETURNING *",
+      [due_date, id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Due date not found after update" });
+    }
+
+    const updatedDueDate = result.rows[0].due_date;
+
+    // Format tanggal ke: Wednesday, 11 June 2025
+    const formatDate = (dateStr) => {
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      return new Intl.DateTimeFormat('en-GB', options).format(new Date(dateStr));
+    };
+
+    // Log aktivitas update
+    await logCardActivity({
+      action: 'updated_due',
+      card_id: cardId,
+      user_id: userId,
+      entity: 'due date',
+      entity_id: null,
+      details: {
+        old_title: formatDate(oldDueDate),
+        new_title: formatDate(updatedDueDate),
+      }
+    });
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+
 //6. delete due date by ID
 app.delete('/api/card-due-date/:id', async(req,res)=>{
     const { id } = req.params;
@@ -3419,6 +3461,8 @@ app.get('/api/labels', async(req,res)=>{
         res.status(500).json({ error: "Internal server error" });
     }
 })
+
+
 
 //CARD_LABELS
 // 3. menghapus label dari card id 
@@ -4845,23 +4889,23 @@ app.get('/api/activity-logs/user/:userId', async (req, res) => {
 app.get('/api/activity-card/card/:cardId', async(req,res)=>{
     const {cardId} = req.params;
 
-    try{
-        const result = await client.query(
-            `SELECT * FROM card_activities WHERE card_id = $1`,
-            [cardId]
-        );
+    try {
+    const result = await client.query(`
+      SELECT ca.*, u.username
+      FROM card_activities ca
+      JOIN users u ON ca.user_id = u.id
+      WHERE ca.card_id = $1
+      ORDER BY ca.created_at DESC
+    `, [cardId]);
 
-        if(result.rowCount === 0){
-            return res.status(400).json({message:`No activity found for this card with this id ${cardId}`});
-        }
-
-        res.status(200).json({
-            message: `Activities for card ID ${cardId}`,
-            activities: result.rows,
-        })
-    }catch(error){
-        res.status(500).json({error: error.message})
-    }
+    res.json({
+      message: `Activities for card ID ${cardId}`,
+      activities: result.rows,
+    });
+  } catch (err) {
+    console.error('Error fetching activities:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 })
 
 app.post('/api/activity-log', async (req, res) => {

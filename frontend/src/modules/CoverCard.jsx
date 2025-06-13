@@ -81,82 +81,60 @@ const CoverCard = ({
     const imageCovers = covers.filter((cover) => cover.cover_image_url);
     const colorCovers = covers.filter((cover) => !cover.cover_image_url && cover.color_code);
 
-    return (
-        <div className="cover-container">
-            <div className="show-cover">
-                <div className="cover">
-                    <div className="selected-cover">
-                        {/* <div
-                            style={{
-                                width: '100%',
-                                height: '200px',
-                                backgroundImage: selectedCover?.cover_image_url ? `url(${selectedCover.cover_image_url})` : "none",
-                                backgroundColor: selectedCover?.color_code || "gray",
-                                backgroundSize: 'cover',
-                                backgroundPosition: 'center',
-                                backgroundRepeat: 'no-repeat',
-                                border: '1px solid #eee',
-                                borderRadius: '4px'
-                            }}
-                        /> */}
-                        <div className="button-cover">
-                            <div className="bc-left">
-                                <HiOutlinePhoto/>
-                                <h5>SELECT CARD COVER</h5>
-                            </div>
-                            <div className="bc-rigth">
-                                <BootstrapTooltip title='Delete Cover' placement='top'>
-                                    <button className='bc-delete' onClick={handleRemoveCover}>
-                                        <HiOutlineTrash/>
-                                        Delete Cover
-                                    </button>
-                                </BootstrapTooltip>
-                                <BootstrapTooltip title='Close' placement='top'>
-                                    <button className='btn-close' onClick={onClose}>
-                                        <HiXMark/>
-                                    </button>
-                                </BootstrapTooltip>
-                            </div>
-                            
-                            {/* <button onClick={handleShowSelect}>
-                                <HiOutlinePhoto className='bc-icon' />
-                                Select Cover
-                            </button> */}
-                        </div>
+    return(
+        <div className='card-cover-container'>
+            <div className="card-cover-header">
+                <div className="cch-title">
+                    <HiOutlinePhoto/>
+                    <h5>SELECT CARD COVER</h5>
+                </div>
+                <div className="cch-btn">
+                    <BootstrapTooltip title='Delete Cover' placement='top'>
+                        <button onClick={handleRemoveCover}>
+                            <HiOutlineTrash/>
+                        </button>
+                    </BootstrapTooltip>
+                    <BootstrapTooltip title='Close' placement='top'>
+                        <button onClick={onClose}>
+                            <HiXMark/>
+                        </button>
+                    </BootstrapTooltip>
+                </div>
+            </div>
 
-                        {/* {showSelectCover && ( */}
-                            <div className='sc-container' ref={refSelect}>
-                                {/* <h5>SELECT COVER</h5> */}
-                                <div className="image-cover">
-                                {imageCovers.length > 0 && (
-                                        <div className='ci'>
-                                            <h5>Image Cover</h5>
-                                            <div className='image-content'>
-                                                {imageCovers.map((cover) => (
-                                                    <div
-                                                        key={cover.id}
-                                                        style={{
-                                                            width: '120px',  // Ubah dari 200px menjadi 250px
-                                                            height: '60px',
-                                                            backgroundImage: `url(${cover.cover_image_url})`,
-                                                            backgroundSize: 'cover',
-                                                            backgroundPosition: 'center',
-                                                            backgroundRepeat: 'no-repeat',
-                                                            borderRadius:'5px',
-                                                            boxShadow:selectedCover?.id === cover.id ?' 0px 4px 8px rgba(0, 0, 0, 0.3)':'none',
-                                                            border: selectedCover?.id === cover.id ? '1px solid #9b2fad' : '1px solid #eee',
-                                                            cursor: 'pointer',
-                                                            flexShrink: 0 // Mencegah div mengecil saat overflow
-                                                        }}
-                                                        onClick={() => handleSelectCover(cover.id)}
-                                                    >
-                                                        {selectedCover?.id === cover.id && <span><HiCheckBadge className='check-icon'/></span>}
-                                                    </div>
-                                                ))}
-                                            </div>
+            {/* BODY  */}
+                <div className='card-cover-body' ref={refSelect}>
+                    <div className="image-cover">
+                    {/* <h5>SELECT COVER</h5> */}
+                    {imageCovers.length > 0 && (
+                            <div className='ci'>
+                                <h5>Image Cover</h5>
+                                <div className='image-content'>
+                                    {imageCovers.map((cover) => (
+                                        <div
+                                            key={cover.id}
+                                            style={{
+                                                width: '120px',  // Ubah dari 200px menjadi 250px
+                                                height: '60px',
+                                                backgroundImage: `url(${cover.cover_image_url})`,
+                                                backgroundSize: 'cover',
+                                                backgroundPosition: 'center',
+                                                backgroundRepeat: 'no-repeat',
+                                                borderRadius:'5px',
+                                                boxShadow:selectedCover?.id === cover.id ?' 0px 4px 8px rgba(0, 0, 0, 0.3)':'none',
+                                                border: selectedCover?.id === cover.id ? '1px solid #9b2fad' : '1px solid #eee',
+                                                cursor: 'pointer',
+                                                flexShrink: 0 // Mencegah div mengecil saat overflow
+                                            }}
+                                            onClick={() => handleSelectCover(cover.id)}
+                                        >
+                                            {selectedCover?.id === cover.id && <span><HiCheckBadge className='check-icon'/></span>}
                                         </div>
-                                    )}
+                                    ))}
                                 </div>
+                            </div>
+                        )}
+                    </div>
 
                                 <div className="default-color">
                                     {colorCovers.length > 0 && (
@@ -188,11 +166,8 @@ const CoverCard = ({
                                 </div>
                             </div>
                         {/* )} */}
-                    </div>
-                </div>
-            </div>
         </div>
-    );
+    )
 };
 
 export default CoverCard;

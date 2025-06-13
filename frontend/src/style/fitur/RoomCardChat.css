@@ -2,9 +2,11 @@
     /* border: 1px solid red; */
     /* padding: 10px; */
     padding-bottom: 0px !important;
-    background-color: white;
+    /* background-color: white; */
+    background-color: #e9e2f3;
     border-radius: 4px;
     height: 100%;
+    position: relative;
     /* height: 75vh; */
     /* min-height: 77vh; */
     /* margin-bottom: 10px; */
@@ -13,23 +15,9 @@
 
 .rc-container{
     display: flex;
-    /* border: 1px solid blue; */
+    /* border: 1px solid blue;  */
     margin-bottom: 5px;
-    width: 35vw;
-}
-
-.rc-content{
-    /* border: 1px solid red; */
-    background-color: #fff;
-    padding: 0px;
-    width: 85%;
-    position: relative;
-}
-.rc-box{
-    padding: 7px;
-    /* border: 1px solid yellow; */
-    border-radius: 4px;
-    width: 97%;
+    width: 100%
 }
 
 .rc-text{
@@ -43,16 +31,18 @@
 
 .rc-text-title{
     /* border: 1px solid #ddd; */
+    /* border: 1px solid green; */
     display: flex;
     align-items:baseline;
     justify-content: flex-start;
+    width: 100%;
     /* gap: 10px; */
 }
 .rc-text-title img{
     width: 30px;
     height: 30px;
     border-radius: 50%;  
-    border: 1px solid green;
+    border: 1px solid #755eea;
     /* margin: 0px; */
 }
 .rc-text-title p{
@@ -84,12 +74,28 @@
 
 .main-conver{
     /* border: 1px solid grey; */
-    height: 67vh;
+    height: 75vh;
     width: 100%;
     min-width: 30vw;
-    padding: 5px;
+    /* padding: 0px 10px; */
     /* width: fit-content; */
     overflow-y: auto;
+}
+
+.main-conver .main-cover-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* border: 1px solid blue; */
+    position: sticky;
+    top: 0px;
+    z-index: 99;
+    padding: 5px 10px;
+    border: 1px solid #6E30DC;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    color: white;
+    background-image: linear-gradient(to right, #6d5aea, #715cea, #755eea, #7861ea, #7c63ea, #8266ea, #8768ea, #8c6bea, #946fea, #9b72ea, #a276ea, #a87aea);    
 }
 
 .main-rcc .rep-editor{

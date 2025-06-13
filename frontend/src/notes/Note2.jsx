@@ -754,3 +754,99 @@ export default NewCardDetail
                     <h2>Card Detail</h2>
                     <button onClick={() => setLayoutOpen(true)}>Open Chat</button>
                 </div> */}
+
+
+return (
+        <div
+            style={{
+                width:'100%',
+                height:'100%',
+                display:'flex',
+                flexDirection:'column',
+                justifyContent:'flex-start',
+            }}
+        >
+            STATUS
+
+            {/* <h5>Status Kartu:</h5> */}
+            {currentStatus ? (
+                <button 
+                    style={{
+                        backgroundColor: currentStatus.background_color,
+                        color: currentStatus.text_color,
+                        border:`1px solid ${currentStatus.text_color}`,
+                        borderRadius: '8px',
+                        fontWeight: 'bold',
+                        fontSize:'10px',
+                        margin:'0px',
+                        padding:'3px 8px',
+                        display:'flex',
+                        alignItems:'center',
+                        justifyContent:'flex-start',
+                        gap:'5px',
+                        width:'100%',
+                        height:'100%'
+                    }}
+                >
+                    {ICON_STATUS[currentStatus.status_name]}
+                    {currentStatus.status_name}
+                </button>
+            ) : (
+                <p
+                    style={{fontSize:'12px', margin:'0px'}}
+                ></p>
+            )}
+        </div>
+    );
+
+
+//=====================
+<div className="ds-header" style={{ position: 'relative' }}>
+  <div style={{
+    gap:'5px',
+    fontSize:'12px',
+    display:'flex',
+    alignItems:'center', 
+    justifyContent:'flex-start',
+    color: getDueStatusColor(date.due_date),
+  }}>
+    <HiOutlineClock />
+    DUE DATE
+  </div>
+  <div style={{ position: 'relative' }}>
+    <HiChevronRight
+      onClick={handleShowDueDate}
+      style={{ cursor: 'pointer' }}
+    />
+    {showDueDate && (
+      <div
+        style={{
+          position:'absolute',
+          top:'100%', // langsung di bawah ikon
+          right: 0,
+          padding:'5px',
+          border:'1px solid #ddd',
+          boxShadow: '0px 4px 8px #5e12eb1e',
+          borderRadius:'4px',
+          backgroundColor:'white',
+          zIndex:'999',
+          width:'250px',
+        }}
+      >
+        <DueDate
+          cardId={cardId}
+          onClose={handleCloseDueDate}
+          dueDates={dueDates}
+          setDueDates={setDueDates}
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+          selectedDueDateId={selectedDueDateId}
+          setSelectedDueDateId={setSelectedDueDateId}
+          loading={loading}
+          setLoading={setLoading}
+          fetchDueDates={fetchDueDates}
+        />
+      </div>
+    )}
+  </div>
+</div>

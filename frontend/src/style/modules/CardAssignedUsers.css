@@ -89,3 +89,18 @@
     cursor: pointer;
     color: red;
   }
+
+
+/* MEDIA QUERY  */
+@media (min-width : 768px) and (max-width:992px){
+  .user-avatar{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 3px;
+  }
+  .remove-user-btn{
+    padding: 0px;
+    margin: 0px;
+  }
+} 

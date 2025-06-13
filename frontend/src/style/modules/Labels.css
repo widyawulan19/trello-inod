@@ -1,7 +1,7 @@
 .label-container{
-    /* border: 1px solid red; */
+    /* border: 1px solid blue; */
     /* border-radius: 4px; */
-    padding: 5px;
+    padding: 2px;
     /* width: 50%; */
 }
 .label-container .lc-header{
@@ -9,7 +9,12 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 5px;
+    padding: 5px 10px;
+    color: white;
+    margin-bottom: 5px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    background-image: linear-gradient(to right, #6d5aea, #715cea, #755eea, #7861ea, #7c63ea, #8266ea, #8768ea, #8c6bea, #946fea, #9b72ea, #a276ea, #a87aea);
 }
 .lc-header h5{
     margin: 0px;
@@ -17,7 +22,7 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    color: #333;
+    color: white;
     font-weight: bold;
     font-size: 12px;
     letter-spacing: 1px;
@@ -37,6 +42,7 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
+    padding: 5px 7px;
 }
 .delete-label{
     margin-left: 2px;
@@ -132,7 +138,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    padding: 10px;
+    /* padding: 10px; */
 }
 .fl-label h5{
     /* margin: 5px 0px; */
@@ -149,7 +155,7 @@
     /* border: 1px solid green; */
 }
 .form-label input{
-    width: 70%;
+    width: 60%;
     border: 1px solid #ddd;
     border-radius: 4px;
     padding: 5px;
@@ -166,7 +172,7 @@
 }
 .form-label button{
     color: white;
-    width: 30%;
+    width: fit-content;
     font-size: 12px;
     font-weight: bold;
     border: 1px solid #6a11cb !important;
@@ -174,7 +180,6 @@
     background: linear-gradient(to right, #6a11cb, #2575fc);
 }
 .form-label button:hover{
-
     background: linear-gradient(to right,#2575fc, #6a11cb );
 }
 .show-form{
@@ -243,4 +248,36 @@
     cursor: pointer;
     margin-left: 3px;
     color: #333;
+}
+
+/* MEDIA QUERY  */
+
+/* Large devices (desktops, ≥992px) */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  /* CSS laptop biasa */
+}
+
+
+/* Medium devices (tablets, ≥768px) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .form-label input{
+        width: 60%;
+    }
+  /* CSS tablet atau iPad */
+}
+/* ukuran handpone besar  */
+@media (min-width: 576px) and (max-width: 767.98px){
+   .form-label input{
+        width: 60%;
+    }
+    .form-label button{
+        font-size: 10px;
+    }
+}
+
+/* ukuran handpone kecil  */
+@media (min-width:375px) and (max-width:575px){
+    .form-label input{
+        width: 55%;
+    }
 }

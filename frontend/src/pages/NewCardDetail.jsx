@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { FiUsers } from "react-icons/fi";
-import { HiChevronDown, HiChevronUp, HiCog8Tooth, HiMiniArrowLeftStartOnRectangle, HiMiniChatBubbleLeftRight, HiMiniListBullet, HiMiniPhoto, HiOutlineArchiveBox, HiOutlineArrowsPointingOut, HiOutlineCalendar, HiOutlineChevronRight, HiOutlineCreditCard, HiOutlineListBullet, HiOutlineSquare2Stack, HiOutlineTrash, HiPaperClip, HiPlus, HiTag, HiXMark } from 'react-icons/hi2';
+import { HiChatBubbleLeftRight, HiChevronDown, HiChevronUp, HiCog8Tooth, HiMiniArrowLeftStartOnRectangle, HiMiniChatBubbleLeftRight, HiMiniListBullet, HiMiniPhoto, HiOutlineArchiveBox, HiOutlineArrowsPointingOut, HiOutlineCalendar, HiOutlineChevronRight, HiOutlineCreditCard, HiOutlineListBullet, HiOutlineSquare2Stack, HiOutlineTrash, HiPaperClip, HiPlus, HiTag, HiXMark } from 'react-icons/hi2';
 import { useNavigate, useParams } from 'react-router-dom'
 import '../style/pages/NewCardDetail.css'
 import BootstrapTooltip from '../components/Tooltip';
@@ -78,7 +78,19 @@ const NewCardDetail=()=> {
     //SHOW ACTION/SETTING CARD
     const [showAction, setShowAction] = useState(false);
     const refShowAction = OutsideClick(()=>setShowAction(false));
-    
+    //Chatroom
+    const [showChat, setShowChat] = useState(false);
+    const [showStatus, setShowStatus] = useState(true);
+    const toggleStatus = () => setShowStatus(!showStatus);
+
+
+    const handleShowChatroom = () =>{
+        setShowChat(!showChat);
+    }
+
+    const handleCloseChatroom = () =>{
+        setShowChat(false);
+    }
 
     //text long description
     const toggleShowMore = () => setShowMore(!showMore);
@@ -449,15 +461,28 @@ const NewCardDetail=()=> {
                     Card Detail
                 </button>
             </div>  
-           {/* <div className="ncd-right">
-            <BootstrapTooltip title="View Data Marketing" placement='top'>
-                <button >
-                    <AiOutlineLineChart className='nr-icon'/>
-                    View Data Marketing
-                </button>
-            </BootstrapTooltip>
-           </div> */}
+            <div className="btn-chatroom">
+                <BootstrapTooltip title='Open Room Chat' placement='top'>
+                    <button className='chat-btn' onClick={handleShowChatroom}>
+                        <HiChatBubbleLeftRight size={20}/>
+                    </button>
+                </BootstrapTooltip>
+            </div>
         </div>
+        {/* MODAL CHATROOM  */}
+        {/* SHOW CHATROOM  */}
+                {showChat && (
+                    <div className='modal-chatroom'>
+                        <RoomCardChat 
+                            cards={cards} 
+                            cardId={cardId} 
+                            userId={userId} 
+                            onClose={handleCloseChatroom}
+                            assignedUsers={assignedUsers} 
+                            assignableUsers={assignableUsers}
+                        />
+                    </div>
+                )}
 
         {/* BODY  */}
         <div className="ncd-body">
@@ -486,14 +511,14 @@ const NewCardDetail=()=> {
                             )}
 
                             {/* HEADER LABEL  */}
-                        <div className="ncd-label">
-                            <SelectedLabels
-                                cardId={cardId}
-                                fetchCardDetail={fetchCardById}
-                                labels={labels}
-                                fetchLabels={fetchLabels}
-                            />
-                        </div>
+                            <div className="ncd-label">
+                                <SelectedLabels
+                                    cardId={cardId}
+                                    fetchCardDetail={fetchCardById}
+                                    labels={labels}
+                                    fetchLabels={fetchLabels}
+                                />
+                            </div>
                         </div>
 
                         {/* HEADER BUTTON  */}
@@ -510,17 +535,44 @@ const NewCardDetail=()=> {
                                     {/* SELECT LABEL */}
                                 </button>
                             </BootstrapTooltip>
-                            <BootstrapTooltip title='Open Room Chat' placement='top'>
-                                <button onClick={() => setLayoutOpen(true)}>
-                                    <HiMiniChatBubbleLeftRight className='cdl-icon'/>
-                                    {/* ROOM CHAT */}
-                                </button>
-                            </BootstrapTooltip>
                         </div>
+
+                        {/* SHOW BUTTON  */}
+                        {/* SHOW COVER  */}
+                        {showCover && (
+                            <div className='cover-modal'>
+                                <CoverCard
+                                    cardId={cardId}
+                                    fetchCardDetail={fetchCardById}
+                                    selectedCover={selectedCover}
+                                    setSelectedCover={setSelectedCover}
+                                    fetchCardCover={fetchCardCover}
+                                    onClose={handleCloseCover}
+                                />
+                            </div>
+                        )}
+
+                        {/* SHOW LABEL  */}
+                        {showLabel && (
+                            <div className="label-modals">
+                                <Label
+                                    cardId={cardId}
+                                    labels={labels}
+                                    setLabels={setLabels}
+                                    fetchLabels={fetchLabels}
+                                    onClose={handleCloseLabel}
+                                    fetchCardDetail={fetchCardById}
+                                />
+                            </div>
+                        )}
+                        {/* END SHOW BUTTON  */}
                     </div>
                     
                     {/* STATUS  */}
-                    <div className="ncd-status">
+                    <button className="toggle-status-btn" onClick={toggleStatus}>
+                        {showStatus ? 'Hide Status ▲' : 'Show Status ▼'}
+                    </button>
+                    <div className={`ncd-status ${!showStatus ? 'minimized' : ''}`}>
                         <div className="ncd-status-container">
                             <StatusDisplay 
                                 cardId={cardId} 
@@ -572,20 +624,20 @@ const NewCardDetail=()=> {
                             </div>
                             <div className="des-content">
                                 {cards && cardId && (
-                                    <div className="des-content">
+                                    <div className="des-content" style={{height:'fit-content'}}>
                                     {editingDescription === cardId ? (
                                         <div className="ta-cont">
-                                        <textarea
-                                            value={newDescription}
-                                            onChange={(e) => setNewDescription(e.target.value)}
-                                            onBlur={() => handleSaveDescription(cardId)}
-                                            onKeyDown={(e) => handleKeyPressDescription(e, cardId)}
-                                            autoFocus
-                                            rows={5}
-                                        />
-                                        <small className="text-muted">
-                                            **Tekan Enter untuk simpan || Shift + Enter untuk baris baru
-                                        </small>
+                                            <textarea
+                                                value={newDescription}
+                                                onChange={(e) => setNewDescription(e.target.value)}
+                                                onBlur={() => handleSaveDescription(cardId)}
+                                                onKeyDown={(e) => handleKeyPressDescription(e, cardId)}
+                                                autoFocus
+                                                rows={5}
+                                            />
+                                            <small className="text-muted">
+                                                **Tekan Enter untuk simpan || Shift + Enter untuk baris baru
+                                            </small>
                                         </div>
                                     ) : (
                                         <div
@@ -640,14 +692,14 @@ const NewCardDetail=()=> {
                                 <div className="ncd-detail-con">
                                     <div className="c-create">
                                          <HiOutlineCalendar className='cc-icon'/>
-                                         <div className="cc-date" style={{borderBottom:'0.5px solid #ddd'}}>
+                                         <div className="cc-date">
                                              <p>Created</p>
                                              {cards.create_at && formatTimestamp(cards.create_at)}
                                          </div>
                                     </div>
                                     <div className="c-create">
                                          <HiMiniListBullet className='cc-icon'/>
-                                         <div className="cc-date" style={{fontWeight:'bold'}}>
+                                         <div className="cc-date" style={{fontWeight:'bold', width:'100%'}}>
                                              <p>List</p>
                                              {listName}
                                          </div>
@@ -689,12 +741,15 @@ const NewCardDetail=()=> {
                                 Recent Card Activity
                             </div>
                             <div className="ncd-activiy-content">
-                                
+                                <CardActivity cardId={cardId}/>
                             </div>
                         </div>
                     </div>
                 </div>
+
         </div>
+        
+       
     </div>
   )
 }

@@ -85,6 +85,7 @@ const DueDateDisplay = ({
                   </div>
                   <div style={{ position: 'relative' }}>
                     <HiChevronRight
+                      className="due-setting"
                       onClick={handleShowDueDate}
                       style={{ cursor: 'pointer' }}
                     />
