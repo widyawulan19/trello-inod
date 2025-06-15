@@ -38,11 +38,19 @@
 }
 .sl-container{
     margin-bottom: 5px;
-    /* border: 1px solid #ddd; */
+    border: 1px solid #ddd;
     display: flex;
     align-items: center;
     justify-content: flex-start;
     padding: 5px 7px;
+    width: 39vw;
+    overflow-x: auto;
+}
+.sl-container .slb-p{
+    white-space: nowrap;      /* ⛔ Jangan potong ke bawah */
+    overflow: hidden;         /* 🚫 Sembunyikan teks yang kepanjangan */
+    text-overflow: ellipsis;  /* … saat teks terlalu panjang */
+    margin: 0; 
 }
 .delete-label{
     margin-left: 2px;
@@ -85,18 +93,24 @@
 .lb-content{
     position: relative;
 }
+.lb-content:hover{
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
 .lbox-icon{
     margin-left: 5px;
-    /* padding: 2px; */
+    padding: 2px;
     color: #333;
     font-weight: bold;
-    border: 0.2px solid transparent;
+    font-size: 15px;
+    /* border: 1px solid red; */
+    cursor: pointer;
+    border: 0.2px solid rgba(255, 255, 255, 0.31);
     border-radius: 4px;
 }
-/* .lbox-icon:hover{
+.lbox-icon:hover{
     background-color: #eee;
     border: 0.2px solid #eee;
-} */
+}
 
 .set-label{
     position: absolute;
@@ -105,13 +119,14 @@
     border: 1px solid #eee;
     border-radius: 4px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 10px;
+    padding: 5px 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
     z-index: 99;
     gap: 5px;
+    width: fit-content;
 }
 .delete-label-btn{
     border: 1px solid white;
@@ -124,11 +139,80 @@
     font-size: 10px;
     font-weight: normal;
     color: red;
+    width: 100%;
 }
 .delete-label-btn:hover{
     border: 1px solid #eee;
     background-color: #eee;
 }
+
+.color-options{
+    border: 1px solid white;
+    border-radius: 4px;
+    padding: 2px 3px;
+    gap: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: 10px;
+    font-weight: normal;
+    color: #333;
+    width: 100%;
+}
+.color-options:hover{
+    border: 1px solid #eee;
+    background-color: #eee;
+}
+
+/* MODAL COLOR  */
+.bg-color-list{
+    position: absolute;
+    top: 50px;
+    right: 0px;
+    z-index: 99;
+    width: 25vw;
+    height: fit-content;
+    /* padding: 5px; */
+    background-color: #fff;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    /* display: flex;
+    flex-wrap: wrap; */
+    gap: 5px;
+}
+
+.color-label-header{
+    border: 1px solid #9b72ea; 
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+    background-image: linear-gradient(to left, #2d66e7, #3863e7, #425fe8, #4c5be7, #5557e7, #5d54e7, #6551e7, #6d4de7, #764ae7, #7e47e7, #8743e7, #8f3fe6);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 5px 10px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+.color-label-con{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    padding: 5px 10px;
+    /* border: 1px solid red; */
+}
+.color-label-con .color-code{
+    border: 1px solid #eee;
+}
+.color-label-con .color-code:hover{
+    border: 1px solid #9b72ea;
+    box-shadow: 0px 4px 8px #5e12eb46;
+}
+/* END MODAL COLOR  */
 /* CREATE LABEL  */
 .fl-label{
     margin: 10px;
@@ -156,6 +240,7 @@
 }
 .form-label input{
     width: 60%;
+    color: #6551e7;
     border: 1px solid #ddd;
     border-radius: 4px;
     padding: 5px;
@@ -263,6 +348,11 @@
     .form-label input{
         width: 60%;
     }
+    .sl-container{
+        /* border: 1px solid red; */
+        /* width: 39vw; */
+        width: 100%;
+    }
   /* CSS tablet atau iPad */
 }
 /* ukuran handpone besar  */
@@ -273,11 +363,21 @@
     .form-label button{
         font-size: 10px;
     }
+    .sl-container{
+        /* border: 1px solid blue; */
+        /* width: 39vw; */
+        width: 100%;
+    }
 }
 
 /* ukuran handpone kecil  */
 @media (min-width:375px) and (max-width:575px){
     .form-label input{
         width: 55%;
+    }
+    .sl-container{
+        /* border: 1px solid yellow; */
+        /* width: 39vw; */
+        width: 100%;
     }
 }

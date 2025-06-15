@@ -82,6 +82,8 @@ const NewCardDetail=()=> {
     const [showChat, setShowChat] = useState(false);
     const [showStatus, setShowStatus] = useState(true);
     const toggleStatus = () => setShowStatus(!showStatus);
+    //card activity
+    const [cardActivities, setCardActivities] = useState([]);
 
 
     const handleShowChatroom = () =>{
@@ -733,6 +735,22 @@ const NewCardDetail=()=> {
                                     Add Assignee
                                 </button>
                             </div>
+
+                            {/* SHOW USER ASSIGMENT  */}
+                            {showAssigment && (
+                                <div className='assign-modal'>
+                                    <CardAssigment
+                                        cardId={cardId}
+                                        onClose={handleCloseAssign}
+                                        assignedUsers={assignedUsers}
+                                        setAssignedUsers={setAssignedUsers}
+                                        fetchAssignedUsers={fetchAssignedUsers}
+                                        assignableUsers={assignableUsers}
+                                        setAssignableUsers={setAssignableUsers}
+                                        fetchAssignableUsers={fetchAssignableUsers}
+                                    />
+                                </div>   
+                            )}
                         </div>
 
                         {/* CARD ACTIVITY */}
@@ -741,7 +759,7 @@ const NewCardDetail=()=> {
                                 Recent Card Activity
                             </div>
                             <div className="ncd-activiy-content">
-                                <CardActivity cardId={cardId}/>
+                                <CardActivity cardId={cardId} fetchCardById={fetchCardById}/>
                             </div>
                         </div>
                     </div>

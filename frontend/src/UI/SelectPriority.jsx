@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getCardPriority } from '../services/ApiServices';
 import { HiChevronRight, HiMiniLightBulb } from "react-icons/hi2";
 import CardProperties from '../modules/CardPriorities';
+import '../style/modules/CardPriorities.css';
 
 const SelectPriority = ({ 
     cardId,
@@ -94,18 +95,7 @@ const SelectPriority = ({
             </div>
             {showPriority && (
                 <div 
-                    style={{
-                        position:'absolute',
-                        top:'100%',
-                        right:'0px',
-                        padding:'5px',
-                        border:'1px solid #ddd',
-                        boxShadow: '0px 4px 8px #5e12eb1e',
-                        borderRadius:'4px',
-                        backgroundColor:'white',
-                        zIndex:'99',
-                        width:'100%'
-                    }}
+                    className='priority-modals'
                 >
                     <CardProperties
                         cardId={cardId}  

@@ -9,6 +9,9 @@ const SelectedLabels = ({ cardId, fetchCardDetail,labels }) => {
     const [allLabels, setAllLabels] = useState([]);
     // const [labels, setLabels] = useState([]);
 
+    //debug
+    console.log('File ini selected labels', cardId, labels)
+
 
     useEffect(() => {
         fetchData();
@@ -30,11 +33,11 @@ const SelectedLabels = ({ cardId, fetchCardDetail,labels }) => {
         <div className="selected-labels" >
             {labels.map(label => (
                 <div 
-                key={label.id} 
+                key={label.label_id} 
                 className="label-item"
                 style={{ backgroundColor: label.bg_color, color:'#333' }}
                 >
-                {label.name}
+                {label.label_name}
                 </div>
             ))}
         </div>

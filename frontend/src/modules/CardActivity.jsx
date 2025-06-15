@@ -7,9 +7,11 @@ const COLOR_BORDER = {
   updated_desc: 'border-indigo-500',
   remove_label: 'border-red-500',
   remove_user: 'border-red-500',
+  remove_cover:'border-red-500',
   add_user: 'border-green-500',
   add_label: 'border-green-500',
-  updated_cover: 'border-yellow-500',
+  add_cover: 'border-green-500',
+  // updated_cover: 'border-yellow-500',
   updated_due: 'border-purple-500',
   updated_prio: 'border-pink-500',
   updated_status: 'border-teal-500'
@@ -17,22 +19,27 @@ const COLOR_BORDER = {
 
 const MESSAGE_ACTIVITY = {
   updated_title: 'updated title to',
-  updated_desc: 'updated description to',
+  updated_desc: 'updated description',
   remove_label: 'removed label',
   remove_user: 'removed user',
+  remove_cover: 'removed cover from card',
   add_user: 'added a user',
-  add_label: 'added a label',
-  updated_cover: 'updated cover card',
+  add_label: 'added a new label',
+  add_cover:'added a new cover',
+  // updated_cover: 'updated cover card',
   updated_due: 'updated due date',
   updated_prio: 'updated priority card',
   updated_status: 'updated status'
 };
 
-const CardActivity = ({ cardId }) => {
+const CardActivity = ({ cardId, fetchCardById }) => {
   const { user } = useUser();
   const userId = user.id;
   const [cardActivities, setCardActivities] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  //debug
+  console.log('file card activity menerima fetchcardById', fetchCardById);
 
   const fetchCardActivites = async () => {
     try {

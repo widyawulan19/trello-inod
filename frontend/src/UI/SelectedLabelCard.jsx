@@ -36,7 +36,8 @@ const SelectedLabelCard = ({ cardId }) => {
                     <div 
                         key={label.id} 
                         style={{ 
-                            backgroundColor: label.bg_color.replace("rgb", "rgba").replace(")", ", 0.3)"),
+                            // backgroundColor: label.bg_color.replace("rgb", "rgba").replace(")", ", 0.3)"),
+                            backgroundColor: label.bg_color,
                             color: label.color,
                             padding: "3px",
                             paddingLeft:'5px',
@@ -51,7 +52,7 @@ const SelectedLabelCard = ({ cardId }) => {
                             width:'fit-content'
                         }}
                     >
-                        {label.name}
+                        {label.label_name}
                         
                         <BootstrapTooltip title='Remove Labels' placement='top'>
                             <HiXMark 

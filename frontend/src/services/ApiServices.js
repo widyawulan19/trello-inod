@@ -158,6 +158,10 @@ export const createLabel = (data) => axios.post(`${API_URL}/labels`, data)
 export const addLabelToCard = (cardId, labelId) => axios.post(`${API_URL}/cards/${cardId}/labels/${labelId}`)
 export const deleteLabelFromLabels = (labelId) => axios.delete(`${API_URL}/delete-label/${labelId}`)
 export const updateLabelName = (id, data) => axios.put(`${API_URL}/update-label-name/${id}`, data)
+export const addColorToBgColorLabel = (labelId, data) => axios.put(`${API_URL}/label/${labelId}/bg_color`, data)
+
+//COLORS
+export const getAllColor = () => axios.get(`${API_URL}/colors`)
 
 //CARD STATUS
 export const getStatusByCardId = (cardId) => axios.get(`${API_URL}/cards/${cardId}/status`)

@@ -728,6 +728,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
 }
 .ncd-add-btn button{
     display: flex;
@@ -740,6 +741,24 @@
     border-radius: 8px;
     width: 90%;
     color: #4c4fe8;
+    cursor: pointer;
+}
+.ncd-add-btn button:hover{
+    background-color: #4c5ce75a;
+}
+
+/* USER ASSIGN SHOW MODAL */
+.assign-modal{
+    position: absolute;
+    top: 50%;
+    right: 8%;
+    z-index: 99;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 0px;
+    width: 20vw;
+    background-color: white;
+    box-shadow: 0px 4px 8px #5e12eb46;
 }
 
 /* CARD ACTIVITY  */
@@ -940,7 +959,9 @@
     align-items: center;
     justify-content: flex-start;
     max-height: 1000px;
-    overflow: hidden;
+    height: 30vh;
+    /* border: 1px solid red; */
+    overflow-y: auto;
     transition: max-height 0.3s ease-in-out;
   }
   .ncd-status .ncd-status-container,
@@ -959,7 +980,7 @@
     border: none;
     color: #5557e7;
     font-weight: bold;
-    margin: 10px 0;
+    margin: 3px 0;
     cursor: pointer;
     font-size: 13px;
   }
@@ -1105,7 +1126,7 @@
 
     .ncd-status.minimized {
       max-height: 0;
-      overflow: hidden;
+      overflow-y: auto;
     }
 
   .toggle-status-btn {

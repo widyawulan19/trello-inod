@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { deleteLabels, getAllLabels, getLabelByCard, createLabel, addLabelToCard, updateLabelName, deleteLabelFromLabels } from '../services/ApiServices';
-import { HiEllipsisVertical, HiMiniTag, HiOutlineTrash, HiXMark } from "react-icons/hi2";
+import { deleteLabels, getAllLabels, getLabelByCard, createLabel, addLabelToCard, updateLabelName, deleteLabelFromLabels, getAllColor, addColorToBgColorLabel } from '../services/ApiServices';
+import { HiEllipsisVertical, HiMiniTag, HiOutlinePencil, HiOutlineTrash, HiXMark } from "react-icons/hi2";
 import '../style/modules/Labels.css'
 import OutsideClick from '../hook/OutsideClick';
 import BootstrapTooltip from '../components/Tooltip';
@@ -12,16 +12,21 @@ const Label = ({ cardId, fetchCardDetail, labels, setLabels, fetchLabels, onClos
     const showLabelRef = OutsideClick(() => setShowSelectLabel(false));
     const [showSelectLabel, setShowSelectLabel] = useState(false);
     const [showSetting, setShowSetting] = useState(false);
+    const [showColor, setShowColor] = useState(false);
     const refShowSetting = OutsideClick(()=>setShowSetting(false));
     const {showSnackbar} = useSnackbar();
+    const [bgColorOption, setBgColorOption] = useState([]);
+
     
     //DEBUG
-    console.log('file labels menerima data label:', labels);
-    console.log('File ini menerima data fetchCardDetail:', fetchCardDetail)
+    console.log('Labels menerima allLabel:', allLabels);
+    // console.log('file labels menerima data label:', labels);
+    // console.log('File ini menerima data fetchCardDetail:', fetchCardDetail)
 
     useEffect(() => {
         fetchLabels();
         fetchAllLabels();
+        fetchAllColor();
     }, [cardId]);
 
     //FUNGSI MENAMPILKAN SEMUA LABEL
@@ -34,6 +39,16 @@ const Label = ({ cardId, fetchCardDetail, labels, setLabels, fetchLabels, onClos
         }
     };
 
+    //FUNGSI UNTUK MENAMPILKAN SEMUA COLOR
+    const fetchAllColor = async () =>{
+        try{
+            const response = await getAllColor();
+            setBgColorOption(response.data)
+        }catch(error){
+            console.error('Error fetching all color:', error);
+        }
+    }
+
     //FUNGSI MEMBUAT LABEL BARU
     const handleCreateLabel = async (e) => {
         e.preventDefault();
@@ -41,6 +56,7 @@ const Label = ({ cardId, fetchCardDetail, labels, setLabels, fetchLabels, onClos
             const response = await createLabel({ name: newLabel.name });
             setAllLabels([...allLabels, response.data]);
             setNewLabel({ name: '' });
+            fetchAllLabels();
             showSnackbar('successfully created label','success');
         } catch (error) {
             console.error('Error creating label:', error);
@@ -51,19 +67,22 @@ const Label = ({ cardId, fetchCardDetail, labels, setLabels, fetchLabels, onClos
     //FUNGSI DELETE LABEL FROM CARD
     const handleDeleteLabel = async (cardId, labelId) => {
         try {
+            console.log('Deleting label from card', cardId, labelId);
             await deleteLabels(cardId, labelId);
             setLabels(labels.filter(label => label.id !== labelId));
             showSnackbar('Successfully delete label from card','success');
+            fetchLabels(cardId);
         } catch (error) {
-            console.error('Error deleting label:', error);
-            showSnackbar('Failed to deleting label','error');
+            console.error('Error deleting label card:', error);
+            showSnackbar('Failed to deleting label to card','error');
         }
     };
 
     //FUNGSI MEMILIH LABEL UNTUK CARD
     const handleSelectLabel = async (label) => {
         try {
-            await addLabelToCard(cardId, label.id);
+            console.log('Fungsi handle select label mempunyai data label', label);
+            await addLabelToCard(cardId, label);
             setLabels([...labels, label]);
             fetchCardDetail(cardId);
             showSnackbar('Successfully adding label to card', 'success');
@@ -86,21 +105,38 @@ const Label = ({ cardId, fetchCardDetail, labels, setLabels, fetchLabels, onClos
         }
     }
 
-    const handleShowSetting = (labelId) => {
+    const handleShowSetting = (labelId,e) => {
+        e.stopPropagation();
         if (showSetting === labelId) {
             setShowSetting(null); //
         } else {
             setShowSetting(labelId); 
         }
     }
+
+    const handleShowColors = (labelId, e) =>{
+        e.stopPropagation();
+        if(showColor === labelId){
+            setShowColor(null);
+        }else{
+            setShowColor(labelId)
+        }
+    }
+
+    const handleCloseColor = () =>{
+        setShowColor(false)
+    }
     
     //FUNGSI DELETE LABEL DARI DAFTAR LABELS
-    const handleDeleteLabels = async(labelId) =>{
+    const handleDeleteLabels = async(labelId,e) =>{
+        e.stopPropagation();
         try{
             const response = await deleteLabelFromLabels(labelId);
             console.log('Label delete succesfully:', response.data);
             showSnackbar('Label delete successfully','success');
             fetchCardDetail(cardId);
+            fetchLabels(cardId);
+            fetchAllLabels();
             return response.data;
         }catch(error){
             console.error('Error deleting label from labels',error)
@@ -108,6 +144,19 @@ const Label = ({ cardId, fetchCardDetail, labels, setLabels, fetchLabels, onClos
             throw error;
         }
     }
+
+    //FUNGSI UNTUK HANDLE PERUBAHAN BACKGROUND LABEL
+    const handleAssignBgColorToLabel = async (labelId, bgColorId) => {
+        try {
+            const data = { bg_color_id: bgColorId };
+            await addColorToBgColorLabel(labelId, data);
+            showSnackbar('Label background updated successfully', 'success');
+            fetchAllLabels(); // refresh label list
+        } catch (error) {
+            console.error('Failed to assign bg color to label:', error);
+            showSnackbar('Failed to update label background', 'error');
+        }
+    };
 
 
     return (
@@ -127,7 +176,7 @@ const Label = ({ cardId, fetchCardDetail, labels, setLabels, fetchLabels, onClos
             <div className="sl-container">
                 {labels.map(label => (
                     <div
-                        key={label.id}
+                        key={label.label_id}
                         style={{
                             // backgroundColor: label.bg_color?.replace("rgb", "rgba").replace(")", ", 0.3)"),
                             backgroundColor: label.bg_color,
@@ -138,16 +187,17 @@ const Label = ({ cardId, fetchCardDetail, labels, setLabels, fetchLabels, onClos
                             borderRadius: "4px",
                             display: 'flex',
                             alignItems: 'center',
-                            justifyContent: 'center',
+                            justifyContent: 'flex-start',
                             fontSize: '10px',
                             fontWeight: 'bold',
                             width: 'fit-content',
                             gap:'5px'
                         }}
                     >
-                        {label.name}
+                        <p className='slb-p'>{label.label_name}</p>
+                        
                        <HiXMark
-                            onClick={()=> handleDeleteLabel(cardId, label.id)}
+                            onClick={()=> handleDeleteLabel(cardId, label.label_id)}
                             style={{
                                 cursor:'pointer',
                             }}
@@ -162,33 +212,66 @@ const Label = ({ cardId, fetchCardDetail, labels, setLabels, fetchLabels, onClos
                     {allLabels.map(label => (
                         <div
                             key={label.id}
-                            onClick={() => handleSelectLabel(label)}
+                            onClick={() => handleSelectLabel(label.id)}
                             className='lb-content'
                             style={{
                                 padding: "4px 5px",
                                 fontSize: '10px',
                                 cursor: "pointer",
+                                // backgroundColor:'red',
                                 backgroundColor: label.bg_color,
+                                border:'1px solid #eee',
                                 fontWeight:'bold',
                                 color:'#333',
                                 borderRadius: '4px',
-                                border: '1px solid #fff',
                                 marginBottom: '4px',
                                 gap:'3px',
                                 display: 'flex',
                                 alignItems: 'center',
-                                justifyContent: 'flex-start'
+                                justifyContent: 'flex-start',
+                                position:'relative'
                             }}
                         >
                             {label.name}
-                            <HiEllipsisVertical className='lbox-icon' onClick={()=> handleShowSetting(label.id)} />
+                            <HiEllipsisVertical className='lbox-icon' onClick={(e)=> handleShowSetting(label.id, e)} />
                             
                             {/* SETTING LABEL  */}
                                 {showSetting === label.id && (
                                     <div className="set-label" ref={refShowSetting}>
-                                        <div className="delete-label-btn" onClick={()=> handleDeleteLabels(label.id)}>
+                                        <div className="delete-label-btn" onClick={(e)=> handleDeleteLabels(label.id,e)}>
                                             <HiOutlineTrash/>
                                             Delete
+                                        </div>
+                                        {/* Dropdown pilih warna */}
+                                        <div className="color-options" onClick={(e)=> handleShowColors(label.id,e)}>
+                                            <HiOutlinePencil/>
+                                            Color
+                                        </div>
+                                    </div>
+                                )}
+                                {showColor === label.id &&  (
+                                    <div className="bg-color-list">
+                                        <div className='color-label-header'>
+                                            <h4>Select Color Labe</h4>
+                                            <HiXMark onClick={handleCloseColor}/>
+                                        </div>
+                                        <div className="color-label-con">
+                                            {bgColorOption.map(color => (
+                                             <div
+                                             className='color-code'
+                                                key={color.id}
+                                                title={color.name}
+                                                onClick={() => handleAssignBgColorToLabel(label.id, color.id)}
+                                                style={{
+                                                width: '20px',
+                                                height: '20px',
+                                                borderRadius: '3px',
+                                                backgroundColor: color.hex_code,
+                                                cursor: 'pointer',
+                                                // border: '1px solid #ccc'
+                                                }}
+                                            />
+                                        ))}
                                         </div>
                                     </div>
                                 )}

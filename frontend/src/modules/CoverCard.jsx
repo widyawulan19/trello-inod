@@ -9,6 +9,7 @@ import {
 import { HiOutlinePhoto, HiOutlineXMark, HiCheckBadge, HiOutlineTrash, HiXMark } from "react-icons/hi2";
 import OutsideClick from '../hook/OutsideClick';
 import BootstrapTooltip from '../components/Tooltip';
+import { useSnackbar } from '../context/Snackbar';
 
 const CoverCard = ({ 
     cardId, 
@@ -21,6 +22,7 @@ const CoverCard = ({
     const [covers, setCovers] = useState([]); // Semua pilihan cover
     const [showCover, setShowCover] = useState(false);
     const [showSelectCover, setShowSelectCover] = useState(false);
+    const {showSnackbar} = useSnackbar();
 
     const refCover = OutsideClick(() => setShowCover(false));
     const refSelect = OutsideClick(() => setShowSelectCover(false));
@@ -61,10 +63,12 @@ const CoverCard = ({
             } else {
                 await addCoverCard(coverData);
             }
+            showSnackbar('Successfully add cover','success');
             await fetchCardCover(); // refresh dari parent
             fetchCardDetail(); // refresh detail
         } catch (error) {
             console.error('Gagal memilih cover:', error);
+            showSnackbar('Gagal memilih cover', 'error');
         }
     };
 
@@ -73,8 +77,10 @@ const CoverCard = ({
             await deleteCoverCard(cardId);
             setSelectedCover(null);
             fetchCardDetail(); // Refresh tampilan
+            showSnackbar('Successfully remove cover', 'success');
         } catch (error) {
             console.error('Gagal menghapus cover:', error);
+            showSnackbar('Gagal menghapus cover', 'error');
         }
     };
 

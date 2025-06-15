@@ -104,6 +104,9 @@ app.put('/api/cards/:id/title', async(req,res)=>{
       }
 })
 
+
+
+
 app.put('/api/card-due-date/:id', async (req, res) => {
   const { id } = req.params;
   const { due_date } = req.body;
@@ -563,3 +566,46 @@ const RoomCardChat = ({cards, userId, cardId,onClose,assignedUsers,assignableUse
 };
 
 export default RoomCardChat;
+
+
+app.delete('/api/delete-cover/:cardId', async (req, res) => {
+    const { cardId } = req.params;
+    const userId = req.user.id; // pastikan kamu pakai middleware auth untuk dapat req.user
+
+    try {
+        // Ambil dulu data cover sebelum dihapus
+        const coverResult = await client.query(
+            "SELECT * FROM card_cover WHERE card_id = $1",
+            [cardId]
+        );
+
+        if (coverResult.rowCount === 0) {
+            return res.status(404).json({ message: "No cover found for this card." });
+        }
+
+        const cover = coverResult.rows[0]; // Data cover sebelum dihapus
+
+        // Hapus cover
+        await client.query(
+            "DELETE FROM card_cover WHERE card_id = $1",
+            [cardId]
+        );
+
+        // Log aktivitas penghapusan cover
+        await logCardActivity({
+            card_id: parseInt(cardId),
+            user_id: userId,
+            action: "delete",
+            entity: "cover",
+            entity_id: cover.id, // Ini id cover yang dihapus
+            details: {
+                message: "Cover removed from card"
+            }
+        });
+
+        res.json({ message: "Cover removed successfully." });
+    } catch (error) {
+        console.error("Error deleting cover:", error);
+        res.status(500).json({ error: error.message });
+    }
+});

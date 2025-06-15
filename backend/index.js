@@ -1317,36 +1317,77 @@ app.delete('/api/board-priority-remove', async(req,res)=>{
 
 //CARD PRIORITY
 //1. add priority to card
-app.post('/api/card-priorities', async(req,res)=>{
-    try{
-        const {card_id,  priority_id} = req.body;
-        if(!card_id || !priority_id){
-            return res.status(400).json({error:"card_id dan priority_id wajib diisi"});
-        }
+app.post('/api/card-priorities', async (req, res) => {
+  const userId = req.user.id;
+  const { card_id, priority_id } = req.body;
 
-        await client.query('BEGIN');
+  if (!card_id || !priority_id) {
+    return res.status(400).json({ error: "card_id dan priority_id wajib diisi" });
+  }
 
-        //menghapus semua prioritas lama untuk board ini (hanya jika satu prioritas yang ditampilkan)
-        await client.query(
-            "DELETE FROM card_priorities WHERE card_id = $1",
-            [card_id]
-        );
+  try {
+    await client.query('BEGIN');
 
-        //insert prioritas baru
-        const result = await client.query(
-            "INSERT INTO card_priorities (card_id, priority_id) VALUES ($1, $2) RETURNING *",
-            [card_id, priority_id]
-        )
-        
-        await client.query("COMMIT");
+    // Ambil priority lama sebelum dihapus
+    const oldPriorityResult = await client.query(
+      `SELECT cp.priority_id, p.name AS priority_name
+       FROM card_priorities cp
+       JOIN priorities p ON cp.priority_id = p.id
+       WHERE cp.card_id = $1`,
+      [card_id]
+    );
 
-        res.status(201).json({ message: "Prioritas berhasil ditambahkan", data: result.rows[0] });
-    }catch(error){
-        await client.query("ROLLBACK");
-        console.error(error);
-        res.status(500).json({ error: "Terjadi kesalahan server" });
-    }
-})
+    const oldPriorityId = oldPriorityResult.rows[0]?.priority_id || null;
+    const oldPriorityName = oldPriorityResult.rows[0]?.priority_name || null;
+
+    // Hapus semua prioritas lama untuk card ini
+    await client.query(
+      "DELETE FROM card_priorities WHERE card_id = $1",
+      [card_id]
+    );
+
+    // Tambahkan prioritas baru
+    const insertResult = await client.query(
+      "INSERT INTO card_priorities (card_id, priority_id) VALUES ($1, $2) RETURNING *",
+      [card_id, priority_id]
+    );
+
+    // Ambil nama prioritas baru
+    const newPriorityResult = await client.query(
+      "SELECT name FROM priorities WHERE id = $1",
+      [priority_id]
+    );
+    const newPriorityName = newPriorityResult.rows[0]?.name || null;
+
+    // Log aktivitas
+    await logCardActivity({
+      action: 'updated_prio',
+      card_id: parseInt(card_id),
+      user_id: userId,
+      entity: 'priority',
+      entity_id: priority_id,
+      details: {
+        old_priority_id: oldPriorityId,
+        old_priority_name: oldPriorityName,
+        new_priority_id: priority_id,
+        new_priority_name: newPriorityName
+      }
+    });
+
+    await client.query('COMMIT');
+
+    res.status(201).json({
+      message: "Prioritas berhasil ditambahkan",
+      data: insertResult.rows[0]
+    });
+
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error("Error adding priority to card:", error);
+    res.status(500).json({ error: "Terjadi kesalahan server" });
+  }
+});
+
 //2. get all card priority
 app.get('/api/card-priorities', async(req,res)=>{
     try{
@@ -2214,6 +2255,7 @@ app.get('/api/cards/:cardId/assignable-users', async(req,res)=>{
 //2. assign user to card
 app.post('/api/cards/:cardId/users/:userId', async(req,res)=>{
     const { cardId, userId } = req.params;
+    const usersId = req.user.id;
 
     try {
         const validationQuery = `
@@ -2253,6 +2295,16 @@ app.post('/api/cards/:cardId/users/:userId', async(req,res)=>{
             type: 'card_assigned',
         })
 
+        //add log card activity
+        await logCardActivity({
+            action:'add_user',
+            card_id:cardId,
+            user_id:usersId,
+            entity:'users',
+            entity_id:userId,
+            details:''
+        })
+
         res.status(200).json({ message: 'User assigned to card', data: insert.rows[0] });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -2262,6 +2314,7 @@ app.post('/api/cards/:cardId/users/:userId', async(req,res)=>{
 //3. remove user from card
 app.delete('/api/cards/:cardId/users/:userId', async (req, res) => {
   const { cardId, userId } = req.params;
+  const usersId = req.user.id;
 
   try {
       const result = await client.query(
@@ -2286,6 +2339,16 @@ app.delete('/api/cards/:cardId/users/:userId', async (req, res) => {
         userId,
         message:`You were removed from card name "${cardName}"`,
         type: 'card_unassigned',
+      })
+
+      //add log card activity
+      await logCardActivity({
+        action:'remove_user',
+        card_id:cardId,
+        user_id:usersId,
+        entity:'users',
+        entity_id:userId,
+        details:''
       })
 
       res.status(200).json({ message: 'User unassigned from card' });
@@ -2364,9 +2427,22 @@ app.put('/api/cards/:id/title', async(req,res)=>{
 app.put('/api/cards/:id/desc', async(req,res)=>{
     const { id } = req.params;
     const { description } = req.body;
+    const userId = req.user.id;
+
         try {
             const result = await client.query("UPDATE cards SET description = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *", [description, id]);
             if (result.rows.length === 0) return res.status(404).json({ error: "Card not found" });
+            
+            //add log card activity
+            await logCardActivity({
+                action: 'updated_desc',
+                card_id: parseInt(id),
+                user_id: userId,
+                entity: 'description',
+                entity_id: null,
+                details:''
+            })
+
             res.json(result.rows[0]);
         } catch (error) {
             res.status(500).json({ error: error.message });
@@ -2454,6 +2530,8 @@ app.get('/api/card-cover/:cardId', async(req,res)=>{
 //2. menambahkan cover ke card -> works
 app.post('/api/add-cover', async(req,res)=>{
     const { card_id, cover_id } = req.body;
+    const userId = req.user.id;
+
     try {
         const checkExisting = await client.query(
             "SELECT * FROM card_cover WHERE card_id = $1", 
@@ -2468,6 +2546,17 @@ app.post('/api/add-cover', async(req,res)=>{
             "INSERT INTO card_cover (card_id, cover_id, create_at) VALUES ($1, $2, CURRENT_TIMESTAMP) RETURNING *",
             [card_id, cover_id]
         );
+
+        //add log card activity
+        await logCardActivity({
+            action:'add_cover',
+            card_id:card_id,
+            user_id:userId,
+            entity:'cover',
+            entity_id:cover_id,
+            details:''
+        })
+
         res.json(result.rows[0]);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -2494,15 +2583,36 @@ app.put('/api/update-cover', async(req,res)=>{
 //4. menghapus cover dari card -> works
 app.delete('/api/delete-cover/:cardId', async(req,res)=>{
     const { cardId } = req.params;
+    const userId = req.user.id;
+    
     try {
-        const result = await client.query(
-            "DELETE FROM card_cover WHERE card_id = $1 RETURNING *",
+        // Ambil dulu data cover sebelum dihapus
+        const coverResult = await client.query(
+            "SELECT * FROM card_cover WHERE card_id = $1",
             [cardId]
         );
 
-        if (result.rowCount === 0) {
+        if (coverResult.rowCount === 0) {
             return res.status(404).json({ message: "No cover found for this card." });
         }
+
+        const cover = coverResult.rows[0]; // Data cover sebelum dihapus
+
+        // Hapus cover
+        await client.query(
+            "DELETE FROM card_cover WHERE card_id = $1",
+            [cardId]
+        );
+
+        // Log aktivitas penghapusan cover
+        await logCardActivity({
+            card_id: parseInt(cardId),
+            user_id: userId,
+            action: "delete",
+            entity: "cover",
+            entity_id: cover.id, // Ini id cover yang dihapus
+            details: ''
+        });
 
         res.json({ message: "Cover removed successfully." });
     } catch (error) {
@@ -3435,32 +3545,49 @@ app.delete('/api/checklists-fix-items/:id', async(req,res)=>{
 
 //LABEL
 // 1. get label by card id 
-app.get('/api/cards/:cardId/labels', async(req,res)=>{
-    const { cardId } = req.params;
-    try {
-        const result = await client.query(
-            `SELECT labels.id, labels.name, labels.color, labels.bg_color 
-             FROM labels
-             INNER JOIN card_labels ON labels.id = card_labels.label_id
-             WHERE card_labels.card_id = $1`, 
-            [cardId]
-        );
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "Internal server error" });
-    }
-})
+app.get('/api/cards/:cardId/labels', async (req, res) => {
+  const { cardId } = req.params;
+
+  const query = `
+    SELECT 
+      l.id AS label_id,
+      l.name AS label_name,
+      c.hex_code AS bg_color
+    FROM card_labels cl
+    JOIN labels l ON cl.label_id = l.id
+    LEFT JOIN colors c ON l.bg_color_id = c.id
+    WHERE cl.card_id = $1
+  `;
+
+  try {
+    const result = await client.query(query, [cardId]);
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error fetching labels by cardId:', error);
+    res.status(500).json({ error: 'Failed to fetch labels' });
+  }
+});
+
 //2. menampilkan semua label 
-app.get('/api/labels', async(req,res)=>{
+app.get('/api/labels', async (req, res) => {
     try {
-        const result = await client.query(`SELECT * FROM labels`);
+        const result = await client.query(`
+            SELECT 
+            l.id,
+            l.name,
+            c.hex_code AS bg_color
+            FROM labels l
+            LEFT JOIN colors c ON l.bg_color_id = c.id
+
+        `);
         res.json(result.rows);
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "Internal server error" });
+        console.error('Error fetching labels with color:', err);
+        res.status(500).json({ error: 'Internal server error' });
     }
-})
+});
+
 
 
 
@@ -3468,11 +3595,24 @@ app.get('/api/labels', async(req,res)=>{
 // 3. menghapus label dari card id 
 app.delete('/api/cards/:cardId/labels/:labelId', async(req,res)=>{
     const { cardId, labelId } = req.params;
+    const userId = req.user.id;
+
     try {
         await client.query(
             `DELETE FROM card_labels WHERE card_id = $1 AND label_id = $2`, 
             [cardId, labelId]
         );
+
+        //add log card activity
+        await logCardActivity({
+            action:'remove_label',
+            card_id:cardId,
+            user_id:userId,
+            entity:'label',
+            entity_id:labelId,
+            details:''
+        })
+
         res.json({ message: "Label removed from card successfully" });
     } catch (err) {
         console.error(err);
@@ -3483,23 +3623,10 @@ app.delete('/api/cards/:cardId/labels/:labelId', async(req,res)=>{
 app.post('/api/labels', async(req,res)=>{
     const { name } = req.body; // Hanya menerima nama label
 
-    // Fungsi untuk menghasilkan warna hex acak
-    const getRandomColor = () => {
-        const letters = '0123456789ABCDEF';
-        let color = '#';
-        for (let i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
-    };
-
-    const textColor = getRandomColor();  // Warna teks acak
-    const bgColor = getRandomColor();    // Warna background acak
-
     try {
         const result = await client.query(
-            `INSERT INTO labels (name, color, bg_color, create_at) VALUES ($1, $2, $3, CURRENT_TIMESTAMP) RETURNING *`,
-            [name, textColor, bgColor]
+            `INSERT INTO labels (name,color,create_at) VALUES ($1, $2,CURRENT_TIMESTAMP) RETURNING *`,
+            [name,'#333']
         );
         res.status(201).json(result.rows[0]);
     } catch (err) {
@@ -3511,6 +3638,8 @@ app.post('/api/labels', async(req,res)=>{
 //5. add label to card
 app.post('/api/cards/:cardId/labels/:labelId', async(req,res)=>{
     const {cardId, labelId} = req.params;
+    const userId = req.user.id;
+
     try {
         // Check if the card and label exist
         const cardExists = await client.query('SELECT 1 FROM cards WHERE id = $1', [cardId]);
@@ -3525,6 +3654,16 @@ app.post('/api/cards/:cardId/labels/:labelId', async(req,res)=>{
             'INSERT INTO card_labels (card_id, label_id, create_at) VALUES ($1, $2, CURRENT_TIMESTAMP) RETURNING *',
             [cardId, labelId]
         );
+
+        //add log card activity
+        await logCardActivity({
+            action:'add_label',
+            card_id:cardId,
+            user_id:userId,
+            entity:'add label',
+            entity_id:labelId,
+            details:''
+        })
 
         return res.status(201).json({
             message: 'Label added to card successfully',
@@ -3576,7 +3715,46 @@ app.put('/api/update-label-name/:id', async(req,res)=>{
     }
 })
 
+//8.add color id to label for bg 
+app.put('/api/label/:labelId/bg_color', async(req,res)=>{
+    const { labelId } = req.params;
+    const {bg_color_id} = req.body;
+
+    try {
+    const updateQuery = `
+      UPDATE labels
+      SET bg_color_id = $1,
+          update_at = NOW()
+      WHERE id = $2
+      RETURNING *;
+    `;
+
+    const result = await client.query(updateQuery, [bg_color_id, labelId]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Label not found' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+})
+
 // END LABEL 
+
+//COLORS
+//1. get all data colors
+app.get('/api/colors', async(req,res)=>{
+    try{
+        const result = await client.query('SELECT * FROM colors');
+        res.json(result.rows);
+    }catch(error){
+        res.status(500).json({error: error.message})
+    }
+})
+//END COLORS
+
 
 //CARD STATUS
 //1. get status card by card id
@@ -3637,6 +3815,7 @@ app.get('/api/status', async(req,res)=>{
 app.post('/api/cards/:cardId/status', async(req,res)=>{
     const { cardId } = req.params;
     const { statusId } = req.body;
+    const userId = req.user.id;
     
     try {
         // Cek apakah kartu sudah memiliki status
@@ -3651,6 +3830,17 @@ app.post('/api/cards/:cardId/status', async(req,res)=>{
             await client.query(`INSERT INTO card_status (card_id, status_id, assigned_at) VALUES ($1, $2, CURRENT_TIMESTAMP)`, [cardId, statusId]);
             res.json({ message: 'Status kartu berhasil ditambahkan' });
         }
+
+        //add log card activity
+        await logCardActivity({
+            action:'updated_status',
+            card_id:cardId,
+            user_id:userId,
+            entity:'status',
+            entity_id:statusId,
+            details:''
+        })
+
     } catch (error) {
         res.status(500).json({ error: 'Gagal menambahkan/memperbarui status kartu' });
     }

@@ -75,21 +75,7 @@ const CardAssigment = ({
             </div>
             ) : (
               <p></p>
-              // <ul className="assigned-list">
-              //   {assignedUsers.map((user) => (
-              //     <li key={user.user_id} className="assigned-item">
-              //       <div className="ai-title">
-              //         <img src={user.photo_url} alt={user.username}/>
-              //         <p>{user.username}</p>
-              //       </div>
-              //       <BootstrapTooltip title='Remove User' placement='top'>
-              //         <button onClick={() => handleRemoveUser(user.user_id)} className="remove-btn">
-              //           <HiOutlineTrash/>
-              //         </button>
-              //       </BootstrapTooltip>
-              //     </li>
-              //   ))}
-              // </ul>
+              
             )}
       </div>
 

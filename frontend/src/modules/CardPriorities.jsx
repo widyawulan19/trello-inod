@@ -14,10 +14,12 @@ import {
 } from 'react-icons/hi2';
 import BootstrapTooltip from '../components/Tooltip';
 import '../style/modules/CardPriorities.css'
+import { useSnackbar } from '../context/Snackbar';
 
 const CardProperties = ({ cardId, selectedPriority, refreshPriority, onClose }) => {
   const [allPriorities, setAllPriorities] = useState([]);
   const [showCardProperties, setShowCardProperties] = useState(false);
+  const {showSnackbar} = useSnackbar();
 
   useEffect(() => {
     fetchAllPriorities();
@@ -44,9 +46,11 @@ const CardProperties = ({ cardId, selectedPriority, refreshPriority, onClose }) 
     try {
       await addPriorityToCard(cardId, priority.id);
       await refreshPriority(); // Meminta induk update data
+      showSnackbar('Successfully add a new priority','success');
       setShowCardProperties(false);
     } catch (error) {
       console.error('Gagal menambahkan prioritas ke kartu', error);
+      showSnackbar('Failed to add a new priority','error');
     }
   };
 
@@ -66,7 +70,7 @@ const CardProperties = ({ cardId, selectedPriority, refreshPriority, onClose }) 
       <div className="scp-header">
         <h4>SELECT PRIORITY</h4>
         <BootstrapTooltip title='Close' placement='top'>
-          <HiXMark onClick={onClose} size={12} />
+          <HiXMark onClick={onClose} className='close-icon' />
         </BootstrapTooltip>
       </div>
       <div className="scp-content">

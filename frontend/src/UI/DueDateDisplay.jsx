@@ -89,8 +89,12 @@ const DueDateDisplay = ({
                       onClick={handleShowDueDate}
                       style={{ cursor: 'pointer' }}
                     />
-                    {showDueDate && (
+                    
+                  </div>
+                </div>
+                {showDueDate && (
                       <div
+                      className="due-setting"
                         style={{
                           position:'absolute',
                           top:'100%', // langsung di bawah ikon
@@ -119,8 +123,6 @@ const DueDateDisplay = ({
                         />
                       </div>
                     )}
-                  </div>
-                </div>
               
               <div key={date.id} style={{width:'100%',height:'100%',display:'flex', alignItems:'center', justifyContent:'flex-start',borderRadius:'6px', padding:'3px', fontSize:'12px'}}>
                 {/* <HiOutlineClock style={{marginRight:'5px', color: getDueStatusColor(date.due_date), fontSize:'12px'}}/> */}
