@@ -95,21 +95,7 @@ app.post('/api/upload-attach', upload.single('file'), async (req, res) => {
 
 
 //UPLOADED FILES
-// app.get('/api/uploaded-files/:cardId', async(req,res)=>{
-//     const {cardId} = req.params;
 
-//     try{
-//         const result = await client.query(
-//             `SELECT * FROM uploaded_files WHERE card_id = $1 ORDER BY uploaded_at DESC`,
-//             [cardId]
-//         );
-
-//         res.status(200).json(result.rows);
-//     }catch(error){
-//         console.error('Error fetching files:', error);
-//         res.status(500).json({error: 'Failed to fetch uploaded files'});
-//     }
-// })
 app.get('/api/uploaded-files/:cardId', async (req, res) => {
   const { cardId } = req.params;
 
@@ -177,11 +163,6 @@ app.post('/api/register', async (req, res) => {
       // Hash password sebelum disimpan
       const saltRounds = 10;
       const hashedPassword = await bcrypt.hash(password, saltRounds);
-  
-      // Simpan username, email, dan hashedPassword ke database
-      // Misalnya query untuk menyimpan data pengguna (username, email, password)
-      // const query = 'INSERT INTO users (username, email, password) VALUES ($1, $2, $3)';
-      // const values = [username, email, hashedPassword];
   
       // Kirim response sukses (simpan di database)
       res.status(201).json({ message: 'User successfully registered' });
