@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const client = require('./connection');
 const dotenv = require("dotenv");
@@ -9,6 +10,13 @@ const {logActivity} = require('./ActivityLogger');
 const {logCardActivity} = require('./CardLogActivity');
 require('./CronJob')
 const {SystemNotification} = require('./SystemNotification');
+
+
+
+//import for upload
+const upload = require('./upload');
+const cloudinary = require('./CloudinaryConfig');
+
 
 //TOP
 
@@ -41,6 +49,124 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
+
+//ENDPOIN UPLOAD
+app.post('/api/upload-attach', upload.single('file'), async (req, res) => {
+  const { card_id } = req.body;
+
+  if (!req.file || !card_id) {
+    return res.status(400).json({ error: 'Missing file or card_id' });
+  }
+
+  try {
+    // Upload buffer ke Cloudinary
+    const result = await new Promise((resolve, reject) => {
+      cloudinary.uploader.upload_stream(
+        {
+          resource_type: 'auto', // bisa 'auto', 'raw', 'image', 'video'
+          folder: 'trello_uploads',
+          public_id: `${Date.now()}-${req.file.originalname}`,
+        },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      ).end(req.file.buffer);
+    });
+
+    const fileUrl = result.secure_url;
+    const fileName = req.file.originalname;
+
+    // Dapatkan ekstensi file
+    const extension = fileName.split('.').pop().toLowerCase();
+
+    // Simpan ke DB
+    const dbResult = await client.query(
+      `INSERT INTO uploaded_files (card_id, file_url, file_name, type) VALUES ($1, $2, $3, $4) RETURNING *`,
+      [card_id, fileUrl, fileName, extension]
+    );
+
+    res.status(201).json(dbResult.rows[0]);
+  } catch (error) {
+    console.error('Upload error:', error);
+    res.status(500).json({ error: 'Upload failed', message: error.message });
+  }
+});
+
+
+//UPLOADED FILES
+// app.get('/api/uploaded-files/:cardId', async(req,res)=>{
+//     const {cardId} = req.params;
+
+//     try{
+//         const result = await client.query(
+//             `SELECT * FROM uploaded_files WHERE card_id = $1 ORDER BY uploaded_at DESC`,
+//             [cardId]
+//         );
+
+//         res.status(200).json(result.rows);
+//     }catch(error){
+//         console.error('Error fetching files:', error);
+//         res.status(500).json({error: 'Failed to fetch uploaded files'});
+//     }
+// })
+app.get('/api/uploaded-files/:cardId', async (req, res) => {
+  const { cardId } = req.params;
+
+  try {
+    const result = await client.query(
+      `
+      SELECT 
+        f.id,
+        f.card_id,
+        f.file_url,
+        f.file_name,
+        f.type,
+        f.uploaded_at,
+        u.username,
+        pr.photo_url,
+        pr.profile_name
+      FROM uploaded_files f
+      LEFT JOIN users u ON f.user_id = u.id
+      LEFT JOIN user_profil up ON u.id = up.user_id
+      LEFT JOIN profil pr ON up.profil_id = pr.id
+      WHERE f.card_id = $1
+      ORDER BY f.uploaded_at DESC
+      `,
+      [cardId]
+    );
+
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error('Error fetching files:', error);
+    res.status(500).json({ error: 'Failed to fetch uploaded files' });
+  }
+});
+
+//get total file by cardid
+app.get('/api/uploaded-files/:cardId/count', async (req, res) => {
+  const { cardId } = req.params;
+
+  try {
+    const result = await client.query(
+      `SELECT COUNT(*) AS total_files FROM uploaded_files WHERE card_id = $1`,
+      [cardId]
+    );
+
+    res.status(200).json({ 
+      card_id: cardId,
+      total_files: parseInt(result.rows[0].total_files, 10) 
+    });
+  } catch (error) {
+    console.error('Error counting files:', error);
+    res.status(500).json({ error: 'Failed to count uploaded files' });
+  }
+});
+
+
+
+
+//END ENDPOIN UPLOAD
 
 
 //REGISTER
@@ -295,7 +421,7 @@ app.post('/api/workspace-user/create', async(req,res)=>{
         res.status(500).json({error: error.message});
     }
 })
-//2. get workspace user -> works
+//2. get workspace user -> works (DIEDIT)
 app.get('/api/workspace/:id/users', async(req,res)=>{
     const {id} = req.params;
     try{

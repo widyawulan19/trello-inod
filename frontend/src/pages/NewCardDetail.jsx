@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import '../style/pages/NewCardDetail.css'
 import BootstrapTooltip from '../components/Tooltip';
 import { GiCloudUpload } from "react-icons/gi";
-import { archiveCard, deleteUserFromCard, getAllCardUsers, getAllDueDateByCardId, getAllStatus, getAllUserAssignToCard, getCardById, getCardPriority, getCoverByCard, getLabelByCard, getListById, getStatusByCardId, updateDescCard, updateTitleCard } from '../services/ApiServices';
+import { archiveCard, deleteUserFromCard, getAllCardUsers, getAllDueDateByCardId, getAllStatus, getAllUserAssignToCard, getCardById, getCardPriority, getCoverByCard, getLabelByCard, getListById, getStatusByCardId, getTotalFile, updateDescCard, updateTitleCard } from '../services/ApiServices';
 import SelectedLabels from '../UI/SelectedLabels';
 import CardDetailPanel from '../modules/CardDetailPanel';
 import DetailCard from '../modules/DetailCard';
@@ -29,6 +29,8 @@ import OutsideClick from '../hook/OutsideClick';
 import StatusDisplay from '../UI/StatusDisplay';
 import SelectPriority from '../UI/SelectPriority';
 import DueDateDisplay from '../UI/DueDateDisplay';
+import FormUpload from '../modals/FormUpload';
+import UploadFile from '../modals/UploadFile';
 
 const NewCardDetail=()=> {
     //STATE
@@ -84,6 +86,23 @@ const NewCardDetail=()=> {
     const toggleStatus = () => setShowStatus(!showStatus);
     //card activity
     const [cardActivities, setCardActivities] = useState([]);
+    const [showFormUpload, setFormUpload] = useState(false);
+    const [exampleUpload, setExampleUpload] = useState(false);
+    //total file 
+    const [totalFile, setTotalFile] = useState(0);
+
+    const handleShowExample = () =>{
+        setExampleUpload(!exampleUpload);
+        alert('tombol upload berhasil di klik')
+    }
+
+    const handleShowFormUpload = () =>{
+        setFormUpload(!showFormUpload);
+        console.log('button upload berhasil di klik')
+    }
+    const handleCloseFormUpload = () =>{
+        setFormUpload(false);
+    }
 
 
     const handleShowChatroom = () =>{
@@ -119,12 +138,6 @@ const NewCardDetail=()=> {
         ));
     };
 
-    //DEBUG
-    // console.log('file new card detail menerima workspaceId:', workspaceId);
-    // console.log('file new card detail menerima cardId:', cardId);
-    // console.log('File new card menerima data user Id:', userId);
-    // console.log('file new card detail menerima list name:', listName);
-    // console.log('file new card menerima card:', cards)
 
     //FUNCTION
     //1. fetch Card by id
@@ -408,6 +421,19 @@ const NewCardDetail=()=> {
             showSnackbar('Failed to archive card', 'error')
         }
     }
+
+    //16. fetch total file
+    const fetchTotalFile = async()=>{
+        try{
+            const result = await getTotalFile(cardId);
+            setTotalFile(result.data.total_files)
+        }catch(error){
+            console.error('Error fetching total file:', error)
+        }
+    }
+    useEffect(()=>{
+        fetchTotalFile()
+    },[cardId])
       
 
     //FUNCTION NAVIGATE
@@ -671,15 +697,40 @@ const NewCardDetail=()=> {
                         <div className="ncd-attach">
                             <div className="attach-header-cont">
                                 <h5>Attachment</h5>
-                                <button>0 Files</button>
+                                <div className="attach-header-btn">
+                                    <button className='total-file'>{totalFile} files</button>
+                                    <BootstrapTooltip title='add attachment' placement='top'>
+                                         <button className='add-attach' onClick={handleShowFormUpload}> <HiPlus/></button>
+                                    </BootstrapTooltip>
+                                </div>
+                                
                             </div>
-                            <div className="attach-content">
-                                <button className='attach-upload'><GiCloudUpload/></button>
-                                <p>Drop files here or tap to browse</p>
-                                <button className='add-attach'> <HiPlus/> Add Attachment</button>
+                            <div className='attach-body'>
+                                <div className="file-cont">
+                                    <UploadFile cardId={cardId}/>
+                                </div>
+                                {/* <div className="attach-content">
+                                    <button className='attach-upload'><GiCloudUpload/></button>
+                                    <p>Drop files here or tap to browse</p>
+                                    <button className='add-attach' onClick={handleShowFormUpload}> <HiPlus/> Add Attachment</button>
+                                </div> */}
                             </div>
+                            
                         </div>
+                        {showFormUpload && (
+                            <div className="upload-form-modals">
+                                <FormUpload cardId={cardId} onClose={handleCloseFormUpload}/>
+                                {/* EXAMPLE FORM */}
+                            </div>
+                        )}
                     </div>
+
+                    {/* 
+                    import { IoDocumentTextOutline,IoImage } from "react-icons/io5";
+                    import { HiBars4 } from "react-icons/hi2";
+                    import { BsSoundwave } from "react-icons/bs";
+                    import { TbPdf } from "react-icons/tb";
+                    */}
 
 
                     <div className="ncd-main-right">

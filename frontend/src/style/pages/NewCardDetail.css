@@ -797,6 +797,7 @@
     padding: 15px;
     margin-top: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    /* position: relative; */
 } 
 .ncd-attach .attach-header-cont{
     display: flex;
@@ -808,14 +809,36 @@
     font-weight: bold;
     font-size: 14px;
 }
+.attach-header-btn .total-file{
+    font-size: 12px;
+    /* font-weight: normal; */
+    color: #333;
+    border: 1px solid white; 
+    background-color: white;
+    padding: 3px;
+}
 
-.attach-header-cont button{
+.attach-header-btn button{
     border: 1px solid #987df9; 
     padding: 3px 5px;
     font-size: 10px;
     background-color: #d5cafd;
     color:#5c38db;
 }
+
+.attach-body{
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 10px;
+}
+.attach-body .file-cont{
+    /* border: 1px solid blue; */
+    width: 100%;
+}
+
 
 .attach-content{
     border: 2px dashed #8688fa;
@@ -828,6 +851,22 @@
     padding: 20px;
     gap: 10px;
     margin-top: 15px;
+    position: relative;
+}
+.upload-form-modals{
+    position: absolute;
+    top: 50%;
+    left: 8%;
+    z-index: 99;
+    width: 57%;
+    height: 27%;
+    padding: 10px;
+    /* border: 1px solid red; */
+    border-radius: 8px;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* BUTTON UPLOAD */
@@ -863,6 +902,10 @@
     background-image: linear-gradient(to left, #2d66e7, #3863e7, #425fe8, #4c5be7, #5557e7, #5d54e7, #6551e7, #6d4de7, #764ae7, #7e47e7, #8743e7, #8f3fe6);
     box-shadow: 0px 4px 8px #5e12eb46;
 }
+
+/* .ncd-attach{
+    border: 1px solid blue;
+} */
 
 
 /* button chatroom  */
@@ -945,6 +988,15 @@
 
     .label-modals{
         width: 50vh;
+    }
+
+    .ncd-main-content .ncd-main-left{
+        height: 55vh;
+    }
+
+    .ncd-main-left .ncd-attach{
+        /* border: 1px solid red; */
+        margin-bottom: 10px;
     }
 
   /* CSS tablet atau iPad */

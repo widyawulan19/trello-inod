@@ -3,6 +3,22 @@ import axios from 'axios';
 const API_URL = 'http://localhost:3002/api'; //untuk development
 // const API_URL = 'https://5eae-118-96-151-188.ngrok-free.app/api'; //kalau pakai ngrok
 
+
+//UPLOAD FILE
+export const uploadFile = (file, cardId) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('card_id', cardId);
+
+  return axios.post(`${API_URL}/upload-attach`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  }).then(res => res.data);
+};
+
+//UPLOADED FILE
+export const getAllUploadFiles = (cardId) => axios.get(`${API_URL}/uploaded-files/${cardId}`);
+export const getTotalFile = (cardId) =>  axios.get(`${API_URL}/uploaded-files/${cardId}/count`);
+
 //WORKSPACE
 export const getWorkspaces = () => axios.get(`${API_URL}/workspace`)
 export const getWorkspaceById = (id) => axios.get(`${API_URL}/workspace/${id}`)

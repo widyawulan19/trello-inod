@@ -5,6 +5,7 @@
     margin-top: 10px;
     border-radius: 8px;
     height: 90vh;
+    /* border: 1px solid red; */
 }
 
 /* HEADER  */
@@ -162,10 +163,10 @@
 
 /* TABEL DATA EMPLOYEE  */
 .employee-table-wrapper{
-    /* border: 1px solid #6E30DC; */
+    border: 1px solid #6E30DC;
     padding: 10px;
     overflow-x: auto; 
-    height: 76vh;
+    height: 67vh;
     position: relative !important;
 }
 .employee-table {
@@ -441,4 +442,109 @@
     padding: 0px;
     font-size: 10px;
     font-weight: normal;
+}
+
+/* COLUMN ACTION  */
+.action-tabel{
+    /* border: 1px solid blue; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+}
+.action-tabel button{
+    /* width: 100%; */
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* MEDIA QUERY  */
+/* Large devices (desktops, ≥992px) */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  /* CSS laptop biasa */
+  .action-tabel{
+        width: 15vw;
+    }
+}
+
+
+/* Medium devices (tablets, ≥768px) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  /* CSS tablet atau iPad */
+  /* COLUMN ACTION  */
+    .action-tabel{
+        /* border: 1px solid blue; */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 10vw;
+    }
+    .action-tabel button{
+        width: 100%;
+        /* border: 1px solid red; */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* VIEW CARD  */
+    .employee-container{
+        height: 67vh;
+    }
+}
+
+/* ukuran handpone besar  */
+@media (min-width: 576px) and (max-width: 767.98px){
+   .de-panel{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+   }
+   .de-panel .dep-right
+   {
+    width: 100%;
+   }
+
+   .de-panel .dep-left
+   {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    /* border: 1px solid red; */
+   }
+
+   /* VIEW CARD  */
+    .employee-container{
+        height: 58vh;
+    }
+}
+
+/* ukuran handpone kecil  */
+@media (min-width:375px) and (max-width:575px){
+    .de-panel{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .de-panel .dep-right
+    {
+        width: 100%;
+    }
+
+    .de-panel .dep-left
+    {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        /* border: 1px solid red; */
+    }
+    /* VIEW CARD  */
+    .employee-container{
+        height: 55vh;
+    }
 }

@@ -279,7 +279,7 @@ const DataMember=()=> {
                           </div>
                         </td>
                         <td>{employee.nomor_wa}</td>
-                        <td style={{textAlign:'center'}}>
+                        <td className='action-tabel'>
                           <BootstrapTooltip title='Edit' placement='top'>
                              <button onClick={()=> handleShowFormEdit(employee)}>
                               <HiMiniPencilSquare/>
