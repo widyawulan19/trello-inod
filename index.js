@@ -11,13 +11,16 @@ const bcrypt = require('bcryptjs')
 const {logActivity} = require('./ActivityLogger');
 const {logCardActivity} = require('./CardLogActivity');
 require('./CronJob')
-const {SystemNotification} = require('./backend/SystemNotification');
+const {SystemNotification} = require('./SystemNotification');
+// const {SystemNotification} = require('./backend/SystemNotification');
 
 
 
 //import for upload
-const upload = require('./backend/upload');
-const cloudinary = require('./backend/CloudinaryConfig');
+// const upload = require('./backend/upload');
+// const cloudinary = require('./backend/CloudinaryConfig');
+const upload = require('./upload');
+const cloudinary = require('./CloudinaryConfig');
 
 
 //TOP
