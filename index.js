@@ -33,11 +33,12 @@ app.use(express.json());
 // const PORT = process.env.PORT || 3002; // Gunakan port dari .env atau default 3002
 
 app.use(cors({
-    origin: "http://localhost:3000", // Untuk development
+    origin: "*", // Untuk development
     // origin: "https://5eae-118-96-151-188.ngrok-free.app", // untuk test backend url dari ngrok
     methods: ["GET", "POST", "PUT", "DELETE","PATCH"], 
     allowedHeaders: ["Content-Type", "Authorization"], 
   }));
+
 
 // Middleware untuk mensimulasikan login
 const simulateLogin = (req, res, next) => {
@@ -54,14 +55,14 @@ app.get("/", (req, res) => {
     res.send("Server is running on port " + PORT);
 });
 
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
+
 // app.listen(PORT, () => {
 //     console.log(`Server running on http://localhost:${PORT}`);
 // });
-
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-});
-
 
 //ENDPOIN UPLOAD
 app.post('/api/upload-attach', upload.single('file'), async (req, res) => {
