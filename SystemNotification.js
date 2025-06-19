@@ -1,4 +1,4 @@
-const client = require('./backend/connection'); // Sesuaikan path dengan lokasi koneksi DB kamu
+const client = require('./connection'); // Sesuaikan path dengan lokasi koneksi DB kamu
 
 async function SystemNotification({ userId, cardId = null,workspaceId, message, type }) {
   try {
