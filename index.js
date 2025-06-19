@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require("express");
-const client = require('./backend/connection');
+const client = require('./connection');
+// const client = require('./backend/connection');
 const dotenv = require("dotenv");
 const bodyParser = require('body-parser');
 const cors = require('cors')
