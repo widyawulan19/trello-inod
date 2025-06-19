@@ -6,7 +6,8 @@ const dotenv = require("dotenv");
 const bodyParser = require('body-parser');
 const cors = require('cors')
 const moment = require('moment')
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs')
+// const bcrypt = require('bcrypt');
 const {logActivity} = require('./ActivityLogger');
 const {logCardActivity} = require('./CardLogActivity');
 require('./CronJob')
