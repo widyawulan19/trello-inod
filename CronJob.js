@@ -1,6 +1,6 @@
 // cronJob.js
 const cron = require('node-cron');
-const client = require('./connection'); // file koneksi ke PostgreSQL kamu
+const client = require('./backend/connection'); // file koneksi ke PostgreSQL kamu
 const dayjs = require('dayjs');
 
 cron.schedule('0 0 * * *', async () => {
