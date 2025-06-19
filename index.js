@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require("express");
-const client = require('./connection');
+const client = require('./backend/connection');
 const dotenv = require("dotenv");
 const bodyParser = require('body-parser');
 const cors = require('cors')
@@ -9,13 +9,13 @@ const bcrypt = require('bcrypt');
 const {logActivity} = require('./ActivityLogger');
 const {logCardActivity} = require('./CardLogActivity');
 require('./CronJob')
-const {SystemNotification} = require('./SystemNotification');
+const {SystemNotification} = require('./backend/SystemNotification');
 
 
 
 //import for upload
-const upload = require('./upload');
-const cloudinary = require('./CloudinaryConfig');
+const upload = require('./backend/upload');
+const cloudinary = require('./backend/CloudinaryConfig');
 
 
 //TOP
