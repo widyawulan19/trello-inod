@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3002/api'; //untuk development
+// const API_URL = 'http://localhost:3002/api'; //untuk development
+const API_URL = 'https://trello-inod-production.up.railway.app/api'
 // const API_URL = 'https://5eae-118-96-151-188.ngrok-free.app/api'; //kalau pakai ngrok
 
 
