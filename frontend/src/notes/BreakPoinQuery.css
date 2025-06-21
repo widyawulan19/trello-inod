@@ -36,6 +36,9 @@
 }
 
 
+/* MEDIA QUERY KHUSUS UNTUK WIDTH  */
+
+
 
 /* Extra large devices (large desktops, ≥1200px) */
 @media (min-width: 1200px) and (max-width:1400px) {

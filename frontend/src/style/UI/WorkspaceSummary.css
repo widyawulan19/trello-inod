@@ -2,7 +2,7 @@
     /* border: 1px solid green; */
     padding: 0px 15px;
     width: 100%;
-    height: 35vh;
+    height: 38vh;
     gap: 5px;
     overflow-y: auto;
     display: flex;
@@ -64,6 +64,10 @@
 
 /* ukuran handpone kecil  */
 @media (min-width:375px) and (max-width:575px){
+  .summary-container{
+    /* border: 1px solid blue; */
+    height: 33vh;
+  }
     .item-header h4{
       font-size: 10px;
     }
