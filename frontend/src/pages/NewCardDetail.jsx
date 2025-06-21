@@ -597,7 +597,7 @@ const NewCardDetail=()=> {
                     </div>
                     
                     {/* STATUS  */}
-                    <button className="toggle-status-btn" onClick={toggleStatus}>
+                    <button className="toggle-status-btn" style={{ margin:'0px', padding:'0px'}} onClick={toggleStatus}>
                         {showStatus ? 'Hide Status ▲' : 'Show Status ▼'}
                     </button>
                     <div className={`ncd-status ${!showStatus ? 'minimized' : ''}`}>
@@ -694,6 +694,8 @@ const NewCardDetail=()=> {
                                 )}
                             </div>
                         </div>
+
+                        {/* ATTACHMENT  */}
                         <div className="ncd-attach">
                             <div className="attach-header-cont">
                                 <h5>Attachment</h5>
@@ -701,6 +703,7 @@ const NewCardDetail=()=> {
                                     <button className='total-file'>{totalFile} files</button>
                                     <BootstrapTooltip title='add attachment' placement='top'>
                                          <button className='add-attach' onClick={handleShowFormUpload}> <HiPlus/></button>
+                                         {/* <button className='add-attach' onClick={handleShowFormUpload}> <HiPlus/></button> */}
                                     </BootstrapTooltip>
                                 </div>
                                 
@@ -709,13 +712,7 @@ const NewCardDetail=()=> {
                                 <div className="file-cont">
                                     <UploadFile cardId={cardId}/>
                                 </div>
-                                {/* <div className="attach-content">
-                                    <button className='attach-upload'><GiCloudUpload/></button>
-                                    <p>Drop files here or tap to browse</p>
-                                    <button className='add-attach' onClick={handleShowFormUpload}> <HiPlus/> Add Attachment</button>
-                                </div> */}
-                            </div>
-                            
+                            </div> 
                         </div>
                         {showFormUpload && (
                             <div className="upload-form-modals">
@@ -723,6 +720,7 @@ const NewCardDetail=()=> {
                                 {/* EXAMPLE FORM */}
                             </div>
                         )}
+                        {/* END ATTACHMENT  */}
                     </div>
 
                     {/* 

@@ -1,12 +1,11 @@
 .wp-container{
     border: 1px solid #ddd;
     /* border: 1px solid green; */
-    height: 100vh;
+    height: 97%;
     margin-bottom: 10px;
     margin: 15px;
     background-color: white;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
+    border-radius: 8px;
     color: #333;
 
     position: relative;

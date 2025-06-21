@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { uploadFile } from '../services/ApiServices'; // pastikan path-nya sesuai
 import '../style/modals/FormUpload.css';
 import { HiXMark } from 'react-icons/hi2';
-import { GiCloudUpload } from 'react-icons/gi';
+import { IoCloudUploadOutline } from "react-icons/io5";
 
 const FormUpload = ({ cardId, onClose }) => {
   const [file, setFile] = useState(null);         // file yg dipilih
@@ -29,7 +29,7 @@ const FormUpload = ({ cardId, onClose }) => {
       </div>
 
       <div className="form-upload-input">
-        <GiCloudUpload className='upload-icon'/>
+        <IoCloudUploadOutline className='fu-icon'/>
         Drag & Drop to Upload or
         <div className="input-con">
           <label htmlFor="file-upload" className="custom-upload-button">
@@ -43,7 +43,6 @@ const FormUpload = ({ cardId, onClose }) => {
               style={{ display: 'none' }}
             />
         </div>
-        
       </div>
       
       <div className="button-upload">
