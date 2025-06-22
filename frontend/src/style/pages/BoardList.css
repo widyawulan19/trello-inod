@@ -1,11 +1,10 @@
 .bl-container  {
     border: 1px solid #ddd;
-    height: 100vh;
-    margin-bottom: 10px;
+    height: 97%;
+    /* margin-bottom: 10px; */
     margin: 15px;
     background-color: white;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
+    border-radius: 8px;
     color: #333;
     position: relative;
 }
@@ -76,61 +75,47 @@
 /* BODY  */
 .bl-body{
     padding: 5px;
-    height: 100%;
+    height: 90%;
     min-height: 85vh;
     width: 100%;
     min-width: 80vw;
     overflow-x: auto;
     white-space: nowrap;
     /* border: 1px solid green; */
-    
+    margin-bottom: 5px;
 }
 .bl-content{
     padding: 0px;
     padding-bottom: 10px;
     display: flex;
+    align-items: flex-start; /* penting agar list-list sejajar di atas */
+    gap: 10px;
+    overflow-x: auto;
     gap: 10px;
     width: 90vw;
     height: 100%;
-    min-height: 84vh;
-    /* border: 1px solid violet; */
-    overflow-x: auto;
-    /* position: relative; */
+    min-height: 70vh;
 }
 .bl-card{
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
     /* border: 1px solid #ddd; */
     background-color: #fff;
-    /* background-color: red; */
     border-radius: 4px;
-    position: relative;
     min-width: 280px;
     max-width: 280px;
-    /* height: fit-content; */
-    height: 100%;
-    min-height: 60vh;
     padding: 5px;
-    /* box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); */
-    /* box-sizing: border-box; */
+    height: auto; 
 }
 .bl-box{
     border-radius: 8px;
     border: 1px solid #ddd;
-    /* background-color: red; */
     background-color: #f2f1f1;
-    /* background-color: #eeeeee41; */
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    box-sizing: border-box; 
     padding: 5px;
-    margin: 0px;
     width: 100%;
-    /* height: 100%; */
-    /* height: fit-content; */
-    min-height: 5vh;
-    max-height: 90vh; 
+    height: auto; 
 }
 .list-title{
     /* border: 1px solid blue; */
@@ -245,20 +230,25 @@
 /* end setting list  */
 
 .list-body{
-    /* height: 0%; */
-    max-height: 80vh;
-    width: 100%;
-    border-radius: 4px;
-    gap: 8px;
-    min-height: 5px;
     display: flex;
     flex-direction: column;
-    flex-grow: 1; 
+    gap: 8px;
     margin-top: 10px;
-    margin-bottom: 0px;
+    width: 100%;
     /* border: 1px solid green; */
-    overflow-x: auto;
+    max-height: 70vh;
+    overflow-y: auto;
 }
+
+.list-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.list-body::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 3px;
+}
+
 /* END BODY  */
 
 /* FROM CARD  */
@@ -397,30 +387,53 @@
 }
 
 /* Large devices (desktops, ≥992px) */
-@media (min-width: 992px) and (max-width: 1199.98px) {
+@media (min-width: 992px) and (max-width: 1199.98px) and (min-height:600px) and (max-height:800px) {
   /* CSS laptop biasa */
+  .bl-body{
+        height: 93%;
+        min-height: 0px;
+        /* border: 1px solid red; */
+    }
+    .list-body{
+        max-height: 70vh;
+        /* border: 1px solid green; */
+    }
   
 }
 
 /* Medium devices (tablets, ≥768px) */
-@media (min-width: 768px) and (max-width: 991.98px) {
+@media (min-width: 768px) and (max-width: 991.98px) and (min-height:500px) and (max-height:700px) {
   /* CSS tablet atau iPad */
-
+  .bl-body{
+        height: 92%;
+        min-height: 0px;
+        /* border: 1px solid red; */
+    }
+    .list-body{
+        max-height: 68vh;
+        /* border: 1px solid green; */
+    }
 }
 
 /* ukuran handpone besar  */
-@media (min-width: 576px) and (max-width: 767.98px){
-   
+@media (min-width: 576px) and (max-width: 767.98px) and (min-height:400px) and (max-height:700px) {
+   .bl-body{
+        height: 92%;
+        min-height: 0px;
+        /* border: 1px solid red; */
+    }
+    .list-body{
+        max-height: 63vh;
+        /* border: 1px solid green; */
+    }
 }
 
 /* ukuran handpone kecil  */
-@media (min-width:375px) and (max-width:575px){
+@media (min-width:375px) and (max-width:575px) and (min-height:300px) and (max-height:600px) {
     .bl-header{
-        /* border: 1px solid red; */
     }
 
     .blnav{
-        /* border: 1px solid red; */
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -434,7 +447,6 @@
     .blnav button{
         font-size: 10px;
         padding: 4px;
-        /* border: 1px solid blue; */
         width: 100%;
         display: flex;
         align-items: center;
@@ -442,10 +454,19 @@
     }
 
     .more-action .btn-create-list{
-        /* border: 1px solid orangered; */
         font-size: 10px;
         padding: 5px;
     }
+
+    /* BODY  */
+    .bl-body{
+        height: 88%;
+        min-height: 0px;
+    }
+    .list-body{
+        max-height: 60vh;
+    }
+    /* END BODY  */
 
 }
 

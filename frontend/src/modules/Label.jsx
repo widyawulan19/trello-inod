@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { deleteLabels, getAllLabels, getLabelByCard, createLabel, addLabelToCard, updateLabelName, deleteLabelFromLabels, getAllColor, addColorToBgColorLabel } from '../services/ApiServices';
 import { HiEllipsisVertical, HiMiniTag, HiOutlinePencil, HiOutlineTrash, HiXMark } from "react-icons/hi2";
+import { FaTags } from "react-icons/fa";
 import '../style/modules/Labels.css'
 import OutsideClick from '../hook/OutsideClick';
 import BootstrapTooltip from '../components/Tooltip';
@@ -163,7 +164,7 @@ const Label = ({ cardId, fetchCardDetail, labels, setLabels, fetchLabels, onClos
         <div className='label-container'>
             <div className="lc-header">
                 <h5>
-                    <HiMiniTag className='l-icon' />
+                    <FaTags className='l-icon' />
                     CARD LABELS
                 </h5>
                 <BootstrapTooltip title='Close' placement='top'>
@@ -173,117 +174,152 @@ const Label = ({ cardId, fetchCardDetail, labels, setLabels, fetchLabels, onClos
            
 
             {/* LABELS YANG SUDAH DITAMBAHKAN */}
-            <div className="sl-container">
-                {labels.map(label => (
-                    <div
-                        key={label.label_id}
-                        style={{
-                            // backgroundColor: label.bg_color?.replace("rgb", "rgba").replace(")", ", 0.3)"),
-                            backgroundColor: label.bg_color,
-                            // color: label.color,
-                            color:'#333',
-                            padding: "4px",
-                            margin: "2px",
-                            borderRadius: "4px",
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'flex-start',
-                            fontSize: '10px',
-                            fontWeight: 'bold',
-                            width: 'fit-content',
-                            gap:'5px'
-                        }}
-                    >
-                        <p className='slb-p'>{label.label_name}</p>
-                        
-                       <HiXMark
-                            onClick={()=> handleDeleteLabel(cardId, label.label_id)}
-                            style={{
-                                cursor:'pointer',
-                            }}
-                       />
-                    </div>
-                ))}
-            </div>
 
-            {/* LIST SELECT LABEL */}
-            <div className="show-label" ref={showLabelRef}>
-                <div className="l-box">
-                    {allLabels.map(label => (
-                        <div
-                            key={label.id}
-                            onClick={() => handleSelectLabel(label.id)}
-                            className='lb-content'
-                            style={{
-                                padding: "4px 5px",
-                                fontSize: '10px',
-                                cursor: "pointer",
-                                // backgroundColor:'red',
-                                backgroundColor: label.bg_color,
-                                border:'1px solid #eee',
-                                fontWeight:'bold',
-                                color:'#333',
-                                borderRadius: '4px',
-                                marginBottom: '4px',
-                                gap:'3px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'flex-start',
-                                position:'relative'
-                            }}
-                        >
-                            {label.name}
-                            <HiEllipsisVertical className='lbox-icon' onClick={(e)=> handleShowSetting(label.id, e)} />
-                            
-                            {/* SETTING LABEL  */}
-                                {showSetting === label.id && (
-                                    <div className="set-label" ref={refShowSetting}>
-                                        <div className="delete-label-btn" onClick={(e)=> handleDeleteLabels(label.id,e)}>
-                                            <HiOutlineTrash/>
-                                            Delete
-                                        </div>
-                                        {/* Dropdown pilih warna */}
-                                        <div className="color-options" onClick={(e)=> handleShowColors(label.id,e)}>
-                                            <HiOutlinePencil/>
-                                            Color
-                                        </div>
-                                    </div>
-                                )}
-                                {showColor === label.id &&  (
-                                    <div className="bg-color-list">
-                                        <div className='color-label-header'>
-                                            <h4>Select Color Labe</h4>
-                                            <HiXMark onClick={handleCloseColor}/>
-                                        </div>
-                                        <div className="color-label-con">
-                                            {bgColorOption.map(color => (
-                                             <div
-                                             className='color-code'
-                                                key={color.id}
-                                                title={color.name}
-                                                onClick={() => handleAssignBgColorToLabel(label.id, color.id)}
-                                                style={{
-                                                width: '20px',
-                                                height: '20px',
-                                                borderRadius: '3px',
-                                                backgroundColor: color.hex_code,
-                                                cursor: 'pointer',
-                                                // border: '1px solid #ccc'
-                                                }}
-                                            />
-                                        ))}
-                                        </div>
-                                    </div>
-                                )}
-                            {/* END SETTING LABEL  */}
-                        </div>
-                    ))}
+            <div className="labels-main-body">
+                <div className='labels-cont'>
+                    <h5 style={{
+                        fontSize:'13px',
+                        // fontWeight:'bold',
+                        color:'#333',
+                        borderBottom:'1px solid #ddd',
+                        marginBottom:'5px',
+                        paddingBottom:'5px'
+                    }}>Active label</h5>
+                    <div className="sl-container">
+                        {labels.map(label => (
+                            <div
+                                key={label.label_id}
+                                style={{
+                                    // backgroundColor: label.bg_color?.replace("rgb", "rgba").replace(")", ", 0.3)"),
+                                    backgroundColor: label.bg_color,
+                                    // color: label.color,
+                                    color:'#333',
+                                    padding: "4px",
+                                    margin: "2px",
+                                    borderRadius: "4px",
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'flex-start',
+                                    fontSize: '10px',
+                                    fontWeight: 'bold',
+                                    width: 'fit-content',
+                                    gap:'5px'
+                                }}
+                            >
+                                <p className='slb-p'>{label.label_name}</p>
+                                
+                            <HiXMark
+                                    onClick={()=> handleDeleteLabel(cardId, label.label_id)}
+                                    style={{
+                                        cursor:'pointer',
+                                    }}
+                            />
+                            </div>
+                        ))}
+                    </div>
                 </div>
-                
+
+                {/* LIST SELECT LABEL */}
+                <div className="show-label" ref={showLabelRef}>
+                    <h5
+                        style={{
+                        fontSize:'13px',
+                        // fontWeight:'bold',
+                        color:'#333',
+                        borderBottom:'1px solid #ddd',
+                        marginBottom:'5px',
+                        paddingBottom:'5px'
+                    }}
+                    >All Label</h5>
+                    <div className="l-box">
+                        {allLabels.map(label => (
+                            <div
+                                key={label.id}
+                                onClick={() => handleSelectLabel(label.id)}
+                                className='lb-content'
+                                style={{
+                                    // padding: "5px 10px",
+                                    // fontSize: '10px',
+                                    // cursor: "pointer",
+                                    // width:'15vw',
+                                    // backgroundColor:'red',
+                                    backgroundColor: label.bg_color,
+                                    // border:'1px solid #eee',
+                                    // fontWeight:'bold',
+                                    // color:'#333',
+                                    // borderRadius: '8px',
+                                    // marginBottom: '4px',
+                                    // gap:'3px',
+                                    // display: 'flex',
+                                    // alignItems: 'center',
+                                    // justifyContent: 'space-between',
+                                    // position:'relative'
+                                }}
+                            >
+                                {label.name}
+                                <HiEllipsisVertical className='lbox-icon' onClick={(e)=> handleShowSetting(label.id, e)} />
+                                
+                                {/* SETTING LABEL  */}
+                                    {showSetting === label.id && (
+                                        <div className="set-label" ref={refShowSetting}>
+                                            <div className="delete-label-btn" onClick={(e)=> handleDeleteLabels(label.id,e)}>
+                                                <HiOutlineTrash/>
+                                                Delete
+                                            </div>
+                                            {/* Dropdown pilih warna */}
+                                            <div className="color-options" onClick={(e)=> handleShowColors(label.id,e)}>
+                                                <HiOutlinePencil/>
+                                                Color
+                                            </div>
+                                        </div>
+                                    )}
+                                    {showColor === label.id &&  (
+                                        <div className="bg-color-list">
+                                            <div className='color-label-header'>
+                                                <h4>Select Color Labe</h4>
+                                                <HiXMark onClick={handleCloseColor}/>
+                                            </div>
+                                            <div className="color-label-con">
+                                                {bgColorOption.map(color => (
+                                                <div
+                                                className='color-code'
+                                                    key={color.id}
+                                                    title={color.name}
+                                                    onClick={() => handleAssignBgColorToLabel(label.id, color.id)}
+                                                    style={{
+                                                    width: '20px',
+                                                    height: '20px',
+                                                    borderRadius: '3px',
+                                                    backgroundColor: color.hex_code,
+                                                    cursor: 'pointer',
+                                                    // border: '1px solid #ccc'
+                                                    }}
+                                                />
+                                            ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                {/* END SETTING LABEL  */}
+                            </div>
+                        ))}
+                    </div>
+                    
+                </div>
 
                 {/* FORM CREATE NEW LABEL */}
                 <div className='fl-label'>
-                    <h5>CREATE NEW LABEL</h5>
+                    <h5
+                        style={{
+                        fontSize:'13px',
+                        // fontWeight:'bold',
+                        color:'#333',
+                        borderBottom:'1px solid #ddd',
+                        marginBottom:'5px',
+                        paddingBottom:'5px',
+                        width:'100%'
+                    }}>
+                        Create New Label
+                    </h5>
                     <div className="form-label">
                         <input
                             type="text"
@@ -295,6 +331,7 @@ const Label = ({ cardId, fetchCardDetail, labels, setLabels, fetchLabels, onClos
                         <button type="submit" onClick={handleCreateLabel}>CREATE LABEL</button>
                     </div>
                 </div>
+                
             </div>
         </div>
     );
