@@ -42,38 +42,68 @@
 }
 
 /* RIGHT  */
+
+/* RIGHT BUTTON  */
 .de-panel .dep-left{
-    /* border: 1px solid violet; */
+    /* border: 1px solid red; */
+    margin-bottom: 0px;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: flex-end;
     width: 30%;
     position: relative;
+    gap: 2px;
 }
 .dep-left .dep-btn{
     /* border: 1px solid green; */
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    gap: 2px;
     width: 100%;
 }
 .dep-btn button{
-    font-size: 12px;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    cursor: pointer;
-    background-color: #6E30DC;
-    border: 1px solid #6E30DC;
+    border: 1px solid #5D12EB;
     border-radius: 4px;
     color: white;
+    background-color: #5D12EB;
+    cursor: pointer;
+    font-weight: normal;
+    font-size: 11px;
     padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
 }
 .dep-btn button:hover{
-    box-shadow: 0px 4px 8px #6f30dc7c;
+    box-shadow: 0px 4px 8px #5e12eb46;
 }
+
+/* END RIGHT BUTTON  */
+
+/* PANEL SEARCH  */
+
+.dep-btn .dep-search-box{
+    border: 1px solid #5D12EB;
+    border-radius: 8px;
+    padding: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+.dep-search-box:hover{
+    border: 1px solid #6E30DC;
+}
+.dep-search-box input{
+    border: 1px solid white;
+    padding: 2px;
+    font-size: 10px;
+    background-color: white;
+}
+.dep-search-box input:focus{
+    outline: none;
+}
+
 
 /* DROPDOWN FILTER  */
 .dep-left .dropdown-menu{
@@ -81,7 +111,9 @@
     border-radius: 8px;
     padding: 10px;
     top: 50%;
+    right: 0px;
     width: 50%;
+    z-index: 99;
 }
 .dm-title{
     /* border: 1px solid green; */
@@ -102,42 +134,18 @@
     background-color: #c2a4f77c;
 }
 
-/* PANEL SEARCH  */
-.dep-left .dep-search{
-    border: 1px solid white;
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
-}
-.dep-search .dep-search-box{
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 3px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-}
-.dep-search-box:hover{
-    border: 1px solid #6E30DC;
-}
-.dep-search-box input{
-    border: 1px solid white;
-    padding: 2px;
-    font-size: 10px;
-    background-color: white;
-}
-.dep-search-box input:focus{
-    outline: none;
-}
+
 /* END HEADER  */
 
 /* TOGGLE VIEW  */
-.view-toggle{
+.dep-left .view-toggle{
     /* border: 1px solid green; */
+    width: 100%;
     padding: 5px 10px;
+    padding-right: 0px;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: flex-end;
 }
 .view-toggle button{
     border: 1px solid #5e5e5e;
@@ -163,9 +171,10 @@
 
 /* TABEL DATA EMPLOYEE  */
 .employee-table-wrapper{
-    border: 1px solid #6E30DC;
-    padding: 10px;
+    /* border: 1px solid #6E30DC; */
+    padding: 0px 10px;
     overflow-x: auto; 
+    width: 100%;
     height: 67vh;
     position: relative !important;
 }
@@ -178,13 +187,22 @@
   border-collapse: collapse;
   font-size: 14px;
   /* border: 1px solid red; */
+  position: relative;
+}
+/* style header tabel  */
+.sticky-th {
+  position: sticky;
+  top: 0;
+  background-color: white; /* penting, supaya gak transparan */
+  z-index: 10; /* biar th tetap di atas td saat scroll */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* opsional biar lebih kelihatan */
 }
 
 .employee-table-wrapper th,
 .employee-table-wrapper td {
   padding: 10px;
   border-bottom: 1px solid #ddd;
-  text-align: left;
+  text-align: center;
   /* width: 10vw; */
 }
 
@@ -195,6 +213,7 @@
   font-weight: normal;
   font-size: 15px;
   text-align: center;
+  /* width: 100%; */
 }
 .employee-table-wrapper tr:hover{
     /* background-color: #f5f5f5; */
@@ -264,7 +283,7 @@
     position: fixed;
     top: 0%;
     left: 0;
-    width: 100vw;
+    width: 100%;
     height: 100vh;
     z-index: 99;
     padding: 0px;
@@ -277,7 +296,7 @@
     background-color: white;
     border: 1px solid #ddd;
     border-radius: 8px;
-    width: 50vw;
+    width: 50%;
     margin-top: 5%;
     height: fit-content;
 }
@@ -450,7 +469,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: fit-content;
+    /* width: fit-content; */
+    min-width:10vw;
+    max-width: 10vw;
+    width: 10vw;
 }
 .action-tabel button{
     /* width: 100%; */
@@ -461,90 +483,82 @@
 }
 
 /* MEDIA QUERY  */
-/* Large devices (desktops, ≥992px) */
-@media (min-width: 992px) and (max-width: 1199.98px) {
-  /* CSS laptop biasa */
-  .action-tabel{
-        width: 15vw;
-    }
-}
-
-
-/* Medium devices (tablets, ≥768px) */
-@media (min-width: 768px) and (max-width: 991.98px) {
-  /* CSS tablet atau iPad */
-  /* COLUMN ACTION  */
-    .action-tabel{
-        /* border: 1px solid blue; */
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        width: 10vw;
-    }
-    .action-tabel button{
-        width: 100%;
-        /* border: 1px solid red; */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    /* VIEW CARD  */
-    .employee-container{
-        height: 67vh;
-    }
-}
-
-/* ukuran handpone besar  */
-@media (min-width: 576px) and (max-width: 767.98px){
-   .de-panel{
+/* ukuran handpone kecil */
+@media (min-width:375px) and (max-width:575px) and (min-height:300px) and (max-height:600px) {
+  /* header panel  */
+    .de-panel{
     display: flex;
     flex-direction: column;
+    align-items: center;
     justify-content: center;
-   }
-   .de-panel .dep-right
-   {
+    /* border: 1px solid red; */
+    padding-bottom: 0px;
+  }
+  .de-panel .dep-right{
     width: 100%;
-   }
+  }
 
-   .de-panel .dep-left
-   {
+  .dep-right .dep-desc{
+    display: none;
+  }
+
+  .de-panel .dep-left{
     width: 100%;
+  }
+  /* end header panel  */
+
+  /* EMPLOYEE DATA WRAPPER  */
+  .employee-table-wrapper{
+    /* border: 1px solid red; */
+  }
+
+  /* ADD DATA MODAL  */
+  .form-modal-box{
+    width: 90%;
+    /* height: 80%; */
+  }
+}
+
+/* ukuran handpone besar */
+@media (min-width: 576px) and (max-width: 767.98px) and (min-height:400px) and (max-height:700px) {
+  /* header  panel  */
+  .de-panel{
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: flex-start;
     /* border: 1px solid red; */
-   }
+    padding: 5px;
+  }
+  .de-panel .dep-right{
+    width: 100%;
+  }
 
-   /* VIEW CARD  */
-    .employee-container{
-        height: 58vh;
-    }
-}
 
-/* ukuran handpone kecil  */
-@media (min-width:375px) and (max-width:575px){
-    .de-panel{
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-    .de-panel .dep-right
-    {
-        width: 100%;
-    }
+  .de-panel .dep-left{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 5px 0px;
+    /* border: 1px solid red; */
+  }
 
-    .de-panel .dep-left
-    {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        /* border: 1px solid red; */
-    }
-    /* VIEW CARD  */
-    .employee-container{
-        height: 55vh;
-    }
+  .dep-left .dep-btn{
+    width: 60%;
+    /* border: 1px solid yellow; */
+  }
+  .dep-left .view-toggle{
+    width: 40%;
+    padding: 0px;
+    /* border: 1px solid blue; */
+    justify-content: flex-start;
+  }
+  /* end header panel  */
+
+  /* ADD DATA MODAL  */
+  .form-modal-box{
+    width: 70%;
+  }
 }

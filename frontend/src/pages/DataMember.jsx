@@ -169,6 +169,15 @@ const DataMember=()=> {
 
             <div className="dep-left">
                 <div className="dep-btn">
+                  <div className="dep-search-box">
+                      <HiOutlineSearch />
+                      <input
+                          type="text"
+                          placeholder="Search by name..."
+                          value={searchTerm}
+                          onChange={handleSearchChange}
+                      />
+                  </div>
                   <button onClick={handleShowForm} >
                     <HiPlus className='mr-1'/>
                     ADD DATA
@@ -177,10 +186,7 @@ const DataMember=()=> {
                       <HiOutlineFilter style={{marginRight:'3px'}}/>
                       FILTER
                   </button>
-                  {/* <button onClick={handleShowSchedule}>
-                    <HiMiniCalendar/>
-                    SCHEDULE
-                  </button> */}
+                  
                 </div>
                 {/* SHOW FILTER DROPDOWN */}
                 {isDropdownOpen && (
@@ -194,49 +200,39 @@ const DataMember=()=> {
                     <li onClick={() => handleFilterData('desain')}>DESAIN</li>
                     <li onClick={() => handleFilterData('operational')}>OPERATIONAL</li>
                   </ul>
-                )}
+                )}  
 
-                <div className='dep-search'>
-                  <div className="dep-search-box">
-                      <HiOutlineSearch />
-                      {/* Input pencarian */}
-                      <input
-                          type="text"
-                          placeholder="Search by name..."
-                          value={searchTerm}
-                          onChange={handleSearchChange}
-                      />
-                  </div>
+                {/* TOGGLE VIEW DATA  */}
+                 <div className="view-toggle">
+                    <button
+                      className={viewMode === 'table' ? 'active' : ''}
+                      onClick={() => setViewMode('table')}
+                    >
+                      <HiMiniTableCells size={15}/>
+                      Table View
+                    </button>
+                    <button
+                      className={viewMode === 'card' ? 'active' : ''}
+                      onClick={() => setViewMode('card')}
+                    >
+                      <HiOutlineCreditCard size={15}/>
+                      Card View
+                    </button>
                 </div>
+
+                {/* TABEL DATA EMPLOYEE */}  
+                {/* SHOW FORM  */}
+                {showForm && (
+                  <div className="form-modal">
+                    <div className="form-modal-box">
+                        <FormDataEmployee onClose={handleCloseShoForm} fetchMember={fetchMember}/>
+                    </div>
+                  </div>
+                )}
             </div>
           </div>
 
-          <div className="view-toggle">
-              <button
-                className={viewMode === 'table' ? 'active' : ''}
-                onClick={() => setViewMode('table')}
-              >
-                <HiMiniTableCells size={15}/>
-                Table View
-              </button>
-              <button
-                className={viewMode === 'card' ? 'active' : ''}
-                onClick={() => setViewMode('card')}
-              >
-                <HiOutlineCreditCard size={15}/>
-                Card View
-              </button>
-          </div>
-
-          {/* TABEL DATA EMPLOYEE */}  
-          {/* SHOW FORM  */}
-          {showForm && (
-            <div className="form-modal">
-              <div className="form-modal-box">
-                  <FormDataEmployee onClose={handleCloseShoForm} fetchMember={fetchMember}/>
-              </div>
-            </div>
-          )}
+         
           {/* SHOW SCHEDULE  */}
           {showSchedule && (
             <div className="schedule-modal">
@@ -250,18 +246,18 @@ const DataMember=()=> {
               <table cellPadding="10" cellSpacing='0'>
                 <thead>
                   <tr>
-                    <th style={{borderTopLeftRadius:'8px'}}>No</th>
-                    <th>Nama</th>
-                    <th>Username</th>
-                    <th>Divisi</th>
-                    <th>Jabatan</th>
-                    <th>Email</th>
-                    <th> 
+                    <th className="sticky-th"  style={{borderTopLeftRadius:'8px'}}>No</th>
+                    <th className="sticky-th" >Nama</th>
+                    <th className="sticky-th" >Username</th>
+                    <th className="sticky-th" >Divisi</th>
+                    <th className="sticky-th" >Jabatan</th>
+                    <th className="sticky-th" >Email</th>
+                    <th className="sticky-th" > 
                       <div className='th'>
                         <HiMiniPhone/> Nomor WA
                       </div>
                     </th>
-                    <th style={{borderTopRightRadius:'8px'}}>Action</th>
+                    <th className="sticky-th"  style={{borderTopRightRadius:'8px'}}>Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -269,7 +265,7 @@ const DataMember=()=> {
                     filteredData.map((employee, index) => (
                       <tr key={employee.employee_id || index}>
                         <td style={{textAlign:'center'}}>{index + 1}</td>
-                        <td style={{width:'10)%', minWidth:'7vw', maxWidth:'7vw'}}>{employee.name}</td>
+                        <td style={{width:'10vw', minWidth:'7vw', maxWidth:'7vw'}}>{employee.name}</td>
                         <td>{employee.username}</td>
                         <td>{employee.divisi}</td>
                         <td>{employee.jabatan}</td>

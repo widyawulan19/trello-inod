@@ -3991,7 +3991,7 @@ app.post('/api/data-employees', async (req, res) => {
     const {name, nomor_wa, divisi, jabatan, email_employee, username} = req.body
     try{
         const result = await client.query(
-            `INSERT INTO data_employees (name, nomor_wa, divisi, jabatan, email_employee,username create_at, update_at)
+            `INSERT INTO data_employees (name, nomor_wa, divisi, jabatan, email_employee,username, create_at, update_at)
              VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW()) RETURNING *`,
             [name, nomor_wa, divisi, jabatan, email_employee, username]
         );
