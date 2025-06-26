@@ -201,7 +201,7 @@
 .employee-table-wrapper th,
 .employee-table-wrapper td {
   padding: 10px;
-  border-bottom: 1px solid #ddd;
+  /* border-bottom: 1px solid #ddd; */
   text-align: center;
   /* width: 10vw; */
 }
@@ -215,10 +215,21 @@
   text-align: center;
   /* width: 100%; */
 }
-.employee-table-wrapper tr:hover{
+.employee-table-wrapper tbody tr:hover{
     /* background-color: #f5f5f5; */
-    background-color: #d3c0f446;
+    background-color: #a574fa;
+    color: #5D12EB;
 }
+
+/* WARNA BACKGROUND TABEL*/
+.employee-table-wrapper tbody tr:nth-child(odd) {
+  background-color: #f4edfc;
+}
+
+.employee-table-wrapper tbody tr:nth-child(even) {
+  background-color: #ffffff;
+}
+/* END WARNA BACKGROUND TABEL  */
 .employee-table-wrapper .th{
     display: flex;
     align-items: center;
@@ -243,6 +254,23 @@
   /* color: #c9e7f3;
   color: #2c66ec; */
 }
+
+/* .employee-table-wrapper table {
+  table-layout: fixed;
+}
+
+.employee-table-wrapper th:nth-child(2),
+.employee-table-wrapper td:nth-child(2) {
+  width: 10vw;
+  min-width: 7vw;
+  max-width: 7vw;
+}
+
+.employee-table-wrapper th:nth-child(8),
+.employee-table-wrapper td:nth-child(8) {
+  width: 8vw;
+} */
+
 
 /* EXTRA ATRIBUTE */
 .email-cont{
@@ -316,6 +344,7 @@
 }
 
 .employee-card{
+    /* border: 1px solid red; */
     border: 1px solid #ddd;
     border-radius: 8px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
@@ -334,9 +363,10 @@
     /* align-items:first baseline; */
     justify-content: space-between;
     padding: 10px;
+    padding-top: 0px;
 }
 .card-header .ch-left{
-    
+    /* border: 1px solid red; */
 }
 .ch-left h4{
     font-weight: bold;
@@ -470,9 +500,10 @@
     align-items: center;
     justify-content: center;
     /* width: fit-content; */
-    min-width:10vw;
-    max-width: 10vw;
-    width: 10vw;
+    /* min-width:10vw;
+    max-width: 10vw; */
+    width: 100%;
+    /* height: 100%; */
 }
 .action-tabel button{
     /* width: 100%; */
@@ -517,6 +548,23 @@
     width: 90%;
     /* height: 80%; */
   }
+
+  /* FORM EDIT MODAL  */
+  .employee-container{
+    height: 70vh;
+  }
+  .employee-card{
+    height: 40vh;
+  }
+
+  .edit-cont-modal{
+    width: 70%;
+  }
+
+  /* ACTIONS MODAL  */
+  .card-setting-menu{
+    width: 40vw;
+  }
 }
 
 /* ukuran handpone besar */
@@ -560,5 +608,27 @@
   /* ADD DATA MODAL  */
   .form-modal-box{
     width: 70%;
+  }
+
+  /* FORM EDIT MODAL  */
+  .edit-cont-modal{
+    width: 70%;
+  }
+
+  .employee-container{
+    height: 65vh;
+  }
+
+  .employee-card{
+    height: 30vh;
+  }
+}
+
+/* Large devices (desktops, ≥992px) */
+@media (min-width: 992px) and (max-width: 1199.98px) and (min-height:600px) and (max-height:800px) {
+  
+  .employee-card{
+    height: 30vh;
+    /* border: 1px solid green; */
   }
 }

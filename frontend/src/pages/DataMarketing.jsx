@@ -281,11 +281,11 @@ const handleFilterButton = () =>{
             </button>
             <button onClick={handleShowDataMarketing}>
               <HiMiniTableCells className="dm-icon"/>
-              SHOW DATA BY
+              SHOW DATA
             </button>
             <button onClick={handleFilterButton}>
               <HiChevronUpDown className="dm-icon"/>
-              SHORT DATA BY
+              SHORT DATA
             </button>
           </div>
           <div className="mdc-search-container">
@@ -443,7 +443,7 @@ const handleFilterButton = () =>{
                 {filteredData.map((item, index) => (
                   <tr key={item.marketing_id}>
                     <td>{index + 1}</td>
-                    <td style={{ width: '100%', minWidth: '12vw', maxWidth: '12vw' }}>{item.input_by}
+                    <td className="input-container">{item.input_by}
                       {hasCardId(item) && (
                         <span style={{
                           backgroundColor: '#e0f7fa',
@@ -462,8 +462,8 @@ const handleFilterButton = () =>{
                         </span>
                       )}
                     </td>
-                    <td style={{ width: '100%', minWidth: '10vw', maxWidth: '10vw' }}>{item.acc_by}</td>
-                    <td style={{ width: '100%', minWidth: '10vw', maxWidth: '10vw', textAlign:'left' }}>
+                    <td className="acc-container">{item.acc_by}</td>
+                    <td className="status-container">
                         <span style={{
                           padding: '2px 8px',
                           borderRadius: '12px',
@@ -474,23 +474,23 @@ const handleFilterButton = () =>{
                           {item.is_accepted ? 'Accepted' : 'Not Accepted'}
                         </span>
                       </td>
-                    <td style={{ width: '100%', minWidth: '12vw', maxWidth: '12vw' }}>{item.buyer_name}</td>
-                    <td style={{ width: '100%', minWidth: '10vw', maxWidth: '10vw' }}>{item.order_number}</td>
-                    <td style={{ width: '100%', minWidth: '10vw', maxWidth: '10vw' }}>{item.account}</td>
-                    <td style={{ width: '100%', minWidth: '10vw', maxWidth: '10vw', textAlign:'center' }}>{new Date(item.deadline).toLocaleDateString()}</td>
-                    <td style={{ width: '100%', minWidth: '12vw', maxWidth: '12vw' }}>{item.code_order}</td>
+                    <td className="buyer-name-container">{item.buyer_name}</td>
+                    <td className="order-number-container" >{item.order_number}</td>
+                    <td className="account-container">{item.account}</td>
+                    <td className="deadline-container" style={{textAlign:'center' }}>{new Date(item.deadline).toLocaleDateString()}</td>
+                    <td className="code-order-container">{item.code_order}</td>
                     <td style={{textAlign:'center'}}>{item.jumlah_track}</td>
-                    <td style={{ width: '100%', minWidth: '10vw', maxWidth: '10vw' }}>{item.order_type}</td>
-                    <td style={{ width: '100%', minWidth: '10vw', maxWidth: '10vw' }}>{item.offer_type}</td>
-                    <td style={{ width: '100%', minWidth: '10vw', maxWidth: '10vw' }}>{item.jenis_track}</td>
-                    <td style={{ width: '100%', minWidth: '10vw', maxWidth: '10vw' }}>{item.genre}</td>
-                    <td style={{ width: '100%', minWidth: '13vw', maxWidth: '13vw' , textAlign:'center', color:'#1E1E1E'}}>${item.price_normal}</td>
-                    <td style={{ width: '100%', minWidth: '13vw', maxWidth: '13vw' , textAlign:'center', color:'#E53935'}}>{item.price_discount ? `$${item.price_discount}` : "N/A"}</td>
-                    <td style={{ width: '100%', minWidth: '13vw', maxWidth: '13vw' , textAlign:'center', color:'#388E3C'}}>{item.discount}</td>
-                    <td style={{width: '100%', minWidth: '13vw', maxWidth: '13vw',color:'#388E3C',textAlign:'center'}}>{item.basic_price}</td>
-                    <td style={{ width: '100%', minWidth: '13vw', maxWidth: '13vw' }}>{item.project_type}</td>
-                    <td style={{ width: '100%', minWidth: '13vw', maxWidth: '13vw' }}>{item.duration}</td>
-                    <td style={{ width: '100%', minWidth: '16vw', maxWidth: '16vw' }}>
+                    <td className="order-type-container">{item.order_type}</td>
+                    <td className="offer-type-container">{item.offer_type}</td>
+                    <td className="jenis-track-container" >{item.jenis_track}</td>
+                    <td className="genre-container">{item.genre}</td>
+                    <td className="price-normal-container" style={{textAlign:'center', color:'#1E1E1E'}}>${item.price_normal}</td>
+                    <td className="price-discount-container" style={{textAlign:'center', color:'#E53935'}}>{item.price_discount ? `$${item.price_discount}` : "N/A"}</td>
+                    <td className="discount-container" style={{textAlign:'center', color:'#388E3C'}}>{item.discount}</td>
+                    <td className="basic-price-container" style={{color:'#388E3C',textAlign:'center'}}>{item.basic_price}</td>
+                    <td className="project-type-container" >{item.project_type}</td>
+                    <td className="duration-container">{item.duration}</td>
+                    <td className="action-container">
                       <div className="action-data-marketing">
                         <BootstrapTooltip title='View Data' placement='top'>
                             <button onClick={()=> handleShowDetail(item.marketing_id)}>

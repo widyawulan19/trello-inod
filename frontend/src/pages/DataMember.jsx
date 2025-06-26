@@ -264,12 +264,12 @@ const DataMember=()=> {
                   {filteredData.length > 0 ? (
                     filteredData.map((employee, index) => (
                       <tr key={employee.employee_id || index}>
-                        <td style={{textAlign:'center'}}>{index + 1}</td>
-                        <td style={{width:'10vw', minWidth:'7vw', maxWidth:'7vw'}}>{employee.name}</td>
+                        <td>{index + 1}</td>
+                        <td>{employee.name}</td>
                         <td>{employee.username}</td>
                         <td>{employee.divisi}</td>
                         <td>{employee.jabatan}</td>
-                        <td style={{textAlign:'center'}}>
+                        <td>
                           <div className='email-cont'>
                             {employee.email_employee}
                           </div>
@@ -312,7 +312,7 @@ const DataMember=()=> {
                   <div className="employee-card" key={employee.employee_id || index}>
                     <div className="card-header">
                       <div className="ch-left">
-                        <img src={employee.photo_url} alt={employee.username} />
+                        <img src={employee.photo_url} />
                         <h4>{employee.name}</h4>
                         <p className="employee-division">{employee.jabatan}</p>
                       </div>

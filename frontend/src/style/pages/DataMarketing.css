@@ -4,13 +4,15 @@
     margin-left: 10px;
     margin-top: 10px;
     border-radius: 8px;
+    height: 97%;
 }
 .dm-panel{
-    /* border: 0.5px solid #ddd; */
+    /* border: 0.5px solid red; */
     padding: 5px 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: 100%;
 }
 .dm-left{
     /* border: 1px solid red; */
@@ -19,6 +21,7 @@
     align-items: center;
     justify-content: flex-start;
     gap: 5px;
+    width: 60%;
 }
 .dml-title{
     display: flex;
@@ -40,15 +43,16 @@
     display: flex;
     flex-direction: column;
     /* align-items: center; */
-    justify-content: flex-start;
+    justify-content: flex-end;
     /* border: 1px solid blue; */
     gap: 10px;
     position: relative;
+    width: 40%;
 }
 .dmcr-btn{
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: flex-end;
 }
 .dmcr-btn button{
     background: linear-gradient(to bottom, #6E30DC, #5D12EB);
@@ -83,15 +87,17 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    border: 0.5px solid #ddd;
-    border-radius: 4px;
+    /* border: 1px solid red; */
+    border: 1px solid #ddd;
+    border-radius: 8px;
     /* width: 50%; */
     width: fit-content;
-    /* padding: 2px; */
+    padding: 1px;
+    padding-right: 3px;
     background-color: white !important;
 }
 .dm-search-box:hover{
-    border: 0.5px solid #6E30DC;
+    border: 1px solid #6E30DC;
 
 }
 .dm-search-box input{
@@ -107,6 +113,7 @@
 }
 .dm-search-box .dms-icon{
     background-color: white;
+    /* border: 1px solid red; */
     padding: 4px;
     font-size: 25px;
     border-top-right-radius: 4px ;
@@ -178,7 +185,7 @@
     margin: 10px;
     /* width: 92vw; */
     min-width: 80vw;
-    height: 85vh;
+    height: 78vh;
     /* height: 20vh; */
     overflow-y: auto;
     position: relative;
@@ -228,6 +235,56 @@
 /* .dm-container td:hover{
     color: #5D12EB;
 } */
+
+/* ============== TABEL HEAD STYLE ========== */
+.input-container,
+.buyer-name-container,
+.code-order-container,
+.project-type-container,
+.duration-container
+{
+    width: 100%;
+    min-width: 13vw;
+    max-width: 13vw;
+}
+.acc-container,
+.price-normal-container,
+.order-number-container,
+.account-container,
+.deadline-container,
+.order-type-container,
+.offer-type-container,
+.jenis-track-container,
+.genre-container,
+.price-discount-container,
+.discount-container,
+.basic-price-container
+{
+    width: 100%;
+    min-width: 10vw;
+    max-width: 10vw;
+}
+
+/* STATUS HEAD TABEL  */
+.status-container{
+    width: 100%;
+    min-width: 10vw;
+    max-width: 10vw;
+    text-align: left;
+}
+
+
+/* ACTION HEAD TABEL  */
+ .action-container{
+    width: 100%;
+    min-width: 16vw;
+    max-width: 16vw;
+    /* border: 1px solid blue; */
+ }
+
+/* ============== TABEL HEAD STYLE ========== */
+
+ /* ACTION HEAD TABEL  */
 .action-data-marketing{
     display: flex;
     align-items: center;
@@ -392,7 +449,7 @@
 .ul-filter{
     border: 1px solid #ddd;
     border-radius: 6px;
-    /* border: 1px solid blue; */
+    /* border: 1px solid red; */
     background-color: white;
     box-shadow: 0px 4px 8px #5e12eb46;
     position: absolute;
@@ -435,3 +492,364 @@
     border: 1px solid #5D12EB;
 }
 /* .filt */
+
+/* BREAKPOINT MEDIA QUERY  */
+
+/* Large devices (desktops, ≥992px) */
+@media (min-width: 992px) and (max-width: 1199.98px) and (min-height:600px) and (max-height:800px) {
+  .dmc-right{
+    /* border: 1px solid orange; */
+  }
+  .dmcr-btn {
+    justify-content: flex-end;
+  }
+
+  /* FORM ADD DATA  */
+  .dmf-content{
+    width: 60%;
+    /* border: 1px solid blue; */
+  }
+
+  /* STATUS HEAD TABLE  */
+  .status-container{
+    min-width: 15vw;
+    max-width: 15vw;
+    /* border: 1px solid red; */
+  }
+
+  /* VIEW DATA MODAL  */
+  .detail-data-marketing .detail-data-box{
+    width: 60%;
+  }
+
+  /* EDIT DATA MODAL  */
+  .edit-data-marketing .edit-data-box{
+    width: 60%;
+  }
+}
+
+/* Medium devices (tablets, ≥768px) */
+@media (min-width: 768px) and (max-width: 991.98px) and (min-height:500px) and (max-height:700px) {
+  /* FORM ADD DATA  */
+  .dmf-content{
+    width: 70%;
+    /* border: 1px solid blue; */
+  }
+
+   /* button panel  */
+  .dmc-right{
+    /* border: 1px solid red; */
+    width: 50%;
+  }
+  .dmcr-btn{
+    /* border: 1px solid blue; */
+    justify-content: flex-end;
+    gap: 0px;
+  }
+  .dmcr-btn button{
+    font-size: 10px;
+    padding: 5px;
+  }
+
+  /* TABEL  */
+
+  .input-container,
+  .buyer-name-container,
+  .code-order-container,
+  .project-type-container,
+  .duration-container
+  {
+      width: 100%;
+      min-width: 20vw;
+      max-width: 20vw;
+  }
+
+  .acc-container,
+  .price-normal-container,
+  .order-number-container,
+  .account-container,
+  .deadline-container,
+  .order-type-container,
+  .offer-type-container,
+  .jenis-track-container,
+  .genre-container,
+  .price-discount-container,
+  .discount-container,
+  .basic-price-container
+  {
+      width: 100%;
+      min-width: 18vw;
+      max-width: 18vw;
+  }
+
+  /* STATUS HEAD TABLE  */
+  .status-container{
+    min-width: 20vw;
+    max-width: 20vw;
+    /* border: 1px solid red; */
+  }
+
+
+  /* ACTION HEAD TABLE  */
+  .action-container{
+    min-width: 20vw;
+    max-width: 20vw;
+    /* border: 1px solid orangered; */
+  }
+
+  /* TABEL END  */
+
+  /* VIEW DATA MODAL  */
+  .detail-data-marketing .detail-data-box{
+    width: 80%;
+  }
+/* EDIT MODAL  */
+  .edit-data-marketing .edit-data-box{
+    width: 80%;
+  }
+}
+
+/* ukuran handpone besar */
+@media (min-width: 576px) and (max-width: 767.98px) and (min-height:400px) and (max-height:700px) {
+  /* FORM ADD DATA  */
+  .dmf-content{
+    width: 70%;
+    /* border: 1px solid blue; */
+  }
+
+  /* button panel  */
+  .dmc-right{
+    /* border: 1px solid red; */
+    width: 55%;
+  }
+  .dmcr-btn{
+    /* border: 1px solid blue; */
+    justify-content: flex-end;
+    gap: 0px;
+  }
+  .dmcr-btn button{
+    font-size: 10px;
+    padding: 5px 3px;
+  }
+
+  /* SHOW DATA DROPDOWN  */
+    .show-data-container{
+    right: 0%;
+    top: 10%;
+  }
+
+  /* FILTER CONTAINER  */
+  .filter-container{
+    top: 12%;
+    right: 2%;
+    width: 60%;
+  }
+
+  /* dropdown sub  */
+  .ul-filter{
+    width: 40vw;
+  }
+
+  /* TABEL DATA MARKETING  */
+  .dm-container{
+    height: 75vh;
+    width: 100%;
+    /* border: 1px solid green; */
+  }
+
+  /* TABEL  */
+
+  .input-container,
+  .buyer-name-container,
+  .code-order-container,
+  .project-type-container,
+  .duration-container
+  {
+      width: 100%;
+      min-width: 25vw;
+      max-width: 25vw;
+  }
+
+  .acc-container,
+  .price-normal-container,
+  .order-number-container,
+  .account-container,
+  .deadline-container,
+  .order-type-container,
+  .offer-type-container,
+  .jenis-track-container,
+  .genre-container,
+  .price-discount-container,
+  .discount-container,
+  .basic-price-container
+  {
+      width: 100%;
+      min-width: 20vw;
+      max-width: 20vw;
+  }
+
+  /* STATUS HEAD TABLE  */
+  .status-container{
+    min-width: 20vw;
+    max-width: 20vw;
+    /* border: 1px solid red; */
+  }
+
+
+  /* ACTION HEAD TABLE  */
+  .action-container{
+    min-width: 30vw;
+    max-width: 30vw;
+    /* border: 1px solid orangered; */
+  }
+  /* END TABEL  */
+
+  /* VIEW DATA MODAL  */
+  .detail-data-marketing .detail-data-box{
+    width: 90%;
+  }
+
+  /* EDIT MODAL  */
+  .edit-data-marketing .edit-data-box{
+    width: 90%;
+  }
+}
+
+/* ukuran handpone kecil */
+@media (min-width:375px) and (max-width:575px) and (min-height:300px) and (max-height:600px) {
+  /* PANEL/ HEADER  */
+    .dm-panel{
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+    .dml-desc{
+        display: none;
+    }
+    .dm-left{
+        width: 100%;
+    }
+    .dmc-right{
+        width: 100%;
+        gap: 3px;
+         margin-top: 5px;
+    }
+    .dmcr-btn{
+        /* border: 1px solid green; */
+        justify-content: center;
+    }
+    .dmcr-btn button{
+        font-size: 10px;
+        /* padding: 5px; */
+    }
+  /* END PANEL / HEADER  */
+  
+  /* SEARCH BAR DATA  */
+  .mdc-search-container{
+    /* border: 1px solid orangered; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+.mdc-search-container .dm-search-box{
+    width: 80%;
+    justify-content: space-between;
+}
+.dm-search-box input{
+    /* border: 1px solid blue; */
+    width: 90%;
+}
+
+    /* FORM ADD DATA  */
+  .dmf-content{
+    width: 100%;
+    /* border: 1px solid blue; */
+    border-radius: 8px;
+  }
+  .show-data-container{
+    right: 0%;
+    top: 10%;
+  }
+
+  /* FILTER CONTAINER  */
+  .filter-container{
+    top: 12%;
+    right: 3%;
+    width: 90%;
+  }
+
+  /* dropdown sub  */
+  .ul-filter{
+    width: 40vw;
+  }
+  /* END FILTER CONTAINER  */
+
+  /* TABEL DATA MARKETING  */
+  .dm-container{
+    height: 68vh;
+    width: 95%;
+    /* border: 1px solid green; */
+  }
+
+   /* TABEL  */
+
+  .input-container,
+  .buyer-name-container,
+  .code-order-container,
+  .project-type-container,
+  .duration-container
+  {
+      width: 100%;
+      min-width: 38vw;
+      max-width: 38vw;
+  }
+
+  .acc-container,
+  .price-normal-container,
+  .order-number-container,
+  .account-container,
+  .deadline-container,
+  .order-type-container,
+  .offer-type-container,
+  .jenis-track-container,
+  .genre-container,
+  .price-discount-container,
+  .discount-container,
+  .basic-price-container
+  {
+      width: 100%;
+      min-width: 35vw;
+      max-width: 35vw;
+  }
+
+  /* STATUS HEAD TABLE  */
+  .status-container{
+    min-width: 35vw;
+    max-width: 35vw;
+    /* border: 1px solid red; */
+  }
+
+
+  /* ACTION HEAD TABLE  */
+  .action-container{
+    min-width: 40vw;
+    max-width: 40vw;
+    /* border: 1px solid orangered; */
+  }
+  /* END TABEL  */
+
+  /* VIEW DATA MODAL  */
+  .detail-data-marketing .detail-data-box{
+    width: 80%;
+  }
+
+  /* EDIT MODAL  */
+  .edit-data-marketing .edit-data-box{
+    width: 80%;
+  }
+}
+@media (min-width:275px) and (max-width:375px) and (min-height:200px) and (max-height:500px) {
+    .dm-icon{
+      display: none;
+    }
+  }

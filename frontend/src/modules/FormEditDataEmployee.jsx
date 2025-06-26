@@ -84,8 +84,8 @@ const FormEditDataEmployee = ({ fetchMember, onClose, employee }) => {
     <div className='form-edit-cont'>
       <div className="fec-header">
         <div className="fec-title">
-          <h4>UPDATE DATA</h4>
-          <p>{employee.username}</p>
+          <h4>UPDATE DATA {employee.username}</h4>
+          {/* <p>{employee.username}</p> */}
         </div>
         <BootstrapTooltip title='Close Form' placement='top'>
           <FaXmark onClick={onClose} className='fec-close' />
@@ -93,6 +93,7 @@ const FormEditDataEmployee = ({ fetchMember, onClose, employee }) => {
       </div>
 
       <form onSubmit={handleSubmit}>
+        <div className="form-cont">
         <div className="form-edit-content">
           <label>Full Name</label>
           <input 
@@ -169,6 +170,7 @@ const FormEditDataEmployee = ({ fetchMember, onClose, employee }) => {
           <button type='submit'>
             Simpan Perubahan
           </button>
+        </div>
         </div>
       </form>
     </div>

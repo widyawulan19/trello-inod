@@ -1,9 +1,9 @@
 .fdm-container{
-    width: fit-content;
+    width: 100%;
 }
 .fdm-header{
     border-bottom: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 8px;
     background-color: #5D12EB;
     color: white;
     display: flex;
@@ -62,7 +62,7 @@
     gap: 10;
 }
 .sec-link-content .box{
-    /* border: 1px solid red; */
+    /* border: 1px solid green; */
     border-radius: 4px;
     padding: 5px;
     gap: 10;
@@ -127,4 +127,30 @@
 .button-update button:hover{
     background: linear-gradient(to bottom,#5D12EB,#6E30DC);
     box-shadow: 0px 4px 8px #6f30dc7c;
+}
+
+/* MEDIA QUERY  */
+/* ukuran handpone kecil */
+@media (min-width:375px) and (max-width:575px) and (min-height:300px) and (max-height:600px) {
+  .fdm-container form{
+    width: 100%;
+    /* border: 1px solid orange; */
+  }
+    .fdm-container .section-main{
+    /* border: 1px solid red; */
+    width: 100%;
+  }
+  .sec-content{
+    /* border: 1px solid blue; */
+    width: 100%;
+    padding: 0px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  .box input{
+    width: 100%;
+    padding: 8px;
+  }
 }
