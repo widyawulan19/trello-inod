@@ -609,3 +609,33 @@ app.delete('/api/delete-cover/:cardId', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+
+
+//10vw
+{
+  // acc,
+  // status,
+  // order Number,
+  // account,
+  // deadline,
+  // order_type,
+  // offer_type,
+  // jenis_track,
+  // genre,
+  // price normal,
+  // price discount,
+  // discount,
+  // basic price,
+}
+
+//12vw
+{
+  // input,
+  // buyer name,
+  // coder order,
+
+  // project type,
+  // duration,
+}
+

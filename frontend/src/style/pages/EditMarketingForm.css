@@ -208,3 +208,16 @@ form h4
     padding: 6px 10px;
     border-radius: 4px;
 }
+
+
+/* MEDIA QUERY  */
+/* ukuran handpone kecil */
+@media (min-width:375px) and (max-width:575px) and (min-height:300px) and (max-height:600px) {
+  .sec-content .emd-box{
+    /* border: 1px solid red; */
+    width: 90%;
+  }
+  .emd-box .dropdown-selected{
+    width: 100%;
+  }
+}
