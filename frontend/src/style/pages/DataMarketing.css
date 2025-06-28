@@ -36,6 +36,8 @@
 }
 .dml-desc{
     font-size: 10px;
+    width: 100%;
+    /* border: 1px solid blue; */
 }
 
 /* PANEL KANAN  */
@@ -332,7 +334,7 @@
     border: 1px solid #5D12EB;
     border-radius: 8px;
     width: 50vw;
-    margin-top: 5%;
+    /* margin-top: 5%; */
     height: 90vh;
     /* height: 100%; */
 }
@@ -412,7 +414,7 @@
     right: 0%;
     gap: 5px;
     z-index: 100;
-    width: 28%;
+    width: 25vw;
     padding: 10px;
 }
 .filter-header h5{
@@ -427,22 +429,25 @@
 }
 .filter-box{
     position: relative;
+    /* border: 1px solid red; */
 }
-.filter-content .filter-btn{
+.filter-box .filter-btn{
     border: 1px solid #5D12EB;
+    background-color: #5D12EB;
     border-radius: 6px;
     cursor: pointer;
     font-size: 13px;
+    font-weight: bold;
     padding: 5px;
-    color: #5D12EB;
+    color: white;
     display: flex;
     align-items: center;
     justify-content: flex-start;
     gap: 5px;
     width: 100%;
 }
-.filter-content .filter-btn:hover{
-    background-color: #eee;
+.filter-box .filter-btn:hover{
+    box-shadow: 0px 4px 8px #5e12eb46;
 }
 
 /* dropdown sub  */
@@ -457,7 +462,7 @@
     left: 0%;
     z-index: 100;
     padding: 10px;
-    width: 10vw;
+    width: 100%;
     font-size: 12px;
 }
 
@@ -496,7 +501,8 @@
 /* BREAKPOINT MEDIA QUERY  */
 
 /* Large devices (desktops, ≥992px) */
-@media (min-width: 992px) and (max-width: 1199.98px) and (min-height:600px) and (max-height:800px) {
+/* @media (min-width: 992px) and (max-width: 1199.98px) and (min-height:600px) and (max-height:800px) { */
+@media (min-width: 992px) and (max-width: 1199.98px){
   .dmc-right{
     /* border: 1px solid orange; */
   }
@@ -519,17 +525,23 @@
 
   /* VIEW DATA MODAL  */
   .detail-data-marketing .detail-data-box{
-    width: 60%;
+    width: 70%;
   }
 
   /* EDIT DATA MODAL  */
   .edit-data-marketing .edit-data-box{
     width: 60%;
   }
+
+  /* FILTER CONTAINER  */
+  .filter-container{
+    width: 35vw;
+  }
 }
 
 /* Medium devices (tablets, ≥768px) */
-@media (min-width: 768px) and (max-width: 991.98px) and (min-height:500px) and (max-height:700px) {
+/* @media (min-width: 768px) and (max-width: 991.98px) and (min-height:500px) and (max-height:700px) { */
+@media (min-width: 768px) and (max-width: 991.98px) {
   /* FORM ADD DATA  */
   .dmf-content{
     width: 70%;
@@ -607,13 +619,22 @@
   .edit-data-marketing .edit-data-box{
     width: 80%;
   }
+  /* FILTER CONTAINER  */
+  .filter-container{
+    width: 40vw;
+  }
+  /* .show-data-container{
+    right: 5%;
+    top: 8%;
+  } */
 }
 
 /* ukuran handpone besar */
-@media (min-width: 576px) and (max-width: 767.98px) and (min-height:400px) and (max-height:700px) {
+/* @media (min-width: 576px) and (max-width: 767.98px) and (min-height:400px) and (max-height:700px) { */
+@media (min-width: 576px) and (max-width: 767.98px) {
   /* FORM ADD DATA  */
   .dmf-content{
-    width: 70%;
+    width: 90%;
     /* border: 1px solid blue; */
   }
 
@@ -633,22 +654,16 @@
   }
 
   /* SHOW DATA DROPDOWN  */
-    .show-data-container{
-    right: 0%;
-    top: 10%;
+  .show-data-container{
+    right: 5%;
+    top: 5%;
   }
 
   /* FILTER CONTAINER  */
   .filter-container{
-    top: 12%;
-    right: 2%;
-    width: 60%;
+    width: 55vw;
   }
 
-  /* dropdown sub  */
-  .ul-filter{
-    width: 40vw;
-  }
 
   /* TABEL DATA MARKETING  */
   .dm-container{
@@ -716,7 +731,8 @@
 }
 
 /* ukuran handpone kecil */
-@media (min-width:375px) and (max-width:575px) and (min-height:300px) and (max-height:600px) {
+/* @media (min-width:375px) and (max-width:575px) and (min-height:300px) and (max-height:600px) { */
+@media (min-width:375px) and (max-width:575px){
   /* PANEL/ HEADER  */
     .dm-panel{
         flex-direction: column;
@@ -767,21 +783,16 @@
     border-radius: 8px;
   }
   .show-data-container{
-    right: 0%;
-    top: 10%;
+    right: 5%;
+    top: 8%;
   }
 
-  /* FILTER CONTAINER  */
+ /* FILTER CONTAINER  */
   .filter-container{
-    top: 12%;
-    right: 3%;
-    width: 90%;
+    width: 85vw;
+    top:10%;  
   }
 
-  /* dropdown sub  */
-  .ul-filter{
-    width: 40vw;
-  }
   /* END FILTER CONTAINER  */
 
   /* TABEL DATA MARKETING  */
@@ -840,7 +851,8 @@
 
   /* VIEW DATA MODAL  */
   .detail-data-marketing .detail-data-box{
-    width: 80%;
+    width: 90%;
+    /* border: 1px solid red; */
   }
 
   /* EDIT MODAL  */
@@ -848,7 +860,8 @@
     width: 80%;
   }
 }
-@media (min-width:275px) and (max-width:375px) and (min-height:200px) and (max-height:500px) {
+/* @media (min-width:275px) and (max-width:375px) and (min-height:200px) and (max-height:500px) { */
+@media (min-width:275px) and (max-width:375px){
     .dm-icon{
       display: none;
     }

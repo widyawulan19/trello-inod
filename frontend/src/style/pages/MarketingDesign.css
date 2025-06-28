@@ -1,5 +1,5 @@
 .md-container{
-    height: 100%;
+    height: 97%;
     /* width: 93vw; */
     min-width: 80vw;
     /* border: 1px solid blue; */
@@ -41,12 +41,7 @@
     margin: 0px;
     font-weight: bold;
 }
-.mdh-desc{
-    border: 1px solid blue;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-}
+
 .mdh-right{
     display: flex;
     flex-direction: column;
@@ -54,7 +49,7 @@
     justify-content: flex-end;
     /* border: 1px solid blue; */
     position: relative;
-    gap: 10px; 
+    gap: 5px; 
 }
 .mdhr-btn{
     /* border: 1px solid red; */
@@ -107,14 +102,14 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    border: 0.5px solid #ddd;
+    border: 1px solid #ddd;
     border-radius: 4px;
     /* width: 50%; */
     width: fit-content;
     /* padding: 2px; */
 }
 .mdh-search:hover{
-    border: 0.5px solid #6E30DC;
+    border: 1px solid #6E30DC;
 }
 .mdh-search input{
     padding: 4px 5px;
@@ -145,7 +140,8 @@
 .data-accept-design{
     overflow-x: auto; 
     border-radius: 8px;
-    height: 76vh;
+    height: 78vh;
+    /* border: 1px solid red; */
     position: relative !important;
 }
 
@@ -181,6 +177,44 @@
 }
 
 
+/* TABEL HEADER  */
+.acc-container,
+.code-order-container,
+.jumlah-container,
+.order-number-container,
+.account-container,
+.deadline-container,
+.jumlah-revisi-container,
+.order-type-container,
+.offer-type-container
+{
+    width: 100%;
+    min-width: 12vw;
+    max-width: 12vw;
+}
+
+.input-container,
+.buyer-name-container,
+.status-container,
+.price-normal-container,
+.price-discount-container,
+.discount_percentage-container,
+.action-container
+{
+    width: 100%;
+    min-width: 15vw;
+    max-width: 15vw;
+}
+
+.project-type-container,
+.resolution-container,
+.style-container
+{
+    width: 100%;
+    min-width: 20vw;
+    max-width: 20vw;
+}
+
 
 /* .action-table */
 .action-table button{
@@ -215,7 +249,7 @@
     background-color: white;
     border: 1px solid #5D12EB;
     border-radius: 8px;
-    width: 50vw;
+    width: 60vw;
     margin-top: 5%;
     height: 90vh;
     /* height: 100%; */
@@ -271,14 +305,14 @@
     padding: 0px;
     margin: 0px;
     width: 40%;
-    height: 95vh;
+    height: 91vh;
 }
 .tr-body{
     /* border: 1px solid red; */
 }
 
 /* DROPDOWN SHOW DATA  */
-.sd-container{
+.sd-cont{
     border: 1px solid #ddd;
     /* border: 1px solid red; */
     border-radius: 6px;
@@ -289,63 +323,85 @@
     right: 10%;
     z-index: 100;
     padding: 10px;
+}
+.sd-cont .sd-box{
+    /* border: 1px solid red; */
+    padding: 5px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: flex-start !important;
+}
+.sd-box button{
+    width: 100%;
+    display: flex;
+    /* align-items: center; */
     justify-content: flex-start;
-}
-.sd-container h5{
     font-size: 12px;
-    color: #5e5e5e;
-}
-.sd-container button{
-    font-size: 12px;
+    padding-left: 10px;
     border: 1px solid white;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
-    background-color: white;
 }
-.sd-container button:hover{
-    border: 1px solid #eee;
-    background-color: #eee;
+
+.sd-box button:hover{
+    background-color: #5e12eb46;
+    border: 1px solid #5e12eb46;
+}
+
+.sd-box h5{
+    /* border: 1px solid green; */
+    width: 100%;    
+    font-size: 12px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
 }
 
 /* FILTER DATA  */
-.ft-container{
+.ft-cont{
+    /* border: 1px solid green; */
     border: 1px solid #ddd;
+    border-radius: 6px;
     background-color: white;
     box-shadow: 0px 4px 8px #5e12eb46;
     position: absolute;
     top: 5%;
-    right: 0%;
+    right: 1%;
     z-index: 100;
-    padding: 10px;
+    padding: 5px 10px;
+    width: 25vw;
 }
-.ft-container h5{
+.ft-cont h5{
     font-size: 12px;
-    color: #5e5e5e;
+    color: #333;
 }
 .ftc-content{
-    /* border: 1px solid #ddd; */
+    width: 100%;
+}
+.ftc-box{
     position: relative;
 }
-.ftc-content .btn-ft{
+
+.ftc-box .ft-btn{
     border: 1px solid #5D12EB;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 13px;
-    padding: 5px;
-    color: #5D12EB;
     display: flex;
     align-items: center;
     justify-content: flex-start;
+    gap: 5px;
+    width: 100%;
+    font-size: 13px;
+    padding: 4px 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
+    background-color: #5D12EB;
 }
-.ftc-content .btn-ft:hover{
-    background-color: #eee;
+
+.ft-icon{
+    color: white;
 }
-.dacr-icon{
-    margin-right: 5px;
-}
+
 
 /* DROPDOWN SHORT  */
 .ul-ftc{
@@ -353,7 +409,7 @@
     background-color: white;
     box-shadow: 0px 4px 8px #5e12eb46;
     position: absolute;
-    top: 100%;
+    top: 100% !important;
     right: 0%;
     z-index: 100;
     padding: 10px;
@@ -364,3 +420,360 @@
     font-size: 12px;
 }
 
+
+/* MEDIA QUERY  */
+/* Extra large devices (large desktops, ≥1200px) */
+@media (min-width: 1200px) and (max-width:1400px) {
+  .wf-create{
+     width:20%;
+  }
+}
+
+/* Large devices (desktops, ≥992px) */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  /* button header  */
+    .mdh-right{
+        /* border: 1px solid red; */
+        width: 50%;
+        gap: 5px;
+    }
+    .mdhr-btn{
+        justify-content: flex-end;
+    }
+    .mdhr-btn button{
+        font-size: 10px;
+        padding: 5px 8px;
+    }
+
+    /* FILTER CONTAINER  */
+    .ft-cont{
+        /* border: 1px solid blue; */
+        width: 35vw;
+        top: 6%;
+    }
+
+/* TABEL HEADER  */
+.action-container
+{
+    width: 100%;
+    min-width: 18vw;
+    max-width: 18vw;
+}
+
+/* FORM ADD DATA  */
+.md-content{
+    width: 60%;
+}
+
+/* VIEW DETAIL DATA  */
+.detail-data-design .detail-cont{
+    width: 65vw;
+}
+
+/* FORM EDIT DATA  */
+.edit-data-design .edit-cont{
+    width: 70vw;
+}
+
+}
+
+/* Medium devices (tablets, ≥768px) */
+@media (min-width: 767px) and (max-width: 991.98px) {
+  /* button header  */
+    .mdh-right{
+        /* border: 1px solid red; */
+        width:100%;
+        /* gap: 5px; */
+    }
+    .mdhr-btn{
+        justify-content: flex-end;
+        /* border: 1px solid red; */
+        /* gap: 2px; */
+    }
+    .mdhr-btn button{
+        font-size: 10px;
+        padding: 5px;
+        margin-left: 0px;
+    }
+
+    /* TABEL HEADER  */
+    .acc-container,
+    .code-order-container,
+    .jumlah-container,
+    .order-number-container,
+    .account-container,
+    .deadline-container,
+    .jumlah-revisi-container,
+    .order-type-container,
+    .offer-type-container
+    {
+        width: 100%;
+        min-width: 15vw;
+        max-width: 15vw;
+    }
+
+    .input-container,
+    .buyer-name-container,
+    .status-container,
+    .price-normal-container,
+    .price-discount-container,
+    .discount_percentage-container
+    {
+        width: 100%;
+        min-width: 20vw;
+        max-width: 20vw;
+    }
+
+    .project-type-container,
+    .resolution-container,
+    .style-container,
+    .action-container
+    {
+        width: 100%;
+        min-width: 23vw;
+        max-width: 23vw;
+    }
+
+     .data-accept-design{
+        height: 70vh;
+    }
+
+    /* FILTER CONTAINER  */
+    .ft-cont{
+        width: 40vw;
+        top: 8%;
+    }
+
+    /* DROPDOWN SHOW DATA  */
+    .sd-cont{
+        top: 7%;
+        padding: 2px;
+    }
+
+    /* FORM ADD DATA  */
+    .md-content{
+        width: 65%;
+    }
+
+    /* VIEW DETAIL DATA  */
+    .detail-data-design .detail-cont{
+        width: 80vw;
+    }
+
+    /* FORM EDIT DATA  */
+    .edit-data-design .edit-cont{
+        width: 80vw;
+    }
+
+}
+
+/* ukuran handpone besar */
+@media (min-width: 576px) and (max-width: 767.98px) {
+   /* button header  */
+    .mdh-right{
+        /* border: 1px solid red; */
+        width:100%;
+        /* gap: 5px; */
+    }
+    .mdhr-btn{
+        justify-content: flex-end;
+        /* border: 1px solid red; */
+        /* gap: 2px; */
+    }
+    .mdhr-btn button{
+        font-size: 9px;
+        padding: 5px;
+        margin-left: 0px;
+    }
+
+        /* TABEL HEADER  */
+    .acc-container,
+    .code-order-container,
+    .jumlah-container,
+    .order-number-container,
+    .account-container,
+    .deadline-container,
+    .jumlah-revisi-container,
+    .order-type-container,
+    .offer-type-container
+    {
+        width: 100%;
+        min-width: 15vw;
+        max-width: 15vw;
+    }
+
+    .input-container,
+    .buyer-name-container,
+    .status-container,
+    .price-normal-container,
+    .price-discount-container,
+    .discount_percentage-container
+    {
+        width: 100%;
+        min-width: 20vw;
+        max-width: 20vw;
+    }
+
+    .project-type-container,
+    .resolution-container,
+    .style-container,
+    .action-container
+    {
+        width: 100%;
+        min-width: 30vw;
+        max-width: 30vw;
+    }
+    .data-accept-design{
+        height: 70vh;
+    }
+
+    /* FILTER CONTAINER  */
+    .ft-cont{
+        width: 55vw;
+        top: 8%;
+    }
+
+    /* DROPDOWN SHOW DATA  */
+    .sd-cont{
+        top: 7%;
+        padding: 2px;
+    }
+
+    /* FORM ADD DATA  */
+    .md-content{
+        width: 80%;
+    }
+
+     /* VIEW DETAIL DATA  */
+    .detail-data-design .detail-cont{
+        width: 90vw;
+    }
+    /* FORM EDIT DATA  */
+    .edit-data-design .edit-cont{
+        width: 90vw;
+    }
+
+}
+
+/* ukuran handpone kecil */
+@media (min-width:375px) and (max-width:575px) {
+/* @media (min-width:375px) and (max-width:575px)  { */
+  .md-header{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .mdh-left{
+    width: 100%;
+  }
+
+  .mdh-des{
+    display: none;
+  }
+
+  .mdh-right{
+    width: 100%;
+  }
+  .mdhr-btn{
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5px;
+  }
+  .mdhr-btn button{
+        font-size: 12px;
+        padding: 5px 7px;
+        margin-left: 0px;
+    }
+
+    /* SEARCH CONTENT  */
+    .mdh-search-container{
+        justify-content: center;
+    }
+    .mdh-search{
+        width: 90%;
+    }
+    .mdh-search input{
+        width: 100%;
+    }
+
+    .data-accept-design{
+        height: 70vh;
+    }
+
+    /* TABEL HEADER  */
+    .acc-container,
+    .code-order-container,
+    .jumlah-container,
+    .order-number-container,
+    .account-container,
+    .deadline-container,
+    .jumlah-revisi-container,
+    .order-type-container,
+    .offer-type-container
+    {
+        width: 100%;
+        min-width: 30vw;
+        max-width: 30vw;
+    }
+
+    .input-container,
+    .buyer-name-container,
+    .price-normal-container,
+    .price-discount-container,
+    .discount_percentage-container
+    {
+        width: 100%;
+        min-width: 38vw;
+        max-width: 38vw;
+    }
+
+    .project-type-container,
+    .resolution-container,
+    .style-container,
+    .status-container
+    /* .action-container */
+    {
+        width: 100%;
+        min-width: 43vw;
+        max-width: 43vw;
+    }
+
+    .action-container
+    {
+        width: 100%;
+        min-width: 50vw;
+        max-width: 50vw;
+    }
+
+    /* FILTER CONTAINER  */
+    .ft-cont{
+        width: 90%;
+        top: 11%;
+        right: 5%;
+    }
+
+    /* DROPDOWN SHOW DATA  */
+    .sd-cont{
+        top: 7%;
+        right: 15%;
+        padding: 2px;
+    }
+
+    /* FORM ADD DATA  */
+    .md-content{
+        width: 100%;
+    }
+
+    /* VIEW DETAIL DATA  */
+    .detail-data-design .detail-cont{
+        width: 98%;
+    }
+    /* FORM EDIT DATA  */
+    .edit-data-design .edit-cont{
+        width: 95vw;
+    }
+
+}

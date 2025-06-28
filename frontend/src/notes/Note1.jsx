@@ -614,28 +614,30 @@ app.delete('/api/delete-cover/:cardId', async (req, res) => {
 
 //10vw
 {
-  // acc,
-  // status,
-  // order Number,
-  // account,
-  // deadline,
-  // order_type,
-  // offer_type,
-  // jenis_track,
-  // genre,
-  // price normal,
-  // price discount,
-  // discount,
-  // basic price,
+// input
+// acc
+// status
+// code order 
+// jumlah design 
+// order number 
+// account 
+// date 
+// jumlah revisi 
+// order type 
+// offer type 
 }
 
 //12vw
 {
-  // input,
-  // buyer name,
-  // coder order,
+  // buyer name
+// style 
+// resolution 
+// price normal
+// price discount 
+// discount_percentage
 
-  // project type,
-  // duration,
 }
 
+// 16vw 
+// project type 
+// action 

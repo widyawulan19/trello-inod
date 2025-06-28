@@ -5,7 +5,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border: 1px solid #5D12EB;
+    /* border: 1px solid #5D12EB; */
+    /* border: 1px solid red; */
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
     padding: 10px;
@@ -31,6 +32,13 @@
     color: #051937;
 }
 
+.vmd-header .vmd-right{
+    /* border: 1px solid green; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
 .vmd-right .create-btn{
     border: 1px solid #6E30DC;
     background: linear-gradient(to bottom, #042887, #051937);
@@ -42,7 +50,7 @@
     border-radius: 6px;
     position: relative;
     cursor: pointer;
-    margin: 0px 5px;
+    /* margin: ; */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -81,6 +89,8 @@
 .view-md-container .vmd-body{
     /* border: 1px solid red; */
     height: 80vh;
+    min-height: 50vh;
+    max-height: 90vh;
     padding: 10px;
     overflow-y: auto;
 }
@@ -99,8 +109,16 @@
     margin: 10px 0px;
     color: #333;
 }
+
+.vmd-detail{
+    border: 1px solid #eee;
+    border-radius: 4px;
+    padding: 5px;
+    padding-left: 0px;
+}
+
 .vmd-content{
-    /* border: 1px solid #eee; */
+    border: 1px solid #eee;
     /* background: linear-gradient(to bottom, #6f30dc44, #5e12eb44); */
     border-radius: 4px;
     display: flex;
@@ -114,11 +132,12 @@
     height: 100%;
 }
 .vmd-content .box-content{
-    /* border: 1px solid blue; */
+    /* border: 1px solid yellow; */
     margin: 5px 0px;
+    width: 100%;
 }
 .vmd-ref-content{
-    /* border: 1px solid grey; */
+    border: 1px solid #eee;
     border-radius: 4px;
     display: flex;
     /* flex-direction: row; */
@@ -138,6 +157,7 @@
     border-radius: 4px;
     padding: 10px;
     margin-top: 3px;
+    /* width: fit-content; */
     width: 95%;
     /* width: 300px; */
 }
@@ -167,6 +187,7 @@
 }
 .box-content .box-box{
     border: 1px solid #ddd;
+    /* border: 1px solid green; */
     border-radius: 4px;
     padding: 5px;
     margin-top: 3px;
@@ -197,10 +218,115 @@
 .vmd-form{
     padding: 2px;
     border-radius: 4px;
-    /* background-color: #333; */
+    /* background-color: red; */
     position: absolute;
     z-index: 100;
     right: 0;
     width: 400px;
     height: 500px;
+}
+
+
+/* Large devices (desktops, ≥992px) */
+@media (min-width: 992px) and (max-width: 1199.98px) and (min-height:600px) and (max-height:800px) {
+  
+}
+
+/* Medium devices (tablets, ≥768px) */
+@media (min-width: 768px) and (max-width: 991.98px) and (min-height:500px) and (max-height:700px) {
+  /* BODY TABEL  */
+    .view-md-container .vmd-body{
+        height: 78vh;
+    }
+    
+    .box-content .box-box{
+        width: 200px;
+        border: 1px solid orange;
+    }
+}
+
+/* ukuran handpone besar */
+/* @media (min-width: 576px) and (max-width: 767.98px) and (min-height:400px) and (max-height:700px) { */
+@media (min-width: 576px) and (max-width: 767.98px){
+/* HEADER  */
+.vmd-right{
+    width: 50%;
+    margin: 0px;
+    gap: 3px ;
+}
+.vmd-right .create-btn{
+    /* padding: 3px; */
+}
+
+    /* BODY TABEL  */
+    .view-md-container .vmd-body{
+        height: 78vh;
+    }
+    
+    .box-content .box-box{
+        width: 200px;
+        border: 1px solid orange;
+    }
+}
+
+/* ukuran handpone kecil */
+/* @media (min-width:375px) and (max-width:575px) and (min-height:300px) and (max-height:600px) { */
+@media (min-width:375px) and (max-width:575px){
+  /* HEADER  */
+  .vmd-header{
+    /* border: 1px solid red; */
+    flex-direction: column;
+    justify-content: center;
+  }
+  .vmd-left{
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    justify-content: flex-start;
+    width: 100%;
+  }
+  .vmd-right{
+    margin-top: 5px;
+    width: 100%;
+    margin-top: 5px;
+    /* border: 1px solid orange; */
+    display: flex;
+    align-items: center;
+    justify-content: center !important;
+  }
+  
+    /* BODY TABEL  */
+    .view-md-container .vmd-body{
+        height: 73vh;
+        /* border: 1px solid blue; */
+    }
+    
+    .box-content{
+        width: 100%;
+    }
+    .box-content .box-box{
+        width: 100%;
+    }
+    .vmd-content{
+        border: 1px solid #eee;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+
+    .vmd-ref-content{
+        /* border: 1px solid green; */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        
+    }
+
+    /* form create card  */
+    .vmd-form{
+        width: 100%;
+    }
 }

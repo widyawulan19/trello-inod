@@ -212,7 +212,7 @@ form h4
 
 /* MEDIA QUERY  */
 /* ukuran handpone kecil */
-@media (min-width:375px) and (max-width:575px) and (min-height:300px) and (max-height:600px) {
+@media (min-width:375px) and (max-width:575px) {
   .sec-content .emd-box{
     /* border: 1px solid red; */
     width: 90%;
@@ -220,4 +220,6 @@ form h4
   .emd-box .dropdown-selected{
     width: 100%;
   }
+
+  
 }
