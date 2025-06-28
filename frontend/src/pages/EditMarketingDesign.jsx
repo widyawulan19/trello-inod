@@ -143,7 +143,7 @@ import { FaXmark } from 'react-icons/fa6';
                         required
                     />
                 </div>
-                <div className="emd-box">
+                <div className="emd-box" >
                     <label>Status Accept</label>
                     <div
                         className={`dropdown-selected ${formData.is_accepted ? 'accepted-status' : 'not-accepted-status'}`}

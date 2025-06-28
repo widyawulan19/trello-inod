@@ -339,7 +339,7 @@ const ViewDataMarketing=({marketingId, onClose})=> {
           <div className="sec-desc-content">
             <div className="box" style={{width:'100%', padding:'0px 5px'}}>
               {/* <p>Description</p> */}
-              <div className='box1' style={{height:'10vh', width:'47vw'}}>
+              <div className='box1' style={{height:'10vh', width:'100%'}}>
                 <p>{dataMarketings.detail_project}</p>
               </div>
             </div>

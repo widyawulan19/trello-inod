@@ -254,11 +254,11 @@ const MarketingDesign=()=> {
                   </button>
                   <button onClick={handleShowDataMarketing}>
                       <HiMiniTableCells className='mdh-icon'/>
-                    SHOW DATA BY
+                    SHOW DATA
                   </button>
                   <button onClick={handleFilterButton}>
                       <HiChevronUpDown className='mdh-icon'/>
-                    FILTER DATA BY
+                    FILTER DATA
                   </button>
               </div>
               <div className="mdh-search-container">
@@ -272,52 +272,56 @@ const MarketingDesign=()=> {
                 </div>
               </div>
             </div>
-        </div>
-        {/* SHOW COMPONENT  */}
-        {showFormCreate && (
-            <div className="md-form">
-                <div className="md-content">
-                    {/* <Setting onClose={handleCloseForm}/> */}
-                    <NewFormMarketingDesign onClose={handleCloseForm} fetchMarketingDesign={fetchMarketingDesign}/>
+            {/* SHOW COMPONENT  */}
+            {showFormCreate && (
+                <div className="md-form">
+                    <div className="md-content">
+                        {/* <Setting onClose={handleCloseForm}/> */}
+                        <NewFormMarketingDesign onClose={handleCloseForm} fetchMarketingDesign={fetchMarketingDesign}/>
+                    </div>
                 </div>
-            </div>
-        )}
+            )}
 
 
-        {/* SHOW DATA  */}
-        {showData && (
-         <div className='sd-container' ref={showDataRef}>
-            <h5>Show Data By:</h5>
-            <button onClick={() => {setFilterType('DATA MARKETING DESIGN'); {setShowData(!showData)}}} >
-              All Data
-            </button>
-            <button onClick={() => {setFilterType('DATA DENGAN CARD');; {setShowData(!showData)}}}>
-              Data Dengan Card
-            </button>
-            <button onClick={() => {setFilterType('DATA TANPA CARD');; {setShowData(!showData)}}}>
-              Data Tanpa Card
-            </button>
-            <button onClick={() => {setFilterType('DATA ACCEPT');; {setShowData(!showData)}}}>
-              Accept Data Marketing
-            </button>
-            <button onClick={() => {setFilterType('DATA BELUM ACCEPT');; {setShowData(!showData)}}}>
-              Data Belum Accept
-            </button>
-          </div>
-        )}
+            {/* SHOW DATA  */}
+            {showData && (
+            <div className='sd-cont' ref={showDataRef}>
+                <div className="sd-box">
+                  <h5>Show Data By:</h5>
+                  <button onClick={() => {setFilterType('DATA MARKETING DESIGN'); {setShowData(!showData)}}} >
+                    All Data
+                  </button>
+                  <button onClick={() => {setFilterType('DATA DENGAN CARD');; {setShowData(!showData)}}}>
+                    Data Dengan Card
+                  </button>
+                  <button onClick={() => {setFilterType('DATA TANPA CARD');; {setShowData(!showData)}}}>
+                    Data Tanpa Card
+                  </button>
+                  <button onClick={() => {setFilterType('DATA ACCEPT');; {setShowData(!showData)}}}>
+                    Accept Data Marketing
+                  </button>
+                  <button onClick={() => {setFilterType('DATA BELUM ACCEPT');; {setShowData(!showData)}}}>
+                    Data Belum Accept
+                  </button>
+                </div>
+              </div>
+            )}
+        </div>
+        
+        {/* show  */}
 
         {/* FILTER BY TYPE DATA  */}
         {showFilter && (
-          <div className="ft-container" ref={showFilterRef}>
+          <div className="ft-cont" ref={showFilterRef}>
             <div className="ftc-header">
               <h5>Filter By:</h5>
             </div>
             <div className="ftc-content">
               <div className="ftc-box">
-                <button onClick={() => setDropdownOpen(!dropdownOpen)} className='btn-ft'>
-                  <HiChevronUpDown className='dacr-icon'/>
+                <div className='ft-btn' onClick={() => setDropdownOpen(!dropdownOpen)}>
+                  <HiChevronUpDown className='ft-icon'/>
                   {shortType ? shortType.replace('_', ' ') : 'Filter Type'}
-                </button>
+                </div>
                 {dropdownOpen && (
                   <ul className='ul-ftc'>
                     <li
@@ -417,14 +421,14 @@ const MarketingDesign=()=> {
                         DISCOUNT PRESENTAGE
                     </th>
                     <th>PROJECT TYPE</th>
-                    <th className='rounded-tr-md'>ACTION</th>
+                    <th style={{textAlign:'center'}}>ACTION</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredData.map((item, index)=>(
                     <tr key={item.marketing_design_id}>
                       <td>{index + 1}</td>
-                      <td style={{ width: '100%', minWidth: '10vw', maxWidth: '10vw' }}>{item.input_by}
+                      <td className='input-container'>{item.input_by}
                         {hasCardId(item) && (
                           <span style={{
                             backgroundColor: '#e0f7fa',
@@ -443,8 +447,8 @@ const MarketingDesign=()=> {
                           </span>
                         )}
                       </td>
-                      <td style={{ width: '100%', minWidth: '7vw', maxWidth: '7vw'}}>{item.acc_by}</td>
-                      <td style={{ width: '100%', minWidth: '10vw', maxWidth: '10vw', textAlign:'left' }}>
+                      <td className='acc-container'>{item.acc_by}</td>
+                      <td className='status-container' style={{textAlign:'left' }}>
                          <span style={{
                            padding: '2px 8px',
                            borderRadius: '12px',
@@ -455,22 +459,22 @@ const MarketingDesign=()=> {
                            {item.is_accepted ? 'Accepted' : 'Not Accepted'}
                          </span>
                        </td>
-                      <td style={{ width: '100%', minWidth: '12vw', maxWidth: '12vw' }}>{item.buyer_name}</td>
-                      <td style={{ width: '100%', minWidth: '10vw', maxWidth: '10vw' }}>{item.code_order}</td>
-                      <td style={{ width: '100%', minWidth: '10vw', maxWidth: '10vw', textAlign:'center' }}>{item.jumlah_design}</td>
-                      <td style={{ width: '100%', minWidth: '10vw', maxWidth: '10vw' }}>{item.order_number}</td>
-                      <td style={{ width: '100%', minWidth: '10vw', maxWidth: '10vw' }}>{item.account}</td>
-                      <td style={{ width: '100%', minWidth: '10vw', maxWidth: '10vw', textAlign:'center' }}>{new Date(item.deadline).toLocaleDateString()}</td>
-                      <td style={{ width: '100%', minWidth: '10vw', maxWidth: '10vw', textAlign:'center' }}>{item.jumlah_revisi}</td>
-                      <td style={{ width: '100%', minWidth: '10vw', maxWidth: '10vw'}}>{item.order_type}</td>
-                      <td style={{ width: '100%', minWidth: '10vw', maxWidth: '10vw'}}>{item.offer_type}</td>
-                      <td style={{ width: '100%', minWidth: '13vw', maxWidth: '13vw'}}>{item.style}</td>
-                      <td style={{ width: '100%', minWidth: '12vw', maxWidth: '12vw'}}>{item.resolution}</td>
-                      <td style={{ width: '100%', minWidth: '13vw', maxWidth: '13vw' , textAlign:'center', color:'#1E1E1E'}}>${item.price_normal}</td>
-                      <td style={{ width: '100%', minWidth: '13vw', maxWidth: '13vw' , textAlign:'center', color:'#E53935'}}>${item.price_discount}</td>
-                      <td style={{ width: '100%', minWidth: '13vw', maxWidth: '13vw' , textAlign:'center', color:'#388E3C'}}>${item.discount_percentage}</td>
-                      <td style={{ width: '100%', minWidth: '16vw', maxWidth: '16vw', fontSize:'8px' }}>{item.project_type}</td>
-                      <td style={{ width: '100%', minWidth: '15vw', maxWidth: '15vw' }}>
+                      <td className='buyer-name-container'>{item.buyer_name}</td>
+                      <td className='code-order-container'>{item.code_order}</td>
+                      <td className='jumlah-container' style={{textAlign:'center' }}>{item.jumlah_design}</td>
+                      <td className='order-number-container'>{item.order_number}</td>
+                      <td className='account-container'>{item.account}</td>
+                      <td className='deadline-container' style={{ textAlign:'center' }}>{new Date(item.deadline).toLocaleDateString()}</td>
+                      <td className='jumlah-revisi-container' style={{textAlign:'center' }}>{item.jumlah_revisi}</td>
+                      <td className='order-type-container'>{item.order_type}</td>
+                      <td className='offer-type-container'>{item.offer_type}</td>
+                      <td className='style-container'>{item.style}</td>
+                      <td className='resolution-container'>{item.resolution}</td>
+                      <td className='price-normal-container' style={{textAlign:'center', color:'#1E1E1E'}}>${item.price_normal}</td>
+                      <td className='price-discount-container' style={{textAlign:'center', color:'#E53935'}}>${item.price_discount}</td>
+                      <td className='discount_percentage-container' style={{textAlign:'center', color:'#388E3C'}}>${item.discount_percentage}</td>
+                      <td className='project-type-container' >{item.project_type}</td>
+                      <td className='action-container'>
                         <div className="action-table">
                           <BootstrapTooltip title='View Data' placement='top'>
                             <button onClick={()=> handleShowDetail(item.marketing_design_id)}>

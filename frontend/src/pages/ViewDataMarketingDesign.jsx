@@ -294,6 +294,7 @@ const renderTextWithLinks = (text) => {
             </div>
           </div>
         </div>
+
         <div className="sec-reference">
           <h4>Reference</h4>
           <div className="vmd-ref-content">
@@ -304,30 +305,6 @@ const renderTextWithLinks = (text) => {
               </div>
             </div>
 
-            {/* <div className="box-content">
-              <p>Reference</p>
-              <div className="box-ref">
-                <p>{dataMarketingDesign.reference}</p>
-              </div>
-            </div> */}
-            {/* <div className="box-content">
-              <p>File & Chat</p>
-              <div className="box-ref">
-                {
-                  isValidUrl(dataMarketingDesign.file_and_chat) ? (
-                    <a 
-                      href={dataMarketingDesign.file_and_chat} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                    >
-                      {dataMarketingDesign.file_and_chat}
-                    </a>
-                  ) : (
-                    <p>{dataMarketingDesign.file_and_chat}</p>
-                  )
-                }
-              </div>
-            </div> */}
             <div className="box-content">
               <p>File & Chat</p>
               <div className="box-ref">
@@ -340,7 +317,11 @@ const renderTextWithLinks = (text) => {
                       color: '#1d4ed8',        // biru-500 (Tailwind vibe)
                       textDecoration: 'none',
                       fontWeight: '500',
-                      fontSize:'12px'
+                      fontSize:'12px',
+                      // border:'1px solid red',
+                      wordWrap:'break-word',
+                      whiteSpace:'normal',
+                      overflowWrap:'break-word'
                     }}
                     onMouseOver={(e) => e.currentTarget.style.textDecoration = 'underline'}
                     onMouseOut={(e) => e.currentTarget.style.textDecoration = 'none'}
@@ -358,7 +339,7 @@ const renderTextWithLinks = (text) => {
         <div className="sec-detail-project">
           <h4>Detail Project</h4>
           <div className="vmd-detail">
-            <div className="box-content">
+            <div className="box-content" style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
               {/* <p>Detail Project</p> */}
               <div className="box-ref" style={{height:'30vh',overflowY:'auto'}}>
                 <p>{renderTextWithLinks(dataMarketingDesign.detail_project)}</p>

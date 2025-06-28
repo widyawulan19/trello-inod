@@ -49,6 +49,7 @@
     font-size: 12px;
 }
 .emd-content{
+    border: 1px solid #eee;
     border-radius: 4px;
     padding: 5px;
     display: grid;
@@ -101,7 +102,7 @@
     font-size: 12px;
 }
 .emd-ref-content{
-    /* border: 1px solid grey; */
+    border: 1px solid #eee;
     border-radius: 4px;
     padding: 5px;
     display: flex;
@@ -129,7 +130,7 @@
     border-radius: 4px;
     padding: 5px;
     margin-top: 3px;
-    width: 95%;
+    width: 100%;
     font-size: 12px;
 }
 .emd-ref-box input:hover{
@@ -147,7 +148,7 @@
     border-radius: 4px;
     padding: 5px;
     margin-top: 3px;
-    width: 95%;
+    width: 100%;
     height: 10vh;
     font-size: 12px;
 }
@@ -198,17 +199,17 @@
     border-radius: 4px;
     padding: 5px;
     margin-top: 3px;
-    width: 95%;
+    width: 100%;
     font-size: 11px;
 }
 
 .emd-box .dropdown-options{
     position: absolute;
-    top: 70%;
+    top: 90%;
     left: 3%;
     z-index: 99;
     padding: 5px;
-    width: 90%;
+    width: 95%;
     border: 1px solid #ddd;
     border-radius: 4px;
     background-color: white; 
@@ -263,3 +264,16 @@
     border: 1px solid #6f30dc47;
     box-shadow: 0px 4px 8px #6f30dc54;
 } */
+
+/* media query  */
+/* ukuran handpone kecil */
+@media (min-width:375px) and (max-width:575px) and (min-height:300px) and (max-height:600px) {
+  .emd-container form{
+    height: 75vh;
+    /* border: 1px solid green; */
+  }
+
+  .emd-btn button{
+    width: 90%;
+  }
+}

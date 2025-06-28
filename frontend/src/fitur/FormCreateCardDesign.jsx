@@ -130,7 +130,7 @@ const FormCreateCardDesign = ({ marketingDesignId, onClose }) => {
 
       <div className="fcd-content">
         <div className="fcd-select-box">
-          {/* <label>Choose Board</label> */}
+          <label>Choose Board</label>
             <button className="fcd-btn"  onClick={handleShowBoardDropdown}>
               {selectedBoardId ? boards.find(board => board.id === selectedBoardId)?.name : "Select Board"}
               <HiOutlineChevronDown className="dropdown-icon" />
@@ -155,7 +155,7 @@ const FormCreateCardDesign = ({ marketingDesignId, onClose }) => {
             )}
             {selectedBoardId && (
             <div className="fcd-select-list">
-              {/* <label>Choose List</label> */}
+              <label>Choose List</label>
                 <button className="fcd-lists-btn" onClick={() => setShowListDropdown(!showListDropdown)}>
                   {selectedListId ? filteredLists.find(list => list.id === selectedListId)?.name : "Select a List"}
                   <HiOutlineChevronDown className="dropdown-icon" />
