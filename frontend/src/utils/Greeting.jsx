@@ -1,5 +1,7 @@
 import React from 'react';
 import '../style/pages/Home.css'
+import { FaMoon, FaSun } from "react-icons/fa6";
+import { FaCloudSun } from "react-icons/fa";
 
 const Greeting = () => {
   const currentHour = new Date().getHours();
@@ -8,13 +10,14 @@ const Greeting = () => {
   let greetingIcon = '';
   if (currentHour >= 5 && currentHour < 12) {
     greetingText = 'Good Morning!';
-    greetingIcon = '🌞';
+    greetingIcon = <FaSun/>;
   } else if (currentHour >= 12 && currentHour < 18) {
     greetingText = 'Good Afternoon!';
-    greetingIcon = '🌤️';
+    greetingIcon = <FaCloudSun/>;
   } else {
     greetingText = 'Good Evening!';
-    greetingIcon = '🌃';
+    // greetingIcon = '🌃';
+    greetingIcon = <FaMoon/>;
   }
 
   const currentDate = new Date();
@@ -29,11 +32,12 @@ const Greeting = () => {
   const year = currentDate.getFullYear();
 
   return (
-    <div style={{ textAlign: 'left',padding:'0px 10px',marginTop:'0px' , fontSize: '20px' }}>
-      <h4 style={{margin:'0px', padding:'0px'}}>
+    <div className='greeting-container'>
+      <h4>
         <span className="gradient-text">{greetingText}</span>{' '}
-        <span>{greetingIcon}</span>
+        <span className='greet-icon'>{greetingIcon}</span>
       </h4>
+      {/* <p>🏠 Home</p> */}
       <p style={{marginTop:'0',marginBottom:'0', fontSize:'10px', padding:'0px'}}>
         Today is {dayName}, {date} {monthName} {year} | Hope you have a great day!
       </p>

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import '../style/UI/WorkspaceSummary.css';
+import { GoDotFill } from "react-icons/go";
 import { getWorkspaceSummary, getBoardsWorkspace } from '../services/ApiServices';
-import { HiOutlineArrowTopRightOnSquare } from 'react-icons/hi2';
+import { HiArrowRight, HiOutlineArrowRight, HiOutlineArrowTopRightOnSquare } from 'react-icons/hi2';
 import { HiLink } from 'react-icons/hi';
 import BootstrapTooltip from '../components/Tooltip';
 import { useNavigate } from 'react-router-dom';
@@ -58,29 +59,21 @@ const WorkspaceSummary = ({ userId }) => {
   return (
     <div className="summary-container">
       {Array.isArray(summaries) && summaries.map((workspace) => (
-        <div className="sec-body" key={workspace.workspace_id}>
-          <div className="item-header">
-            <h4 className="summary-title">{workspace.workspace_name}</h4>
-            <div className="summary-btn">
-              <BootstrapTooltip title='Open in new tab' placement='top'>
-                <button onClick={() => navigateToFirstBoard(workspace.workspace_id)}>
-                  <HiOutlineArrowTopRightOnSquare />
-                </button>
-              </BootstrapTooltip>
-              <BootstrapTooltip title='Get link' placement='top'>
-                <button>
-                  <HiLink />
-                </button>
-              </BootstrapTooltip>
+        <div  key={workspace.workspace_id} className='summary-content'>
+          <div className="summary-header">
+            <div className="sh-left">
+              <GoDotFill className='shl-icon'/>
+              <h4 className="summary-title">{workspace.workspace_name}</h4>
+            </div>
+            
+            <div className='view' onClick={() => navigateToFirstBoard(workspace.workspace_id)}>
+              VIEW <HiArrowRight/>
             </div>
           </div>
-
-          <div className="item-left">
-            <div className="sc-p">
-              <button>🧩 Boards: {workspace.board_count}</button>
-              <button>📑 Lists: {workspace.list_count}</button>
-              <button>🗂️ Cards: {workspace.card_count}</button>
-            </div>
+          <div className="summary-body">
+            <div className="sb1">📋 Boards : {workspace.board_count}</div>
+            <div className="sb1">📝 Lists : {workspace.list_count}</div>
+            <div className="sb1">🗂️ Cards : {workspace.card_count}</div>
           </div>
         </div>
       ))}
@@ -89,3 +82,39 @@ const WorkspaceSummary = ({ userId }) => {
 };
 
 export default WorkspaceSummary;
+
+
+// {/* <div className="summary-container">
+//       {Array.isArray(summaries) && summaries.map((workspace) => (
+//         <div className="sec-body" key={workspace.workspace_id}>
+//           <div className="item-header">
+//             <h4 className="summary-title">{workspace.workspace_name}</h4>
+//             {/* <div className="summary-btn">
+//               <BootstrapTooltip title='Open in new tab' placement='top'>
+//                 <button onClick={() => navigateToFirstBoard(workspace.workspace_id)}>
+//                   <HiOutlineArrowTopRightOnSquare />
+//                 </button>
+//               </BootstrapTooltip>
+//               <BootstrapTooltip title='Get link' placement='top'>
+//                 <button>
+//                   <HiLink />
+//                 </button>
+//               </BootstrapTooltip>
+//             </div> */}
+//           </div>
+
+//           <div className="item-left">
+//             <div className="sc-p">
+//               <button>🧩 Boards: {workspace.board_count}</button>
+//               <button>📑 Lists: {workspace.list_count}</button>
+//               <button>🗂️ Cards: {workspace.card_count}</button>
+//             </div>
+//             <div className="btn-view">
+//               <button onClick={() => navigateToFirstBoard(workspace.workspace_id)}>
+//                 VIEW  <HiOutlineArrowRight style={{marginLeft:'3px'}}/>
+//               </button>
+//             </div>
+//           </div>
+//         </div>
+//       ))}
+//     </div> */}

@@ -3,8 +3,12 @@ import '../style/pages/Home.css'
 import Greeting from '../utils/Greeting.jsx'
 import BootstrapTooltip from '../components/Tooltip.jsx'
 import { RxDragHandleDots2 } from "react-icons/rx";
-import { HiMiniCalendarDateRange,HiOutlineHome,HiOutlineCog8Tooth, HiOutlineClock,HiOutlineArrowsPointingOut,HiOutlineEllipsisHorizontal,HiOutlineSquares2X2,HiOutlineArrowTopRightOnSquare ,HiLink, HiOutlineTrash, HiOutlineXMark, HiClipboardDocumentList} from "react-icons/hi2";
+import { HiMiniCalendarDateRange,HiOutlineHome,HiOutlineCog8Tooth, HiOutlineClock,HiOutlineArrowsPointingOut,HiOutlineEllipsisHorizontal,HiOutlineSquares2X2,HiOutlineArrowTopRightOnSquare ,HiLink, HiOutlineTrash, HiOutlineXMark, HiClipboardDocumentList, HiPlus} from "react-icons/hi2";
 import { useNavigate } from 'react-router-dom';
+import { HiFolder } from "react-icons/hi2";
+import { GiMusicalScore } from "react-icons/gi";
+import { BsArrowsAngleExpand } from "react-icons/bs";
+import { FaNoteSticky } from "react-icons/fa6";
 import OutsideClick from '../hook/OutsideClick.jsx';
 import { createWorkspace } from '../services/ApiServices.js';
 import { Alert } from '@mui/material';
@@ -102,26 +106,15 @@ const Home=()=> {
   return (
     <div className="home-container">
         <div className="home-header">
-        <div className='nav'>
-          <div className="nav-title">
-            🏠 Home
+          <div className='nav'>
+            <Greeting/>
           </div>
-          <p className="nav-subtext">Overview & Quick Access</p>
-        </div>
+
+          <div className="hh-btn" onClick={handleShowForm}>
+              <HiPlus/>
+              CREATE WORKSPACE
+          </div>
         
-        <div className="home-btn" >
-          <button onClick={handleShowForm}>
-            <HiOutlinePlus className='btn-icon'/>
-              CREATE A WORKSPACE
-          </button>
-          <p>
-            | <HiOutlineCog8Tooth 
-                className='nav-icon' 
-                style={{marginLeft:'5px'}}
-                onClick={handleGreeting}
-              />
-          </p>
-        </div>
   
           {/* CREATE WORKSPACE FORM  */}
           <CustomAlert
@@ -165,119 +158,57 @@ const Home=()=> {
                 {/* <button className='cancle-btn'>Cancle</button> */}
                </div>
             </div>
-          )}
-          {/* END CREATE WORKSPACE FORM  */}
-          {/* 1. buat satu button bisa handle (navigate to workspace page, set alert) */}
-          
+          )}        
         </div>
-        <div className="greeting">
-          {isGreeting && (
-            <Greeting/>
-          )}
-        </div>
+       
         <div className="home-body">
           {/* RECENT SECTION  */}
-          <div className="section-body">
-            <div className="sb-header">
-              <div className="sbh-left">
-                <HiClipboardDocumentList/>
-                <h4>WORKSPACE SUMMARY</h4>
-              </div>
-              <div className="sbh-right">
-                <BootstrapTooltip title='View in full screen' placement='top'>
-                    <button onClick={navigateToRecent}>
-                      <HiOutlineArrowsPointingOut/>
-                    </button>
-                </BootstrapTooltip>
-
-                <BootstrapTooltip title='More setting' placement='top'>
-                   <button onClick={handleShowSetting}>
-                    <HiOutlineEllipsisHorizontal/>
-                  </button>
-                </BootstrapTooltip>
-                
-                {showSetting && (
-                  <div className="setting-icon" ref={settingRef}>
-                    <button>
-                      <HiOutlineTrash/>
-                      <p>Remove Card</p>
-                    </button>
+          <div className="home-body-left">
+            {/* SUMMARY  */}
+            <div className="home-summary">
+              <div className="summary-header">
+                <div className="sh-left">
+                  <div className="sh-icon">
+                    <HiFolder/>
                   </div>
-                )}
+                  <h4><span className='sh-gradient'>Workspaces Summary</span></h4>
+                </div>
+                <div className="sh-right">
+                   <BsArrowsAngleExpand className='sh-expand'/>
+                </div>
+                
+              </div>
+              <div className="body-s">
+                {/* <GiMusicalScore size={50}/> */}
+                <WorkspaceSummary userId={userId}/>
               </div>
             </div>
-            <div className="sb-body">
-              <WorkspaceSummary userId={userId}/>
+            <div className="home-notes">
+              <div className="notes-header">
+                <div className="nh-left">
+                  <div className="nhl-icon">
+                    <FaNoteSticky/>
+                  </div>
+                  <h4><span className='nhl-gradient'>Personal Notes</span></h4>
+                </div>
+                <div className="nh-right">
+                  <div className="note-btn">
+                    <HiPlus/>
+                    Add Note
+                  </div>
+                </div>
+              </div>
+              <div className="notes-body">
+
+              </div>
             </div>
           </div>
+          <div className="home-body-right">
+            <div className="home-agenda">
 
-          {/* AGENDA SECTION  */}
-          <div className="section-body">
-            <div className="sb-header">
-              <div className="sbh-left">
-                <HiMiniCalendarDateRange/>
-                <h4>YOUR AGENDA</h4>
-              </div>
-              <div className="sbh-right">
-                <BootstrapTooltip title='View in full screen' placement='top'>
-                    <button onClick={navigateToRecent}>
-                      <HiOutlineArrowsPointingOut/>
-                    </button>
-                </BootstrapTooltip>
-
-                <BootstrapTooltip title='More setting' placement='top'>
-                   <button onClick={handleShowSetting}>
-                    <HiOutlineEllipsisHorizontal/>
-                  </button>
-                </BootstrapTooltip>
-                
-                {showSetting && (
-                  <div className="setting-icon" ref={settingRef}>
-                    <button>
-                      <HiOutlineTrash/>
-                      <p>Remove Card</p>
-                    </button>
-                  </div>
-                )}
-              </div>
             </div>
-            <div className="sb-body">
-              <AgendaUser/>
-            </div>
-          </div>
+            <div className="home-quick">
 
-          {/* NOTE SECTION  */}
-          <div className="section-body">
-            <div className="sb-header">
-              <div className="sbh-left">
-                <HiMiniCalendarDateRange/>
-                <h4>PERSONAL NOTE</h4>
-              </div>
-              <div className="sbh-right">
-                <BootstrapTooltip title='View in full screen' placement='top'>
-                    <button onClick={navigateToRecent}>
-                      <HiOutlineArrowsPointingOut/>
-                    </button>
-                </BootstrapTooltip>
-
-                <BootstrapTooltip title='More setting' placement='top'>
-                   <button onClick={handleShowSetting}>
-                    <HiOutlineEllipsisHorizontal/>
-                  </button>
-                </BootstrapTooltip>
-                
-                {showSetting && (
-                  <div className="setting-icon" ref={settingRef}>
-                    <button>
-                      <HiOutlineTrash/>
-                      <p>Remove Card</p>
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-            <div className="sb-body">
-              <AgendaUser/>
             </div>
           </div>
 
