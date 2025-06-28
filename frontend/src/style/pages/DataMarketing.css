@@ -88,12 +88,12 @@
 .mdc-search-container .dm-search-box{
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: space-between;
     /* border: 1px solid red; */
     border: 1px solid #ddd;
-    border-radius: 8px;
-    /* width: 50%; */
-    width: fit-content;
+    border-radius: 4px;
+    width: 50%;
+    /* width: fit-content; */
     padding: 1px;
     padding-right: 3px;
     background-color: white !important;
@@ -754,8 +754,20 @@
         justify-content: center;
     }
     .dmcr-btn button{
-        font-size: 10px;
-        /* padding: 5px; */
+        font-size: 12px;
+        padding: 5px 6px;
+    }
+    .mdc-search-container{
+      /* border: 1px solid blue; */
+      width: 100% !important;
+    }
+    .mdc-search-container .dm-search-box{
+      width: 100% !important;
+      /* border: 1px solid red; */
+    }
+
+    .dm-search-box input{
+      width: 100%;
     }
   /* END PANEL / HEADER  */
   
@@ -797,7 +809,7 @@
 
   /* TABEL DATA MARKETING  */
   .dm-container{
-    height: 68vh;
+    height: 75vh;
     width: 95%;
     /* border: 1px solid green; */
   }

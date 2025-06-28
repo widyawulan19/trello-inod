@@ -1,86 +1,72 @@
 .summary-container {
-    /* border: 1px solid green; */
+    /* border: 1px solid blue; */
     padding: 0px 15px;
     width: 100%;
-    height: 38vh;
-    gap: 5px;
+    height: 100%;
+    gap: 10px;
     overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    align-items: center;
+    justify-content: center;
   }
-  
-  .summary-container .sec-body{
+
+  .summary-content{
     border: 1px solid #ddd;
-    border-left: 2px solid #6a11cb;
-    border-radius: 6px;
-    padding: 5px 10px;
-    width: 100%;
+    /* background-color: #eee; */
+    border-radius: 16px;
+    padding: 15px;
     cursor: pointer;
   }
-
-  .sec-body:hover{
-    background-color: #ddd;
-    
+  .summary-content:hover{
+    border: 1px solid #6a11cb;
+    box-shadow: 0px 4px 8px #6b11cb40;
   }
 
-  .sec-body .item-header{
-    /* border: 1px solid blue; */
+  .summary-content .summary-header{
+    /* border-left: 3px solid green; */
+    border-bottom: 1px solid white;
+    padding: 2px;
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
-  .item-header h4{
-    font-weight: bold;
-    font-size: 13px;
-    color: #333;
+
+  .summary-header .sh-left{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
   }
-  .item-header .summary-btn{
-    /* border: 1px solid red; */
-    gap: 5px;
+
+  .shl-icon{
+    font-size: 20px;
+    color: #6a11cb;
   }
-  .summary-btn button{
-    border: 1px solid rgba(255, 0, 0, 0);
-    border-radius: 6px;
-    padding: 5px;
-    color: #333;
+
+  .summary-header h4{
+    margin: 0px;
     font-size: 15px;
   }
-  .summary-btn button:hover{
-    background-color: #eee;
-    border: 1px solid #eee;
-  }
 
-  .sec-body .item-left{
-    /* border: 1px solid red; */
-    padding: 0px;
-  }
-  .sc-p button{
+  .summary-header .view{
+    gap: 5px;
+    color: #5320be;
     font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
   }
 
-/* MEDIA QUERIES  */
+  
 
-/* ukuran handpone kecil  */
-@media (min-width:375px) and (max-width:575px){
-  .summary-container{
-    /* border: 1px solid blue; */
-    height: 33vh;
+  /* BODY  */
+  .summary-content .summary-body{
+    margin-top: 15px;
+    /* border: 1px solid grey; */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
   }
-    .item-header h4{
-      font-size: 10px;
-    }
-    .item-header .summary-btn{
-      /* border: 1px solid blue; */
-      gap: 0px;
-      display: flex;
-      align-items: center;
-    }
-    .summary-btn button{
-      padding: 2px;
-      font-size: 10px;
-      /* border: 1px solid green; */
-      margin: 2px;
-    }
-}

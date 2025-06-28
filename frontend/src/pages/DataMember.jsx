@@ -17,6 +17,7 @@ const DataMember=()=> {
     const [filterDivisi, setFilterDivisi] = useState('')
     const [searchTerm, setSearchTerm] = useState('')
     //STATE SHOW
+    const [showSearchBar, setShowSearchBar] = useState(false)
     const [showCardSetting, setShowCardSetting] = useState(null)
     const cardSettingRef = OutsideClick(()=> setShowCardSetting(false))
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -29,6 +30,9 @@ const DataMember=()=> {
     const [showEditData, setShowEditData] = useState(false);
     const [selectedEmployee, setSelectedEmployee] = useState(null);
 
+    const handleShowSearchBar = () =>{
+      setShowSearchBar(!showSearchBar)
+    }
 
     //FUNCTION
     //1. get data employee
@@ -169,15 +173,6 @@ const DataMember=()=> {
 
             <div className="dep-left">
                 <div className="dep-btn">
-                  <div className="dep-search-box">
-                      <HiOutlineSearch />
-                      <input
-                          type="text"
-                          placeholder="Search by name..."
-                          value={searchTerm}
-                          onChange={handleSearchChange}
-                      />
-                  </div>
                   <button onClick={handleShowForm} >
                     <HiPlus className='mr-1'/>
                     ADD DATA
@@ -186,6 +181,19 @@ const DataMember=()=> {
                       <HiOutlineFilter style={{marginRight:'3px'}}/>
                       FILTER
                   </button>
+                  <div className="dep-search-box" onClick={handleShowSearchBar}>
+                      <HiOutlineSearch />
+                  </div>
+                  {showSearchBar && (
+                    <div className='search-cont'> 
+                        <input
+                            type="text"
+                            placeholder="Search by name..."
+                            value={searchTerm}
+                            onChange={handleSearchChange}
+                        /> 
+                      </div>
+                  )}
                   
                 </div>
                 {/* SHOW FILTER DROPDOWN */}
@@ -242,7 +250,7 @@ const DataMember=()=> {
 
 
           {viewMode === 'table' ? (
-            <div className="employee-table-wrapper">
+            <div className="employee-table-wrapper" >
               <table cellPadding="10" cellSpacing='0'>
                 <thead>
                   <tr>
@@ -265,16 +273,16 @@ const DataMember=()=> {
                     filteredData.map((employee, index) => (
                       <tr key={employee.employee_id || index}>
                         <td>{index + 1}</td>
-                        <td>{employee.name}</td>
-                        <td>{employee.username}</td>
-                        <td>{employee.divisi}</td>
-                        <td>{employee.jabatan}</td>
+                        <td className='name-con'>{employee.name}</td>
+                        <td className='username-con'>{employee.username}</td>
+                        <td className='divisi-con'>{employee.divisi}</td>
+                        <td className='jabatan-con'>{employee.jabatan}</td>
                         <td>
                           <div className='email-cont'>
                             {employee.email_employee}
                           </div>
                         </td>
-                        <td>{employee.nomor_wa}</td>
+                        <td className='nomor-con'>{employee.nomor_wa}</td>
                         <td className='action-tabel'>
                           <BootstrapTooltip title='Edit' placement='top'>
                              <button onClick={()=> handleShowFormEdit(employee)}>

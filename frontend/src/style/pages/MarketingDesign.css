@@ -693,14 +693,15 @@
         justify-content: center;
     }
     .mdh-search{
-        width: 90%;
+        width: 100%;
     }
     .mdh-search input{
         width: 100%;
     }
 
     .data-accept-design{
-        height: 70vh;
+        height: 75vh;
+        /* border: 1px solid blue; */
     }
 
     /* TABEL HEADER  */
