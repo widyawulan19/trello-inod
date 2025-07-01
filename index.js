@@ -5107,6 +5107,16 @@ app.get('/api/workspaces/:userId/summary', async (req, res) => {
   }
 });
 
+//PERSONAL NOTE
+app.get('/api/all-note', async(req,res)=>{
+    try{
+        const result = await client.query('SELECT * FROM personal_note ORDER BY id DESC');
+        res.json(result.rows)
+    }catch(error){
+        res.status(500).json({error:'Gagal mengambil data semua personal note'});
+    }
+})
+
 // PROFILE 
 //1. get all profile
 app.get('/api/profile', async(req,res)=>{
