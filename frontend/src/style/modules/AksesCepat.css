@@ -18,6 +18,12 @@
     border: 1px solid #6a11cb;
     box-shadow: 0px 4px 8px #6b11cb40;
 }
+.akses-box h4{
+    font-size: 12px;
+    /* border: 1px solid grey; */
+    text-align: center;
+    font-weight: bold;
+}
 .akses-icon{
     border: 1px solid #6b11cb0e;
     border-radius: 8px;
@@ -53,4 +59,26 @@
     padding: 10px;
     background: linear-gradient(90deg, #cb8411, #f7e381);
     box-shadow: 0px 4px 8px #6b11cb40;
+}
+
+
+/* MEDIA QUERY  */
+/* Large devices (desktops, ≥992px) */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+
+}
+
+/* Medium devices (tablets, ≥768px) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+
+}
+
+/* ukuran handpone besar  */
+@media (min-width: 576px) and (max-width: 767.98px){
+
+}
+
+/* ukuran handpone kecil  */
+@media (min-width:375px) and (max-width:575px){
+    
 }

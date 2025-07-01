@@ -19,7 +19,7 @@ from "react-icons/hi2";
 import '../style/pages/Workspace.css'
 import { useNavigate, useParams } from 'react-router-dom';
 import OutsideClick from '../hook/OutsideClick';
-import { createWorkspace, getWorkspacesByUserId, getWorkspaceUsers,getAdminFromWorkspace,updateWorkspaceName, updateWorkspaceDescription,getAllUsersWorkspace, deleteWorkspaceUser, archiveWorkspaceUser, getTotalUserWorkspace, getAllUsersWorkspaceAndProfil, getAllUsers, addUserToWorkspace, removeUserFromWorkspace } from '../services/ApiServices';
+import { createWorkspace, getWorkspacesByUserId, getWorkspaceUsers,getAdminFromWorkspace,updateWorkspaceName, updateWorkspaceDescription,getAllUsersWorkspace, deleteWorkspaceUser, archiveWorkspaceUser, getTotalUserWorkspace, getAllUsersWorkspaceAndProfil, getAllUsers, addUserToWorkspace, removeUserFromWorkspace, getWorkspaceSummary } from '../services/ApiServices';
 import CustomAlert from '../hook/CustomAlert';
 import Assigment from '../modules/Assigment';
 import FormNewWorkspace from '../modules/FormNewWorkspace';
@@ -28,6 +28,7 @@ import { useSnackbar } from '../context/Snackbar';
 import WorkspaceDeleteConfirm from '../modals/WorkspaceDeleteConfirm';
 import UsersTotal from '../modules/UsersTotal';
 import { useUser } from '../context/UserContext';
+import { IoHome, IoTimeSharp } from 'react-icons/io5';
 
 function NewWorkspace() {
   const {user} = useUser()
@@ -48,6 +49,7 @@ function NewWorkspace() {
   const [userWorkspace, setUserWorkspace] = useState([]);
   //total user
   const [userCount, setUserCount] = useState(null);
+  const [summary, setSummary] = useState([]);
   //load workspace
   const [workspaces, setWorkspaces] = useState([]);
   const [workspaceId, setWorkspaceId] = useState(null)
@@ -399,22 +401,41 @@ function NewWorkspace() {
           }
       }
 
+      //fetch summary 
+      useEffect(() => {
+          const fetchSummary = async () => {
+            console.log('Fetching summary for userId:', userId);
+      
+            if (!userId) {
+              console.warn('userId belum ada, fetch dibatalkan');
+              return;
+            }
+      
+           try {
+              const response = await getWorkspaceSummary(userId);
+              console.log('Hasil summary:', response.data);
+              setSummary(response.data); // langsung data array, bukan response.data.data
+            } catch (error) {
+              console.error('Gagal fetch summary:', error);
+            } 
+          };
+      
+          fetchSummary();
+        }, [userId]);
+
   return (
     <div className='workspace-container'>
       <div className="workspace-header">
         <div className="wnav">
-          <div className="wnav-btn">
-            <button onClick={navigateToHome}>
-              <HiOutlineHome className='nav-icon'/>
-              Home
-            </button>
-              <HiOutlineChevronRight size={15}/>
-            <button className='wnav-active'>
-              <HiOutlineSquaresPlus/>
+          <div className="wnav-btn-con">
+            <div className="wnav-btn">
+              <IoHome className='nav-icon'/>
+            </div>
+            <HiOutlineChevronRight size={15}/>
+            <div className="wnav-active">
               Workspace
-            </button>
+            </div>
           </div>
-          <h3>Welcome to {user.username}'s Workspace</h3>
         </div>
         <div className="wform">
           <button onClick={handleShowForm}>
@@ -439,10 +460,14 @@ function NewWorkspace() {
         {/* END CREATE WORKSPACE FORM  */}
       </div>
 
+      <div className="workspace-welcome">
+        <h3>Welcome to {user.username}'s Workspace</h3>
+        <p>
+          Mulailah mengelola proyek, tim, dan ide hebatmu di sini. Buat board baru, undang anggota, dan capai target bersama.
+        </p>
+      </div>
+
       <div className="workspace-body">
-          {/* <div className="greeting">
-            <h4>Welcome, name</h4>
-          </div> */}
           <div className="workspace-content">
             {workspaces.map(workspace=>(
               <div key={workspace.id} className="workspace-card" onClick={()=> setWorkspaceId(workspace.id)}>
@@ -492,25 +517,28 @@ function NewWorkspace() {
                 />
 
                 {/* END SHOW SETTING  */}
-                <div className="wc">
-                  {/* EDITING DESCRIPTION  */}
-                  {editingDescription === workspace.id ?(
-                    <textarea
-                      value={newDescription}
-                      onChange={(e)=> setNewDescription(e.target.value)}
-                      onBlur={() => handleSaveDescription(workspace.id)}
-                      onKeyDown={(e)=> handleKeyPressDescription(e, workspace.id)}
-                      autoFocus
-                    />
-                  ):(
-                    <p onClick={(e)=> handleEditDescription(e, workspace.id, workspace.description)}>{workspace.description}</p>
-                  )}
-                  {/* <p>{workspace.description}</p> */}
-                  <div className="wc-btm">
-                    <div className='wc-user' onClick={(e) => handleShowUser(e, workspace.id)}>
-                      <div className="user-group">
-                        {admin[workspace.id] ? (
+                
+                {/* BODY CARD WORKSPACE  */}
+                <div className="workspace-card-body">
+                  <div className="workspace-card-desc">
+                     {editingDescription === workspace.id ?(
+                      <textarea
+                        value={newDescription}
+                        onChange={(e)=> setNewDescription(e.target.value)}
+                        onBlur={() => handleSaveDescription(workspace.id)}
+                        onKeyDown={(e)=> handleKeyPressDescription(e, workspace.id)}
+                        autoFocus
+                      />
+                    ):(
+                      <p onClick={(e)=> handleEditDescription(e, workspace.id, workspace.description)}>{workspace.description}</p>
+                    )}
+                  </div>
+
+                  <div className="workspace-info">
+                    <div className="user-admin">
+                      {admin[workspace.id] ? (
                           <div className='prof-user'>
+                            {/* <IoTimeSharp className='create-icon'/> */}
                             <img 
                               src={admin[workspace.id].photo_url || 'default-avatar.png'} 
                               alt={admin[workspace.id].username}
@@ -520,40 +548,26 @@ function NewWorkspace() {
                         ) : (
                           <span></span>
                         )}
-
-                        {/* Nama Admin */}
-                        <button className='btn-date'>
-                          <HiMiniCalendar className='wc-icon'/>
-                          {formatDate(workspace.create_at)}
-                        </button>
-                          {/* MEMBER  */}
-                        <div className="btn-ts">
-                          <UsersTotal workspaceId={workspace.id}/>
-                        </div>
-                      </div>
                     </div>
-                    {/* SHOW USER  */}
-                    {showUser[workspace.id] && (
-                      <div className="user-container" ref={userRef} onClick={(e)=>e.stopPropagation()}>
-                        <Assigment 
-                          workspaceId={workspace.id} 
-                          fetchWorkspaceUser={fetchWorkspaceUser}
-                          searchTerm={searchTerm}
-                          setSearchTerm={setSearchTerm}
-                          users={users}
-                          filteredUsers={filteredUsers}
-                          handleSelectUser={handleSelectUser}
-                          handleRemoveUser={handleRemoveUser}
-                        />
-                      </div>
-                    )}
-                    {/* END SHOW USER  */}
-                    <button className='btn-nav-board' onClick={() => handleWorkspaceClick(workspace.id, userId)}>
-                      View Board
-                    </button>
+                    <div className="info-date">
+                       {/* <HiMiniCalendar className='create-icon'/> */}
+                        {formatDate(workspace.create_at)}
+                    </div>
                   </div>
+
+                  <div className="info-btm">
+                     {/* <UsersTotal workspaceId={workspace.id}/> */}
+                     {Array.isArray(summary) && summary.map((workspace) =>(
+                      <div key={workspace.workspace_id} className="summary-content">
+                         <div className="sb1">📋 Boards : {workspace.board_count}</div>
+                         <div className="sb1">📝 Lists : {workspace.list_count}</div>
+                         <div className="sb1">🗂️ Cards : {workspace.card_count}</div>
+                      </div>
+                     ))}
+                   </div>
+                 
                 </div>
-                
+
               </div>
             ))}
             {/* CARD FORM CREATE  */}

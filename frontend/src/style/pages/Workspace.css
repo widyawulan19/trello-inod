@@ -3,7 +3,7 @@
     height: 100vh;
     margin-bottom: 10px;
     margin: 15px;
-    background-color: white;
+    background-color: #F8FAFC;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
     color: #333;
@@ -27,20 +27,28 @@
     /* padding: 2px; */
     /* border: 1px solid green; */
 }
-.wnav-btn{
+.wnav-btn-con{
     /* border: 1px solid blue; */
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    gap: 2px;
+    /* gap: 2px; */
 }
-.nav-icon{
-    margin-right: 5px;
+
+.wnav-btn-con .wnav-btn{
+    /* border: 1px solid red; */
+}
+
+.wnav-btn .nav-icon{
     color: #333;
     cursor: pointer;
-    font-size: 13px;
+    font-size: 18px;
 }
-.wnav button{
+.wnav-btn .nav-icon:hover{
+    color: #5D12EB;
+}
+
+/* .wnav button{
     padding: 5px;
     font-size: 12px;
     display: flex;
@@ -54,25 +62,25 @@
 }
 .wnav button:hover{
     background: linear-gradient(to right, #6b11cb41, #2574fc41);
-}
+} */
 
-.wnav .wnav-active{
+.wnav-btn-con .wnav-active{
     color: #5D12EB;
-}
-
-.wnav h3{
+    font-size: 15px;
     font-weight: bold;
 }
 
+
+
 .wform button{
-    padding:5px 8px;
+    padding:8px 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     border-radius: 8px;
     color: white;
-    /* font-weight: bold; */
+    font-weight: bold;
     font-size: 15px;
     border: 1px solid #eee;
     background: linear-gradient(to right, #6a11cb, #2575fc);
@@ -93,36 +101,57 @@
     color: #ddd;
 }
 
+/* WORKSPACE WELCOME MESSAGE  */
+.workspace-welcome{
+    /* border: 1px solid red; */
+    padding: 0px 20px;
+    margin-top: 20px;
+}
+.workspace-welcome h3{
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    color: #333;
+}
+.workspace-welcome p{
+    margin: 0px;
+    font-size: 13px;
+    color: #333;
+}
+
 /* WORKSPACE BODY  */
 .workspace-body{
-    /* border: 1px solid red; */
+    border: 1px solid red;
     padding: 20px;
-    min-height: 80vh;
+    height: 78vh;
     position: relative;
 }
 
 .workspace-content {
-    /* border: 1px solid red; */
-    height: 75vh;
+    border: 1px solid blue;
+    height: fit-content;
     padding: 20px 0px;
-    display: flex;
-    gap: 20px;
-    overflow-x: auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    /* overflow-x: auto; */
     white-space: nowrap;
   }
-  .workspace-content > * {
+  /* .workspace-content > * {
     min-width: 250px;
     max-width: 300px;
     flex: 0 0 auto;
-  }
+  } */
 .workspace-card{
-    /* border: 1px solid red; */
-    border: 1px solid #e1d3fb;
-    background-color: #eeeeee8c;
+    border: 1px solid #c5cad2;
+    /* border: 1px solid #e1d3fb; */
+    background-color: white;
     height: fit-content;
-    border-radius: 8px;
+    border-radius: 10px;
+    height: 20vh;
     position: relative;
-    box-shadow: 0px 4px 8px #5e12eb46;
+    box-shadow: 0px 4px 8px #bdc4cd;
+    /* box-shadow: 0px 4px 8px #5e12eb46; */
 }
 /* CARD FORM CREATE  */
 .form-workspace-card{
@@ -152,8 +181,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px;
-    /* position: relative; */
+    padding: 10px 15px;
+    position: relative;
     /* border: 1px solid yellow; */
 }
 /* form setting  */
@@ -218,13 +247,13 @@
 .wc-name{
     display: flex;
     align-items:center;
-    justify-content: space-between;
+    justify-content: flex-start;
     flex-wrap: wrap;
     /* border: 1px solid red; */
     word-wrap: break-word;
     overflow-wrap: break-word;
     white-space: normal;
-    max-width: 250px; 
+    width: 90%; 
 }
 .wc-name input{
     /* border: 1px solid red; */
@@ -239,19 +268,22 @@
 
 .wc-name h5{
     font-size: 13px;
+    font-weight: bold;
     margin: 0px;
     margin-left: 5px;
     word-wrap: break-word; /* Break long words */
     word-break: break-word; /* Break long words at the end of the line */
-    max-width: 220px; /* Optional, adjust this for a max width */
+    max-width: 80vw; /* Optional, adjust this for a max width */
     overflow-wrap: break-word;
     /* border: 1px solid green; */
     /* width: 95%; */
 }
 .wc-header .setting-icon{
     cursor: pointer;
+    color: #333;
     border: 1px solid #eeeeee41;
     border-radius: 4px;
+    font-size: 20px;
 }
 .wc-header .setting-icon:hover{
     cursor: pointer;
@@ -259,10 +291,79 @@
     background-color: #ddd;
     border-radius: 4px;
 }
-.wc{
-    background-color: #fff;
-    /* border: 1px solid #ddd; */
+
+/* NEW BODY CARD WORKSPACE  */
+.workspace-card-body{
+    /* border: 1px solid blue; */
+}
+
+.workspace-card-desc{
+    /* border: 1px solid grey; */
+    padding: 0px 15px;
+}
+
+.workspace-card-desc textarea{
+    border: 1px solid #eee;
+    border-radius: 4px;
+    outline: none;
+    width: 95%;
+    padding: 5px;
+    font-size: 13px;
+}
+
+.workspace-card-desc p{
+    margin: 0px;
+    font-size: 13px;
+    height:fit-content;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    white-space: normal;    /* memastikan teks bisa wrap */
+    word-wrap: break-word;  /* memaksa kata panjang tetap dipotong biar gak overflow */
+    overflow-wrap: break-word;
+}
+
+.workspace-card-body .workspace-info{
+    /* border: 1px solid blue; */
+    padding: 2px 15px;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.workspace-info .user-admin{
     /* border: 1px solid red; */
+    gap:5px;
+}
+.user-admin .create-icon{
+    font-size: 18px;
+    color: #838383;
+    margin-right: 5px;
+}
+
+.workspace-info .info-date{
+    /* border: 1px solid red; */
+    font-size: 10px;
+    color: #838383;
+}
+
+.workspace-card-body .info-btm{
+    border: 1px solid #ddd;
+}
+.info-btm .summary-content{
+    border: 1px solid blue;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+
+.wc{
+    /* background-color: #fff; */
+    /* border: 1px solid #ddd; */
+    border: 1px solid red;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -272,6 +373,8 @@
     /* width: fit-content; */
     /* min-width: 15vw; */
     margin: 5px;
+    margin-top: 0px;
+    padding-top: 0px;
     padding: 10px;
 }
 .wc textarea{
@@ -281,14 +384,17 @@
     width: 95%;
     padding: 5px;
     font-size: 13px;
-
 }
 .wc p{
     margin: 0px;
     font-size: 13px;
-    padding-top: 10px;
+    /* padding-top: 10px; */
     height: 5vh;
     /* border: 1px solid red; */
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
     white-space: normal;    /* memastikan teks bisa wrap */
     word-wrap: break-word;  /* memaksa kata panjang tetap dipotong biar gak overflow */
     overflow-wrap: break-word;

@@ -187,6 +187,7 @@ const Home=()=> {
                 <WorkspaceSummary userId={userId}/>
               </div>
             </div>
+            
             <div className="home-notes">
               <div className="notes-header">
                 <div className="nh-left">
@@ -198,7 +199,7 @@ const Home=()=> {
                 <div className="nh-right">
                   <div className="note-btn">
                     <HiPlus/>
-                    Add Note
+                    <p>Add Note</p>
                   </div>
                 </div>
               </div>
