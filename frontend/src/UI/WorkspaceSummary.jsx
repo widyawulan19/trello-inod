@@ -62,7 +62,7 @@ const WorkspaceSummary = ({ userId }) => {
         <div  key={workspace.workspace_id} className='summary-content'>
           <div className="summary-header">
             <div className="sh-left">
-              <GoDotFill className='shl-icon'/>
+              {/* <GoDotFill className='shl-icon'/> */}
               <h4 className="summary-title">{workspace.workspace_name}</h4>
             </div>
             

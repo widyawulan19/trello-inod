@@ -18,6 +18,10 @@ import { HiOutlinePlus } from 'react-icons/hi';
 import { MdAddChart } from 'react-icons/md';
 import WorkspaceSummary from '../UI/WorkspaceSummary.jsx';
 import AgendaUser from '../UI/AgendaUser.jsx';
+import PersonalNote from '../modules/PersonalNote.jsx';
+import PersonalAgenda from '../modules/PersonalAgenda.jsx';
+import { IoCalendar, IoFlash } from 'react-icons/io5';
+import AksesCepat from '../modules/AksesCepat.jsx';
 
 const Home=()=> {
   //state
@@ -199,16 +203,44 @@ const Home=()=> {
                 </div>
               </div>
               <div className="notes-body">
-
+                <PersonalNote/>
               </div>
             </div>
           </div>
           <div className="home-body-right">
             <div className="home-agenda">
-
+              <div className="agenda-header">
+                <div className="ah-left">
+                  <div className="ahl-icon">
+                    <IoCalendar/>
+                  </div>
+                  <h4>Your Agenda</h4>
+                </div>
+                <div className="ah-right">
+                  <BsArrowsAngleExpand className='sh-expand'/>
+                </div>
+              </div>
+              <div className="agenda-body">
+                <PersonalAgenda/>
+              </div>
             </div>
-            <div className="home-quick">
 
+            <div className="home-quick">
+              <div className="quick-header">
+                <div className="quick-left">
+                  <div className="quick-icon">
+                    <IoFlash/>
+                  </div>
+                  <h4>Quick Actions</h4>
+                </div>
+                <div className="quick-right">
+                  <BsArrowsAngleExpand className='sh-expand'/>
+                </div>
+              </div>
+
+              <div className="quick-body">
+                <AksesCepat/>
+              </div>
             </div>
           </div>
 

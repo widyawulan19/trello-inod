@@ -1,0 +1,111 @@
+/* .personal-agenda-container{
+    border: 1px solid #ddd;
+    border-radius: 16px;
+    padding: 10px;
+} */
+.personal-agenda-box{
+    border-radius: 16px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    cursor: pointer;
+    margin: 10px 0px;
+}
+.personal-agenda-box:hover{
+    border: 1px solid #6a11cb;
+    box-shadow: 0px 4px 8px #6b11cb40;
+}
+
+.personal-agenda-box .pn-header{
+    /* border: 1px solid #ddd; */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.pn-header .pnh-left{
+    gap: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    /* border: 1px solid green; */
+    width: 75%;
+}
+.pnh-left .pnh-icon{
+    color: #ba81f7;
+}
+
+.pnh-left h4{
+    color: #ba81f7;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.pn-header .pnh-right{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 25%;
+    gap: 10px;
+    padding-right: 10px;
+}
+.pnh-right h3{
+    font-size: 20px;
+    font-weight: bold;
+    background: linear-gradient(90deg, #6a11cb, #ba81f7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+}
+
+.pnh-right p{
+    margin: 0px;
+    font-size: 10px;
+    color: #333;
+}
+
+
+
+
+
+.personal-agenda-box .pn-content{
+    margin: 10px 0px;
+    /* border: 1px solid red; */
+}
+.pn-content p{
+    font-size: 12px;
+}
+
+.personal-agenda-box .pn-footer{
+    /* border: 1px solid #ddd; */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.pn-footer .agenda{
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: bold;
+    border: 1px solid #6b11cb41;
+    background-color: #6b11cb41;
+    color: #6a11cb;
+    padding: 5px 7px;
+}
+.pn-footer .read{
+    /* border: 1px solid green; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    letter-spacing: 1.5px;
+    color: #ba81f7;
+}
+.read-icon{
+    margin-left: 10px;
+}
+.pn-footer .btn{
+    /* border: 1px solid green; */
+    gap: 10px;
+    color: gray;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
