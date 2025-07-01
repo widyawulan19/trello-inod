@@ -36,6 +36,7 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
+    gap: 0px;
   }
 
   .shl-icon{
@@ -46,6 +47,8 @@
   .summary-header h4{
     margin: 0px;
     font-size: 15px;
+    font-weight: bold;
+    color:  #a34dff;
   }
 
   .summary-header .view{
@@ -70,3 +73,47 @@
     align-items: center;
     justify-content: space-between;
   }
+
+  .summary-body .sb1{
+    font-size: 12px;
+  }
+
+  /* MEDIA QUERY  */
+  /* Large devices (desktops, ≥992px) */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  /* CSS laptop biasa */
+  .summary-container{
+    padding: 5px;
+  }
+}
+
+/* Medium devices (tablets, ≥768px) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+
+}
+
+/* ukuran handpone besar  */
+@media (min-width: 576px) and (max-width: 767.98px){
+  .summary-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  .summary-content{
+    width: 100%;
+  }
+}
+
+/* ukuran handpone kecil  */
+@media (min-width:375px) and (max-width:575px){
+  .summary-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  .summary-content{
+    width: 100%;
+  }
+}
