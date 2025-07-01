@@ -5057,6 +5057,42 @@ app.get('/api/workspaces/:userId/summary', async (req, res) => {
       res.status(500).json({ error: 'Internal server error' });
     }
   });
+
+  //get a summary for one workspace
+  app.get('/api/workspaces/:userId/summary/:workspaceId', async (req, res) => {
+  const { userId, workspaceId } = req.params;
+
+  const query = `
+    SELECT 
+      w.id AS workspace_id,
+      w.name AS workspace_name,
+      COUNT(DISTINCT b.id) AS board_count,
+      COUNT(DISTINCT l.id) AS list_count,
+      COUNT(c.id) AS card_count
+    FROM workspaces_users wu
+    JOIN workspaces w ON wu.workspace_id = w.id
+    LEFT JOIN boards b ON b.workspace_id = w.id
+    LEFT JOIN lists l ON l.board_id = b.id
+    LEFT JOIN cards c ON c.list_id = l.id
+    WHERE wu.user_id = $1 AND w.id = $2
+    GROUP BY w.id
+    ORDER BY w.name
+  `;
+
+  try {
+    const result = await client.query(query, [userId, workspaceId]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'Workspace summary not found for this user' });
+    }
+
+    res.json(result.rows[0]); // hanya satu workspace
+  } catch (err) {
+    console.error('Error fetching workspace summary by ID:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
   
 // PROFILE 
 //1. get all profile
