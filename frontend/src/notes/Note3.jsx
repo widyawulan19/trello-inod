@@ -1,117 +1,575 @@
-// // GET /api/uploaded-files/:cardId
-// app.get('/api/uploaded-files/:cardId', async (req, res) => {
-//   const { cardId } = req.params;
+import React, { useState,useEffect } from 'react'
+import {
+  HiOutlineHome,
+  HiMiniSlash,
+  HiOutlineSquaresPlus,
+  HiOutlineEllipsisHorizontal,
+  HiOutlineClock,
+  HiOutlineArchiveBox,
+  HiOutlinePencilSquare,
+  HiOutlineSquare2Stack,
+  HiOutlineTrash,
+  HiOutlineChevronRight,
+  HiOutlinePlus,
+  HiMiniUserGroup,
+  HiMiniCalendar,
+  HiOutlineUserGroup,
+} 
+from "react-icons/hi2";
+import '../style/pages/Workspace.css'
+import { useNavigate, useParams } from 'react-router-dom';
+import OutsideClick from '../hook/OutsideClick';
+import { createWorkspace, getWorkspacesByUserId, getWorkspaceUsers,getAdminFromWorkspace,updateWorkspaceName, updateWorkspaceDescription,getAllUsersWorkspace, deleteWorkspaceUser, archiveWorkspaceUser, getTotalUserWorkspace, getAllUsersWorkspaceAndProfil, getAllUsers, addUserToWorkspace, removeUserFromWorkspace } from '../services/ApiServices';
+import CustomAlert from '../hook/CustomAlert';
+import Assigment from '../modules/Assigment';
+import FormNewWorkspace from '../modules/FormNewWorkspace';
+import BootstrapTooltip from '../components/Tooltip';
+import { useSnackbar } from '../context/Snackbar';
+import WorkspaceDeleteConfirm from '../modals/WorkspaceDeleteConfirm';
+import UsersTotal from '../modules/UsersTotal';
+import { useUser } from '../context/UserContext';
+import { IoHome } from 'react-icons/io5';
 
-//   try {
-//     const result = await client.query(
-//       `SELECT * FROM uploaded_files WHERE card_id = $1 ORDER BY uploaded_at DESC`,
-//       [cardId]
-//     );
+function NewWorkspace() {
+  const {user} = useUser()
+  const userId = user.id;
 
-//     res.status(200).json(result.rows);
-//   } catch (error) {
-//     console.error('Error fetching files:', error);
-//     res.status(500).json({ error: 'Failed to fetch uploaded files' });
-//   }
-// });
+  //state
+  const navigate = useNavigate();
+  const [showUser, setShowUser] = useState({});
+  const [showForm, setShowForm] = useState(false);
+  const [showSetting, setShowSetting] = useState(false);
+  const showRef = OutsideClick(()=> setShowForm(false));
+  const settingRef = OutsideClick(()=> setShowSetting(false));
+  const userRef = OutsideClick(()=> setShowUser(false))
+  //create workspace
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [users, setUsers] = useState([]);
+  const [userWorkspace, setUserWorkspace] = useState([]);
+  //total user
+  const [userCount, setUserCount] = useState(null);
+  //load workspace
+  const [workspaces, setWorkspaces] = useState([]);
+  const [workspaceId, setWorkspaceId] = useState(null)
+  const [admin, setAdmin] = useState({});
+  const [activeWorkspace, setActiveWorkspace] = useState(null);
+  //state edit workspace
+  const [editingName, setEditingName] = useState(null);
+  const [editingDescription, setEditingDescription] = useState(null);
+  const [newName, setNewName] = useState('');
+  const [newDescription, setNewDescription] = useState('');
+  //delete confirm
+  const [selectedUserId, setSelectedUserId] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [selectedWorkspaceId, setSelectedWorkspaceId] = useState(null)
+  const [selectedWorkspaceName, setSelectedWorkspaceName] = useState(null);
+  //alert
+  const {showSnackbar} = useSnackbar();
 
-// // DELETE /api/uploaded-files/:id
-// app.delete('/api/uploaded-files/:id', async (req, res) => {
-//   const { id } = req.params;
+  //state assign
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [showDropdown, setShowDropdown]= useState(false);
+  const [allUsers, setAllUsers] = useState([]);
 
-//   try {
-//     // Ambil dulu file_url untuk referensi hapus dari Cloudinary kalau perlu
-//     const findResult = await client.query(
-//       `SELECT file_url FROM uploaded_files WHERE id = $1`,
-//       [id]
-//     );
+  //DEBUG
+  console.log('File New Workspace menerima userId dari userContex:', userId)
+  console.log('file new workspace menerima data workspace:', workspaces);
+  console.log('workspace id:', workspaceId)
 
-//     if (findResult.rows.length === 0) {
-//       return res.status(404).json({ error: 'File not found' });
-//     }
+  //onclose form
+  const onCloseForm =()=>{
+    setShowForm(false);
+  }
 
-//     const fileUrl = findResult.rows[0].file_url;
+  //alert
+  const [alertInfo, setAlertInfo] = useState({
+    severity: '',
+    title: '',
+    message: '',
+    showAlert: false,
+  });
 
-//     // (Opsional) Hapus file dari Cloudinary kalau disimpan di sana
-//     // Pastikan kamu parsing public_id dari URL
-//     // const publicId = ... // logic parsing
-//     // await cloudinary.uploader.destroy(publicId, { resource_type: 'raw' });
+  //function
+  //1. fungsi navigate home
+  const navigateToHome = () =>{
+    navigate('/');
+  }
+  //2. show form create workspace
+  const handleShowForm = (e) =>{
+    e.stopPropagation();
+    setShowForm((prev)=> !prev);
+  }
+  const handleShowSetting = (e, workspaceId)=>{
+    e.stopPropagation();
+    setActiveWorkspace(workspaceId); 
+    // setShowSetting((prev)=> !prev);
+    setShowSetting((prev) => ({
+      ...prev,  // Menyalin status sebelumnya
+      [workspaceId]: !prev[workspaceId],  // Toggle hanya untuk workspace yang dipilih
+    }));
+  }
 
-//     // Hapus dari database
-//     await client.query(`DELETE FROM uploaded_files WHERE id = $1`, [id]);
+  const handleShowUser = (e, workspaceId) =>{
+    e.stopPropagation();
+    setActiveWorkspace(workspaceId); 
+    setShowUser((prev)=> ({
+      ...prev,
+      [workspaceId]: !prev[workspaceId],
+    }))
+  }
 
-//     res.status(200).json({ message: 'File deleted successfully' });
-//   } catch (error) {
-//     console.error('Error deleting file:', error);
-//     res.status(500).json({ error: 'Failed to delete file' });
-//   }
-// });
+  //3. fungsi create workspace
+  const handleSubmit = async(e) =>{
+    e.preventDefault();
+    try{
+      const response = await createWorkspace({name, description});
+      setName('');
+      setDescription('');
+      setAlertInfo({
+        severity: 'success',
+        title: 'Success',
+        message: 'successfully create a new workspace!',
+        showAlert: true,
+      });
+      // Re-fetch workspaces setelah berhasil create
+      const workspaceResult = await getWorkspacesByUserId(userId);
+      setWorkspaces(workspaceResult.data);
+      console.log('Create workspace successfully:', response.data); 
+    }catch(error){
+      setAlertInfo({
+        severity: 'error',
+        title: 'error',
+        message: 'Error to create a new workspace!',
+        showAlert: true,
+      });
+      console.error('Error create workspace:', error);
+    }
+  }
+  //4.close alert
+  const handleCloseAlert = () => {
+    setAlertInfo({ ...alertInfo, showAlert: false });
+  };
+  //5. load all workspace user
+  const fetchWorkspaceUser = async () => {
+    try {
+      const workspaceResult = await getWorkspacesByUserId(userId);
+      setWorkspaces(workspaceResult.data);
+      fetchAdmins(workspaceResult.data);  // Jika ada data admin yang perlu diambil
+    } catch (error) {
+      console.error("Error fetching workspace data:", error);
+    }
+  };
+  useEffect(() => {
+    if (userId) {
+      fetchWorkspaceUser();
+    }
+  }, [userId]);
+  //6. load user 
+  useEffect(()=> {
+    const fetchUsers = async()=>{
+      try{
+        const response = await getWorkspaceUsers(userId);
+        setUsers(response.data);
+      }catch(error){
+        console.error('Failed to fetch user data');
+      }
+    };
+    if(userId){
+      fetchUsers();
+    }
+  },[userId])
+  //7. format date
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);  // Membuat objek Date dari string tanggal
+    const options = { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    };  // Menentukan format yang diinginkan: "Day Month Year"
+    
+    return date.toLocaleDateString('id-ID', options); // Format tanggal Indonesia
+  };
+  //8. navigate to workspace id
+  const handleWorkspaceClick = (workspaceId, userId) =>{
+    navigate(`/workspaces/${workspaceId}`,{ state: { userId } })
+  }
+  //9.fetch data admin
+  const fetchAdmins = async (workspaces) => {
+    const adminData = {};
+    await Promise.all(
+      workspaces.map(async (workspace) => {
+        try {
+          const response = await getAdminFromWorkspace(workspace.id);
+          const admin = response.data.admins[0]; // ambil admin pertama
+          adminData[workspace.id] = admin || null;
+        } catch (error) {
+          console.error(`Error fetching admin for workspace ${workspace.id}:`, error);
+          adminData[workspace.id] = null;
+        }
+      })
+    );
+    setAdmin(adminData);
+  };
+  
+  //10. generate profil initials
+  const generateProfileInitials = (username) => {
+    if (!username || typeof username !== 'string') return ''; // Memastikan username adalah string
+  
+    const words = username.split(/[_\s]+/); // Pisahkan dengan underscore atau spasi
+    const initials = words.map(word => word.charAt(0).toUpperCase()).join('');
+  
+    return initials.slice(0, 2); // Ambil maksimal 2 huruf
+  };
+  //11. generate backgorund
+  const generateBackgroundColor = (username) => {
+    if (!username) return '#cccccc'; // Warna default jika username tidak ada
+    let hash = 0;
+    for (let i = 0; i < username.length; i++) {
+      hash = username.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return `hsl(${hash % 360}, 70%, 60%)`; // Warna unik berdasarkan username
+  };
+
+  //12. fungsi delete workspace
+  const handleDeleteClick = (e, workspaceId, workspaceName, userId) => {
+    e.stopPropagation();
+    setSelectedWorkspaceId(workspaceId);
+    setSelectedWorkspaceName(workspaceName);
+    setSelectedUserId(userId);
+    setShowDeleteModal(true);
+  };
+  
+  const confirmDelete = async () => {
+    try {
+      console.log('Deleting workspace with id:', selectedWorkspaceId, 'and user:', selectedUserId);
+      const response = await deleteWorkspaceUser(selectedWorkspaceId, selectedUserId);
+      showSnackbar('Workspace deleted successfully', 'success');
+      console.log('Workspace deleted successfully', response.data);
+      fetchWorkspaceUser()
+    } catch (error) {
+      showSnackbar('Failed to delete workspace', 'error');
+      console.error('Error deleting workspace:', error);
+    } finally {
+      setShowDeleteModal(false);
+      setSelectedWorkspaceId(null);
+      setSelectedUserId(null);
+      setSelectedWorkspaceName('');
+    }
+  };
+  
+  const handleCancleDelete = (e) => {
+    e.stopPropagation();
+    setShowDeleteModal(false);
+    setSelectedWorkspaceId(null);
+    setSelectedUserId(null);
+    setSelectedWorkspaceName('');
+  };
+  
+
+  //13. fungsi archive workspace user
+  const archiveWorkspaceUserData = async(workspaceId)=>{
+    try{
+      const respone = await archiveWorkspaceUser(workspaceId);
+      console.log("Succesfully archive workspace data")
+      showSnackbar('Succesfully archive workspace', 'success')
+      fetchWorkspaceUser()
+    }catch(error){
+      console.error('Error archive data:', error)
+      showSnackbar('Failed to archive workspace', 'error')
+    }
+  }
 
 
-// <div className="de-panel">
-//             <div className="dep-right">
-//               <h3>👋 Meet the Team</h3>
-//               <div className="dep-desc">
-//                 <strong style={{fontSize:'12px'}}>Satu Tim. Banyak Cerita. Satu Visi.</strong>
-//                 <p>
-//                   Halaman ini adalah tempat kamu bisa mengenal lebih dekat siapa saja orang-orang hebat yang membangun dan menggerakkan Inod Studio, mulai dari latar belakang mereka, peran di tim, hingga kontribusinya di setiap proyek.
-//                 </p>
-//               </div>
-//             </div>
+  const handleEditName = (e, workspaceId, currentName) =>{
+    e.stopPropagation()
+    setEditingName(workspaceId);
+    setNewName(currentName);
+  }
 
-//             <div className="dep-left">
-//                 <div className="dep-btn">
-//                   <button onClick={handleShowForm} >
-//                     <HiPlus className='mr-1'/>
-//                     ADD DATA
-//                   </button>
-//                   <button onClick={()=> setIsDropdownOpen(!isDropdownOpen)}>
-//                       <HiOutlineFilter style={{marginRight:'3px'}}/>
-//                       FILTER
-//                   </button>
-//                 </div>
-//                 {/* SHOW FILTER DROPDOWN */}
-//                 {isDropdownOpen && (
-//                   <ul className="dropdown-menu" ref={isDropdownOpenRef}>
-//                     <div className="dm-title">
-//                       Filter by:
-//                     </div>
-//                     <li onClick={() => handleFilterData('')}>All DATA</li>
-//                     <li onClick={() => handleFilterData('produksi')}>PRODUKSI</li>
-//                     <li onClick={() => handleFilterData('marketing')}>MARKETING</li>
-//                     <li onClick={() => handleFilterData('desain')}>DESAIN</li>
-//                     <li onClick={() => handleFilterData('operational')}>OPERATIONAL</li>
-//                   </ul>
-//                 )}
+  const handleEditDescription = (e, workspaceId, currentDescription) => {
+    e.stopPropagation();
+    setEditingDescription(workspaceId);
+    setNewDescription(currentDescription); // Mengatur nilai awal input deskripsi
+  };
 
-//                 <div className='dep-search'>
-//                   <div className="dep-search-box">
-//                       <HiOutlineSearch />
-//                       {/* Input pencarian */}
-//                       <input
-//                           type="text"
-//                           placeholder="Search by name..."
-//                           value={searchTerm}
-//                           onChange={handleSearchChange}
-//                       />
-//                   </div>
-//                 </div>
-//             </div>
-//           </div>
+  const handleSaveName = async(workspaceId) =>{
+    try{
+      await updateWorkspaceName(workspaceId, {name:newName})
+      setEditingName(null);
+      fetchWorkspaceUser();
+    }catch(error){
+      console.error('Error updating workspace name:', error)
+    }
+  }
+  const handleSaveDescription = async(workspaceId)=>{
+    try{
+      await updateWorkspaceDescription(workspaceId, {description:newDescription})
+      setEditingDescription(null)
+      fetchWorkspaceUser();
+    }catch(error){
+      console.error('Error updating workspace description:', error)
+    }
+  }
 
-//           <div className="view-toggle">
-//               <button
-//                 className={viewMode === 'table' ? 'active' : ''}
-//                 onClick={() => setViewMode('table')}
-//               >
-//                 <HiMiniTableCells size={15}/>
-//                 Table View
-//               </button>
-//               <button
-//                 className={viewMode === 'card' ? 'active' : ''}
-//                 onClick={() => setViewMode('card')}
-//               >
-//                 <HiOutlineCreditCard size={15}/>
-//                 Card View
-//               </button>
-//           </div>
+    // Fungsi untuk menangani saat tombol Enter ditekan
+    const handleKeyPressName = (e, workspaceId) => {
+      if (e.key === 'Enter') {
+        handleSaveName(workspaceId); // Simpan nama jika Enter ditekan
+        e.stopPropagation();
+      }
+    };
+  
+    const handleKeyPressDescription = (e, workspaceId) => {
+      if (e.key === 'Enter') {
+        handleSaveDescription(workspaceId); // Simpan deskripsi jika Enter ditekan
+        e.stopPropagation();
+      }
+    };
+
+    //fetch all user from workspace id
+    const fetchUsers = async()=>{
+      try{
+        const response = await getAllUsersWorkspaceAndProfil(workspaceId);
+        setUsers(response.data);
+      }catch(error){
+        console.error('Error fetching users:', error)
+      }
+    }
+    useEffect(()=>{
+      if(workspaceId){
+        fetchUsers();
+      }
+    },[]);
+
+    //fetch all user in login program
+    useEffect(()=>{
+        const fetchAllUser = async()=>{
+            try{
+                const response = await getAllUsers();
+                setAllUsers(response.data);
+            }catch(error){
+                console.error('Error fetch all data users:', error);
+            }
+        }
+        fetchAllUser();
+    },[])
+
+
+    // function search user
+    useEffect(()=>{
+        if (searchTerm) {
+            const filtered = allUsers.filter((allUser) =>
+              allUser.username.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            setFilteredUsers(filtered);
+            setShowDropdown(true);
+          } else {
+            setShowDropdown(false);
+          }
+    }, [searchTerm, allUsers]);
+
+   //select user
+      const handleSelectUser = async (allUser) =>{
+          try{
+              await addUserToWorkspace(workspaceId, allUser.id, {role:"member"});
+              showSnackbar(`${allUser.username} berhasil ditambahkan ke workspace`,'success')
+              setSearchTerm("");
+              setShowDropdown(false);
+              fetchUsers();
+              fetchWorkspaceUser();
+          }catch(error){
+              console.error("Error adding user to workspace:", error);
+              showSnackbar('Failed adding user to workspace','error')
+          }
+      }
+  
+  
+      //remove user from workspace
+      const handleRemoveUser = async (userId) =>{
+          try{
+              await removeUserFromWorkspace(workspaceId, userId);
+              setUsers(users.filter(user => user.id !== userId));
+              showSnackbar('Success removing user from workspace','success')
+              fetchWorkspaceUser();
+              fetchUsers();
+          }catch(error){
+              showSnackbar('Failed to removing user from workspace','error')
+              console.error('Error removing user from workspace:', error);
+          }
+      }
+
+  return (
+    <div className='workspace-container'>
+      <div className="workspace-header">
+        <div className="wnav">
+          <div className="wnav-btn-con">
+            <div className="wnav-btn">
+              <IoHome className='nav-icon'/>
+            </div>
+            <HiOutlineChevronRight size={15}/>
+            <div className="wnav-active">
+              Workspace
+            </div>
+          </div>
+        </div>
+        <div className="wform">
+          <button onClick={handleShowForm}>
+            <HiOutlinePlus className='wform-icon'/>
+           CREATE WORKSPACE
+          </button>
+        </div>
+        {/* CREATE WORKSPACE FORM  */}
+          <CustomAlert
+            severity={alertInfo.severity}
+            title={alertInfo.title}
+            message={alertInfo.message}
+            showAlert={alertInfo.showAlert}
+            onClose={handleCloseAlert}
+          />
+
+          {showForm && (
+            
+              <FormNewWorkspace userId={userId} fetchWorkspaceUser={fetchWorkspaceUser} onCloseForm={onCloseForm}/>
+
+          )}
+        {/* END CREATE WORKSPACE FORM  */}
+      </div>
+
+      <div className="workspace-welcome">
+        <h3>Welcome to {user.username}'s Workspace</h3>
+        <p>Mulailah mengelola proyek, tim, dan ide hebatmu di sini.
+Buat board baru, undang anggota, dan capai target bersama.</p>
+      </div>
+
+      <div className="workspace-body">
+          {/* <div className="greeting">
+            <h4>Welcome, name</h4>
+          </div> */}
+          <div className="workspace-content">
+            {workspaces.map(workspace=>(
+              <div key={workspace.id} className="workspace-card" onClick={()=> setWorkspaceId(workspace.id)}>
+                <div className="wc-header">
+                  <div className="wc-name">
+                    <HiOutlineSquaresPlus/>
+                    {/* Editing nama  */}
+                    {editingName === workspace.id ?(
+                      <input
+                      type="text"
+                      value={newName}
+                      onChange={(e) => setNewName(e.target.value)}
+                      onBlur={() => handleSaveName( workspace.id)} 
+                      onKeyDown={(e) => handleKeyPressName(e, workspace.id)}
+                      autoFocus
+                    />
+                    ):(
+                      <h5 onClick={(e) => handleEditName(e,workspace.id, workspace.name)}>{workspace.name}</h5>
+                    )}
+                  </div>
+                  <BootstrapTooltip title='Workspace Setting' placement='top'>
+                    <HiOutlineEllipsisHorizontal className='setting-icon' onClick={(e) => handleShowSetting(e, workspace.id)} />
+                  </BootstrapTooltip>
+                </div>
+                {/* SHOW SETTING  */}
+                {showSetting[workspace.id] && activeWorkspace === workspace.id && (
+                  <div className="setting-wc" ref={settingRef}>
+                    <button onClick={()=> archiveWorkspaceUserData(workspace.id)}>
+                      <HiOutlineArchiveBox className='swc-icon'/>
+                      Archive
+                    </button>
+                    <div className="delete">
+                      <button onClick={(e) => handleDeleteClick(e, workspace.id, workspace.name, userId)} className="flex items-center gap-1 text-red-500 hover:text-red-700">
+                        <HiOutlineTrash className='swc-delete'/>
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                )}
+                {/* DELETE CONFIRM MODAL  */}
+                <WorkspaceDeleteConfirm
+                  isOpen={showDeleteModal}
+                  workspaceId={selectedWorkspaceId}
+                  onConfirm={confirmDelete}
+                  onCancel = {handleCancleDelete}
+                  workspaceName={selectedWorkspaceName}
+                />
+
+                {/* END SHOW SETTING  */}
+                <div className="wc">
+                  {/* EDITING DESCRIPTION  */}
+                  {editingDescription === workspace.id ?(
+                    <textarea
+                      value={newDescription}
+                      onChange={(e)=> setNewDescription(e.target.value)}
+                      onBlur={() => handleSaveDescription(workspace.id)}
+                      onKeyDown={(e)=> handleKeyPressDescription(e, workspace.id)}
+                      autoFocus
+                    />
+                  ):(
+                    <p onClick={(e)=> handleEditDescription(e, workspace.id, workspace.description)}>{workspace.description}</p>
+                  )}
+                  {/* <p>{workspace.description}</p> */}
+                  <div className="wc-btm">
+                    <div className='wc-user' onClick={(e) => handleShowUser(e, workspace.id)}>
+                      <div className="user-group">
+                        {admin[workspace.id] ? (
+                          <div className='prof-user'>
+                            <img 
+                              src={admin[workspace.id].photo_url || 'default-avatar.png'} 
+                              alt={admin[workspace.id].username}
+                            />
+                            <span>{admin[workspace.id].username}</span>
+                          </div>
+                        ) : (
+                          <span></span>
+                        )}
+
+                        {/* Nama Admin */}
+                        <button className='btn-date'>
+                          <HiMiniCalendar className='wc-icon'/>
+                          {formatDate(workspace.create_at)}
+                        </button>
+                          {/* MEMBER  */}
+                        <div className="btn-ts">
+                          <UsersTotal workspaceId={workspace.id}/>
+                        </div>
+                      </div>
+                    </div>
+                    {/* SHOW USER  */}
+                    {showUser[workspace.id] && (
+                      <div className="user-container" ref={userRef} onClick={(e)=>e.stopPropagation()}>
+                        <Assigment 
+                          workspaceId={workspace.id} 
+                          fetchWorkspaceUser={fetchWorkspaceUser}
+                          searchTerm={searchTerm}
+                          setSearchTerm={setSearchTerm}
+                          users={users}
+                          filteredUsers={filteredUsers}
+                          handleSelectUser={handleSelectUser}
+                          handleRemoveUser={handleRemoveUser}
+                        />
+                      </div>
+                    )}
+                    {/* END SHOW USER  */}
+                    <button className='btn-nav-board' onClick={() => handleWorkspaceClick(workspace.id, userId)}>
+                      View Board
+                    </button>
+                  </div>
+                </div>
+                
+              </div>
+            ))}
+            {/* CARD FORM CREATE  */}
+            <div className="form-workspace-card" onClick={handleShowForm}>
+                <HiOutlinePlus className='fwc-icon'/>
+                <p> CREATE A WORKSPACE</p>
+            </div>
+          </div>
+      </div>
+      
+    </div>
+  )
+}
+
+export default NewWorkspace
