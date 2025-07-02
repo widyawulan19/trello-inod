@@ -1,8 +1,8 @@
 .duplicate-container{
     background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding:  5px 10px;
+    border: 1px solid #5D12EB;
+    border-radius: 8px;
+    /* padding:  5px 10px; */
     width: 100%;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     display: flex;
@@ -16,27 +16,29 @@
     font-size: 10px;
 } */
 .db-header{
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    align-items: center;
-    font-weight: bold;
-    font-size: 16px;
-    padding: 5px 10px;
-    border-bottom: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+  font-weight: bold;
+  font-size: 16px;
+  padding: 5px 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ddd;
+  border-radius: 8px;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+  background-color: #5D12EB;
+  color: white;
 }
 .dbh-icon{
-    cursor: pointer;
-    font-size: 12px;
-    border: 1px solid white;
-    border-radius: 4px;
+  cursor: pointer;
+  font-size: 20px;
+  color: white;
 }
-.dbh-icon:hover{
-    background-color: #f5f5f5;
 
-}
-.duplicate-container p{
-    font-size: 10px;
+.db-header p{
+    font-size: 12px;
     font-weight: bold;
     margin: 0px;
 }
@@ -48,9 +50,10 @@
     display: flex;
     justify-content: space-between;
     gap: 5px;
+    padding: 5px 10px;
 }
 .db-select{
-    font-size: 10px;
+    font-size: 12px;
     width: 60%;
     background-color: white;
     border: 1px solid #ddd;
@@ -72,7 +75,7 @@
     border-radius: 4px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     cursor: pointer;
     gap: 5px;
 }
@@ -81,6 +84,13 @@
 }
 
 /* DUPLICATE SEARCH  */
+
+.duplicate-box-con{
+    padding: 0px 10px;
+    /* border: 1px solid blue; */
+    width: 100%;
+}
+
 .duplicate-search{
     width: 100%;
     padding: 5px;
@@ -89,26 +99,25 @@
 .duplicate-search input {
     width: 100% ;
     padding: 5px ;
-    border: 0.5px solid #ccc;
+    border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 10px;
   }
   .duplicate-search input:hover {
-    border: 0.5px solid #6E30DC;
+    border: 1px solid #6E30DC;
   }
   .duplicate-search input:focus {
-    border: 0.5px solid #6E30DC;
+    border: 1px solid #6E30DC;
     box-shadow: 0px 4px 10px #5e12eb44;
     outline: none;
   }
 
 .db-list {
     list-style: none;
-    padding: 0;
     margin: 0;
     font-size: 10px;
     width: 100%;
-    max-height: 150px;
+    max-height: 100px;
     overflow-y: auto;
     border: 1px solid #ddd;
     border-radius: 4px;

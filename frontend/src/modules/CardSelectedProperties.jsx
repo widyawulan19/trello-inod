@@ -39,7 +39,8 @@ const CardSelectedProperties=({cardId})=> {
                 justifyContent:'flex-start',
                 fontSize: '10px',
                 fontWeight: 'bold',
-                border: `1px solid ${priority.color}`
+                border:'1px solid transparent'
+                // border: `1px solid ${priority.color}`
               }}
             >
               <HiMiniLightBulb style={{ color: priority.color, marginRight: '5px' }} />

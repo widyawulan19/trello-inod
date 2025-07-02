@@ -243,7 +243,7 @@ const Card=({card,boards, lists,userId,listName, listId,fetchBoardDetail,fetchLi
 
 
   return (
-    <div style={{position:'relative'}}>
+    <div style={{position:'relative'}} >
      <div className='card-container'>
         <div className="cc-top-header">
             <div className="cctop-status">
@@ -372,18 +372,6 @@ const Card=({card,boards, lists,userId,listName, listId,fetchBoardDetail,fetchLi
     {showModal && (
         <div className='dc-modal'>
             <div className="dcm-conten">
-                {/* <CardDetailModals/> */}
-                {/* <CardDetail   
-                    userId={userId}
-                    cardId={card.id} 
-                    onClose={handleCloseModal} 
-                    workspaceId={workspaceId} 
-                    boardId={boardId} 
-                    listId={listId} 
-                    fetchBoardDetail={fetchBoardDetail}
-                    fetchLists={fetchLists}
-                    fetchCardList={fetchCardList}
-                /> */}
                 <NewCardDetail
                      userId={userId}
                      cardId={card.id} 

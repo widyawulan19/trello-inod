@@ -69,34 +69,34 @@ const MoveBoard = ({ boardId, userId, onClose, fetchBoards }) => {
             {/* HiMiniArrowLeftStartOnRectangle */}
 
             {showWorkspace && (
-                <>
+                <div className='move-content-box'>
                  {/* Pencarian workspace */}
-                <div className='move-search'>
-                    <input
-                        type='text'
-                        placeholder='Search workspaces...'
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                </div>
+                    <div className='move-search'>
+                        <input
+                            type='text'
+                            placeholder='Search workspaces...'
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                    </div>
 
-                {/* Daftar workspace */}
-                <ul className='workspace-list-container'>
-                    {filteredWorkspaces.length > 0 ? (
-                        filteredWorkspaces.map((ws) => (
-                            <li
-                                key={ws.id}
-                                className={`workspace-list-item ${selectedWorkspace?.id === ws.id ? 'selected' : ''}`}
-                                onClick={() => setSelectedWorkspace(ws)}
-                            >
-                                {ws.name}
-                            </li>
-                        ))
-                    ) : (
-                        <li className='wlc-nomove'>No workspaces found</li>
-                    )}
-                </ul>
-                </>
+                    {/* Daftar workspace */}
+                    <ul className='workspace-list-container'>
+                        {filteredWorkspaces.length > 0 ? (
+                            filteredWorkspaces.map((ws) => (
+                                <li
+                                    key={ws.id}
+                                    className={`workspace-list-item ${selectedWorkspace?.id === ws.id ? 'selected' : ''}`}
+                                    onClick={() => setSelectedWorkspace(ws)}
+                                >
+                                    {ws.name}
+                                </li>
+                            ))
+                        ) : (
+                            <li className='wlc-nomove'>No workspaces found</li>
+                        )}
+                    </ul>
+                </div>
             )}
         </div>
     );

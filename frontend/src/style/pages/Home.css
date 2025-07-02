@@ -232,8 +232,9 @@
     border-radius: 16px;
     box-shadow: 0px 4px 8px #6b11cb40;
     width: 100%;
-    height: 70%;
+    height: 65%;
     margin-bottom: 10px;
+    padding-bottom: 5px;
 }
 .summary-header{
     /* border-bottom: 1px solid #ddd; */
@@ -288,7 +289,7 @@
 }
 
 .home-summary .body-s{
-    margin-top: 30px;
+    /* margin-top: 30px; */
     /* border: 1px solid magenta; */
     height: 40vh;
 }
@@ -724,8 +725,8 @@
     height: 45vh;
    }
 
-   .quick-body{
-    /* height: 18vh; */
+   .home-quick{
+    height: 60%;
     /* border: 1px solid red; */
    }
 }

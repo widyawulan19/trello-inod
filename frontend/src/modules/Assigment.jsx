@@ -138,11 +138,11 @@ const Assigment=({
                     </BootstrapTooltip>
                 </div>
                 <div className="wuser-action">
-                    <BootstrapTooltip title='View User' placement='top'>
+                    {/* <BootstrapTooltip title='View User' placement='top'>
                         <button className='prof-acc'>
                             <RiAccountPinCircleLine/>
                         </button>
-                    </BootstrapTooltip>
+                    </BootstrapTooltip> */}
                     
                     <BootstrapTooltip title='Remove User' placement='top'>
                         <button className='remove-btn' onClick={()=> handleRemoveUser(user.id)}>

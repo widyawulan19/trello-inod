@@ -292,6 +292,7 @@ export const getArchiveMarketingDesign = () => axios.get(`${API_URL}/archive-mar
 
 //WORKSPACE USER SUMMARY
 export const getWorkspaceSummary = (userId) => axios.get(`${API_URL}/workspaces/${userId}/summary`)
+export const getWorkspaceSummaryByWorkspaceId = (userId,workspaceId) => axios.get(`${API_URL}/workspaces/${userId}/summary/${workspaceId}`)
 
 //PROFILE
 export const getAllProfile = () => axios.get(`${API_URL}/profile`)
