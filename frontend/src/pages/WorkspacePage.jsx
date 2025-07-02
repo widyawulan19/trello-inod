@@ -2,7 +2,7 @@ import React, { useEffect, useState,useCallback } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import '../style/pages/WorkspacePage.css';
 import {HiOutlineSquaresPlus,HiMiniSlash, HiOutlineEllipsisHorizontal,HiOutlineClock,HiMiniLightBulb,HiChevronRight, HiOutlinePlus, HiMiniXMark, HiOutlineSquare2Stack,HiMiniArrowLeftStartOnRectangle, HiOutlineArchiveBox, HiOutlineTrash, HiOutlineChevronRight, HiOutlineXMark, HiMiniCalendar, HiPlus } from 'react-icons/hi2';
-import { HiOutlineChartBar } from "react-icons/hi";
+import { FaPlus } from "react-icons/fa";
 import { CiAlignTop } from "react-icons/ci";
 import { addPriorityToBoard, createBoard, deletePropertyFromBoard, duplicateBoards, getALlPriorities, getBoardById, getBoardPriorities, getBoardsWorkspace, getWorkspaceById, updateBoardDescription, updateBoardName, archiveBoard, deleteBoard } from '../services/ApiServices';
 import OutsideClick from '../hook/OutsideClick';
@@ -12,6 +12,7 @@ import DuplicateBoard from '../fitur/DuplicateBoard';
 import { useSnackbar } from '../context/Snackbar';
 import BoardDeleteConfirm from '../modals/BoardDeleteConfirm';
 import BoardProperties from '../modules/BoardProperties';
+import { IoTime } from 'react-icons/io5';
 
 const WorkspacePage=()=> {
   const location = useLocation();
@@ -372,19 +373,14 @@ const handleNavigateToWorkspace = () =>{
     <div className='wp-container'>
       <div className="wp-header">
         <div className="nav">
-          <button onClick={handleNavigateToWorkspace}>
-            <HiOutlineSquaresPlus className='nav-icon'/>
-            {workspace.name}
-          </button>
-          <HiOutlineChevronRight className='nav-arrow'/>
-          <button className='nav-active'>
-            {/* <HiOutlineChartBar className='nav-icon'/> */}
-            <CiAlignTop className='ni-active'/>
-            Boards
-          </button>
+          <h5> WORKSPACE {workspace.name}</h5>
+          <p onClick={handleNavigateToWorkspace}>{workspace.name}  /  Boards</p>
         </div>
         <div className="more-action">
-          <button className='create-board-btn' onClick={handleShowForm}>CREATE NEW BOARD</button>
+          <div className="create-board-btn" onClick={handleShowForm}>
+            <FaPlus className='cbb-icon'/>
+            <p>Create Button</p>
+          </div>
         </div>
       </div>
       {/* CREATE A NEW BOARD  */}
@@ -422,6 +418,13 @@ const handleNavigateToWorkspace = () =>{
         </form>
       )}
       {/* END CREATE A NEW BOARD  */}
+
+      <div className="board-title">
+        <h3>Your Board, Your Space</h3>
+        <p>
+          Organize tasks, collaborate with your team, and keep projects moving forward — all in one place.
+        </p>
+      </div>
 
       <div className="wp-body-container" >
         <div className="wp-content">
@@ -512,10 +515,10 @@ const handleNavigateToWorkspace = () =>{
                 {/* <p>{board.description}</p> */}
                 {/* <p>{formatDate(board.create_at)}</p> */}
                 <div className="wp-btm">
-                  <button>
-                    <HiMiniCalendar className='wp-icon'/>
+                  <div className='wp-create'>
+                    <IoTime className='wp-icon'/>
                     {formatDate(board.create_at)}
-                  </button>
+                  </div>
                   <button 
                     className='view'
                     onClick={()=>handleNavigateToBoardList(workspaceId, board.id)}

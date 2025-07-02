@@ -27,7 +27,7 @@ const UsersTotal=({workspaceId})=> {
 
       return (
         <div className='ut-container'>
-            <HiOutlineUserGroup className='wc-icon'/>
+            {/* <HiOutlineUserGroup className='wc-icon'/> */}
             <p>{userCount} members</p>
         </div>
         

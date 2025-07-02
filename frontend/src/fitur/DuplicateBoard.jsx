@@ -77,7 +77,7 @@ const DuplicateBoard = ({ boardId, userId, onClose, fetchBoards }) => {
             </div>
 
             {showWorkspace && (
-                <>
+                <div className='duplicate-box-con'>
                 {/* SELECT WORKSPACE  */}
                 <div className="duplicate-search">
                     <input
@@ -103,7 +103,7 @@ const DuplicateBoard = ({ boardId, userId, onClose, fetchBoards }) => {
                         <li>No workspace found</li>
                     )}
                 </ul>
-                </>
+                </div>
             )}
         </div>
     );

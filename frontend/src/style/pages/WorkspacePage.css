@@ -4,15 +4,19 @@
     height: 97%;
     margin-bottom: 10px;
     margin: 15px;
-    background-color: white;
+    background-color: #F8FAFC;
     border-radius: 8px;
     color: #333;
 
     position: relative;
 }
+
+/* HEADER  */
 .wp-header{
     border-bottom: 1px solid #ddd;
-    padding: 0px 10px;
+    border-radius: 8px;
+    background-color: white;
+    padding: 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -20,46 +24,46 @@
 }
 .wp-header .nav{
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     color: #333;
+    gap: 2px;
     cursor: pointer;
     margin-left: 10px;
     /* border: 1px solid green; */
 }
-.wp-header .nav button{
-    font-size: 12px;
-}
-.wp-header .nav button:hover{
-    background: linear-gradient(to right, #6b11cb41, #2574fc41);
-}
-.nav-icon{
-    margin-right: 5px;
-    color: #333;
-    cursor: pointer;
-    font-size: 13px;
-}
-.nav-arrow{
+
+.nav h5{
+    font-weight: bold;
     font-size: 15px;
+    color: #333;
+    letter-spacing: 0.5px;
 }
-.ni-active{
-    color: #5D12EB;
-    margin-right: 5px;
+
+.nav p{
+    width: 100%;
+    font-size: 12px;
+    color: #5e5e5e;
+    text-align: left;
     cursor: pointer;
-    font-size: 13px;
 }
-.nav .nav-active{
+.nav p:hover{
     color: #5D12EB;
 }
+
 .more-action .create-board-btn{
     border: 1px solid #5D12EB;
-    border-radius: 4px;
+    border-radius: 8px;
     background: linear-gradient(to right, #6a11cb, #2575fc);
     color: white;
     font-weight: bold;
-    font-size: 12px;
-    padding: 5px;
+    font-size: 13px;
+    padding: 10px 15px;
+    gap: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .more-action .create-board-btn:hover{
     background: linear-gradient(to right, #2575fc, #6a11cb);
@@ -177,7 +181,26 @@
     color: white;
 
 }
-/* Body  */
+
+/* BOARD TITLE  */
+.board-title{
+    /* border: 1px solid green; */
+    padding: 5px 15px;
+    padding-top: 10px;
+}
+.board-title h3{
+    font-weight: bold;
+    font-size: 18px;
+    letter-spacing: 0.5px;
+}
+.board-title p{
+    margin: 0px;
+    font-size: 12px;
+    color: #5e5e5e;
+}
+
+
+/* BOARD BODY  */
 .wp-body-container{
     /* border: 1px solid blue; */
     padding: 20px;
@@ -194,6 +217,7 @@
     gap: 20px;
     overflow-x: auto;
     width: 100%;
+    height: 40vh;
     min-width: 80vw;
 }
 .wpf-create{
@@ -219,13 +243,18 @@
     color: grey;
 }
 .wp-card{
-    border: 1px solid #e1d3fb;
+    border: 1px solid #c5cad2;
     /* border: 1px solid orangered; */
-    background-color: #eeeeee41;
+    background-color: white;
     min-height:15vh ;
-    /* width: 20%; */
-    border-radius: 8px;
+    padding: 5px;
+    width: 30%;
+    border-radius: 10px;
     position: relative;
+    cursor: pointer;
+}
+.wp-card:hover{
+    border: 1px solid #5D12EB;
     box-shadow: 0px 4px 8px #5e12eb46;
 }
 
@@ -475,27 +504,27 @@
     align-items: center;
     justify-content: space-between;
 }
-.wp-btm button{
+.wp-btm .wp-create{
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 5px;
     border-radius: 4px;
-    border: 1px solid #eee;
     background-color: #fff;
     font-size: 10px;
+    color: #5e5e5e;
 }
 .wp-btm .view{
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 5px;
-    border-radius: 4px;
+    padding: 5px 15px;
+    border-radius: 8px;
     border: 1px solid #5D12EB;
     background-color: #5D12EB;
     cursor: pointer;
     color: #fff;
-    /* font-weight: bold; */
+    font-weight: bold;
     font-size: 12px;
     gap: 5px;
 }
@@ -504,6 +533,8 @@
 }
 .wp-icon{
     margin-right: 5px;
+    font-size: 15px;
+    color: #5e5e5e;
 }
 /* end body  */
 
@@ -511,12 +542,16 @@
 /* MOVE  */
 .workspace-move-modal{
     position: absolute;
-    top: 50%;
+    top: 70%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 150;
-    box-shadow: 0px 4px 8px #5e12eb46;
+    /* box-shadow: 0px 4px 8px #5e12eb46; */
     border-radius: 4px;
+    /* border: 1px solid red; */
+    height: 100%;
+    width: 100%;
+    /* background-color: red; */
     /* border: 1px solid rgba(255, 255, 255, 0); */
 }
 .duplicate-modal{
@@ -524,13 +559,12 @@
     border-radius: 4px;
     position: absolute;
     z-index: 99;
-    background-color: rgba(255, 255, 255, 0);
-    padding-top: 20px;
-    /* position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 150;/ */
+    top: 20%;
+    width: 100%;
+    height: 100%;
+    /* background-color: red; */
+    /* background-color: rgba(255, 255, 255, 0); */
+    /* padding-top: 20px; */
 }
 /* END MOVE  */
 
@@ -544,12 +578,21 @@
     left: 85%;
     /* right: 0; */
   }
+  .wp-card{
+    width: 40%;
+  }
 }
 
 @media (min-width: 768px) and (max-width: 991.98px){
     .bform-workspace{
         /* border: 1px solid green; */
         left: 80%;
+  }
+  .wp-body-container{
+    padding: 10px;
+  }
+    .wp-card{
+    width: 50%;
   }
 }
 
@@ -559,6 +602,14 @@
   .bform-workspace{
     /* border: 1px solid blue; */
     left: 78%;
+  }
+
+  .wp-body-container{
+    padding: 10px 5px;
+  }
+
+   .wp-card{
+    width: 60%;
   }
 }
 
@@ -577,6 +628,11 @@
     .wp-header{
         /* border: 1px solid blue; */
         padding: 0px 2px;
+        /* flex-direction: column; */
+    }
+
+    .create-board-btn p{
+        display: none;
     }
     .wp-header .nav{
         /* border: 1px solid green; */
@@ -587,30 +643,33 @@
         justify-content: flex-start;
         padding: 0px 3px;
     }
-    .wp-header .nav button{
-        /* border: 1px solid blue; */
-        padding: 3px;
+    .nav h5{
+        /* border: 1px solid red; */
         text-align: left;
-        font-size: 10px;
-        /* font-weight: bold; */
         width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
     }
-    .nav-icon{
-        font-size: 12px;
-    }
-    .nav-arrow{
-        display: none;
-    }
+
     .more-action .create-board-btn{
         font-size: 8px;
-        /* text-align: left; */
-        /* border: 1px solid red; */
-        padding: 5px;
-        
+        padding: 10px;   
+    }
+    .create-board-btn .cbb-icon{
+        font-size: 15px;
+    }
+
+
+   .wp-card{
+      width: 90%;
     }
 
 }
 /* END MEDIA QUERY */
+
+/* HEIGHT MEDIA QUERY  */
+/* HEIGHT BREAKPOIN  */
+@media  (min-height:400px) and (max-height:730px){
+    .wp-content{
+        height: 50vh;
+        /* border: 1px solid red; */
+    }
+}

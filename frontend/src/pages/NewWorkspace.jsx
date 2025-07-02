@@ -16,10 +16,11 @@ import {
   HiOutlineUserGroup,
 } 
 from "react-icons/hi2";
+import { TbListCheck } from "react-icons/tb";
 import '../style/pages/Workspace.css'
 import { useNavigate, useParams } from 'react-router-dom';
 import OutsideClick from '../hook/OutsideClick';
-import { createWorkspace, getWorkspacesByUserId, getWorkspaceUsers,getAdminFromWorkspace,updateWorkspaceName, updateWorkspaceDescription,getAllUsersWorkspace, deleteWorkspaceUser, archiveWorkspaceUser, getTotalUserWorkspace, getAllUsersWorkspaceAndProfil, getAllUsers, addUserToWorkspace, removeUserFromWorkspace, getWorkspaceSummary } from '../services/ApiServices';
+import { createWorkspace, getWorkspacesByUserId, getWorkspaceUsers,getAdminFromWorkspace,updateWorkspaceName, updateWorkspaceDescription,getAllUsersWorkspace, deleteWorkspaceUser, archiveWorkspaceUser, getTotalUserWorkspace, getAllUsersWorkspaceAndProfil, getAllUsers, addUserToWorkspace, removeUserFromWorkspace, getWorkspaceSummary, getWorkspaceSummaryByWorkspaceId } from '../services/ApiServices';
 import CustomAlert from '../hook/CustomAlert';
 import Assigment from '../modules/Assigment';
 import FormNewWorkspace from '../modules/FormNewWorkspace';
@@ -29,6 +30,8 @@ import WorkspaceDeleteConfirm from '../modals/WorkspaceDeleteConfirm';
 import UsersTotal from '../modules/UsersTotal';
 import { useUser } from '../context/UserContext';
 import { IoHome, IoTimeSharp } from 'react-icons/io5';
+import { HiViewBoards } from 'react-icons/hi';
+import { PiCardsFill } from 'react-icons/pi';
 
 function NewWorkspace() {
   const {user} = useUser()
@@ -49,7 +52,10 @@ function NewWorkspace() {
   const [userWorkspace, setUserWorkspace] = useState([]);
   //total user
   const [userCount, setUserCount] = useState(null);
-  const [summary, setSummary] = useState([]);
+  const [workspaceSummaries, setWorkspaceSummaries] = useState({});
+
+
+
   //load workspace
   const [workspaces, setWorkspaces] = useState([]);
   const [workspaceId, setWorkspaceId] = useState(null)
@@ -402,26 +408,38 @@ function NewWorkspace() {
       }
 
       //fetch summary 
-      useEffect(() => {
-          const fetchSummary = async () => {
-            console.log('Fetching summary for userId:', userId);
-      
-            if (!userId) {
-              console.warn('userId belum ada, fetch dibatalkan');
-              return;
-            }
-      
-           try {
-              const response = await getWorkspaceSummary(userId);
-              console.log('Hasil summary:', response.data);
-              setSummary(response.data); // langsung data array, bukan response.data.data
-            } catch (error) {
-              console.error('Gagal fetch summary:', error);
-            } 
-          };
-      
-          fetchSummary();
-        }, [userId]);
+    const fetchSummaries = async (workspaces) => {
+      const summaryData = {};
+
+      await Promise.all(
+        workspaces.map(async (workspace) => {
+          try {
+            const res = await getWorkspaceSummaryByWorkspaceId(userId, workspace.id);
+            summaryData[workspace.id] = res.data;
+          } catch (err) {
+            console.error(`Error fetching summary for workspace ${workspace.id}:`, err);
+            summaryData[workspace.id] = null;
+          }
+        })
+      );
+
+      setWorkspaceSummaries(summaryData);
+    };
+
+
+
+    useEffect(() => {
+  if (userId && workspaces.length > 0) {
+    fetchSummaries(workspaces);
+    fetchAdmins(workspaces); // bisa jalan barengan
+  }
+}, [userId, workspaces]);
+
+
+
+
+
+
 
   return (
     <div className='workspace-container'>
@@ -470,6 +488,7 @@ function NewWorkspace() {
       <div className="workspace-body">
           <div className="workspace-content">
             {workspaces.map(workspace=>(
+              
               <div key={workspace.id} className="workspace-card" onClick={()=> setWorkspaceId(workspace.id)}>
                 <div className="wc-header">
                   <div className="wc-name">
@@ -535,7 +554,7 @@ function NewWorkspace() {
                   </div>
 
                   <div className="workspace-info">
-                    <div className="user-admin">
+                    <div className="user-admin" onClick={(e)=> handleShowUser(e, workspace.id)}>
                       {admin[workspace.id] ? (
                           <div className='prof-user'>
                             {/* <IoTimeSharp className='create-icon'/> */}
@@ -543,7 +562,8 @@ function NewWorkspace() {
                               src={admin[workspace.id].photo_url || 'default-avatar.png'} 
                               alt={admin[workspace.id].username}
                             />
-                            <span>{admin[workspace.id].username}</span>
+                            <p>{admin[workspace.id].username}  & <UsersTotal workspaceId={workspace.id}/> </p>
+                            <p></p>
                           </div>
                         ) : (
                           <span></span>
@@ -553,27 +573,54 @@ function NewWorkspace() {
                        {/* <HiMiniCalendar className='create-icon'/> */}
                         {formatDate(workspace.create_at)}
                     </div>
-                  </div>
 
-                  <div className="info-btm">
-                     {/* <UsersTotal workspaceId={workspace.id}/> */}
-                     {Array.isArray(summary) && summary.map((workspace) =>(
-                      <div key={workspace.workspace_id} className="summary-content">
-                         <div className="sb1">📋 Boards : {workspace.board_count}</div>
-                         <div className="sb1">📝 Lists : {workspace.list_count}</div>
-                         <div className="sb1">🗂️ Cards : {workspace.card_count}</div>
+                    {/* SHOW USER  */}
+                    {showUser[workspace.id] && (
+                      <div className="user-container" ref={userRef} onClick={(e)=>e.stopPropagation()}>
+                        <Assigment 
+                          workspaceId={workspace.id} 
+                          fetchWorkspaceUser={fetchWorkspaceUser}
+                          searchTerm={searchTerm}
+                          setSearchTerm={setSearchTerm}
+                          users={users}
+                          filteredUsers={filteredUsers}
+                          handleSelectUser={handleSelectUser}
+                          handleRemoveUser={handleRemoveUser}
+                        />
                       </div>
-                     ))}
-                   </div>
-                 
+                    )}
+                  </div>
+                  
+                </div>
+
+
+                <div className="summary-counts">
+                  {workspaceSummaries[workspace.id] ? (
+                    <ul>
+                      <li> <HiViewBoards/> {workspaceSummaries[workspace.id].board_count} boards</li>
+                      <li> <TbListCheck/> {workspaceSummaries[workspace.id].list_count} lists</li>
+                      <li> <PiCardsFill/> {workspaceSummaries[workspace.id].card_count} cards</li>
+                      {/* <li> <UsersTotal workspaceId={workspace.id}/> </li> */}
+                    </ul>
+                  ) : (
+                    <p>Loading summary...</p>
+                  )}
+                  <div className='btn-nav-board' onClick={() => handleWorkspaceClick(workspace.id, userId)}>
+                    View Board
+                  </div>
                 </div>
 
               </div>
             ))}
             {/* CARD FORM CREATE  */}
             <div className="form-workspace-card" onClick={handleShowForm}>
-                <HiOutlinePlus className='fwc-icon'/>
-                <p> CREATE A WORKSPACE</p>
+              <div className="fwc-icon">
+                  <HiOutlinePlus/>
+              </div>
+              <h4> CREATE A WORKSPACE</h4>
+              <p>
+                Start a new project and collaborate with your team
+              </p>
             </div>
           </div>
       </div>

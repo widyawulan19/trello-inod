@@ -29,6 +29,7 @@ import DuplicateList from '../fitur/DuplicateList'
 import ListDeleteConfirm from '../modals/ListDeleteConfirm'
 import { useSnackbar } from '../context/Snackbar'
 import { useUser } from '../context/UserContext'
+import { FaChevronRight, FaPlus } from 'react-icons/fa6'
 
 const BoardList=()=> {
     //STATE
@@ -327,22 +328,18 @@ const handleNavigateToBoard = (workspaceId,boardId) =>{
     <div className='bl-container'>
         <div className="bl-header">
             <div className="blnav">
-                <button onClick={()=>handleNavigateToWorkspace(workspaceId)}>
-                    <HiOutlineChartBar className='blnav-icon'/>
-                    {boards.name}
-                </button>
-                <HiOutlineChevronRight className='blnav-arrow'/>
-                <button className='bln-active'>
-                    <HiOutlineListBullet className='bln-icon'/>
-                    Board List
-                </button>
+                <h4>{boards.name} Boards</h4>
+                <div className="blnav-sub" onClick={()=>handleNavigateToWorkspace(workspaceId)}>
+                    <p>{boards.name}</p>
+                    <HiOutlineChevronRight/>
+                    <p>Board List</p>
+                </div>
             </div>
             <div className="more-action">
-                <button
-                    className='btn-create-list'
-                    onClick={handleShowListForm}
-                >CREATE NEW LIST</button>
-                {/* <button onClick={handleRefetchBoard}>REFRESH</button> */}
+                <div className="btn-create-list" onClick={handleShowListForm}>
+                    <FaPlus/>
+                    <p>Create List</p>
+                </div>
             </div>
             {showListForm && (
                <div className='fl-container' ref={listFormRef}>
@@ -449,14 +446,13 @@ const handleNavigateToBoard = (workspaceId,boardId) =>{
 
                             <div className="form-card-wrapper">
                                 <div className="form-card">
-                                    <button  className='fc-cont' onClick={(e)=> handleShowForm(e, list.id)}>
-                                        <HiPlus/>
+                                    <div className="fc-cont" onClick={(e)=> handleShowForm(e, list.id)}>
+                                         <HiPlus/>
                                         Add Card
-                                    </button>
-                                    
-                                    <button className='card-count'>
+                                    </div>
+                                    <div className="card-count">
                                         <HiOutlineCreditCard style={{marginRight:'5px'}}/>
-                                    </button>
+                                    </div>
                                 </div>
                                 {showForm[list.id]&&(
                                     <div className='cc-form-card' ref={formRef}>

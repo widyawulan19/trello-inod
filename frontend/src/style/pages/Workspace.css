@@ -121,37 +121,38 @@
 
 /* WORKSPACE BODY  */
 .workspace-body{
-    border: 1px solid red;
+    /* border: 1px solid red; */
     padding: 20px;
     height: 78vh;
     position: relative;
 }
 
 .workspace-content {
-    border: 1px solid blue;
+    /* border: 1px solid blue; */
     height: fit-content;
     padding: 20px 0px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 30px;
-    /* overflow-x: auto; */
     white-space: nowrap;
   }
-  /* .workspace-content > * {
-    min-width: 250px;
-    max-width: 300px;
-    flex: 0 0 auto;
-  } */
+
 .workspace-card{
     border: 1px solid #c5cad2;
-    /* border: 1px solid #e1d3fb; */
+    width: 100%;
     background-color: white;
     height: fit-content;
     border-radius: 10px;
-    height: 20vh;
+    height: 22vh;
+    /* padding-bottom: 5px; */
     position: relative;
+    cursor: pointer;
     box-shadow: 0px 4px 8px #bdc4cd;
     /* box-shadow: 0px 4px 8px #5e12eb46; */
+}
+.workspace-card:hover{
+    border: 1px solid #ae8aeb;
+    box-shadow: 0px 4px 8px #5e12eb46;
 }
 /* CARD FORM CREATE  */
 .form-workspace-card{
@@ -163,17 +164,34 @@
      flex-direction: column;
      align-items: center;
      justify-content: center;
-     box-shadow: 0px 4px 8px #5e12eb46;
+    box-shadow: 0px 4px 8px #bdc4cd;
      cursor: pointer;
-     height:10vh ;
+     height:22vh ;
+     padding: 20px;
 }
-.form-workspace-card p{
+.form-workspace-card:hover{
+     box-shadow: 0px 4px 8px #5e12eb46;
+}
+.form-workspace-card h4{
     margin: 0;
     font-size: 15px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+.form-workspace-card p{
+    margin: 0px;
+    font-size: 12px;
+    color: #5e5e5e;
 }
 .fwc-icon{
     font-size: 20px;
     font-weight: bold;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 5px;
+    background-color: #ddd;
+    color: #333;
+    margin-bottom: 5px;
 }
 /* END CARD FORM CREATE  */
 
@@ -300,6 +318,8 @@
 .workspace-card-desc{
     /* border: 1px solid grey; */
     padding: 0px 15px;
+    margin: 3px 0px;
+    height: 7vh;
 }
 
 .workspace-card-desc textarea{
@@ -312,35 +332,75 @@
 }
 
 .workspace-card-desc p{
-    margin: 0px;
+    /* margin: 0px;
     font-size: 13px;
     height:fit-content;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    white-space: normal;    /* memastikan teks bisa wrap */
-    word-wrap: break-word;  /* memaksa kata panjang tetap dipotong biar gak overflow */
+    white-space: normal; 
+    word-wrap: break-word; 
+    overflow-wrap: break-word; */
+    margin: 0px;
+    font-size: 13px;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* jumlah baris maksimum */
+    -webkit-box-orient: vertical;
+    line-height: 1.4em; /* line spacing */
+    max-height: calc(1.4em * 3); /* hitung sesuai jumlah baris */
+    word-wrap: break-word;
     overflow-wrap: break-word;
+    white-space: normal;
+    
 }
 
 .workspace-card-body .workspace-info{
     /* border: 1px solid blue; */
     padding: 2px 15px;
-    margin-top: 8px;
+    /* margin-top: 8px; */
     display: flex;
     align-items: center;
     justify-content: space-between;
+    position: relative;
+}
+
+.workspace-info .user-container{
+    position: absolute;
+    top: 100%; 
+    left: 0; 
+    background-color: white;
+    border: 1px solid #ae8aeb;
+    border-radius: 8px;
+    padding: 10px 7px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    z-index: 10; 
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 3px;
+    font-size: 15px;
 }
 
 .workspace-info .user-admin{
     /* border: 1px solid red; */
     gap:5px;
 }
-.user-admin .create-icon{
-    font-size: 18px;
-    color: #838383;
-    margin-right: 5px;
+
+.user-admin .prof-user{
+    /* border: 1px solid blue; */
+    gap: 5px;
+}
+
+.prof-user p{
+    font-size: 12px;
+    color: #5e5e5e;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
 }
 
 .workspace-info .info-date{
@@ -350,95 +410,41 @@
 }
 
 .workspace-card-body .info-btm{
-    border: 1px solid #ddd;
+    /* border: 1px solid #ddd; */
 }
 .info-btm .summary-content{
-    border: 1px solid blue;
+    /* border: 1px solid blue; */
     display: flex;
     align-items: center;
     justify-content: flex-start;
 }
 
+/* SUMMARY COUNT  */
+.summary-counts{
+    padding: 3px 15px;
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.summary-counts ul{
+    /* border: 1px solid blue; */
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: flex-start;
+}
+.summary-counts li{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    gap: 5px;
+    color: #5e5e5e;
+}
 
-.wc{
-    /* background-color: #fff; */
-    /* border: 1px solid #ddd; */
-    border: 1px solid red;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    border-radius: 8px;
-    min-height: 15vh;
-    /* width: fit-content; */
-    /* min-width: 15vw; */
-    margin: 5px;
-    margin-top: 0px;
-    padding-top: 0px;
-    padding: 10px;
-}
-.wc textarea{
-    border: 1px solid #eee;
-    border-radius: 4px;
-    outline: none;
-    width: 95%;
-    padding: 5px;
-    font-size: 13px;
-}
-.wc p{
-    margin: 0px;
-    font-size: 13px;
-    /* padding-top: 10px; */
-    height: 5vh;
-    /* border: 1px solid red; */
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    white-space: normal;    /* memastikan teks bisa wrap */
-    word-wrap: break-word;  /* memaksa kata panjang tetap dipotong biar gak overflow */
-    overflow-wrap: break-word;
-    /* color: #ccccc; */
-}
-.wc .wc-btm{
-    /* border: 1px solid red; */
-    display: flex;
-    /* flex-direction: column; */
-    align-items: flex-end;
-    justify-content: space-between;
-    padding: 0px;
-    position: relative;
-    width: 100%;
-    margin-top: 10px;
-}
-.wc-btm button{
-    padding: 2px;
-    border: 1px solid white;
-    border-radius: 4px;
-    /* background-color: white; */
-    font-size: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-/* .wc-btm button:hover{
-    border: 1px solid #eee;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-} */
-.wc .wc-user{
-    padding: 2px;
-    border-radius: 4px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    gap:5px;
-    cursor: pointer;
-    /* border: 1px solid #eee; */
-    /* box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); */
-    font-size: 10px;
-    margin: 0px;
-}
+
+
 .user-group{
     /* border: 1px solid green; */
     display: flex;
@@ -466,43 +472,23 @@
     font-size: 15px;
     margin-right: 5px;
 }
-.wc-btm .user-container{
-    position: absolute;
-    top: 40px; /* Sesuaikan dengan posisi yang diinginkan */
-    right: 0; /* Menempel ke kanan */
-    background-color: white;
-    /* border: 1px solid #ddd; */
-    border-radius: 4px;
-    padding: 10px 7px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
-    z-index: 10; /* Pastikan lebih tinggi dari elemen lain */
-    display: flex;
-    flex-direction: column;
-    /* align-items: center; */
-    justify-content: flex-start;
-    gap: 3px;
-    font-size: 15px;
-}
+
 /* END WORKSPACE BODY  */
 
-.wc-btm .btn-date{
-    border: 1px solid white;
-    background-color: white;
-}
+
 /* button navigate to board  */
-.wc-btm .btn-nav-board{
-    padding: 5px;
+ .btn-nav-board{
+    padding: 5px 10px;
+    border-radius: 8px;
     border: 1px solid #5D12EB ;
     background: linear-gradient(to bottom, #6E30DC, #5D12EB);
     color: white;
+    font-size: 12px;
     font-weight: bold;
+    cursor: pointer;
 }
-.wc-btm .btn-nav-board:hover{
-    padding: 5px;
-    border: 1px solid #5D12EB ;
-    background: linear-gradient(to bottom, #5D12EB, #6E30DC);
-    color: white;
-    font-weight: bold;
+.btn-nav-board:hover{
+    box-shadow: 0px 4px 8px #5e12eb46;
 }
 
 /* FORM CREATE WORKSPACE -> FORMNEWWORKSPACE  */
@@ -620,15 +606,16 @@
     /* border: 1px solid green; */
     display: flex;
     align-items: center;
-    /* padding: 2px; */
     justify-content: flex-start;
     height: 100%;
+    /* margin-left: 3px; */
 }
 .ut-container p{
     /* border: 1px solid grey; */
     height: 100%;
+    margin-left: 3px;
     padding: 0px;
-    font-size: 10px;
+    font-size: 12px;
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -637,6 +624,79 @@
 /* END USER TOTAL */ 
 
 /* MEDIA QUERY BREAKPOINT  */
+/* Extra large devices (large desktops, ≥1200px) */
+@media (min-width: 1200px) and (max-width:1500px) {
+  /* CSS monitor besar */
+    .workspace-content{
+    /* border: 1px solid green; */
+    /* height: 75vh; */
+    overflow-y: auto;
+    gap: 15px;
+  }
+}
+
+/* Large devices (desktops, ≥992px) */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  /* CSS laptop biasa */
+  .workspace-body{
+    /* border: 1px solid red; */
+    padding: 10px;
+  }
+  .workspace-content{
+    /* border: 1px solid green; */
+    height: 75vh;
+    overflow-y: auto;
+    gap: 15px;
+    grid-template-columns: repeat(2, 1fr)
+  }
+  .workspace-card{
+  }
+}
+
+/* Medium devices (tablets, ≥768px) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  /* CSS tablet atau iPad */
+    .workspace-body{
+    /* border: 1px solid red; */
+    padding: 10px;
+  }
+  .workspace-content{
+    /* border: 1px solid green; */
+    height: 75vh;
+    overflow-y: auto;
+    gap: 15px;
+    grid-template-columns: repeat(2, 1fr)
+  }
+}
+
+/* ukuran handpone besar  */
+@media (min-width: 576px) and (max-width: 767.98px){
+.workspace-body{
+    /* border: 1px solid red; */
+    padding: 10px 20px;
+  }
+  .workspace-content{
+    /* border: 1px solid green; */
+    height: 75vh;
+    overflow-x: auto;
+    gap: 10px;
+    padding: 10px;
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .workspace-card{
+    height: 24vh;
+  }
+
+  .btn-nav-board{
+    padding: 5px;
+    font-size: 10px;
+  }
+  .form-workspace-card{
+    display: none;
+  }
+}
+
 
 /* Ukuran layar iPhone 7 adalah 375px x 667px (atau 375 x 667) */
 @media (min-width: 375px) and (max-width:667px){
@@ -666,9 +726,31 @@
         display: none;
     }
 
+    .workspace-welcome p{
+        display: none;
+    }
+
     .workspace-body{
         padding: 5px;
+        
+    }
+    .workspace-content{
+        /* border: 1px solid green; */
+        height: 75vh;
+        overflow-y: auto;
+        gap: 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+    }
+    .workspace-card{
+        height: 26vh;
     }
 }
 
+/* HEIGHT BREAKPOIN  */
+@media  (min-height:400px) and (max-height:730px){
+
+}
 /* END MEDIA QUERY BREAKPOINT  */
