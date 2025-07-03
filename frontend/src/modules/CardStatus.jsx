@@ -3,6 +3,7 @@ import { getStatusByCardId, getAllStatus, updateStatus } from '../services/ApiSe
 import '../style/modules/CardStatus.css';
 import { HiArrowDown, HiArrowUturnLeft, HiCheckCircle, HiChevronDown, HiFlag, HiMiniEye, HiMiniXCircle, HiXMark } from 'react-icons/hi2';
 import { FaCheckCircle } from 'react-icons/fa';
+import { FaXmark } from 'react-icons/fa6';
 
 const CardStatus = ({ 
     cardId,
@@ -40,10 +41,10 @@ const CardStatus = ({
     }
 
     return (
-        <div className='status-container'>
+        <div className='card-status-container'>
             <div className="status-header">
                 <h5>CARD STATUS</h5>
-                <HiXMark onClick={onClose}  size={18} className='sch-icon'/>
+                <FaXmark onClick={onClose}  size={20} className='sch-icon'/>
             </div>
             <div className="sc-content">
                 {/* <h5>Status Kartu Saat ini</h5> */}

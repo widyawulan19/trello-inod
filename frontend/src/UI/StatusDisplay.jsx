@@ -73,7 +73,7 @@ const StatusDisplay = ({
                 display:'flex',
                 flexDirection:'column',
                 justifyContent:'flex-start',
-                position:'relative'
+                position:'relative',
             }}
         >
             {currentStatus ? (
@@ -139,13 +139,16 @@ const StatusDisplay = ({
                         position:'absolute',
                         top:'100%',
                         right:'0px',
-                        padding:'5px',
+                        padding:'10px',
                         border:'1px solid #ddd',
                         boxShadow: '0px 4px 8px #5e12eb1e',
-                        borderRadius:'4px',
+                        borderRadius:'8px',
                         backgroundColor:'white',
                         zIndex:'99',
-                        width:'100%'
+                        width:'100%',
+                        display:'flex',
+                        alignItems:'center',
+                        justifyContent:'center'
                     }}
                 >
                     <CardStatus

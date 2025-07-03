@@ -6,6 +6,7 @@ import '../style/modules/Labels.css'
 import OutsideClick from '../hook/OutsideClick';
 import BootstrapTooltip from '../components/Tooltip';
 import { useSnackbar } from '../context/Snackbar';
+import { FaXmark } from 'react-icons/fa6';
 
 const Label = ({ cardId, fetchCardDetail, labels, setLabels, fetchLabels, onClose }) => {
     const [allLabels, setAllLabels] = useState([]);
@@ -116,6 +117,7 @@ const Label = ({ cardId, fetchCardDetail, labels, setLabels, fetchLabels, onClos
     }
 
     const handleShowColors = (labelId, e) =>{
+        setShowSetting(false);
         e.stopPropagation();
         if(showColor === labelId){
             setShowColor(null);
@@ -124,8 +126,9 @@ const Label = ({ cardId, fetchCardDetail, labels, setLabels, fetchLabels, onClos
         }
     }
 
-    const handleCloseColor = () =>{
-        setShowColor(false)
+    const handleCloseColor = (e) =>{
+        setShowColor(false);
+        e.stopPropagation();
     }
     
     //FUNGSI DELETE LABEL DARI DAFTAR LABELS
@@ -168,7 +171,7 @@ const Label = ({ cardId, fetchCardDetail, labels, setLabels, fetchLabels, onClos
                     CARD LABELS
                 </h5>
                 <BootstrapTooltip title='Close' placement='top'>
-                    <HiXMark onClick={onClose} className='l-close'/>
+                    <FaXmark onClick={onClose} className='l-close'/>
                 </BootstrapTooltip>
             </div>
            
@@ -179,8 +182,8 @@ const Label = ({ cardId, fetchCardDetail, labels, setLabels, fetchLabels, onClos
                 <div className='labels-cont'>
                     <h5 style={{
                         fontSize:'13px',
-                        // fontWeight:'bold',
-                        color:'#333',
+                        fontWeight:'bold',
+                        color:'#4F5966',
                         borderBottom:'1px solid #ddd',
                         marginBottom:'5px',
                         paddingBottom:'5px'
@@ -224,8 +227,8 @@ const Label = ({ cardId, fetchCardDetail, labels, setLabels, fetchLabels, onClos
                     <h5
                         style={{
                         fontSize:'13px',
-                        // fontWeight:'bold',
-                        color:'#333',
+                        fontWeight:'bold',
+                        color:'#4F5966',
                         borderBottom:'1px solid #ddd',
                         marginBottom:'5px',
                         paddingBottom:'5px'
@@ -238,22 +241,7 @@ const Label = ({ cardId, fetchCardDetail, labels, setLabels, fetchLabels, onClos
                                 onClick={() => handleSelectLabel(label.id)}
                                 className='lb-content'
                                 style={{
-                                    // padding: "5px 10px",
-                                    // fontSize: '10px',
-                                    // cursor: "pointer",
-                                    // width:'15vw',
-                                    // backgroundColor:'red',
                                     backgroundColor: label.bg_color,
-                                    // border:'1px solid #eee',
-                                    // fontWeight:'bold',
-                                    // color:'#333',
-                                    // borderRadius: '8px',
-                                    // marginBottom: '4px',
-                                    // gap:'3px',
-                                    // display: 'flex',
-                                    // alignItems: 'center',
-                                    // justifyContent: 'space-between',
-                                    // position:'relative'
                                 }}
                             >
                                 {label.name}
@@ -277,7 +265,8 @@ const Label = ({ cardId, fetchCardDetail, labels, setLabels, fetchLabels, onClos
                                         <div className="bg-color-list">
                                             <div className='color-label-header'>
                                                 <h4>Select Color Labe</h4>
-                                                <HiXMark onClick={handleCloseColor}/>
+                                                <FaXmark onClick={(e)=> handleCloseColor(e)}/>
+                                                {/* <HiXMark onClick={handleCloseColor}/> */}
                                             </div>
                                             <div className="color-label-con">
                                                 {bgColorOption.map(color => (
@@ -311,8 +300,8 @@ const Label = ({ cardId, fetchCardDetail, labels, setLabels, fetchLabels, onClos
                     <h5
                         style={{
                         fontSize:'13px',
-                        // fontWeight:'bold',
-                        color:'#333',
+                        fontWeight:'bold',
+                        color:'#4F5966',
                         borderBottom:'1px solid #ddd',
                         marginBottom:'5px',
                         paddingBottom:'5px',

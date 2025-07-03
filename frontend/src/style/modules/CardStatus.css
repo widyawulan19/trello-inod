@@ -1,21 +1,22 @@
-.status-container{
+.card-status-container{
     /* border: 1px solid blue; */
+    width: 100% !important;
 }
 .status-container h5{
     margin: 0px;
 }
 .status-header{
     /* border: 1px solid red; */
+    padding: 5px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 10px;
     color: #5e5e5e;
-    font-weight: bold;
 }
 .status-header h5{
    margin: 0px;
-   font-size: 10px;
+   font-size: 12px;
+   font-weight: bold;
    color: #5e5e5e;
 }
 .sch-icon{

@@ -435,7 +435,7 @@
     }
     .list-body{
         max-height: 72vh;
-        border: 1px solid green;
+        /* border: 1px solid green; */
     }
     
 }
@@ -456,7 +456,7 @@
     }
     .list-body{
         max-height: 72vh;
-        border: 1px solid green;
+        /* border: 1px solid green; */
     }
 }
 
