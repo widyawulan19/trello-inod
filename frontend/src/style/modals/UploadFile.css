@@ -10,10 +10,15 @@
 }
 
 .upload-cont{
+    cursor: pointer;
     border: 1px solid #ddd;
     border-radius: 8px;
     width: fit-content;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+.upload-cont:hover{
+    border: 1px solid #6a11cb;
+    box-shadow: 0px 4px 8px #5e12eb46;
 }
 
 .upload-cont .upload-cont-prev{
@@ -102,7 +107,7 @@
 
 /* MEDIA QUERY  */
 
-@media (min-width: 768px) and (max-width: 991.98px) and (min-height:500px) and (max-height:700px) {
+@media (min-width: 768px) and (max-width: 991.98px) {
     .upload-cont{
         /* border: 1px solid green; */
         width: 20vw;
@@ -120,7 +125,7 @@
 }
 
 /* Medium devices (tablets, ≥768px) */
-@media (min-width: 576px) and (max-width: 767.98px) and (min-height:400px) and (max-height:700px) {
+@media (min-width: 576px) and (max-width: 767.98px){
     .upload-cont{
         /* border: 1px solid green; */
         width: 30vw;
@@ -137,7 +142,7 @@
 }
 
 /* ukuran handpone kecil */
-@media (min-width:375px) and (max-width:575px) and (min-height:300px) and (max-height:600px) {
+@media (min-width:375px) and (max-width:575px) {
   .upload-cont{
         /* border: 1px solid green; */
         width: 45vw;

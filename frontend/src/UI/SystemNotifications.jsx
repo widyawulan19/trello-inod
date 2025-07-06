@@ -129,7 +129,7 @@ const SystemNotifications=({
               <div className='sn-btn'>
                 {!notif.is_read && (
                   <button onClick={() => handleMarkAsRead(notif.id)}>
-                    Mark as Read
+                    Mark
                   </button>
                 )}
                 <button onClick={() => handleDelete(notif.id)}>

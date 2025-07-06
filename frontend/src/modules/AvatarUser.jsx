@@ -13,7 +13,7 @@ const AvatarUser = ({
   onClose
 }) => {
   return (
-    <div className='all-profile-container'>
+    <div className='all-profile-cont'>
       <div className="apc-header">
         <h5>Select Your Avatar</h5>
         <HiXMark onClick={onClose} className='apc-icon'/>

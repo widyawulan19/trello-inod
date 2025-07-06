@@ -68,7 +68,7 @@
 /* BODY Navbar system UI  */
 .notif-system-container .nav-s-body{
    /* margin-top: 10px; */
-    border:1px solid blue;
+    /* border:1px solid blue; */
     /* height: 63vh; */
     /* overflow-y: auto; */
     padding: 5px;
@@ -178,4 +178,39 @@
     color:#F4D793;
     color:#889E73;
     color:#6a11cb;
+}
+
+/* MEDIA QUERY  */
+/* ukuran handpone besar  */
+@media (min-width: 576px) and (max-width: 767.98px){
+   .ns-header{
+    flex-direction: column;
+    justify-content: center;
+   }
+   .ns-header .ns-left{
+    width: 100%;
+   }
+   .ns-header .ns-right{
+    width: 100%;
+    margin-top: 5px;
+   }
+}
+
+/* ukuran handpone kecil  */
+@media (min-width:375px) and (max-width:575px){
+    .ns-header{
+    flex-direction: column;
+    justify-content: center;
+   }
+   .ns-header .ns-left{
+    width: 100%;
+   }
+   .ns-header .ns-right{
+    width: 100%;
+    margin-top: 5px;
+   }
+   .notif-system-container .ns-body{
+    height: 57vh;
+    /* border: 1px solid red; */
+   }
 }

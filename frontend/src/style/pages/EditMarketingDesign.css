@@ -267,7 +267,7 @@
 
 /* media query  */
 /* ukuran handpone kecil */
-@media (min-width:375px) and (max-width:575px) and (min-height:300px) and (max-height:600px) {
+@media (min-width:375px) and (max-width:575px) {
   .emd-container form{
     height: 75vh;
     /* border: 1px solid green; */

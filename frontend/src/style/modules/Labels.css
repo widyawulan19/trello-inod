@@ -344,7 +344,7 @@
     display: flex;
     flex-wrap: wrap; /* Memungkinkan label pindah ke baris bawah jika tidak cukup */
     gap: 4px; /* Jarak antar label */
-    padding: 4px 0px;
+    padding:0px;
     max-width: 100%; /* Pastikan container tidak melewati batas parent */
     overflow: hidden;
     margin-top: 5px;
@@ -517,6 +517,13 @@
         width: 100%;
         padding: 10px;
         /* border: 1px solid green; */
+    }
+
+    .label-item{
+        padding: 5px;
+        border-radius: 4px;
+        font-size: 10px;
+        font-weight: bold;
     }
 }
 

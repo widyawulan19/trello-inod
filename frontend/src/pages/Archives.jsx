@@ -88,7 +88,7 @@ const Archives=()=> {
         <div className="archive-header">
             <div className="ah-left">
                 <div className="header-title">
-                    <HiArchiveBoxArrowDown/>
+                    {/* <HiArchiveBoxArrowDown/> */}
                     <h4>ARCHIVE DATA {selectedType.charAt(0).toUpperCase() + selectedType.slice(1)}s</h4>
                 </div>
                 <div className="header-desc">
@@ -114,7 +114,7 @@ const Archives=()=> {
                         <BootstrapTooltip>
                             <button onClick={handleShowDataArchive}>
                                 <HiChevronUpDown size={15}/>
-                                Show Data By
+                                Show Data
                             </button>
                         </BootstrapTooltip>
                     </div>

@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { getActivityCard } from '../services/ApiServices';
 import { useUser } from '../context/UserContext';
+import '../style/modules/CardActivity.css';
 
 const COLOR_BORDER = {
-  updated_title: 'border-blue-500',
-  updated_desc: 'border-indigo-500',
-  remove_label: 'border-red-500',
-  remove_user: 'border-red-500',
-  remove_cover:'border-red-500',
-  add_user: 'border-green-500',
-  add_label: 'border-green-500',
-  add_cover: 'border-green-500',
-  // updated_cover: 'border-yellow-500',
-  updated_due: 'border-purple-500',
-  updated_prio: 'border-pink-500',
-  updated_status: 'border-teal-500'
+  updated_title: '#3b82f6',      // blue-500
+  updated_desc: '#6366f1',       // indigo-500
+  remove_label: '#ef4444',       // red-500
+  remove_user: '#ef4444',        // red-500
+  remove_cover: '#ef4444',       // red-500
+  add_user: '#22c55e',           // green-500
+  add_label: '#22c55e',          // green-500
+  add_cover: '#22c55e',          // green-500
+  // updated_cover: '#eab308',   // yellow-500 (optional, uncomment if needed)
+  updated_due: '#a855f7',        // purple-500
+  updated_prio: '#ec4899',       // pink-500
+  updated_status: '#14b8a6'      // teal-500
 };
 
 const MESSAGE_ACTIVITY = {
@@ -60,9 +61,7 @@ const CardActivity = ({ cardId, fetchCardById }) => {
   }, [cardId]);
 
   return (
-    <div className="mt-1"
-      style={{padding:'10px'}}
-    >
+    <div className="ca-container">
       {loading ? (
         <p>Loading...</p>
       ) : cardActivities.length === 0 ? (
@@ -81,7 +80,7 @@ const CardActivity = ({ cardId, fetchCardById }) => {
           {cardActivities.map((activity) => {
             const detail = activity.action_detail ? JSON.parse(activity.action_detail) : {};
             const actionKey = `${activity.action_type}_${activity.entity}`;
-            const borderColor = COLOR_BORDER[activity.action_type] || 'border-gray-300';
+            const borderColor = COLOR_BORDER[activity.action_type] || '#ddd';
             const messageText = MESSAGE_ACTIVITY[activity.action_type] || `${activity.action_type}`;
             
             let message = `${activity.username} ${messageText}`;
@@ -98,9 +97,14 @@ const CardActivity = ({ cardId, fetchCardById }) => {
             return (
               <li
                 key={activity.id}
-                className={`p-1 border-l-4 ${borderColor} bg-gray-100 rounded`}
+                className='ca-li'
                 style={{
-                  width:'100%'
+                  padding: '0.25rem',
+                  borderLeftWidth: '4px',
+                  borderLeftStyle: 'solid',
+                  borderLeftColor: borderColor,
+                  backgroundColor: '#f8fafc', // slate-50
+                  borderRadius: '0.25rem',
                 }}
               >
                 <p 
