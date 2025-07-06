@@ -1,10 +1,8 @@
 .personal-container{
     /* border: 1px solid red; */
     padding: 10px;
-    min-width: 45vw;
-    width: 100%;
-    min-height: 70vh;
-    height: 90%;
+    width: 45vw;
+    height: 70vh;
     display: flex;
     flex-direction: column;
 }
@@ -18,7 +16,7 @@
     /* border: 1px solid blue; */
     width: 100%;
 }
-.personal-container .pc-body{
+.personal-container .pch-body{
     /* border: 1px solid red; */
     margin-top: 20px;
     display: flex;
@@ -136,22 +134,25 @@
 @media (min-width: 576px) and (max-width: 767.98px){
    .personal-container{
         /* border: 1px solid orange; */
+        height: 65vh;
         width: 100%;
         display: flex;
         align-items: center;
         justify-content: flex-end;
+        padding: 5px;
    }
    .personal-container .pc-title{
         /* border: 1px solid green; */
         width: 100%;
    }
 
-    .personal-container .pc-body{
+    .personal-container .pch-body{
         /* border: 1px solid blue; */
         display: flex;
         flex-direction: column;
         align-items: center;
         width: 100%;
+        margin-top: 0px;
     }
     .pc-body .pi,
     .pc-body .pi-job
@@ -163,7 +164,11 @@
 
 /* ukuran handpone kecil  */
 @media (min-width:375px) and (max-width:575px){
-    .personal-container .pc-body{
+    .personal-container{
+        /* border: 1px solid red; */
+        width: 100%;
+    }
+    .personal-container .pch-body{
         /* border: 1px solid blue; */
         display: flex;
         flex-direction: column;
@@ -173,14 +178,16 @@
     .pc-title p{
         font-size: 10px;
     }
-    .pc-body .pi,
-    .pc-body .pi-job
+    .pch-body .pi,
+    .pch-body .pi-job
     {
         width: 100%;
+        /* border: 1px solid grey; */
     }
 
     .save-btn-container .save-btn{
         /* border: 1px solid red; */
         width: 100%;
     }
+
 }

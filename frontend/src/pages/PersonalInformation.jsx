@@ -61,7 +61,7 @@ const PersonalInformation=({fetchUserSettingData,userData, userId})=> {
             <h3>Personal Information</h3>
             <p>Atur informasi dasar akunmu di sini untuk memaksimalkan fitur aplikasi.</p>
         </div> */}
-        <div className="pc-body">
+        <div className="pch-body">
             <div className="pi">
                 {/* <h4>Informasi Umum</h4> */}
                 <div className="pc-box">

@@ -276,74 +276,18 @@ const RoomCardChat = ({cards, userId, cardId,onClose,assignedUsers,assignableUse
   };
   
 
-  return (
-    <div className='main-rcc' >
-      <div className='main-conver' >
-        <div className="main-cover-header">
+  return(
+    <div className='roomchat-container'>
+        <div className="chat-header">
           <h4>Room Chat</h4>
           <HiXMark onClick={onClose}/>
         </div>
-        {chats.map(renderChat)}
+        <div className="chat-container">
+          {chats.map(renderChat)}
+        </div>
+        
       </div>
-
-      {/* Form hanya menangani submit, tidak membungkus editor */}
-      <div className="rep-editor">
-        <form
-          className='form-chat'
-          ref={formRef}
-          onSubmit={handleSend}
-          // style={{ display: 'none' }} // Sembunyikan atau tampilkan sesuai kebutuhan
-        >
-          {replyToId && (() => {
-            const repliedChat = chats.find(chat => chat.id === replyToId || chat.replies?.some(reply => reply.id === replyToId));
-            const repliedUserId = repliedChat?.id === replyToId
-              ? repliedChat.user_id
-              : repliedChat?.replies?.find(reply => reply.id === replyToId)?.user_id;
-
-            const username = assignableUsers.find(user => user.user_id === repliedUserId)?.username || `User ID: ${repliedUserId}`;
-
-            return (
-              <div className='reply-alert'>
-                <div className="rep">
-                  <HiArrowUturnRight/>
-                  <strong>Replying to :</strong> 
-                  {username}
-                </div>
-                <button
-                  type="button"
-                  className='rep-btn'
-                  onClick={() => setReplyToId(null)}
-                >
-                  Cancel
-                </button>
-              </div>
-            );
-          })()}
-        </form>
-
-
-        {/* TextEditor2 di luar form */}
-        <div className='editor-wrapper'>
-          <div className="text-editor" >
-            <TextEditor2 value={message} onChange={setMessage} />
-          </div>
-          
-          <div className="ew-content">
-            <button
-              type="button"
-              onClick={() => formRef.current?.requestSubmit()}
-            >
-              <IoIosSend className='ew-icon'/>
-              {/* Send */}
-            </button>
-          </div>
-        </div>    
-      </div>
-      
-
-       
-    </div>
-  );
+  )
 };
 
 export default RoomCardChat;
