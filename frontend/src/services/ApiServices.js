@@ -280,8 +280,12 @@ export const getWorkspaceIdAndBoardId = (data) => axios.post(`${API_URL}/get-wor
 //membuat card dari data marketing (design, musik)
 
 export const createCardFromDataMarketing = (listId, marketingDesignId) => axios.put(`${API_URL}/create-card-marketing/${listId}/${marketingDesignId}`)
-//ARCHIVE
 
+//ARCHIVE UNIVERSAL
+export const archiveData = (entity_id, id) => axios.post(`${API_URL}/archive/${entity_id}/${id}`);
+
+
+//ARCHIVE
 export const getArchiveWorkspace = () => axios.get(`${API_URL}/archive-workspace`)
 export const getArchiveWorkspaceUser = () => axios.get(`${API_URL}/archive-workspace-user`);
 export const getArchiveBoard = () => axios.get(`${API_URL}/archive-board`)
