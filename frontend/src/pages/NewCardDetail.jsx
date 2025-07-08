@@ -31,6 +31,7 @@ import SelectPriority from '../UI/SelectPriority';
 import DueDateDisplay from '../UI/DueDateDisplay';
 import FormUpload from '../modals/FormUpload';
 import UploadFile from '../modals/UploadFile';
+import NewRoomChat from '../fitur/NewRoomChat';
 
 const NewCardDetail=()=> {
     //STATE
@@ -501,13 +502,18 @@ const NewCardDetail=()=> {
         {/* SHOW CHATROOM  */}
                 {showChat && (
                     <div className='modal-chatroom'>
-                        <RoomCardChat 
+                        {/* <RoomCardChat 
                             cards={cards} 
                             cardId={cardId} 
                             userId={userId} 
                             onClose={handleCloseChatroom}
                             assignedUsers={assignedUsers} 
                             assignableUsers={assignableUsers}
+                        /> */}
+                        <NewRoomChat
+                            cardId={cardId}
+                            userId={userId} 
+                            onClose={handleCloseChatroom}
                         />
                     </div>
                 )}

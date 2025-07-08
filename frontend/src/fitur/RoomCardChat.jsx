@@ -140,7 +140,7 @@ const RoomCardChat = ({cards, userId, cardId,onClose,assignedUsers,assignableUse
               display: 'flex',
               flexDirection: 'column',
               alignItems: isOwnMessage ? 'flex-end' : 'flex-start',
-              // border:'1px solid green',
+              border:'1px solid green',
               marginTop:'10px'
             }}
           >
