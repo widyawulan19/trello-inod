@@ -283,7 +283,9 @@ export const createCardFromDataMarketing = (listId, marketingDesignId) => axios.
 
 //ARCHIVE UNIVERSAL
 export const archiveData = (entity_id, id) => axios.post(`${API_URL}/archive/${entity_id}/${id}`);
-
+export const getAllDataArchive = () => axios.get(`${API_URL}/archive-data`);
+export const deleteArchiveDataUniversalById = (id) => axios.delete(`${API_URL}/archive-data/${id}`);
+export const restoreDataArchive = (entity_id,id) => axios.post(`${API_URL}/restore/${entity_id}/${id}`)
 
 //ARCHIVE
 export const getArchiveWorkspace = () => axios.get(`${API_URL}/archive-workspace`)
