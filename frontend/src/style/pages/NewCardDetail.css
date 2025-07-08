@@ -898,9 +898,10 @@
 
 /* MODAL CHATROOM  */
 .modal-chatroom{
-    background-color: #fff;
+    background-color: #e9e2f3;
     border: 1px solid #5c38db;
-    border-radius: 8px;
+    border-radius: 12px;
+    padding-bottom: 2px;
     width: 50vw;
     height: 90vh;
     z-index: 100;
@@ -951,8 +952,8 @@
 /* Medium devices (tablets, ≥768px) */
 @media (min-width: 768px) and (max-width: 991.98px) {
     .modal-chatroom{
-        width: 50vw;
-        height: 95vh;
+        width: 60vw;
+        height: 92vh;
     }
     .cc-date{
         /* border: 1px solid blue; */
@@ -1132,8 +1133,8 @@
     overflow-y: visible;
   }
   .modal-chatroom{
-        width: 70%;
-        height: 95vh;
+        width: 80vw;
+        height: 92vh;
     }
 
     /* ATTACHMENT  */
@@ -1256,8 +1257,8 @@
   }
 
   .modal-chatroom{
-        width: 100%;
-        height: 95vh;
+        width: 100vw;
+        height: 92vh;
     }
 
     .label-modals{
