@@ -28,16 +28,19 @@ const NavbarNotification=({onClose})=> {
 
     //FUNCTION
     //1. fetch total unread dari dua notifikasi
-    const fetchTotalUnread = async ()=>{
-        try{
+    const fetchTotalUnread = async () => {
+      try {
             const result = await getUserTotalNotificationUnread(userId);
-            setNotifications(result.data);
-        }catch(error){
+            const { unread_chat, unread_system } = result.data;
+
+            setUnreadCount(unread_chat);
+            setUnreadCountSystem(unread_system);
+        } catch (error) {
             console.log('Failed to fetch total unread for this user:', error);
-        }finally{
+        } finally {
             setLoading(false);
         }
-    }
+    };
 
     useEffect(()=>{
         if(userId){
