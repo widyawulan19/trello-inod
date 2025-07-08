@@ -4979,7 +4979,7 @@ app.get('/api/archive-data', async (req, res) => {
 });
 
 //3. delete data archive by id
-app.get('/api/archive', async (req, res) => {
+app.delete('/api/archive-data', async (req, res) => {
   try {
     const result = await client.query(`SELECT * FROM archive_universal ORDER BY archived_at DESC`);
     res.status(200).json(result.rows);
@@ -4988,6 +4988,61 @@ app.get('/api/archive', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+//4. restore data archive 
+app.post('/api/restore/:entity/:id', async (req, res) => {
+  const { entity, id } = req.params;
+
+  const entityMap = {
+    workspaces_users: {table:'workspaces_users'},
+    workspaces: {table:'workspace'},
+    board: { table: 'boards' },
+    lists: {table:'lists'},
+    cards: { table: 'cards' },
+    data_marketing: { table: 'data_marketing' },
+    marketing_design: { table: 'marketing_design'}
+    // tambah sesuai entity kamu
+  };
+
+  const config = entityMap[entity];
+  if (!config) return res.status(400).json({ error: 'Entity tidak dikenali' });
+
+  try {
+    // 1. Ambil data dari archive_universal
+    const archiveResult = await client.query(
+      `SELECT data FROM archive_universal WHERE entity_type = $1 AND entity_id = $2`,
+      [entity, id]
+    );
+
+    if (archiveResult.rows.length === 0) {
+      return res.status(404).json({ error: `Data ${entity} dengan id ${id} tidak ditemukan di archive` });
+    }
+
+    const data = archiveResult.rows[0].data;
+    const keys = Object.keys(data);
+    const values = Object.values(data);
+    const placeholders = values.map((_, i) => `$${i + 1}`).join(', ');
+
+    // 2. Insert kembali ke tabel aslinya
+    const insertQuery = `
+      INSERT INTO ${config.table} (${keys.join(', ')})
+      VALUES (${placeholders})
+    `;
+    await client.query(insertQuery, values);
+
+    // 3. Hapus dari archive_universal
+    await client.query(
+      `DELETE FROM archive_universal WHERE entity_type = $1 AND entity_id = $2`,
+      [entity, id]
+    );
+
+    res.status(200).json({ message: `Data ${entity} berhasil direstore.` });
+  } catch (err) {
+    console.error('Restore error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
   
 // ARCHIVE DATA 
 //1. get all workspace archive
