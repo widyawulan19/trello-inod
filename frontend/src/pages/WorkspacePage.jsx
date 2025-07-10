@@ -345,7 +345,7 @@ const handleSubmit = async (e, userId) =>{
 //fungsi archive board
 const handleArchiveBoard = (boardId) =>{
   ArchiveHandle({
-    entity:'board',
+    entity:'boards',
     id: boardId,
     refetch:fetchBoards,
     showSnackbar: showSnackbar,
