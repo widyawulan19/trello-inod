@@ -4944,7 +4944,7 @@ app.get('/api/archive-data', async (req, res) => {
 //2. archive data berdasarkan entity
 app.post('/api/archive/:entity/:id', async (req, res) => {
     const { entity, id } = req.params;
-    const userId = req.params.id;
+    const userId = req.params.userId;
 
     const entityMap = {
         workspaces_user : {table: 'workspaces_users', idField:'workspace_id'} ,
