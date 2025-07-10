@@ -5014,7 +5014,7 @@ app.post('/api/restore/:entity/:id', async (req, res) => {
   const entityMap = {
     workspaces_users: {table:'workspaces_users'},
     workspaces: {table:'workspace'},
-    board: { table: 'boards' },
+    boards: { table: 'boards' },
     lists: {table:'lists'},
     cards: { table: 'cards' },
     data_marketing: { table: 'data_marketing' },
