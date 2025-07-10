@@ -4944,6 +4944,7 @@ app.get('/api/archive-data', async (req, res) => {
 //2. archive data berdasarkan entity
 app.post('/api/archive/:entity/:id', async (req, res) => {
     const { entity, id } = req.params;
+    const userId = req.params.userId;
 
     const entityMap = {
         workspaces_user : {table: 'workspaces_users', idField:'workspace_id'} ,
@@ -4975,9 +4976,10 @@ app.post('/api/archive/:entity/:id', async (req, res) => {
 
         // 2. Masukkan ke archive_universal
         await client.query(`
-            INSERT INTO archive_universal (entity_type, entity_id, data)
-            VALUES ($1, $2, $3)
-        `, [entity, id, data]);
+        INSERT INTO archive_universal (entity_type, entity_id, data, user_id)
+        VALUES ($1, $2, $3, $4)
+        `, [entity, id, data, userId]); // <-- pastikan req.user.id diset
+
 
         // 3. Hapus dari tabel aslinya
         await client.query(
