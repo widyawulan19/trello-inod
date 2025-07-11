@@ -30,6 +30,7 @@ import ListDeleteConfirm from '../modals/ListDeleteConfirm'
 import { useSnackbar } from '../context/Snackbar'
 import { useUser } from '../context/UserContext'
 import { FaChevronRight, FaPlus } from 'react-icons/fa6'
+import { handleArchive } from '../utils/handleArchive'
 
 const BoardList=()=> {
     //STATE
@@ -301,18 +302,26 @@ const BoardList=()=> {
 
 
 //archive lists
-const handleArchiveLists = async(listId)=>{
-    console.log('Archiving list with id:',listId)
-    try{
-        const response = await archiveList(listId)
-        console.log('lists archived successfully:', response.data)
-        showSnackbar('List berhasil diarsipkan','success')
-        fetchLists()
-    }catch(error){
-        console.error('Error archiving lists:', error)
-        showSnackbar('Gagal mengarsipkan list','error')
-    }
+const handleArchiveLists = (listId) =>{
+    handleArchive({
+        entity:'lists',
+        id: listId,
+        refetch:fetchLists,
+        showSnackbar: showSnackbar,
+    })
 }
+// const handleArchiveLists = async(listId)=>{
+//     console.log('Archiving list with id:',listId)
+//     try{
+//         const response = await archiveList(listId)
+//         console.log('lists archived successfully:', response.data)
+//         showSnackbar('List berhasil diarsipkan','success')
+//         fetchLists()
+//     }catch(error){
+//         console.error('Error archiving lists:', error)
+//         showSnackbar('Gagal mengarsipkan list','error')
+//     }
+// }
 
 //NAVIGATION
 // <Route path='/workspaces/:workspaceId' element={<WorkspacePage/>}/>

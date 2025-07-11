@@ -12,6 +12,7 @@ import { useSnackbar } from "../context/Snackbar";
 import DataMarketingDeleteConfirm from "../modals/DataMarketingDeleteConfirm";
 import OutsideClick from "../hook/OutsideClick";
 import { IoEyeSharp } from "react-icons/io5";
+import { handleArchive } from "../utils/handleArchive";
 
 const DataMarketing = () => {
   const location = useLocation();
@@ -212,17 +213,25 @@ const fetchDataMarketing = async()=>{
 }
 
 //archive data
-const handleArchiveDataMarketing = async(marketing_id)=>{
-  try{
-    const response = await archiveDataMarketing(marketing_id);
-    console.log('Successfully archive workspace data');
-    showSnackbar('Succesfully archive workspace', 'success');
-    fetchDataMarketing();
-  }catch(error){
-    console.error('Error archiving data marekting:',error)
-    showSnackbar('Failed to archive workspace','error')
-  }
+const handleArchiveDataMarketing =(marketing_id)=>{
+  handleArchive({
+    entity:'data_marketing',
+    id: marketing_id,
+    refetch: fetchDataMarketing,
+    showSnackbar: showSnackbar,
+  })
 }
+// const handleArchiveDataMarketing = async(marketing_id)=>{
+//   try{
+//     const response = await archiveDataMarketing(marketing_id);
+//     console.log('Successfully archive workspace data');
+//     showSnackbar('Succesfully archive workspace', 'success');
+//     fetchDataMarketing();
+//   }catch(error){
+//     console.error('Error archiving data marekting:',error)
+//     showSnackbar('Failed to archive workspace','error')
+//   }
+// }
 
 //fungsi filtered data
 const handleFilterData = (selectedTerm) => {

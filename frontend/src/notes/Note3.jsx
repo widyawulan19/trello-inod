@@ -133,3 +133,94 @@ app.post('/api/restore/:entity/:id', async (req, res) => {
   }
 });
 
+import React, { useEffect, useState } from "react";
+import { getAllDataArchive, deleteArchiveDataUniversalById } from "../services/ApiServices";
+
+const ArchiveUniversal = () => {
+  const [archiveData, setArchiveData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [snackbar, setSnackbar] = useState({ message: "", type: "" });
+
+  const fetchArchiveData = async () => {
+    setLoading(true);
+    try {
+      const response = await getAllDataArchive();
+      setArchiveData(response.data);
+    } catch (error) {
+      console.error("Error fetching archive data", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const showSnackbar = (message, type) => {
+    setSnackbar({ message, type });
+    setTimeout(() => setSnackbar({ message: "", type: "" }), 3000);
+  };
+
+  const handleDeleteArchive = async (id) => {
+    try {
+      await deleteArchiveDataUniversalById(id);
+      showSnackbar("Successfully deleted archive data", "success");
+      fetchArchiveData(); // Refresh
+    } catch (error) {
+      console.error("Failed to delete archive data:", error);
+      showSnackbar("Failed to delete archive data", "error");
+    }
+  };
+
+  useEffect(() => {
+    fetchArchiveData();
+  }, []);
+
+  return (
+    <div className="p-4">
+      {snackbar.message && (
+        <div className={`p-2 mb-4 text-white ${snackbar.type === "success" ? "bg-green-500" : "bg-red-500"}`}>
+          {snackbar.message}
+        </div>
+      )}
+      <h2 className="mb-4 text-xl font-bold">Archive Data</h2>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <table className="w-full text-sm border">
+          <thead>
+            <tr className="text-left bg-gray-100">
+              <th className="p-2 border">Entity Type</th>
+              <th className="p-2 border">Entity ID</th>
+              <th className="p-2 border">User ID</th>
+              <th className="p-2 border">Archived At</th>
+              <th className="p-2 border">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {archiveData.map((item) => (
+              <tr key={item.id} className="hover:bg-gray-50">
+                <td className="p-2 border">{item.entity_type}</td>
+                <td className="p-2 border">{item.entity_id}</td>
+                <td className="p-2 border">{item.user_id ?? "-"}</td>
+                <td className="p-2 border">{new Date(item.archived_at).toLocaleString()}</td>
+                <td className="p-2 border">
+                  <button
+                    onClick={() => handleDeleteArchive(item.id)}
+                    className="px-2 py-1 text-white bg-red-500 rounded hover:bg-red-600"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+            {archiveData.length === 0 && (
+              <tr>
+                <td colSpan="5" className="p-4 text-center text-gray-500">No archived data found.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+};
+
+export default ArchiveUniversal;

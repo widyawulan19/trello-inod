@@ -13,7 +13,7 @@ import { useSnackbar } from '../context/Snackbar';
 import BoardDeleteConfirm from '../modals/BoardDeleteConfirm';
 import BoardProperties from '../modules/BoardProperties';
 import { IoTime } from 'react-icons/io5';
-import { ArchiveHandle } from '../utils/ArchiveHandle';
+import { handleArchive } from '../utils/handleArchive';
 
 const WorkspacePage=()=> {
   const location = useLocation();
@@ -344,25 +344,13 @@ const handleSubmit = async (e, userId) =>{
 
 //fungsi archive board
 const handleArchiveBoard = (boardId) =>{
-  ArchiveHandle({
+  handleArchive({
     entity:'boards',
     id: boardId,
     refetch:fetchBoards,
     showSnackbar: showSnackbar,
   })
 }
-// const handleArchiveBoard = async (boardId) => {
-//   console.log("Archiving board with ID:", boardId); // Log boardId
-//   try {
-//     const response = await archiveBoard(boardId);
-//     console.log('Board archived successfully:', response.data);
-//     showSnackbar('Board archived successfully','success')
-//     fetchBoards(); // Refresh the boards
-//   } catch (error) {
-//     console.error('Error archiving board:', error);
-//     showSnackbar('Failed to archive board','error')
-//   }
-// };
 
 
 //navigate to board list

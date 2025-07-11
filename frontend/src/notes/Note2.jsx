@@ -1,150 +1,73 @@
 import React, { useEffect, useState } from 'react';
-import { getAllCardChat, createMessage, deleteMessage } from '../services/api';
-import './CardChats.css';
+import { getAllDataArchive } from '../services/ApiServices';
 
-const CardChats = ({ cardId, userId }) => {
-  const [chats, setChats] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [message, setMessage] = useState('');
-  const [replyTo, setReplyTo] = useState(null);
-  const [replyMessages, setReplyMessages] = useState({});
+const ArchiveUniversal = () => {
+  const [archiveData, setArchiveData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [filterType, setFilterType] = useState(''); // untuk search by entity_type
 
-  useEffect(() => {
-    fetchChats();
-  }, [cardId]);
-
-  const fetchChats = async () => {
+  const fetchArchiveData = async () => {
     setLoading(true);
     try {
-      const res = await getAllCardChat(cardId);
-      setChats(res.data);
-    } catch (err) {
-      console.error('Error fetching chats:', err);
+      const response = await getAllDataArchive();
+      setArchiveData(response.data);
+      setFilteredData(response.data); // set awal
+    } catch (error) {
+      console.error('Error fetching archive data', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSendMessage = async () => {
-    if (!message.trim()) return;
-    await createMessage(cardId, {
-      user_id: userId,
-      message,
-      parent_message_id: null,
-    });
-    setMessage('');
-    fetchChats();
-  };
+  useEffect(() => {
+    fetchArchiveData();
+  }, []);
 
-  const handleSendReply = async (parentId) => {
-    const replyMessage = replyMessages[parentId];
-    if (!replyMessage?.trim()) return;
+  const handleFilterChange = (e) => {
+    const selectedType = e.target.value.toLowerCase();
+    setFilterType(selectedType);
 
-    await createMessage(cardId, {
-      user_id: userId,
-      message: replyMessage,
-      parent_message_id: parentId,
-    });
-
-    setReplyMessages((prev) => ({ ...prev, [parentId]: '' }));
-    setReplyTo(null);
-    fetchChats();
-  };
-
-  const handleDeleteChat = async (chatId) => {
-    try {
-      await deleteMessage(chatId);
-      fetchChats();
-    } catch (err) {
-      console.error('Delete failed:', err);
+    if (selectedType === '') {
+      setFilteredData(archiveData); // reset
+    } else {
+      const filtered = archiveData.filter(item =>
+        item.entity_type.toLowerCase().includes(selectedType)
+      );
+      setFilteredData(filtered);
     }
   };
 
-  const renderChats = (chatList, level = 0) => {
-    return chatList.map((chat) => (
-      <div
-        className={`chat-message ${level > 0 ? 'chat-reply' : ''}`}
-        key={chat.id}
-        style={{ marginLeft: `${level * 30}px` }}
-      >
-        <div className="chat-header">
-          <img
-            className="chat-avatar"
-            src={chat.photo_url || '/default-avatar.png'}
-            alt={chat.username}
-          />
-          <div className="chat-user-info">
-            <span className="chat-username">{chat.username}</span>
-            <span className="chat-timestamp">
-              {new Date(chat.send_time).toLocaleString()}
-            </span>
-          </div>
-        </div>
-
-        <div className="chat-bubble">{chat.message}</div>
-
-        <div className="chat-actions">
-          {/* Hanya tampilkan tombol Reply jika chat utama (bukan reply) */}
-          {chat.parent_message_id === null && (
-            <button
-              className="chat-reply-btn"
-              onClick={() => setReplyTo(replyTo === chat.id ? null : chat.id)}
-            >
-              {replyTo === chat.id ? 'Cancel' : 'Reply'}
-            </button>
-          )}
-          <button
-            className="chat-delete-btn"
-            onClick={() => handleDeleteChat(chat.id)}
-          >
-            Delete
-          </button>
-        </div>
-
-        {replyTo === chat.id && (
-          <div className="chat-reply-form">
-            <textarea
-              placeholder="Write a reply..."
-              value={replyMessages[chat.id] || ''}
-              onChange={(e) =>
-                setReplyMessages((prev) => ({
-                  ...prev,
-                  [chat.id]: e.target.value,
-                }))
-              }
-            />
-            <button onClick={() => handleSendReply(chat.id)}>Send Reply</button>
-          </div>
-        )}
-
-        {chat.replies?.length > 0 && renderChats(chat.replies, level + 1)}
-      </div>
-    ));
-  };
-
   return (
-    <div className="chat-room-container">
-      <h3 className="chat-title">💬 Chat Room</h3>
-      <div className="chat-list">
-        {loading ? (
-          <p className="chat-loading">Loading chats...</p>
-        ) : chats.length === 0 ? (
-          <p className="chat-empty">No chats yet.</p>
-        ) : (
-          renderChats(chats)
-        )}
+    <div className="p-4">
+      <h2 className="mb-4 text-xl font-semibold">Archived Data</h2>
+
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Search by entity_type (e.g. boards)"
+          value={filterType}
+          onChange={handleFilterChange}
+          className="w-full max-w-sm p-2 border rounded"
+        />
       </div>
 
-      <div className="chat-input-box">
-        <textarea
-          placeholder="Type your message..."
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-        />
-        <button onClick={handleSendMessage}>Send</button>
-      </div>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <ul className="space-y-4">
+          {filteredData.map((item) => (
+            <li key={item.id} className="p-3 border rounded shadow-sm">
+              <p><strong>Entity Type:</strong> {item.entity_type}</p>
+              <p><strong>Entity ID:</strong> {item.entity_id}</p>
+              <p><strong>Archived At:</strong> {new Date(item.archived_at).toLocaleString()}</p>
+              <p><strong>User ID:</strong> {item.user_id ?? '-'}</p>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };
 
-export default CardChats;
+export default ArchiveUniversal;

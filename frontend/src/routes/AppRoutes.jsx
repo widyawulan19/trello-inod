@@ -33,6 +33,7 @@ import FullNewCalendar from '../fitur/FullNewCalendar';
 import ExampleTailwind from '../pages/ExampleTailwind';
 import EmployeeSchedule from '../modules/EmployeeSchedule';
 import NotificationIcon from '../UI/NotificationIcon';
+import ArchiveUniversal from '../pages/ArchiveUniversal';
 
 const AppRoutes=()=> {
   return (
@@ -60,6 +61,7 @@ const AppRoutes=()=> {
         <Route path='/text-editor' element={<TextEditor/>}/>
         <Route path='/setting' element={<Setting/>}/>
         <Route path='/archive' element={<Archives/>}/>
+        <Route path='/archive-data' element={<ArchiveUniversal/>}/>
         <Route path='/user-profile' element={<Profile/>}/>
         <Route path='/activity' element={<ActivityPage/>}/>
         <Route path='/chat' element={<ChatUi/>}/>

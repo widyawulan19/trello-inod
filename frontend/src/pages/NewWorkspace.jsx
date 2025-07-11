@@ -32,6 +32,7 @@ import { useUser } from '../context/UserContext';
 import { IoHome, IoTimeSharp } from 'react-icons/io5';
 import { HiViewBoards } from 'react-icons/hi';
 import { PiCardsFill } from 'react-icons/pi';
+import { handleArchive } from '../utils/handleArchive';
 
 function NewWorkspace() {
   const {user} = useUser()
@@ -276,17 +277,25 @@ function NewWorkspace() {
   
 
   //13. fungsi archive workspace user
-  const archiveWorkspaceUserData = async(workspaceId)=>{
-    try{
-      const respone = await archiveWorkspaceUser(workspaceId);
-      console.log("Succesfully archive workspace data")
-      showSnackbar('Succesfully archive workspace', 'success')
-      fetchWorkspaceUser()
-    }catch(error){
-      console.error('Error archive data:', error)
-      showSnackbar('Failed to archive workspace', 'error')
-    }
+  const archiveWorkspaceUserData = (workspaceId)=>{
+    handleArchive({
+      entity:'workspaces',
+      id: workspaceId,
+      refetch: fetchWorkspaceUser,
+      showSnackbar:showSnackbar,
+    })
   }
+  // const archiveWorkspaceUserData = async(workspaceId)=>{
+  //   try{
+  //     const respone = await archiveWorkspaceUser(workspaceId);
+  //     console.log("Succesfully archive workspace data")
+  //     showSnackbar('Succesfully archive workspace', 'success')
+  //     fetchWorkspaceUser()
+  //   }catch(error){
+  //     console.error('Error archive data:', error)
+  //     showSnackbar('Failed to archive workspace', 'error')
+  //   }
+  // }
 
 
   const handleEditName = (e, workspaceId, currentName) =>{
