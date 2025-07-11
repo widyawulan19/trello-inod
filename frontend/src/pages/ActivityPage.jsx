@@ -33,7 +33,7 @@ const ActivityPage = () => {
   //ACTION TEXT
   const TEXT_ACTION_COLORS={
     update: '#1E90FF',  // DodgerBlue - menandakan pembaruan atau perubahan
-    add: '##28A745',     // Green - untuk penambahan, identik dengan positif
+    add: '#28A745',     // Green - untuk penambahan, identik dengan positif
     delete: '#DC3545',  // Red - umum digunakan untuk aksi hapus
     create: '#4B352A',  // Blue - mirip "add" tapi bisa dibedakan sebagai aksi baru
     archive: '#6C757D',

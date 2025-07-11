@@ -2,6 +2,8 @@
     /* border: 1px solid red; */
     width: 30vw;
     height: fit-content;
+    background-color: white;
+    border-radius: 8px;
     /* padding: 8px; */
     /* gap: 10px; */
 }
@@ -111,8 +113,7 @@
 @media (min-width: 992px) and (max-width: 1199.98px) {
   /* CSS laptop biasa */
   .navNotif-container{
-    /* border: 1px solid green; */
-    width: 100%;
+    width:40vw;
   }
 }
 
@@ -124,10 +125,8 @@
         width: 10vw;
     }
     .navNotif-container{
-        /* border: 1px solid red; */
-         /* width: 35vw; */
-        width: 100%;
-    }
+        width:45vw;
+  }
 }
 
 /* ukuran handpone besar  */
@@ -139,23 +138,22 @@
         width: 10vw;
     }
     .navNotif-container{
-        /* border: 1px solid blue; */
-         /* width: 50vw; */
-        width: 100%;
-    }
+        width:50vw;
+  }
 }
 
 /* ukuran handpone kecil  */
 @media (min-width:375px) and (max-width:575px){
     .btn-nav-notif{
-        justify-content: flex-start;
+        justify-content: center;
+        /* border: 1px solid red; */
+        gap: 5px;
     }
     .btn-nav-notif .navNotif-btn{
-        width: 15vw;
+        width: 20vw;
+        /* border: 1px solid blue; */
     }
    .navNotif-container{
-        /* border: 1px solid violet; */
-         /* width: 50vw; */
         width: 100%;
     }
 }

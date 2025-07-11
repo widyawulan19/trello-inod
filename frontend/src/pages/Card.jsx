@@ -41,6 +41,7 @@ import CardCoverDisplay from '../modules/CardCoverDisplay';
 import CardDueDateDisplay from '../modules/CardDueDateDisplay';
 import CardFooter from '../modules/CardFooter';
 import NewCardDetail from './NewCardDetail';
+import { handleArchive } from '../utils/handleArchive';
 
 const Card=({card,boards, lists,userId,listName, listId,fetchBoardDetail,fetchLists,fetchCardList,onRefetch})=> {
     // console.log('cards diterima:', card)
@@ -218,20 +219,28 @@ const Card=({card,boards, lists,userId,listName, listId,fetchBoardDetail,fetchLi
     }
 
     //archive card
-    const handleArchiveCard = async(cardId)=>{
-        console.log('Arciving card with id:', cardId)
-        try{
-            const response = await archiveCard(cardId)
-            console.log('Card archiving successfully:', response.data)
-            // fetchCardList(cardId)
-            fetchCardList(listId)
-            setShowSetting(false)
-            showSnackbar('Card archived successfully','success')
-        }catch(error){
-            console.error('Error archiving cards:', error)
-            showSnackbar('Failed to archive card', 'error')
-        }
+    const handleArchiveCard = (cardId)=>{
+        handleArchive({
+            entity:'cards',
+            id: cardId,
+            refetch: fetchCardList,
+            showSnackbar: showSnackbar,
+        })
     }
+    // const handleArchiveCard = async(cardId)=>{
+    //     console.log('Arciving card with id:', cardId)
+    //     try{
+    //         const response = await archiveCard(cardId)
+    //         console.log('Card archiving successfully:', response.data)
+    //         // fetchCardList(cardId)
+    //         fetchCardList(listId)
+    //         setShowSetting(false)
+    //         showSnackbar('Card archived successfully','success')
+    //     }catch(error){
+    //         console.error('Error archiving cards:', error)
+    //         showSnackbar('Failed to archive card', 'error')
+    //     }
+    // }
 
     //fungsi menampilkan icon 
     const ICON_STATUS = {

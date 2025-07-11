@@ -16,6 +16,7 @@ import Setting from './Setting';
 import NewFormMarketingDesign from './NewFormMarketingDesign';
 import { useNavigate } from 'react-router-dom';
 import OutsideClick from '../hook/OutsideClick';
+import { handleArchive } from '../utils/handleArchive';
 
 const MarketingDesign=()=> {
     //STATE
@@ -142,17 +143,25 @@ const MarketingDesign=()=> {
     }
 
     //ARCHIVE DATA
-    const handleArchiveDataMarketingDesign = async(marketing_design_id) =>{
-      try{
-        const response = await archiveDataMarektingDesign(marketing_design_id);
-        console.log('Successfully archive workspace data');
-        showSnackbar('Succesfully archive workspace', 'success')
-        fetchMarketingDesign()
-      }catch(error){
-        console.error('Error archiving data marekting:',error)
-        showSnackbar('Failed to archive workspace','error')
-      }
+    const handleArchiveDataMarketingDesign =(marketing_design_id) =>{
+      handleArchive({
+        entity:'marketing_design',
+        id:marketing_design_id,
+        refetch:fetchMarketingDesign,
+        showSnackbar: showSnackbar,
+      })
     }
+    // const handleArchiveDataMarketingDesign = async(marketing_design_id) =>{
+    //   try{
+    //     const response = await archiveDataMarektingDesign(marketing_design_id);
+    //     console.log('Successfully archive workspace data');
+    //     showSnackbar('Succesfully archive workspace', 'success')
+    //     fetchMarketingDesign()
+    //   }catch(error){
+    //     console.error('Error archiving data marekting:',error)
+    //     showSnackbar('Failed to archive workspace','error')
+    //   }
+    // }
 
     //FUNCTION
     //1. fetch marketing design 

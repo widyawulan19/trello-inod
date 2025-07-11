@@ -1,58 +1,73 @@
-// components/CardChats.js
 import React, { useEffect, useState } from 'react';
-import { getAllCardChat } from '../services/api'; // pastikan path-nya benar
+import { getAllDataArchive } from '../services/ApiServices';
 
-const CardChats = ({ cardId }) => {
-  const [chats, setChats] = useState([]);
-  const [loading, setLoading] = useState(true);
+const ArchiveUniversal = () => {
+  const [archiveData, setArchiveData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [filterType, setFilterType] = useState(''); // untuk search by entity_type
 
-  useEffect(() => {
-    const fetchChats = async () => {
-      try {
-        const response = await getAllCardChat(cardId);
-        setChats(response.data);
-      } catch (error) {
-        console.error('Error fetching chats:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (cardId) fetchChats();
-  }, [cardId]);
-
-  const renderChats = (chatList, level = 0) => {
-    return chatList.map((chat) => (
-      <div key={chat.id} style={{ marginLeft: level * 20, marginBottom: '10px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <img
-            src={chat.photo_url || '/default-avatar.png'}
-            alt={chat.username}
-            style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '50%',
-              objectFit: 'cover',
-            }}
-          />
-          <strong>{chat.username}</strong>
-          <span style={{ fontSize: '12px', color: '#888' }}>{new Date(chat.send_time).toLocaleString()}</span>
-        </div>
-        <p style={{ marginLeft: '40px', marginTop: '4px' }}>{chat.message}</p>
-
-        {chat.replies && chat.replies.length > 0 && renderChats(chat.replies, level + 1)}
-      </div>
-    ));
+  const fetchArchiveData = async () => {
+    setLoading(true);
+    try {
+      const response = await getAllDataArchive();
+      setArchiveData(response.data);
+      setFilteredData(response.data); // set awal
+    } catch (error) {
+      console.error('Error fetching archive data', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  if (loading) return <p>Loading chats...</p>;
+  useEffect(() => {
+    fetchArchiveData();
+  }, []);
+
+  const handleFilterChange = (e) => {
+    const selectedType = e.target.value.toLowerCase();
+    setFilterType(selectedType);
+
+    if (selectedType === '') {
+      setFilteredData(archiveData); // reset
+    } else {
+      const filtered = archiveData.filter(item =>
+        item.entity_type.toLowerCase().includes(selectedType)
+      );
+      setFilteredData(filtered);
+    }
+  };
 
   return (
-    <div style={{border:'1px solid blue', height:'60vh', overflowY:'auto'}}>
-      <h3>💬 Chats</h3>
-      {chats.length === 0 ? <p>No chats available.</p> : renderChats(chats)}
+    <div className="p-4">
+      <h2 className="mb-4 text-xl font-semibold">Archived Data</h2>
+
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Search by entity_type (e.g. boards)"
+          value={filterType}
+          onChange={handleFilterChange}
+          className="w-full max-w-sm p-2 border rounded"
+        />
+      </div>
+
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <ul className="space-y-4">
+          {filteredData.map((item) => (
+            <li key={item.id} className="p-3 border rounded shadow-sm">
+              <p><strong>Entity Type:</strong> {item.entity_type}</p>
+              <p><strong>Entity ID:</strong> {item.entity_id}</p>
+              <p><strong>Archived At:</strong> {new Date(item.archived_at).toLocaleString()}</p>
+              <p><strong>User ID:</strong> {item.user_id ?? '-'}</p>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };
 
-export default CardChats;
+export default ArchiveUniversal;

@@ -1,19 +1,24 @@
 require('dotenv').config();
 const express = require("express");
 const client = require('./connection');
+// const client = require('./backend/connection');
 const dotenv = require("dotenv");
 const bodyParser = require('body-parser');
 const cors = require('cors')
 const moment = require('moment')
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs')
+// const bcrypt = require('bcrypt');
 const {logActivity} = require('./ActivityLogger');
 const {logCardActivity} = require('./CardLogActivity');
 require('./CronJob')
 const {SystemNotification} = require('./SystemNotification');
+// const {SystemNotification} = require('./backend/SystemNotification');
 
 
 
 //import for upload
+// const upload = require('./backend/upload');
+// const cloudinary = require('./backend/CloudinaryConfig');
 const upload = require('./upload');
 const cloudinary = require('./CloudinaryConfig');
 
@@ -25,13 +30,15 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
-const PORT = process.env.PORT || 3002; // Gunakan port dari .env atau default 3002
+// const PORT = process.env.PORT || 3002; // Gunakan port dari .env atau default 3002
+
 app.use(cors({
-    origin: "http://localhost:3000", // Untuk development
+    origin: "*", // Untuk development
     // origin: "https://5eae-118-96-151-188.ngrok-free.app", // untuk test backend url dari ngrok
     methods: ["GET", "POST", "PUT", "DELETE","PATCH"], 
     allowedHeaders: ["Content-Type", "Authorization"], 
   }));
+
 
 // Middleware untuk mensimulasikan login
 const simulateLogin = (req, res, next) => {
@@ -42,13 +49,20 @@ const simulateLogin = (req, res, next) => {
 app.use(simulateLogin);
 app.use(express.urlencoded({ extended: true }));
 
+const PORT = process.env.PORT || 8080;
+
 app.get("/", (req, res) => {
     res.send("Server is running on port " + PORT);
 });
 
+
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
+
+// app.listen(PORT, () => {
+//     console.log(`Server running on http://localhost:${PORT}`);
+// });
 
 //ENDPOIN UPLOAD
 app.post('/api/upload-attach', upload.single('file'), async (req, res) => {
@@ -3991,7 +4005,7 @@ app.post('/api/data-employees', async (req, res) => {
     const {name, nomor_wa, divisi, jabatan, email_employee, username} = req.body
     try{
         const result = await client.query(
-            `INSERT INTO data_employees (name, nomor_wa, divisi, jabatan, email_employee, username, create_at, update_at)
+            `INSERT INTO data_employees (name, nomor_wa, divisi, jabatan, email_employee,username, create_at, update_at)
              VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW()) RETURNING *`,
             [name, nomor_wa, divisi, jabatan, email_employee, username]
         );
@@ -4917,8 +4931,20 @@ app.get('/api/marketing-designs-null', async(req,res)=>{
 })
 
 //ARCHIVE UNIVERSAL
+//1. get all data archive
+app.get('/api/archive-data', async (req, res) => {
+  try {
+    const result = await client.query(`SELECT * FROM archive_universal ORDER BY archived_at DESC`);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error('Error fetching archive:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+//2. archive data berdasarkan entity
 app.post('/api/archive/:entity/:id', async (req, res) => {
     const { entity, id } = req.params;
+    const userId = req.params.id;
 
     const entityMap = {
         workspaces_user : {table: 'workspaces_users', idField:'workspace_id'} ,
@@ -4950,9 +4976,10 @@ app.post('/api/archive/:entity/:id', async (req, res) => {
 
         // 2. Masukkan ke archive_universal
         await client.query(`
-            INSERT INTO archive_universal (entity_type, entity_id, data)
-            VALUES ($1, $2, $3)
-        `, [entity, id, data]);
+        INSERT INTO archive_universal (entity_type, entity_id, data, user_id)
+        VALUES ($1, $2, $3, $4)
+        `, [entity, id, data, userId]); // <-- pastikan req.user.id diset
+
 
         // 3. Hapus dari tabel aslinya
         await client.query(
@@ -4965,6 +4992,79 @@ app.post('/api/archive/:entity/:id', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
+//3. delete data archive by id
+app.delete('/api/archive-data/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await client.query(`DELETE FROM archive_universal WHERE id = $1`, [id]);
+    if (result.rowCount > 0) {
+      res.status(200).json({ message: `Archive with id ${id} deleted` });
+    } else {
+      res.status(404).json({ error: `Archive with id ${id} not found` });
+    }
+  } catch (error) {
+    console.error('Error deleting archive:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+//4. restore data archive 
+app.post('/api/restore/:entity/:id', async (req, res) => {
+  const { entity, id } = req.params;
+
+  const entityMap = {
+    workspaces_users: {table:'workspaces_users'},
+    workspaces: {table:'workspaces'},
+    boards: { table: 'boards' },
+    lists: {table:'lists'},
+    cards: { table: 'cards' },
+    data_marketing: { table: 'data_marketing' },
+    marketing_design: { table: 'marketing_design'}
+    // tambah sesuai entity kamu
+  };
+
+  const config = entityMap[entity];
+  if (!config) return res.status(400).json({ error: 'Entity tidak dikenali' });
+
+  try {
+    // 1. Ambil data dari archive_universal
+    const archiveResult = await client.query(
+      `SELECT data FROM archive_universal WHERE entity_type = $1 AND entity_id = $2`,
+      [entity, id]
+    );
+
+    if (archiveResult.rows.length === 0) {
+      return res.status(404).json({ error: `Data ${entity} dengan id ${id} tidak ditemukan di archive` });
+    }
+
+    const data = archiveResult.rows[0].data;
+    const keys = Object.keys(data);
+    const values = Object.values(data);
+    const placeholders = values.map((_, i) => `$${i + 1}`).join(', ');
+
+    // 2. Insert kembali ke tabel aslinya
+    const insertQuery = `
+      INSERT INTO ${config.table} (${keys.join(', ')})
+      VALUES (${placeholders})
+    `;
+    await client.query(insertQuery, values);
+
+    // 3. Hapus dari archive_universal
+    await client.query(
+      `DELETE FROM archive_universal WHERE entity_type = $1 AND entity_id = $2`,
+      [entity, id]
+    );
+
+    res.status(200).json({ message: `Data ${entity} berhasil direstore.` });
+  } catch (err) {
+    console.error('Restore error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+//END ARCHIVE UNIVERSAL
+
 
   
 // ARCHIVE DATA 
@@ -5109,6 +5209,51 @@ app.get('/api/workspaces/:userId/summary', async (req, res) => {
     }
   });
   
+  //get summary form a workspace 
+  app.get('/api/workspaces/:userId/summary/:workspaceId', async (req, res) => {
+  const { userId, workspaceId } = req.params;
+
+  const query = `
+    SELECT 
+      w.id AS workspace_id,
+      w.name AS workspace_name,
+      COUNT(DISTINCT b.id) AS board_count,
+      COUNT(DISTINCT l.id) AS list_count,
+      COUNT(c.id) AS card_count
+    FROM workspaces_users wu
+    JOIN workspaces w ON wu.workspace_id = w.id
+    LEFT JOIN boards b ON b.workspace_id = w.id
+    LEFT JOIN lists l ON l.board_id = b.id
+    LEFT JOIN cards c ON c.list_id = l.id
+    WHERE wu.user_id = $1 AND w.id = $2
+    GROUP BY w.id
+    ORDER BY w.name
+  `;
+
+  try {
+    const result = await client.query(query, [userId, workspaceId]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'Workspace summary not found for this user' });
+    }
+
+    res.json(result.rows[0]); // hanya satu workspace
+  } catch (err) {
+    console.error('Error fetching workspace summary by ID:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+//PERSONAL NOTE
+app.get('/api/all-note', async(req,res)=>{
+    try{
+        const result = await client.query('SELECT * FROM personal_note ORDER BY id DESC');
+        res.json(result.rows)
+    }catch(error){
+        res.status(500).json({error:'Gagal mengambil data semua personal note'});
+    }
+})
+
 // PROFILE 
 //1. get all profile
 app.get('/api/profile', async(req,res)=>{
