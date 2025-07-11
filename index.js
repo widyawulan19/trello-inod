@@ -109,21 +109,6 @@ app.post('/api/upload-attach', upload.single('file'), async (req, res) => {
 
 
 //UPLOADED FILES
-// app.get('/api/uploaded-files/:cardId', async(req,res)=>{
-//     const {cardId} = req.params;
-
-//     try{
-//         const result = await client.query(
-//             `SELECT * FROM uploaded_files WHERE card_id = $1 ORDER BY uploaded_at DESC`,
-//             [cardId]
-//         );
-
-//         res.status(200).json(result.rows);
-//     }catch(error){
-//         console.error('Error fetching files:', error);
-//         res.status(500).json({error: 'Failed to fetch uploaded files'});
-//     }
-// })
 app.get('/api/uploaded-files/:cardId', async (req, res) => {
   const { cardId } = req.params;
 
@@ -177,10 +162,49 @@ app.get('/api/uploaded-files/:cardId/count', async (req, res) => {
   }
 });
 
-
-
-
 //END ENDPOIN UPLOAD
+
+//ENDPOIN SEARCH CARD
+app.get('/api/search', async (req, res) => {
+  const { keyword, workspaceId } = req.query;
+
+  if (!keyword || !workspaceId) {
+    return res.status(400).json({ error: 'Keyword and workspaceId are required' });
+  }
+
+  const searchKeyword = `%${keyword}%`;
+
+  try {
+    const query = `
+      SELECT 
+        cards.id AS card_id,
+        cards.title,
+        cards.description,
+        lists.name AS list_name,
+        boards.name AS board_name,
+        workspaces.name AS workspace_name
+      FROM 
+        cards
+      JOIN 
+        lists ON cards.list_id = lists.id
+      JOIN 
+        boards ON lists.board_id = boards.id
+      JOIN 
+        workspaces ON boards.workspace_id = workspaces.id
+      WHERE 
+        workspaces.id = $2 AND (
+          LOWER(cards.title) ILIKE LOWER($1)
+          OR LOWER(cards.description) ILIKE LOWER($1)
+      )
+    `;
+
+    const result = await client.query(query, [searchKeyword, workspaceId]);
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Search error:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 
 //REGISTER
