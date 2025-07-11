@@ -165,6 +165,7 @@ app.get('/api/uploaded-files/:cardId/count', async (req, res) => {
 //END ENDPOIN UPLOAD
 
 //ENDPOIN SEARCH CARD
+// ENDPOINT SEARCH CARD (DENGAN ID)
 app.get('/api/search', async (req, res) => {
   const { keyword, workspaceId } = req.query;
 
@@ -180,9 +181,13 @@ app.get('/api/search', async (req, res) => {
         cards.id AS card_id,
         cards.title,
         cards.description,
+        cards.list_id,
         lists.name AS list_name,
+        lists.board_id,
         boards.name AS board_name,
-        workspaces.name AS workspace_name
+        boards.workspace_id,
+        workspaces.name AS workspace_name,
+        workspaces.id AS workspace_id
       FROM 
         cards
       JOIN 
@@ -205,6 +210,7 @@ app.get('/api/search', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 
 //REGISTER
