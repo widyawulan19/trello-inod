@@ -164,7 +164,7 @@ app.get('/api/uploaded-files/:cardId/count', async (req, res) => {
 
 //END ENDPOIN UPLOAD
 
-//ENDPOIN SEARCH CARD
+// ENDPOINT SEARCH CARD (DENGAN ID)
 // ENDPOINT SEARCH CARD (DENGAN ID)
 app.get('/api/search', async (req, res) => {
   const { keyword, workspaceId } = req.query;
