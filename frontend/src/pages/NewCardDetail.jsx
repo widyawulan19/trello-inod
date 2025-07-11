@@ -91,6 +91,16 @@ const NewCardDetail=()=> {
     const [exampleUpload, setExampleUpload] = useState(false);
     //total file 
     const [totalFile, setTotalFile] = useState(0);
+    //status
+    const [showStatusInput, setShowStatusInput] = useState(false);
+    const [statusVisible, setStatusVisible] = useState(true); // default: visible
+
+    const toggleStatusVisibility = () => {
+      setStatusVisible(!statusVisible);
+    };
+
+
+
 
     const handleShowExample = () =>{
         setExampleUpload(!exampleUpload);
@@ -601,12 +611,19 @@ const NewCardDetail=()=> {
                         )}
                         {/* END SHOW BUTTON  */}
                     </div>
+
+                    {/* Toggle Button (only for small screen) */}
+                    <div className="status-toggle-btn-wrapper">
+                        <button 
+                            className="status-toggle-btn" 
+                            onClick={toggleStatusVisibility}
+                        >
+                            {statusVisible ? 'Hide Status ▲' : 'Show Status ▼'}
+                        </button>
+                    </div>
                     
                     {/* STATUS  */}
-                    <button className="toggle-status-btn" style={{ margin:'0px', padding:'0px'}} onClick={toggleStatus}>
-                        {showStatus ? 'Hide Status ▲' : 'Show Status ▼'}
-                    </button>
-                    <div className={`ncd-status ${!showStatus ? 'minimized' : ''}`}>
+                     <div className={`ncd-status ${!statusVisible ? 'status-hidden' : ''}`}>
                         <div className="ncd-status-container">
                             <StatusDisplay 
                                 cardId={cardId} 
@@ -645,7 +662,7 @@ const NewCardDetail=()=> {
                             />
                         </div>
                     </div>
-                </div>
+                    </div>
 
                 <div className="ncd-main-content">
                     <div className="ncd-main-left">

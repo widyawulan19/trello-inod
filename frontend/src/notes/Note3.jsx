@@ -224,3 +224,44 @@ const ArchiveUniversal = () => {
 };
 
 export default ArchiveUniversal;
+
+
+<div className='ncd-status'>
+                        <div className="ncd-status-container">
+                            <StatusDisplay 
+                                cardId={cardId} 
+                                // onClose={handleCloseStatus}
+                                currentStatus={currentStatus}
+                                setCurrentStatus={setCurrentStatus}
+                                allStatuses={allStatuses}
+                                setAllStatuses={setAllStatuses}
+                                selectedStatus={selectedStatus}
+                                setSelectedStatus={setSelectedStatus}
+                                fetchCardStatus={fetchCardStatus}
+                                fetchAllStatuses={fetchAllStatuses}
+                            />
+                        </div>
+                        <div className="ncd-status-priority">
+                           <SelectPriority 
+                                cardId={cardId} 
+                                selectedProperties={selectedProperties} 
+                                setSelectedProperties={setSelectedProperties} 
+                                selectedPriority={selectedPriority}
+                                refreshPriority={fetchPriority}
+                            />
+                        </div>
+                        <div className="ncd-status-due">
+                            <DueDateDisplay
+                                cardId={cardId}
+                                dueDates={dueDates}
+                                setDueDates={setDueDates}
+                                selectedDate={selectedDate}
+                                setSelectedDate={setSelectedDate}
+                                selectedDueDateId={selectedDueDateId}
+                                setSelectedDueDateId={setSelectedDueDateId}
+                                loading={loading}
+                                setLoading={setLoading}
+                                fetchDueDates={fetchDueDates}
+                            />
+                        </div>
+                    </div>

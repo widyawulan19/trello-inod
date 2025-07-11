@@ -1,11 +1,11 @@
 .cp-container{
     /* border: 1px solid #ddd; */
     border-radius: 4px;
-    padding: 0px;
+    padding: 10px 5px;
 }
 .scp-header{
     /* background-image: linear-gradient(to right, #2d66e7, #3863e7, #425fe8, #4c5be7, #5557e7, #5d54e7, #6551e7, #6d4de7, #764ae7, #7e47e7, #8743e7, #8f3fe6); */
-    color: #333;
+    color: #5e5e5e;
     /* border: 1px solid blue; */
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
@@ -16,8 +16,8 @@
 }
 .scp-header h4{
     margin: 0px;
-    font-size: 12px;
-    /* color: #5e5e5e; */
+    font-size: 10px;
+    color: #5e5e5e;
     font-weight: bold;
 }
 .scp-header .close-icon{
@@ -123,13 +123,16 @@
 
 
 /* SELECT PRIORITIES  */
+.card-priority{
+    position: relative;
+}
 .priority-modals{
     position: absolute;
     top: 100%;
     right: 0px;
     border: 1px solid #ddd;
     box-shadow: 0px 8px 8px #5e12eb1e;
-    border-radius: 4px;
+    border-radius: 8px;
     background-color: white;
     z-index: 199;
     width: 100%;

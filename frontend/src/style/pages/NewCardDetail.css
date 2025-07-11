@@ -494,22 +494,6 @@
     align-items:baseline;
     justify-content: center;
 }
-/* Disembunyikan saat minimized */
-.ncd-status.minimized {
-  display: none;
-}
-
- .toggle-status-btn {
-    background: none;
-    border: none;
-    color: #5557e7;
-    font-weight: bold;
-    margin: 5px 0;
-    cursor: pointer;
-    font-size: 13px;
-    /* position: relative; */
-  }
-
 
 .ncd-status-container{
     /* border: 1px solid #ddd; */
@@ -526,6 +510,43 @@
      height: fit-content;
     /* width: 30%; */
 }
+.ncd-status-empty,
+.ncd-priority-empty,
+.ncd-due-empty {
+  color: #888;
+  font-style: italic;
+  padding: 4px 0;
+}
+
+
+.btn-add-status {
+  background-color: transparent;
+  border: 1px dashed #888;
+  color: #555;
+  padding: 4px 8px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+/* responsive toggle button */
+.status-toggle-btn-wrapper {
+  display: none;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.status-toggle-btn {
+  font-size: 12px;
+  padding: 4px 10px;
+  background-color: white;
+  border: 1px solid white;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #4c4fe8;
+}
+
 /* END STATUS  */
 
 .cdl-header{
@@ -918,21 +939,11 @@
 /* Extra large devices (large desktops, ≥1200px) */
 @media (min-width: 1200px) and (max-width:1400px) {
   /* CSS monitor besar */
-  .toggle-status-btn{
-        display: none;
-    }
-    /* .ncd-main-content .ncd-main-left{
-        border: 1px solid grey;
-        height: 60vh;
-    } */
+  
 }
 
 /* large devices  */
 @media (min-width: 992px) and (max-width:1200px){
-
-    .toggle-status-btn{
-        display: none;
-    }
 
     .ncd-main-content {
         height: 60vh;
@@ -978,47 +989,26 @@
     }
         /* END BODY  */
 
-    .toggle-status-btn{
-        display: none;
-    }
-
-    .ncd-status{
-        padding: 5px;
-        /* border: 1px solid red; */
-        grid-template-columns: repeat(3, 30%);
-    }
 
     .label-modals{
         width: 50vh;
     }
 
     .ncd-main-content {
-        height: 60vh;
+        height: 58vh;
         /* border: 1px solid red; */
     }
     .ncd-main-content .ncd-main-left{
         /* border: 1px solid grey; */
-        height: 60vh;
+        height: 58vh;
     }
     .ncd-main-content .ncd-main-right{
         /* border: 1px solid grey; */
-        height: 60vh;
+        height: 58vh;
     }
 
     .attach-body{
         /* border: 1px solid red; */
-    }
-
-
-
-    /* CARD ACTIVITY  */
-
-
-    /* CARD ACTIVITY  */
-
-    .ncd-main-left .ncd-attach{
-        /* border: 1px solid red; */
-        /* margin-bottom: 10px; */
     }
 
     /* UPLOAD MODAL  */
@@ -1029,45 +1019,48 @@
         top: 45%;
     }
 
-  /* CSS tablet atau iPad */
+    /* STATUS  */
+    .ncd-status{
+        /* border: 1px solid blue; */
+        padding: 10px;
+        display: flex;
+        flex-direction: row;
+    }
+
+    .ncd-status-container,
+    .ncd-status-priority,
+    .ncd-status-due{
+        width: 100%;
+    }
+    /* END STATUS  */
 }
 
 /* Medium devices (tablets, ≥768px) */
 @media (min-width: 576px) and (max-width: 767.98px){
   /* CSS tablet atau iPad */
-   .ncd-status {
-    display: flex; /* ✅ default tampil (bisa hide via class "minimized") */
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    height: 35vh;
-    width: 95%;
-    top: 25%;
-    overflow-y: auto;
-  }
 
-  .ncd-status.minimized {
-    max-height: 0;
-    padding: 0;
-    overflow: hidden;
-    display: none; /* ✅ barulah disembunyikan kalau pakai class ini */
-  }
-  .ncd-status .ncd-status-container,
-  .ncd-status .ncd-status-priority,
-  .ncd-status .ncd-status-due
-  {
-    width: 100%;
-  }
+      /* STATUS BTN  */
+    .status-toggle-btn-wrapper {
+        display: block;
+    }
 
-  .toggle-status-btn {
-    background: none;
-    border: none;
-    color: #5557e7;
-    font-weight: bold;
-    margin: 3px 0;
-    cursor: pointer;
-    font-size: 13px;
-  }
+    .ncd-status.status-hidden {
+        display: none;
+    }
+
+    .ncd-status{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .ncd-status-container,
+    .ncd-status-priority,
+    .ncd-status-due{
+        width: 100%;
+    }
+  /* END STATUS BTN  */
 
   .ncd-main-header{
     width: 100%;
@@ -1149,11 +1142,41 @@
         left: 3%;
         top: 45%;
     }
+
+    /* CARD ACTIVITY  */
+    .ncd-card-activity .ncd-activiy-content{
+        /* border: 1px solid orange; */
+        padding: 0px;
+    }
 }
 
 /* ukuran handpone kecil  */
 /* @media (min-width:375px) and (max-width:575px){ */
 @media (min-width:375px) and (max-width:575px) {
+
+    /* STATUS BTN  */
+    .status-toggle-btn-wrapper {
+        display: block;
+    }
+
+    .ncd-status.status-hidden {
+        display: none;
+    }
+
+    .ncd-status{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .ncd-status-container,
+    .ncd-status-priority,
+    .ncd-status-due{
+        width: 100%;
+    }
+  /* END STATUS BTN  */
+
     .ncd-body{
         padding: 5px;
         /* border: 1px solid red; */
@@ -1165,41 +1188,129 @@
     .ncd-main-header{
         width: 100%;
     }
-    
-   .ncd-status {
-    display: flex; 
+
+
+   .ncd-main-header .ncd-title-btn{
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    justify-content: flex-start;
+    padding: 5px;
+    /* border: 1px solid red; */
+  }
+  .title-label{
+    width: 98%;
+  }
+
+  .ct-box h5{
+    padding: 0px;
+    /* border: 1px solid red; */
+  }
+
+  .main-header-btn{
+    width: 100%;
+    /* border: 1px solid blue; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+    /* MAIN CONTENT  */
+.ncd-main-content {
+    /* border: 1px solid blue; */
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    display: flex;
+    margin-bottom: 5px;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    height: 35vh;
-    width: 95%;
-    top: 25%;
-    overflow-y: auto;
+    justify-content: flex-start; /* ✅ ubah jadi flex-start biar isian dimulai dari atas */
+    gap: 15px; /* tambahkan jika butuh spasi antar elemen */
+    /* padding-bottom: 5vh;  */
   }
 
-  .ncd-status.minimized {
-    max-height: 0;
-    padding: 0;
-    /* overflow: hidden; */
-    /* display: none; */
+  .ncd-main-content .ncd-main-left {
+    width: 100%;
+    height: auto; /* ✅ biar fleksibel menyesuaikan isi */
+    max-height: none;
+    overflow-y: visible;
+    /* border: 1px solid blue !important; */
   }
 
-    .ncd-status .ncd-status-container,
-    .ncd-status .ncd-status-priority,
-    .ncd-status .ncd-status-due
-    {
+  .ncd-main-content .ncd-main-right {
+    width: 100%;
+    height: auto;
+    max-height: none;
+    overflow-y: visible;
+  }
+
+  .modal-chatroom{
+        width: 100vw;
+        height: 92vh;
+    }
+
+    .label-modals{
         width: 100%;
     }
 
-    .toggle-status-btn {
-        background: none;
-        border: none;
-        color: #5557e7;
-        font-weight: bold;
-        margin: 3px 0;
-        cursor: pointer;
-        font-size: 13px;
+  /* UPLOAD MODAL  */
+  .upload-form-modals{
+    width: 94%;
+    height: fit-content;
+    left: 3%;
+    top: 45%;
   }
+
+  /* ASSIGNMENT MODAL  */
+  .assign-modal{
+    width: 80%;
+    /* height: 30% ; */
+    /* border: 1px solid green; */
+    background-color: transparent;
+  }
+    /* ASSIGNMENT MODAL  */
+
+}
+
+/* HEIGHT BREAKPOIN  */
+@media  (min-height:400px) and (max-height:730px){
+
+    /* STATUS BTN  */
+    .status-toggle-btn-wrapper {
+        display: block;
+    }
+
+    .ncd-status.status-hidden {
+        display: none;
+    }
+
+    .ncd-status{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .ncd-status-container,
+    .ncd-status-priority,
+    .ncd-status-due{
+        width: 100%;
+    }
+  /* END STATUS BTN  */
+
+    .ncd-body{
+        padding: 5px;
+        /* border: 1px solid red; */
+        height: 90%;
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+
+    .ncd-main-header{
+        width: 100%;
+    }
+
 
    .ncd-main-header .ncd-title-btn{
     display: flex;

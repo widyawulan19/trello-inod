@@ -1,10 +1,10 @@
 .card-status-container{
     /* border: 1px solid blue; */
     width: 100% !important;
+    padding: 5px; 
+
 }
-.status-container h5{
-    margin: 0px;
-}
+
 .status-header{
     /* border: 1px solid red; */
     padding: 5px;
@@ -15,7 +15,7 @@
 }
 .status-header h5{
    margin: 0px;
-   font-size: 12px;
+   font-size: 10px;
    font-weight: bold;
    color: #5e5e5e;
 }
@@ -34,7 +34,7 @@
     background-color: rgb(253, 225, 225);
     text-align: center;
     margin: 0px;
-    padding: 3px;
+    padding: 5px;
     font-size: 10px;
 }
 
