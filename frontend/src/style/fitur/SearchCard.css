@@ -1,0 +1,101 @@
+.search-card-container{
+    border: 1px solid #ddd;
+
+    width: 100%;
+    gap: 5px;
+    border-radius: 16px;
+    padding: 3px 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+}
+.search-card-container:hover{
+    border: 1px solid #5D12EB;
+    box-shadow: 0px 4px 8px #5e12eb46;
+}
+.search-card-container input{
+    border: 1px solid white;
+    border-radius: 8px;
+    padding: 5px;
+    font-size: 10px;
+    color: #5e5e5e;
+    width: 15vw;
+}
+.search-card-container input:focus{
+    outline: none;
+    border: 1px solid white;
+}
+
+.search-card-container .search-card-btn{
+    border: 1px solid #5D12EB;
+    border-radius: 8px;
+    background-color: #5D12EB;
+    color: white;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+}
+
+.search-card-result{
+    position: absolute;
+    top: 100%;
+    right: 10%;
+    z-index: 99;
+    padding: 5px;
+    border: 1px solid #b4a3d2;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0px 4px 8px #5e12eb46;
+}
+
+.search-card-result .no-res{
+    border: 1px solid red;
+    color: red;
+    padding: 5px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-card-result .search-result-list{
+    padding: 5px;
+    gap: 3px;
+    /* border: 1px solid #ddd; */
+    height: 50vh;
+    overflow-y: auto;
+}
+.search-result-list .search-result-item{
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 5px;
+    margin: 5px;
+    cursor: pointer;
+}
+.search-result-list .search-result-item:hover{
+    border: 1px solid #5D12EB;
+    box-shadow: 0px 4px 8px #5e12eb46;
+}
+
+.search-result-item .card-title{
+    border-bottom: 1px solid #ddd;
+    font-size: 12px;
+    color: #333;
+    padding: 3px;
+}
+
+.search-result-item .p-desc{
+    font-size: 10px;
+    color: #5e5e5e;
+}
+
+.search-result-item .p-contex{
+    font-size: 12px;
+    color: #5e5e5e;
+}
+
+mark {
+  background-color: #ffe564;
+  padding: 0 2px;
+  border-radius: 4px;
+}

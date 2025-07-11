@@ -31,6 +31,7 @@ import { useSnackbar } from '../context/Snackbar'
 import { useUser } from '../context/UserContext'
 import { FaChevronRight, FaPlus } from 'react-icons/fa6'
 import { handleArchive } from '../utils/handleArchive'
+import SearchCard from '../fitur/SearchCard'
 
 const BoardList=()=> {
     //STATE
@@ -345,6 +346,9 @@ const handleNavigateToBoard = (workspaceId,boardId) =>{
                 </div>
             </div>
             <div className="more-action">
+                <div className="search-btn">
+                    <SearchCard workspaceId={workspaceId}/>
+                </div>
                 <div className="btn-create-list" onClick={handleShowListForm}>
                     <FaPlus/>
                     <p>Create List</p>

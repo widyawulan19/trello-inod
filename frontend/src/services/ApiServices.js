@@ -20,6 +20,9 @@ export const uploadFile = (file, cardId) => {
 export const getAllUploadFiles = (cardId) => axios.get(`${API_URL}/uploaded-files/${cardId}`);
 export const getTotalFile = (cardId) =>  axios.get(`${API_URL}/uploaded-files/${cardId}/count`);
 
+//SEARCH CARD BY 1 WORKSPACE
+export const searchCards = (keyword, workspaceId) => axios.get(`${API_URL}/search`, { params: { keyword, workspaceId } });
+
 //WORKSPACE
 export const getWorkspaces = () => axios.get(`${API_URL}/workspace`)
 export const getWorkspaceById = (id) => axios.get(`${API_URL}/workspace/${id}`)

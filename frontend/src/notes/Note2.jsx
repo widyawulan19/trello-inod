@@ -1,73 +1,61 @@
-import React, { useEffect, useState } from 'react';
-import { getAllDataArchive } from '../services/ApiServices';
+import React, { useState, useEffect } from 'react';
+import { searchCards } from '../services/ApiServices';
+import '../style/fitur/SearchCard.css';
+import { IoSearchOutline } from 'react-icons/io5';
 
-const ArchiveUniversal = () => {
-  const [archiveData, setArchiveData] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [filterType, setFilterType] = useState(''); // untuk search by entity_type
+const SearchCard = ({ workspaceId }) => {
+  const [keyword, setKeyword] = useState('');
+  const [results, setResults] = useState([]);
 
-  const fetchArchiveData = async () => {
-    setLoading(true);
-    try {
-      const response = await getAllDataArchive();
-      setArchiveData(response.data);
-      setFilteredData(response.data); // set awal
-    } catch (error) {
-      console.error('Error fetching archive data', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // Auto-search saat keyword berubah
   useEffect(() => {
-    fetchArchiveData();
-  }, []);
+    const delayDebounce = setTimeout(() => {
+      if (keyword.trim() && workspaceId) {
+        handleSearch();
+      } else {
+        setResults([]);
+      }
+    }, 400); // debounce 400ms
 
-  const handleFilterChange = (e) => {
-    const selectedType = e.target.value.toLowerCase();
-    setFilterType(selectedType);
+    return () => clearTimeout(delayDebounce);
+  }, [keyword, workspaceId]);
 
-    if (selectedType === '') {
-      setFilteredData(archiveData); // reset
-    } else {
-      const filtered = archiveData.filter(item =>
-        item.entity_type.toLowerCase().includes(selectedType)
-      );
-      setFilteredData(filtered);
+  const handleSearch = async () => {
+    try {
+      const response = await searchCards(keyword, workspaceId);
+      setResults(response.data);
+    } catch (error) {
+      console.error('Search failed:', error);
     }
   };
 
   return (
-    <div className="p-4">
-      <h2 className="mb-4 text-xl font-semibold">Archived Data</h2>
+    <div className="search-card-container">
+      <IoSearchOutline size={18} />
+      <input
+        type="text"
+        value={keyword}
+        onChange={(e) => setKeyword(e.target.value)}
+        placeholder="Search card title or description..."
+      />
 
-      <div className="mb-4">
-        <input
-          type="text"
-          placeholder="Search by entity_type (e.g. boards)"
-          value={filterType}
-          onChange={handleFilterChange}
-          className="w-full max-w-sm p-2 border rounded"
-        />
+      <div className="search-card-result">
+        {keyword && results.length === 0 && (
+          <p>No results found.</p>
+        )}
+
+        {results.map((card) => (
+          <div key={card.card_id} className="search-box">
+            <h3>{card.title}</h3>
+            <p className="p-desc">{card.description}</p>
+            <p className="p-contex">
+              📦 List: <strong>{card.list_name}</strong> | 🧭 Board: <strong>{card.board_name}</strong> | 🏢 Workspace: <strong>{card.workspace_name}</strong>
+            </p>
+          </div>
+        ))}
       </div>
-
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <ul className="space-y-4">
-          {filteredData.map((item) => (
-            <li key={item.id} className="p-3 border rounded shadow-sm">
-              <p><strong>Entity Type:</strong> {item.entity_type}</p>
-              <p><strong>Entity ID:</strong> {item.entity_id}</p>
-              <p><strong>Archived At:</strong> {new Date(item.archived_at).toLocaleString()}</p>
-              <p><strong>User ID:</strong> {item.user_id ?? '-'}</p>
-            </li>
-          ))}
-        </ul>
-      )}
     </div>
   );
 };
 
-export default ArchiveUniversal;
+export default SearchCard;
