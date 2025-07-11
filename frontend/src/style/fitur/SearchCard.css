@@ -1,6 +1,5 @@
 .search-card-container{
     border: 1px solid #ddd;
-
     width: 100%;
     gap: 5px;
     border-radius: 16px;
@@ -62,7 +61,7 @@
     padding: 5px;
     gap: 3px;
     /* border: 1px solid #ddd; */
-    height: 50vh;
+    height: 40vh;
     overflow-y: auto;
 }
 .search-result-list .search-result-item{

@@ -3,10 +3,12 @@ import { searchCards } from '../services/ApiServices';
 import '../style/fitur/SearchCard.css';
 import { IoSearchOutline } from 'react-icons/io5';
 import { IoIosCard } from 'react-icons/io';
+import { useNavigate } from 'react-router-dom';
 
 const SearchCard = ({ workspaceId }) => {
   const [keyword, setKeyword] = useState('');
   const [results, setResults] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
@@ -73,7 +75,13 @@ const SearchCard = ({ workspaceId }) => {
         {results.length > 0 && (
           <ul className="search-result-list">
             {results.map((card) => (
-              <li key={card.card_id} className="search-result-item">
+              <li
+                    key={card.card_id}
+                    className="p-3 mb-2 border rounded cursor-pointer search-result-item hover:bg-gray-100"
+                    onClick={() => navigate(
+                        `/workspaces/${card.workspace_id}/board/${card.board_id}/lists/${card.list_id}/cards/${card.card_id}`
+                    )}
+                >
                 <div className='card-title'>
                     <strong>{card.title}</strong>
                 </div>
