@@ -212,8 +212,8 @@ app.get('/api/search', async (req, res) => {
 
 // GLOBAL SEARCH CARD (berdasarkan user)
 app.get('/api/search/global', async (req, res) => {
-    const { keyword} = req.query;
-    const userId = req.user.id;
+    const { keyword, userId} = req.query;
+    // const userId = req.user.id;
 
   if (!keyword || !userId) {
     return res.status(400).json({ error: 'Keyword and userId are required' });
