@@ -210,16 +210,26 @@ app.get('/api/search', async (req, res) => {
   }
 });
 
-// GLOBAL SEARCH CARD (berdasarkan user)
+//GLOBAL SEARCH CARD (berdasarkan user)
 app.get('/api/search/global', async (req, res) => {
-    const { keyword, userId} = req.query;
-    // const userId = req.user.id;
+  const { keyword, userId } = req.query;
 
+  // Validasi input
   if (!keyword || !userId) {
     return res.status(400).json({ error: 'Keyword and userId are required' });
   }
 
   const searchKeyword = `%${keyword}%`;
+  const numericUserId = parseInt(userId);
+
+  if (isNaN(numericUserId)) {
+    return res.status(400).json({ error: 'Invalid userId' });
+  }
+
+  // Logging input
+  console.log('🔍 keyword:', keyword);
+  console.log('🔍 userId:', numericUserId);
+  console.log('🔍 searchKeyword:', searchKeyword);
 
   try {
     const query = `
@@ -239,22 +249,27 @@ app.get('/api/search/global', async (req, res) => {
       JOIN lists ON cards.list_id = lists.id
       JOIN boards ON lists.board_id = boards.id
       JOIN workspaces ON boards.workspace_id = workspaces.id
-      JOIN workspaces_users ON workspace_users.workspace_id = workspaces.id
+      JOIN workspaces_users ON workspaces_users.workspace_id = workspaces.id
       WHERE 
-        workspace_users.user_id = $2
+        workspaces_users.user_id = $2
         AND (
           LOWER(cards.title) ILIKE LOWER($1)
           OR LOWER(cards.description) ILIKE LOWER($1)
         )
     `;
 
-    const result = await client.query(query, [searchKeyword, userId]);
+    const result = await client.query(query, [searchKeyword, numericUserId]);
     res.json(result.rows);
   } catch (err) {
-    console.error('Search error:', err);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error('❌ Search error message:', err.message);
+    console.error('🧨 Full error:', err);
+    res.status(500).json({ 
+      error: 'Internal server error', 
+      detail: err.message 
+    });
   }
 });
+
 
 
 
