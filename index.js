@@ -239,7 +239,7 @@ app.get('/api/search/global', async (req, res) => {
       JOIN lists ON cards.list_id = lists.id
       JOIN boards ON lists.board_id = boards.id
       JOIN workspaces ON boards.workspace_id = workspaces.id
-      JOIN workspace_users ON workspace_users.workspace_id = workspaces.id
+      JOIN workspaces_users ON workspace_users.workspace_id = workspaces.id
       WHERE 
         workspace_users.user_id = $2
         AND (
