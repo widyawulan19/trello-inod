@@ -12,6 +12,7 @@ import FullNewCalendar from '../fitur/FullNewCalendar';
 import NotificationPage from '../UI/NotificationPage';
 import NavbarNotification from '../UI/NavbarNotification';
 import NotificationIcon from '../UI/NotificationIcon';
+import SearchGlobalCard from '../fitur/SearchGlobalCard';
 
 //tooltip
 const BootstrapTooltip = styled(({className, ...props}) =>(
@@ -111,13 +112,7 @@ const Navbar=()=> {
             <img src={logo1} alt={logo1} onClick={handleToHome}/>
         </div>
         <div className="more-fiture">
-            <div className="input">
-                <HiOutlineMagnifyingGlass className='input-icon'/>
-                <input 
-                    type="text"
-                    placeholder='search...'
-                />
-            </div>
+            <SearchGlobalCard userId={userId}/>
             <div className="more-action">
                 <BootstrapTooltip title="Calendar">
                     <div 
@@ -190,10 +185,8 @@ const Navbar=()=> {
             <div className="profil">
                 <BootstrapTooltip title="Profile">
                     {profilUser && (
-                        <div className='icon-wrapper'>
-                             <button onClick={navigateToProfile}>
+                        <div className='icon-wrapper' onClick={navigateToProfile}>
                                 <img src={profilUser.photo_url} alt={profilUser.username} />
-                            </button>
                         </div>
                     )}
                 </BootstrapTooltip>

@@ -24,13 +24,15 @@
     height: 100%;
     border-radius: 8px;
 }
+
+
 .more-fiture{
     /* border: 1px solid #eee; */
     display: flex;
     align-items: center;
     justify-content: center;
     margin-right: 10px;
-    padding: 0px;
+    padding: 5px 0px;
 }
 .more-fiture .input{
     border: 1px solid rgba(255, 255, 255, 0.3);
@@ -110,27 +112,23 @@ input:hover
 }
 
 /* profil  */
+.more-fiture .profil{
+    /* border: 1px solid red; */
+    padding: 0px;
+    margin-left: 5px;
+}
 .profil .icon-wrapper{
     padding: 0px;
     color: white;
+    cursor: pointer;
     /* border: 1px solid blue; */
 }
 .icon-wrapper img{
-    width: 30px;
+    width: 50px;
     height: 30px;
     border-radius: 50%;
     
 }
-.icon-wrapper button{
-    /* padding: 5px; */
-    border: 1px solid #eeeeee00;
-    /* box-shadow: 0px 4px 8px rgba(0,0,0,0.1); */
-    background-color: rgba(255, 0, 0, 0);
-    border-radius: 8px;
-    color: white;
-    cursor: pointer;
-}
-
 
 /* CALENDAR  */
 .calender-modal{
@@ -163,29 +161,47 @@ input:hover
 
 @media (min-width:768px) and (max-width: 991.98px){
     .navbar-container .logo{
-        width: 80%;
-        /* padding: 5px 0px; */
+        width: 20%;
     }
     .logo img{
-        width: 50%;
+        width: 100%;
         height: 100%;
+        /* border: 1px solid red; */
     }
     .notif-modal{
         width: 40vw;
+    }
+
+    .more-fiture{
+        /* border:1px solid red;oard */
+        width: 60%;
+    }
+
+    .more-fiture .profil{
+        width: 10vw;
+        /* border: 1px solid green; */
     }
 }
 
 @media (min-width:576px) and (max-width: 768px) {
     .navbar-container .logo{
-        width: 80%;
-        /* padding: 5px 0px; */
+        width: 20%;
     }
     .logo img{
-        width: 50%;
+        width: 100%;
         height: 100%;
+        /* border: 1px solid red; */
     }
     .notif-modal{
         width: 40vw;
+    }
+    .more-fiture{
+        /* border: 1px solid orange; */
+        width: 70%;
+    }
+        .more-fiture .profil{
+        width: 10vw;
+        /* border: 1px solid green; */
     }
 }
 
@@ -225,38 +241,11 @@ input:hover
     }
 
   /* PROFIL  */
-     .profil {
-        width: auto;
-        height: auto;
-    }
-
-    .profil .icon-wrapper {
-        padding: 0px;
-        border: none;
+    .more-fiture .profil{
+        width: 15vw;
         /* border: 1px solid green; */
-        /* display: flex;
-        align-items: center;
-        justify-content: center; */
     }
 
-    .icon-wrapper button {
-        width: 50px;
-        height: 30px; 
-        /* margin: 0px; */
-        /* padding: 5px; */
-        background-color: transparent;
-        /* border: none; */
-        /* border: 1px solid yellow; */
-    }
-
-    .icon-wrapper img {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        object-fit: cover;
-        /* border: 1px solid red; */
-        margin: 0px;
-    }
     .notif-modal{
         width: 75vw;
         right: 0%;

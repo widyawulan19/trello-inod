@@ -67,6 +67,7 @@ const SearchCard = ({ workspaceId }) => {
         placeholder="Search card title or description..."
       />
 
+    {keyword !== '' && (
       <div className="search-card-result">
         {keyword && results.length === 0 && (
           <p className='no-res'>No results found.</p>
@@ -99,6 +100,8 @@ const SearchCard = ({ workspaceId }) => {
           </ul>
         )}
       </div>
+      )}
+      
     </div>
   );
 };

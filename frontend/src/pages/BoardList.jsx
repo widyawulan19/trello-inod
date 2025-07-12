@@ -338,7 +338,7 @@ const handleNavigateToBoard = (workspaceId,boardId) =>{
     <div className='bl-container'>
         <div className="bl-header">
             <div className="blnav">
-                <h4>{boards.name} Boards</h4>
+                <h4 className='ellipsis-text'>{boards.name} Boards</h4>
                 <div className="blnav-sub" onClick={()=>handleNavigateToWorkspace(workspaceId)}>
                     <p>{boards.name}</p>
                     <HiOutlineChevronRight/>
@@ -350,7 +350,7 @@ const handleNavigateToBoard = (workspaceId,boardId) =>{
                     <SearchCard workspaceId={workspaceId}/>
                 </div>
                 <div className="btn-create-list" onClick={handleShowListForm}>
-                    <FaPlus/>
+                    <FaPlus className='cl-icon'/>
                     <p>Create List</p>
                 </div>
             </div>
