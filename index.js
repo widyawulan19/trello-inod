@@ -165,7 +165,6 @@ app.get('/api/uploaded-files/:cardId/count', async (req, res) => {
 //END ENDPOIN UPLOAD
 
 // ENDPOINT SEARCH CARD (DENGAN ID)
-// ENDPOINT SEARCH CARD (DENGAN ID)
 app.get('/api/search', async (req, res) => {
   const { keyword, workspaceId } = req.query;
 
@@ -204,6 +203,52 @@ app.get('/api/search', async (req, res) => {
     `;
 
     const result = await client.query(query, [searchKeyword, workspaceId]);
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Search error:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// GLOBAL SEARCH CARD (berdasarkan user)
+app.get('/api/search/global', async (req, res) => {
+    const { keyword} = req.query;
+    const userId = req.user.id;
+
+  if (!keyword || !userId) {
+    return res.status(400).json({ error: 'Keyword and userId are required' });
+  }
+
+  const searchKeyword = `%${keyword}%`;
+
+  try {
+    const query = `
+      SELECT 
+        cards.id AS card_id,
+        cards.title,
+        cards.description,
+        cards.list_id,
+        lists.name AS list_name,
+        lists.board_id,
+        boards.name AS board_name,
+        boards.workspace_id,
+        workspaces.name AS workspace_name,
+        workspaces.id AS workspace_id
+      FROM 
+        cards
+      JOIN lists ON cards.list_id = lists.id
+      JOIN boards ON lists.board_id = boards.id
+      JOIN workspaces ON boards.workspace_id = workspaces.id
+      JOIN workspace_users ON workspace_users.workspace_id = workspaces.id
+      WHERE 
+        workspace_users.user_id = $2
+        AND (
+          LOWER(cards.title) ILIKE LOWER($1)
+          OR LOWER(cards.description) ILIKE LOWER($1)
+        )
+    `;
+
+    const result = await client.query(query, [searchKeyword, userId]);
     res.json(result.rows);
   } catch (err) {
     console.error('Search error:', err);
