@@ -5346,11 +5346,11 @@ app.get('/api/all-note', async(req,res)=>{
 })
 
 // 2.  Get all notes for a specific user
-app.get('/api/user/:userId', async (req, res) => {
+app.get('/api/personal-note/user/:userId', async (req, res) => {
   const { userId } = req.params;
   try {
     const result = await client.query(
-      'SELECT * FROM notes WHERE user_id = $1 ORDER BY created_at DESC',
+      'SELECT * FROM personal_note WHERE user_id = $1 ORDER BY created_at DESC',
       [userId]
     );
     res.json(result.rows);
@@ -5360,11 +5360,11 @@ app.get('/api/user/:userId', async (req, res) => {
 });
 
 // 3. Get a single note by ID (only if owned by user)
-app.get('/api/:id/user/:userId', async (req, res) => {
+app.get('/api/personal-note/:id/user/:userId', async (req, res) => {
   const { id, userId } = req.params;
   try {
     const result = await client.query(
-      'SELECT * FROM notes WHERE id = $1 AND user_id = $2',
+      'SELECT * FROM personal_note WHERE id = $1 AND user_id = $2',
       [id, userId]
     );
     if (result.rows.length === 0) {
@@ -5377,11 +5377,11 @@ app.get('/api/:id/user/:userId', async (req, res) => {
 });
 
 // 4. Create a new note
-app.post('/', async (req, res) => {
+app.post('/api/personal-note', async (req, res) => {
   const { name, isi_note, user_id, agenda_id } = req.body;
   try {
     const result = await client.query(
-      `INSERT INTO notes (name, isi_note, user_id, agenda_id) 
+      `INSERT INTO personal_note (name, isi_note, user_id, agenda_id) 
        VALUES ($1, $2, $3, $4) RETURNING *`,
       [name, isi_note, user_id, agenda_id]
     );
@@ -5392,12 +5392,12 @@ app.post('/', async (req, res) => {
 });
 
 // 5. Update a note (only if owned by user)
-app.put('/:id/user/:userId', async (req, res) => {
+app.put('/api/personal-note/:id/user/:userId', async (req, res) => {
   const { id, userId } = req.params;
   const { name, isi_note, agenda_id } = req.body;
   try {
     const result = await client.query(
-      `UPDATE notes SET name = $1, isi_note = $2, agenda_id = $3, update_at = NOW() 
+      `UPDATE personal_note SET name = $1, isi_note = $2, agenda_id = $3, update_at = NOW() 
        WHERE id = $4 AND user_id = $5 RETURNING *`,
       [name, isi_note, agenda_id, id, userId]
     );
@@ -5411,11 +5411,11 @@ app.put('/:id/user/:userId', async (req, res) => {
 });
 
 // 6. Delete a note (only if owned by user)
-app.delete('/:id/user/:userId', async (req, res) => {
+app.delete('api/personal-note/:id/user/:userId', async (req, res) => {
   const { id, userId } = req.params;
   try {
     const result = await client.query(
-      'DELETE FROM notes WHERE id = $1 AND user_id = $2 RETURNING *',
+      'DELETE FROM personal_note WHERE id = $1 AND user_id = $2 RETURNING *',
       [id, userId]
     );
     if (result.rows.length === 0) {
