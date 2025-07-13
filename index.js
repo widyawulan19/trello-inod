@@ -5335,6 +5335,7 @@ app.get('/api/workspaces/:userId/summary', async (req, res) => {
 });
 
 //PERSONAL NOTE
+//1. get all note
 app.get('/api/all-note', async(req,res)=>{
     try{
         const result = await client.query('SELECT * FROM personal_note ORDER BY id DESC');
@@ -5343,6 +5344,88 @@ app.get('/api/all-note', async(req,res)=>{
         res.status(500).json({error:'Gagal mengambil data semua personal note'});
     }
 })
+
+// 2.  Get all notes for a specific user
+app.get('/api/user/:userId', async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const result = await client.query(
+      'SELECT * FROM notes WHERE user_id = $1 ORDER BY created_at DESC',
+      [userId]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 3. Get a single note by ID (only if owned by user)
+app.get('/api/:id/user/:userId', async (req, res) => {
+  const { id, userId } = req.params;
+  try {
+    const result = await client.query(
+      'SELECT * FROM notes WHERE id = $1 AND user_id = $2',
+      [id, userId]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'Note not found' });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 4. Create a new note
+app.post('/', async (req, res) => {
+  const { name, isi_note, user_id, agenda_id } = req.body;
+  try {
+    const result = await client.query(
+      `INSERT INTO notes (name, isi_note, user_id, agenda_id) 
+       VALUES ($1, $2, $3, $4) RETURNING *`,
+      [name, isi_note, user_id, agenda_id]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 5. Update a note (only if owned by user)
+app.put('/:id/user/:userId', async (req, res) => {
+  const { id, userId } = req.params;
+  const { name, isi_note, agenda_id } = req.body;
+  try {
+    const result = await client.query(
+      `UPDATE notes SET name = $1, isi_note = $2, agenda_id = $3, update_at = NOW() 
+       WHERE id = $4 AND user_id = $5 RETURNING *`,
+      [name, isi_note, agenda_id, id, userId]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'Note not found or not owned by user' });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 6. Delete a note (only if owned by user)
+app.delete('/:id/user/:userId', async (req, res) => {
+  const { id, userId } = req.params;
+  try {
+    const result = await client.query(
+      'DELETE FROM notes WHERE id = $1 AND user_id = $2 RETURNING *',
+      [id, userId]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'Note not found or not owned by user' });
+    }
+    res.json({ message: 'Note deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // PROFILE 
 //1. get all profile
