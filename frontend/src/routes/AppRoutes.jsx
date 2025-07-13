@@ -34,11 +34,17 @@ import ExampleTailwind from '../pages/ExampleTailwind';
 import EmployeeSchedule from '../modules/EmployeeSchedule';
 import NotificationIcon from '../UI/NotificationIcon';
 import ArchiveUniversal from '../pages/ArchiveUniversal';
+import MainLp from '../landingpage/MainLp';
+import Layout from '../components/Layout';
 
 const AppRoutes=()=> {
   return (
     <Routes>
-        <Route path='/' element={<Home/>}/>
+
+        <Route path='/landing-page' element={<MainLp/>}/>
+
+        <Route path='/' element={<Layout/>}>
+        <Route index element={<Home/>}/>
         <Route path='/recent' element={<Recent/>}/>
         <Route path='/workspaces' element={<NewWorkspace/>}/>
         <Route path='/workspaces/:workspaceId' element={<WorkspacePage/>}/>
@@ -73,6 +79,7 @@ const AppRoutes=()=> {
         <Route path='/example-css' element={<ExampleTailwind/>}/>
         <Route path='/employee-schedule' element={<EmployeeSchedule/>}/>
         <Route path='/notif-icon' element={<NotificationIcon/>}/>
+        </Route>
     </Routes>
   )
 }
