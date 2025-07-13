@@ -5350,7 +5350,7 @@ app.get('/api/personal-note/user/:userId', async (req, res) => {
   const { userId } = req.params;
   try {
     const result = await client.query(
-      'SELECT * FROM personal_note WHERE user_id = $1 ORDER BY created_at DESC',
+      'SELECT * FROM personal_note WHERE user_id = $1 ORDER BY create_at DESC',
       [userId]
     );
     res.json(result.rows);
