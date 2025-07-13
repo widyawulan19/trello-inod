@@ -5338,7 +5338,7 @@ app.get('/api/workspaces/:userId/summary', async (req, res) => {
 //1. get all note
 app.get('/api/all-note', async(req,res)=>{
     try{
-        const result = await client.query('SELECT * FROM personal_note ORDER BY id DESC');
+        const result = await client.query('SELECT * FROM personal_notes ORDER BY id DESC');
         res.json(result.rows)
     }catch(error){
         res.status(500).json({error:'Gagal mengambil data semua personal note'});
@@ -5350,7 +5350,7 @@ app.get('/api/personal-note/user/:userId', async (req, res) => {
   const { userId } = req.params;
   try {
     const result = await client.query(
-      'SELECT * FROM personal_note WHERE user_id = $1 ORDER BY create_at DESC',
+      'SELECT * FROM personal_notes WHERE user_id = $1 ORDER BY create_at DESC',
       [userId]
     );
     res.json(result.rows);
@@ -5364,7 +5364,7 @@ app.get('/api/personal-note/:id/user/:userId', async (req, res) => {
   const { id, userId } = req.params;
   try {
     const result = await client.query(
-      'SELECT * FROM personal_note WHERE id = $1 AND user_id = $2',
+      'SELECT * FROM personal_notes WHERE id = $1 AND user_id = $2',
       [id, userId]
     );
     if (result.rows.length === 0) {
@@ -5381,7 +5381,7 @@ app.post('/api/personal-note', async (req, res) => {
   const { name, isi_note, user_id, agenda_id } = req.body;
   try {
     const result = await client.query(
-      `INSERT INTO personal_note (name, isi_note, user_id, agenda_id) 
+      `INSERT INTO personal_notes (name, isi_note, user_id, agenda_id) 
        VALUES ($1, $2, $3, $4) RETURNING *`,
       [name, isi_note, user_id, agenda_id]
     );
@@ -5397,7 +5397,7 @@ app.put('/api/personal-note/:id/user/:userId', async (req, res) => {
   const { name, isi_note, agenda_id } = req.body;
   try {
     const result = await client.query(
-      `UPDATE personal_note SET name = $1, isi_note = $2, agenda_id = $3, update_at = NOW() 
+      `UPDATE personal_notes SET name = $1, isi_note = $2, agenda_id = $3, update_at = NOW() 
        WHERE id = $4 AND user_id = $5 RETURNING *`,
       [name, isi_note, agenda_id, id, userId]
     );
@@ -5415,7 +5415,7 @@ app.delete('api/personal-note/:id/user/:userId', async (req, res) => {
   const { id, userId } = req.params;
   try {
     const result = await client.query(
-      'DELETE FROM personal_note WHERE id = $1 AND user_id = $2 RETURNING *',
+      'DELETE FROM personal_notes WHERE id = $1 AND user_id = $2 RETURNING *',
       [id, userId]
     );
     if (result.rows.length === 0) {
