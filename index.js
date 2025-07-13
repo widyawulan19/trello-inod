@@ -5411,7 +5411,7 @@ app.put('/api/personal-note/:id/user/:userId', async (req, res) => {
 });
 
 // 6. Delete a note (only if owned by user)
-app.delete('api/personal-note/:id/user/:userId', async (req, res) => {
+app.delete('/api/personal-note/:id/user/:userId', async (req, res) => {
   const { id, userId } = req.params;
   try {
     const result = await client.query(
