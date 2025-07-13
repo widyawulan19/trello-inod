@@ -5350,7 +5350,7 @@ app.get('/api/personal-note/user/:userId', async (req, res) => {
   const { userId } = req.params;
   try {
     const result = await client.query(
-      'SELECT * FROM personal_notes WHERE user_id = $1 ORDER BY create_at DESC',
+      'SELECT * FROM personal_notes WHERE user_id = $1 ORDER BY created_at DESC',
       [userId]
     );
     res.json(result.rows);
@@ -5397,7 +5397,7 @@ app.put('/api/personal-note/:id/user/:userId', async (req, res) => {
   const { name, isi_note, agenda_id } = req.body;
   try {
     const result = await client.query(
-      `UPDATE personal_notes SET name = $1, isi_note = $2, agenda_id = $3, update_at = NOW() 
+      `UPDATE personal_notes SET name = $1, isi_note = $2, agenda_id = $3, updated_at = NOW() 
        WHERE id = $4 AND user_id = $5 RETURNING *`,
       [name, isi_note, agenda_id, id, userId]
     );
