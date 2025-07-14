@@ -197,3 +197,19 @@ router.get('/:id/user/:user_id', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+
+// INSERT INTO agenda_status (name, description, color) VALUES
+('trivial', 'Very low importance. Not urgent and can be postponed easily.', '#B0BEC5'),
+('optional', 'Optional activity. Does not affect your main goals.', '#90A4AE'),
+('normal', 'Regular agenda item. Important but not urgent.', '#42A5F5'),
+('important', 'High importance. Should be prioritized.', '#FB8C00'),
+('critical', 'Extremely important and time-sensitive. Must not be missed.', '#E53935');
+
+// INSERT INTO agenda_personal (user_id, title, description, agenda_date, reminder_time, status_id)
+// VALUES
+(3, 'Rapat Tim Marketing', 'Bahas strategi kampanye Q3', '2025-07-20', '2025-07-20 09:00:00', 1),
+(3, 'Review Project Alpha', 'Tinjau progress dan deliverable Project Alpha', '2025-07-22', '2025-07-22 10:30:00', 2),
+(3, 'Meeting Client ABC', 'Diskusi ulang kontrak dan requirement', '2025-07-24', '2025-07-24 14:00:00', 1),
+(3, 'Persiapan Presentasi', 'Siapkan slide untuk presentasi ke direksi', '2025-07-25', '2025-07-25 08:00:00', 3),
+(3, 'Jurnal Harian', 'Catatan aktivitas dan refleksi pribadi', '2025-07-26', '2025-07-26 19:00:00', 3);
