@@ -5427,6 +5427,101 @@ app.delete('/api/personal-note/:id/user/:userId', async (req, res) => {
   }
 });
 
+//PERSONAL AGENDA
+//1. create new agenda
+app.post('/api/agenda', async (req, res) => {
+  const { user_id, title, description, agenda_date, reminder_time, status_id } = req.body;
+  try {
+    const result = await client.query(
+      `INSERT INTO agenda_personal (user_id, title, description, agenda_date, reminder_time, status_id)
+       VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+      [user_id, title, description, agenda_date, reminder_time, status_id]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+//2. read all agendas for users
+app.get('/api/user/:user_id', async (req, res) => {
+  const { user_id } = req.params;
+  try {
+    const result = await client.query(
+      `SELECT a.*, s.name as status_name, s.color 
+       FROM agenda_personal a
+       LEFT JOIN agenda_status s ON a.status_id = s.id
+       WHERE a.user_id = $1
+       ORDER BY a.agenda_date ASC`,
+      [user_id]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+//3. read satu agenda by id (and user)
+app.get('/api/:id/user/:user_id', async (req, res) => {
+  const { id, user_id } = req.params;
+  try {
+    const result = await client.query(
+      `SELECT a.*, s.name as status_name, s.color 
+       FROM agenda_personal a
+       LEFT JOIN agenda_status s ON a.status_id = s.id
+       WHERE a.id = $1 AND a.user_id = $2`,
+      [id, user_id]
+    );
+    if (result.rows.length === 0) return res.status(404).json({ message: 'Agenda not found' });
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+//4. update agenda
+app.put('/api/:id/user/:user_id', async (req, res) => {
+  const { id, user_id } = req.params;
+  const { title, description, agenda_date, reminder_time, status_id, is_notified } = req.body;
+
+  try {
+    const result = await client.query(
+      `UPDATE agenda_personal
+       SET title = $1,
+           description = $2,
+           agenda_date = $3,
+           reminder_time = $4,
+           status_id = $5,
+           is_notified = $6,
+           updated_at = NOW()
+       WHERE id = $7 AND user_id = $8
+       RETURNING *`,
+      [title, description, agenda_date, reminder_time, status_id, is_notified, id, user_id]
+    );
+    if (result.rows.length === 0) return res.status(404).json({ message: 'Agenda not found or unauthorized' });
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+//5. delete agenda
+app.delete('/api/:id/user/:user_id', async (req, res) => {
+  const { id, user_id } = req.params;
+  try {
+    const result = await client.query(
+      `DELETE FROM agenda_personal WHERE id = $1 AND user_id = $2 RETURNING *`,
+      [id, user_id]
+    );
+    if (result.rows.length === 0) return res.status(404).json({ message: 'Agenda not found or unauthorized' });
+    res.json({ message: 'Agenda deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+
 // PROFILE 
 //1. get all profile
 app.get('/api/profile', async(req,res)=>{
