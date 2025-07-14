@@ -5521,6 +5521,106 @@ app.delete('/api/:id/user/:user_id', async (req, res) => {
 });
 
 
+//STATUS AGENDA
+//1. get all agenda status
+app.get('/api/agenda-status', async (req, res) => {
+  try {
+    const result = await client.query('SELECT * FROM agenda_status ORDER BY id ASC');
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+//2. Get single status by ID
+app.get('/api/agenda-status/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await client.query('SELECT * FROM agenda_status WHERE id = $1', [id]);
+    if (result.rows.length === 0) return res.status(404).json({ message: 'Status not found' });
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+//3. create new status
+app.post('/api/agenda-status', async (req, res) => {
+  const { name, description, color } = req.body;
+  try {
+    const result = await client.query(
+      `INSERT INTO agenda_status (name, description, color)
+       VALUES ($1, $2, $3) RETURNING *`,
+      [name, description, color]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+//4. Update status
+app.put('/api/agenda-status/:id', async (req, res) => {
+  const { id } = req.params;
+  const { name, description, color } = req.body;
+  try {
+    const result = await client.query(
+      `UPDATE agenda_status SET name = $1, description = $2, color = $3 WHERE id = $4 RETURNING *`,
+      [name, description, color, id]
+    );
+    if (result.rows.length === 0) return res.status(404).json({ message: 'Status not found' });
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+//5. Delete status (with safety: only if not used in agenda_personal)
+app.delete('/api/agenda-status/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    // Cek apakah ada agenda menggunakan status ini
+    const check = await client.query('SELECT 1 FROM agenda_personal WHERE status_id = $1 LIMIT 1', [id]);
+    if (check.rows.length > 0) {
+      return res.status(400).json({ message: 'Cannot delete status: already used in agenda_personal' });
+    }
+
+    const result = await client.query('DELETE FROM agenda_status WHERE id = $1 RETURNING *', [id]);
+    if (result.rows.length === 0) return res.status(404).json({ message: 'Status not found' });
+
+    res.json({ message: 'Status deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+//6. Get single agenda + status by agenda_id and user_id
+app.get('/api/:id/user/:user_id', async (req, res) => {
+  const { id, user_id } = req.params;
+
+  try {
+    const result = await client.query(
+      `SELECT 
+          a.*, 
+          s.name AS status_name, 
+          s.description AS status_description,
+          s.color AS status_color
+       FROM agenda_personal a
+       LEFT JOIN agenda_status s ON a.status_id = s.id
+       WHERE a.id = $1 AND a.user_id = $2`,
+      [id, user_id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'Agenda not found' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 // PROFILE 
 //1. get all profile
