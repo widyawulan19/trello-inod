@@ -14,6 +14,8 @@ import NavbarNotification from '../UI/NavbarNotification';
 import NotificationIcon from '../UI/NotificationIcon';
 import SearchGlobalCard from '../fitur/SearchGlobalCard';
 import PersonalNotes from '../modules/PersonalNotes';
+import PersonalAgendas from '../modules/PersonalAgendas';
+import AgendaUser from '../UI/AgendaUser';
 
 //tooltip
 const BootstrapTooltip = styled(({className, ...props}) =>(
@@ -39,6 +41,7 @@ const Navbar=()=> {
     const [showCalendar, setShowCalendar] = useState(false);
     const [showNotif, setShowNotif] = useState(false);
     const [showNotes, setShowNotes] = useState(false);
+    const [showAgenda, setShowAgenda] = useState(false);
     
     //unread total
     const [unreadCount, setUnreadCount] = useState(0);
@@ -116,6 +119,15 @@ const Navbar=()=> {
    const handleCloseNotes = () =>{
     setShowNotes(false)
    }
+
+   //SHOW AGENDA
+   const handleShowAgenda = () =>{
+    setShowAgenda(!showAgenda)
+   }
+
+   const handleCloseAgenda = () =>{
+    setShowAgenda(false)
+   }
  
   return (
     <div className='navbar-container'>
@@ -129,10 +141,11 @@ const Navbar=()=> {
                     <div 
                         className={`icon-wrapper ${active === 'calendar' ? 'active' : ''}`} 
                         onClick={() => handleActive('calendar')}
+                        // onClick={handleShowAgenda}
                     >
                         <HiMiniCalendarDateRange   
                             className='icon-icon' 
-                            onClick={handleShowCalendar}
+                            onClick={handleShowAgenda}
                     />
                     </div>
                     {showCalendar && (
@@ -198,6 +211,13 @@ const Navbar=()=> {
                 {showNotes && (
                     <div className="notes-modal">
                         <PersonalNotes userId={userId}/>
+                    </div>
+                )}
+
+                {/* SHOW AGENDA */}
+                {showAgenda && (
+                    <div className="agenda-modal">
+                        <AgendaUser userId={userId} onClose={handleCloseAgenda}/>
                     </div>
                 )}
             </div>

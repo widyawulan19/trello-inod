@@ -18,10 +18,10 @@ import { HiOutlinePlus } from 'react-icons/hi';
 import { MdAddChart } from 'react-icons/md';
 import WorkspaceSummary from '../UI/WorkspaceSummary.jsx';
 import AgendaUser from '../UI/AgendaUser.jsx';
-import PersonalAgenda from '../modules/PersonalAgenda.jsx';
 import { IoCalendar, IoFlash } from 'react-icons/io5';
 import AksesCepat from '../modules/AksesCepat.jsx';
 import PersonalNotes from '../modules/PersonalNotes.jsx';
+import PersonalAgendas from '../modules/PersonalAgendas.jsx';
 
 const Home=()=> {
   //state
@@ -105,6 +105,11 @@ const Home=()=> {
 
   const handleCancle = () =>{
     setShowForm(false)
+  }
+
+  //9. navigate to agenda page
+  const navigateToAgendaPage = () =>{
+    navigate('/agenda-page')
   }
 
   return (
@@ -218,11 +223,12 @@ const Home=()=> {
                   <h4>Your Agenda</h4>
                 </div>
                 <div className="ah-right">
-                  <BsArrowsAngleExpand className='sh-expand'/>
+                  <BsArrowsAngleExpand className='sh-expand' onClick={navigateToAgendaPage}/>
                 </div>
               </div>
               <div className="agenda-body">
-                <PersonalAgenda/>
+                {/* <PersonalAgenda/> */}
+                <PersonalAgendas userId={userId}/>
               </div>
             </div>
 

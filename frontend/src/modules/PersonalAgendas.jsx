@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import '../style/modules/PersonalAgendas.css'
-import { FaCircle, FaXmark } from 'react-icons/fa6';
+import { FaCircle } from 'react-icons/fa6';
 import { HiArrowRight } from 'react-icons/hi2';
-import BootstrapTooltip from '../components/Tooltip';
 import { getAgendaUser } from '../services/ApiServices';
+import BootstrapTooltip from '../components/Tooltip';
 
-const AgendaUser = ({userId,onClose}) => {
+const PersonalAgendas = ({userId}) => {
     //STATE
     const [agendas,setAgendas] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -51,11 +51,7 @@ const AgendaUser = ({userId,onClose}) => {
     if(agendas.length === 0) return <p>No agendas found for this user</p>
 
   return (
-    <div className='personal-agenda-navbar'>
-        <div className="agenda-header">
-            <h3>Your Personal Agenda</h3>
-            <FaXmark onClick={onClose} className='ah-icon'/>
-        </div>
+    <div className='personal-agenda-container'>
         {agendas.map(agenda =>(
         <div key={agenda.id} className="personal-agenda-box">
             <div className="pn-header">
@@ -96,4 +92,4 @@ const AgendaUser = ({userId,onClose}) => {
   )
 }
 
-export default AgendaUser
+export default PersonalAgendas

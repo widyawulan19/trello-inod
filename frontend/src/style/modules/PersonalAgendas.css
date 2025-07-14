@@ -1,8 +1,9 @@
-/* .personal-agenda-container{
-    border: 1px solid #ddd;
-    border-radius: 16px;
-    padding: 10px;
-} */
+.personal-agenda-container{
+    height: 40vh;
+    /* border: 1px solid red; */
+    overflow-y: auto;
+}
+
 .personal-agenda-box{
     border-radius: 16px;
     border: 1px solid #ddd;
@@ -16,7 +17,7 @@
 }
 
 .personal-agenda-box .pn-header{
-    /* border: 1px solid #ddd; */
+    /* border: 1px solid red; */
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -24,32 +25,35 @@
 
 .pn-header .pnh-left{
     gap: 15px;
+    /* padding: 2px; */
     display: flex;
     align-items: center;
     justify-content: flex-start;
     /* border: 1px solid green; */
     width: 75%;
 }
-.pnh-left .pnh-icon{
-    color: #ba81f7;
-}
+
 
 .pnh-left h4{
     color: #ba81f7;
     font-size: 15px;
     font-weight: bold;
+    margin: 0px;
 }
 
-.pn-header .pnh-right{
+.pnh-right{
     display: flex;
+    flex-direction: row;
     align-items: center;
-    justify-content: flex-end;
     width: 25%;
-    gap: 10px;
     padding-right: 10px;
+    /* border: 1px solid red; */
 }
+
 .pnh-right h3{
     font-size: 20px;
+    margin: 0px;
+    /* border: 1px solid green; */
     font-weight: bold;
     background: linear-gradient(90deg, #6a11cb, #ba81f7);
     -webkit-background-clip: text;
@@ -61,18 +65,19 @@
     margin: 0px;
     font-size: 10px;
     color: #333;
+    /* border: 1px solid green; */
 }
-
-
-
-
 
 .personal-agenda-box .pn-content{
     margin: 10px 0px;
     /* border: 1px solid red; */
+    width: 100%;
 }
 .pn-content p{
-    font-size: 12px;
+    font-size: 12px; 
+    white-space: nowrap;           /* mencegah teks turun ke bawah */
+    overflow: hidden;              /* sembunyikan teks yang melebihi container */
+    text-overflow: ellipsis; 
 }
 
 .personal-agenda-box .pn-footer{
@@ -82,13 +87,13 @@
     justify-content: space-between;
 }
 .pn-footer .agenda{
-    border-radius: 4px;
+    border-radius: 16px;
     font-size: 10px;
     font-weight: bold;
-    border: 1px solid #6b11cb41;
+    /* border: 1px solid #6b11cb41; */
     background-color: #6b11cb41;
-    color: #6a11cb;
-    padding: 5px 7px;
+    color: white;
+    padding: 5px 15px;
 }
 .pn-footer .read{
     /* border: 1px solid green; */
@@ -98,6 +103,11 @@
     letter-spacing: 1.5px;
     color: #ba81f7;
 }
+
+.pn-footer .read:hover{
+    color: white;
+}
+
 .read-icon{
     margin-left: 10px;
 }
@@ -115,4 +125,54 @@
    .personal-agenda-box{
     
    }
+}
+
+
+
+/* AGENDA USER  */
+.personal-agenda-navbar {
+  height: 40vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.personal-agenda-navbar .agenda-header {
+  position: sticky;
+  top: 0; /* ✅ nempel di atas saat scroll */
+  z-index: 99;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  width: 100%;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #6a11cb;
+  color: white;
+}
+.ah-icon{
+    cursor: pointer;
+}
+
+.agenda-header h3{
+    margin: 0px;
+    font-size: 15px;
+    font-weight: bold;
+    color: white;
+}
+
+.personal-agenda-navbar .personal-agenda-box{
+    border-radius: 16px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    cursor: pointer;
+    margin: 10px 0px;
+    width: 95%;
+}
+.personal-agenda-navba .personal-agenda-box:hover{
+    border: 1px solid #6a11cb;
+    box-shadow: 0px 4px 8px #6b11cb40;
 }

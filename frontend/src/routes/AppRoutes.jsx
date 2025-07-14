@@ -37,6 +37,7 @@ import ArchiveUniversal from '../pages/ArchiveUniversal';
 import MainLp from '../landingpage/MainLp';
 import Layout from '../components/Layout';
 import PersonalNotes from '../modules/PersonalNotes';
+import AgendaPage from '../pages/AgendaPage';
 
 const AppRoutes=()=> {
   return (
@@ -81,6 +82,7 @@ const AppRoutes=()=> {
         <Route path='/employee-schedule' element={<EmployeeSchedule/>}/>
         <Route path='/notif-icon' element={<NotificationIcon/>}/>
         <Route path='/personal-notes' element={<PersonalNotes/>}/>
+        <Route path='/agenda-page' element={<AgendaPage/>}/>
         </Route>
     </Routes>
   )

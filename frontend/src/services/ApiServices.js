@@ -34,6 +34,23 @@ export const createNote = (data) => axios.post(`${API_URL}/personal-note`, data)
 export const updateNote = (noteId,data,userId) => axios.put(`${API_URL}/personal-note/${noteId}/user/${userId}`, data);
 export const deleteNote = (noteId,userId) => axios.delete(`${API_URL}/personal-note/${noteId}/user/${userId}`)
 
+//PERSONAL AGENDA
+export const createNewAgenda = (data) => axios.post(`${API_URL}/agenda`,data);
+export const getAgendaUser = (userId) => axios.get(`${API_URL}/agenda-user/user/${userId}`);
+export const getAgendaUserById = (agendaId,userId) => axios.get(`${API_URL}/agenda-user/${agendaId}/user/${userId}`);
+export const updateAgendaUser = (agendaId,userId ) => axios.put(`${API_URL}/agenda/${agendaId}/user/${userId}`);
+export const deletAgendaUser = (agendaId, userId) => axios.delete(`${API_URL}/agenda-user/${agendaId}/user/${userId}`);
+
+//STATUS AGENDA
+export const getAllAgendaStatus = () => axios.get(`${API_URL}/agenda-status`)
+export const getStatusById = (statusId) => axios.get(`${API_URL}/agenda-status/${statusId}`)
+export const createNewStatus = (data) => axios.post(`${API_URL}/agenda-status`,data)
+export const updateStatusAgenda = (statusId) => axios.put(`${API_URL}/agenda-status/${statusId}`)
+export const deleteStatus = (statusId) => axios.delete(`${API_URL}/agenda-status/${statusId}`)
+
+
+
+
 //WORKSPACE
 export const getWorkspaces = () => axios.get(`${API_URL}/workspace`)
 export const getWorkspaceById = (id) => axios.get(`${API_URL}/workspace/${id}`)

@@ -1,0 +1,37 @@
+.agenda-page-container{
+    border: 1px solid #ddd;
+    height: 91vh;
+    padding: 0px;
+    margin-bottom: 10px;
+    margin: 15px;
+    background-color: #F8FAFC;
+    border-radius: 8px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* HEADER  */
+.agenda-page-container .agenda-page-header{
+    border: 1px solid red;
+    width: 100%;
+    padding: 10px;
+}
+.agenda-page-header h2{
+    font-size: 25px;
+    font-weight: bold;
+    color: #333;
+    margin: 0px;
+}
+.agenda-page-header h4{
+    font-size: 15px;
+    font-weight: bold;
+    color: rgb(100, 99, 99);
+    margin: 0px;
+}
+.agenda-page-header p{
+    font-size: 12px;
+    color: grey;
+}
+/* END HEADER  */

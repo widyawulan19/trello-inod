@@ -279,13 +279,26 @@
     padding: 4px;
 }
 .sh-right .sh-expand,
-.ah-right .sh-expand,
 .quick-right .sh-expand
 {
     font-weight: bold;
     font-size: 15px;
     color: #5320be;
     filter: drop-shadow(0 0 1px #5320be);
+}
+
+.ah-right .sh-expand{
+    font-weight: bold;
+    font-size: 15px;
+    color: #5320be;
+    cursor: pointer; 
+    transition: transform 0.2s ease;
+}
+.ah-right .sh-expand:hover {
+  box-shadow: 0px 4px 8px #6b11cb40;
+  filter: drop-shadow(0 0 1px #5320be);
+  transform: scale(1.2); /* ✅ memperbesar */
+  transition: transform 0.2s ease; /* ✅ animasi halus */
 }
 
 .home-summary .body-s{
@@ -364,7 +377,7 @@
     border-radius: 16px;
     box-shadow: 0px 4px 8px #6b11cb40;
     width: 100%;
-    height: 80%;
+    height: 70%;
 }
 .home-agenda .agenda-header{
     display: flex;
@@ -731,3 +744,15 @@
    }
 }
 
+
+/* ANIMATION */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

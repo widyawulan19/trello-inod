@@ -171,6 +171,22 @@ input:hover
     width: 40vw;
 }
 /* END NOTES  */
+
+/* AGENDA  */
+.agenda-modal{
+    position: absolute;
+    border: 1px solid #6a11cb;
+    /* border: 1px solid #B49CFF; */
+    background-color: white;
+    border-radius: 8px;
+    top: 140%;
+    right: 5%;
+    box-shadow: 0px 4px 8px #6b11cb40;
+    /* padding: 8px; */
+    width: 30vw;
+}
+/* END AGENDA  */
+
 /* MEDIA QUERY  */
 
 @media (min-width:768px) and (max-width: 991.98px){
