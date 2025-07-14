@@ -18,10 +18,10 @@ import { HiOutlinePlus } from 'react-icons/hi';
 import { MdAddChart } from 'react-icons/md';
 import WorkspaceSummary from '../UI/WorkspaceSummary.jsx';
 import AgendaUser from '../UI/AgendaUser.jsx';
-import PersonalNote from '../modules/PersonalNote.jsx';
 import PersonalAgenda from '../modules/PersonalAgenda.jsx';
 import { IoCalendar, IoFlash } from 'react-icons/io5';
 import AksesCepat from '../modules/AksesCepat.jsx';
+import PersonalNotes from '../modules/PersonalNotes.jsx';
 
 const Home=()=> {
   //state
@@ -204,7 +204,7 @@ const Home=()=> {
                 </div>
               </div>
               <div className="notes-body">
-                <PersonalNote/>
+                <PersonalNotes userId={userId}/>
               </div>
             </div>
           </div>

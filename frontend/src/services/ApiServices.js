@@ -26,6 +26,14 @@ export const searchCards = (keyword, workspaceId) => axios.get(`${API_URL}/searc
 //SEARCH CARD BY WORKSPACE USER
 export const searchCardsByUser = (keyword, userId) => axios.get(`${API_URL}/search/global`, {params: { keyword, userId }});
 
+// PERSONAL NOTES 
+export const getAllPersonalNotes = () => axios.get(`${API_URL}/all-note`);
+export const getNotesByUserId = (userId) => axios.get(`${API_URL}/personal-note/user/${userId}`);
+export const getNoteByIdansUserId = (noteId, userId) => axios.get(`${API_URL}/personal-note/${noteId}/user/${userId}`)
+export const createNote = (data) => axios.post(`${API_URL}/personal-note`, data);
+export const updateNote = (noteId,data,userId) => axios.put(`${API_URL}/personal-note/${noteId}/user/${userId}`, data);
+export const deleteNote = (noteId,userId) => axios.delete(`${API_URL}/personal-note/${noteId}/user/${userId}`)
+
 //WORKSPACE
 export const getWorkspaces = () => axios.get(`${API_URL}/workspace`)
 export const getWorkspaceById = (id) => axios.get(`${API_URL}/workspace/${id}`)

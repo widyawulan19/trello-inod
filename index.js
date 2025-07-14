@@ -109,21 +109,6 @@ app.post('/api/upload-attach', upload.single('file'), async (req, res) => {
 
 
 //UPLOADED FILES
-// app.get('/api/uploaded-files/:cardId', async(req,res)=>{
-//     const {cardId} = req.params;
-
-//     try{
-//         const result = await client.query(
-//             `SELECT * FROM uploaded_files WHERE card_id = $1 ORDER BY uploaded_at DESC`,
-//             [cardId]
-//         );
-
-//         res.status(200).json(result.rows);
-//     }catch(error){
-//         console.error('Error fetching files:', error);
-//         res.status(500).json({error: 'Failed to fetch uploaded files'});
-//     }
-// })
 app.get('/api/uploaded-files/:cardId', async (req, res) => {
   const { cardId } = req.params;
 
@@ -177,10 +162,115 @@ app.get('/api/uploaded-files/:cardId/count', async (req, res) => {
   }
 });
 
-
-
-
 //END ENDPOIN UPLOAD
+
+// ENDPOINT SEARCH CARD (DENGAN ID)
+app.get('/api/search', async (req, res) => {
+  const { keyword, workspaceId } = req.query;
+
+  if (!keyword || !workspaceId) {
+    return res.status(400).json({ error: 'Keyword and workspaceId are required' });
+  }
+
+  const searchKeyword = `%${keyword}%`;
+
+  try {
+    const query = `
+      SELECT 
+        cards.id AS card_id,
+        cards.title,
+        cards.description,
+        cards.list_id,
+        lists.name AS list_name,
+        lists.board_id,
+        boards.name AS board_name,
+        boards.workspace_id,
+        workspaces.name AS workspace_name,
+        workspaces.id AS workspace_id
+      FROM 
+        cards
+      JOIN 
+        lists ON cards.list_id = lists.id
+      JOIN 
+        boards ON lists.board_id = boards.id
+      JOIN 
+        workspaces ON boards.workspace_id = workspaces.id
+      WHERE 
+        workspaces.id = $2 AND (
+          LOWER(cards.title) ILIKE LOWER($1)
+          OR LOWER(cards.description) ILIKE LOWER($1)
+      )
+    `;
+
+    const result = await client.query(query, [searchKeyword, workspaceId]);
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Search error:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+//GLOBAL SEARCH CARD (berdasarkan user)
+app.get('/api/search/global', async (req, res) => {
+  const { keyword, userId } = req.query;
+
+  // Validasi input
+  if (!keyword || !userId) {
+    return res.status(400).json({ error: 'Keyword and userId are required' });
+  }
+
+  const searchKeyword = `%${keyword}%`;
+  const numericUserId = parseInt(userId);
+
+  if (isNaN(numericUserId)) {
+    return res.status(400).json({ error: 'Invalid userId' });
+  }
+
+  // Logging input
+  console.log('🔍 keyword:', keyword);
+  console.log('🔍 userId:', numericUserId);
+  console.log('🔍 searchKeyword:', searchKeyword);
+
+  try {
+    const query = `
+      SELECT 
+        cards.id AS card_id,
+        cards.title,
+        cards.description,
+        cards.list_id,
+        lists.name AS list_name,
+        lists.board_id,
+        boards.name AS board_name,
+        boards.workspace_id,
+        workspaces.name AS workspace_name,
+        workspaces.id AS workspace_id
+      FROM 
+        cards
+      JOIN lists ON cards.list_id = lists.id
+      JOIN boards ON lists.board_id = boards.id
+      JOIN workspaces ON boards.workspace_id = workspaces.id
+      JOIN workspaces_users ON workspaces_users.workspace_id = workspaces.id
+      WHERE 
+        workspaces_users.user_id = $2
+        AND (
+          LOWER(cards.title) ILIKE LOWER($1)
+          OR LOWER(cards.description) ILIKE LOWER($1)
+        )
+    `;
+
+    const result = await client.query(query, [searchKeyword, numericUserId]);
+    res.json(result.rows);
+  } catch (err) {
+    console.error('❌ Search error message:', err.message);
+    console.error('🧨 Full error:', err);
+    res.status(500).json({ 
+      error: 'Internal server error', 
+      detail: err.message 
+    });
+  }
+});
+
+
 
 
 //REGISTER
@@ -4944,7 +5034,7 @@ app.get('/api/archive-data', async (req, res) => {
 //2. archive data berdasarkan entity
 app.post('/api/archive/:entity/:id', async (req, res) => {
     const { entity, id } = req.params;
-    const userId = req.params.id;
+    const userId = req.user.id;
 
     const entityMap = {
         workspaces_user : {table: 'workspaces_users', idField:'workspace_id'} ,
@@ -5245,14 +5335,97 @@ app.get('/api/workspaces/:userId/summary', async (req, res) => {
 });
 
 //PERSONAL NOTE
+//1. get all note
 app.get('/api/all-note', async(req,res)=>{
     try{
-        const result = await client.query('SELECT * FROM personal_note ORDER BY id DESC');
+        const result = await client.query('SELECT * FROM personal_notes ORDER BY id DESC');
         res.json(result.rows)
     }catch(error){
         res.status(500).json({error:'Gagal mengambil data semua personal note'});
     }
 })
+
+// 2.  Get all notes for a specific user
+app.get('/api/personal-note/user/:userId', async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const result = await client.query(
+      'SELECT * FROM personal_notes WHERE user_id = $1 ORDER BY created_at DESC',
+      [userId]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 3. Get a single note by ID (only if owned by user)
+app.get('/api/personal-note/:id/user/:userId', async (req, res) => {
+  const { id, userId } = req.params;
+  try {
+    const result = await client.query(
+      'SELECT * FROM personal_notes WHERE id = $1 AND user_id = $2',
+      [id, userId]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'Note not found' });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 4. Create a new note
+app.post('/api/personal-note', async (req, res) => {
+  const { name, isi_note, user_id, agenda_id } = req.body;
+  try {
+    const result = await client.query(
+      `INSERT INTO personal_notes (name, isi_note, user_id, agenda_id) 
+       VALUES ($1, $2, $3, $4) RETURNING *`,
+      [name, isi_note, user_id, agenda_id]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 5. Update a note (only if owned by user)
+app.put('/api/personal-note/:id/user/:userId', async (req, res) => {
+  const { id, userId } = req.params;
+  const { name, isi_note, agenda_id } = req.body;
+  try {
+    const result = await client.query(
+      `UPDATE personal_notes SET name = $1, isi_note = $2, agenda_id = $3, updated_at = NOW() 
+       WHERE id = $4 AND user_id = $5 RETURNING *`,
+      [name, isi_note, agenda_id, id, userId]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'Note not found or not owned by user' });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 6. Delete a note (only if owned by user)
+app.delete('/api/personal-note/:id/user/:userId', async (req, res) => {
+  const { id, userId } = req.params;
+  try {
+    const result = await client.query(
+      'DELETE FROM personal_notes WHERE id = $1 AND user_id = $2 RETURNING *',
+      [id, userId]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'Note not found or not owned by user' });
+    }
+    res.json({ message: 'Note deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // PROFILE 
 //1. get all profile

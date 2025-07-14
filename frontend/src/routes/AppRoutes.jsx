@@ -36,6 +36,7 @@ import NotificationIcon from '../UI/NotificationIcon';
 import ArchiveUniversal from '../pages/ArchiveUniversal';
 import MainLp from '../landingpage/MainLp';
 import Layout from '../components/Layout';
+import PersonalNotes from '../modules/PersonalNotes';
 
 const AppRoutes=()=> {
   return (
@@ -79,6 +80,7 @@ const AppRoutes=()=> {
         <Route path='/example-css' element={<ExampleTailwind/>}/>
         <Route path='/employee-schedule' element={<EmployeeSchedule/>}/>
         <Route path='/notif-icon' element={<NotificationIcon/>}/>
+        <Route path='/personal-notes' element={<PersonalNotes/>}/>
         </Route>
     </Routes>
   )

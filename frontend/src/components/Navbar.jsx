@@ -13,6 +13,7 @@ import NotificationPage from '../UI/NotificationPage';
 import NavbarNotification from '../UI/NavbarNotification';
 import NotificationIcon from '../UI/NotificationIcon';
 import SearchGlobalCard from '../fitur/SearchGlobalCard';
+import PersonalNotes from '../modules/PersonalNotes';
 
 //tooltip
 const BootstrapTooltip = styled(({className, ...props}) =>(
@@ -37,6 +38,7 @@ const Navbar=()=> {
     // const userId = 12;
     const [showCalendar, setShowCalendar] = useState(false);
     const [showNotif, setShowNotif] = useState(false);
+    const [showNotes, setShowNotes] = useState(false);
     
     //unread total
     const [unreadCount, setUnreadCount] = useState(0);
@@ -105,6 +107,15 @@ const Navbar=()=> {
    const handleCloseNotif = () =>{
     setShowNotif(false)
    }
+
+   //SHOW NOTES
+   const handleShowNotes = () =>{
+    setShowNotes(!showNotes)
+   }
+
+   const handleCloseNotes = () =>{
+    setShowNotes(false)
+   }
  
   return (
     <div className='navbar-container'>
@@ -133,7 +144,8 @@ const Navbar=()=> {
                 <BootstrapTooltip title="Notes">
                     <div 
                       className={`icon-wrapper ${active === 'notes' ? 'active' : ''}`} 
-                      onClick={() => handleActive('notes')}
+                    //   onClick={() => handleActive('notes')}
+                    onClick={handleShowNotes}
                     >
                         <HiOutlineClipboardDocumentList className='icon-icon' />
                     </div>
@@ -179,6 +191,13 @@ const Navbar=()=> {
                     <div className='notif-modal'>
                         <NavbarNotification userId={userId} onClose={handleCloseNotif}/>
                         {/* <NotificationPage userId={userId}/> */}
+                    </div>
+                )}
+
+                {/* SHOW NOTES  */}
+                {showNotes && (
+                    <div className="notes-modal">
+                        <PersonalNotes userId={userId}/>
                     </div>
                 )}
             </div>
