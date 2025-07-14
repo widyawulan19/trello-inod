@@ -8,8 +8,7 @@
     border-radius: 8px;
     color: #333;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
 }
 
 /* HEADER  */
@@ -35,3 +34,94 @@
     color: grey;
 }
 /* END HEADER  */
+
+
+/* ACTION  */
+.agenda-page-container .agenda-page-action{
+    border: 1px solid blue;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 20px;
+}
+.agenda-page-action .action-left{
+    width: 40%;
+    border: 1px solid red;
+}
+.agenda-page-action .action-right{
+    width: 60%;
+    border: 1px solid green;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+/* DROPDOWN FITURE  */
+.dropdown-wrapper {
+  position: relative;
+  /* display: inline-block; */
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  border: 1px solid orange;
+}
+
+.dropdown-toggle {
+  padding: 8px 12px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  cursor: pointer;
+  min-width: 180px;
+  text-align: left;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  width: 100%;
+  z-index: 10;
+  border-radius: 6px;
+  padding: 0;
+  list-style: none;
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+}
+
+.dropdown-menu li {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.dropdown-menu li:hover,
+.dropdown-menu li.active {
+  background-color: #f0f0f0;
+  font-weight: bold;
+}
+
+/* END DROPDOWN FITURE  */
+
+/* FORM CREATE  */
+.create-agenda-form input,
+.create-agenda-form textarea,
+.create-agenda-form select {
+  padding: 8px;
+  width: 100%;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.create-agenda-form button {
+  padding: 10px;
+  background-color: #6a11cb;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* END ACTION  */
