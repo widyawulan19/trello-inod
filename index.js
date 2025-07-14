@@ -5444,7 +5444,7 @@ app.post('/api/agenda', async (req, res) => {
 });
 
 //2. read all agendas for users
-app.get('/api/user/:user_id', async (req, res) => {
+app.get('/api/agenda-user/user/:user_id', async (req, res) => {
   const { user_id } = req.params;
   try {
     const result = await client.query(
@@ -5462,7 +5462,7 @@ app.get('/api/user/:user_id', async (req, res) => {
 });
 
 //3. read satu agenda by id (and user)
-app.get('/api/:id/user/:user_id', async (req, res) => {
+app.get('/api/agenda-user/:id/user/:user_id', async (req, res) => {
   const { id, user_id } = req.params;
   try {
     const result = await client.query(
@@ -5480,7 +5480,7 @@ app.get('/api/:id/user/:user_id', async (req, res) => {
 });
 
 //4. update agenda
-app.put('/api/:id/user/:user_id', async (req, res) => {
+app.put('/api/agenda/:id/user/:user_id', async (req, res) => {
   const { id, user_id } = req.params;
   const { title, description, agenda_date, reminder_time, status_id, is_notified } = req.body;
 
@@ -5506,7 +5506,7 @@ app.put('/api/:id/user/:user_id', async (req, res) => {
 });
 
 //5. delete agenda
-app.delete('/api/:id/user/:user_id', async (req, res) => {
+app.delete('/api/agenda-user/:id/user/:user_id', async (req, res) => {
   const { id, user_id } = req.params;
   try {
     const result = await client.query(
