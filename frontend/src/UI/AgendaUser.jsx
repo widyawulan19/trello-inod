@@ -71,11 +71,11 @@ const AgendaUser = ({userId,onClose}) => {
                 </div>
                 {renderAgendaDate(agenda.agenda_date)}
             </div>
-            <div className="pn-content">
+            {/* <div className="pn-content">
                 <p>
                     {agenda.description}
                 </p>
-            </div>
+            </div> */}
             <div className="pn-footer">
                 <BootstrapTooltip title='Agenda Status' placement='top'>
                     <div className="agenda" 

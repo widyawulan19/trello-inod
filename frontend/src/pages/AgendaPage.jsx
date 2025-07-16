@@ -1,21 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import '../style/pages/AgendaPage.css';
 import { useUser } from '../context/UserContext';
-import { createNewAgenda, getAgendaUser } from '../services/ApiServices';
+import { createNewAgenda, deletAgendaUser, getAgendaUser, updateAgendaUser } from '../services/ApiServices';
 import { FaXmark } from 'react-icons/fa6';
+import { IoCheckmarkSharp, IoSearch, IoTrash } from "react-icons/io5";
+import { HiOutlineClock, HiOutlinePlus, HiXMark } from 'react-icons/hi2';
+import { AiFillClockCircle, AiFillSchedule } from "react-icons/ai";
+import { useSnackbar } from '../context/Snackbar';
+import { IoCreateOutline } from "react-icons/io5";
+import { HiDocumentText } from "react-icons/hi2";
+import BootstrapTooltip from '../components/Tooltip';
 
 function AgendaPage() {
   const { user } = useUser();
   const userId = user.id;
+  const {showSnackbar} = useSnackbar();
   const [agendas, setAgendas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [selectedAgenda, setSelectedAgenda] = useState(null);
 
 
   // Search & Filter
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
   const [showFormAgenda, setShowFormAgenda] = useState(false);
+  const [editAgendaId, setEditAgendaId] = useState(null);
   const [newAgenda, setNewAgenda] = useState({
     title: '',
     description: '',
@@ -68,37 +78,70 @@ function AgendaPage() {
 
   //4. function create new agenda
   const handleInputChange = (e) => {
-  const { name, value } = e.target;
-  setNewAgenda({ ...newAgenda, [name]: value });
-        };
-
-        const handleCreateAgenda = async (e) => {
-        e.preventDefault();
-
-        try {
-            const payload = {
-            ...newAgenda,
-            user_id: userId,
-            };
-
-            const res = await createNewAgenda(payload);
-            console.log('Agenda created:', res.data);
-
-            setNewAgenda({
-            title: '',
-            description: '',
-            agenda_date: '',
-            reminder_time: '',
-            status_id: ''
-            });
-
-            fetchDataAgenda(); // Refresh list
-        } catch (err) {
-            console.error('Failed to create agenda:', err);
-        }
+        const { name, value } = e.target;
+        setNewAgenda({ ...newAgenda, [name]: value });
     };
 
-    //5. show form agenda
+    // 5. create 
+    const handleCreateAgenda = async (e) => {
+      e.preventDefault();
+
+      try {
+        const agendaDate = newAgenda.agenda_date;
+        const reminderTime = newAgenda.reminder_time;
+        const reminderDateTime = new Date(`${agendaDate}T${reminderTime}:00`).toISOString();
+
+        const payload = {
+          ...newAgenda,
+          reminder_time: reminderDateTime,
+          user_id: user.id,
+        };
+
+        if (editAgendaId) {
+          // UPDATE AGENDA
+          await updateAgendaUser(editAgendaId, user.id, payload);
+          showSnackbar('Agenda updated successfully', 'success');
+        } else {
+          // CREATE AGENDA
+          await createNewAgenda(payload);
+          showSnackbar('Successfully created agenda', 'success');
+        }
+
+        // Reset state & refresh
+        setNewAgenda({
+          title: '',
+          description: '',
+          agenda_date: '',
+          reminder_time: '',
+          status_id: ''
+        });
+        setEditAgendaId(null);
+        setShowFormAgenda(false);
+        fetchDataAgenda();
+      } catch (err) {
+        console.error('Failed to save agenda:', err);
+        showSnackbar('Failed to save agenda', 'error');
+      }
+    };
+
+    //6. delete agenda
+    const handleDeleteAgenda = async (agendaId) => {
+      const confirm = window.confirm("Are you sure you want to delete this agenda?");
+      if (!confirm) return;
+
+      try {
+        await deletAgendaUser(agendaId, userId);
+        showSnackbar("Agenda deleted successfully", "success");
+        fetchDataAgenda(); // refresh list
+      } catch (err) {
+        console.error("Failed to delete agenda:", err);
+        showSnackbar("Failed to delete agenda", "error");
+      }
+    };
+
+
+
+    //7. show form agenda
     const handleShowForm = () =>{
         setShowFormAgenda(!showFormAgenda);
     }
@@ -106,6 +149,15 @@ function AgendaPage() {
     const handleCloseForm = () =>{
         setShowFormAgenda(false)
     }
+
+    // 8. show detail agenda 
+       const handleShowModals = (agenda) => {
+        setSelectedAgenda(agenda);
+    };
+
+    const handleCloseModals = () => {
+        setSelectedAgenda(null);
+    };
 
   return (
     <div className='agenda-page-container'>
@@ -119,23 +171,23 @@ function AgendaPage() {
 
       <div className="agenda-page-action">
         <div className="action-left">
+            <IoSearch className='ac-icon'/>
             <input
                 type="text"
                 placeholder="Search agenda..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                style={{ padding: '8px', width: '250px', marginRight: '16px' }}
             />
         </div>
         <div className="action-right">
             <div className="dropdown-wrapper">
                 <p>Filter by Status:</p>
-                <button
+                <div
                     className="dropdown-toggle"
                     onClick={() => setDropdownOpen(!dropdownOpen)}
                 >
-                    {selectedStatus || 'All Statuses'} ▼
-                </button>
+                    {selectedStatus || 'All Statuses'} <span>▼</span>
+                </div>
 
                 {dropdownOpen && (
                     <ul className="dropdown-menu">
@@ -158,7 +210,7 @@ function AgendaPage() {
 
             {/* form create new agenda  */}
             <div className="form-agenda" onClick={handleShowForm}>
-                <FaXmark/>
+                <HiOutlinePlus/>
                 Add New
             </div>
         </div>
@@ -167,78 +219,206 @@ function AgendaPage() {
       {/* SHOW FORM AGENDA  */}
       {showFormAgenda && (
         <div className="create-agenda-form">
-            <h3>Create New Agenda</h3>
-            <form onSubmit={handleCreateAgenda} style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
+            <div className="create-agenda-header">
+                <h3>Create New Agenda</h3>
+                <FaXmark onClick={handleCloseForm} className='cah-icon'/>
+            </div>
+            
+            <form onSubmit={handleCreateAgenda}>
                 <input
-                type="text"
-                name="title"
-                placeholder="Title"
-                value={newAgenda.title}
-                onChange={handleInputChange}
-                required
+                    type="text"
+                    name="title"
+                    placeholder="Title"
+                    value={newAgenda.title}
+                    onChange={handleInputChange}
+                    required
                 />
                 <textarea
-                name="description"
-                placeholder="Description"
-                value={newAgenda.description}
-                onChange={handleInputChange}
-                required
+                    name="description"
+                    placeholder="Description"
+                    value={newAgenda.description}
+                    onChange={handleInputChange}
+                    required
                 />
                 <input
-                type="date"
-                name="agenda_date"
-                value={newAgenda.agenda_date}
-                onChange={handleInputChange}
-                required
+                    type="date"
+                    name="agenda_date"
+                    value={newAgenda.agenda_date}
+                    onChange={handleInputChange}
+                    required
                 />
                 <input
-                type="time"
-                name="reminder_time"
-                value={newAgenda.reminder_time}
-                onChange={handleInputChange}
-                required
+                    type="time"
+                    name="reminder_time"
+                    value={newAgenda.reminder_time}
+                    onChange={handleInputChange}
+                    required
                 />
                 <select
-                name="status_id"
-                value={newAgenda.status_id}
-                onChange={handleInputChange}
-                required
+                    name="status_id"
+                    value={newAgenda.status_id}
+                    onChange={handleInputChange}
+                    required
                 >
-                <option value="">Select Status</option>
-                <option value="1">Trivial</option>
-                <option value="2">Optional</option>
-                <option value="3">Normal</option>
-                <option value="4">Important</option>
-                <option value="5">Critical</option>
+                    <option value="">Select Status</option>
+                    <option value="1">Trivial</option>
+                    <option value="2">Optional</option>
+                    <option value="3">Normal</option>
+                    <option value="4">Important</option>
+                    <option value="5">Critical</option>
                 </select>
-                <button type="submit">Add Agenda</button>
+                <button type="submit">{editAgendaId ? 'Update Agenda' : 'Add Agenda'}</button>
+
             </form>
         </div>
       )}
 
       {/* END SHOW FORM AGENDA  */}
-
       <div className="agenda-page-content">
-        <table className='agenda-page-table'>
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Description</th>
-              <th>Agenda Date</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredAgendas.map(agenda => (
-              <tr key={agenda.id}>
-                <td>{agenda.title}</td>
-                <td>{agenda.description}</td>
-                <td>{formatDate(agenda.agenda_date)}</td>
-                <td>{agenda.status_name}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="agenda-table-box">
+            <table className='agenda-page-table'>
+            <thead>
+                <tr>
+                <th>TITLE & DESCRIPTION</th>
+                <th>DATE</th>
+                <th>STATUS</th>
+                <th style={{textAlign:'center'}}>ACTION</th>
+                </tr>
+            </thead>
+            <tbody>
+                {filteredAgendas.map(agenda => (
+                <tr key={agenda.id}>
+                    <td style={{width:'50%'}}>
+                        <div className='title-container'>
+                            <h5
+                              onClick={()=> handleShowModals(agenda)}
+                            >{agenda.title}</h5>
+                            <p>{agenda.description}</p>
+                        </div>
+                    </td>
+                    <td>{formatDate(agenda.agenda_date)}</td>
+                    <td>
+                        <div style={{border:`1px solid white`,borderRadius:'8px', fontWeight:'bold',padding:'4px 10px',width:'fit-content', color:'white',backgroundColor:agenda.color}}>
+                            {agenda.status_name}
+                        </div>
+                    </td>
+                    <td>
+                        <div className='action-page-icon'>
+                          <BootstrapTooltip title='Edit Agenda' placement='top'>
+                            {/* <div className='action-btn'><IoCreateOutline/></div> */}
+                            <div
+                              className='action-btn'
+                              onClick={() => {
+                                setEditAgendaId(agenda.id);
+                                setNewAgenda({
+                                  title: agenda.title,
+                                  description: agenda.description,
+                                  agenda_date: agenda.agenda_date.split('T')[0],
+                                  reminder_time: new Date(agenda.reminder_time).toTimeString().slice(0, 5),
+                                  status_id: agenda.status_id.toString()
+                                });
+                                setShowFormAgenda(true);
+                              }}
+                            >
+                              <IoCreateOutline/>
+                            </div>
+                          </BootstrapTooltip>
+                          <BootstrapTooltip title='Delete Agenda' placement='top'>
+                            <div 
+                              className='action-btn'
+                              onClick={() => handleDeleteAgenda(agenda.id)}
+                            >
+                              <IoTrash/>
+                            </div>
+                          </BootstrapTooltip>
+                          {/* <BootstrapTooltip title='Marks Agenda' placement='top'>
+                             <div className='action-btn'><IoCheckmarkSharp/></div>
+                          </BootstrapTooltip> */}
+                        </div>
+                    </td>
+                </tr>
+                ))}
+            </tbody>
+            </table>
+            {/* FORM MODALS  */}
+            {selectedAgenda && (
+              <div className="agenda-modals">
+                <div className="agenda-modals-box">
+                    <div className="modals-header">
+                      <div className="mh-left">
+                        <div className="icon">
+                          <AiFillSchedule/>
+                        </div>
+                        <div className="title">
+                          <h3>{selectedAgenda.title}</h3>
+                          <p>Agenda Details</p>
+                        </div>
+                      </div>
+                      
+                      <FaXmark className='close-icon' onClick={handleCloseModals} />
+                    </div>
+                    <div className="modals-content">
+                      {/* MODAL ACTIONS  */}
+                      <div className="modals-action">
+                        {/* status  */}
+                        <div 
+                          style={{
+                            border:`1px solid white`,
+                            borderRadius:'8px',
+                            backgroundColor: selectedAgenda.color,
+                            color: 'white',
+                            padding: '2px 8px',
+                            fontSize:'12px'
+                          }}
+                          > {selectedAgenda.status_name} 
+                        </div>
+                        <IoTrash style={{color:'#5e5e5e', cursor:'pointer'}}/>
+                      </div>
+                      
+                      {/* MODALS DATE  */}
+                      <div className="modals-date">
+                        <div className="md-top">
+                          <div className="top-left">
+                            <AiFillSchedule/>
+                          </div>
+                          <div className="top-right">
+                            <p>Date</p>
+                            <h4>
+                              {new Date(selectedAgenda.agenda_date).toLocaleDateString('id-ID', {
+                                day: 'numeric',
+                                month: 'long',
+                                year: 'numeric'
+                              })}
+                            </h4>
+                          </div>
+                        </div>
+                        
+                        <div className="md-top">
+                          <div className="top-left2">
+                            <HiOutlineClock/>
+                          </div>
+                          <div className="top-right">
+                            <p>Time</p>
+                            <h4>
+                              {new Date(selectedAgenda.reminder_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </h4>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="modals-main">
+                        <div className="mm-header"> 
+                           <HiDocumentText style={{color:'#5e5e5e'}}/>
+                           <h4>Descriptions</h4>
+                        </div>
+                        <div className="mm-desc">
+                          <p> {selectedAgenda.description}</p>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+              </div>
+            )}
+        </div>
 
         {loading && <p>Loading agendas...</p>}
         {!loading && filteredAgendas.length === 0 && <p>No agendas found.</p>}

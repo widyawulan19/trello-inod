@@ -38,7 +38,7 @@ export const deleteNote = (noteId,userId) => axios.delete(`${API_URL}/personal-n
 export const createNewAgenda = (data) => axios.post(`${API_URL}/agenda`,data);
 export const getAgendaUser = (userId) => axios.get(`${API_URL}/agenda-user/user/${userId}`);
 export const getAgendaUserById = (agendaId,userId) => axios.get(`${API_URL}/agenda-user/${agendaId}/user/${userId}`);
-export const updateAgendaUser = (agendaId,userId ) => axios.put(`${API_URL}/agenda/${agendaId}/user/${userId}`);
+export const updateAgendaUser = (agendaId, userId, data) => axios.put(`${API_URL}/agenda/${agendaId}/user/${userId}`, data);
 export const deletAgendaUser = (agendaId, userId) => axios.delete(`${API_URL}/agenda-user/${agendaId}/user/${userId}`);
 
 //STATUS AGENDA

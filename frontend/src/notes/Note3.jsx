@@ -265,3 +265,93 @@ export default ArchiveUniversal;
                             />
                         </div>
                     </div>
+
+// Form states
+const [newAgenda, setNewAgenda] = useState({
+  title: '',
+  description: '',
+  agenda_date: '',
+  reminder_time: '',
+  status_id: '' // asumsi status pakai id
+});
+
+const handleInputChange = (e) => {
+  const { name, value } = e.target;
+  setNewAgenda({ ...newAgenda, [name]: value });
+};
+
+const handleCreateAgenda = async (e) => {
+  e.preventDefault();
+
+  try {
+    const payload = {
+      ...newAgenda,
+      user_id: userId,
+    };
+
+    const res = await createNewAgenda(payload);
+    console.log('Agenda created:', res.data);
+
+    setNewAgenda({
+      title: '',
+      description: '',
+      agenda_date: '',
+      reminder_time: '',
+      status_id: ''
+    });
+
+    fetchDataAgenda(); // Refresh list
+  } catch (err) {
+    console.error('Failed to create agenda:', err);
+  }
+};
+
+<div className="create-agenda-form">
+  <h3>Create New Agenda</h3>
+  <form onSubmit={handleCreateAgenda} style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
+    <input
+      type="text"
+      name="title"
+      placeholder="Title"
+      value={newAgenda.title}
+      onChange={handleInputChange}
+      required
+    />
+    <textarea
+      name="description"
+      placeholder="Description"
+      value={newAgenda.description}
+      onChange={handleInputChange}
+      required
+    />
+    <input
+      type="date"
+      name="agenda_date"
+      value={newAgenda.agenda_date}
+      onChange={handleInputChange}
+      required
+    />
+    <input
+      type="time"
+      name="reminder_time"
+      value={newAgenda.reminder_time}
+      onChange={handleInputChange}
+      required
+    />
+    <select
+      name="status_id"
+      value={newAgenda.status_id}
+      onChange={handleInputChange}
+      required
+    >
+      <option value="">Select Status</option>
+      <option value="1">Trivial</option>
+      <option value="2">Optional</option>
+      <option value="3">Normal</option>
+      <option value="4">Important</option>
+      <option value="5">Critical</option>
+    </select>
+    <button type="submit">Add Agenda</button>
+  </form>
+</div>
+

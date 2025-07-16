@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import '../style/modules/PersonalAgendas.css'
 import { FaCircle } from 'react-icons/fa6';
-import { HiArrowRight } from 'react-icons/hi2';
+import { HiArrowRight, HiXMark } from 'react-icons/hi2';
 import { getAgendaUser } from '../services/ApiServices';
 import BootstrapTooltip from '../components/Tooltip';
+import { useNavigate } from 'react-router-dom';
 
 const PersonalAgendas = ({userId}) => {
     //STATE
     const [agendas,setAgendas] = useState([]);
     const [loading, setLoading] = useState(false);
-
+    const navigate = useNavigate()
+    const [selectedAgenda, setSelectedAgenda] = useState(null);
 
     //FUNCTION
     //1. fetch data agenda user 
@@ -45,6 +47,20 @@ const PersonalAgendas = ({userId}) => {
         );
     };
 
+    //3, function render agenda
+    const handleShowModals = (agenda) => {
+        setSelectedAgenda(agenda);
+    };
+
+    const handleCloseModals = () => {
+        setSelectedAgenda(null);
+    };
+
+    //4. navigate 
+    const handleNavigateToAgendaPage = () =>{
+        navigate('/agenda-page')
+    }
+
 
 
     if(loading) return <p>Loading agenda ...</p>
@@ -67,11 +83,11 @@ const PersonalAgendas = ({userId}) => {
                 </div>
                 {renderAgendaDate(agenda.agenda_date)}
             </div>
-            <div className="pn-content">
+            {/* <div className="pn-content">
                 <p>
                     {agenda.description}
                 </p>
-            </div>
+            </div> */}
             <div className="pn-footer">
                 <BootstrapTooltip title='Agenda Status' placement='top'>
                     <div className="agenda" 
@@ -82,9 +98,27 @@ const PersonalAgendas = ({userId}) => {
                         {agenda.status_name}
                     </div>
                 </BootstrapTooltip>
-                <div className="read">
+                {/* <div className="read" onClick={handleNavigateToAgendaPage}>
                     READ MORE <HiArrowRight className='read-icon'/>
-                </div>
+                </div> */}
+                {/* {selectedAgenda && (
+                    <div className="agenda-modals">
+                    <div className="agenda-modals-box">
+                        <div className="modals-header">
+                        <h3 style={{ color: selectedAgenda.color }}>{selectedAgenda.title}</h3>
+                        <HiXMark className='close-icon' onClick={handleCloseModals} />
+                        </div>
+                        <div className="modals-content">
+                        <div className="modals-main">
+                            <p><strong>Description:</strong> {selectedAgenda.description}</p>
+                            <p><strong>Date:</strong> {renderAgendaDate(selectedAgenda.agenda_date)}</p>
+                            <p><strong>Reminder:</strong> {new Date(selectedAgenda.reminder_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                            <p><strong>Status:</strong> {selectedAgenda.status_name}</p>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                )} */}
             </div>
         </div>
         ))}

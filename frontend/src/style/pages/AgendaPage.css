@@ -2,20 +2,26 @@
     border: 1px solid #ddd;
     height: 91vh;
     padding: 0px;
+    gap: 10px;
     margin-bottom: 10px;
     margin: 15px;
-    background-color: #F8FAFC;
+    background-color: #eee;
     border-radius: 8px;
     color: #333;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    /* justify-content: center; */
 }
 
 /* HEADER  */
 .agenda-page-container .agenda-page-header{
-    border: 1px solid red;
+    /* border: 1px solid red; */
     width: 100%;
     padding: 10px;
+    background-color: white;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
 }
 .agenda-page-header h2{
     font-size: 25px;
@@ -38,52 +44,91 @@
 
 /* ACTION  */
 .agenda-page-container .agenda-page-action{
-    border: 1px solid blue;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: white;
+    width: 90%;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 5px 20px;
+    padding: 20px;
+    position: relative;
+
 }
 .agenda-page-action .action-left{
     width: 40%;
-    border: 1px solid red;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 4px;
 }
+.ac-icon{
+    font-size: 25px;
+    color: grey;
+}
+.ac-icon:hover{
+    background-color: white;
+    border: 1px solid white;
+}
+
+.action-left input{
+    padding: 0px 5px;
+    width: 100%;
+    font-size: 12px;
+    border: 1px solid white;
+}
+.action-left input:focus{
+    outline: none;
+}
+
 .agenda-page-action .action-right{
     width: 60%;
-    border: 1px solid green;
+    gap: 5px;
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    /* border: 1px solid red; */
+    position: relative; 
 }
 
 /* DROPDOWN FITURE  */
 .dropdown-wrapper {
   position: relative;
-  /* display: inline-block; */
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  border: 1px solid orange;
+}
+
+.dropdown-wrapper p{
+    font-size: 12px;
+    color: #5e5e5e;
+    font-weight: bold;
+    margin-right: 10px;
 }
 
 .dropdown-toggle {
-  padding: 8px 12px;
+  padding: 7px 12px;
   background-color: white;
   border: 1px solid #ccc;
   border-radius: 6px;
   cursor: pointer;
   min-width: 180px;
-  text-align: left;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .dropdown-menu {
   position: absolute;
   top: 110%;
-  left: 0;
+  right: 0;
   background-color: white;
   border: 1px solid #ccc;
-  width: 100%;
-  z-index: 10;
+  width: 65%;
+  z-index: 100;
   border-radius: 6px;
   padding: 0;
   list-style: none;
@@ -106,22 +151,417 @@
 /* END DROPDOWN FITURE  */
 
 /* FORM CREATE  */
+.action-right .form-agenda{
+    border: 1px solid white;
+    border-radius: 8px;
+    background-color: #6a11cb;
+    color: white;
+    padding: 5px 10px;
+    gap: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;   
+}
+.create-agenda-form {
+    position: absolute;
+    border: 1px solid #6a11cb;
+    border-radius: 8px;
+    background-color: white;
+    /* padding: 10px; */
+    top: 30%;
+    right: 5%;
+    z-index: 101;
+    width: 30%;
+}
+
+.create-agenda-form .create-agenda-header{
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #6a11cb;
+    color: white;
+    background-color: #6a11cb;
+}
+.create-agenda-header h3{
+    font-size: 15px;
+}
+.cah-icon{
+    cursor: pointer;
+}
+
+.create-agenda-form form{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid white;
+}
+
 .create-agenda-form input,
 .create-agenda-form textarea,
 .create-agenda-form select {
   padding: 8px;
   width: 100%;
-  border-radius: 4px;
+  font-size: 12px;
+  border-radius: 8px;
   border: 1px solid #ccc;
 }
 
+.create-agenda-form input:hover,
+.create-agenda-form textarea:hover,
+.create-agenda-form select:hover {
+    outline: none;
+    border: 1px solid #6a11cb;
+    box-shadow: 0px 4px 8px #6b11cb40;
+}
+
+.create-agenda-form input:focus,
+.create-agenda-form textarea:focus,
+.create-agenda-form select:focus {
+    outline: none;
+    border: 1px solid #6a11cb;
+    box-shadow: 0px 4px 8px #6b11cb40;
+}
+
 .create-agenda-form button {
-  padding: 10px;
+  padding: 5px 10px;
   background-color: #6a11cb;
   color: white;
-  border: none;
-  border-radius: 4px;
+  border: 1px solid #6a11cb;
+  border-radius: 8px;
   cursor: pointer;
+}
+.create-agenda-form button:hover{
+    box-shadow: 0px 4px 8px #6b11cb40;
 }
 
 /* END ACTION  */
+
+/* AGENDA TABLE  */
+.agenda-page-content {
+  width: 95%;
+  background-color: #f8f9fb;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  padding: 0px;
+  overflow-x: auto;
+  box-shadow: 0px 2px 8px rgba(0,0,0,0.05);
+}
+
+.agenda-table-box{
+  height: 60vh;
+  overflow-y: auto;
+  /* border: 1px solid red; */
+}
+
+.agenda-page-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Segoe UI', sans-serif;
+
+    position: relative;
+}
+
+.agenda-page-table thead th {
+  text-align: left;
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: normal;
+  letter-spacing: 0.5px;
+  color: #5e5e5e;
+  background-color: #eef0f2;
+  position: sticky;
+  top: 0;
+  z-index: 99;
+}
+
+/* .agenda-page-table tbody td {
+  background-color: #ffffff;
+  padding: 16px;
+  vertical-align: top;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  font-size: 14px;
+  color: #374151;
+} */
+
+.agenda-page-table tbody td{
+    background-color: #ffffff;
+    padding: 10px 16px;
+    vertical-align: top;
+    font-size: 12px;
+    color: #374151;
+}
+
+.agenda-page-table tbody tr:hover td {
+  background-color: #f3f4f6;
+  transition: background-color 0.2s ease;
+}
+
+/* DETAILS AGENDA MODALS  */
+.agenda-modals{
+  width: 100%;
+  height: 93%;
+    top: 7%;
+    left: 0px;
+    z-index: 200;
+    background-color: rgba(0, 0, 0, 0.155);
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.agenda-modals-box{
+  background-color: white;
+  width: 40%;
+  height: 60%;
+  padding: 0px;
+  border: 1px solid #5320be;
+  border-radius: 10px;
+}
+.agenda-modals-box .modals-header{
+  border-bottom: 1px solid #6a11cb;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(to right, #5c48f5, #9A40F8);
+}
+.modals-header .mh-left{
+  /* border: 1px solid red; */
+  gap: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.mh-left .icon{
+  border: 1px solid rgba(255, 255, 255, 0.291);
+  border-radius: 10px;
+  padding: 5px 8px;
+  background-color:rgba(255, 255, 255, 0.291);
+  color: white;
+}
+
+.mh-left .title{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0px;
+}
+.title h3{
+  font-weight: bold;
+}
+.title p{
+  font-size: 10px;
+  width: 100%;
+}
+
+.close-icon{
+  cursor: pointer;
+  font-size: 18px;
+  filter: drop-shadow(0 0 1px #5320be);
+}
+.close-icon:hover{
+  box-shadow: 0px 4px 8px #6b11cb40;
+  filter: drop-shadow(0 0 1px #5320be);
+  transform: scale(1.2); /* ✅ memperbesar */
+  transition: transform 0.2s ease; /* ✅ animasi halus */
+}
+
+/* MODALS MAIN CONTENT  */
+.modals-content{
+  /* border: 1px solid red; */
+  padding: 20px;
+  padding-top: 10px;
+}
+.modals-content .modals-action{
+  padding: 5px 10px;
+  margin: 10px 0px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* border: 1px solid green; */
+}
+
+/* MODAL DATE  */
+.modals-date{
+  border: 1px solid #f6f6f6;
+  background-color: #f6f6f6;
+  border-radius: 8px;
+  padding: 10px;
+  margin: 10px 0px;
+  gap: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modals-date .md-top{
+  /* border: 1px solid red; */
+  gap: 10px;
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.top-left{
+  border: 1px solid #f6f6f6;
+  border-radius: 6px;
+  background-color: #d8d4f9;
+  color: #5c48f5;
+  padding: 8px;
+}
+.top-left2{
+  border: 1px solid #f6f6f6;
+  border-radius: 6px;
+  background-color: #e5d3f8;
+  color: #9A40F8;
+  padding: 8px;
+}
+.top-right{
+  /* border: 1px solid red; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+.top-right p{
+  margin: 0px;
+  color: #5e5e5e;
+  font-size: 11px;
+  width: 100%;
+}
+.top-right h4{
+  margin: 0px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #374151;
+  width: 100%;
+}
+
+/* MODALS MAIN  */
+.modals-main{
+  /* border: 1px solid red; */
+  padding: 5px;
+}
+.modals-main .mm-header{
+  gap: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  /* border: 1px solid blue; */
+}
+.mm-header h4{
+  font-size: 15px;
+  font-weight: bold;
+  color: #5e5e5e;
+}
+.mm-desc{
+  border:1px solid #f6f6f6;
+  border-radius: 10px;
+  padding: 10px;
+  width: 100%;
+  height: 23vh;
+  background-color: #f6f6f6;
+}
+.mm-desc p{
+  font-size: 12px;
+  color: grey;
+}
+
+/* END DETAILS AGENDA  MODALS  */
+
+.action-page-icon{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.action-page-icon .action-btn{
+  border: 1px solid #fff;
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 2px 5px;
+  cursor: pointer;
+  font-size: 18px;
+}
+.action-page-icon .action-btn:hover{
+  background-color: #ddd;
+  border: 1px solid #ddd;
+}
+
+.title-container{
+    /* border: 1px solid red; */
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.title-container h5{
+    margin: 0px;
+    font-size: 14px;
+    font-weight: bold;
+    /* color: #333; */
+    color: #6a11cb;
+    width: 100%;
+    cursor: pointer;
+}
+
+.title-container h5:hover{
+    text-decoration: underline;
+}
+
+.title-container p{
+    font-size: 12px;
+    margin: 0px;
+    color: #374151;
+    width: 20vw;
+    white-space: nowrap;          /* Biar teks 1 baris */
+    overflow: hidden;             /* Sembunyikan teks yang overflow */
+    text-overflow: ellipsis;
+}
+
+/* Status Badge */
+.status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 9999px;
+  text-transform: capitalize;
+}
+
+
+/* Action buttons */
+.action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.action-buttons button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6b7280;
+  font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.action-buttons button:hover {
+  color: #111827;
+  transform: scale(1.1);
+}
+
+/* END AGENDA TABLE */
