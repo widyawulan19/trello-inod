@@ -5482,7 +5482,7 @@ app.get('/api/agenda-user/:id/user/:user_id', async (req, res) => {
 //4. update agenda
 app.put('/api/agenda/:id/user/:user_id', async (req, res) => {
   const { id, user_id } = req.params;
-  const { title, description, agenda_date, reminder_time, status_id, is_notified } = req.body;
+  const { title, description, agenda_date, reminder_time, status_id, is_notified, is_done } = req.body;
 
   try {
     const result = await client.query(
@@ -5493,10 +5493,11 @@ app.put('/api/agenda/:id/user/:user_id', async (req, res) => {
            reminder_time = $4,
            status_id = $5,
            is_notified = $6,
+           is_done = $7,
            updated_at = NOW()
-       WHERE id = $7 AND user_id = $8
+       WHERE id = $8 AND user_id = $9
        RETURNING *`,
-      [title, description, agenda_date, reminder_time, status_id, is_notified, id, user_id]
+      [title, description, agenda_date, reminder_time, status_id, is_notified,is_done, id, user_id]
     );
     if (result.rows.length === 0) return res.status(404).json({ message: 'Agenda not found or unauthorized' });
     res.json(result.rows[0]);
