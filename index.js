@@ -5461,6 +5461,7 @@ app.get('/api/agenda-user/user/:user_id', async (req, res) => {
   }
 });
 
+
 //3. read satu agenda by id (and user)
 app.get('/api/agenda-user/:id/user/:user_id', async (req, res) => {
   const { id, user_id } = req.params;
@@ -5531,7 +5532,7 @@ app.get('/api/unfinished-agendas/:userId', async (req, res) => {
        FROM agenda_personal a
        LEFT JOIN agenda_status s ON a.status_id = s.id
        WHERE a.user_id = $1
-       AND a.is_done 'false
+       AND a.is_done = false
        ORDER BY a.agenda_date ASC`,
 
       // `SELECT * FROM agenda_personal 
