@@ -5570,31 +5570,33 @@ app.get('/api/finish-agendas/:userId', async (req, res) => {
 });
 
 
-//7. endpoin checkmark agenda 
-app.put('/api/finish-agenda/:agendaId', async (req, res) => {
+// 7. Update is_done value (true or false)
+app.put('/api/update-agenda-status/:agendaId', async (req, res) => {
   const { agendaId } = req.params;
+  const { is_done } = req.body; // frontend kirim nilai true atau false
 
   try {
     const result = await client.query(`
       UPDATE agenda_personal 
-      SET is_done = true 
-      WHERE id = $1
+      SET is_done = $1 
+      WHERE id = $2
       RETURNING *
-    `, [agendaId]);
+    `, [is_done, agendaId]);
 
     if (result.rowCount === 0) {
       return res.status(404).json({ message: 'Agenda not found' });
     }
 
     res.json({
-      message: 'Agenda marked as finished',
+      message: `Agenda status updated to ${is_done}`,
       updatedAgenda: result.rows[0]
     });
   } catch (err) {
-    console.error('Error updating agenda:', err);
-    res.status(500).send('Failed to update agenda');
+    console.error('Error updating agenda status:', err);
+    res.status(500).send('Failed to update agenda status');
   }
 });
+
 
 
 
