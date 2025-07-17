@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../style/pages/AgendaPage.css';
 import { useUser } from '../context/UserContext';
-import { createNewAgenda, deletAgendaUser, getAgendaUser, updateAgendaUser } from '../services/ApiServices';
+import { createNewAgenda, deletAgendaUser, getAgendaUser, updateAgendaByUser, updateAgendaUser } from '../services/ApiServices';
 import { FaXmark } from 'react-icons/fa6';
 import { IoCheckmarkSharp, IoSearch, IoTrash } from "react-icons/io5";
 import { HiOutlineClock, HiOutlinePlus, HiXMark } from 'react-icons/hi2';
@@ -159,6 +159,19 @@ function AgendaPage() {
         setSelectedAgenda(null);
     };
 
+    //9. fungsi update finished status agenda
+    const handleToggleDone = async(agendaId, userId, currentStatus) =>{
+      try{
+        await updateAgendaByUser(agendaId, userId, {is_done : !currentStatus});
+        showSnackbar('Status update successfully', 'success');
+        fetchDataAgenda();
+      }catch(error){
+        console.error('Updated failed!', error);
+        showSnackbar('Error updating finished status!', 'error')
+      }
+    }
+
+
   return (
     <div className='agenda-page-container'>
       <div className='agenda-page-header'>
@@ -282,6 +295,7 @@ function AgendaPage() {
                 <th>TITLE & DESCRIPTION</th>
                 <th>DATE</th>
                 <th>STATUS</th>
+                <th>FINISHED</th>
                 <th style={{textAlign:'center'}}>ACTION</th>
                 </tr>
             </thead>
@@ -301,6 +315,25 @@ function AgendaPage() {
                         <div style={{border:`1px solid white`,borderRadius:'8px', fontWeight:'bold',padding:'4px 10px',width:'fit-content', color:'white',backgroundColor:agenda.color}}>
                             {agenda.status_name}
                         </div>
+                    </td>
+                    <td>
+                      <BootstrapTooltip title='Click to Change status' placement='top'>
+                        <div
+                          onClick={()=> handleToggleDone(agenda.id, agenda.user_id, agenda.is_done)}
+                          style={{
+                          padding:'5px 8px',
+                          border:'1px solid white',
+                          borderRadius:'8px',
+                          cursor:'pointer',
+                          fontSize:'12px',
+                          width:'fit-content',
+                          textAlign:'center',
+                          color: agenda.is_done ? '#821715' : '#246c12',
+                          backgroundColor: agenda.is_done ? '#f7a7a6' : '#b6f7a6'
+                        }}>
+                          {agenda.is_done ? 'Not Finished': 'Finished'}
+                        </div>
+                      </BootstrapTooltip>
                     </td>
                     <td>
                         <div className='action-page-icon'>
@@ -361,18 +394,41 @@ function AgendaPage() {
                       {/* MODAL ACTIONS  */}
                       <div className="modals-action">
                         {/* status  */}
-                        <div 
-                          style={{
-                            border:`1px solid white`,
-                            borderRadius:'8px',
-                            backgroundColor: selectedAgenda.color,
-                            color: 'white',
-                            padding: '2px 8px',
-                            fontSize:'12px'
-                          }}
-                          > {selectedAgenda.status_name} 
+                        <div className="ma-left">
+                          {/* status  */}
+                          <div 
+                            style={{
+                              border:`1px solid white`,
+                              borderRadius:'8px',
+                              backgroundColor: selectedAgenda.color,
+                              color: '#333',
+                              padding: '5px 8px',
+                              fontSize:'12px'
+                            }}
+                            > {selectedAgenda.status_name} 
+                          </div>
+                          {/* status finished  */}
+                          <div
+                            onClick={()=> handleToggleDone(selectedAgenda.id, selectedAgenda.user_id, selectedAgenda.is_done)}
+                            style={{
+                              padding:'5px 8px',
+                              border:'1px solid white',
+                              borderRadius:'8px',
+                              cursor:'pointer',
+                              fontSize:'12px',
+                              width:'fit-content',
+                              textAlign:'center',
+                              color: selectedAgenda.is_done ? '#821715' : '#246c12',
+                              backgroundColor: selectedAgenda.is_done ? '#f7a7a6' : '#b6f7a6'
+                            }}>
+                            {selectedAgenda.is_done ? 'Not Finished': 'Finished'}
+                          </div>
                         </div>
-                        <IoTrash style={{color:'#5e5e5e', cursor:'pointer'}}/>
+                        <BootstrapTooltip title='Delete Agenda' placement='top'>
+                          <div className="trash-btn">
+                            <IoTrash/>
+                          </div>
+                        </BootstrapTooltip>
                       </div>
                       
                       {/* MODALS DATE  */}

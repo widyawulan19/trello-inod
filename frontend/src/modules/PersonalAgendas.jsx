@@ -1,129 +1,118 @@
-import React, { useEffect, useState } from 'react'
-import '../style/modules/PersonalAgendas.css'
+import React, { useEffect, useState } from 'react';
+import '../style/modules/PersonalAgendas.css';
 import { FaCircle } from 'react-icons/fa6';
-import { HiArrowRight, HiXMark } from 'react-icons/hi2';
-import { getAgendaUser } from '../services/ApiServices';
+import { getUnfinishAgenda, deletAgendaUser } from '../services/ApiServices';
 import BootstrapTooltip from '../components/Tooltip';
 import { useNavigate } from 'react-router-dom';
+import { useSnackbar } from '../context/Snackbar';
+import { IoTrash } from 'react-icons/io5';
 
-const PersonalAgendas = ({userId}) => {
-    //STATE
-    const [agendas,setAgendas] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const navigate = useNavigate()
-    const [selectedAgenda, setSelectedAgenda] = useState(null);
+const PersonalAgendas = ({ userId }) => {
+  const [agendas, setAgendas] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const { showSnackbar } = useSnackbar();
+  const [selectedAgenda, setSelectedAgenda] = useState(null);
 
-    //FUNCTION
-    //1. fetch data agenda user 
-    const fetchAgendaUser = async() =>{
-        try{
-            const response = await getAgendaUser(userId);
-            setAgendas(response.data);
-        }catch(error){
-            console.log('Error fetch data agenda:', error)
-        }finally{
-            setLoading(false)
-        }
+  // Fetch unfinished agendas
+  const fetchUnfinishedAgenda = async () => {
+    try {
+      const response = await getUnfinishAgenda(userId);
+      setAgendas(response.data.data);
+    } catch (error) {
+      console.error('Error fetching unfinished agenda!', error);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    useEffect(()=>{
-        if(userId){
-            fetchAgendaUser()
-        }
-    },[userId])
-
-    //2. function date 
-    const renderAgendaDate = (isoDate) => {
-        const date = new Date(isoDate);
-        const day = date.getDate(); // ex: 24
-        const month = date.toLocaleString('default', { month: 'short' }); // ex: Jul
-        const year = date.getFullYear(); // ex: 2025
-
-        return (
-            <div className="pnh-right">
-                <h3>{day}</h3>
-                <p>{month} {year}</p>
-            </div>
-        );
-    };
-
-    //3, function render agenda
-    const handleShowModals = (agenda) => {
-        setSelectedAgenda(agenda);
-    };
-
-    const handleCloseModals = () => {
-        setSelectedAgenda(null);
-    };
-
-    //4. navigate 
-    const handleNavigateToAgendaPage = () =>{
-        navigate('/agenda-page')
+  useEffect(() => {
+    if (userId) {
+      fetchUnfinishedAgenda();
     }
+  }, [userId]);
 
+  const renderAgendaDate = (isoDate) => {
+    const date = new Date(isoDate);
+    const day = date.getDate();
+    const month = date.toLocaleString('default', { month: 'short' });
+    const year = date.getFullYear();
 
+    return (
+      <div className="pnh-right">
+        <h3>{day}</h3>
+        <p>{month} {year}</p>
+      </div>
+    );
+  };
 
-    if(loading) return <p>Loading agenda ...</p>
-    if(agendas.length === 0) return <p>No agendas found for this user</p>
+  const handleDeleteAgenda = async (agendaId) => {
+    const confirm = window.confirm("Are you sure you want to delete this agenda?");
+    if (!confirm) return;
+
+    try {
+      await deletAgendaUser(agendaId, userId);
+      showSnackbar('Successfully deleted agenda', 'success');
+      fetchUnfinishedAgenda();
+    } catch (error) {
+      console.log('Error deleting agenda!', error);
+      showSnackbar('Failed to delete agenda', 'error');
+    }
+  };
+
+  if (loading) return <p>Loading agenda...</p>;
+  if (agendas.length === 0) return <p>No unfinished agendas found</p>;
 
   return (
-    <div className='personal-agenda-container'>
-        {agendas.map(agenda =>(
+    <div className="personal-agenda-container">
+      {agendas.map((agenda) => (
         <div key={agenda.id} className="personal-agenda-box">
-            <div className="pn-header">
-                <div className="pnh-left">
-                    <FaCircle className='pnh-icon'
-                        style={{
-                            color:agenda.color
-                        }}
-                    />
-                    <h4
-                        style={{color:agenda.color}}
-                    >#{agenda.title}</h4>
-                </div>
-                {renderAgendaDate(agenda.agenda_date)}
+          <div className="pn-header">
+            <div className="pnh-left">
+              <FaCircle className="pnh-icon" style={{ color: agenda.color }} />
+              <h4 style={{ color: agenda.color }}>#{agenda.title}</h4>
             </div>
-            {/* <div className="pn-content">
-                <p>
-                    {agenda.description}
-                </p>
-            </div> */}
-            <div className="pn-footer">
-                <BootstrapTooltip title='Agenda Status' placement='top'>
-                    <div className="agenda" 
-                        style={{
-                            border: `1px solid ${agenda.color}`,
-                            backgroundColor:agenda.color
-                        }}>
-                        {agenda.status_name}
-                    </div>
-                </BootstrapTooltip>
-                {/* <div className="read" onClick={handleNavigateToAgendaPage}>
-                    READ MORE <HiArrowRight className='read-icon'/>
-                </div> */}
-                {/* {selectedAgenda && (
-                    <div className="agenda-modals">
-                    <div className="agenda-modals-box">
-                        <div className="modals-header">
-                        <h3 style={{ color: selectedAgenda.color }}>{selectedAgenda.title}</h3>
-                        <HiXMark className='close-icon' onClick={handleCloseModals} />
-                        </div>
-                        <div className="modals-content">
-                        <div className="modals-main">
-                            <p><strong>Description:</strong> {selectedAgenda.description}</p>
-                            <p><strong>Date:</strong> {renderAgendaDate(selectedAgenda.agenda_date)}</p>
-                            <p><strong>Reminder:</strong> {new Date(selectedAgenda.reminder_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
-                            <p><strong>Status:</strong> {selectedAgenda.status_name}</p>
-                        </div>
-                        </div>
-                    </div>
-                    </div>
-                )} */}
-            </div>
-        </div>
-        ))}
-    </div>
-  )
-}
+            {renderAgendaDate(agenda.agenda_date)}
+          </div>
 
-export default PersonalAgendas
+          <div className="pn-footer">
+            <BootstrapTooltip title="Agenda Status" placement="top">
+              <div className="agenda"
+                style={{
+                  border: `1px solid ${agenda.color}`,
+                  backgroundColor: agenda.color,
+                }}>
+                {agenda.status_name}
+              </div>
+            </BootstrapTooltip>
+            <div className="pn-footer-right">
+              <BootstrapTooltip title="Finished Status" placement="top">
+                <div style={{
+                  padding: '5px 8px',
+                  border: '1px solid white',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontSize: '12px',
+                  width: 'fit-content',
+                  textAlign: 'center',
+                  color: agenda.is_done ? '#246c12' : '#821715',
+                  backgroundColor: agenda.is_done ? '#b6f7a6' : '#f7a7a6'
+                }}>
+                  {agenda.is_done ? 'Finished' : 'Not Finished'}
+                </div>
+              </BootstrapTooltip>
+
+              <BootstrapTooltip title="Delete Agenda" placement="top">
+                <div className="footer-delete" onClick={() => handleDeleteAgenda(agenda.id)}>
+                  <IoTrash />
+                </div>
+              </BootstrapTooltip>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default PersonalAgendas;

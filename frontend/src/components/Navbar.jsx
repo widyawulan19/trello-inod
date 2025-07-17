@@ -7,7 +7,7 @@ import { Tooltip, tooltipClasses } from '@mui/material';
 import {styled} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
-import { getProfileByUserId, getUserTotalNotificationUnread } from '../services/ApiServices';
+import { getProfileByUserId, getUnfinishAgenda, getUserTotalNotificationUnread } from '../services/ApiServices';
 import FullNewCalendar from '../fitur/FullNewCalendar';
 import NotificationPage from '../UI/NotificationPage';
 import NavbarNotification from '../UI/NavbarNotification';
@@ -16,6 +16,7 @@ import SearchGlobalCard from '../fitur/SearchGlobalCard';
 import PersonalNotes from '../modules/PersonalNotes';
 import PersonalAgendas from '../modules/PersonalAgendas';
 import AgendaUser from '../UI/AgendaUser';
+import { IoCalendar } from 'react-icons/io5';
 
 //tooltip
 const BootstrapTooltip = styled(({className, ...props}) =>(
@@ -45,10 +46,13 @@ const Navbar=()=> {
     
     //unread total
     const [unreadCount, setUnreadCount] = useState(0);
+    const [unfinishedCount, setUnfinishedCount] = useState(0);
+    const [unfinishedAgendas, setUnfinishedAgendas] = useState([]);
 
     //debug
     console.log('NAVBAR ini menerima data user dan userId:', user, userId);
 
+    //function fetch total unread notif
     const fetchTotalUnreadNotif = async () => {
         try {
             const response = await getUserTotalNotificationUnread(userId);
@@ -66,6 +70,25 @@ const Navbar=()=> {
             fetchTotalUnreadNotif()
         }
     }, [userId])
+
+    //function fetch unfinished agenda
+    const fetchUnfinishedAgenda = async()=>{
+        try{
+            const response = await getUnfinishAgenda(userId);
+            console.log('API response:', response);
+
+            setUnfinishedCount(response.data.count)
+            setUnfinishedAgendas(response.data.data)
+        }catch(error){
+            console.log('Error to fetch unfinished count agenda', error);
+        }
+    }
+
+    useEffect(()=>{
+        if(userId){
+            fetchUnfinishedAgenda()
+        }
+    },[userId])
 
     //FUNGSI
     const fetchUserProfile = async() =>{
@@ -128,6 +151,12 @@ const Navbar=()=> {
    const handleCloseAgenda = () =>{
     setShowAgenda(false)
    }
+
+   const handleClickAgenda = () => {
+        handleShowAgenda();           // Fungsi pertama
+        handleActive('calendar');     // Fungsi kedua dengan parameter
+    };
+
  
   return (
     <div className='navbar-container'>
@@ -137,16 +166,34 @@ const Navbar=()=> {
         <div className="more-fiture">
             <SearchGlobalCard userId={userId}/>
             <div className="more-action">
-                <BootstrapTooltip title="Calendar">
+                <BootstrapTooltip title="Agenda">
                     <div 
                         className={`icon-wrapper ${active === 'calendar' ? 'active' : ''}`} 
-                        onClick={() => handleActive('calendar')}
-                        // onClick={handleShowAgenda}
+                        onClick={handleClickAgenda}
                     >
-                        <HiMiniCalendarDateRange   
-                            className='icon-icon' 
-                            onClick={handleShowAgenda}
-                    />
+                        <div style={{display:'inline-box', position:'relative'}}>
+                            <IoCalendar className='icon-icon' />
+                            <div style={{
+                                position: 'absolute',
+                                top: '0px',
+                                right:'0px',
+                                backgroundColor: 'red',
+                                color: 'white',
+                                fontSize: '8px',
+                                padding: '2px 5px',
+                                borderRadius: '50%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                width: '10px',
+                                // width:'15px',
+                                height: '10px',
+                                }}>
+                                {unfinishedCount}
+                            </div>
+                        </div>
+
+                    
                     </div>
                     {showCalendar && (
                         <div className='calender-modal'>

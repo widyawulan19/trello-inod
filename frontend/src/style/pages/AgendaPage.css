@@ -383,12 +383,31 @@
   padding-top: 10px;
 }
 .modals-content .modals-action{
-  padding: 5px 10px;
+  padding: 5px;
   margin: 10px 0px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   /* border: 1px solid green; */
+}
+
+.modals-action .ma-left{
+  /* border: 1px solid red; */
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.modals-action .trash-btn{
+  border: 1px solid white;
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 5px;
+  color: #5e5e5e;
+  font-size: 18px;
+}
+.modals-action .trash-btn:hover{
+  background-color: #ddd;
 }
 
 /* MODAL DATE  */

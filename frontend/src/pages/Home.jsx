@@ -222,9 +222,12 @@ const Home=()=> {
                   </div>
                   <h4>Your Agenda</h4>
                 </div>
+
+                <BootstrapTooltip title='Open Agenda Page' placement='top'>
                 <div className="ah-right">
                   <BsArrowsAngleExpand className='sh-expand' onClick={navigateToAgendaPage}/>
                 </div>
+                </BootstrapTooltip>
               </div>
               <div className="agenda-body">
                 {/* <PersonalAgenda/> */}

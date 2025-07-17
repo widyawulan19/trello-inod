@@ -129,6 +129,9 @@ input:hover
     border-radius: 50%;
     
 }
+.icon-wrapper.active{
+    color: #6a11cb;
+}
 
 /* CALENDAR  */
 .calender-modal{

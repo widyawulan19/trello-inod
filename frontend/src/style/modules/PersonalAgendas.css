@@ -82,6 +82,7 @@
 
 .personal-agenda-box .pn-footer{
     /* border: 1px solid #ddd; */
+    margin-top: 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -96,6 +97,26 @@
     color: white;
     padding: 5px 15px;
 }
+
+.pn-footer-right{
+    gap: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.pn-footer-right .footer-delete{
+    border: 1px solid white;
+    border-radius: 8px;
+    padding: 5px;
+    font-size: 18px;
+    color: #5e5e5e;
+    cursor: pointer;
+}
+.footer-delete:hover{
+    background-color: #ddd;
+}
+
 .pn-footer .read{
     /* border: 1px solid green; */
     display: flex;
