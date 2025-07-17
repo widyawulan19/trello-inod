@@ -5547,7 +5547,7 @@ app.get('/api/unfinished-agendas/:userId', async (req, res) => {
 });
 
 
-
+//6.1 mark check agenda (get finish agendas)
 app.get('/api/finish-agendas/:userId', async (req, res) => {
   const { userId } = req.params;
   try {
