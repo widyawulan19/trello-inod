@@ -249,7 +249,7 @@ const Home=()=> {
               </div>
 
               <div className="quick-body">
-                <AksesCepat/>
+                <AksesCepat userId={userId} handleShowForm={handleShowForm}/>
               </div>
             </div>
           </div>

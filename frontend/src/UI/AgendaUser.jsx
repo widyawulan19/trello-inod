@@ -3,22 +3,24 @@ import '../style/modules/PersonalAgendas.css'
 import { FaCircle, FaXmark } from 'react-icons/fa6';
 import { HiArrowRight } from 'react-icons/hi2';
 import BootstrapTooltip from '../components/Tooltip';
-import { getAgendaUser } from '../services/ApiServices';
+import { getAgendaUser, getUnfinishAgenda } from '../services/ApiServices';
+import { useNavigate } from 'react-router-dom';
 
 const AgendaUser = ({userId,onClose}) => {
     //STATE
     const [agendas,setAgendas] = useState([]);
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate()
 
 
     //FUNCTION
     //1. fetch data agenda user 
     const fetchAgendaUser = async() =>{
         try{
-            const response = await getAgendaUser(userId);
-            setAgendas(response.data);
+            const response = await getUnfinishAgenda(userId);
+            setAgendas(response.data.data);
         }catch(error){
-            console.log('Error fetch data agenda:', error)
+            console.log('Error fetch unfinished agenda:', error)
         }finally{
             setLoading(false)
         }
@@ -44,6 +46,12 @@ const AgendaUser = ({userId,onClose}) => {
             </div>
         );
     };
+
+    //3. function navigate to app router
+    const handleNavigateToPage = () =>{
+        navigate('/agenda-page')
+        onClose()
+    }
 
 
 
@@ -86,7 +94,7 @@ const AgendaUser = ({userId,onClose}) => {
                         {agenda.status_name}
                     </div>
                 </BootstrapTooltip>
-                <div className="read">
+                <div className="read" onClick={handleNavigateToPage}>
                     READ MORE <HiArrowRight className='read-icon'/>
                 </div>
             </div>

@@ -328,10 +328,10 @@ function AgendaPage() {
                           fontSize:'12px',
                           width:'fit-content',
                           textAlign:'center',
-                          color: agenda.is_done ? '#821715' : '#246c12',
-                          backgroundColor: agenda.is_done ? '#f7a7a6' : '#b6f7a6'
+                          color: agenda.is_done ? '#246c12' : '#821715',
+                          backgroundColor: agenda.is_done ? '#b6f7a6' : '#f7a7a6'
                         }}>
-                          {agenda.is_done ? 'Not Finished': 'Finished'}
+                          {agenda.is_done ? 'Finished': ' Not Finished'}
                         </div>
                       </BootstrapTooltip>
                     </td>
@@ -421,7 +421,7 @@ function AgendaPage() {
                               color: selectedAgenda.is_done ? '#821715' : '#246c12',
                               backgroundColor: selectedAgenda.is_done ? '#f7a7a6' : '#b6f7a6'
                             }}>
-                            {selectedAgenda.is_done ? 'Not Finished': 'Finished'}
+                            {selectedAgenda.is_done ? 'Finished': 'Not Finished'}
                           </div>
                         </div>
                         <BootstrapTooltip title='Delete Agenda' placement='top'>
