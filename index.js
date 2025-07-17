@@ -5520,9 +5520,10 @@ app.delete('/api/agenda-user/:id/user/:user_id', async (req, res) => {
   }
 });
 
-//6. mark check agenda
+// 6. mark check agenda (get unfinished agendas)
 app.get('/api/unfinished-agendas/:userId', async (req, res) => {
   const { userId } = req.params;
+
   try {
     const result = await client.query(`
       SELECT * FROM agenda_personal 
@@ -5530,20 +5531,21 @@ app.get('/api/unfinished-agendas/:userId', async (req, res) => {
         AND is_done = false
         AND agenda_date <= NOW()
       ORDER BY agenda_date ASC
-    `, [userId]
-  );
-  res.json(result.rows);
+    `, [userId]);
 
-    // res.json({
-    //   count: result.rowCount,
-    //   data: result.rows,
-    //   message: result.rowCount > 0 ? 'Unfinished agendas fetched successfully' : 'No Unfinished agendas found'
-    // });
+    res.json({
+      count: result.rowCount,
+      data: result.rows,
+      message: result.rowCount > 0 
+        ? 'Unfinished agendas fetched successfully'
+        : 'No unfinished agendas found'
+    });
   } catch (err) {
     console.error('Error fetching unfinished agendas:', err);
-    res.status(500).send('Failed to fetch unfinished agendas');
+    res.status(500).json({ error: 'Failed to fetch unfinished agendas' });
   }
 });
+
 
 app.get('/api/finish-agendas/:userId', async (req, res) => {
   const { userId } = req.params;
