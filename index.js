@@ -5530,13 +5530,15 @@ app.get('/api/unfinished-agendas/:userId', async (req, res) => {
         AND is_done = false
         AND agenda_date <= NOW()
       ORDER BY agenda_date ASC
-    `, [userId]);
+    `, [userId]
+  );
+  res.json(result.rows);
 
-    res.json({
-      count: result.rowCount,
-      data: result.rows,
-      message: result.rowCount > 0 ? 'Unfinished agendas fetched successfully' : 'No Unfinished agendas found'
-    });
+    // res.json({
+    //   count: result.rowCount,
+    //   data: result.rows,
+    //   message: result.rowCount > 0 ? 'Unfinished agendas fetched successfully' : 'No Unfinished agendas found'
+    // });
   } catch (err) {
     console.error('Error fetching unfinished agendas:', err);
     res.status(500).send('Failed to fetch unfinished agendas');
