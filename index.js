@@ -5527,10 +5527,9 @@ app.get('/api/unfinished-agendas/:userId', async (req, res) => {
 
   try {
     const result = await client.query(`
-      SELECT * FROM agenda_personal 
+     SELECT * FROM agenda_personal 
       WHERE user_id = $1 
         AND is_done = false
-        AND agenda_date <= NOW()
       ORDER BY agenda_date ASC
     `, [userId]);
 
@@ -5555,7 +5554,6 @@ app.get('/api/finish-agendas/:userId', async (req, res) => {
       SELECT * FROM agenda_personal 
       WHERE user_id = $1 
         AND is_done = true
-        AND agenda_date <= NOW()
       ORDER BY agenda_date ASC
     `, [userId]);
 
