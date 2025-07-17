@@ -5526,12 +5526,19 @@ app.get('/api/unfinished-agendas/:userId', async (req, res) => {
   const { userId } = req.params;
 
   try {
-    const result = await client.query(`
-      SELECT * FROM agenda_personal 
-      WHERE user_id = $1 
-        AND is_done = false
-      ORDER BY agenda_date ASC
-    `, [userId]);
+    const result = await client.query(
+      `SELECT a.*, s.name as status_name, s.color 
+       FROM agenda_personal a
+       LEFT JOIN agenda_status s ON a.status_id = s.id
+       WHERE a.user_id = $1
+       AND is_done 'false
+       ORDER BY a.agenda_date ASC`,
+
+      // `SELECT * FROM agenda_personal 
+      // WHERE user_id = $1 
+      //   AND is_done = false
+      // ORDER BY agenda_date ASC` ,
+     [userId]);
 
     res.json({
       count: result.rowCount,
