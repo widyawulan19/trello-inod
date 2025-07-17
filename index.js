@@ -5552,10 +5552,11 @@ app.get('/api/finish-agendas/:userId', async (req, res) => {
 
     res.json(result.rows);
   } catch (err) {
-    console.error('Error fetching unfinished agendas:', err);
-    res.status(500).send('Failed to fetch unfinished agendas');
+    console.error('Error fetching finished agendas:', err);
+    res.status(500).send('Failed to fetch finished agendas');
   }
 });
+
 
 //7. endpoin checkmark agenda 
 app.put('/api/finish-agenda/:agendaId', async (req, res) => {
