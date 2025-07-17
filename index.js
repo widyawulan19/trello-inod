@@ -5535,12 +5535,17 @@ app.get('/api/unfinished-agendas/:userId', async (req, res) => {
       ORDER BY a.agenda_date ASC
     `, [userId]);
 
-    res.json(result.rows);
+    res.json({
+      count: result.rowCount,
+      data: result.rows,
+      message: result.rowCount > 0 ? 'Unfinished agendas fetched successfully' : 'No unfinished agendas found'
+    });
   } catch (err) {
     console.error('Error fetching unfinished agendas with status:', err);
     res.status(500).send('Failed to fetch unfinished agendas');
   }
 });
+
 
 
 
@@ -5553,11 +5558,10 @@ app.get('/api/finish-agendas/:userId', async (req, res) => {
       FROM agenda_personal a
       LEFT JOIN agenda_status s ON a.status_id = s.id
       WHERE a.user_id = $1 
-        AND a.is_done = false
+        AND a.is_done = true
       ORDER BY a.agenda_date ASC
     `, [userId]);
 
-    // res.json(result.rows);
     res.json({
       count: result.rowCount,
       data: result.rows,
@@ -5568,6 +5572,7 @@ app.get('/api/finish-agendas/:userId', async (req, res) => {
     res.status(500).send('Failed to fetch finished agendas');
   }
 });
+
 
 
 // 7. Update is_done value (true or false) universal
