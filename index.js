@@ -5527,7 +5527,7 @@ app.get('/api/unfinished-agendas/:userId', async (req, res) => {
 
   try {
     const result = await client.query(`
-     SELECT * FROM agenda_personal 
+      SELECT * FROM agenda_personal 
       WHERE user_id = $1 
         AND is_done = false
       ORDER BY agenda_date ASC
@@ -5545,6 +5545,7 @@ app.get('/api/unfinished-agendas/:userId', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch unfinished agendas' });
   }
 });
+
 
 
 app.get('/api/finish-agendas/:userId', async (req, res) => {
