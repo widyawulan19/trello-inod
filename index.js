@@ -5570,7 +5570,7 @@ app.get('/api/finish-agendas/:userId', async (req, res) => {
 });
 
 
-// 7. Update is_done value (true or false)
+// 7. Update is_done value (true or false) universal
 app.put('/api/update-agenda-status/:agendaId', async (req, res) => {
   const { agendaId } = req.params;
   const { is_done } = req.body; // frontend kirim nilai true atau false
@@ -5596,6 +5596,38 @@ app.put('/api/update-agenda-status/:agendaId', async (req, res) => {
     res.status(500).send('Failed to update agenda status');
   }
 });
+
+// 8. Update is_done with user check
+app.put('/api/update-agenda-status/:agendaId/user/:userId', async (req, res) => {
+  const { agendaId, userId } = req.params;
+  const { is_done} = req.body;
+
+  try {
+    // Pastikan agenda ini milik user yang benar
+    const check = await client.query(
+      'SELECT * FROM agenda_personal WHERE id = $1 AND user_id = $2',
+      [agendaId, userId]
+    );
+
+    if (check.rowCount === 0) {
+      return res.status(403).json({ message: 'Agenda not found or access denied' });
+    }
+
+    const result = await client.query(
+      'UPDATE agenda_personal SET is_done = $1 WHERE id = $2 RETURNING *',
+      [is_done, agendaId]
+    );
+
+    res.json({
+      message: `Agenda status updated to ${is_done}`,
+      updatedAgenda: result.rows[0]
+    });
+  } catch (err) {
+    console.error('Error updating agenda status:', err);
+    res.status(500).send('Failed to update agenda status');
+  }
+});
+
 
 
 
