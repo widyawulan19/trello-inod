@@ -5539,6 +5539,24 @@ app.get('/api/unfinished-agendas/:userId', async (req, res) => {
   }
 });
 
+app.get('/api/finish-agendas/:userId', async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const result = await client.query(`
+      SELECT * FROM agenda_personal 
+      WHERE user_id = $1 
+        AND is_done = true
+        AND agenda_date <= NOW()
+      ORDER BY agenda_date ASC
+    `, [userId]);
+
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error fetching unfinished agendas:', err);
+    res.status(500).send('Failed to fetch unfinished agendas');
+  }
+});
+
 //7. endpoin checkmark agenda 
 app.put('/api/finish-agenda/:agendaId', async (req, res) => {
   const { agendaId } = req.params;
