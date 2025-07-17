@@ -5549,17 +5549,15 @@ app.get('/api/finish-agendas/:userId', async (req, res) => {
   const { userId } = req.params;
   try {
     const result = await client.query(`
-      SELECT * FROM agenda_personal 
-      WHERE user_id = $1 
-        AND is_done = true
-      ORDER BY agenda_date ASC
+      SELECT a.*, s.name as status_name, s.color 
+      FROM agenda_personal a
+      LEFT JOIN agenda_status s ON a.status_id = s.id
+      WHERE a.user_id = $1 
+        AND a.is_done = true
+      ORDER BY a.agenda_date ASC
     `, [userId]);
 
-    res.json({
-      count: result.rowCount,
-      data: result.rows,
-      message: result.rowCount > 0 ? 'Finished agendas fetched successfully' : 'No finished agendas found'
-    });
+    res.json(result.rows);
   } catch (err) {
     console.error('Error fetching finished agendas:', err);
     res.status(500).send('Failed to fetch finished agendas');
