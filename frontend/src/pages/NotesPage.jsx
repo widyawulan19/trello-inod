@@ -1,19 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useUser } from '../context/UserContext';
 import '../style/pages/NotesPage.css';
 import { useSnackbar } from '../context/Snackbar';
-import { getNotesByUserId, createNote, updateNote, deleteNote, updateNameNote } from '../services/ApiServices';
+import { getNotesByUserId, createNote, updateNote, deleteNote, updateNameNote, updateIsiNote } from '../services/ApiServices';
 import { HiPlus, HiSearch, HiTrash, HiPencil, HiX } from 'react-icons/hi';
 import { IoSearch,IoTimeOutline } from 'react-icons/io5';
 import { FaXmark } from 'react-icons/fa6';
 import { PiNotepadFill } from "react-icons/pi";
 import BootstrapTooltip from '../components/Tooltip';
-import e from 'express';
+import ToolbarFormat from '../modules/ToolbarFormat';
+// import e from 'express';
 
 const NotesPage = () => {
   const { user } = useUser();
   const userId = user.id;
   const { showSnackbar } = useSnackbar();
+  const textareaRef = useRef();
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -25,11 +27,14 @@ const NotesPage = () => {
   //edit name
   const [editNoteName, setEditNoteName] = useState(null);
   const [newNoteName, setNewNoteName] = useState('');
+  //edit isi note
+  const [editIsiNote, setEditIsiNote] = useState(null)
+  const [newIsiNote, setNewIsiNote] = useState('');
 
   //FUNCTION UPDATE NAME NOTE
   const handleEditNoteName = (e, noteId, currentName) =>{
     e.stopPropagation();
-    setEditNote(noteId);
+    setEditNoteName(noteId);
     setNewNoteName(currentName);
   }
 
@@ -37,6 +42,10 @@ const NotesPage = () => {
     try{
       await updateNameNote(noteId, userId, { name: newNoteName.trim() });
       fetchDataNotes(); // ambil ulang data biar sync
+      setDetailNote(prev => ({
+        ...prev,
+        name: newNoteName.trim()
+      }));
       setEditNoteName(null);
       showSnackbar('Note name updated successfully', 'success');
 
@@ -52,6 +61,36 @@ const NotesPage = () => {
           handleSaveName(noteId)
           e.stopPropagation();
       }
+  }
+
+  //FUNCTION UPDATE ISI NOTE
+  const handleEditIsiNote = (e, noteId, currentIsi) =>{
+    e.stopPropagation();
+    setEditIsiNote(noteId);
+    setNewIsiNote(currentIsi);
+  }
+
+  const handleSaveIsi = async(noteId)=>{
+    try{
+      await updateIsiNote(noteId, userId, {isi_note: newIsiNote.trim()});
+      fetchDataNotes();
+      setDetailNote(prev => ({
+        ...prev,
+        isi_note: newIsiNote.trim()
+      }));
+      setEditIsiNote(null);
+      showSnackbar('Note isi updated successfully', 'success');
+    }catch(error){
+      console.error('Error updating isi note :', error)
+      showSnackbar('Failed to updating isi note', 'error');
+    }
+  }
+
+  const handleKeyPressIsi = (e, noteId) =>{
+    if(e.key === 'Enter'){
+      handleSaveIsi(noteId)
+      e.stopPropagation();
+    }
   }
 
   //SHOW DETAIL NOTE
@@ -107,6 +146,7 @@ const NotesPage = () => {
       showSnackbar('Note created successfully', 'success');
       setNewNote({ name: '', isi_note: '' });
       fetchDataNotes();
+      setShowFormCreate(false);
     } catch (error) {
       console.error('Create error:', error);
       showSnackbar('Failed to create note', 'error');
@@ -231,9 +271,9 @@ const NotesPage = () => {
               </div>
               
               <div className="header-btn">
-                <BootstrapTooltip title='Edit Note' placement='top'>
+                {/* <BootstrapTooltip title='Edit Note' placement='top'>
                   <div className='btn' onClick={() => handleShowEditForm(note)}><HiPencil /></div>
-                </BootstrapTooltip>
+                </BootstrapTooltip> */}
                 <BootstrapTooltip title='Delete Note' placement='top'>
                   <div className='btn' onClick={() => handleDeleteNote(note.id)}><HiTrash /></div>
                 </BootstrapTooltip>
@@ -279,20 +319,39 @@ const NotesPage = () => {
             <div className="main-content">
               {/* <h3>{detailNote.name}</h3> */}
               <div className="main-title">
-                {editNoteName ? (
+                {editNoteName === detailNote.id ? (
                   <input
                     type='text'
                     value={newNoteName}
                     onChange={(e) => setNewNoteName(e.target.value)}
-                    onBlur={()=> handleSaveName(detailNote.id)}
-                    onKeyDown={(e)=> handleKeyPressName(e, detailNote.id)}
+                    onBlur={() => handleSaveName(detailNote.id)}
+                    onKeyDown={(e) => handleKeyPressName(e, detailNote.id)}
+                    autoFocus
+                  />
+                ) : (
+                  <h3 onClick={(e) => handleEditNoteName(e, detailNote.id, detailNote.name)}>
+                    {detailNote.name}
+                  </h3>
+                )}
+              </div>
+
+                {/* ISI NOTE  */}
+              {/* <p>{detailNote.isi_note}</p> */}
+                {editIsiNote === detailNote.id ? (
+                  <textarea
+                    type='text'
+                    value={newIsiNote}
+                    onChange={(e) => setNewIsiNote(e.target.value)}
+                    onBlur={() => handleSaveIsi(detailNote.id)}
+                    onKeyDown={(e) => handleKeyPressIsi(e, detailNote.id)}
                     autoFocus
                   />
                 ):(
-                  <h3 onClick={(e) => handleEditNoteName(e, detailNote.id, detailNote.name)}>{detailNote.name}</h3> 
+                  <p onClick={(e)=> handleEditIsiNote(e, detailNote.id, detailNote.isi_note)}>
+                    {detailNote.isi_note}
+                  </p>
                 )}
-              </div>
-              <p>{detailNote.isi_note}</p>
+
             </div>
            </div>
           </div>
@@ -303,3 +362,4 @@ const NotesPage = () => {
 };
 
 export default NotesPage;
+
