@@ -5410,7 +5410,32 @@ app.put('/api/personal-note/:id/user/:userId', async (req, res) => {
   }
 });
 
-//5.1 Update description note
+//5.1 Update title note
+app.put('/api/personal-note/:id/name/:userId', async (req, res) => {
+  const { id, userId } = req.params;
+  const { name } = req.body;
+
+  try {
+    const result = await client.query(
+      `UPDATE personal_notes 
+       SET name = $1, updated_at = CURRENT_TIMESTAMP 
+       WHERE id = $2 AND user_id = $3 
+       RETURNING *`,
+      [name, id, userId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Note not found or not owned by user" });
+    }
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+//5.2 update description note
 app.put('/api/personal-note/:id/desc/:userId', async (req, res) => {
   const { id, userId } = req.params;
   const { isi_note } = req.body;
