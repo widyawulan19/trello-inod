@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 // const API_URL = 'http://localhost:3002/api'; //untuk development
-const API_URL = 'https://trello-inod-production.up.railway.app/api'
+// const API_URL = 'https://trello-inod-production.up.railway.app/api'
+const API_URL = 'https://trello-inod-production.up.railway.app/api';
 // const API_URL = 'https://5eae-118-96-151-188.ngrok-free.app/api'; //kalau pakai ngrok
 
 
@@ -33,6 +34,7 @@ export const getNoteByIdansUserId = (noteId, userId) => axios.get(`${API_URL}/pe
 export const createNote = (data) => axios.post(`${API_URL}/personal-note`, data);
 export const updateNote = (noteId,data,userId) => axios.put(`${API_URL}/personal-note/${noteId}/user/${userId}`, data);
 export const deleteNote = (noteId,userId) => axios.delete(`${API_URL}/personal-note/${noteId}/user/${userId}`)
+export const updateIsiNote = (noteId, userId) => axios.put(`${API_URL}/personal-note/${noteId}/desc/${userId}`);
 
 //PERSONAL AGENDA
 export const createNewAgenda = (data) => axios.post(`${API_URL}/agenda`,data);

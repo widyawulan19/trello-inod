@@ -499,3 +499,77 @@ const PersonalAgendas = ({ userId }) => {
 };
 
 // export default PersonalAgendas;
+
+
+
+//2. update title description
+app.put('/api/cards/:id/desc', async(req,res)=>{
+    const { id } = req.params;
+    const { description } = req.body;
+    const userId = req.user.id;
+
+        try {
+            const result = await client.query("UPDATE cards SET description = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *", [description, id]);
+            if (result.rows.length === 0) return res.status(404).json({ error: "Card not found" });
+            
+            //add log card activity
+            await logCardActivity({
+                action: 'updated_desc',
+                card_id: parseInt(id),
+                user_id: userId,
+                entity: 'description',
+                entity_id: null,
+                details:''
+            })
+
+            res.json(result.rows[0]);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+})
+
+// {/* <div className="note-form">
+//   {editingNote ? (
+//     <>
+//       {/* Edit Note Form */}
+//       <input
+//         type="text"
+//         placeholder="Edit title"
+//         value={editingNote.name}
+//         onChange={(e) =>
+//           setEditingNote({ ...editingNote, name: e.target.value })
+//         }
+//       />
+//       <textarea
+//         placeholder="Edit content"
+//         value={editingNote.isi_note}
+//         onChange={(e) =>
+//           setEditingNote({ ...editingNote, isi_note: e.target.value })
+//         }
+//       />
+//       <button onClick={handleUpdateNote}>Update Note</button>
+//     </>
+//   ) : (
+//     <>
+//       {/* Create New Note Form */}
+//       <input
+//         type="text"
+//         placeholder="New note title"
+//         value={newNote.name}
+//         onChange={(e) =>
+//           setNewNote({ ...newNote, name: e.target.value })
+//         }
+//       />
+//       <textarea
+//         placeholder="New note content"
+//         value={newNote.isi_note}
+//         onChange={(e) =>
+//           setNewNote({ ...newNote, isi_note: e.target.value })
+//         }
+//       />
+//       <button onClick={handleCreateNote}>
+//         <HiPlus /> Add Note
+//       </button>
+//     </>
+//   )}
+// </div> */}

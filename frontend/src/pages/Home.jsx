@@ -112,6 +112,11 @@ const Home=()=> {
     navigate('/agenda-page')
   }
 
+  //10. navigate to note page
+  const navigateToNotePage = () =>{
+    navigate('/note-page')
+  }
+
   return (
     <div className="home-container">
         <div className="home-header">
@@ -202,10 +207,11 @@ const Home=()=> {
                   <h4><span className='nhl-gradient'>Personal Notes</span></h4>
                 </div>
                 <div className="nh-right">
-                  <div className="note-btn">
-                    <HiPlus/>
-                    <p>Add Note</p>
+                  <BootstrapTooltip title='Open Note Page' placement='top'>
+                  <div className="ah-right">
+                    <BsArrowsAngleExpand className='sh-expand' onClick={navigateToNotePage}/>
                   </div>
+                  </BootstrapTooltip>
                 </div>
               </div>
               <div className="notes-body">

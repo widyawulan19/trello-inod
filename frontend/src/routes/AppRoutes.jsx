@@ -38,6 +38,7 @@ import MainLp from '../landingpage/MainLp';
 import Layout from '../components/Layout';
 import PersonalNotes from '../modules/PersonalNotes';
 import AgendaPage from '../pages/AgendaPage';
+import NotesPage from '../pages/NotesPage';
 
 const AppRoutes=()=> {
   return (
@@ -83,6 +84,7 @@ const AppRoutes=()=> {
         <Route path='/notif-icon' element={<NotificationIcon/>}/>
         <Route path='/personal-notes' element={<PersonalNotes/>}/>
         <Route path='/agenda-page' element={<AgendaPage/>}/>
+        <Route path='/note-page' element={<NotesPage/>}/>
         </Route>
     </Routes>
   )
