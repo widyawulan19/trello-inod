@@ -34,7 +34,8 @@ export const getNoteByIdansUserId = (noteId, userId) => axios.get(`${API_URL}/pe
 export const createNote = (data) => axios.post(`${API_URL}/personal-note`, data);
 export const updateNote = (noteId,data,userId) => axios.put(`${API_URL}/personal-note/${noteId}/user/${userId}`, data);
 export const deleteNote = (noteId,userId) => axios.delete(`${API_URL}/personal-note/${noteId}/user/${userId}`)
-export const updateIsiNote = (noteId, userId) => axios.put(`${API_URL}/personal-note/${noteId}/desc/${userId}`);
+export const updateIsiNote = (noteId, userId, data) => axios.put(`${API_URL}/personal-note/${noteId}/desc/${userId}`, data);
+export const updateNameNote = (noteId, userId, data) => axios.put(`${API_URL}/personal-note/${noteId}/name/${userId}`, data)
 
 //PERSONAL AGENDA
 export const createNewAgenda = (data) => axios.post(`${API_URL}/agenda`,data);

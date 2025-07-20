@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useUser } from '../context/UserContext';
 import '../style/pages/NotesPage.css';
 import { useSnackbar } from '../context/Snackbar';
-import { getNotesByUserId, createNote, updateNote, deleteNote } from '../services/ApiServices';
+import { getNotesByUserId, createNote, updateNote, deleteNote, updateNameNote } from '../services/ApiServices';
 import { HiPlus, HiSearch, HiTrash, HiPencil, HiX } from 'react-icons/hi';
 import { IoSearch,IoTimeOutline } from 'react-icons/io5';
 import { FaXmark } from 'react-icons/fa6';
 import { PiNotepadFill } from "react-icons/pi";
 import BootstrapTooltip from '../components/Tooltip';
+import e from 'express';
 
 const NotesPage = () => {
   const { user } = useUser();
@@ -21,6 +22,37 @@ const NotesPage = () => {
   const [showFormCreate, setShowFormCreate] = useState(false);
   const [editNote, setEditNote] = useState(false);
   const [detailNote, setDetailNote] = useState(null);
+  //edit name
+  const [editNoteName, setEditNoteName] = useState(null);
+  const [newNoteName, setNewNoteName] = useState('');
+
+  //FUNCTION UPDATE NAME NOTE
+  const handleEditNoteName = (e, noteId, currentName) =>{
+    e.stopPropagation();
+    setEditNote(noteId);
+    setNewNoteName(currentName);
+  }
+
+  const handleSaveName = async(noteId)=>{
+    try{
+      await updateNameNote(noteId, userId, { name: newNoteName.trim() });
+      fetchDataNotes(); // ambil ulang data biar sync
+      setEditNoteName(null);
+      showSnackbar('Note name updated successfully', 'success');
+
+    }catch(error){
+      console.error('Error updating note name:', error)
+      showSnackbar('Failed to updating note name', 'error');
+
+    }
+  }
+
+  const handleKeyPressName = (e, noteId) =>{
+      if(e.key === 'Enter'){
+          handleSaveName(noteId)
+          e.stopPropagation();
+      }
+  }
 
   //SHOW DETAIL NOTE
   const handleShowDetailNote = (note) =>{
@@ -245,7 +277,21 @@ const NotesPage = () => {
               <p>Update : {formatDate(detailNote.updated_at)}</p>
             </div>
             <div className="main-content">
-              <h3>{detailNote.name}</h3>
+              {/* <h3>{detailNote.name}</h3> */}
+              <div className="main-title">
+                {editNoteName ? (
+                  <input
+                    type='text'
+                    value={newNoteName}
+                    onChange={(e) => setNewNoteName(e.target.value)}
+                    onBlur={()=> handleSaveName(detailNote.id)}
+                    onKeyDown={(e)=> handleKeyPressName(e, detailNote.id)}
+                    autoFocus
+                  />
+                ):(
+                  <h3 onClick={(e) => handleEditNoteName(e, detailNote.id, detailNote.name)}>{detailNote.name}</h3> 
+                )}
+              </div>
               <p>{detailNote.isi_note}</p>
             </div>
            </div>
