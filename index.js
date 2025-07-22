@@ -6470,36 +6470,31 @@ app.get('/api/schedule-weekly', async(req,res)=>{
       }
 })
 
-//CREATE SCHEDULE EMPLOYEE IN EMPLOYEE SCEHDULE PAGE
-app.post('/api/create-employee-with-schedule', async (req, res) => {
-  const { name, nomor_wa, divisi, schedule } = req.body;
-
+// NEW SCHEDULE EMPLOYEE 
+app.get('/employee-schedule/view', async (req, res) => {
   try {
-    await client.query('BEGIN');
-
-    const insertEmployeeQuery = `
-      INSERT INTO data_employees (name, nomor_wa, divisi)
-      VALUES ($1, $2, $3)
-      RETURNING id
-    `;
-    const result = await client.query(insertEmployeeQuery, [name, nomor_wa, divisi]);
-    const employeeId = result.rows[0].id;
-
-    const insertScheduleQuery = `
-      INSERT INTO employee_schedule (employee_id, day_id, shift_id)
-      VALUES ($1, $2, $3)
-    `;
-
-    for (const { day_id, shift_id } of schedule) {
-      await client.query(insertScheduleQuery, [employeeId, day_id, shift_id]);
-    }
-
-    await client.query('COMMIT');
-    res.status(201).json({ message: 'Employee and schedule created successfully' });
+    const result = await client.query(`
+      SELECT 
+        e.name,
+        e.divisi,
+        MAX(CASE WHEN d.name = 'Senin' THEN s.name END) AS senin,
+        MAX(CASE WHEN d.name = 'Selasa' THEN s.name END) AS selasa,
+        MAX(CASE WHEN d.name = 'Rabu' THEN s.name END) AS rabu,
+        MAX(CASE WHEN d.name = 'Kamis' THEN s.name END) AS kamis,
+        MAX(CASE WHEN d.name = 'Jumat' THEN s.name END) AS jumat,
+        MAX(CASE WHEN d.name = 'Sabtu' THEN s.name END) AS sabtu,
+        MAX(CASE WHEN d.name = 'Minggu' THEN s.name END) AS minggu
+      FROM employee_schedules es
+      JOIN employees e ON es.employee_id = e.id
+      JOIN day d ON es.day_id = d.id
+      JOIN shift_employee s ON es.shift_id = s.id
+      GROUP BY e.id, e.name, e.divisi
+      ORDER BY e.name
+    `);
+    res.json(result.rows);
   } catch (error) {
-    await client.query('ROLLBACK');
-    console.error('Error creating employee and schedule:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    console.error('Error fetching schedule:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
