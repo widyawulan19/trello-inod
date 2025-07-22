@@ -39,3 +39,33 @@ app.post('/api/note-colors', async(req,res)=>{
     res.status(500).json({error: err.message});
   }
 })
+
+import React, { useRef } from 'react';
+import ToolbarFormat from './ToolbarFormat'; // pastikan path-nya sesuai
+
+{editIsiNote === detailNote.id ? (
+  <div>
+    <ToolbarFormat editorRef={editorRef} />
+    <div
+      ref={editorRef}
+      contentEditable
+      suppressContentEditableWarning={true}
+      onBlur={() => handleSaveIsi(detailNote.id, editorRef.current.innerHTML)}
+      onKeyDown={(e) => handleKeyPressIsi(e, detailNote.id, editorRef.current.innerHTML)}
+      dangerouslySetInnerHTML={{ __html: newIsiNote }}
+      style={{
+        border: '1px solid #ccc',
+        padding: '10px',
+        borderRadius: '4px',
+        minHeight: '100px'
+      }}
+    />
+  </div>
+) : (
+  <p
+    onClick={(e) =>
+      handleEditIsiNote(e, detailNote.id, detailNote.isi_note)
+    }
+    dangerouslySetInnerHTML={{ __html: detailNote.isi_note }}
+  />
+)}

@@ -2,17 +2,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useUser } from '../context/UserContext';
 import '../style/pages/NotesPage.css';
 import { useSnackbar } from '../context/Snackbar';
-import { getNotesByUserId, createNote, updateNote, deleteNote, updateNameNote, updateIsiNote } from '../services/ApiServices';
+import { getNotesByUserId, createNote, updateNote, deleteNote, updateNameNote, updateIsiNote, getAllColorNote, updateNoteColor } from '../services/ApiServices';
 import { HiPlus, HiSearch, HiTrash, HiPencil, HiX } from 'react-icons/hi';
 import { IoColorPaletteSharp, IoSearch,IoTimeOutline } from 'react-icons/io5';
 import { FaXmark } from 'react-icons/fa6';
 import { PiNotepadFill } from "react-icons/pi";
 import BootstrapTooltip from '../components/Tooltip';
 import ToolbarFormat from '../modules/ToolbarFormat';
-import {background_color} from '../data/BgColor'
-// import ReactQuill from 'react-quill';
-// import Quill from 'quill';
-// import 'quill/dist/quill.snow.css';;
 
 
 const NotesPage = () => {
@@ -20,6 +16,7 @@ const NotesPage = () => {
   const userId = user.id;
   const { showSnackbar } = useSnackbar();
   const textareaRef = useRef();
+  const editorRef = useRef();
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -35,16 +32,43 @@ const NotesPage = () => {
   const [editIsiNote, setEditIsiNote] = useState(null)
   const [newIsiNote, setNewIsiNote] = useState('');
   //bgcolor 
-  const [bgColor, setBgColor] = useState({});
   const [colors, setColors] = useState(false);
+  const [noteColor, setNoteColor] = useState([]);
 
-  //FUNCTION BG COLOR
-  const handleChangeBgColor = (noteId, color) => {
-    setBgColor((prev) => ({
-      ...prev,
-      [noteId]: color,
-    }));
-    setColors(false);
+
+//FECTH DATA NOTE COLOR
+  const fetchNoteColor = async()=>{
+    try{
+      const response = await getAllColorNote();
+      setNoteColor(response.data)
+    }catch(error){
+      console.error('Error fetching all data color', error)
+    }
+  }
+
+  //MENAMPILKAN FECTH DATA KETIKA HALAMAN PERTAMA KALI DIMUAT
+  useEffect(() => {
+    fetchDataNotes(); // data catatan
+    fetchNoteColor(); // data warna catatan
+  }, []);
+
+  //FUNGSI UBAH BACKGROUND COLOR
+  const handleChangeBgColor = async (noteId, newColor) => {
+    try {
+      // Kirim sebagai object dengan key bg_color
+      await updateNoteColor(noteId, { bg_color: newColor });
+
+      // Update state lokal
+      setNotes(prevNotes =>
+        prevNotes.map(note =>
+          note.id === noteId ? { ...note, bg_color: newColor } : note
+        )
+      );
+
+      setColors(false);
+    } catch (error) {
+      console.error('Gagal mengubah warna catatan:', error);
+    }
   };
 
   const handleShowColors = (noteId) => {
@@ -70,7 +94,6 @@ const NotesPage = () => {
       }));
       setEditNoteName(null);
       showSnackbar('Note name updated successfully', 'success');
-
     }catch(error){
       console.error('Error updating note name:', error)
       showSnackbar('Failed to updating note name', 'error');
@@ -92,65 +115,50 @@ const NotesPage = () => {
     setNewIsiNote(currentIsi);
   }
 
-  // const handleSaveIsi = async(noteId)=>{
-  //   try{
-  //     await updateIsiNote(noteId, userId, {isi_note: newIsiNote.trim()});
-  //     // await updateIsiNote(noteId, userId, { isi_note: newIsiNote });
-
-  //     fetchDataNotes();
-  //     setDetailNote(prev => ({
-  //       ...prev,
-  //       isi_note: newIsiNote.trim()
-  //     }));
-  //     setEditIsiNote(null);
-  //     showSnackbar('Note isi updated successfully', 'success');
-  //   }catch(error){
-  //     console.error('Error updating isi note :', error)
-  //     showSnackbar('Failed to updating isi note', 'error');
-  //   }
-  // }
 const handleSaveIsi = async (noteId) => {
   try {
-    // ambil isi HTML dengan delay microtask agar DOM update selesai
-    const updatedIsi = textareaRef.current?.innerHTML || '';
+    setTimeout(async () => {
+      const updatedIsi = editorRef.current?.innerHTML || '';
 
-    await updateIsiNote(noteId, userId, { isi_note: updatedIsi });
+      if (!updatedIsi || updatedIsi === '<br>') {
+        showSnackbar('Isi note tidak boleh kosong', 'error');
+        return;
+      }
 
-    fetchDataNotes();
-    setDetailNote(prev => ({
-      ...prev,
-      isi_note: updatedIsi
-    }));
-    setEditIsiNote(null);
-    showSnackbar('Note isi updated successfully', 'success');
+      await updateIsiNote(noteId, userId, { isi_note: updatedIsi });
+
+      fetchDataNotes();
+      setDetailNote(prev => ({
+        ...prev,
+        isi_note: updatedIsi
+      }));
+      setEditIsiNote(null);
+      showSnackbar('Note isi updated successfully', 'success');
+    }, 0);
   } catch (error) {
     console.error('Error updating isi note :', error);
     showSnackbar('Failed to update isi note', 'error');
   }
 };
 
-const handleKeyPressIsi = (e) => {
-  // biarkan Enter menambah baris, jangan disimpan otomatis
+
+
+
+const handleKeyPressIsi = (e, noteId) => {
   if (e.key === 'Enter' && !e.shiftKey) {
-    // optional: kalau kamu ingin cegah enter bikin baris baru
-    // e.preventDefault();
+    e.preventDefault(); // mencegah newline
+    handleSaveIsi(noteId);
   }
 };
 
 
-  // const handleKeyPressIsi = (e, noteId) =>{
-  //   if(e.key === 'Enter'){
-  //     handleSaveIsi(noteId)
-  //     e.stopPropagation();
-  //   }
-  // }
+useEffect(() => {
+  if (editorRef.current && newIsiNote) {
+    editorRef.current.innerHTML = newIsiNote;
+  }
+}, [newIsiNote]);
 
-//   const handleInputIsi = () => {
-//   clearTimeout(window._saveTimeout);
-//   window._saveTimeout = setTimeout(() => {
-//     handleSaveIsi(noteId); // autosave setelah 2 detik tidak ada aktivitas
-//   }, 2000);
-// };
+
 
 
   //SHOW DETAIL NOTE
@@ -185,6 +193,7 @@ const handleKeyPressIsi = (e) => {
     try {
       const response = await getNotesByUserId(userId);
       setNotes(response.data);
+      console.log(response);
     } catch (error) {
       console.log('Error fetch data note', error);
     } finally {
@@ -321,7 +330,7 @@ const handleKeyPressIsi = (e) => {
       <div className="notes-page-content">
         {filteredNotes.length === 0 && <p>Tidak ada catatan ditemukan.</p>}
         {filteredNotes.map(note => (
-          <div key={note.id} className="note-item" style={{ backgroundColor: bgColor[note.id] || '#ffffff' }}>
+          <div key={note.id} className="note-item" style={{ backgroundColor: note.bg_color || '#ffffff' }}>
             <div className="note-item-header">
               <div className="header-title">
                 <div className='note-header-icon'>
@@ -341,17 +350,21 @@ const handleKeyPressIsi = (e) => {
               
               {colors  === note.id && (
                 <div className="color-container">
-                  {background_color.map((color) => (
+                  {noteColor.map((colorItem) => (
                     <button
-                      key={color.name}
-                      onClick={() => handleChangeBgColor(note.id, color.hex)}
+                      key={colorItem.id}
+                      onClick={() => handleChangeBgColor(note.id, colorItem.color)}
                       style={{
-                        backgroundColor: color.hex
+                        backgroundColor: colorItem.color,
+                        width: '30px',
+                        height: '30px',
+                        borderRadius: '50%',
+                        marginRight: '8px',
+                        border: '1px solid #ccc',
+                        cursor: 'pointer',
                       }}
-                      title={color.description}
-                    >
-                      {/* {color.name} */}
-                    </button>
+                      // onClick={() => handleChangeBgColor(selectedNoteId, colorItem.color)} // ganti selectedNoteId sesuai konteks
+                    />
                   ))}
                 </div>
               )}
@@ -359,7 +372,7 @@ const handleKeyPressIsi = (e) => {
 
             <div className="note-item-main">
               <h3>{note.name}</h3>
-              <p>{note.isi_note}</p>
+              <p dangerouslySetInnerHTML={{ __html: note.isi_note }} />
             </div>
 
             <div className="note-item-footer">
@@ -413,45 +426,40 @@ const handleKeyPressIsi = (e) => {
 
                 {/* ISI NOTE  */}
                 {editIsiNote === detailNote.id ? (
-                  <div className='textarea'>
-                    <ToolbarFormat editorRef={textareaRef} />
-                    <div
-                      className="content-editable"
-                      contentEditable
-                      ref={textareaRef}
-                      onBlur={() => {
-                        const updatedIsi = textareaRef.current.innerHTML;
-                        setNewIsiNote(updatedIsi);
-                        handleSaveIsi(detailNote.id);
-                      }}
-                      onKeyDown={(e) => handleKeyPressIsi(e, detailNote.id)}
-                      suppressContentEditableWarning={true}
-                    >
-                      {/* Set initial value inside contentEditable */}
-                      <div dangerouslySetInnerHTML={{ __html: newIsiNote }} />
+                  <div>
+                    <ToolbarFormat editorRef={editorRef} />
+                    <div >
+                      <div
+                        ref={editorRef}
+                        contentEditable
+                        suppressContentEditableWarning={true}
+                        onKeyDown={(e) => handleKeyPressIsi(e, detailNote.id)}
+                        dangerouslySetInnerHTML={{ __html: detailNote?.isi_note }}
+                        className='textarea'
+                        // style={{
+                        //   border: '1px solid #ccc',
+                        //   padding: '10px',
+                        //   borderRadius: '4px',
+                        //   minHeight: '100px'
+                        // }}
+                      />
+                      <div className="btn-save">
+                        <button onClick={() => handleSaveIsi(detailNote.id)}>Save</button>
+                      </div>
+                      
                     </div>
+
+
                   </div>
                 ) : (
-                  <p onClick={(e)=> handleEditIsiNote(e, detailNote.id, detailNote.isi_note)}>
-                    <span dangerouslySetInnerHTML={{ __html: detailNote.isi_note }} />
-                  </p>
+                  <p
+                    onClick={(e) =>
+                      handleEditIsiNote(e, detailNote.id, detailNote.isi_note)
+                    }
+                    dangerouslySetInnerHTML={{ __html: detailNote.isi_note }}
+                  />
                 )}
 
-
-                {/* {editIsiNote === detailNote.id ? (
-                  <textarea
-                    type='text'
-                    value={newIsiNote}
-                    onChange={(e) => setNewIsiNote(e.target.value)}
-                    onBlur={() => handleSaveIsi(detailNote.id)}
-                    onKeyDown={(e) => handleKeyPressIsi(e, detailNote.id)}
-                    autoFocus
-                  />
-                ):(
-                  <p onClick={(e)=> handleEditIsiNote(e, detailNote.id, detailNote.isi_note)}>
-                    {detailNote.isi_note}
-                  </p>
-                )} */}
 
             </div>
            </div>

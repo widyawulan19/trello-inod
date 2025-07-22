@@ -53,10 +53,11 @@ const PersonalNotes=({userId})=> {
                 </div>
 
                 <div className="pn-content">
-                    <p>{note.isi_note}</p>
+                    <p dangerouslySetInnerHTML={{ __html: note.isi_note }}/>
+                    
                 </div>
 
-                <div className="pn-footer">
+                {/* <div className="pn-footer">
                     <div className="read">
                         READ MORE <HiArrowRight className='read-icon'/>
                     </div>
@@ -64,7 +65,7 @@ const PersonalNotes=({userId})=> {
                         <FaEdit/>
                         <MdDelete/>
                     </div>
-                </div>
+                </div> */}
             </div>
         ))}
     </div>

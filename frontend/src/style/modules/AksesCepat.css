@@ -2,12 +2,12 @@
     /* border: 1px solid grey; */
     display: grid;
     grid-template-columns: repeat(2,1fr);
-    gap: 10px;
+    gap: 20px;
 }
 .akses-box{
     border: 1px solid #ddd;
     border-radius: 8px;
-    padding: 8px 5px;
+    padding: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;

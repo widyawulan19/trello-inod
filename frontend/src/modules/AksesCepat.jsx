@@ -13,6 +13,11 @@ const AksesCepat=({userId,handleShowForm})=> {
     const handleNavigateToAgendaPage = () =>{
         navigate('/agenda-page')
     }
+
+    //2. function navihate to note page
+    const handleNAvigateToNotesPage = () =>{
+        navigate('/note-page');
+    }
     //debug
     console.log('Fitur akses cepat menerima data userId:',userId)
   return (
@@ -23,7 +28,7 @@ const AksesCepat=({userId,handleShowForm})=> {
             </div>
             <h4>New Workspace</h4>
         </div>
-        <div className="akses-box">
+        <div className="akses-box" onClick={handleNAvigateToNotesPage}>
             <div className="akses-icon2">
                 <FaNoteSticky/>
             </div>

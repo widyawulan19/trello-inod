@@ -24,7 +24,7 @@
 }
 
 .pn-header .pnh-left{
-    gap: 15px;
+    gap: 5px;
     /* padding: 2px; */
     display: flex;
     align-items: center;
@@ -36,7 +36,7 @@
 
 .pnh-left h4{
     color: #ba81f7;
-    font-size: 15px;
+    font-size: 12px;
     font-weight:normal;
     margin: 0px;
 }

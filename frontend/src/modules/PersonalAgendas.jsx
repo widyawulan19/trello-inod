@@ -70,7 +70,7 @@ const PersonalAgendas = ({ userId }) => {
           <div className="pn-header">
             <div className="pnh-left">
               <FaCircle className="pnh-icon" style={{ color: agenda.color }} />
-              <h4 style={{ color: agenda.color }}>#{agenda.title}</h4>
+              <h4 style={{ color: agenda.color, fontSize:'12px', fontWeight:'normal', }}>#{agenda.title}</h4>
             </div>
             {renderAgendaDate(agenda.agenda_date)}
           </div>

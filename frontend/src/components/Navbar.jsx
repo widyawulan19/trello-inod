@@ -5,7 +5,7 @@ import logo1 from '../assets/whiteLogo.png'
 import { HiMiniCalendarDateRange,HiOutlineMagnifyingGlass,HiOutlineClipboardDocumentList,HiMiniLanguage,HiMiniBellAlert,HiOutlineUserCircle,HiOutlineChevronDown } from "react-icons/hi2";
 import { Tooltip, tooltipClasses } from '@mui/material';
 import {styled} from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useNavigation } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 import { getProfileByUserId, getUnfinishAgenda, getUserTotalNotificationUnread } from '../services/ApiServices';
 import FullNewCalendar from '../fitur/FullNewCalendar';
@@ -125,6 +125,10 @@ const Navbar=()=> {
         setShowCalendar(!showCalendar)
    }
 
+   const handleToNote = () =>{
+    navigate('/note-page');
+   }
+
    //SHOW NITIFICATION
    const handleShowNotif = () =>{
     setShowNotif(!showNotif)
@@ -205,7 +209,8 @@ const Navbar=()=> {
                     <div 
                       className={`icon-wrapper ${active === 'notes' ? 'active' : ''}`} 
                     //   onClick={() => handleActive('notes')}
-                    onClick={handleShowNotes}
+                    // onClick={handleShowNotes}
+                    onClick={handleToNote}
                     >
                         <HiOutlineClipboardDocumentList className='icon-icon' />
                     </div>
@@ -257,7 +262,8 @@ const Navbar=()=> {
                 {/* SHOW NOTES  */}
                 {showNotes && (
                     <div className="notes-modal">
-                        <PersonalNotes userId={userId}/>
+
+                        {/* <PersonalNotes userId={userId}/> */}
                     </div>
                 )}
 
