@@ -6470,8 +6470,9 @@ app.get('/api/schedule-weekly', async(req,res)=>{
       }
 })
 
-// NEW SCHEDULE EMPLOYEE 
-app.get('/employee-schedule/view', async (req, res) => {
+// NEW SCHEDULE EMPLOYEE
+//1. view data schedule employee 
+app.get('/api/employee-schedule/view', async (req, res) => {
   try {
     const result = await client.query(`
       SELECT 
@@ -6497,6 +6498,47 @@ app.get('/employee-schedule/view', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+//2. post endpoin 
+app.post("/api/schedule", async (req, res) => {
+  const { employee_name, divisi, schedules } = req.body;
+
+  try {
+    // 1. Cek apakah employee sudah ada
+    const employeeCheck = await client.query(
+      "SELECT id FROM employees WHERE name = $1 AND divisi = $2",
+      [employee_name, divisi]
+    );
+
+    let employeeId;
+
+    if (employeeCheck.rows.length > 0) {
+      // Sudah ada
+      employeeId = employeeCheck.rows[0].id;
+    } else {
+      // Belum ada, tambahkan employee
+      const insertEmployee = await client.query(
+        "INSERT INTO employees (name, divisi) VALUES ($1, $2) RETURNING id",
+        [employee_name, divisi]
+      );
+      employeeId = insertEmployee.rows[0].id;
+    }
+
+    // 2. Simpan shift untuk setiap hari
+    for (const s of schedules) {
+      await client.query(
+        "INSERT INTO employee_shifts (employee_id, day_id, shift_id) VALUES ($1, $2, $3)",
+        [employeeId, s.day_id, s.shift_id]
+      );
+    }
+
+    res.status(201).json({ message: "Jadwal shift berhasil disimpan!" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Terjadi kesalahan saat menyimpan shift." });
+  }
+});
+
 
 
 
