@@ -5489,7 +5489,7 @@ app.put('/api/persona-note/:id/bg-color', async(req,res)=>{
     )
     res.json({message:'Color update successfully'});
   }catch(error){
-    req.status(500).json({error: 'Failed to update color'});
+    res.status(500).json({error: 'Failed to update color'});
   }
 })
 
@@ -5515,7 +5515,7 @@ app.post('/api/note-colors', async(req,res)=>{
     );
     res.status(201).json(result.rows[0]);
   }catch(error){
-    res.status(500).json({error: err.message});
+    res.status(500).json({error: error.message});
   }
 })
 
