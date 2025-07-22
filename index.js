@@ -6470,6 +6470,46 @@ app.get('/api/schedule-weekly', async(req,res)=>{
       }
 })
 
+//CREATE SCHEDULE EMPLOYEE IN EMPLOYEE SCEHDULE PAGE
+app.post('/api/create-employee-with-schedule', async (req, res) => {
+  const { name, divisi, schedule } = req.body;
+  // schedule format: [{ day_id: 1, shift_id: 2 }, { day_id: 2, shift_id: 1 }, ...]
+
+  const client = await client.connect();
+  try {
+    await client.query('BEGIN');
+
+    // 1. Insert into data_employees
+    const insertEmployeeQuery = `
+      INSERT INTO data_employees (name, divisi)
+      VALUES ($1, $2)
+      RETURNING id
+    `;
+    const result = await client.query(insertEmployeeQuery, [name, divisi]);
+    const employeeId = result.rows[0].id;
+
+    // 2. Insert schedule for this employee
+    const insertScheduleQuery = `
+      INSERT INTO employee_schedule (employee_id, day_id, shift_id)
+      VALUES ($1, $2, $3)
+    `;
+
+    for (const { day_id, shift_id } of schedule) {
+      await client.query(insertScheduleQuery, [employeeId, day_id, shift_id]);
+    }
+
+    await client.query('COMMIT');
+    res.status(201).json({ message: 'Employee and schedule created successfully' });
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Error creating employee and schedule:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  } finally {
+    client.release();
+  }
+});
+
+
 //SCHEDULE DAY
 //1. get all days
 app.get('/api/schedule-days', async(req,res)=>{
