@@ -36,6 +36,11 @@ export const updateNote = (noteId,data,userId) => axios.put(`${API_URL}/personal
 export const deleteNote = (noteId,userId) => axios.delete(`${API_URL}/personal-note/${noteId}/user/${userId}`)
 export const updateIsiNote = (noteId, userId, data) => axios.put(`${API_URL}/personal-note/${noteId}/desc/${userId}`, data);
 export const updateNameNote = (noteId, userId, data) => axios.put(`${API_URL}/personal-note/${noteId}/name/${userId}`, data)
+export const updateNoteColor = (noteId, data) => axios.put(`${API_URL}/personal-note/${noteId}/bg-color`, data);
+
+//NOTE COLORS
+export const getAllColorNote = () => axios.get(`${API_URL}/note-colors`);
+export const addNewColorNote = (data) => axios.post(`${API_URL}/note-colors`, data);
 
 //PERSONAL AGENDA
 export const createNewAgenda = (data) => axios.post(`${API_URL}/agenda`,data);
