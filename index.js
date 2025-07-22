@@ -5477,6 +5477,22 @@ app.delete('/api/personal-note/:id/user/:userId', async (req, res) => {
   }
 });
 
+//7. put personal note color
+app.put('/api/persona-note/:id/bg-color', async(req,res)=>{
+  const {id} = req.params;
+  const {bg_color} = req.body;
+
+  try{
+    await client.query(
+      'UPDATE personal_notes SET bg_color = $1 WHERE id = $2',
+      [bg_color,id]
+    )
+    res.json({message:'Color update successfully'});
+  }catch(error){
+    req.status(500).json({error: 'Failed to update color'});
+  }
+})
+
 //COLOR NOTE
 //1. get all data note color
 app.get('/api/note-colors', async(req,res)=>{
@@ -5502,6 +5518,8 @@ app.post('/api/note-colors', async(req,res)=>{
     res.status(500).json({error: err.message});
   }
 })
+
+//
 
 
 //PERSONAL AGENDA
