@@ -210,8 +210,9 @@
 }
 
 .note-item {
+  /* border: 1px solid red; */
   border: 1px solid #b3a5c200;
-  background-color: white;
+  /* background-color: white; */
   padding: 15px;
   height: 25vh;
   width: 20vw;
@@ -261,15 +262,15 @@
   justify-content: flex-end;
   /* border: 1px solid red; */
   width: 50%;
-  gap: 5px;
+  gap: 2px;
 }
 
 .header-btn .btn{
-  border: 1px solid #fff;
+  border: 1px solid #ffffff00;
   border-radius: 8px;
   padding: 5px;
   cursor: pointer;
-  color: #5e5e5e
+  color: #ababab
 }
 .btn:hover{
   box-shadow: 0px 4px 8px #6b11cb40;
@@ -284,6 +285,36 @@
   top: 10px;
   right: 10px;
 }
+
+/* note-color  */
+.color-container{
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0px 4px 8px #6b11cb40;
+  padding: 8px;
+  display: grid;
+  grid-template-columns: repeat(5,30px);
+  align-items: center;
+  justify-content: flex-start;
+  position: absolute;
+  gap: 5px;
+  top: 20%;
+  right: 0;
+  z-index: 100;
+}
+.color-container button{
+  border: 1px solid #ccc;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #000;
+  font-size: 0.8rem;
+}
+.color-container button:hover{
+  border: 1px solid #6a11cb;
+}
+/* end note color  */
 
 /* NOTE MAIN  */
 .note-item-main{
@@ -519,4 +550,31 @@
 @keyframes fadeIn {
   from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
+}
+
+
+
+.content-editable {
+  border: 1px solid #ccc;
+  padding: 10px;
+  min-height: 100px;
+  outline: none;
+}
+.chat-toolbar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.emoji-picker {
+  display: flex;
+  flex-wrap: wrap;
+  background: white;
+  border: 1px solid #ddd;
+  padding: 5px;
+  position: absolute;
+  z-index: 10;
+}
+.emoji-picker span {
+  cursor: pointer;
+  margin: 2px;
 }
