@@ -5477,6 +5477,16 @@ app.delete('/api/personal-note/:id/user/:userId', async (req, res) => {
   }
 });
 
+//COLOR NOTE
+app.get('/api/note-colore', async(req,res)=>{
+  try{
+    const result = await client.query('SELECT * FROM notes_color ORDER BY id DESC');
+    res.json(result.rows)
+  }catch(error){
+    res.status(500).json({error: 'Gagal mengambil semua data color note'})
+  }
+})
+
 //PERSONAL AGENDA
 //1. create new agenda
 app.post('/api/agenda', async (req, res) => {
