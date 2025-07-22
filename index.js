@@ -6475,7 +6475,7 @@ app.post('/api/create-employee-with-schedule', async (req, res) => {
   const { name, divisi, schedule } = req.body;
   // schedule format: [{ day_id: 1, shift_id: 2 }, { day_id: 2, shift_id: 1 }, ...]
 
-  const client = await client.query();
+  const client = await client.connect();
   try {
     await client.query('BEGIN');
 
