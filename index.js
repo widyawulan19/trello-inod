@@ -5488,7 +5488,7 @@ app.get('/api/note-colors', async(req,res)=>{
   }
 })
 
-//2. add data note color
+//2. add a new data note color 
 app.post('/api/note-colors', async(res, res)=>{
   const {color, color_name} = req.body;
   try{
