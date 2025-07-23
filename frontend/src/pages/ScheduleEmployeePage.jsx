@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { getAllEmployeeSchedule1, getAllShift, getDays, updateShiftByEmployeeAndDay } from '../services/ApiServices';
+import { createEmployeeSchedule, getAllEmployeeSchedule1, getAllShift, getDays, updateShiftByEmployeeAndDay } from '../services/ApiServices';
+import { useSnackbar } from '../context/Snackbar';
+import { IoTrashBin } from 'react-icons/io5';
 
 const ScheduleEmployeePage=()=> {
     //STATE
@@ -7,8 +9,13 @@ const ScheduleEmployeePage=()=> {
     const [days, setDays] = useState([]);
     const [showShift, setShowShift] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [selectedShiftId, setSelectedShiftId] = useState(null);
+    const [selectedShiftId, setSelectedShiftId] = useState({});
     const [shiftOptions, setShiftOptions] = useState([]);
+    const [showForm, setShowForm] = useState(false);
+    const {showSnackbar} = useSnackbar();
+    //state form create
+    const [name, setName] = useState('');
+    const [divisi, setDivisi] = useState('');
 
 
     //FUNCTION
@@ -71,6 +78,44 @@ const ScheduleEmployeePage=()=> {
         }
     };
 
+    //7. show form
+    const handleShowForm = () =>{
+        setShowForm(!showForm);
+    }
+
+    //FUNCTION CREATE SCHEDULE
+    // 8. change shift di saat buat data baru
+    const handleChangeShift = (dayId, shiftId) =>{
+        setSelectedShiftId((prev) => ({
+            ...prev,
+            [dayId]:shiftId
+        }))
+    }
+
+    // 9. fungsi submit
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const schedules = Object.entries(selectedShiftId).map(([day_id, shift_id]) => ({
+          day_id: parseInt(day_id),
+          shift_id,
+        }));
+    
+        try {
+          await createEmployeeSchedule({ name, divisi, schedules });
+          showSnackbar('Jadwal baru berhasil dibuat!','success')
+          setName('');
+          setDivisi('');
+          setSelectedShiftId({});
+          fetchDataSchedule();
+        } catch (error) {
+          console.error('Error:', error);
+          showSnackbar('Gagal menyimpan jadwal!', 'error')
+        }
+      };
+
+
+    //END FUNCTION CREATE SCHEDULE
+
 
     //USEEFFECT 
     useEffect(()=>{
@@ -83,6 +128,8 @@ const ScheduleEmployeePage=()=> {
 
   return (
     <div style={{ padding: "20px", backgroundColor:'white' }}>
+        <div onClick={handleShowForm}>Add New</div>
+        
       <h2>Jadwal Karyawan</h2>
       {loading ? (
         <p>Loading...</p>
@@ -95,6 +142,7 @@ const ScheduleEmployeePage=()=> {
               {days.map((day) => (
                 <th key={day.id}>{day.name}</th>
               ))}
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -134,27 +182,76 @@ const ScheduleEmployeePage=()=> {
                                 {shiftOptions.map((shift) => (
                                     <li
                                     key={shift.id}
-                                    onClick={() => handleShiftChange(emp.id, day.id, shift.id)}
+                                    onClick={() => handleShiftChange(emp.employee_id, day.id, shift.id)}
                                     style={{
                                         padding: "6px 10px",
                                         cursor: "pointer",
                                         borderBottom: "1px solid #eee",
                                     }}
                                     >
-                                    {shift.name}|{shift.id}
+                                    {shift.name}
                                     </li>
                                 ))}
                                 </ul>
                             </div>
                             )}
-
                     </td>
                     );
                 })}
+                <td><div><IoTrashBin/></div></td>
                 </tr>
             ))}
           </tbody>
         </table>
+      )}
+
+      {showForm && (
+        <div className='form-create-modal'>
+            <h2>Buat Jadwal Karyawan Baru</h2>
+                <form onSubmit={handleSubmit}>
+                    <div>
+                    <label>Nama:</label>
+                    <input
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                    />
+                    </div>
+
+                    <div>
+                    <label>Divisi:</label>
+                    <input
+                        type="text"
+                        value={divisi}
+                        onChange={(e) => setDivisi(e.target.value)}
+                        required
+                    />
+                    </div>
+
+                    <div>
+                    <h4>Pilih Shift per Hari:</h4>
+                    {days.map((day) => (
+                        <div key={day.id}>
+                        <strong>{day.name}</strong>
+                        <select
+                            value={selectedShiftId[day.id] || ''}
+                            onChange={(e) => handleChangeShift(day.id, parseInt(e.target.value))}
+                        >
+                            <option value="">--Pilih Shift--</option>
+                            {shiftOptions.map((shift) => (
+                            <option key={shift.id} value={shift.id}>
+                                {shift.name}
+                            </option>
+                            ))}
+                        </select>
+                        </div>
+                    ))}
+                    </div>
+
+                    <button type="submit">Simpan Jadwal</button>
+                </form>
+        </div>
       )}
     </div>
   )
