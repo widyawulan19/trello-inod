@@ -6339,16 +6339,16 @@ app.get('/api/user-schedule/:userId', async(req,res)=>{
 })
 
 //5. get all shift
-app.get('/api/shift', async(req,res)=>{
-    try{
-        const result = await client.query(
-            'SELECT * FROM shift_schedule'
-        )
-        res.json(result.rows);
-    }catch(error){
-        res.status(500).json({error:error.message})
-    }
-})
+// app.get('/api/shift', async(req,res)=>{
+//     try{
+//         const result = await client.query(
+//             'SELECT * FROM shift_schedule'
+//         )
+//         res.json(result.rows);
+//     }catch(error){
+//         res.status(500).json({error:error.message})
+//     }
+// })
 
 //update employee shift
 app.put('/api/schedule-weekly', async (req, res) => {
