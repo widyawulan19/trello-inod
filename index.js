@@ -6654,7 +6654,7 @@ app.delete("/api/employee-schedule/:employeeId", async (req, res) => {
 
 
 //GET ALL DAY
-app.get('/api/days', async(req,res)=>{
+app.get('/api/all-days', async(req,res)=>{
   try{
     const result = await client.query("SELECT * FROM day ORDER BY id ASC");
     res.status(200).json(result.rows);
@@ -6665,7 +6665,7 @@ app.get('/api/days', async(req,res)=>{
 })
 
 //GET ALL SHIFT
-app.get('/api/shift', async(req,res) =>{
+app.get('/api/all-shift', async(req,res) =>{
   try{
     const result = await client.query("SELECT * FROM shift_employee ORDER BY id ASC");
     res.status(200).json(result.rows);
