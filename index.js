@@ -6499,6 +6499,43 @@ app.get('/api/employee-schedule/view', async (req, res) => {
   }
 });
 
+//1.2 view data shcedule employee by employee id
+app.get('/api/employee-schedule/view/:id', async (req, res) => {
+  const employeeId = req.params.id;
+
+  try {
+    const result = await client.query(`
+      SELECT 
+        e.id,
+        e.name,
+        e.divisi,
+        MAX(CASE WHEN d.name = 'Senin' THEN s.name END) AS senin,
+        MAX(CASE WHEN d.name = 'Selasa' THEN s.name END) AS selasa,
+        MAX(CASE WHEN d.name = 'Rabu' THEN s.name END) AS rabu,
+        MAX(CASE WHEN d.name = 'Kamis' THEN s.name END) AS kamis,
+        MAX(CASE WHEN d.name = 'Jumat' THEN s.name END) AS jumat,
+        MAX(CASE WHEN d.name = 'Sabtu' THEN s.name END) AS sabtu,
+        MAX(CASE WHEN d.name = 'Minggu' THEN s.name END) AS minggu
+      FROM employee_schedules es
+      JOIN employees e ON es.employee_id = e.id
+      JOIN day d ON es.day_id = d.id
+      JOIN shift_employee s ON es.shift_id = s.id
+      WHERE e.id = $1
+      GROUP BY e.id, e.name, e.divisi
+    `, [employeeId]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'Employee schedule not found.' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error('Error fetching employee schedule:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
 //2. post endpoin 
 app.post("/api/employee-schedule", async (req, res) => {
   const { name, divisi, schedules } = req.body;
