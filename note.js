@@ -28,3 +28,34 @@ app.put('/api/personal-note/:id/color', async (req, res) => {
     res.status(500).json({ error: 'Failed to update color' });
   }
 });
+
+// Update seluruh data karyawan dan jadwal shift
+app.put("/api/employee-schedule/:employeeId", async (req, res) => {
+  const { employeeId } = req.params;
+  const { name, divisi, schedules } = req.body;
+
+  try {
+    // Update nama dan divisi employee
+    await client.query(
+      "UPDATE employees SET name = $1, divisi = $2 WHERE id = $3",
+      [name, divisi, employeeId]
+    );
+
+    // Hapus semua jadwal lama
+    await client.query("DELETE FROM employee_schedules WHERE employee_id = $1", [employeeId]);
+
+    // Masukkan jadwal baru
+    for (const s of schedules) {
+      await client.query(
+        "INSERT INTO employee_schedules (employee_id, day_id, shift_id) VALUES ($1, $2, $3)",
+        [employeeId, s.day_id, s.shift_id]
+      );
+    }
+
+    res.status(200).json({ message: "Data karyawan dan jadwal berhasil diupdate." });
+  } catch (err) {
+    console.error("Error updating employee schedule:", err);
+    res.status(500).json({ error: "Terjadi kesalahan saat mengupdate data." });
+  }
+});
+
