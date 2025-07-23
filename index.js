@@ -6501,13 +6501,13 @@ app.get('/api/employee-schedule/view', async (req, res) => {
 
 //2. post endpoin 
 app.post("/api/employee-schedule", async (req, res) => {
-  const { employee_name, divisi, schedules } = req.body;
+  const { name, divisi, schedules } = req.body;
 
   try {
     // 1. Cek apakah employee sudah ada
     const employeeCheck = await client.query(
       "SELECT id FROM employees WHERE name = $1 AND divisi = $2",
-      [employee_name, divisi]
+      [name, divisi]
     );
 
     let employeeId;
@@ -6519,7 +6519,7 @@ app.post("/api/employee-schedule", async (req, res) => {
       // Belum ada, tambahkan employee
       const insertEmployee = await client.query(
         "INSERT INTO employees (name, divisi) VALUES ($1, $2) RETURNING id",
-        [employee_name, divisi]
+        [name, divisi]
       );
       employeeId = insertEmployee.rows[0].id;
     }
