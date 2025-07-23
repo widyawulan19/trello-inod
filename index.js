@@ -6476,8 +6476,9 @@ app.get('/api/employee-schedule/view', async (req, res) => {
   try {
     const result = await client.query(`
       SELECT 
-        e.name,
-        e.divisi,
+        e.id AS employee_id,
+        e.name AS employee_name,
+        e.divisi AS division,
         MAX(CASE WHEN d.name = 'Senin' THEN s.name END) AS senin,
         MAX(CASE WHEN d.name = 'Selasa' THEN s.name END) AS selasa,
         MAX(CASE WHEN d.name = 'Rabu' THEN s.name END) AS rabu,
@@ -6492,12 +6493,14 @@ app.get('/api/employee-schedule/view', async (req, res) => {
       GROUP BY e.id, e.name, e.divisi
       ORDER BY e.name
     `);
+
     res.json(result.rows);
   } catch (error) {
     console.error('Error fetching schedule:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 //1.2 view data shcedule employee by employee id
 app.get('/api/employee-schedule/view/:employeeId', async (req, res) => {
