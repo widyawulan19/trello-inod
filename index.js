@@ -6527,7 +6527,8 @@ app.post("/api/employee-schedule", async (req, res) => {
     // 2. Simpan shift untuk setiap hari ke tabel employee_schedules
     for (const s of schedules) {
       await client.query(
-        "INSERT INTO employee_schedules (employee_id, day_id, shift_id) VALUES ($1, $2, $3)",
+        `INSERT INTO employee_schedules (employee_id, day_id, shift_id)
+         VALUES ($1, $2, $3)`,
         [employeeId, s.day_id, s.shift_id]
       );
     }
@@ -6538,6 +6539,7 @@ app.post("/api/employee-schedule", async (req, res) => {
     res.status(500).json({ error: "Terjadi kesalahan saat menyimpan shift." });
   }
 });
+
 
 
 
