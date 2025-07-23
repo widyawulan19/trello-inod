@@ -6501,7 +6501,7 @@ app.get('/api/employee-schedule/view', async (req, res) => {
 
 //1.2 view data shcedule employee by employee id
 app.get('/api/employee-schedule/view/:id', async (req, res) => {
-  const employeeId = req.params;
+  const {employeeId} = req.params;
 
   try {
     const result = await client.query(`
