@@ -6631,6 +6631,28 @@ app.put("/api/employee-schedule/:employeeId/schedules", async (req, res) => {
   }
 });
 
+//5. delete schedule employee by employee id
+app.delete("/api/employee-schedule/:employeeId", async (req, res) => {
+  const { employeeId } = req.params;
+
+  try {
+    const result = await client.query(
+      "DELETE FROM employee_schedules WHERE employee_id = $1",
+      [employeeId]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: "Jadwal tidak ditemukan untuk employee ini." });
+    }
+
+    res.status(200).json({ message: "Jadwal shift berhasil dihapus." });
+  } catch (err) {
+    console.error("Error deleting schedules:", err);
+    res.status(500).json({ error: "Terjadi kesalahan saat menghapus jadwal." });
+  }
+});
+
+
 
 
 
