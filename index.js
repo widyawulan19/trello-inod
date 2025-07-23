@@ -6500,7 +6500,7 @@ app.get('/api/employee-schedule/view', async (req, res) => {
 });
 
 //2. post endpoin 
-app.post("/api/schedule", async (req, res) => {
+app.post("/api/employee-schedule", async (req, res) => {
   const { employee_name, divisi, schedules } = req.body;
 
   try {
