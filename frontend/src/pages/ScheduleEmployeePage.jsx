@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import { getAllEmployeeSchedule1, getAllShift, getDays } from '../services/ApiServices';
+import { getAllEmployeeSchedule1, getAllShift, getDays, updateShiftByEmployeeAndDay } from '../services/ApiServices';
 
 const ScheduleEmployeePage=()=> {
     //STATE
     const [schedules, setSchedules] = useState([]);
     const [days, setDays] = useState([]);
-    const [shifts, setShifts] = useState([]);
     const [showShift, setShowShift] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [selectedShiftId, setSelectedShiftId] = useState(null);
+    const [shiftOptions, setShiftOptions] = useState([]);
+
 
     //FUNCTION
     //1. fungsi fetch data schedule
@@ -40,7 +42,7 @@ const ScheduleEmployeePage=()=> {
     const fetchShifts = async () =>{
         try{
             const response = await getAllShift();
-            setShifts(response.data)
+            setShiftOptions(response.data)
         }catch(error){
             console.log('Error fetching shift data:', error);
         }
@@ -54,6 +56,21 @@ const ScheduleEmployeePage=()=> {
             setShowShift({ rowIndex, dayId }); // set unique key
         }
     };
+    
+    // 6. fungsi change shift
+    const handleShiftChange = async (employeeId, dayId, shiftId) => {
+        try {
+            console.log("employeeId:", employeeId); // harus angka
+            console.log("dayId:", dayId);
+            await updateShiftByEmployeeAndDay(employeeId, dayId, { shift_id: shiftId });
+            console.log("Shift berhasil diupdate");
+            fetchDataSchedule(); // Refresh data
+            setShowShift(null); // Tutup dropdown
+        } catch (error) {
+            console.error("Gagal update shift:", error);
+        }
+    };
+
 
     //USEEFFECT 
     useEffect(()=>{
@@ -100,13 +117,37 @@ const ScheduleEmployeePage=()=> {
                         </div>
 
                         {isDropdownVisible && (
-                        <div style={{ marginTop: "5px", color: "blue" }}>
-                            {/* Dropdown content here */}
-                            {shifts.map((shift)=>(
-                                <div key={shift.id}>{shift.name}</div>
-                            ))}
-                        </div>
-                        )}
+                            <div style={{ position: "relative" }}>
+                                <ul
+                                style={{
+                                    listStyle: "none",
+                                    padding: "8px",
+                                    margin: 0,
+                                    backgroundColor: "#fff",
+                                    border: "1px solid #ccc",
+                                    position: "absolute",
+                                    zIndex: 1000,
+                                    width: "100%",
+                                    color:'red'
+                                }}
+                                >
+                                {shiftOptions.map((shift) => (
+                                    <li
+                                    key={shift.id}
+                                    onClick={() => handleShiftChange(emp.id, day.id, shift.id)}
+                                    style={{
+                                        padding: "6px 10px",
+                                        cursor: "pointer",
+                                        borderBottom: "1px solid #eee",
+                                    }}
+                                    >
+                                    {shift.name}|{shift.id}
+                                    </li>
+                                ))}
+                                </ul>
+                            </div>
+                            )}
+
                     </td>
                     );
                 })}

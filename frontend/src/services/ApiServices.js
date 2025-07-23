@@ -271,8 +271,8 @@ export const createEmployeeSchedule = (data) => axios.post(`${API_URL}/employee-
 export const updateEmployeeSchedule = (employeeId, data) => axios.put(`${API_URL}/employee-schedule/${employeeId}`,data);
 export const updateEmployeeShift1 = (employeeId, data) => axios.put(`${API_URL}/employee-schedule/${employeeId}/schedules`, data);
 export const deleteEmployeeData1 = (employeeId) => axios.delete(`${API_URL}/employee-schedule/${employeeId}`);
-// export const getDays = () => axios.get(`${API_URL}/all-days`)
-// export const getAllShift = () => axios.get(`${API_URL}/all-shift`)
+export const updateShiftByEmployeeAndDay = (employeeId,dayId, data) => axios.put(`${API_URL}/employee-schedule/${employeeId}/day/${dayId}`, data)
+
 
 //NEW EMPLOYEE SCHEDULE
 export const getAllEmployeeSchedule = () => axios.get(`${API_URL}/schedules`);

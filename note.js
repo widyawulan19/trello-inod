@@ -181,4 +181,37 @@ app.delete("/api/employee-schedule/:employeeId", async (req, res) => {
 });
 
 
+app.put('/api/employee-schedule/:employeeId/day/:dayId', async (req, res) => {
+  const { employeeId, dayId } = req.params;
+  const { shift_id } = req.body;
+
+  try {
+    // 1. Cek apakah jadwal untuk employee dan hari sudah ada
+    const existing = await client.query(
+      `SELECT * FROM employee_schedules WHERE employee_id = $1 AND day_id = $2`,
+      [employeeId, dayId]
+    );
+
+    if (existing.rows.length > 0) {
+      // 2. Update jika ada
+      await client.query(
+        `UPDATE employee_schedules SET shift_id = $1 WHERE employee_id = $2 AND day_id = $3`,
+        [shift_id, employeeId, dayId]
+      );
+    } else {
+      // 3. Jika belum ada, insert baru
+      await client.query(
+        `INSERT INTO employee_schedules (employee_id, day_id, shift_id) VALUES ($1, $2, $3)`,
+        [employeeId, dayId, shift_id]
+      );
+    }
+
+    res.status(200).json({ message: "Shift updated successfully" });
+  } catch (error) {
+    console.error("Error updating shift:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
 
