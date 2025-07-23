@@ -6653,6 +6653,29 @@ app.delete("/api/employee-schedule/:employeeId", async (req, res) => {
 });
 
 
+//GET ALL DAY
+app.get('/api/days', async(req,res)=>{
+  try{
+    const result = await client.query("SELECT * FROM day ORDER BY id ASC");
+    res.status(200).json(result.rows);
+  }catch(err){
+    console.error("Error getting days:", err);
+    res.status(500).json({ error: "Terjadi kesalahan saat mengambil data"});
+  }
+})
+
+//GET ALL SHIFT
+app.get('/api/shift', async(req,res) =>{
+  try{
+    const result = await client.query("SELECT * FROM shift_employee ORDER BY id ASC");
+    res.status(200).json(result.rows);
+  }catch(err){
+    console.error("Error getting shifts:", err);
+    res.status(500).json({ error: "Terjadi kesalahan saat mengambil data"})
+  }
+})
+
+
 
 
 
