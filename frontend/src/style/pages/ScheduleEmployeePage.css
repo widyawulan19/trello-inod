@@ -1,0 +1,468 @@
+.employee-schedule-container {
+    height: 97%;
+    /* padding-top: 10px; */
+    margin-bottom: 10px;
+    margin: 15px;
+    background-color: white;
+    border-radius: 8px;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    /* align-items: baseline; */
+    /* justify-content: center; */
+}
+
+/* HEADER  */
+.schedule-header {
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.schedule-header .sh-left {
+    /* border: 1px solid blue; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 80%;
+}
+
+.sh-left h3 {
+    width: 100%;
+}
+
+.schedule-header .sh-right {
+    /* border: 1px solid green; */
+    width: 20%;
+    gap: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    position: relative;
+}
+
+/* BUTTON FILTER  */
+.sh-right .schedule-filter {
+    border: 1px solid #5320be;
+    border-radius: 6px;
+    background-color: #5320be;
+    padding: 5px 10px;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.schedule-filter:hover {
+    box-shadow: 0px 4px 8px #6b11cb40
+}
+
+/* MODAL FILTER  */
+.filter-modal {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 15vw;
+    z-index: 100;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 0px 4px 8px #6b11cb40
+}
+
+.filter-modal .filter-box {
+    list-style: none;
+    padding: 10px;
+    margin: 0;
+    gap: 5px;
+    border: 1px solid #eee;
+
+}
+
+.filter-box .filter-li {
+    border: 1px solid white;
+    border-radius: 4px;
+    padding: 0px 10px;
+    margin: 5px 0px;
+    cursor: pointer;
+    font-size: 12px;
+    color: #333;
+}
+
+.filter-box .filter-li:hover {
+    border: 1px solid #ddd;
+    background-color: #ddd;
+}
+
+
+/* BUTTON FORM  */
+.sh-right .schedule-form {
+    border: 1px solid #5320be;
+    border-radius: 6px;
+    background-color: #5320be;
+    padding: 5px 10px;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    position: relative;
+}
+
+.sh-right .schedule-form:hover {
+    box-shadow: 0px 4px 8px #6b11cb40
+}
+
+
+/* FORM CREATE MODAL  */
+.form-create-modal {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 95%;
+    height: 95%;
+    z-index: 100;
+    background-color: rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.create-content {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 60%;
+    height: 80%;
+}
+
+.create-content .create-header {
+    background: linear-gradient(90deg, #a34dff, #3a78ff);
+    /* border: 1px solid red; */
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    color: white;
+}
+
+.create-header .ch-left {
+    gap: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.ch-left .ch-icon {
+    border: 1px solid #ffffff39;
+    border-radius: 8px;
+    background-color: #ffffff39;
+    padding: 8px;
+}
+
+.create-header h2 {
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    margin: 0px;
+}
+
+.create-header p {
+    color: black;
+    margin: 0px;
+}
+
+.create-header .create-icon {
+    cursor: pointer;
+}
+
+/* MAIN FORM  */
+.create-content .create-main-form {
+    /* border: 1px solid blue; */
+    height: 70vh;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+.box-identitas {
+    /* border: 1px solid red; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    margin: 10px 0px;
+}
+
+
+.box-identitas .isi-box-identitas {
+    gap: 10px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.isi-box-identitas .box-identitas {
+    /* border: 1px solid red; */
+    /* gap: 10px; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.box-identitas h4 {
+    width: 100%;
+    font-weight: bold;
+    color: #333;
+    font-size: 15px;
+}
+
+.box-identitas .bi-title {
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    gap: 5px;
+}
+
+.bi-title .bi-icon {
+    color: #a34dff;
+    font-size: 18px;
+}
+
+.box-identitas .box-input {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    gap: 5px;
+    padding: 5px 10px;
+}
+
+.box-icon {
+    color: grey;
+}
+
+.box-identitas span {
+    color: red;
+}
+
+.box-identitas label {
+    font-size: 12px;
+    color: #333;
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.box-identitas input {
+    width: 100%;
+    border: 1px solid #fff;
+    border-radius: 4px;
+    font-size: 13px;
+    padding: 2px 10px;
+    margin-left: 5px;
+    color: #5e5e5e;
+    /* font-weight: bold; */
+}
+
+.box-identitas input:hover {
+    border: 1px solid #fff;
+
+}
+
+.box-identitas input:focus {
+    outline: none;
+}
+
+/* box shift  */
+.create-main-form .box-shift {
+    /* border: 1px solid red; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+/* shift header  */
+.box-shift .shift-title {
+    width: 100%;
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.shift-title .st-left {
+    /* border: 1px solid red; */
+    gap: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.st-left h4 {
+    width: 100%;
+    font-weight: bold;
+    color: #333;
+    font-size: 15px;
+}
+
+.st-left .shift-icon {
+    color: #a34dff;
+    font-size: 13px;
+}
+
+.st-right {
+    gap: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.st-right p {
+    font-size: 10px;
+    color: #5e5e5e;
+}
+
+.st-right .st-icon {
+    color: #5e5e5e;
+    font-size: 10px;
+}
+
+/* end shift header  */
+
+/* SHIFT CONTENT  */
+.shift-content {
+    /* border: 1px solid blue; */
+    width: 100%;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.shift-content .shift-con {
+    border: 1px solid #ddd;
+    background-color: #eee;
+    border-radius: 10px;
+    margin: 5px;
+    padding: 10px;
+}
+
+.shift-con:hover {
+    border: 1px solid #5320be;
+    box-shadow: 0px 4px 8px #6b11cb40
+}
+
+.shift-con .sc-title {
+    /* border: 1px solid red; */
+    gap: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.sc-title .sc-icon {
+    color: #a34dff;
+    font-size: 12px;
+}
+
+/* shift option  */
+.shift-option {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-top: 5px;
+    cursor: pointer;
+    background-color: white;
+    width: 100%;
+    font-size: 12px;
+}
+
+.shift-option:hover {
+    background-color: #eee;
+}
+
+.shift-list {
+    border: 1px solid #eee;
+    border-radius: 4px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    background-color: white;
+    z-index: 100;
+    width: 200px;
+}
+
+.shift-li {
+    border: 1px solid #fff;
+    border-radius: 8px;
+    padding: 5px;
+    padding-left: 10px;
+    font-size: 12px;
+    background-color: white;
+    cursor: pointer;
+}
+
+.shift-li:hover {
+    background-color: #eee;
+}
+
+/* end box shift  */
+
+/* button submit  */
+.btn-submit {
+    /* border: 1px solid blue; */
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.btn-submit button {
+    background-color: #5320be;
+    color: white;
+    padding: 10px;
+    border: 1px solid #5320be;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.btn-submit button:hover {
+    box-shadow: 0px 4px 8px #6b11cb40
+}
+
+/* end button submit  */
+/* END FORM CREATE MODAL  */
+
+/* TABEL  */
+
+.schedule-shift-box {
+    cursor: pointer;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 5px;
+}
+
+.schedule-shift-box:hover {
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+/* END TABEL  */
+
+/* END HEADER  */

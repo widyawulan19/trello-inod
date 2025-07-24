@@ -1,99 +1,96 @@
-import React, { useEffect, useState } from 'react';
-import { createEmployeeSchedule } from '../services/ApiServices';
-import { getDays, getAllShift } from '../services/ApiServices';
+{showForm && (
+        <div className='form-create-modal'>
+            <div className="create-content">
+                <div className="create-header">
+                    <h2>Tambah Jadwal Karyawan Baru</h2>
+                    <HiXMark className='create-icon'/>
+                </div>
+                
+                <form className='create-main-form' onSubmit={handleSubmit}>
+                    <div className="box-identitas">
+                        <h4>Masukkan Identitas Karyawan:</h4>
+                        <div className="isi-box-identitas">
+                            <div className='box-identitas'>
+                                <label>Nama:</label>
+                                <input
+                                type="text"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                required
+                                />
+                            </div>
 
-const CreateScheduleForm = () => {
-  const [name, setName] = useState('');
-  const [divisi, setDivisi] = useState('');
-  const [days, setDays] = useState([]);
-  const [shifts, setShifts] = useState([]);
-  const [selectedShifts, setSelectedShifts] = useState({}); // { day_id: shift_id }
+                            <div className='box-identitas'>
+                                <label>Divisi:</label>
+                                <input
+                                type="text"
+                                value={divisi}
+                                onChange={(e) => setDivisi(e.target.value)}
+                                required
+                                />
+                            </div>
+                        </div>
+                        
+                    </div>
+                
+                    <div className='box-shift'>
+                        <h4>Pilih Shift per Hari:</h4>
+                        {days.map((day) => (
+                        <div key={day.id} style={{ marginBottom: '10px', position: 'relative' }}>
+                            <strong>{day.name}</strong>
+                            <div
+                            style={{
+                                padding: '5px',
+                                border: '1px solid #ccc',
+                                marginTop: '5px',
+                                cursor: 'pointer',
+                                backgroundColor: '#fff',
+                                width: '200px'
+                            }}
+                            onClick={() =>
+                                setSelectedShiftId((prev) => ({
+                                ...prev,
+                                openDay: prev.openDay === day.id ? null : day.id
+                                }))
+                            }
+                            >
+                            {shiftOptions.find(shift => shift.id === selectedShiftId[day.id])?.name || '--Pilih Shift--'}
+                            </div>
 
-  // Fetch days and shifts
-  useEffect(() => {
-    const fetchData = async () => {
-      const dayRes = await getDays();
-      const shiftRes = await getAllShift();
-      setDays(dayRes.data);
-      setShifts(shiftRes.data);
-    };
-    fetchData();
-  }, []);
+                            {selectedShiftId.openDay === day.id && (
+                            <ul
+                                style={{
+                                listStyle: 'none',
+                                padding: 0,
+                                margin: 0,
+                                border: '1px solid #ccc',
+                                position: 'absolute',
+                                backgroundColor: 'white',
+                                zIndex: 1000,
+                                width: '200px'
+                                }}
+                            >
+                                {shiftOptions.map((shift) => (
+                                <li
+                                    key={shift.id}
+                                    style={{
+                                    padding: '5px',
+                                    cursor: 'pointer',
+                                    borderBottom: '1px solid #eee'
+                                    }}
+                                    onClick={() => {
+                                    handleChangeShift(day.id, shift.id);
+                                    setSelectedShiftId((prev) => ({ ...prev, openDay: null })); // tutup dropdown
+                                    }}
+                                >
+                                    {shift.name}
+                                </li>
+                                ))}
+                            </ul>
+                            )}
+                        </div>
+                        ))}
+                    </div>
 
-  const handleShiftChange = (dayId, shiftId) => {
-    setSelectedShifts((prev) => ({
-      ...prev,
-      [dayId]: shiftId,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const schedules = Object.entries(selectedShifts).map(([day_id, shift_id]) => ({
-      day_id: parseInt(day_id),
-      shift_id,
-    }));
-
-    try {
-      await createEmployeeSchedule({ name, divisi, schedules });
-      alert('Jadwal berhasil dibuat!');
-      setName('');
-      setDivisi('');
-      setSelectedShifts({});
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Gagal menyimpan jadwal!');
-    }
-  };
-
-  return (
-    <div>
-      <h2>Buat Jadwal Karyawan Baru</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Nama:</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </div>
-
-        <div>
-          <label>Divisi:</label>
-          <input
-            type="text"
-            value={divisi}
-            onChange={(e) => setDivisi(e.target.value)}
-            required
-          />
-        </div>
-
-        <div>
-          <h4>Pilih Shift per Hari:</h4>
-          {days.map((day) => (
-            <div key={day.id}>
-              <strong>{day.name}</strong>
-              <select
-                value={selectedShifts[day.id] || ''}
-                onChange={(e) => handleShiftChange(day.id, parseInt(e.target.value))}
-              >
-                <option value="">--Pilih Shift--</option>
-                {shifts.map((shift) => (
-                  <option key={shift.id} value={shift.id}>
-                    {shift.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          ))}
-        </div>
-
-        <button type="submit">Simpan Jadwal</button>
-      </form>
-    </div>
-  );
-};
-
-export default CreateScheduleForm;
+                <button type="submit">Simpan Jadwal</button>
+                </form>
