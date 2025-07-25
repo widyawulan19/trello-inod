@@ -125,7 +125,7 @@
     width: 95%;
     height: 95%;
     z-index: 100;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.1);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -136,7 +136,7 @@
     border: 1px solid #ddd;
     border-radius: 8px;
     width: 60%;
-    height: 80%;
+    height: 85%;
 }
 
 .create-content .create-header {
@@ -353,15 +353,16 @@
 
 .shift-content .shift-con {
     border: 1px solid #ddd;
-    background-color: #eee;
+    background-color: #fff;
     border-radius: 10px;
     margin: 5px;
     padding: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .shift-con:hover {
     border: 1px solid #5320be;
-    box-shadow: 0px 4px 8px #6b11cb40
+    box-shadow: 0px 4px 8px #6b11cb40;
 }
 
 .shift-con .sc-title {
@@ -380,7 +381,7 @@
 /* shift option  */
 .shift-option {
     padding: 5px;
-    border: 1px solid #ccc;
+    border: 1px solid #ececec;
     border-radius: 8px;
     margin-top: 5px;
     cursor: pointer;
@@ -447,6 +448,75 @@
 /* END FORM CREATE MODAL  */
 
 /* TABEL  */
+.schedule-body {
+    width: 100%;
+    height: 75vh !important;
+    padding: 10px;
+    /* border: 1px solid red; */
+    border-collapse: collapse;
+    overflow-y: auto;
+    overflow: auto;
+}
+
+
+.sep-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Arial', sans-serif;
+    font-size: 14px;
+}
+
+.sep-table thead th {
+    position: sticky;
+    top: 0;
+    background-color: #eeeff0;
+    color: #374151;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    text-transform: capitalize;
+    z-index: 99;
+}
+
+
+.sep-table td {
+    border: 1px solid #e5e7eb;
+    /* Warna abu soft */
+    font-size: 12px;
+    padding: 10px 12px;
+    text-align: center;
+    vertical-align: middle;
+    transition: background-color 0.3s ease;
+}
+
+.sep-table tbody tr:hover {
+    background-color: #f3f4f6;
+    /* Hover row */
+}
+
+.sep-table td:first-child,
+.sep-table th:first-child {
+    text-align: left;
+    font-weight: 500;
+}
+
+.schedule-shift-box {
+    padding: 6px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.schedule-shift-box:hover {
+    opacity: 0.8;
+    transform: scale(1.03);
+}
+
 
 .schedule-shift-box {
     cursor: pointer;
@@ -462,6 +532,37 @@
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+/* DROPDOWN  */
+.day-dropdown {
+    position: absolute;
+    background-color: white;
+    border: 1px solid #5320be;
+    border-radius: 8px;
+    padding: 5px 7px;
+    margin: 0;
+    z-index: 10;
+    height: fit-content;
+    list-style: none;
+    width: 100%;
+    color: #374151;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.day-list {
+    padding: 6px 10px;
+    cursor: pointer;
+    border: 1px solid white;
+    background-color: white;
+    border-radius: 8px;
+    margin: 3px 0px;
+}
+
+.day-list:hover {
+    border: 1px solid #eee;
+    background-color: #eee;
+}
+
+/* END DROPDWON  */
 
 /* END TABEL  */
 

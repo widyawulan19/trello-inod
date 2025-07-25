@@ -188,7 +188,7 @@ const Home=()=> {
                   <h4><span className='sh-gradient'>Workspaces Summary</span></h4>
                 </div>
                 <div className="sh-right">
-                   <BsArrowsAngleExpand className='sh-expand'/>
+                   {/* <BsArrowsAngleExpand className='sh-expand'/> */}
                 </div>
                 
               </div>
@@ -219,6 +219,7 @@ const Home=()=> {
               </div>
             </div>
           </div>
+
           <div className="home-body-right">
             <div className="home-agenda">
               <div className="agenda-header">
@@ -250,7 +251,7 @@ const Home=()=> {
                   <h4>Quick Actions</h4>
                 </div>
                 <div className="quick-right">
-                  <BsArrowsAngleExpand className='sh-expand'/>
+                  {/* <BsArrowsAngleExpand className='sh-expand'/> */}
                 </div>
               </div>
 

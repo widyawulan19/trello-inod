@@ -215,15 +215,16 @@ const ScheduleEmployeePage=()=> {
       {loading ? (
         <p>Loading...</p>
       ) : (
-        <table border="1" cellPadding="10" cellSpacing="0" style={{ width: "100%", borderCollapse: "collapse" }}>
+        <div className="schedule-body">
+        <table border="1" cellPadding="10" className='sep-table'>
           <thead style={{ backgroundColor: "#f0f0f0" }}>
             <tr>
-              <th>Nama</th>
+              <th style={{borderTopLeftRadius:'8px'}}>Nama</th>
               <th>Divisi</th>
               {days.map((day) => (
                 <th key={day.id}>{day.name}</th>
               ))}
-              <th>Action</th>
+              <th style={{borderTopRightRadius:'8px'}}>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -255,29 +256,12 @@ const ScheduleEmployeePage=()=> {
 
                         {isDropdownVisible && (
                             <div style={{ position: "relative" }}>
-                                <ul
-                                style={{
-                                    listStyle: "none",
-                                    padding: "8px",
-                                    margin: 0,
-                                    backgroundColor: "#fff",
-                                    border: "1px solid #ccc",
-                                    position: "absolute",
-                                    zIndex: 1000,
-                                    width: "100%",
-                                    color:'red'
-                                }}
-                                >
+                                <ul className='day-dropdown'>
                                 {shiftOptions.map((shift) => (
                                     <li
                                     key={shift.id}
                                     onClick={() => handleShiftChange(emp.employee_id, day.id, shift.id)}
-                                    style={{
-                                        padding: "6px 10px",
-                                        cursor: "pointer",
-                                        borderBottom: "1px solid #eee",
-                                    }}
-                                    >
+                                    className='day-list'>
                                     {shift.name}
                                     </li>
                                 ))}
@@ -287,11 +271,12 @@ const ScheduleEmployeePage=()=> {
                     </td>
                     );
                 })}
-                <td><div><IoTrashBin/></div></td>
+                <td><div style={{textAlign:'center', display:'flex', alignItems:'center', justifyContent:'center', width:'100%'}}><IoTrashBin/></div></td>
                 </tr>
             ))}
           </tbody>
         </table>
+        </div>
       )}
 
       {showForm && (

@@ -1,28 +1,31 @@
-.personal-notes-container{
+.personal-notes-container {
     /* border: 1px solid green; */
-    height: 28vh;
+    height: 37vh;
     overflow-y: auto;
 }
-.personal-notes-box{
+
+.personal-notes-box {
+    background-color: white;
     border-radius: 16px;
     border: 1px solid #ddd;
     padding: 10px;
     cursor: pointer;
     margin: 10px 0px;
 }
-.personal-notes-box:hover{
+
+.personal-notes-box:hover {
     border: 1px solid #6a11cb;
     box-shadow: 0px 4px 8px #6b11cb40;
 }
 
-.personal-notes-box .pn-header{
+.personal-notes-box .pn-header {
     /* border: 1px solid #ddd; */
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.pn-header .pnh-left{
+.pn-header .pnh-left {
     gap: 15px;
     display: flex;
     align-items: center;
@@ -30,17 +33,18 @@
     /* border: 1px solid green; */
     width: 75%;
 }
-.pnh-left .pnh-icon{
+
+.pnh-left .pnh-icon {
     color: #ba81f7;
 }
 
-.pnh-left h4{
+.pnh-left h4 {
     color: #ba81f7;
     font-size: 15px;
     font-weight: bold;
 }
 
-.pn-header .pnh-right{
+.pn-header .pnh-right {
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -49,24 +53,25 @@
     padding-right: 10px;
 }
 
-.pnh-right p{
+.pnh-right p {
     margin: 0px;
     font-size: 10px;
     color: #333;
 }
 
 /* CONTENT  */
-.personal-notes-box .pn-content{
+.personal-notes-box .pn-content {
     margin: 10px 0px;
 }
 
-.personal-notes-box .pn-footer{
+.personal-notes-box .pn-footer {
     /* border: 1px solid #ddd; */
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
-.pn-footer .read{
+
+.pn-footer .read {
     border: 1px solid white;
     border-radius: 8px;
     padding: 5px 10px;
@@ -77,16 +82,19 @@
     color: #ba81f7;
     cursor: pointer;
 }
-.read:hover{
-    border:'1px solid #ddd';
+
+.read:hover {
+    border: '1px solid #ddd';
     background-color: #6a11cb;
     color: white;
     box-shadow: 0px 4px 8px #6b11cb40;
 }
-.read-icon{
+
+.read-icon {
     margin-left: 10px;
 }
-.pn-footer .btn{
+
+.pn-footer .btn {
     /* border: 1px solid green; */
     gap: 10px;
     color: gray;
