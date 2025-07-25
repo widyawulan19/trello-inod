@@ -157,6 +157,12 @@
     .personal-agenda-box {}
 }
 
+@media (min-width:375px) and (max-width:575px) {
+    .personal-agenda-container {
+        height: 40vh;
+    }
+}
+
 
 
 /* AGENDA USER  */

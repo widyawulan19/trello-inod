@@ -410,6 +410,7 @@
 .home-body-right .home-agenda {
     background-color: rgba(255, 255, 255, 0.500);
     border: 1px solid #ddd;
+    /* border: 1px solid red; */
     border-radius: 16px;
     box-shadow: 0px 4px 8px #6b11cb40;
     width: 100%;
@@ -795,6 +796,12 @@
 
     .note-btn p {
         display: none;
+    }
+
+    /* AGENDA  */
+    .home-body-right .home-agenda {
+        /* border: 1px solid red; */
+        margin-top: 7vh;
     }
 }
 

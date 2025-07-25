@@ -102,3 +102,10 @@
     align-items: center;
     justify-content: flex-start;
 }
+
+/* MEDIA QUERY  */
+@media (min-width:375px) and (max-width:575px) {
+    .personal-notes-container {
+        height: 35vh;
+    }
+}
