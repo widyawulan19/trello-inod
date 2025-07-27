@@ -31,7 +31,7 @@ app.use(cors({
 }));
 
 
-
+console.log("JWT_SECRET:", process.env.JWT_SECRET);
 
 
 // Middleware untuk mensimulasikan login
