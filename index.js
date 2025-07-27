@@ -31,6 +31,9 @@ app.use(cors({
 }));
 
 
+
+
+
 // Middleware untuk mensimulasikan login
 const simulateLogin = (req, res, next) => {
   req.user = { id: 3 }; // ID pengguna simulasi, misalnya 1
@@ -81,7 +84,7 @@ app.post("/api/auth/login", async (req, res) => {
     const token = jwt.sign(
       { id: user.rows[0].id, username: user.rows[0].username, email: user.rows[0].email },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: "1d" }
     );
 
     res.json({ token, user: { id: user.rows[0].id, username: user.rows[0].username, email: user.rows[0].email } });
