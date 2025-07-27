@@ -1,4 +1,4 @@
-.workspace-container{
+.workspace-container {
     border: 1px solid #ddd;
     height: 100vh;
     margin-bottom: 10px;
@@ -8,7 +8,8 @@
     border-top-right-radius: 8px;
     color: #333;
 }
-.workspace-header{
+
+.workspace-header {
     border-bottom: 1px solid #ddd;
     padding: 5px 10px;
     display: flex;
@@ -16,7 +17,8 @@
     justify-content: space-between;
     position: relative;
 }
-.wnav{
+
+.wnav {
     display: flex;
     flex-direction: column;
     /* align-items: center; */
@@ -27,7 +29,8 @@
     /* padding: 2px; */
     /* border: 1px solid green; */
 }
-.wnav-btn-con{
+
+.wnav-btn-con {
     /* border: 1px solid blue; */
     display: flex;
     align-items: center;
@@ -35,16 +38,17 @@
     /* gap: 2px; */
 }
 
-.wnav-btn-con .wnav-btn{
+.wnav-btn-con .wnav-btn {
     /* border: 1px solid red; */
 }
 
-.wnav-btn .nav-icon{
+.wnav-btn .nav-icon {
     color: #333;
     cursor: pointer;
     font-size: 18px;
 }
-.wnav-btn .nav-icon:hover{
+
+.wnav-btn .nav-icon:hover {
     color: #5D12EB;
 }
 
@@ -64,7 +68,7 @@
     background: linear-gradient(to right, #6b11cb41, #2574fc41);
 } */
 
-.wnav-btn-con .wnav-active{
+.wnav-btn-con .wnav-active {
     color: #5D12EB;
     font-size: 15px;
     font-weight: bold;
@@ -72,8 +76,8 @@
 
 
 
-.wform button{
-    padding:8px 10px;
+.wform button {
+    padding: 8px 10px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -85,15 +89,18 @@
     border: 1px solid #eee;
     background: linear-gradient(to right, #6a11cb, #2575fc);
 }
-.wform button:hover{
-    background: linear-gradient(to right,#2575fc, #6a11cb);
+
+.wform button:hover {
+    background: linear-gradient(to right, #2575fc, #6a11cb);
     box-shadow: 0px 4px 8px #5e12eb46;
 }
-.wform-icon{
+
+.wform-icon {
     margin-right: 5px;
     font-size: 12px;
 }
-.wform p{
+
+.wform p {
     margin: 0;
     display: flex;
     align-items: center;
@@ -102,25 +109,27 @@
 }
 
 /* WORKSPACE WELCOME MESSAGE  */
-.workspace-welcome{
+.workspace-welcome {
     /* border: 1px solid red; */
     padding: 0px 20px;
     margin-top: 20px;
 }
-.workspace-welcome h3{
+
+.workspace-welcome h3 {
     font-size: 20px;
     font-weight: bold;
     letter-spacing: 0.5px;
     color: #333;
 }
-.workspace-welcome p{
+
+.workspace-welcome p {
     margin: 0px;
     font-size: 13px;
     color: #333;
 }
 
 /* WORKSPACE BODY  */
-.workspace-body{
+.workspace-body {
     /* border: 1px solid red; */
     padding: 20px;
     height: 78vh;
@@ -135,9 +144,9 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 30px;
     white-space: nowrap;
-  }
+}
 
-.workspace-card{
+.workspace-card {
     border: 1px solid #c5cad2;
     width: 100%;
     background-color: white;
@@ -150,40 +159,46 @@
     box-shadow: 0px 4px 8px #bdc4cd;
     /* box-shadow: 0px 4px 8px #5e12eb46; */
 }
-.workspace-card:hover{
+
+.workspace-card:hover {
     border: 1px solid #ae8aeb;
     box-shadow: 0px 4px 8px #5e12eb46;
 }
+
 /* CARD FORM CREATE  */
-.form-workspace-card{
-     border: 1px dashed #5D12EB;
-     background-color: #eeeeee41;
-     border-radius: 8px;
-     position: relative;
-     display: flex;
-     flex-direction: column;
-     align-items: center;
-     justify-content: center;
+.form-workspace-card {
+    border: 1px dashed #5D12EB;
+    background-color: #eeeeee41;
+    border-radius: 8px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     box-shadow: 0px 4px 8px #bdc4cd;
-     cursor: pointer;
-     height:22vh ;
-     padding: 20px;
+    cursor: pointer;
+    height: 22vh;
+    padding: 20px;
 }
-.form-workspace-card:hover{
-     box-shadow: 0px 4px 8px #5e12eb46;
+
+.form-workspace-card:hover {
+    box-shadow: 0px 4px 8px #5e12eb46;
 }
-.form-workspace-card h4{
+
+.form-workspace-card h4 {
     margin: 0;
     font-size: 15px;
     font-weight: bold;
     letter-spacing: 0.5px;
 }
-.form-workspace-card p{
+
+.form-workspace-card p {
     margin: 0px;
     font-size: 12px;
     color: #5e5e5e;
 }
-.fwc-icon{
+
+.fwc-icon {
     font-size: 20px;
     font-weight: bold;
     border: 1px solid #ddd;
@@ -193,9 +208,10 @@
     color: #333;
     margin-bottom: 5px;
 }
+
 /* END CARD FORM CREATE  */
 
-.wc-header{
+.wc-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -203,18 +219,22 @@
     position: relative;
     /* border: 1px solid yellow; */
 }
+
 /* form setting  */
-.workspace-card .setting-wc{
+.workspace-card .setting-wc {
     position: absolute;
-    top: 30px; /* Sesuaikan dengan posisi yang diinginkan */
-    right: 0; /* Menempel ke kanan */
+    top: 30px;
+    /* Sesuaikan dengan posisi yang diinginkan */
+    right: 0;
+    /* Menempel ke kanan */
     background-color: white;
     border: 1px solid #ddd;
     /* height: 30vh; */
     border-radius: 4px;
     padding: 10px 7px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
-    z-index: 10; /* Pastikan lebih tinggi dari elemen lain */
+    z-index: 10;
+    /* Pastikan lebih tinggi dari elemen lain */
     display: flex;
     flex-direction: column;
     /* align-items: center; */
@@ -222,7 +242,8 @@
     gap: 3px;
     font-size: 15px;
 }
-.setting-wc button{
+
+.setting-wc button {
     padding: 8px;
     display: flex;
     align-items: center;
@@ -233,20 +254,24 @@
     border-radius: 4px;
     color: #333;
 }
-.setting-wc button:hover{
+
+.setting-wc button:hover {
     background-color: #eee;
 }
-.swc-icon{
+
+.swc-icon {
     margin-right: 5px;
     font-size: 13px;
     color: #333;
 }
-.swc-delete{
+
+.swc-delete {
     margin-right: 5px;
     font-size: 13px;
     color: red;
 }
-.delete button{
+
+.delete button {
     padding: 8px;
     display: flex;
     align-items: center;
@@ -258,52 +283,61 @@
     background-color: #fff;
     color: red;
 }
-.delete button:hover{
+
+.delete button:hover {
     background-color: #eee;
 }
+
 /* end form setting  */
-.wc-name{
+.wc-name {
     display: flex;
-    align-items:center;
+    align-items: center;
     justify-content: flex-start;
     flex-wrap: wrap;
     /* border: 1px solid red; */
     word-wrap: break-word;
     overflow-wrap: break-word;
     white-space: normal;
-    width: 90%; 
+    width: 90%;
 }
-.wc-name input{
+
+.wc-name input {
     /* border: 1px solid red; */
     font-size: 13px;
     padding: 0px 5px;
     border-radius: 6px;
 }
-.wc-name input:focus{
+
+.wc-name input:focus {
     outline: none;
     border: 1px solid #ddd;
 }
 
-.wc-name h5{
+.wc-name h5 {
     font-size: 13px;
     font-weight: bold;
     margin: 0px;
     margin-left: 5px;
-    word-wrap: break-word; /* Break long words */
-    word-break: break-word; /* Break long words at the end of the line */
-    max-width: 80vw; /* Optional, adjust this for a max width */
+    word-wrap: break-word;
+    /* Break long words */
+    word-break: break-word;
+    /* Break long words at the end of the line */
+    max-width: 80vw;
+    /* Optional, adjust this for a max width */
     overflow-wrap: break-word;
     /* border: 1px solid green; */
     /* width: 95%; */
 }
-.wc-header .setting-icon{
+
+.wc-header .setting-icon {
     cursor: pointer;
     color: #333;
     border: 1px solid #eeeeee41;
     border-radius: 4px;
     font-size: 20px;
 }
-.wc-header .setting-icon:hover{
+
+.wc-header .setting-icon:hover {
     cursor: pointer;
     border: 1px solid #ddd;
     background-color: #ddd;
@@ -311,18 +345,18 @@
 }
 
 /* NEW BODY CARD WORKSPACE  */
-.workspace-card-body{
+.workspace-card-body {
     /* border: 1px solid blue; */
 }
 
-.workspace-card-desc{
+.workspace-card-desc {
     /* border: 1px solid grey; */
     padding: 0px 15px;
     margin: 3px 0px;
     height: 7vh;
 }
 
-.workspace-card-desc textarea{
+.workspace-card-desc textarea {
     border: 1px solid #eee;
     border-radius: 4px;
     outline: none;
@@ -331,7 +365,7 @@
     font-size: 13px;
 }
 
-.workspace-card-desc p{
+.workspace-card-desc p {
     /* margin: 0px;
     font-size: 13px;
     height:fit-content;
@@ -348,17 +382,20 @@
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
-    -webkit-line-clamp: 3; /* jumlah baris maksimum */
+    -webkit-line-clamp: 3;
+    /* jumlah baris maksimum */
     -webkit-box-orient: vertical;
-    line-height: 1.4em; /* line spacing */
-    max-height: calc(1.4em * 3); /* hitung sesuai jumlah baris */
+    line-height: 1.4em;
+    /* line spacing */
+    max-height: calc(1.4em * 3);
+    /* hitung sesuai jumlah baris */
     word-wrap: break-word;
     overflow-wrap: break-word;
     white-space: normal;
-    
+
 }
 
-.workspace-card-body .workspace-info{
+.workspace-card-body .workspace-info {
     /* border: 1px solid blue; */
     padding: 2px 15px;
     /* margin-top: 8px; */
@@ -368,16 +405,16 @@
     position: relative;
 }
 
-.workspace-info .user-container{
+.workspace-info .user-container {
     position: absolute;
-    top: 100%; 
-    left: 0; 
+    top: 100%;
+    left: 0;
     background-color: white;
     border: 1px solid #ae8aeb;
     border-radius: 8px;
     padding: 10px 7px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
-    z-index: 10; 
+    z-index: 10;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -385,17 +422,17 @@
     font-size: 15px;
 }
 
-.workspace-info .user-admin{
+.workspace-info .user-admin {
     /* border: 1px solid red; */
-    gap:5px;
+    gap: 5px;
 }
 
-.user-admin .prof-user{
+.user-admin .prof-user {
     /* border: 1px solid blue; */
     gap: 5px;
 }
 
-.prof-user p{
+.prof-user p {
     font-size: 12px;
     color: #5e5e5e;
     display: flex;
@@ -403,16 +440,17 @@
     justify-content: flex-start;
 }
 
-.workspace-info .info-date{
+.workspace-info .info-date {
     /* border: 1px solid red; */
     font-size: 10px;
     color: #838383;
 }
 
-.workspace-card-body .info-btm{
+.workspace-card-body .info-btm {
     /* border: 1px solid #ddd; */
 }
-.info-btm .summary-content{
+
+.info-btm .summary-content {
     /* border: 1px solid blue; */
     display: flex;
     align-items: center;
@@ -420,21 +458,23 @@
 }
 
 /* SUMMARY COUNT  */
-.summary-counts{
+.summary-counts {
     padding: 3px 15px;
     /* border: 1px solid red; */
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
-.summary-counts ul{
+
+.summary-counts ul {
     /* border: 1px solid blue; */
     display: flex;
     gap: 10px;
     align-items: center;
     justify-content: flex-start;
 }
-.summary-counts li{
+
+.summary-counts li {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -445,7 +485,7 @@
 
 
 
-.user-group{
+.user-group {
     /* border: 1px solid green; */
     display: flex;
     flex-direction: column;
@@ -456,19 +496,20 @@
     margin: 0px;
 }
 
-.prof-user{
+.prof-user {
     /* border: 1px solid red; */
     display: flex;
     align-items: center;
     justify-content: flex-start;
 }
-.prof-user img{
+
+.prof-user img {
     width: 20px;
     height: 20px;
     border-radius: 50%;
 }
 
-.wc-icon{
+.wc-icon {
     font-size: 15px;
     margin-right: 5px;
 }
@@ -477,41 +518,44 @@
 
 
 /* button navigate to board  */
- .btn-nav-board{
+.btn-nav-board {
     padding: 5px 10px;
     border-radius: 8px;
-    border: 1px solid #5D12EB ;
+    border: 1px solid #5D12EB;
     background: linear-gradient(to bottom, #6E30DC, #5D12EB);
     color: white;
     font-size: 12px;
     font-weight: bold;
     cursor: pointer;
 }
-.btn-nav-board:hover{
+
+.btn-nav-board:hover {
     box-shadow: 0px 4px 8px #5e12eb46;
 }
 
 /* FORM CREATE WORKSPACE -> FORMNEWWORKSPACE  */
-.create-workspace-container{
+.create-workspace-container {
     position: absolute;
     top: 100%;
     right: 0;
-    width: 300px;
+    width: 30vw;
     z-index: 100;
     background-color: white;
     border: 1px solid #ddd;
-    border-radius: 8px;
+    border-radius: 16px;
     box-shadow: 0px 4px 8px #5e12eb46;
     /* box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3); */
 }
-.cwc-header{
+
+.cwc-header {
     border-bottom: 1px solid #ddd;
     padding: 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
-.cwc-header h4{
+
+.cwc-header h4 {
     margin: 0px;
     padding: 5px;
     font-size: 13px;
@@ -520,53 +564,84 @@
     align-items: center;
     justify-content: flex-start;
 }
-.cwch-icon{
+
+.cwch-icon {
     margin-right: 5px;
-    color: #5D12EB;
+    color: white;
+    padding: 5px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #7246eb, #532189)
 }
-.cwc-icon{
-    font-size: 15px;
+
+.cwc-icon {
+    font-size: 18px;
     cursor: pointer;
     border: 1px solid white;
 }
-.cwc-icon:hover{
+
+.cwc-icon:hover {
     background-color: #ddd;
     border-radius: 4px;
     border: 1px solid #ddd;
 }
-.create-workspace-container .form-workspace{
+
+.create-workspace-container .form-workspace {
     padding: 10px;
     display: flex;
     flex-direction: column;
-    align-items:center;
+    align-items: center;
     justify-content: flex-start;
     /* border: 1px solid red; */
 }
-.box input{
-    width: 100%;
+
+.box-form input {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 8px;
+    outline: none;
+    font-size: 12px;
     /* background: linear-gradient(to right, #6a11cb, #2575fc); */
 }
-.box input:hover{
+
+.box-form input:hover {
     background: linear-gradient(to right, #6b11cb41, #2574fc41);
 }
-.box{
+
+.box-form input:focus {
+    border: 1px solid #9b2fad;
+}
+
+.box-form {
     display: flex;
     flex-direction: column;
     width: 90%;
-    /* align-items: center; */
-    /* justify-content: flex-start; */
-    /* border: 1px solid red; */
+    margin-bottom: 5px;
 }
-.box textarea{
-    padding: 5px;
+
+.box-form label {
+    font-size: 10px;
+    color: #333;
+    margin: 5px 0px;
+}
+
+.box-form textarea {
     border: 1px solid #ddd;
-    border-radius: 4px;
-    width: 100% !important;
+    border-radius: 8px;
+    padding: 8px;
+    height: 10vh;
+    outline: none;
+    font-size: 12px;
 }
-.box textarea:hover{
+
+.box-form textarea:hover {
     background: linear-gradient(to right, #6b11cb41, #2574fc41);
 }
-.workspace-btn-form{
+
+.box-form textarea:focus {
+    border: 1px solid #9b2fad;
+}
+
+.workspace-btn-form {
     /* border: 1px solid green; */
     margin: 10px 0px;
     display: flex;
@@ -574,7 +649,8 @@
     justify-content: center;
     width: 100%;
 }
-.workspace-btn-form button{
+
+.workspace-btn-form button {
     background: linear-gradient(to bottom, #6E30DC, #5D12EB);
     color: white;
     font-weight: bold;
@@ -584,7 +660,8 @@
     border-radius: 8px;
     /* padding: 8px 0px; */
 }
-.workspace-btn-form button:hover{
+
+.workspace-btn-form button:hover {
     background: linear-gradient(to bottom, #5D12EB, #6E30DC);
 }
 
@@ -592,7 +669,7 @@
 
 
 /* USER TOTAL  */
-.btn-ts{
+.btn-ts {
     /* border: 1px solid red; */
     display: flex;
     align-items: center;
@@ -602,7 +679,8 @@
     height: 20px;
     margin: 0px;
 }
-.ut-container{
+
+.ut-container {
     /* border: 1px solid green; */
     display: flex;
     align-items: center;
@@ -610,7 +688,8 @@
     height: 100%;
     /* margin-left: 3px; */
 }
-.ut-container p{
+
+.ut-container p {
     /* border: 1px solid grey; */
     height: 100%;
     margin-left: 3px;
@@ -621,120 +700,146 @@
     justify-content: flex-start;
 }
 
-/* END USER TOTAL */ 
+/* END USER TOTAL */
 
 /* MEDIA QUERY BREAKPOINT  */
 /* Extra large devices (large desktops, ≥1200px) */
 @media (min-width: 1200px) and (max-width:1500px) {
-  /* CSS monitor besar */
-    .workspace-content{
-    /* border: 1px solid green; */
-    /* height: 75vh; */
-    overflow-y: auto;
-    gap: 15px;
-  }
+
+    /* CSS monitor besar */
+    .workspace-content {
+        /* border: 1px solid green; */
+        /* height: 75vh; */
+        overflow-y: auto;
+        gap: 15px;
+    }
 }
 
 /* Large devices (desktops, ≥992px) */
 @media (min-width: 992px) and (max-width: 1199.98px) {
-  /* CSS laptop biasa */
-  .workspace-body{
-    /* border: 1px solid red; */
-    padding: 10px;
-  }
-  .workspace-content{
-    /* border: 1px solid green; */
-    height: 75vh;
-    overflow-y: auto;
-    gap: 15px;
-    grid-template-columns: repeat(2, 1fr)
-  }
-  .workspace-card{
-  }
+
+    /* CSS laptop biasa */
+    .workspace-body {
+        /* border: 1px solid red; */
+        padding: 10px;
+    }
+
+    .workspace-content {
+        /* border: 1px solid green; */
+        height: 75vh;
+        overflow-y: auto;
+        gap: 15px;
+        grid-template-columns: repeat(2, 1fr)
+    }
+
+    /* FORM CREATE WORKSPACE  */
+    .create-workspace-container {
+        width: 40vw;
+    }
 }
 
 /* Medium devices (tablets, ≥768px) */
 @media (min-width: 768px) and (max-width: 991.98px) {
-  /* CSS tablet atau iPad */
-    .workspace-body{
-    /* border: 1px solid red; */
-    padding: 10px;
-  }
-  .workspace-content{
-    /* border: 1px solid green; */
-    height: 75vh;
-    overflow-y: auto;
-    gap: 15px;
-    grid-template-columns: repeat(2, 1fr)
-  }
+
+    /* CSS tablet atau iPad */
+    .workspace-body {
+        /* border: 1px solid red; */
+        padding: 10px;
+    }
+
+    .workspace-content {
+        /* border: 1px solid green; */
+        height: 75vh;
+        overflow-y: auto;
+        gap: 15px;
+        grid-template-columns: repeat(2, 1fr)
+    }
+
+    /* FORM CREATE WORKSPACE  */
+    .create-workspace-container {
+        width: 50vw;
+    }
 }
 
 /* ukuran handpone besar  */
-@media (min-width: 576px) and (max-width: 767.98px){
-.workspace-body{
-    /* border: 1px solid red; */
-    padding: 10px 20px;
-  }
-  .workspace-content{
-    /* border: 1px solid green; */
-    height: 75vh;
-    overflow-x: auto;
-    gap: 10px;
-    padding: 10px;
-    grid-template-columns: repeat(1, 1fr);
-  }
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .workspace-body {
+        /* border: 1px solid red; */
+        padding: 10px 20px;
+    }
 
-  .workspace-card{
-    height: 24vh;
-  }
+    .workspace-content {
+        /* border: 1px solid green; */
+        height: 75vh;
+        overflow-x: auto;
+        gap: 10px;
+        padding: 10px;
+        grid-template-columns: repeat(1, 1fr);
+    }
 
-  .btn-nav-board{
-    padding: 5px;
-    font-size: 10px;
-  }
-  .form-workspace-card{
-    display: none;
-  }
+    .workspace-card {
+        height: 24vh;
+    }
+
+    .btn-nav-board {
+        padding: 5px;
+        font-size: 10px;
+    }
+
+    .form-workspace-card {
+        display: none;
+    }
+
+    /* FORM CREATE WORKSPACE  */
+    .create-workspace-container {
+        width: 65vw;
+    }
 }
 
 
 /* Ukuran layar iPhone 7 adalah 375px x 667px (atau 375 x 667) */
-@media (min-width: 375px) and (max-width:667px){
-    .workspace-header{
+@media (min-width: 375px) and (max-width:667px) {
+    .workspace-header {
         /* border: 1px solid red; */
         padding: 0px;
     }
-    .wnav{
+
+    .wnav {
         /* border: 1px solid blue; */
         margin-left: 0px;
         padding-left: 5px;
     }
-    .wnav h3{
+
+    .wnav h3 {
         font-size: 13px;
     }
-    .wnav-btn{
+
+    .wnav-btn {
         /* border: 1px solid green; */
     }
-    .wnav-btn button{
+
+    .wnav-btn button {
         font-size: 10px;
     }
 
-    .wform button{
+    .wform button {
         font-size: 12px;
     }
-    .wform-icon{
+
+    .wform-icon {
         display: none;
     }
 
-    .workspace-welcome p{
+    .workspace-welcome p {
         display: none;
     }
 
-    .workspace-body{
+    .workspace-body {
         padding: 5px;
-        
+
     }
-    .workspace-content{
+
+    .workspace-content {
         /* border: 1px solid green; */
         height: 75vh;
         overflow-y: auto;
@@ -744,13 +849,18 @@
         align-items: center;
         justify-content: flex-start;
     }
-    .workspace-card{
+
+    .workspace-card {
         height: 26vh;
+    }
+
+    /* FORM CREATE WORKSPACE  */
+    .create-workspace-container {
+        width: 85vw;
     }
 }
 
 /* HEIGHT BREAKPOIN  */
-@media  (min-height:400px) and (max-height:730px){
+@media (min-height:400px) and (max-height:730px) {}
 
-}
 /* END MEDIA QUERY BREAKPOINT  */

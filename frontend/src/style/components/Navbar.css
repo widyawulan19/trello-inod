@@ -1,4 +1,4 @@
-.navbar-container{
+.navbar-container {
     /* border: 1px solid red; */
     position: sticky;
     width: 100vw;
@@ -6,27 +6,29 @@
     top: 0;
     z-index: 100;
     padding: 0px;
-    box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     display: flex;
     align-items: center;
     justify-content: space-between;
     background-image: linear-gradient(to right bottom, #051937, #00235f, #042887, #3827ab, #6a11cb);
 }
-.logo{
+
+.logo {
     /* border: 1px solid green; */
     width: 10vw;
     height: 5vh;
     margin-left: 10px;
     cursor: pointer;
 }
-.logo img{
+
+.logo img {
     width: 100%;
     height: 100%;
     border-radius: 8px;
 }
 
 
-.more-fiture{
+.more-fiture {
     /* border: 1px solid #eee; */
     display: flex;
     align-items: center;
@@ -34,7 +36,8 @@
     margin-right: 10px;
     padding: 5px 0px;
 }
-.more-fiture .input{
+
+.more-fiture .input {
     border: 1px solid rgba(255, 255, 255, 0.3);
     /* background-color: white; */
     background: rgba(255, 255, 255, 0.15);
@@ -52,26 +55,26 @@
 .more-fiture .input:focus-within {
     border: 1px solid transparent;
     box-shadow: 0 0 15px 5px rgba(120, 63, 191, 0.1),
-                0 0 10px 2px rgba(218, 110, 60, 0.1);
+        0 0 10px 2px rgba(218, 110, 60, 0.1);
     border-radius: 8px !important;
     overflow: hidden;
 }
 
 .input:hover,
-input:hover
-{
-    background-color:rgba(255, 255, 255, 0.25);
+input:hover {
+    background-color: rgba(255, 255, 255, 0.25);
     border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
-.input-icon{
+.input-icon {
     /* color: grey; */
     color: rgba(255, 255, 255, 0.7);
     /* border: 1px solid red; */
     width: 20%;
     font-size: 20px;
 }
-.input input{
+
+.input input {
     /* width: ; */
     outline: none;
     width: 80%;
@@ -82,12 +85,15 @@ input:hover
     border: 1px solid rgba(255, 255, 255, 0);
     background-color: rgba(255, 255, 255, 0);
 }
-.more-fiture .input:focus {
-    border: 1px solid #783fbf; /* Ganti dengan warna outline yang diinginkan */
-    box-shadow: 0 0 5px rgba(120, 63, 191, 0.5); /* Menambahkan shadow agar lebih terlihat */
-  }
 
-.more-action{
+.more-fiture .input:focus {
+    border: 1px solid #783fbf;
+    /* Ganti dengan warna outline yang diinginkan */
+    box-shadow: 0 0 5px rgba(120, 63, 191, 0.5);
+    /* Menambahkan shadow agar lebih terlihat */
+}
+
+.more-action {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -95,7 +101,8 @@ input:hover
     padding: 5px;
     position: relative;
 }
-.more-action .icon-icon{
+
+.more-action .icon-icon {
     font-size: 20px;
     margin: 0px 10px;
     color: white;
@@ -104,7 +111,8 @@ input:hover
     transition: color 0.2s ease, transform 0.2s ease;
     cursor: pointer;
 }
-.icon-icon:hover{
+
+.icon-icon:hover {
     /* color: #783fbf; */
     color: #B49CFF;
     stroke: #C084FC;
@@ -112,29 +120,32 @@ input:hover
 }
 
 /* profil  */
-.more-fiture .profil{
+.more-fiture .profil {
     /* border: 1px solid red; */
     padding: 0px;
     margin-left: 5px;
 }
-.profil .icon-wrapper{
+
+.profil .icon-wrapper {
     padding: 0px;
     color: white;
     cursor: pointer;
     /* border: 1px solid blue; */
 }
-.icon-wrapper img{
+
+.icon-wrapper img {
     width: 50px;
     height: 30px;
     border-radius: 50%;
-    
+
 }
-.icon-wrapper.active{
+
+.icon-wrapper.active {
     color: #6a11cb;
 }
 
 /* CALENDAR  */
-.calender-modal{
+.calender-modal {
     border: 1px solid #333;
     position: absolute;
     top: 100%;
@@ -142,13 +153,13 @@ input:hover
 }
 
 /* TRANSLATE  */
-.translate{
+.translate {
     /* border: 1px solid white; */
 }
 
 
 /* NOTIFICATION  */
-.notif-modal{
+.notif-modal {
     position: absolute;
     border: 1px solid #6a11cb;
     /* border: 1px solid #B49CFF; */
@@ -158,10 +169,11 @@ input:hover
     right: 5%;
     box-shadow: 0px 4px 8px #6b11cb40;
 }
+
 /* END NOTIFICATION  */
 
 /* NOTES  */
-.notes-modal{
+.notes-modal {
     position: absolute;
     border: 1px solid #6a11cb;
     /* border: 1px solid #B49CFF; */
@@ -173,89 +185,110 @@ input:hover
     padding: 5px;
     width: 40vw;
 }
+
 /* END NOTES  */
 
 /* AGENDA  */
-.agenda-modal{
+.agenda-modal {
     position: absolute;
     border: 1px solid #6a11cb;
     /* border: 1px solid #B49CFF; */
     background-color: white;
-    border-radius: 8px;
+    border-radius: 16px;
     top: 140%;
     right: 5%;
     box-shadow: 0px 4px 8px #6b11cb40;
     /* padding: 8px; */
     width: 30vw;
 }
+
 /* END AGENDA  */
 
 /* MEDIA QUERY  */
 
-@media (min-width:768px) and (max-width: 991.98px){
-    .navbar-container .logo{
+@media (min-width:768px) and (max-width: 991.98px) {
+    .navbar-container .logo {
         width: 20%;
     }
-    .logo img{
+
+    .logo img {
         width: 100%;
         height: 100%;
         /* border: 1px solid red; */
     }
-    .notif-modal{
+
+    .notif-modal {
         width: 40vw;
     }
 
-    .more-fiture{
+    .more-fiture {
         /* border:1px solid red;oard */
         width: 60%;
     }
 
-    .more-fiture .profil{
+    .more-fiture .profil {
         width: 10vw;
         /* border: 1px solid green; */
+    }
+
+    .agenda-modal {
+        width: 50vw;
+        /* border: 1px solid red; */
     }
 }
 
 @media (min-width:576px) and (max-width: 768px) {
-    .navbar-container .logo{
+    .navbar-container .logo {
         width: 20%;
     }
-    .logo img{
+
+    .logo img {
         width: 100%;
         height: 100%;
         /* border: 1px solid red; */
     }
-    .notif-modal{
+
+    .notif-modal {
         width: 40vw;
     }
-    .more-fiture{
+
+    .more-fiture {
         /* border: 1px solid orange; */
         width: 70%;
     }
-        .more-fiture .profil{
+
+    .more-fiture .profil {
         width: 10vw;
         /* border: 1px solid green; */
     }
+
+    .agenda-modal {
+        width: 60vw;
+    }
 }
 
-@media(min-width: 375px) and (max-width:575px){
-    .navbar-container .logo{
+@media(min-width: 375px) and (max-width:575px) {
+    .navbar-container .logo {
         width: 80%;
         /* padding: 5px 0px; */
     }
-    .logo img{
+
+    .logo img {
         width: 80%;
         height: 100%;
     }
-    .more-fiture{
+
+    .more-fiture {
         /* border: 1px solid green; */
         margin-right: 0px;
     }
-    .more-fiture .input input{
+
+    .more-fiture .input input {
         /* width: 2vh; */
         display: none;
     }
-    .more-fiture .input{
+
+    .more-fiture .input {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -264,6 +297,7 @@ input:hover
         border: 1px solid #00235f00;
         background-color: #00235f00;
     }
+
     .input .input-icon {
         font-size: 22px;
         width: 100%;
@@ -273,14 +307,18 @@ input:hover
         /* border: 1px solid blue; */
     }
 
-  /* PROFIL  */
-    .more-fiture .profil{
+    /* PROFIL  */
+    .more-fiture .profil {
         width: 15vw;
         /* border: 1px solid green; */
     }
 
-    .notif-modal{
+    .notif-modal {
         width: 75vw;
         right: 0%;
+    }
+
+    .agenda-modal {
+        width: 80vw;
     }
 }

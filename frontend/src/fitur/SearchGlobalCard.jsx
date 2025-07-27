@@ -3,6 +3,8 @@ import { searchCardsByUser } from '../services/ApiServices'; // ⬅️ pakai ser
 import '../style/fitur/SearchCard.css';
 import { IoSearchOutline } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
+import { HiXMark } from 'react-icons/hi2';
+import { FaCreditCard } from 'react-icons/fa6';
 
 const SearchGlobalCard = ({ userId }) => {
   const [keyword, setKeyword] = useState('');
@@ -64,6 +66,15 @@ const SearchGlobalCard = ({ userId }) => {
 
       {keyword !== '' && (
         <div className="search-global-result">
+          <div className="search-header">
+            <h2>
+              <div className="sgh-icon">
+                <FaCreditCard/>
+              </div>
+              Search results
+            </h2>
+            {/* <HiXMark className='close-search'/> */}
+          </div>
             {results.length === 0 && (
             <p className="no-res">No results found.</p>
             )}

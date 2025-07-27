@@ -3,7 +3,7 @@ import '../style/pages/Home.css'
 import Greeting from '../utils/Greeting.jsx'
 import BootstrapTooltip from '../components/Tooltip.jsx'
 import { RxDragHandleDots2 } from "react-icons/rx";
-import { HiMiniCalendarDateRange,HiOutlineHome,HiOutlineCog8Tooth, HiOutlineClock,HiOutlineArrowsPointingOut,HiOutlineEllipsisHorizontal,HiOutlineSquares2X2,HiOutlineArrowTopRightOnSquare ,HiLink, HiOutlineTrash, HiOutlineXMark, HiClipboardDocumentList, HiPlus} from "react-icons/hi2";
+import { HiMiniCalendarDateRange,HiOutlineHome,HiOutlineCog8Tooth, HiOutlineClock,HiOutlineArrowsPointingOut,HiOutlineEllipsisHorizontal,HiOutlineSquares2X2,HiOutlineArrowTopRightOnSquare ,HiLink, HiOutlineTrash, HiOutlineXMark, HiClipboardDocumentList, HiPlus, HiXMark} from "react-icons/hi2";
 import { useNavigate } from 'react-router-dom';
 import { HiFolder } from "react-icons/hi2";
 import { GiMusicalScore } from "react-icons/gi";
@@ -142,34 +142,40 @@ const Home=()=> {
             <div className='wf-create' ref={showRef}>
               <div className="wf-header">
                 <h5>
-                  <MdAddChart className='wf-icon'/>
-                  CREATE A WORKSPACE 
+                  <div className='wf-icon'>
+                    <MdAddChart/>
+                  </div>
+                  Create New Workspace
                 </h5>
                 <BootstrapTooltip title="Close Form" placement="top">
-                  <HiOutlineXMark onClick={handleCancle} className='wf-close'/>
+                  <HiXMark onClick={handleCancle} className='wf-close'/>
                 </BootstrapTooltip>
               </div>
                <div className="wf-content">
                 <div className="wf-input">
-                  <label>Workspace Title</label>
+                  <label>Workspace Title <span style={{color:'red'}}>*</span></label>
                   <input 
                     type="text"
                     value={name}
+                    placeholder='Enter workspace title'
                     onChange={(e) => setName(e.target.value)}
                     required
                   />
                 </div>
                 <div className="wf-input">
-                  <label>Descriptions</label>
-                  <input 
+                  <label>Descriptions <span style={{color:'red'}}>*</span></label>
+                  <textarea 
                     type="text" 
                     value={description}
+                    placeholder='Describe your workspace (optional)'
                     onChange={(e) => setDescription(e.target.value)}
                     required
                   />
                 </div>
-                <button onClick={handleSubmit}>Create Workspace</button>
-                {/* <button className='cancle-btn'>Cancle</button> */}
+                <div className="wf-btn">
+                  <div className='cancle-btn' onClick={handleCancle}>Cancle</div>
+                  <div className='submit-btn' onClick={handleSubmit}>Create Workspace</div>
+                </div>
                </div>
             </div>
           )}        

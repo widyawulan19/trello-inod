@@ -26,20 +26,19 @@
 }
 
 .pn-header .pnh-left {
-    gap: 5px;
+    gap: 2px !important;
     /* padding: 2px; */
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    /* border: 1px solid green; */
     width: 75%;
 }
 
 
 .pnh-left h4 {
-    color: #ba81f7;
+    /* border: 1px solid blue; */
     font-size: 12px;
-    font-weight: normal;
+    font-weight: normal !important;
     margin: 0px;
 }
 
@@ -87,7 +86,7 @@
 
 .personal-agenda-box .pn-footer {
     /* border: 1px solid #ddd; */
-    margin-top: 10px;
+    margin-top: 5px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -111,6 +110,16 @@
     justify-content: flex-end;
 }
 
+.footer-status {
+    padding: 5px 8px;
+    border: 1px solid white;
+    border-radius: 16px;
+    cursor: pointer;
+    font-size: 12px;
+    width: fit-content;
+    text-align: center;
+}
+
 .pn-footer-right .footer-delete {
     border: 1px solid white;
     border-radius: 8px;
@@ -130,6 +139,7 @@
     align-items: center;
     justify-content: flex-start;
     letter-spacing: 1.5px;
+    font-size: 12px;
     color: #ba81f7;
 }
 
@@ -153,6 +163,71 @@
 
 
 /* MEDIA QUERY  */
+/* Extra large devices (large desktops, ≥1200px) */
+@media (min-width: 1200px) and (max-width:1400px) {
+
+    /* CSS monitor besar */
+    .wf-create {
+        /* border: 1px solid orangered; */
+        width: 20%;
+    }
+}
+
+
+/* Large devices (desktops, ≥992px) */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+
+    /* CSS laptop biasa */
+    .personal-agenda-box .pn-header {
+        flex-direction: column;
+        justify-content: flex-start;
+        /* border: 1px solid red; */
+    }
+
+    .pn-header .pnh-left {
+        gap: 2px !important;
+        width: 100% !important;
+        /* border: 1px solid blue; */
+    }
+
+    .pnh-right {
+        width: 100% !important;
+        /* border: 1px solid blue; */
+    }
+
+    /* FOOTER  */
+    .personal-agenda-box .pn-footer {
+        margin-top: 0px;
+    }
+
+    .pn-footer-right {
+        gap: 2px;
+    }
+
+    .footer-status {
+        padding: 4px;
+        font-size: 10px;
+    }
+}
+
+/* Medium devices (tablets, ≥768px) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .wf-create {
+        /* border: 1px solid orangered; */
+        width: 40%;
+    }
+
+    /* CSS tablet atau iPad */
+}
+
+/* ukuran handpone besar  */
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .wf-create {
+        /* border: 1px solid blue; */
+        width: 50%;
+    }
+}
+
 @media (min-height:400px) and (max-height:650px) {
     .personal-agenda-box {}
 }
@@ -178,17 +253,26 @@
 .personal-agenda-navbar .agenda-header {
     position: sticky;
     top: 0;
-    /* ✅ nempel di atas saat scroll */
     z-index: 99;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    border-bottom: 1px solid #ddd;
     width: 100%;
     padding: 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: #6a11cb;
     color: white;
+    background: linear-gradient(90deg, #7246eb, #532189);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.agenda-header .header-icon {
+    color: #6a11cb;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #ffffff8b;
 }
 
 .ah-icon {
@@ -197,9 +281,13 @@
 
 .agenda-header h3 {
     margin: 0px;
+    gap: 5px;
     font-size: 15px;
     font-weight: bold;
     color: white;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
 }
 
 .personal-agenda-navbar .personal-agenda-box {

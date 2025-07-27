@@ -69,7 +69,7 @@ const PersonalAgendas = ({ userId }) => {
         <div key={agenda.id} className="personal-agenda-box">
           <div className="pn-header">
             <div className="pnh-left">
-              <FaCircle className="pnh-icon" style={{ color: agenda.color }} />
+              <FaCircle  style={{ color: agenda.color}} />
               <h4 style={{ color: agenda.color, fontSize:'12px', fontWeight:'normal', }}>#{agenda.title}</h4>
             </div>
             {renderAgendaDate(agenda.agenda_date)}
@@ -87,14 +87,9 @@ const PersonalAgendas = ({ userId }) => {
             </BootstrapTooltip>
             <div className="pn-footer-right">
               <BootstrapTooltip title="Finished Status" placement="top">
-                <div style={{
-                  padding: '5px 8px',
-                  border: '1px solid white',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  fontSize: '12px',
-                  width: 'fit-content',
-                  textAlign: 'center',
+                <div 
+                className='footer-status'
+                style={{
                   color: agenda.is_done ? '#246c12' : '#821715',
                   backgroundColor: agenda.is_done ? '#b6f7a6' : '#f7a7a6'
                 }}>

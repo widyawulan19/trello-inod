@@ -5,6 +5,7 @@ import { HiArrowRight } from 'react-icons/hi2';
 import BootstrapTooltip from '../components/Tooltip';
 import { getAgendaUser, getUnfinishAgenda } from '../services/ApiServices';
 import { useNavigate } from 'react-router-dom';
+import { IoCalendar } from 'react-icons/io5';
 
 const AgendaUser = ({userId,onClose}) => {
     //STATE
@@ -61,18 +62,23 @@ const AgendaUser = ({userId,onClose}) => {
   return (
     <div className='personal-agenda-navbar'>
         <div className="agenda-header">
-            <h3>Your Personal Agenda</h3>
+            <h3>
+                <div className='header-icon'><IoCalendar/></div>
+                Your Personal Agenda
+            </h3>
             <FaXmark onClick={onClose} className='ah-icon'/>
         </div>
         {agendas.map(agenda =>(
         <div key={agenda.id} className="personal-agenda-box">
             <div className="pn-header">
                 <div className="pnh-left">
-                    <FaCircle className='pnh-icon'
+                    {/* <FaCircle className='pnh-icon'
                         style={{
-                            color:agenda.color
+                            color:agenda.color,
+                            fontSize:'12px',
+                            // border:'1px solid red'
                         }}
-                    />
+                    /> */}
                     <h4
                         style={{color:agenda.color}}
                     >#{agenda.title}</h4>

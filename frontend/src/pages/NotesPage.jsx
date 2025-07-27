@@ -294,7 +294,7 @@ useEffect(() => {
           </div>
           <div className="btn-note" onClick={handleShowForm}>
             <HiPlus/>
-            Add Note
+            <p>Add Note</p>
           </div>
         </div>
         {showFormCreate && (
@@ -376,9 +376,9 @@ useEffect(() => {
             </div>
 
             <div className="note-item-footer">
-              <p>Update : {formatDate(note.updated_at)}</p>
+              <p>Update : <span>{formatDate(note.updated_at)}</span></p>
               <div className="footer-btn" onClick={() => handleShowDetailNote(note)}>
-                View Note
+                Detail
               </div>
             </div>
 
