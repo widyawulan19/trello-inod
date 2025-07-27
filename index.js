@@ -12,6 +12,8 @@ require('./CronJob')
 const { SystemNotification } = require('./SystemNotification');
 const upload = require('./upload');
 const cloudinary = require('./CloudinaryConfig');
+import jwt from "jsonwebtoken"
+
 
 
 //TOP
@@ -66,20 +68,27 @@ app.post("/api/auth/register", async (req, res) => {
   }
 });
 
-// app.post('/api/register', async (req, res) => {
-//     const { username, email, password } = req.body;
+//LOGIN
+app.post("/api/auth/login", async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await client.query(`SELECT * FROM users WHERE email = $1`, [email]);
+    if (user.rows.length === 0) return res.status(401).json({ message: "Invalid email" });
 
-//     try {
-//       // Hash password sebelum disimpan
-//       const saltRounds = 10;
-//       const hashedPassword = await bcrypt.hash(password, saltRounds);
-//       // Kirim response sukses (simpan di database)
-//       res.status(201).json({ message: 'User successfully registered' });
-//     } catch (error) {
-//       console.error('Error hashing password:', error);
-//       res.status(500).json({ error: 'Server error' });
-//     }
-//   });
+    const validPass = await bcrypt.compare(password, user.rows[0].password);
+    if (!validPass) return res.status(401).json({ message: "Invalid password" });
+
+    const token = jwt.sign(
+      { id: user.rows[0].id, username: user.rows[0].username, email: user.rows[0].email },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    res.json({ token, user: { id: user.rows[0].id, username: user.rows[0].username, email: user.rows[0].email } });
+  } catch (err) {
+    res.status(500).json({ message: "Error logging in", error: err });
+  }
+});
 
 
 //USER
