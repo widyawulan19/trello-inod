@@ -12,7 +12,7 @@ require('./CronJob')
 const { SystemNotification } = require('./SystemNotification');
 const upload = require('./upload');
 const cloudinary = require('./CloudinaryConfig');
-import jwt from "jsonwebtoken"
+const jwt = require("jsonwebtoken");
 
 
 
