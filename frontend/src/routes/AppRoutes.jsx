@@ -40,12 +40,20 @@ import PersonalNotes from '../modules/PersonalNotes';
 import AgendaPage from '../pages/AgendaPage';
 import NotesPage from '../pages/NotesPage';
 import ScheduleEmployeePage from '../pages/ScheduleEmployeePage';
+import Login from '../auth/Login';
+import Register from '../auth/Register';
+import RequestPass from '../auth/RequestPass';
+import ResetPass from '../auth/ResetPass';
 
 const AppRoutes=()=> {
   return (
     <Routes>
 
         <Route path='/landing-page' element={<MainLp/>}/>
+        <Route path='/login' element={<Login/>}/>
+        <Route path='/register' element={<Register/>}/>
+        <Route path='/req-reset' element={<RequestPass/>}/>
+        <Route path='/reset-pass' element={<ResetPass/>} />
 
         <Route path='/' element={<Layout/>}>
         <Route index element={<Home/>}/>

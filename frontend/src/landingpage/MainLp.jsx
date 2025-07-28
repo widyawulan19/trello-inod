@@ -1,128 +1,164 @@
-import React, { useEffect, useRef, useState } from 'react'
-import '../style/landingpage/MainLp.css'
-import heroPic from '../assets/hero1.jpg'
-import iconPic from '../assets/lpicon.png'
-import DATALP from '../landingpage/DATALP'
-import { IoSwapVerticalSharp, IoPeople , IoBarChart, IoCogOutline, IoPhonePortrait, IoArrowUp} from "react-icons/io5";
-import { AiFillCopyrightCircle } from "react-icons/ai";
-
+import React, { useEffect, useRef, useState } from 'react';
+import '../style/landingpage/MainLp.css';
+import heroPic from '../assets/hero1.jpg';
+import iconPic from '../assets/lpicon.png';
+import DATALP from '../landingpage/DATALP';
+import {
+  IoSwapVerticalSharp,
+  IoPeople,
+  IoBarChart,
+  IoCogOutline,
+  IoPhonePortrait,
+  IoArrowUp,
+} from 'react-icons/io5';
+import { AiFillCopyrightCircle } from 'react-icons/ai';
+import { useNavigate } from 'react-router-dom';
 
 const MainLp = () => {
-  //STATE
   const [showScroll, setShowScroll] = useState(false);
+  const [activeSection, setActiveSection] = useState(null);
+  const navigate = useNavigate();
 
-  // Refs untuk navigasi
   const section1Ref = useRef(null);
   const section2Ref = useRef(null);
   const section3Ref = useRef(null);
 
-
-  //FUNCTION 
   const icons = {
     IoSwapVerticalSharp: <IoSwapVerticalSharp />,
     IoPeople: <IoPeople />,
     IoBarChart: <IoBarChart />,
     IoCogOutline: <IoCogOutline />,
     IoPhonePortrait: <IoPhonePortrait />,
-  }
+  };
 
-  // Fungsi scroll ke section
+  const handleToLogin = () => {
+    navigate('/login');
+  };
+
   const scrollToSection = (ref) => {
     ref.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Fungsi scroll ke atas
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   useEffect(() => {
     const handleScroll = () => {
+      const scrollPos = window.scrollY + window.innerHeight / 2;
+
+      const sections = [
+        { ref: section1Ref, name: 'section1' },
+        { ref: section2Ref, name: 'section2' },
+        { ref: section3Ref, name: 'section3' },
+      ];
+
+      let current = null;
+
+      for (let s of sections) {
+        const offsetTop = s.ref.current.offsetTop;
+        const offsetHeight = s.ref.current.offsetHeight;
+        if (scrollPos >= offsetTop && scrollPos < offsetTop + offsetHeight) {
+          current = s.name;
+          break;
+        }
+      }
+
+      setActiveSection(current);
+
       if (section2Ref.current) {
         const section2Top = section2Ref.current.offsetTop;
-        if (window.scrollY >= section2Top - 100) {
-          setShowScroll(true);
-        } else {
-          setShowScroll(false);
-        }
+        setShowScroll(window.scrollY >= section2Top - 100);
       }
     };
 
     window.addEventListener('scroll', handleScroll);
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
     <div className='lp-container'>
-      {/* header  */}
-      <div className="lp-header">
-        <div className="header-container">
-          <div className="lp-logo">
-            <h2 onClick={()=> scrollToSection(section1Ref)}>InodStudio Management</h2>
+      <div className='lp-header'>
+        <div className='header-container'>
+          <div className='lp-logo'>
+            <h2 onClick={() => scrollToSection(section1Ref)}>InodStudio Management</h2>
           </div>
-          <div className="lp-btn">
+          <div className='lp-btn'>
             <button onClick={() => scrollToSection(section2Ref)}>Features</button>
             <button onClick={() => scrollToSection(section3Ref)}>About</button>
-            <button className='start-btn'>Get Started</button>
+            <button onClick={handleToLogin} className='start-btn'>
+              Get Started
+            </button>
           </div>
         </div>
       </div>
 
-      {/* CONTEN  */}
-      <div className="lp-content">
-
-        {/* SECTION 1  */}
-        <div className="section1" ref={section1Ref}>
-          <div className="hero-left">
-            <h1 className="headline">
-              Streamline Your Team's <span className="gradient-text">Productivity</span>
+      <div className='lp-content'>
+        {/* SECTION 1 */}
+        <div
+          className={`section1 ${activeSection === 'section1' ? 'active-section' : ''}`}
+          ref={section1Ref}
+        >
+          <div className='hero-left'>
+            <h1 className='headline'>
+              Streamline Your Team's <span className='gradient-text'>Productivity</span>
             </h1>
-            <p className="subheading">
+            <p className='subheading'>
               Transform chaos into clarity with TaskFlow's intuitive task management platform. Collaborate seamlessly, track progress effortlessly, and achieve more together.
             </p>
-            <div className="hero-btn">
-              <button className='start-btn' onClick={() => scrollToSection(section3Ref)}>Get Started</button>
-              <button onClick={() => scrollToSection(section2Ref)}>View Documentation</button>
+            <div className='hero-btn'>
+              <button className='start-btn' onClick={handleToLogin}>
+                Get Started
+              </button>
+              <button >View Documentation</button>
             </div>
           </div>
-          <div className="hero-right">
-            <img src={heroPic} alt="hero pic section 1" />
+          <div className='hero-right'>
+            <img src={heroPic} alt='hero pic section 1' />
           </div>
         </div>
-        {/* END SECTION 1  */}
 
-        {/* SECTION 2  */}
-        <div className="section2" ref={section2Ref}>
-          <div className="sec-top">
+        {/* SECTION 2 */}
+        <div
+          className={`section2 ${activeSection === 'section2' ? 'active-section' : ''}`}
+          ref={section2Ref}
+        >
+          <div className='sec-top'>
             <h2>Everything You Need to Stay Organized</h2>
-            <p className="subheading">
+            <p className='subheading'>
               Powerful features designed to help teams of all sizes work more efficiently and achieve their goals faster.
             </p>
           </div>
-          <div className="sec-btm">
+          <div className='sec-btm'>
             {DATALP.map((data) => {
               const icon = icons[data.icon];
               return (
-                <div key={data.id} className="feature-item">
-                  <div className="feature-icon" style={{ backgroundColor: data.color, border: `1px solid ${data.color}` }}>
+                <div key={data.id} className='feature-item'>
+                  <div
+                    className='feature-icon'
+                    style={{ backgroundColor: data.color, border: `1px solid ${data.color}` }}
+                  >
                     {icon}
                   </div>
                   <h3>{data.title}</h3>
                   <p>{data.description}</p>
                 </div>
-              )
+              );
             })}
           </div>
         </div>
-        {/* END SECTION 2  */}
 
-        {/* SECTION 3  */}
-        <div className="section3" ref={section3Ref}>
-          <div className="sec3-left">
-            <h1 className="headline">
+        {/* SECTION 3 */}
+        <div
+          className={`section3 ${activeSection === 'section3' ? 'active-section' : ''}`}
+          ref={section3Ref}
+        >
+          <div className='sec3-left'>
+            <h1 className='headline'>
               Satu Platform untuk Kelola Pesanan Musik & Data Karyawan dengan Mudah
             </h1>
-            <h2 className="subheading">
+            <h2 className='subheading'>
               Website manajemen berbasis Trello untuk kontrol penuh pada penjualan, produksi, dan tim Anda.
             </h2>
             <p>
@@ -131,7 +167,7 @@ const MainLp = () => {
             <p>
               Dengan tampilan interaktif, website ini memudahkan pengaturan tugas, manajemen karyawan, serta komunikasi antar tim. Semua data tersusun rapi, transparan, dan siap mendukung kinerja perusahaan Anda dengan lebih efisien.
             </p>
-            <div className="sec3-info">
+            <div className='sec3-info'>
               <div className='info-box'>
                 <h1>100K</h1>
                 <p>Music Sale Worldwide</p>
@@ -146,42 +182,43 @@ const MainLp = () => {
               </div>
             </div>
           </div>
-          <div className="sec3-img">
-            <img src={iconPic} alt="hero pic section 1" />
+          <div className='sec3-img'>
+            <img src={iconPic} alt='hero pic section 1' />
           </div>
         </div>
-        {/* END SECTION 3  */}
 
-        {/* FOOTER SECTION  */}
-        <div className="footer">
-          <div className="footer-container">
-            <div className="fc-box">
+        {/* FOOTER */}
+        <div className='footer'>
+          <div className='footer-container'>
+            <div className='fc-box'>
               <h3>InodStudio Management</h3>
-              <p>Streamline your team's productivity with the task management platform build for modern collaboration</p>
+              <p>
+                Streamline your team's productivity with the task management platform built for modern collaboration
+              </p>
             </div>
 
-            <div className="fc-box1">
-              <div className="fc-box2">
+            <div className='fc-box1'>
+              <div className='fc-box2'>
                 <h3>Product</h3>
-                <div className="box-isi">
+                <div className='box-isi'>
                   <p>Features</p>
                   <p>Pricing</p>
                   <p>Integrations</p>
                   <p>Mobile Apps</p>
                 </div>
               </div>
-              <div className="fc-box2">
+              <div className='fc-box2'>
                 <h3>Company</h3>
-                <div className="box-isi">
+                <div className='box-isi'>
                   <p>About Us</p>
                   <p>Careers</p>
                   <p>Blog</p>
                   <p>Contact</p>
                 </div>
               </div>
-              <div className="fc-box2">
+              <div className='fc-box2'>
                 <h3>Support</h3>
-                <div className="box-isi">
+                <div className='box-isi'>
                   <p>Help Center</p>
                   <p>Documentation</p>
                   <p>Community</p>
@@ -191,28 +228,26 @@ const MainLp = () => {
             </div>
           </div>
 
-          <div className="footer-cr">
-            <div className="fcr-left">
+          <div className='footer-cr'>
+            <div className='fcr-left'>
               <AiFillCopyrightCircle />
               2025 InodStudio. All rights reserved.
             </div>
-            <div className="fcr-right">
+            <div className='fcr-right'>
               <p>Privacy Policy</p>
               <p>Terms Of Service</p>
             </div>
           </div>
 
-          {/* SCROLL TO TOP BUTTON */}
           {showScroll && (
-            <button className="scroll-top-btn" onClick={scrollToTop}>
+            <button className='scroll-top-btn' onClick={scrollToTop}>
               <IoArrowUp size={24} />
             </button>
           )}
         </div>
-        {/* END FOOTER SECTION  */}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default MainLp
+export default MainLp;

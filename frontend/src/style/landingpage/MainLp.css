@@ -277,7 +277,7 @@
 
 /* SECTION 3 */
 .lp-content .section3 {
-    border: 1px solid #ddd;
+    /* border: 1px solid #ddd; */
     padding: 20px;
     height: 100vh;
     display: flex;
@@ -534,6 +534,20 @@
 .scroll-top-btn:hover {
     background-color: #3730a3;
 }
+
+.section1,
+.section2,
+.section3 {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease;
+}
+
+.active-section {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
 
 
 

@@ -21,3 +21,29 @@ export const UserProvider = ({ children }) => {
     </UserContext.Provider>
   );
 };
+
+
+
+// jika menggunakan login pakai ini 
+// // context/UserContext.jsx
+// import { createContext, useContext, useState } from "react";
+
+// const UserContext = createContext();
+
+// export const useUser = () => useContext(UserContext);
+
+// export const UserProvider = ({ children }) => {
+//   const [user, setUser] = useState(null); // null saat belum login
+
+//   const login = (userData) => setUser(userData);
+//   const logout = () => {
+//     setUser(null);
+//     localStorage.removeItem("token");
+//   };
+
+//   return (
+//     <UserContext.Provider value={{ user, login, logout }}>
+//       {children}
+//     </UserContext.Provider>
+//   );
+// };
