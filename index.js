@@ -53,6 +53,23 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
+// Middleware verifyToken
+
+const verifyToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+  if (!token) return res.status(401).json({ message: 'No token provided' });
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) return res.status(403).json({ message: 'Invalid or expired token' });
+    req.user = user; // simpan payload token
+    next();
+  });
+};
+
+
+
+
 
 // USERS 
 //REGISTER
@@ -103,6 +120,31 @@ app.post("/api/auth/login", async (req, res) => {
   }
 });
 
+// RESSET PASS 
+app.post("/api/auth/request-reset", async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await client.query(`SELECT * FROM users WHERE email = $1`, [email]);
+    if (user.rows.length === 0) {
+      return res.status(404).json({ message: "Email not found" });
+    }
+
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const resetExpires = new Date(Date.now() + 3600000); // 1 jam
+
+    await client.query(
+      `UPDATE users SET password_reset_token = $1, password_reset_expires = $2 WHERE email = $3`,
+      [resetToken, resetExpires, email]
+    );
+
+    // Di sini kamu bisa kirim email (atau balikin token untuk testing)
+    res.json({ message: "Reset link has been sent", token: resetToken });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error requesting password reset" });
+  }
+});
 
 
 //USER
