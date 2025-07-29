@@ -73,20 +73,55 @@ const verifyToken = (req, res, next) => {
 
 // USERS 
 //REGISTER
+// app.post("/api/auth/register", async (req, res) => {
+//   const { username, email, password } = req.body;
+//   try {
+//     const hashedPassword = await bcrypt.hash(password, 10);
+//     const result = await client.query(
+//       `INSERT INTO users (username, email, password)
+//        VALUES ($1, $2, $3) RETURNING id, username, email`,
+//       [username, email, hashedPassword]
+//     );
+//     res.status(201).json(result.rows[0]);
+//   } catch (err) {
+//     res.status(500).json({ message: "Error registering user", error: err });
+//   }
+// });
 app.post("/api/auth/register", async (req, res) => {
   const { username, email, password } = req.body;
+
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const result = await client.query(
+
+    const userResult = await client.query(
       `INSERT INTO users (username, email, password)
        VALUES ($1, $2, $3) RETURNING id, username, email`,
       [username, email, hashedPassword]
     );
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    res.status(500).json({ message: "Error registering user", error: err });
+
+    const userId = userResult.rows[0].id;
+
+    // ✅ Insert default profil (misalnya profil ID 1)
+    await client.query(
+      `INSERT INTO user_profil (user_id, profil_id)
+       VALUES ($1, $2)`,
+      [userId, 1]
+    );
+
+    // ✅ Insert default data ke user_data
+    await client.query(
+      `INSERT INTO user_data (user_id, name, nomor, divisi, jabatan)
+       VALUES ($1, $2, $3, $4, $5)`,
+      [userId, '', '', 'Umum', 'Anggota'] // kamu bisa sesuaikan default-nya
+    );
+
+    res.status(201).json({ message: "User registered successfully", user: userResult.rows[0] });
+  } catch (error) {
+    console.error("Error during registration:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
+
 
 //LOGIN
 app.post("/api/auth/login", async (req, res) => {
