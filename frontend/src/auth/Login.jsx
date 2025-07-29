@@ -1,14 +1,17 @@
-import React from 'react'
+import React, { useState } from 'react'
 import '../style/auth/Login.css'
 import { SiMusicbrainz } from "react-icons/si";
 import { FcGoogle } from "react-icons/fc";
 import { IoLogoApple } from "react-icons/io5";
 import { HiArrowLeft, HiOutlineArrowLeft } from 'react-icons/hi2';
 import { useNavigate } from 'react-router-dom';
+import { loginUser } from '../services/ApiServices';
 
 const Login=()=> {
     //STATE
     const navigate = useNavigate()
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
     //FUNCTION
     const handleToLandingPage = () =>{
@@ -22,6 +25,24 @@ const Login=()=> {
     const handleToReqRes = () =>{
         navigate('/req-reset')
     }
+
+    const handleLogin = async () => {
+        try {
+            const response = await loginUser({ email, password });
+            console.log('Login success:', response.data);
+
+            // Simpan token dan user ke localStorage (atau state management)
+            localStorage.setItem('token', response.data.token);
+            localStorage.setItem('user', JSON.stringify(response.data.user));
+
+            // Navigasi ke halaman utama/dashboard
+            navigate('/'); // ganti sesuai rute utama kamu
+        } catch (error) {
+            console.error('Login failed:', error.response?.data?.message || error.message);
+            alert(error.response?.data?.message || 'Login gagal. Coba lagi.');
+        }
+    };
+
 
 
   return (
@@ -51,14 +72,18 @@ const Login=()=> {
                 <div className="box-input">
                     <input 
                         type="text" 
-                        placeholder='Username'
+                        placeholder='Email'
+                        value={email}
+                        onChange={(e)=> setEmail(e.target.value)}
                     />
                     <input 
                         type="text" 
                         placeholder='Password'
+                        value={password}
+                        onChange={(e)=> setPassword(e.target.value)}
                     />
                     <p onClick={handleToReqRes}>Forgot Password ?</p>
-                    <div className="btn-login">
+                    <div className="btn-login" onClick={handleLogin}>
                         Login
                     </div>
                 </div>
