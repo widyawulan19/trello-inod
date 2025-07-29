@@ -16,7 +16,7 @@ import { useUser } from '../context/UserContext';
 
 const Profile=()=> {
     //STATE
-    // const userId = 12;
+    // const userId = 13;
     const {user} = useUser(); 
     const userId = user.id;
     const {showSnackbar} = useSnackbar();
@@ -28,6 +28,7 @@ const Profile=()=> {
     const [allProfiles, setAllProfiles] = useState([]);
     const [selectedProfileId, setSelectedProfileId] = useState(null)
     const [currentProfileId, setCurrentProfileId] = useState(null);
+
 
     //DEBUG
     console.log('File Profile.jsx menerima data user dan userId:', userId);

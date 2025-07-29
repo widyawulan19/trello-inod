@@ -6,12 +6,14 @@ import { IoLogoApple } from "react-icons/io5";
 import { HiArrowLeft, HiOutlineArrowLeft } from 'react-icons/hi2';
 import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../services/ApiServices';
+import { useUser } from '../context/UserContext';
 
 const Login=()=> {
     //STATE
     const navigate = useNavigate()
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const {setUser} = useUser() 
 
     //FUNCTION
     const handleToLandingPage = () =>{
@@ -34,6 +36,9 @@ const Login=()=> {
             // Simpan token dan user ke localStorage (atau state management)
             localStorage.setItem('token', response.data.token);
             localStorage.setItem('user', JSON.stringify(response.data.user));
+
+
+            setUser(response.data.user);
 
             // Navigasi ke halaman utama/dashboard
             navigate('/'); // ganti sesuai rute utama kamu

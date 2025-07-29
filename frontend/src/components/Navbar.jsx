@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import '../style/components/Navbar.css'
-import logo from '../assets/logo2.png';
+import defaultPic from '../assets/manuser.png';
 import logo1 from '../assets/whiteLogo.png'
 import { HiMiniCalendarDateRange,HiOutlineMagnifyingGlass,HiOutlineClipboardDocumentList,HiMiniLanguage,HiMiniBellAlert,HiOutlineUserCircle,HiOutlineChevronDown } from "react-icons/hi2";
 import { Tooltip, tooltipClasses } from '@mui/material';
@@ -37,7 +37,7 @@ const Navbar=()=> {
     const navigate = useNavigate();
     const [profilUser, setProfilUser] = useState(null);
     const {user} = useUser();
-    const userId = user.id;
+    const userId = user?.id;
     // const userId = 12;
     const [showCalendar, setShowCalendar] = useState(false);
     const [showNotif, setShowNotif] = useState(false);
@@ -104,6 +104,7 @@ const Navbar=()=> {
             fetchUserProfile()
         }
     },[userId]);
+
 
     const handleActive = (icon) => {
         setActive(icon); // Menetapkan icon yang dipilih
@@ -274,15 +275,32 @@ const Navbar=()=> {
                     </div>
                 )}
             </div>
-            <div className="profil">
+           <div className="profil">
                 <BootstrapTooltip title="Profile">
-                    {profilUser && (
-                        <div className='icon-wrapper' onClick={navigateToProfile}>
-                                <img src={profilUser.photo_url} alt={profilUser.username} />
-                        </div>
-                    )}
+                    <div className='icon-wrapper' onClick={navigateToProfile}>
+                    <img
+                        src={profilUser?.photo_url || defaultPic}
+                        alt={profilUser?.username || user?.username || 'User'}
+                        style={{
+                        width: '50px',
+                        height: '30px',
+                        borderRadius: '50%',
+                        objectFit: 'cover',
+                        
+                        }}
+                    />
+                    {/* <span style={{
+                        fontSize: '12px',
+                        marginTop: '4px',
+                        display: 'block',
+                        color: '#333'
+                    }}>
+                        {profilUser?.username || user?.username || 'Guest'}
+                    </span> */}
+                    </div>
                 </BootstrapTooltip>
             </div>
+
         </div>
     </div>
   )
