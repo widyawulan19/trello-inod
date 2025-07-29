@@ -146,6 +146,32 @@ app.post("/api/auth/request-reset", async (req, res) => {
   }
 });
 
+// HASH PASS MANUAL 
+// TEMPORARY: hash existing user password
+app.put("/api/auth/hash-password", async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await client.query(`SELECT * FROM users WHERE email = $1`, [email]);
+
+    if (user.rows.length === 0) return res.status(404).json({ message: "User not found" });
+
+    const plainPass = user.rows[0].password;
+
+    // Hash password now
+    const hashed = await bcrypt.hash(plainPass, 10);
+
+    // Update to DB
+    await client.query(`UPDATE users SET password = $1 WHERE email = $2`, [hashed, email]);
+
+    res.json({ message: "Password hashed successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error hashing password" });
+  }
+});
+
+
 
 //USER
 //1. create a new user
