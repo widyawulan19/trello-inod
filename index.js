@@ -292,6 +292,7 @@ app.get('/api/user-setting/:userId', async (req, res) => {
   try {
     const result = await client.query(`
       SELECT 
+          u.id,
           u.username,
           u.email,
           ud.name,
@@ -301,11 +302,11 @@ app.get('/api/user-setting/:userId', async (req, res) => {
           p.photo_url
       FROM 
           public.users u
-      JOIN 
+      LEFT JOIN 
           public.user_data ud ON u.id = ud.user_id
-      JOIN 
+      LEFT JOIN 
           public.user_profil up ON u.id = up.user_id
-      JOIN 
+      LEFT JOIN 
           public.profil p ON up.profil_id = p.id
       WHERE 
           u.id = $1;
@@ -322,6 +323,7 @@ app.get('/api/user-setting/:userId', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
 
 
 //8. Edit user profile setting
