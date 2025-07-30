@@ -5,6 +5,7 @@ import { HiArrowRight } from 'react-icons/hi2'
 import { FaEdit } from 'react-icons/fa'
 import { MdDelete } from 'react-icons/md'
 import { getNotesByUserId } from '../services/ApiServices'
+import { useNavigate } from 'react-router-dom'
 
 const PersonalNotes=({userId})=> {
     //DEBUG
@@ -13,6 +14,7 @@ const PersonalNotes=({userId})=> {
     // STATE 
     const [notes, setNotes] = useState([]);
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
 
     //FUNCTION
@@ -34,9 +36,23 @@ const PersonalNotes=({userId})=> {
         }
     }, [userId])
 
+    const navigateToNotePage = () =>{
+        navigate('/note-page')
+    }
+
 
     if (loading) return <p>Loading notes...</p>;
-    if (notes.length === 0) return <p>No notes found for this user.</p>;
+    if (notes.length === 0) {
+        return(
+            <div className="no-notes">
+                <h2>Catatanmu masih kosong saat ini</h2>
+                <p>Gunakan Personal Notes untuk menyimpan ide, daftar tugas, atau hal penting lainnya secara pribadi.</p>
+                <div className="btn-create-notes" onClick={navigateToNotePage}>
+                    Add New Notes
+                </div>
+            </div>
+        )
+    };
 
   return (
     <div className='personal-notes-container'>

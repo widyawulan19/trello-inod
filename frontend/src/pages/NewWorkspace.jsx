@@ -144,7 +144,7 @@ function NewWorkspace() {
       // Re-fetch workspaces setelah berhasil create
       const workspaceResult = await getWorkspacesByUserId(userId);
       setWorkspaces(workspaceResult.data);
-      console.log('Create workspace successfully:', response.data); 
+      console.log('cworkspace successfully:', response.data); 
     }catch(error){
       setAlertInfo({
         severity: 'error',

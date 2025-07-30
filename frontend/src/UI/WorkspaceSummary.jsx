@@ -2,9 +2,7 @@ import React, { useEffect, useState } from 'react';
 import '../style/UI/WorkspaceSummary.css';
 import { GoDotFill } from "react-icons/go";
 import { getWorkspaceSummary, getBoardsWorkspace } from '../services/ApiServices';
-import { HiArrowRight, HiOutlineArrowRight, HiOutlineArrowTopRightOnSquare } from 'react-icons/hi2';
-import { HiLink } from 'react-icons/hi';
-import BootstrapTooltip from '../components/Tooltip';
+import { HiArrowRight } from 'react-icons/hi2';
 import { useNavigate } from 'react-router-dom';
 
 const WorkspaceSummary = ({ userId }) => {
@@ -20,13 +18,14 @@ const WorkspaceSummary = ({ userId }) => {
 
       if (!userId) {
         console.warn('userId belum ada, fetch dibatalkan');
+        setLoading(false);
         return;
       }
 
-     try {
+      try {
         const response = await getWorkspaceSummary(userId);
         console.log('Hasil summary:', response.data);
-        setSummaries(response.data); // langsung data array, bukan response.data.data
+        setSummaries(response.data);
       } catch (error) {
         console.error('Gagal fetch summary:', error);
       } finally {
@@ -37,7 +36,9 @@ const WorkspaceSummary = ({ userId }) => {
     fetchSummary();
   }, [userId]);
 
-  if (loading) return <p className="summary-loading">Loading workspace summaries...</p>;
+  const navigateToWorkspacePage = () => {
+    navigate('/workspaces');
+  };
 
   const navigateToFirstBoard = async (workspaceId) => {
     try {
@@ -45,7 +46,6 @@ const WorkspaceSummary = ({ userId }) => {
       const boards = response.data;
 
       if (boards.length > 0) {
-        const firstBoardId = boards[0].id;
         navigate(`/workspaces/${workspaceId}`);
       } else {
         alert('No boards found in this workspace.');
@@ -56,18 +56,30 @@ const WorkspaceSummary = ({ userId }) => {
     }
   };
 
+  if (loading) return <p>Loading workspace summaries...</p>;
+
+  if (!summaries || summaries.length === 0) {
+    return (
+      <div className='no-workspace'>
+        <h2>Belum Ada Workspace</h2>
+        <p>Yuk mulai produktif! Buat workspace pertamamu untuk mengelola project dan kolaborasi tim.</p>
+        <div className="btn-create-workspace" onClick={navigateToWorkspacePage}>
+           Add New Workspace
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="summary-container">
       {Array.isArray(summaries) && summaries.map((workspace) => (
-        <div  key={workspace.workspace_id} className='summary-content'>
+        <div key={workspace.workspace_id} className='summary-content'>
           <div className="summary-header">
             <div className="sh-left">
-              {/* <GoDotFill className='shl-icon'/> */}
               <h4 className="summary-title">{workspace.workspace_name}</h4>
             </div>
-            
             <div className='view' onClick={() => navigateToFirstBoard(workspace.workspace_id)}>
-              VIEW <HiArrowRight/>
+              VIEW <HiArrowRight />
             </div>
           </div>
           <div className="summary-body">
@@ -82,39 +94,3 @@ const WorkspaceSummary = ({ userId }) => {
 };
 
 export default WorkspaceSummary;
-
-
-// {/* <div className="summary-container">
-//       {Array.isArray(summaries) && summaries.map((workspace) => (
-//         <div className="sec-body" key={workspace.workspace_id}>
-//           <div className="item-header">
-//             <h4 className="summary-title">{workspace.workspace_name}</h4>
-//             {/* <div className="summary-btn">
-//               <BootstrapTooltip title='Open in new tab' placement='top'>
-//                 <button onClick={() => navigateToFirstBoard(workspace.workspace_id)}>
-//                   <HiOutlineArrowTopRightOnSquare />
-//                 </button>
-//               </BootstrapTooltip>
-//               <BootstrapTooltip title='Get link' placement='top'>
-//                 <button>
-//                   <HiLink />
-//                 </button>
-//               </BootstrapTooltip>
-//             </div> */}
-//           </div>
-
-//           <div className="item-left">
-//             <div className="sc-p">
-//               <button>🧩 Boards: {workspace.board_count}</button>
-//               <button>📑 Lists: {workspace.list_count}</button>
-//               <button>🗂️ Cards: {workspace.card_count}</button>
-//             </div>
-//             <div className="btn-view">
-//               <button onClick={() => navigateToFirstBoard(workspace.workspace_id)}>
-//                 VIEW  <HiOutlineArrowRight style={{marginLeft:'3px'}}/>
-//               </button>
-//             </div>
-//           </div>
-//         </div>
-//       ))}
-//     </div> */}

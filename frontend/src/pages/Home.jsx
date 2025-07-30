@@ -22,10 +22,13 @@ import { IoCalendar, IoFlash } from 'react-icons/io5';
 import AksesCepat from '../modules/AksesCepat.jsx';
 import PersonalNotes from '../modules/PersonalNotes.jsx';
 import PersonalAgendas from '../modules/PersonalAgendas.jsx';
+import { useUser } from '../context/UserContext.jsx';
+
 
 const Home=()=> {
   //state
-  const userId = 3; //buat ketika pengguna login userIdnya sesuai database
+  const {user} = useUser();
+  const userId = user?.id;
   const [isGreeting, setIsGreeting] = useState(true);
   const [showSetting, setShowSetting] = useState(false);
   const [showForm, setShowForm] = useState(false);

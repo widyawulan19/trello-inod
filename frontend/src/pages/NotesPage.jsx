@@ -9,6 +9,8 @@ import { FaXmark } from 'react-icons/fa6';
 import { PiNotepadFill } from "react-icons/pi";
 import BootstrapTooltip from '../components/Tooltip';
 import ToolbarFormat from '../modules/ToolbarFormat';
+import { FaNotesMedical } from "react-icons/fa6";
+import { HiXMark } from 'react-icons/hi2';
 
 
 const NotesPage = () => {
@@ -300,25 +302,41 @@ useEffect(() => {
         {showFormCreate && (
           <div className="form-create-note">
             <div className="fc-header">
-              <h2>Form Create Note</h2>
-              <FaXmark onClick={closeShowForm}/>
+              <div className="fc-header-left">
+                <div className="note-icon">
+                  <FaNotesMedical/> 
+                </div>
+        
+                <h2>Form Create Note</h2>
+              </div>
+              
+              <HiXMark onClick={closeShowForm} style={{cursor:'pointer'}}/>
             </div>
             <div className="fc-content">
-              <input
-                type="text"
-                placeholder="New note title"
-                value={newNote.name}
-                onChange={(e) =>
-                  setNewNote({ ...newNote, name: e.target.value })
-                }
-              />
-              <textarea
-                placeholder="New note content"
-                value={newNote.isi_note}
-                onChange={(e) =>
-                  setNewNote({ ...newNote, isi_note: e.target.value })
-                }
-              />
+              <div className="fc-box">
+                <label>Note Name <span className='span-red'>*</span></label>
+                <input
+                  type="text"
+                  placeholder="New note title"
+                  value={newNote.name}
+                  onChange={(e) =>
+                    setNewNote({ ...newNote, name: e.target.value })
+                  }
+                />
+              </div>
+
+              <div className="fc-box">
+                <label>Content <span className='span-red'>*</span></label>
+                <textarea
+                  placeholder="New note content"
+                  value={newNote.isi_note}
+                  onChange={(e) =>
+                    setNewNote({ ...newNote, isi_note: e.target.value })
+                  }
+                />
+              </div>
+              
+              
               <button onClick={handleCreateNote}>
                 <HiPlus /> Add Note
               </button>
@@ -328,7 +346,16 @@ useEffect(() => {
       </div>
       
       <div className="notes-page-content">
-        {filteredNotes.length === 0 && <p>Tidak ada catatan ditemukan.</p>}
+        {/* {filteredNotes.length === 0 && <p>Tidak ada catatan ditemukan.</p>} */}
+        {filteredNotes.length === 0 && <>
+        <div className="no-box" onClick={handleShowForm}>
+          <div className="plus">
+            <HiPlus/>
+          </div>
+          <h3>CREATE YOUR FIRST NOTE</h3>
+          <p>Organisir pikiran, susun rencana, dan dokumentasikan semua hal penting dengan satu klik.</p>
+        </div>
+        </>}
         {filteredNotes.map(note => (
           <div key={note.id} className="note-item" style={{ backgroundColor: note.bg_color || '#ffffff' }}>
             <div className="note-item-header">

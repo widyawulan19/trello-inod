@@ -60,9 +60,24 @@ const PersonalAgendas = ({ userId }) => {
     }
   };
 
-  if (loading) return <p>Loading agenda...</p>;
-  if (agendas.length === 0) return <p>No unfinished agendas found</p>;
+   const navigateToAgenda = () =>{
+    navigate('/agenda-page')
+  }
 
+  if (loading) return <p>Loading agenda...</p>;
+  if (agendas.length === 0) {
+        return(
+            <div className="no-agenda">
+                <h2>Catatanmu masih kosong saat ini</h2>
+                <p>Gunakan Personal Notes untuk menyimpan ide, daftar tugas, atau hal penting lainnya secara pribadi.</p>
+                <div className="btn-create-agenda" onClick={navigateToAgenda}>
+                    Add New Agendas
+                </div>
+            </div>
+        )
+    };
+  
+ 
   return (
     <div className="personal-agenda-container">
       {agendas.map((agenda) => (

@@ -56,58 +56,59 @@ const AgendaUser = ({userId,onClose}) => {
 
 
 
-    if(loading) return <p>Loading agenda ...</p>
-    if(agendas.length === 0) return <p>No agendas found for this user</p>
+    // if(loading) return <p>Loading agenda ...</p>
+    // if(agendas.length === 0) return <p>No agendas found for this user</p>
 
   return (
-    <div className='personal-agenda-navbar'>
-        <div className="agenda-header">
-            <h3>
-                <div className='header-icon'><IoCalendar/></div>
-                Your Personal Agenda
-            </h3>
-            <FaXmark onClick={onClose} className='ah-icon'/>
-        </div>
-        {agendas.map(agenda =>(
-        <div key={agenda.id} className="personal-agenda-box">
-            <div className="pn-header">
+  <div className='personal-agenda-navbar'>
+    <div className="agenda-header">
+      <h3>
+        <div className='header-icon'><IoCalendar /></div>
+        Your Personal Agenda
+      </h3>
+      <FaXmark onClick={onClose} className='ah-icon' />
+    </div>
+
+    {loading ? (
+      <p>Loading agenda...</p>
+    ) : (
+      <div className="personal-agenda-box">
+        {agendas.length === 0 ? (
+          <div style={{ textAlign: 'center', width: '100%', color: 'red', height:'100%' }}>
+            No agendas found for this user.
+          </div>
+        ) : (
+          agendas.map(agenda => (
+            <div key={agenda.id} className="personal-agenda-box">
+              <div className="pn-header">
                 <div className="pnh-left">
-                    {/* <FaCircle className='pnh-icon'
-                        style={{
-                            color:agenda.color,
-                            fontSize:'12px',
-                            // border:'1px solid red'
-                        }}
-                    /> */}
-                    <h4
-                        style={{color:agenda.color}}
-                    >#{agenda.title}</h4>
+                  <h4 style={{ color: agenda.color }}>#{agenda.title}</h4>
                 </div>
                 {renderAgendaDate(agenda.agenda_date)}
-            </div>
-            {/* <div className="pn-content">
-                <p>
-                    {agenda.description}
-                </p>
-            </div> */}
-            <div className="pn-footer">
+              </div>
+
+              <div className="pn-footer">
                 <BootstrapTooltip title='Agenda Status' placement='top'>
-                    <div className="agenda" 
-                        style={{
-                            border: `1px solid ${agenda.color}`,
-                            backgroundColor:agenda.color
-                        }}>
-                        {agenda.status_name}
-                    </div>
+                  <div className="agenda"
+                    style={{
+                      border: `1px solid ${agenda.color}`,
+                      backgroundColor: agenda.color
+                    }}>
+                    {agenda.status_name}
+                  </div>
                 </BootstrapTooltip>
                 <div className="read" onClick={handleNavigateToPage}>
-                    READ MORE <HiArrowRight className='read-icon'/>
+                  READ MORE <HiArrowRight className='read-icon' />
                 </div>
+              </div>
             </div>
-        </div>
-        ))}
-    </div>
-  )
+          ))
+        )}
+      </div>
+    )}
+  </div>
+);
+
 }
 
 export default AgendaUser

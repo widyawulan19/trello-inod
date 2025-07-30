@@ -18,7 +18,7 @@ const Profile=()=> {
     //STATE
     // const userId = 13;
     const {user} = useUser(); 
-    const userId = user.id;
+    const userId = user?.id;
     const {showSnackbar} = useSnackbar();
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -137,79 +137,24 @@ const Profile=()=> {
 
   return (
     <div className='profile-container'>
-        <div className="pc-container">
-            <div className="pc-header">
-                <div className="pch-left">
-                    <HiCog className='pchl-icon'/>
-                    <h2>Profile Settings</h2>
+        <div className="header-profile">
+            <div className="header-title">
+                <div className="pchl-icon">
+                    <HiCog/>
                 </div>
-                <p>Manage your profile, preferences, and account setting</p>
+                <h2>Profile Settings</h2>
             </div>
-            <div className="pc-body">
-                <div className="pcb-left">
-                    <div className="profile-photo">
-                        <img src={userData.photo_url} alt={profile} />
-                        {/* <img src={profile} alt={profile} /> */}
-                        <h3>{userData.name}</h3>
-                        <p>Member since May 2025</p>
-                        <button onClick={handleShowAvatar}>Change Avatar</button>
-                         {/* SHOW SELECT AVATAR  */}
-                            {showAvatar && (
-                                    <div className='ava-container'>
-                                        <AvatarUser 
-                                            userId={userId}
-                                            allProfiles={allProfiles}
-                                            selectedProfileId={selectedProfileId}
-                                            currentProfileId={currentProfileId}
-                                            handleSelectProfile={handleSelectProfile}
-                                            handleSave={handleSave}
-                                            onClose={handleCloseAvatar}
-                                        />
-                                    </div>
-                                )}
-                            {/* END SHOW SELECT AVATAR  */}
-                            
-                    </div>
-                    <div className="profile-setting">
-                        <button 
-                            className={activeSection === 'personal' ? 'active' : ''} 
-                            onClick={() => setActiveSection('personal')}
-                        >
-                            <HiMiniUser className='ps-icon' />
-                            <span className="ps-label">Personal Info</span>
-                        </button>
-                        <button 
-                            className={activeSection === 'activity' ? 'active' : ''} 
-                            onClick={() => setActiveSection('activity')}
-                        >
-                            <FaRegChartBar className='ps-icon' />
-                            <span className="ps-label">Activity & Schedule</span>
-                        </button>
-                        <button 
-                            className={activeSection === 'notification' ? 'active' : ''} 
-                            onClick={() => setActiveSection('notification')}
-                        >
-                            <HiBellAlert className='ps-icon' />
-                            <span className="ps-label">Notification</span>
-                        </button>
-                        <button 
-                            className={activeSection === 'security' ? 'active' : ''} 
-                            onClick={() => setActiveSection('security')}
-                        >
-                            <HiLockClosed className='ps-icon' />
-                            <span className="ps-label">Security</span>
-                        </button>
-                    </div>
-                </div>
-                
-                <div className="pcb-right">
-                    <div className="pcb-content">
-                         {renderContent()}
-                    </div>
-                  
-                </div>
+            <p>Manage your profile, preferences, and account setting</p>
+        </div>
+        <div className="profile-page-main">
+            <div className="profile-left">
+            
+            </div>
+            <div className="profile-right">
+
             </div>
         </div>
+        
     </div>
   )
 }

@@ -4,7 +4,7 @@ import { useUser } from '../context/UserContext';
 import { createNewAgenda, deletAgendaUser, getAgendaUser, updateAgendaByUser, updateAgendaUser } from '../services/ApiServices';
 import { FaXmark } from 'react-icons/fa6';
 import { IoCheckmarkSharp, IoSearch, IoTrash } from "react-icons/io5";
-import { HiOutlineClock, HiOutlinePlus, HiXMark } from 'react-icons/hi2';
+import { HiCalendarDateRange, HiOutlineClock, HiOutlinePlus, HiXMark } from 'react-icons/hi2';
 import { AiFillClockCircle, AiFillSchedule } from "react-icons/ai";
 import { useSnackbar } from '../context/Snackbar';
 import { IoCreateOutline } from "react-icons/io5";
@@ -233,11 +233,19 @@ function AgendaPage() {
       {showFormAgenda && (
         <div className="create-agenda-form">
             <div className="create-agenda-header">
-                <h3>Create New Agenda</h3>
-                <FaXmark onClick={handleCloseForm} className='cah-icon'/>
+              <div className="agenda-header-left">
+                <div className="icon-agenda">
+                  <HiCalendarDateRange/>
+                </div>
+                  <h3>Create New Agenda</h3>
+              </div>
+              
+                <HiXMark onClick={handleCloseForm} className='cah-icon'/>
             </div>
             
             <form onSubmit={handleCreateAgenda}>
+              <div className="ap-box">
+                <label>Agenda title <span className='span-red'>*</span></label>
                 <input
                     type="text"
                     name="title"
@@ -246,6 +254,9 @@ function AgendaPage() {
                     onChange={handleInputChange}
                     required
                 />
+              </div>
+              <div className="ap-box">
+                <label>Agenda description <span className='span-red'>*</span></label>
                 <textarea
                     name="description"
                     placeholder="Description"
@@ -253,20 +264,28 @@ function AgendaPage() {
                     onChange={handleInputChange}
                     required
                 />
-                <input
+              </div>
+                <div className="ap-box">
+                  <label>Agenda date <span className='span-red'>*</span></label>
+                  <input
                     type="date"
                     name="agenda_date"
                     value={newAgenda.agenda_date}
                     onChange={handleInputChange}
                     required
-                />
-                <input
+                  />
+                </div>
+                <div className="ap-box">
+                  <label> Agenda time <span className='span-red'>*</span></label>
+                   <input
                     type="time"
                     name="reminder_time"
                     value={newAgenda.reminder_time}
                     onChange={handleInputChange}
                     required
-                />
+                  />
+                </div>
+                
                 <select
                     name="status_id"
                     value={newAgenda.status_id}
@@ -289,6 +308,19 @@ function AgendaPage() {
       {/* END SHOW FORM AGENDA  */}
       <div className="agenda-page-content">
         <div className="agenda-table-box">
+          {loading ? (
+            <p>Loading agendas...</p>
+          ):filteredAgendas.length === 0 ? (
+            <div className="empty-agenda-container">
+              <div className="empty-container">
+                <h3>No agendas found</h3>
+                <p>Kamu belum membuat agenda apa pun. Mulai buat jadwal atau rencana sekarang agar harimu lebih terorganisir!</p>
+                <div className="btn-create-agenda" onClick={()=> setShowFormAgenda(true)}>
+                  Create New Agenda
+                </div>
+              </div>
+            </div> 
+          ):(
             <table className='agenda-page-table'>
             <thead>
                 <tr>
@@ -373,6 +405,8 @@ function AgendaPage() {
                 ))}
             </tbody>
             </table>
+          )}
+            
             {/* FORM MODALS  */}
             {selectedAgenda && (
               <div className="agenda-modals">
@@ -476,8 +510,8 @@ function AgendaPage() {
             )}
         </div>
 
-        {loading && <p>Loading agendas...</p>}
-        {!loading && filteredAgendas.length === 0 && <p>No agendas found.</p>}
+        {/* {loading && <p>Loading agendas...</p>} */}
+        {/* {!loading && filteredAgendas.length === 0 && <p>No agendas found.</p>} */}
       </div>
     </div>
   );

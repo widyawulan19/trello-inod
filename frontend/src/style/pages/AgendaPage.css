@@ -1,96 +1,104 @@
-.agenda-page-container{
-    border: 1px solid #ddd;
-    height: 91vh;
-    padding: 0px;
-    gap: 10px;
-    margin-bottom: 10px;
-    margin: 15px;
-    background-color: #eee;
-    border-radius: 8px;
-    color: #333;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    /* justify-content: center; */
+.agenda-page-container {
+  border: 1px solid #ddd;
+  height: 91vh;
+  padding: 0px;
+  gap: 10px;
+  margin-bottom: 10px;
+  margin: 15px;
+  background-color: #eee;
+  border-radius: 8px;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* justify-content: center; */
 }
 
 /* HEADER  */
-.agenda-page-container .agenda-page-header{
-    /* border: 1px solid red; */
-    width: 100%;
-    padding: 10px;
-    background-color: white;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
+.agenda-page-container .agenda-page-header {
+  /* border: 1px solid red; */
+  width: 100%;
+  padding: 10px;
+  background-color: white;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
 }
-.agenda-page-header h2{
-    font-size: 25px;
-    font-weight: bold;
-    color: #333;
-    margin: 0px;
+
+.agenda-page-header h2 {
+  font-size: 25px;
+  font-weight: bold;
+  color: #333;
+  margin: 0px;
 }
-.agenda-page-header h4{
-    font-size: 15px;
-    font-weight: bold;
-    color: rgb(100, 99, 99);
-    margin: 0px;
+
+.agenda-page-header h4 {
+  font-size: 15px;
+  font-weight: bold;
+  color: rgb(100, 99, 99);
+  margin: 0px;
 }
-.agenda-page-header p{
-    font-size: 12px;
-    color: grey;
+
+.agenda-page-header p {
+  font-size: 12px;
+  color: grey;
 }
+
 /* END HEADER  */
 
 
 /* ACTION  */
-.agenda-page-container .agenda-page-action{
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    background-color: white;
-    width: 90%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px;
-    position: relative;
+.agenda-page-container .agenda-page-action {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background-color: white;
+  width: 90%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  position: relative;
 
 }
-.agenda-page-action .action-left{
-    width: 40%;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 4px;
-}
-.ac-icon{
-    font-size: 25px;
-    color: grey;
-}
-.ac-icon:hover{
-    background-color: white;
-    border: 1px solid white;
+
+.agenda-page-action .action-left {
+  width: 40%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 4px;
 }
 
-.action-left input{
-    padding: 0px 5px;
-    width: 100%;
-    font-size: 12px;
-    border: 1px solid white;
-}
-.action-left input:focus{
-    outline: none;
+.ac-icon {
+  font-size: 25px;
+  color: grey;
 }
 
-.agenda-page-action .action-right{
-    width: 60%;
-    gap: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    /* border: 1px solid red; */
-    position: relative; 
+.ac-icon:hover {
+  background-color: white;
+  border: 1px solid white;
+}
+
+.action-left input {
+  padding: 0px 5px;
+  width: 100%;
+  font-size: 12px;
+  border: 1px solid white;
+}
+
+.action-left input:focus {
+  outline: none;
+}
+
+.agenda-page-action .action-right {
+  width: 60%;
+  gap: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  /* border: 1px solid red; */
+  position: relative;
 }
 
 /* DROPDOWN FITURE  */
@@ -101,11 +109,11 @@
   justify-content: flex-start;
 }
 
-.dropdown-wrapper p{
-    font-size: 12px;
-    color: #5e5e5e;
-    font-weight: bold;
-    margin-right: 10px;
+.dropdown-wrapper p {
+  font-size: 12px;
+  color: #5e5e5e;
+  font-weight: bold;
+  margin-right: 10px;
 }
 
 .dropdown-toggle {
@@ -134,7 +142,7 @@
   list-style: none;
   max-height: 200px;
   overflow-y: auto;
-  box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .dropdown-menu li {
@@ -151,60 +159,100 @@
 /* END DROPDOWN FITURE  */
 
 /* FORM CREATE  */
-.action-right .form-agenda{
-    border: 1px solid white;
-    border-radius: 8px;
-    background-color: #6a11cb;
-    color: white;
-    padding: 5px 10px;
-    gap: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;   
+.action-right .form-agenda {
+  border: 1px solid white;
+  border-radius: 8px;
+  background-color: #6a11cb;
+  color: white;
+  padding: 5px 10px;
+  gap: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
+
 .create-agenda-form {
-    position: absolute;
-    border: 1px solid #6a11cb;
-    border-radius: 8px;
-    background-color: white;
-    /* padding: 10px; */
-    top: 30%;
-    right: 5%;
-    z-index: 101;
-    width: 30%;
+  position: absolute;
+  border: 1px solid #e5d3f8;
+  border-radius: 16px;
+  background-color: white;
+  padding: 10px;
+  top: 30%;
+  right: 5%;
+  z-index: 101;
+  width: 30%;
+  box-shadow: 0px 4px 8px #5e12eb46;
 }
 
-.create-agenda-form .create-agenda-header{
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    padding: 5px 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border: 1px solid #6a11cb;
-    color: white;
-    background-color: #6a11cb;
-}
-.create-agenda-header h3{
-    font-size: 15px;
-}
-.cah-icon{
-    cursor: pointer;
+.create-agenda-form .create-agenda-header {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #ddd;
+  color: #333;
+  background-color: white;
 }
 
-.create-agenda-form form{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid white;
+.create-agenda-header .agenda-header-left {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  /* border: 1px solid red; */
+  gap: 5px;
 }
 
-.create-agenda-form input,
-.create-agenda-form textarea,
-.create-agenda-form select {
+.agenda-header-left .icon-agenda {
+  margin-right: 5px;
+  color: white;
+  padding: 5px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #7246eb, #532189)
+}
+
+.create-agenda-header h3 {
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.cah-icon {
+  cursor: pointer;
+}
+
+.create-agenda-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid white;
+}
+
+form .ap-box {
+  /* border: 1px solid red; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.ap-box label {
+  width: 100%;
+  color: #333;
+  font-size: 12px;
+}
+
+.ap-box .span-red {
+  color: red;
+  font-size: 15px;
+  margin-left: 5px;
+}
+
+.ap-box input,
+.ap-box textarea,
+.ap-box select {
   padding: 8px;
   width: 100%;
   font-size: 12px;
@@ -212,20 +260,26 @@
   border: 1px solid #ccc;
 }
 
-.create-agenda-form input:hover,
-.create-agenda-form textarea:hover,
-.create-agenda-form select:hover {
-    outline: none;
-    border: 1px solid #6a11cb;
-    box-shadow: 0px 4px 8px #6b11cb40;
+.ap-box input:hover,
+.ap-box textarea:hover,
+.ap-box select:hover {
+  outline: none;
+  border: 1px solid #6a11cb;
+  box-shadow: 0px 4px 8px #6b11cb40;
 }
 
-.create-agenda-form input:focus,
-.create-agenda-form textarea:focus,
-.create-agenda-form select:focus {
-    outline: none;
-    border: 1px solid #6a11cb;
-    box-shadow: 0px 4px 8px #6b11cb40;
+.ap-box input:focus,
+.ap-box textarea:focus,
+.ap-box select:focus {
+  outline: none;
+  border: 1px solid #6a11cb;
+  box-shadow: 0px 4px 8px #6b11cb40;
+}
+
+.create-agenda-form select {
+  font-size: 12px;
+  color: grey;
+  padding: 5px;
 }
 
 .create-agenda-form button {
@@ -236,8 +290,9 @@
   border-radius: 8px;
   cursor: pointer;
 }
-.create-agenda-form button:hover{
-    box-shadow: 0px 4px 8px #6b11cb40;
+
+.create-agenda-form button:hover {
+  box-shadow: 0px 4px 8px #6b11cb40;
 }
 
 /* END ACTION  */
@@ -250,10 +305,72 @@
   border: 1px solid #ddd;
   padding: 0px;
   overflow-x: auto;
-  box-shadow: 0px 2px 8px rgba(0,0,0,0.05);
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.agenda-table-box{
+.empty-agenda-container {
+  /* border: 1px solid red; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  width: 100%;
+  height: 100%;
+}
+
+.empty-agenda-container .empty-container {
+  border: 1px dashed #ddd;
+  border-radius: 16px;
+  padding: 20px;
+  background-color: white;
+  width: 60%;
+  height: fit-content;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.empty-container:hover {
+  box-shadow: 0px 4px 8px #5e12eb46;
+  border: 1px dashed #532189;
+}
+
+.empty-container h3 {
+  font-weight: bold;
+  color: #5320be;
+  font-size: 20px;
+}
+
+.empty-container p {
+  font-size: 12px;
+  color: grey;
+  text-align: center;
+  margin: 8px 0px;
+}
+
+.empty-container .btn-create-agenda {
+  width: 50%;
+  padding: 8px;
+  font-size: 13px;
+  color: white;
+  background-color: #5320be;
+  border: 1px solid #5320be;
+  border-radius: 16px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.btn-create-agenda:hover {
+  box-shadow: 0px 4px 8px #5e12eba5;
+}
+
+/* END EMPTY  */
+
+.agenda-table-box {
   height: 60vh;
   overflow-y: auto;
   /* border: 1px solid red; */
@@ -264,7 +381,7 @@
   border-collapse: collapse;
   font-family: 'Segoe UI', sans-serif;
 
-    position: relative;
+  position: relative;
 }
 
 .agenda-page-table thead th {
@@ -289,12 +406,12 @@
   color: #374151;
 } */
 
-.agenda-page-table tbody td{
-    background-color: #ffffff;
-    padding: 10px 16px;
-    vertical-align: top;
-    font-size: 12px;
-    color: #374151;
+.agenda-page-table tbody td {
+  background-color: #ffffff;
+  padding: 10px 16px;
+  vertical-align: top;
+  font-size: 12px;
+  color: #374151;
 }
 
 .agenda-page-table tbody tr:hover td {
@@ -303,19 +420,20 @@
 }
 
 /* DETAILS AGENDA MODALS  */
-.agenda-modals{
+.agenda-modals {
   width: 100%;
   height: 93%;
-    top: 7%;
-    left: 0px;
-    z-index: 200;
-    background-color: rgba(0, 0, 0, 0.155);
-    position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  top: 7%;
+  left: 0px;
+  z-index: 200;
+  background-color: rgba(0, 0, 0, 0.155);
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.agenda-modals-box{
+
+.agenda-modals-box {
   background-color: white;
   width: 40%;
   height: 60%;
@@ -323,7 +441,8 @@
   border: 1px solid #5320be;
   border-radius: 10px;
 }
-.agenda-modals-box .modals-header{
+
+.agenda-modals-box .modals-header {
   border-bottom: 1px solid #6a11cb;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
@@ -334,55 +453,63 @@
   justify-content: space-between;
   background: linear-gradient(to right, #5c48f5, #9A40F8);
 }
-.modals-header .mh-left{
+
+.modals-header .mh-left {
   /* border: 1px solid red; */
   gap: 10px;
   display: flex;
   align-items: center;
   justify-content: flex-start;
 }
-.mh-left .icon{
+
+.mh-left .icon {
   border: 1px solid rgba(255, 255, 255, 0.291);
   border-radius: 10px;
   padding: 5px 8px;
-  background-color:rgba(255, 255, 255, 0.291);
+  background-color: rgba(255, 255, 255, 0.291);
   color: white;
 }
 
-.mh-left .title{
+.mh-left .title {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
   gap: 0px;
 }
-.title h3{
+
+.title h3 {
   font-weight: bold;
 }
-.title p{
+
+.title p {
   font-size: 10px;
   width: 100%;
 }
 
-.close-icon{
+.close-icon {
   cursor: pointer;
   font-size: 18px;
   filter: drop-shadow(0 0 1px #5320be);
 }
-.close-icon:hover{
+
+.close-icon:hover {
   box-shadow: 0px 4px 8px #6b11cb40;
   filter: drop-shadow(0 0 1px #5320be);
-  transform: scale(1.2); /* ✅ memperbesar */
-  transition: transform 0.2s ease; /* ✅ animasi halus */
+  transform: scale(1.2);
+  /* ✅ memperbesar */
+  transition: transform 0.2s ease;
+  /* ✅ animasi halus */
 }
 
 /* MODALS MAIN CONTENT  */
-.modals-content{
+.modals-content {
   /* border: 1px solid red; */
   padding: 20px;
   padding-top: 10px;
 }
-.modals-content .modals-action{
+
+.modals-content .modals-action {
   padding: 5px;
   margin: 10px 0px;
   display: flex;
@@ -391,14 +518,14 @@
   /* border: 1px solid green; */
 }
 
-.modals-action .ma-left{
+.modals-action .ma-left {
   /* border: 1px solid red; */
   display: flex;
   align-items: center;
   justify-content: flex-start;
 }
 
-.modals-action .trash-btn{
+.modals-action .trash-btn {
   border: 1px solid white;
   border-radius: 8px;
   cursor: pointer;
@@ -406,12 +533,13 @@
   color: #5e5e5e;
   font-size: 18px;
 }
-.modals-action .trash-btn:hover{
+
+.modals-action .trash-btn:hover {
   background-color: #ddd;
 }
 
 /* MODAL DATE  */
-.modals-date{
+.modals-date {
   border: 1px solid #f6f6f6;
   background-color: #f6f6f6;
   border-radius: 8px;
@@ -423,7 +551,7 @@
   justify-content: center;
 }
 
-.modals-date .md-top{
+.modals-date .md-top {
   /* border: 1px solid red; */
   gap: 10px;
   width: 50%;
@@ -431,34 +559,39 @@
   align-items: center;
   justify-content: flex-start;
 }
-.top-left{
+
+.top-left {
   border: 1px solid #f6f6f6;
   border-radius: 6px;
   background-color: #d8d4f9;
   color: #5c48f5;
   padding: 8px;
 }
-.top-left2{
+
+.top-left2 {
   border: 1px solid #f6f6f6;
   border-radius: 6px;
   background-color: #e5d3f8;
   color: #9A40F8;
   padding: 8px;
 }
-.top-right{
+
+.top-right {
   /* border: 1px solid red; */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
 }
-.top-right p{
+
+.top-right p {
   margin: 0px;
   color: #5e5e5e;
   font-size: 11px;
   width: 100%;
 }
-.top-right h4{
+
+.top-right h4 {
   margin: 0px;
   font-size: 14px;
   font-weight: bold;
@@ -467,11 +600,12 @@
 }
 
 /* MODALS MAIN  */
-.modals-main{
+.modals-main {
   /* border: 1px solid red; */
   padding: 5px;
 }
-.modals-main .mm-header{
+
+.modals-main .mm-header {
   gap: 10px;
   margin-bottom: 10px;
   display: flex;
@@ -479,34 +613,37 @@
   justify-content: flex-start;
   /* border: 1px solid blue; */
 }
-.mm-header h4{
+
+.mm-header h4 {
   font-size: 15px;
   font-weight: bold;
   color: #5e5e5e;
 }
-.mm-desc{
-  border:1px solid #f6f6f6;
+
+.mm-desc {
+  border: 1px solid #f6f6f6;
   border-radius: 10px;
   padding: 10px;
   width: 100%;
   height: 23vh;
   background-color: #f6f6f6;
 }
-.mm-desc p{
+
+.mm-desc p {
   font-size: 12px;
   color: grey;
 }
 
 /* END DETAILS AGENDA  MODALS  */
 
-.action-page-icon{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
+.action-page-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
 }
 
-.action-page-icon .action-btn{
+.action-page-icon .action-btn {
   border: 1px solid #fff;
   background-color: #fff;
   border-radius: 8px;
@@ -514,42 +651,45 @@
   cursor: pointer;
   font-size: 18px;
 }
-.action-page-icon .action-btn:hover{
+
+.action-page-icon .action-btn:hover {
   background-color: #ddd;
   border: 1px solid #ddd;
 }
 
-.title-container{
-    /* border: 1px solid red; */
-    display: flex;
-    flex-direction: column;
-    /* align-items: center; */
-    justify-content: flex-start;
-    width: 100%;
+.title-container {
+  /* border: 1px solid red; */
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  justify-content: flex-start;
+  width: 100%;
 }
 
-.title-container h5{
-    margin: 0px;
-    font-size: 14px;
-    font-weight: bold;
-    /* color: #333; */
-    color: #6a11cb;
-    width: 100%;
-    cursor: pointer;
+.title-container h5 {
+  margin: 0px;
+  font-size: 14px;
+  font-weight: bold;
+  /* color: #333; */
+  color: #6a11cb;
+  width: 100%;
+  cursor: pointer;
 }
 
-.title-container h5:hover{
-    text-decoration: underline;
+.title-container h5:hover {
+  text-decoration: underline;
 }
 
-.title-container p{
-    font-size: 12px;
-    margin: 0px;
-    color: #374151;
-    width: 20vw;
-    white-space: nowrap;          /* Biar teks 1 baris */
-    overflow: hidden;             /* Sembunyikan teks yang overflow */
-    text-overflow: ellipsis;
+.title-container p {
+  font-size: 12px;
+  margin: 0px;
+  color: #374151;
+  width: 20vw;
+  white-space: nowrap;
+  /* Biar teks 1 baris */
+  overflow: hidden;
+  /* Sembunyikan teks yang overflow */
+  text-overflow: ellipsis;
 }
 
 /* Status Badge */

@@ -377,7 +377,7 @@ const handleNavigateToWorkspace = () =>{
         <div className="more-action">
           <div className="create-board-btn" onClick={handleShowForm}>
             <FaPlus className='cbb-icon'/>
-            <p>Create Button</p>
+            <p>Create Board</p>
           </div>
         </div>
       </div>
