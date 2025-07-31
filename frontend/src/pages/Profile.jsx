@@ -148,7 +148,59 @@ const Profile=()=> {
         </div>
         <div className="profile-page-main">
             <div className="profile-left">
-            
+                <div className="profile-photo">
+                    <img src={userData.photo_url} alt={profile} />
+                    {/* <img src={profile} alt={profile} /> */}
+                    <h3>{userData.name}</h3>
+                    <p>Member since May 2025</p>
+                    <button onClick={handleShowAvatar}>Change Avatar</button>
+                     {/* SHOW SELECT AVATAR  */}
+                        {showAvatar && (
+                                <div className='ava-container'>
+                                    <AvatarUser 
+                                        userId={userId}
+                                        allProfiles={allProfiles}
+                                        selectedProfileId={selectedProfileId}
+                                        currentProfileId={currentProfileId}
+                                        handleSelectProfile={handleSelectProfile}
+                                        handleSave={handleSave}
+                                        onClose={handleCloseAvatar}
+                                    />
+                                </div>
+                            )}
+                        {/* END SHOW SELECT AVATAR  */}
+                        
+                </div>
+                <div className="profile-setting">
+                    <button 
+                        className={activeSection === 'personal' ? 'active' : ''} 
+                        onClick={() => setActiveSection('personal')}
+                    >
+                        <HiMiniUser className='ps-icon' />
+                        <span className="ps-label">Personal Info</span>
+                    </button>
+                    <button 
+                        className={activeSection === 'activity' ? 'active' : ''} 
+                        onClick={() => setActiveSection('activity')}
+                    >
+                        <FaRegChartBar className='ps-icon' />
+                        <span className="ps-label">Activity & Schedule</span>
+                    </button>
+                    <button 
+                        className={activeSection === 'notification' ? 'active' : ''} 
+                        onClick={() => setActiveSection('notification')}
+                    >
+                        <HiBellAlert className='ps-icon' />
+                        <span className="ps-label">Notification</span>
+                    </button>
+                    <button 
+                        className={activeSection === 'security' ? 'active' : ''} 
+                        onClick={() => setActiveSection('security')}
+                    >
+                        <HiLockClosed className='ps-icon' />
+                        <span className="ps-label">Security</span>
+                    </button>
+                </div>
             </div>
             <div className="profile-right">
 

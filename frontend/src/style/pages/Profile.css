@@ -4,17 +4,20 @@
     height: 100%;
     padding: 30px 40px;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
 }
 
 .profile-container .header-profile {
     border: 1px solid blue;
+    padding: 10px;
     width: 100%;
+    height: 10%;
 }
 
 .header-profile .header-title {
-    border: 1px solid green;
+    /* border: 1px solid green; */
     gap: 10px;
     display: flex;
     align-items: center;
@@ -36,3 +39,28 @@
     color: grey;
     font-size: 12px;
 }
+
+/* MAIN PROFILE  */
+.profile-page-main {
+    border: 1px solid green;
+    width: 100%;
+    height: 90%;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.profile-page-main .profile-left {
+    border: 1px solid red;
+    width: 30%;
+    height: 100%;
+}
+
+.profile-page-main .profile-right {
+    border: 1px solid blue;
+    width: 70%;
+    height: 100%;
+}
+
+/* END MAIN PROFILE  */
