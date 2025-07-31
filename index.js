@@ -330,6 +330,7 @@ app.get('/api/user-setting/:userId', async (req, res) => {
           u.id,
           u.username,
           u.email,
+          u.create_at,
           ud.name,
           ud.nomor,
           ud.divisi,
