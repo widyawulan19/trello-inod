@@ -14,7 +14,7 @@ const PersonalInformation=({fetchUserSettingData,userData, userId})=> {
         name:'',
         username:'',
         email:'',
-        nomor:'',
+        nomor_wa:'',
         jabatan:'',
         divisi:'',
         photo_url:'',
@@ -27,7 +27,7 @@ const PersonalInformation=({fetchUserSettingData,userData, userId})=> {
             name: userData.name || '',
             username: userData.username || '',
             email: userData.email || '',
-            nomor: userData.nomor || '',
+            nomor_wa: userData.nomor_wa || '',
             jabatan: userData.jabatan || '',
             divisi: userData.divisi || '',
             photo_url: userData.photo_url || '',
@@ -95,8 +95,8 @@ const PersonalInformation=({fetchUserSettingData,userData, userId})=> {
                     <label>Nomor</label>
                     <input 
                         type="text" 
-                        name='nomor'
-                        value={formData.nomor}
+                        name='nomor_wa'
+                        value={formData.nomor_wa}
                         onChange={handleChange}
                     />
                 </div>
