@@ -16,7 +16,7 @@ const ResetPass = () => {
   const {showSnackbar} = useSnackbar();
 
   const handleToLandingPage = () => {
-    navigate('/landing-page');
+    navigate('/');
   };
 
 //   const handleToLogin = () => {

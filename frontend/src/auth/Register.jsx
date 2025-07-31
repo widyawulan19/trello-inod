@@ -16,7 +16,7 @@ const Register=()=> {
 
     //FUNCTION
     const handleToLandingPage = () =>{
-        navigate('/landing-page');
+        navigate('/');
     }
 
     const handleToLogin = () =>{

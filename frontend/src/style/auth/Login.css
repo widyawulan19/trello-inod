@@ -189,6 +189,36 @@
     box-shadow: 4px 4px 8px #6b11cb87;
 }
 
+/* PASSWORD BOX  */
+.password-wrapper {
+    margin-top: 10px;
+    /* border: 1px solid red; */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.password-wrapper input {
+    width: 100%;
+    padding-right: 40px;
+    /* biar nggak ketimpa icon mata */
+    border: 1px solid #eee;
+    border-radius: 16px;
+    font-size: 12px;
+    margin: 5px 0px;
+    color: #333;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+    color: #888;
+}
+
+/* END PASSWORD BOX  */
 
 /* ANOTHER LOGIN  */
 .another-login {

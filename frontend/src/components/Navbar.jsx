@@ -111,15 +111,15 @@ const Navbar=()=> {
       };
 
     const handleToHome = () =>{
-        navigate(`/`)
+        navigate(`/layout`)
     }
 
     const navigateToProfile =()=>{
-        navigate(`/user-profile`)
+        navigate(`user-profile`)
     }
 
     const navigateToChat = () =>{
-        navigate(`/chat`)
+        navigate(`chat`)
     }
 
    const handleShowCalendar = () =>{
@@ -127,7 +127,7 @@ const Navbar=()=> {
    }
 
    const handleToNote = () =>{
-    navigate('/note-page');
+    navigate('note-page');
    }
 
    //SHOW NITIFICATION

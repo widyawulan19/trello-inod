@@ -49,52 +49,54 @@ const AppRoutes=()=> {
   return (
     <Routes>
 
-        <Route path='/landing-page' element={<MainLp/>}/>
+        {/* <Route path='/landing-page' element={<MainLp/>}/> */}
+        <Route path='/' element={<MainLp/>}/>
         <Route path='/login' element={<Login/>}/>
         <Route path='/register' element={<Register/>}/>
         <Route path='/req-reset' element={<RequestPass/>}/>
         <Route path='/reset-pass' element={<ResetPass/>} />
 
-        <Route path='/' element={<Layout/>}>
+        {/* <Route path='/' element={<Layout/>}> */}
+        <Route path='/layout' element={<Layout/>}>
         <Route index element={<Home/>}/>
-        <Route path='/recent' element={<Recent/>}/>
-        <Route path='/workspaces' element={<NewWorkspace/>}/>
-        <Route path='/workspaces/:workspaceId' element={<WorkspacePage/>}/>
-        <Route path='/workspaces/:workspaceId/board/:boardId' element={<BoardList/>}/>
-        <Route path='/workspaces/:workspaceId/board/:boardId/lists/:listId' element={<Card/>}/>
+        <Route path='recent' element={<Recent/>}/>
+        <Route path='workspaces' element={<NewWorkspace/>}/>
+        <Route path='workspaces/:workspaceId' element={<WorkspacePage/>}/>
+        <Route path='workspaces/:workspaceId/board/:boardId' element={<BoardList/>}/>
+        <Route path='workspaces/:workspaceId/board/:boardId/lists/:listId' element={<Card/>}/>
         {/* <Route path='/workspaces/:workspaceId/board/:boardId/lists/:listId/cards/:cardId' element={<CardDetail/>}/> */}
-        <Route path='/workspaces/:workspaceId/board/:boardId/lists/:listId/cards/:cardId' element={<NewCardDetail/>}/>
-        <Route path='/testing' element={<Testing/>}/>
-        <Route path='/data-employee' element={<DataEmployee/>}/>
-        <Route path='/data-member' element={<DataMember/>}/>
-        <Route path='/data-marketing' element={<DataMarketing/>}/>
-        <Route path='/data-marketing/:marketingId' element={<ViewDataMarketing/>}/>
-        <Route path='/edit-data-marketing/:marketingId' element={<EditMarketingForm/>}/>
-        <Route path='/form-data-marketing/:marketingId' element={<FormDataMarketing/>}/>
+        <Route path='workspaces/:workspaceId/board/:boardId/lists/:listId/cards/:cardId' element={<NewCardDetail/>}/>
+        <Route path='testing' element={<Testing/>}/>
+        <Route path='data-employee' element={<DataEmployee/>}/>
+        <Route path='data-member' element={<DataMember/>}/>
+        <Route path='data-marketing' element={<DataMarketing/>}/>
+        <Route path='data-marketing/:marketingId' element={<ViewDataMarketing/>}/>
+        <Route path='edit-data-marketing/:marketingId' element={<EditMarketingForm/>}/>
+        <Route path='form-data-marketing/:marketingId' element={<FormDataMarketing/>}/>
         {/* <Route path='/marketing-design' element={<MarketingDesign/>}/> */}
-        <Route path='/marketing-design' element={<MarketingDesign/>}/>
-        <Route path='/cover-card' element={<CoverCard/>}/>
-        <Route path='/cover-select' element={<CoverSelect/>}/>
+        <Route path='marketing-design' element={<MarketingDesign/>}/>
+        <Route path='cover-card' element={<CoverCard/>}/>
+        <Route path='cover-select' element={<CoverSelect/>}/>
         {/* TYR  */}
-        <Route path='/text-editor' element={<TextEditor/>}/>
-        <Route path='/setting' element={<Setting/>}/>
-        <Route path='/archive' element={<Archives/>}/>
-        <Route path='/archive-data' element={<ArchiveUniversal/>}/>
-        <Route path='/user-profile' element={<Profile/>}/>
-        <Route path='/activity' element={<ActivityPage/>}/>
-        <Route path='/chat' element={<ChatUi/>}/>
-        <Route path='/data-accept' element={<AcceptDataDesign/>}/>
-        <Route path='/example-data' element={<ExampleDataMarketingDesign/>}/>
-        <Route path='/employee-data' element={<EmployeeData/>}/>
-        <Route path='/room-test' element={<LayoutTest/>}/>
-        <Route path='/calendar' element={<FullNewCalendar/>}/>
-        <Route path='/example-css' element={<ExampleTailwind/>}/>
-        <Route path='/employee-schedule' element={<EmployeeSchedule/>}/>
-        <Route path='/notif-icon' element={<NotificationIcon/>}/>
-        <Route path='/personal-notes' element={<PersonalNotes/>}/>
-        <Route path='/agenda-page' element={<AgendaPage/>}/>
-        <Route path='/note-page' element={<NotesPage/>}/>
-        <Route path='/new-employee-schedules' element={<ScheduleEmployeePage/>}/>
+        <Route path='text-editor' element={<TextEditor/>}/>
+        <Route path='setting' element={<Setting/>}/>
+        <Route path='archive' element={<Archives/>}/>
+        <Route path='archive-data' element={<ArchiveUniversal/>}/>
+        <Route path='user-profile' element={<Profile/>}/>
+        <Route path='activity' element={<ActivityPage/>}/>
+        <Route path='chat' element={<ChatUi/>}/>
+        <Route path='data-accept' element={<AcceptDataDesign/>}/>
+        <Route path='example-data' element={<ExampleDataMarketingDesign/>}/>
+        <Route path='employee-data' element={<EmployeeData/>}/>
+        <Route path='room-test' element={<LayoutTest/>}/>
+        <Route path='calendar' element={<FullNewCalendar/>}/>
+        <Route path='example-css' element={<ExampleTailwind/>}/>
+        <Route path='employee-schedule' element={<EmployeeSchedule/>}/>
+        <Route path='notif-icon' element={<NotificationIcon/>}/>
+        <Route path='personal-notes' element={<PersonalNotes/>}/>
+        <Route path='agenda-page' element={<AgendaPage/>}/>
+        <Route path='note-page' element={<NotesPage/>}/>
+        <Route path='new-employee-schedules' element={<ScheduleEmployeePage/>}/>
         </Route>
     </Routes>
   )

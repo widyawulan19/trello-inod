@@ -50,15 +50,15 @@ const Sidebar = () => {
       >
         <div className="sidebar-menu" onClick={handleStopPropagation}>
           {[
-            { to: '/workspaces', icon: <HiOutlineSquaresPlus className='icon' />, label: 'Workspace', name: 'workspace' },
-            { to: '/data-member', icon: <HiOutlineUsers className='icon' />, label: 'Inod Member', name: 'member' },
-            { to: '/new-employee-schedules', icon: <HiOutlineCalendarDateRange className='icon' />, label: 'Member Schedule', name: 'schedule' },
+            { to: 'workspaces', icon: <HiOutlineSquaresPlus className='icon' />, label: 'Workspace', name: 'workspace' },
+            { to: 'data-member', icon: <HiOutlineUsers className='icon' />, label: 'Inod Member', name: 'member' },
+            { to: 'new-employee-schedules', icon: <HiOutlineCalendarDateRange className='icon' />, label: 'Member Schedule', name: 'schedule' },
             // { to: '/employee-data', icon: <HiOutlineCalendarDateRange className='icon' />, label: 'Member Schedule', name: 'schedule' },
-            { to: '/data-marketing', icon: <HiOutlineCircleStack className='icon' />, label: 'Data Marketing', name: 'marketing' },
-            { to: '/marketing-design', icon: <HiOutlineChartBar className='icon' />, label: 'Marketing Design', name: 'marketing-design' },
-            { to: '/archive-data', icon: <HiOutlineArchiveBoxArrowDown className='icon' />, label: 'Archive Data', name: 'archive' },
-            { to: '/notif-icon', icon: <HiOutlineCog8Tooth className='icon' />, label: 'Setting', name: 'setting' },
-            { to: '/activity', icon: <HiAdjustmentsHorizontal className='icon' />, label: 'FaQ', name: 'faq' },
+            { to: 'data-marketing', icon: <HiOutlineCircleStack className='icon' />, label: 'Data Marketing', name: 'marketing' },
+            { to: 'marketing-design', icon: <HiOutlineChartBar className='icon' />, label: 'Marketing Design', name: 'marketing-design' },
+            { to: 'archive-data', icon: <HiOutlineArchiveBoxArrowDown className='icon' />, label: 'Archive Data', name: 'archive' },
+            { to: 'notif-icon', icon: <HiOutlineCog8Tooth className='icon' />, label: 'Setting', name: 'setting' },
+            { to: 'activity', icon: <HiAdjustmentsHorizontal className='icon' />, label: 'FaQ', name: 'faq' },
           ].map((item) => (
             <div
               key={item.name}
