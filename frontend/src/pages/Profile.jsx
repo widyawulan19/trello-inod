@@ -14,6 +14,16 @@ import NotificationPage from '../UI/NotificationPage';
 import PersonalNotification from '../UI/PersonalNotification';
 import { useUser } from '../context/UserContext';
 
+const formatDateToReadable = (dateString) => {
+  if (!dateString) return '';
+  return new Intl.DateTimeFormat('en-GB', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+  }).format(new Date(dateString));
+};
+
+
 const Profile=()=> {
     //STATE
     // const userId = 13;
@@ -114,6 +124,8 @@ const Profile=()=> {
         fetchUserProfile();
     },[])
 
+    
+
 
 
     if (loading) return <p>Loading...</p>;
@@ -150,9 +162,11 @@ const Profile=()=> {
             <div className="profile-left">
                 <div className="profile-photo">
                     <img src={userData.photo_url} alt={profile} />
-                    {/* <img src={profile} alt={profile} /> */}
                     <h3>{userData.name}</h3>
-                    <p>Member since May 2025</p>
+                    <p>
+                        Member since {formatDateToReadable(userData.create_at)}
+                    </p>
+
                     <button onClick={handleShowAvatar}>Change Avatar</button>
                      {/* SHOW SELECT AVATAR  */}
                         {showAvatar && (
@@ -203,7 +217,9 @@ const Profile=()=> {
                 </div>
             </div>
             <div className="profile-right">
-
+                <div className="profil-content">
+                    {renderContent()}
+                </div>
             </div>
         </div>
         

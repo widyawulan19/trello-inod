@@ -11,7 +11,7 @@ const RequestPass=()=> {
 
     //FUNCTION
     const handleToLandingPage = () =>{
-        navigate('/landing-page');
+        navigate('/');
     }
 
     //untuk sementara (develop)

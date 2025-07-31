@@ -2,6 +2,7 @@ import React from 'react'
 import BootstrapTooltip from '../components/Tooltip'
 import '../style/pages/Profile.css'
 import { HiXMark } from 'react-icons/hi2'
+import { IoIosImages } from "react-icons/io";
 
 const AvatarUser = ({
   userId,
@@ -15,7 +16,13 @@ const AvatarUser = ({
   return (
     <div className='all-profile-cont'>
       <div className="apc-header">
-        <h5>Select Your Avatar</h5>
+        <div className="apch-left">
+          <div className="ava-icon">
+            <IoIosImages/>
+          </div>
+          <h5>Select Your Avatar</h5>
+        </div>
+        
         <HiXMark onClick={onClose} className='apc-icon'/>
       </div>
       <div className="apc-body">
@@ -26,9 +33,9 @@ const AvatarUser = ({
             style={{
               borderRadius: '8px',
               cursor: 'pointer',
-              width: '30px',
+              width: '60px',
               height: '30px',
-              marginTop: '5px',
+              // marginTop: '5px',
             }}
           >
             <BootstrapTooltip title={profile.profile_name} placement='top'>
