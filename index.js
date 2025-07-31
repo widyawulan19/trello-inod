@@ -363,58 +363,98 @@ app.get('/api/user-setting/:userId', async (req, res) => {
 
 
 //8. Edit user profile setting
-app.put('/api/user-setting/:userId', async (req, res) => {
-  const { userId } = req.params;
-  const { username, email, name, nomor_wa, divisi, jabatan, photo_url } = req.body;
+// app.put('/api/user-setting/:userId', async (req, res) => {
+//   const { userId } = req.params;
+//   const { username, email, name, nomor_wa, divisi, jabatan, photo_url } = req.body;
+
+//   try {
+//     // Mulai transaksi
+//     await client.query('BEGIN');
+
+//     // Update tabel users
+//     await client.query(`
+//         UPDATE public.users
+//         SET username = $1, email = $2
+//         WHERE id = $3
+//       `, [username, email, userId]);
+
+//     // Update tabel data_employees
+//     await client.query(`
+//         UPDATE public.data_employees
+//         SET name = $1, nomor_wa = $2, divisi = $3, jabatan = $4
+//         WHERE user_id = $5
+//       `, [name, nomor_wa, divisi, jabatan, userId]);
+
+//     // Ambil profil_id terlebih dahulu
+//     const profilResult = await client.query(`
+//         SELECT p.id
+//         FROM public.profil p
+//         JOIN public.user_profil up ON p.id = up.profil_id
+//         WHERE up.user_id = $1
+//       `, [userId]);
+
+//     if (profilResult.rows.length === 0) {
+//       await client.query('ROLLBACK');
+//       return res.status(404).json({ message: 'Profil not found' });
+//     }
+
+//     const profilId = profilResult.rows[0].id;
+
+//     // Update tabel profil
+//     await client.query(`
+//         UPDATE public.profil
+//         SET photo_url = $1
+//         WHERE id = $2
+//       `, [photo_url, profilId]);
+
+//     // Commit transaksi
+//     await client.query('COMMIT');
+//     res.json({ message: 'User setting updated successfully' });
+
+//   } catch (error) {
+//     await client.query('ROLLBACK');
+//     console.error('Error updating user setting:', error);
+//     res.status(500).json({ message: 'Internal server error' });
+//   }
+// });
+
+
+// PUT /api/user-setting/:userId
+app.put("/api/user-setting/:userId", async (req, res) => {
+  const userId = req.params.userId;
+
+  const {
+    username,
+    email,
+    name,// dari frontend
+    nomor_wa,      // fallback jika dikirim dengan nama ini
+    divisi,
+    jabatan,
+    photo_url
+  } = req.body;
+
+  // Gunakan salah satu nilai untuk nomor
+  const finalNomor = nomor || nomor_wa;
 
   try {
-    // Mulai transaksi
-    await client.query('BEGIN');
-
     // Update tabel users
-    await client.query(`
-        UPDATE public.users
-        SET username = $1, email = $2
-        WHERE id = $3
-      `, [username, email, userId]);
+    await client.query(
+      `UPDATE users SET username = $1, email = $2 WHERE id = $3`,
+      [username, email, userId]
+    );
 
     // Update tabel data_employees
-    await client.query(`
-        UPDATE public.data_employees
-        SET name = $1, nomor_wa = $2, divisi = $3, jabatan = $4
-        WHERE user_id = $5
-      `, [name, nomor_wa, divisi, jabatan, userId]);
+    await client.query(
+      `UPDATE public.data_employees
+       SET name = $1, nomor_wa = $2, divisi = $3, jabatan = $4, photo_url = $5
+       WHERE user_id = $6`,
+      [name, finalNomor, divisi, jabatan, photo_url, userId]
+    );
 
-    // Ambil profil_id terlebih dahulu
-    const profilResult = await client.query(`
-        SELECT p.id
-        FROM public.profil p
-        JOIN public.user_profil up ON p.id = up.profil_id
-        WHERE up.user_id = $1
-      `, [userId]);
-
-    if (profilResult.rows.length === 0) {
-      await client.query('ROLLBACK');
-      return res.status(404).json({ message: 'Profil not found' });
-    }
-
-    const profilId = profilResult.rows[0].id;
-
-    // Update tabel profil
-    await client.query(`
-        UPDATE public.profil
-        SET photo_url = $1
-        WHERE id = $2
-      `, [photo_url, profilId]);
-
-    // Commit transaksi
-    await client.query('COMMIT');
-    res.json({ message: 'User setting updated successfully' });
-
+    res.status(200).json({ message: "User setting updated successfully." });
   } catch (error) {
-    await client.query('ROLLBACK');
-    console.error('Error updating user setting:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    console.error("Error updating user setting:", error);
+    res.status(500).json({ error: "An error occurred while updating user setting." });
   }
 });
 
