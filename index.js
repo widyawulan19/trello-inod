@@ -120,11 +120,11 @@ const transporter = nodemailer.createTransport({
 
 //new register
 app.post("/api/auth/register", async (req, res) => {
-  const { username, email, password, security_question, security_answer_hash } = req.body;
+  const { username, email, password, security_question, security_answer } = req.body;
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const hashedSecurityAnswer = await bcrypt.hash(security_answer_hash, 10);
+    const hashedSecurityAnswer = await bcrypt.hash(security_answer, 10); // ini yang disimpan
 
     const userResult = await client.query(
       `INSERT INTO users (username, email, password, security_question, security_answer_hash)
@@ -156,6 +156,7 @@ app.post("/api/auth/register", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
 
 
 
