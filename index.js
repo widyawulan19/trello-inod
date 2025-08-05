@@ -13,7 +13,8 @@ const { SystemNotification } = require('./SystemNotification');
 const upload = require('./upload');
 const cloudinary = require('./CloudinaryConfig');
 const jwt = require("jsonwebtoken");
-
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 
 
 //TOP
@@ -67,26 +68,21 @@ const verifyToken = (req, res, next) => {
   });
 };
 
+// send token to user mail 
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "your.email@gmail.com",
+    pass: "your_app_password",
+  }
+})
+
 
 
 
 
 // USERS 
 //REGISTER
-// app.post("/api/auth/register", async (req, res) => {
-//   const { username, email, password } = req.body;
-//   try {
-//     const hashedPassword = await bcrypt.hash(password, 10);
-//     const result = await client.query(
-//       `INSERT INTO users (username, email, password)
-//        VALUES ($1, $2, $3) RETURNING id, username, email`,
-//       [username, email, hashedPassword]
-//     );
-//     res.status(201).json(result.rows[0]);
-//   } catch (err) {
-//     res.status(500).json({ message: "Error registering user", error: err });
-//   }
-// });
 app.post("/api/auth/register", async (req, res) => {
   const { username, email, password } = req.body;
 
@@ -156,6 +152,33 @@ app.post("/api/auth/login", async (req, res) => {
 });
 
 // RESSET PASS 
+// app.post("/api/auth/request-reset", async (req, res) => {
+//   const { email } = req.body;
+//   try {
+//     const user = await client.query(`SELECT * FROM users WHERE email = $1`, [email]);
+//     if (user.rows.length === 0) {
+//       return res.status(404).json({ message: "Email not found" });
+//     }
+
+//     const resetToken = crypto.randomBytes(32).toString("hex");
+//     const resetExpires = new Date(Date.now() + 3600000); // 1 jam
+
+//     await client.query(
+//       `UPDATE users SET password_reset_token = $1, password_reset_expires = $2 WHERE email = $3`,
+//       [resetToken, resetExpires, email]
+//     );
+
+//     // Di sini kamu bisa kirim email (atau balikin token untuk testing)
+//     res.json({ message: "Reset link has been sent", token: resetToken });
+
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ message: "Error requesting password reset" });
+//   }
+// });
+
+// buat transporter seperti di atas dulu ya
+
 app.post("/api/auth/request-reset", async (req, res) => {
   const { email } = req.body;
   try {
@@ -172,14 +195,28 @@ app.post("/api/auth/request-reset", async (req, res) => {
       [resetToken, resetExpires, email]
     );
 
-    // Di sini kamu bisa kirim email (atau balikin token untuk testing)
-    res.json({ message: "Reset link has been sent", token: resetToken });
+    const resetLink = `http://localhost:3000/reset-password?token=${resetToken}`;
+
+    // Kirim email
+    const mailOptions = {
+      from: "your.email@gmail.com",
+      to: email,
+      subject: "Password Reset",
+      html: `<p>Kamu meminta reset password. Klik link berikut untuk reset:</p>
+             <a href="${resetLink}">${resetLink}</a>
+             <p>Link berlaku selama 1 jam.</p>`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.json({ message: "Reset link has been sent to your email" });
 
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Error requesting password reset" });
   }
 });
+
 
 // HASH PASS MANUAL 
 // TEMPORARY: hash existing user password
