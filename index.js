@@ -83,16 +83,53 @@ const transporter = nodemailer.createTransport({
 
 // USERS 
 //REGISTER
+// app.post("/api/auth/register", async (req, res) => {
+//   const { username, email, password } = req.body;
+
+//   try {
+//     const hashedPassword = await bcrypt.hash(password, 10);
+
+//     const userResult = await client.query(
+//       `INSERT INTO users (username, email, password)
+//        VALUES ($1, $2, $3) RETURNING id, username, email`,
+//       [username, email, hashedPassword]
+//     );
+
+//     const userId = userResult.rows[0].id;
+
+//     // ✅ Insert default profil (misalnya profil ID 1)
+//     await client.query(
+//       `INSERT INTO user_profil (user_id, profil_id)
+//        VALUES ($1, $2)`,
+//       [userId, 1]
+//     );
+
+//     // ✅ Insert default data ke user_data
+//     await client.query(
+//       `INSERT INTO user_data (user_id, name, nomor, divisi, jabatan)
+//        VALUES ($1, $2, $3, $4, $5)`,
+//       [userId, '', '', 'Umum', 'Anggota'] // kamu bisa sesuaikan default-nya
+//     );
+
+//     res.status(201).json({ message: "User registered successfully", user: userResult.rows[0] });
+//   } catch (error) {
+//     console.error("Error during registration:", error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// });
+
+//new register
 app.post("/api/auth/register", async (req, res) => {
-  const { username, email, password } = req.body;
+  const { username, email, password, security_question, security_answer } = req.body;
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const userResult = await client.query(
-      `INSERT INTO users (username, email, password)
-       VALUES ($1, $2, $3) RETURNING id, username, email`,
-      [username, email, hashedPassword]
+      `INSERT INTO users (username, email, password, security_question, security_answer)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING id, username, email, security_question`,
+      [username, email, hashedPassword, security_question, security_answer]
     );
 
     const userId = userResult.rows[0].id;
@@ -108,15 +145,19 @@ app.post("/api/auth/register", async (req, res) => {
     await client.query(
       `INSERT INTO user_data (user_id, name, nomor, divisi, jabatan)
        VALUES ($1, $2, $3, $4, $5)`,
-      [userId, '', '', 'Umum', 'Anggota'] // kamu bisa sesuaikan default-nya
+      [userId, '', '', 'Umum', 'Anggota']
     );
 
-    res.status(201).json({ message: "User registered successfully", user: userResult.rows[0] });
+    res.status(201).json({
+      message: "User registered successfully",
+      user: userResult.rows[0],
+    });
   } catch (error) {
     console.error("Error during registration:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
 
 
 //LOGIN
@@ -152,30 +193,6 @@ app.post("/api/auth/login", async (req, res) => {
 });
 
 // RESSET PASS 
-// app.post("/api/auth/request-reset", async (req, res) => {
-//   const { email } = req.body;
-//   try {
-//     const user = await client.query(`SELECT * FROM users WHERE email = $1`, [email]);
-//     if (user.rows.length === 0) {
-//       return res.status(404).json({ message: "Email not found" });
-//     }
-
-//     const resetToken = crypto.randomBytes(32).toString("hex");
-//     const resetExpires = new Date(Date.now() + 3600000); // 1 jam
-
-//     await client.query(
-//       `UPDATE users SET password_reset_token = $1, password_reset_expires = $2 WHERE email = $3`,
-//       [resetToken, resetExpires, email]
-//     );
-
-//     // Di sini kamu bisa kirim email (atau balikin token untuk testing)
-//     res.json({ message: "Reset link has been sent", token: resetToken });
-
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ message: "Error requesting password reset" });
-//   }
-// });
 
 // buat transporter seperti di atas dulu ya
 
