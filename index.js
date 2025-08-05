@@ -504,7 +504,7 @@ app.put('/api/user-setting/:userId', async (req, res) => {
     `, [name, nomor, divisi, jabatan, userId]);
 
     // Cek apakah user_profil sudah ada
-    const existingProfil = await client.query(` index.js
+    const existingProfil = await client.query(`
       SELECT profil.id, profil.photo_url 
       FROM user_profil 
       JOIN profil ON user_profil.profil_id = profil.id
