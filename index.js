@@ -473,8 +473,6 @@ app.put('/api/users-setting/:userId', async (req, res) => {
     photo_url
   } = req.body;
 
-  const client = await pool.connect();
-
   try {
     await client.query('BEGIN');
 
@@ -486,13 +484,12 @@ app.put('/api/users-setting/:userId', async (req, res) => {
       WHERE id = $3
     `, [username, email, userId]);
 
-    // Manual cek users_data
+    // Cek apakah users_data sudah ada
     const usersDataResult = await client.query(`
       SELECT id FROM public.users_data WHERE user_id = $1
     `, [userId]);
 
     if (usersDataResult.rows.length > 0) {
-      // Sudah ada, UPDATE
       await client.query(`
         UPDATE public.users_data
         SET name = $1,
@@ -502,20 +499,18 @@ app.put('/api/users-setting/:userId', async (req, res) => {
         WHERE user_id = $5
       `, [name, nomor, divisi, jabatan, userId]);
     } else {
-      // Belum ada, INSERT
       await client.query(`
         INSERT INTO public.users_data (user_id, name, nomor, divisi, jabatan)
         VALUES ($1, $2, $3, $4, $5)
       `, [userId, name, nomor, divisi, jabatan]);
     }
 
-    // Manual cek user_profil
+    // Cek apakah user_profil sudah ada
     const userProfilResult = await client.query(`
       SELECT profil_id FROM public.user_profil WHERE user_id = $1
     `, [userId]);
 
     if (userProfilResult.rows.length > 0) {
-      // Sudah ada, UPDATE photo_url
       const profilId = userProfilResult.rows[0].profil_id;
 
       await client.query(`
@@ -524,7 +519,6 @@ app.put('/api/users-setting/:userId', async (req, res) => {
         WHERE id = $2
       `, [photo_url, profilId]);
     } else {
-      // Belum ada, INSERT ke profil dan user_profil
       const insertProfil = await client.query(`
         INSERT INTO public.profil (photo_url)
         VALUES ($1)
@@ -545,8 +539,6 @@ app.put('/api/users-setting/:userId', async (req, res) => {
     await client.query('ROLLBACK');
     console.error('Error updating user profile:', error);
     res.status(500).json({ message: 'Internal server error' });
-  } finally {
-    client.release();
   }
 });
 
