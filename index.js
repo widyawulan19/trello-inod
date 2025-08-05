@@ -392,7 +392,7 @@ app.get('/api/user-setting/:userId', async (req, res) => {
           u.email,
           u.create_at,
           ud.name,
-          ud.nomor AS nomor_wa,
+          ud.nomor,
           ud.divisi,
           ud.jabatan,
           p.photo_url
@@ -419,9 +419,6 @@ app.get('/api/user-setting/:userId', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-
-
 
 
 
@@ -493,7 +490,7 @@ app.put('/api/user-setting/:userId', async (req, res) => {
     nomor_wa,
     divisi,
     jabatan,
-    photo_url
+    photo_url,
   } = req.body;
 
   try {
@@ -514,7 +511,6 @@ app.put('/api/user-setting/:userId', async (req, res) => {
        WHERE user_id = $5`,
       [name, nomor_wa, divisi, jabatan, userId]
     );
-
     // Cek apakah user sudah punya profil (melalui relasi user_profil)
     const profilResult = await client.query(`
       SELECT p.id AS profil_id
