@@ -260,3 +260,47 @@ app.post("/api/auth/register", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
+
+
+
+// /api/user-setting/:userId
+app.put('/api/user-setting/:userId', async (req, res) => {
+  const { userId } = req.params;
+  const {
+    username,
+    email,
+    name,
+    nomor_wa,
+    divisi,
+    jabatan,
+    photo_url,
+  } = req.body;
+
+  try {
+    await client.query('BEGIN');
+
+    // Update tabel users
+    await client.query(
+      `UPDATE users 
+       SET username = $1, email = $2, photo_url = $3 
+       WHERE id = $4`,
+      [username, email, photo_url, userId]
+    );
+
+    // Update tabel user_data
+    await client.query(
+      `UPDATE user_data 
+       SET name = $1, nomor_wa = $2, divisi = $3, jabatan = $4 
+       WHERE user_id = $5`,
+      [name, nomor_wa, divisi, jabatan, userId]
+    );
+
+    await client.query('COMMIT');
+    res.status(200).json({ message: 'User setting updated successfully' });
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Error updating user setting:', error);
+    res.status(500).json({ message: 'Failed to update user setting' });
+  }
+});
