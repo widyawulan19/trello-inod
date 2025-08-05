@@ -598,3 +598,67 @@ app.post("/api/auth/reset-password", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
+
+import React, { useState } from 'react';
+import { updateUserSetting } from '../services/ApiServices';
+
+const ResetUserSetting = () => {
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    name: '',
+    nomor_wa: '',
+    divisi: '',
+    jabatan: '',
+    photo_url: ''
+  });
+
+  const [userId, setUserId] = useState('');
+  const [message, setMessage] = useState('');
+
+  const handleChange = (e) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await updateUserSetting(userId, formData);
+      setMessage('User setting updated successfully!');
+    } catch (error) {
+      console.error('Error updating user setting:', error);
+      setMessage('Failed to update user setting.');
+    }
+  };
+
+  return (
+    <div>
+      <h2>Update User Setting</h2>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="User ID"
+          value={userId}
+          onChange={(e) => setUserId(e.target.value)}
+          required
+        />
+        <input type="text" name="username" placeholder="Username" onChange={handleChange} required />
+        <input type="email" name="email" placeholder="Email" onChange={handleChange} required />
+        <input type="text" name="name" placeholder="Full Name" onChange={handleChange} />
+        <input type="text" name="nomor_wa" placeholder="Nomor WA" onChange={handleChange} />
+        <input type="text" name="divisi" placeholder="Divisi" onChange={handleChange} />
+        <input type="text" name="jabatan" placeholder="Jabatan" onChange={handleChange} />
+        <input type="text" name="photo_url" placeholder="Photo URL" onChange={handleChange} />
+        <button type="submit">Update</button>
+      </form>
+      {message && <p>{message}</p>}
+    </div>
+  );
+};
+
+// export default ResetUserSetting;
+
