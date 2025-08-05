@@ -476,10 +476,16 @@ app.put('/api/users-setting/:userId', async (req, res) => {
     `, [username, email, userId]);
 
     await client.query(`
-      UPDATE public.user_data
-      SET name = $1, nomor = $2, divisi = $3, jabatan = $4
-      WHERE user_id = $5;
-    `, [name, nomor, divisi, jabatan, userId]);
+    INSERT INTO public.users_data (user_id, name, nomor, divisi, jabatan)
+    VALUES ($1, $2, $3, $4, $5)
+    ON CONFLICT (user_id)
+    DO UPDATE SET
+      name = EXCLUDED.name,
+      nomor = EXCLUDED.nomor,
+      divisi = EXCLUDED.divisi,
+      jabatan = EXCLUDED.jabatan;
+  `, [userId, name, nomor, divisi, jabatan]);
+
 
     const upResult = await client.query(`
       SELECT profil_id FROM public.user_profil WHERE user_id = $1;
