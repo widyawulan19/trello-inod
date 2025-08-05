@@ -462,7 +462,7 @@ app.get('/api/users-setting/:userId', async (req, res) => {
 
 // update users setting 
 // PUT user profile setting
-app.put('/api/user-setting/:userId', async (req, res) => {
+app.put('/api/users-setting/:userId', async (req, res) => {
   const { userId } = req.params;
   const { username, email, name, nomor, divisi, jabatan, photo_url } = req.body;
 
