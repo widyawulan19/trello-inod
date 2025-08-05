@@ -98,9 +98,9 @@
     background-color: white;
     border: 1px solid white;
     border-radius: 20px;
-    padding: 50px;
+    padding: 20px 50px;
     width: 80%;
-    height: 80%;
+    height: 90%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -127,7 +127,7 @@
     /* border: 1px solid blue; */
     width: 100%;
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 5px;
     /* Tambahkan di sini supaya semua anaknya default align center */
 }
 
@@ -159,29 +159,66 @@
     justify-content: center;
 }
 
-.box-input label {
+.box-input .regis-input {
+    /* border: 1px solid red; */
+    margin-bottom: 5px;
+}
+
+.box-input .regis-input-pass {
+    /* border: 1px solid blue; */
+    gap: 2px;
+    width: 100%;
+}
+
+.regis-input-pass label {
     width: 100%;
     text-align: left;
     color: #5e5e5e;
     font-size: 11px;
+    margin-bottom: 8px;
+    /* border: 1px solid green; */
 }
 
-.box-input input {
+.regis-input-pass .password-wrapper {
+    /* border: 1px solid violet; */
+    margin: 0px;
+}
+
+.regis-input-pass input {
     border: 1px solid #eee;
     border-radius: 16px;
     padding: 8px 12px;
     width: 100%;
     font-size: 12px;
-    margin: 5px 0px;
+    margin: 0px;
     color: #333;
 }
 
-.box-input input:hover {
+.regis-input label {
+    width: 100%;
+    text-align: left;
+    color: #5e5e5e;
+    font-size: 11px;
+    margin-bottom: 5px;
+    /* border: 1px solid green; */
+}
+
+.regis-input input {
+    border: 1px solid #eee;
+    border-radius: 16px;
+    padding: 8px 12px;
+    width: 100%;
+    font-size: 12px;
+    margin: 0px;
+    color: #333;
+}
+
+.regis-input input:hover {
     border: 1px solid #9649eb;
     box-shadow: 0px 4px 8px #6b11cb40;
 }
 
-.box-input input:focus {
+.regis-input input:focus {
     outline: none;
     box-shadow: 0px 4px 8px #6b11cb40;
 }

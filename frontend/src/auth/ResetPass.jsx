@@ -7,43 +7,51 @@ import { IoEye, IoEyeOff } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
 import BootstrapTooltip from '../components/Tooltip';
 import { useSnackbar } from '../context/Snackbar';
+import { resetNewPassword } from '../services/ApiServices';
 
 const ResetPass = () => {
   const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
+  const { showSnackbar } = useSnackbar();
+
+  const [email, setEmail] = useState('');
+  const [securityQuestion, setSecurityQuestion] = useState('');
+  const [securityAnswer, setSecurityAnswer] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const {showSnackbar} = useSnackbar();
+  const [showPassword, setShowPassword] = useState(false);
 
-  const handleToLandingPage = () => {
-    navigate('/');
-  };
+  const handleToLandingPage = () => navigate('/');
 
-//   const handleToLogin = () => {
-//     navigate('/login');
-//   };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Simple validation (can be expanded later)
-    if (!password || !confirmPassword) {
-    //   alert('Mohon isi semua kolom password.');
-      showSnackbar('Mohon isi semua kolom password', 'error');
+    // Validasi input
+    if (!email || !securityQuestion || !securityAnswer || !password || !confirmPassword) {
+      showSnackbar('Mohon isi semua kolom yang diperlukan', 'error');
       return;
     }
 
     if (password !== confirmPassword) {
-    //   alert('Password dan konfirmasi tidak sama.');
-      showSnackbar('Password dan konfirmasi tidak sama', 'error')
+      showSnackbar('Password dan konfirmasi tidak sama', 'error');
       return;
     }
 
-    // TODO: Call API to reset password here
+    try {
+      // Kirim permintaan reset ke backend
+      await resetNewPassword({
+        email,
+        security_question: securityQuestion,
+        security_answer: securityAnswer,
+        new_password: password,
+      });
 
-    // alert('Password berhasil direset!');
-    showSnackbar('Password berhasil direset!', 'success')
-    navigate('/login');
+      showSnackbar('Password berhasil direset!', 'success');
+      navigate('/login');
+    } catch (err) {
+      const errorMsg =
+        err.response?.data?.error || err.response?.data?.message || 'Gagal reset password';
+      showSnackbar(errorMsg, 'error');
+    }
   };
 
   return (
@@ -57,9 +65,7 @@ const ResetPass = () => {
         </div>
 
         <h4>Kelola proyek musik dan produksi dengan lebih rapi dan terorganisir</h4>
-        <p>
-          Satu tempat untuk mengatur project, revisi, deadline, dan kolaborasi tim — semua dalam satu platform.
-        </p>
+        <p>Satu tempat untuk mengatur project, revisi, deadline, dan kolaborasi tim — semua dalam satu platform.</p>
 
         <div className="btn-lp" onClick={handleToLandingPage}>
           <HiArrowLeft />
@@ -71,7 +77,7 @@ const ResetPass = () => {
         <form className="content-box" onSubmit={handleSubmit}>
           <div className="ress-logo">
             <div className="logo-box">
-              <IoIosUnlock size={50} />
+              <IoIosUnlock size={30} />
             </div>
           </div>
 
@@ -84,19 +90,49 @@ const ResetPass = () => {
 
           <div className="box-input">
             <div className="regis-input">
-              <label>
-                Password Baru
-                <span className="required">*</span>
-              </label>
+              <label>Email <span className="required">*</span></label>
+              <input
+                type="email"
+                placeholder="Masukkan email kamu"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+
+            <div className="regis-input">
+              <label>Pertanyaan Keamanan <span className="required">*</span></label>
+              <input
+                type="text"
+                placeholder="Contoh: Apa nama hewan peliharaan pertamamu?"
+                value={securityQuestion}
+                onChange={(e) => setSecurityQuestion(e.target.value)}
+              />
+            </div>
+
+            <div className="regis-input">
+              <label>Jawaban Keamanan <span className="required">*</span></label>
+              <input
+                type="text"
+                placeholder="Jawaban dari pertanyaan keamanan"
+                value={securityAnswer}
+                onChange={(e) => setSecurityAnswer(e.target.value)}
+              />
+            </div>
+
+            <div className="regis-input-pass">
+              <label>Password Baru <span className="required">*</span></label>
               <div className="password-wrapper">
                 <input
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Masukkan password baru"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  name="newPassword"
+                  style={{ margin: '0px' }}
                 />
-                <BootstrapTooltip title={showPassword ? 'Sembunyikan Password' : 'Tampilkan Password'} placement="top">
+                <BootstrapTooltip
+                  title={showPassword ? 'Sembunyikan Password' : 'Tampilkan Password'}
+                  placement="top"
+                >
                   <span className="toggle-password" onClick={() => setShowPassword(!showPassword)}>
                     {showPassword ? <IoEyeOff /> : <IoEye />}
                   </span>
@@ -104,20 +140,19 @@ const ResetPass = () => {
               </div>
             </div>
 
-            <div className="regis-input">
-              <label>
-                Konfirmasi Password
-                <span className="required">*</span>
-              </label>
+            <div className="regis-input-pass">
+              <label>Konfirmasi Password <span className="required">*</span></label>
               <div className="password-wrapper">
                 <input
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Ulangi password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  name="confirmPassword"
                 />
-                <BootstrapTooltip title={showPassword ? 'Sembunyikan Password' : 'Tampilkan Password'} placement="top">
+                <BootstrapTooltip
+                  title={showPassword ? 'Sembunyikan Password' : 'Tampilkan Password'}
+                  placement="top"
+                >
                   <span className="toggle-password" onClick={() => setShowPassword(!showPassword)}>
                     {showPassword ? <IoEyeOff /> : <IoEye />}
                   </span>

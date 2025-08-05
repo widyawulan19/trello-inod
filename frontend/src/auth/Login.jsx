@@ -28,7 +28,7 @@ const Login = () => {
     };
 
     const handleToReqRes = () => {
-        navigate('/req-reset');
+        navigate('/reset-pass');
     };
 
     const handleLogin = async () => {
