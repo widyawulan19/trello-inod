@@ -462,54 +462,49 @@ app.get('/api/users-setting/:userId', async (req, res) => {
 
 // update users setting 
 // PUT user profile setting
+// PUT user-setting
 app.put('/api/users-setting/:userId', async (req, res) => {
   const { userId } = req.params;
   const { username, email, name, nomor, divisi, jabatan, photo_url } = req.body;
 
-  try {
-    await client.query('BEGIN'); // langsung pakai client
+  const client = new Client({ connectionString: process.env.DATABASE_URL });
+  await client.connect();
 
+  try {
+    await client.query('BEGIN');
+
+    // Update users table
     await client.query(`
-      UPDATE public.users
+      UPDATE users
       SET username = $1, email = $2
-      WHERE id = $3;
+      WHERE id = $3
     `, [username, email, userId]);
 
+    // Update users_data table
     await client.query(`
-    INSERT INTO public.users_data (user_id, name, nomor, divisi, jabatan)
-    VALUES ($1, $2, $3, $4, $5)
-    ON CONFLICT (user_id)
-    DO UPDATE SET
-      name = EXCLUDED.name,
-      nomor = EXCLUDED.nomor,
-      divisi = EXCLUDED.divisi,
-      jabatan = EXCLUDED.jabatan;
-  `, [userId, name, nomor, divisi, jabatan]);
-
-
-    const upResult = await client.query(`
-      SELECT profil_id FROM public.user_profil WHERE user_id = $1;
-    `, [userId]);
-
-    if (upResult.rows.length > 0) {
-      const profilId = upResult.rows[0].profil_id;
-
-      await client.query(`
-        UPDATE public.profil
-        SET photo_url = $1
-        WHERE id = $2;
-      `, [photo_url, profilId]);
-    }
+      INSERT INTO users_data (user_id, name, nomor, divisi, jabatan, photo_url, updated_at)
+      VALUES ($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP)
+      ON CONFLICT (user_id)
+      DO UPDATE SET
+        name = EXCLUDED.name,
+        nomor = EXCLUDED.nomor,
+        divisi = EXCLUDED.divisi,
+        jabatan = EXCLUDED.jabatan,
+        photo_url = EXCLUDED.photo_url,
+        updated_at = CURRENT_TIMESTAMP
+    `, [userId, name, nomor, divisi, jabatan, photo_url]);
 
     await client.query('COMMIT');
-    res.json({ message: 'User profile updated successfully' });
-
+    res.json({ message: 'User setting updated successfully' });
   } catch (error) {
     await client.query('ROLLBACK');
-    console.error('Error updating user profile:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    console.error('Error updating user setting:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  } finally {
+    await client.end();
   }
 });
+
 
 
 
