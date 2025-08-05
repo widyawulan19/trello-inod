@@ -420,6 +420,46 @@ app.get('/api/user-setting/:userId', async (req, res) => {
   }
 });
 
+// 7. NEW GET user profile (nama, email, username, nomor wa, divisi, jabatan, photo_url)
+app.get('/api/users-setting/:userId', async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const result = await client.query(`
+      SELECT 
+          u.id,
+          u.username,
+          u.email,
+          u.create_at,
+          uds.name,
+          uds.nomor,
+          uds.divisi,
+          uds.jabatan,
+          p.photo_url
+      FROM 
+          public.users u
+      LEFT JOIN 
+          public.users_data ud ON u.id = ud.user_id
+      LEFT JOIN 
+          public.user_profil up ON u.id = up.user_id
+      LEFT JOIN 
+          public.profil p ON up.profil_id = p.id
+      WHERE 
+          u.id = $1;
+    `, [userId]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const userProfile = result.rows[0];
+    res.json(userProfile);
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 
 
 //8. Edit user profile setting
