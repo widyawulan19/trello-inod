@@ -392,7 +392,7 @@ app.get('/api/user-setting/:userId', async (req, res) => {
           u.email,
           u.create_at,
           ud.name,
-          ud.nomor_wa,
+          ud.nomor AS nomor_wa,
           ud.divisi,
           ud.jabatan,
           p.photo_url
