@@ -462,55 +462,49 @@ app.get('/api/users-setting/:userId', async (req, res) => {
 
 // update users setting 
 // PUT user profile setting
-app.put('/api/users-setting/:userId', async (req, res) => {
+app.put('/api/user-setting/:userId', async (req, res) => {
   const { userId } = req.params;
   const { username, email, name, nomor, divisi, jabatan, photo_url } = req.body;
 
-  const clientConnection = await client.connect();
-
   try {
-    await clientConnection.query('BEGIN'); // Mulai transaksi
+    await client.query('BEGIN'); // langsung pakai client
 
-    // Update tabel users
-    await clientConnection.query(`
+    await client.query(`
       UPDATE public.users
       SET username = $1, email = $2
       WHERE id = $3;
     `, [username, email, userId]);
 
-    // Update tabel user_data
-    await clientConnection.query(`
+    await client.query(`
       UPDATE public.user_data
       SET name = $1, nomor = $2, divisi = $3, jabatan = $4
       WHERE user_id = $5;
     `, [name, nomor, divisi, jabatan, userId]);
 
-    // Dapatkan profil_id dari user_profil untuk update photo_url di profil
-    const upResult = await clientConnection.query(`
+    const upResult = await client.query(`
       SELECT profil_id FROM public.user_profil WHERE user_id = $1;
     `, [userId]);
 
     if (upResult.rows.length > 0) {
       const profilId = upResult.rows[0].profil_id;
 
-      await clientConnection.query(`
+      await client.query(`
         UPDATE public.profil
         SET photo_url = $1
         WHERE id = $2;
       `, [photo_url, profilId]);
     }
 
-    await clientConnection.query('COMMIT'); // Commit transaksi
-
+    await client.query('COMMIT');
     res.json({ message: 'User profile updated successfully' });
+
   } catch (error) {
-    await clientConnection.query('ROLLBACK'); // Rollback jika error
+    await client.query('ROLLBACK');
     console.error('Error updating user profile:', error);
     res.status(500).json({ message: 'Internal server error' });
-  } finally {
-    clientConnection.release(); // Pastikan koneksi dilepas
   }
 });
+
 
 
 
