@@ -232,3 +232,31 @@ app.post("/api/auth/register", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
+
+// REGISTER
+app.post("/api/auth/register", async (req, res) => {
+  const { username, email, password, security_question, security_answer } = req.body;
+
+  try {
+    // Hash password dan security_answer
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedSecurityAnswer = await bcrypt.hash(security_answer, 10);
+
+    // Simpan ke tabel users
+    const result = await client.query(
+      `INSERT INTO users (username, email, password, security_question, security_answer_hash)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING id, username, email, security_question`,
+      [username, email, hashedPassword, security_question, hashedSecurityAnswer]
+    );
+
+    res.status(201).json({
+      message: "User registered successfully",
+      user: result.rows[0]
+    });
+  } catch (error) {
+    console.error("Error during registration:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
