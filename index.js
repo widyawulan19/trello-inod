@@ -494,7 +494,7 @@ app.put("/api/user-setting/:userId", async (req, res) => {
   } = req.body;
 
   // Gunakan salah satu nilai untuk nomor
-  const finalNomor = nomor || nomor_wa;
+  const finalNomor = nomor_wa;
 
   try {
     // Update tabel users
