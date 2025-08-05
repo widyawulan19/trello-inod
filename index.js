@@ -439,7 +439,7 @@ app.get('/api/users-setting/:userId', async (req, res) => {
       FROM 
           public.users u
       LEFT JOIN 
-          public.users_data ud ON u.id = ud.user_id
+          public.users_data uds ON u.id = ud.user_id
       LEFT JOIN 
           public.user_profil up ON u.id = up.user_id
       LEFT JOIN 
