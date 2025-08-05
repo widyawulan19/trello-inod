@@ -98,13 +98,13 @@
     background-color: white;
     border: 1px solid white;
     border-radius: 20px;
-    padding: 50px;
+    padding: 50px !important;
     width: 80%;
     height: 80%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* justify-content: center; */
+    justify-content: center;
 }
 
 .content-box .box-title {

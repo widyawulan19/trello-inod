@@ -77,7 +77,7 @@ const ResetPass = () => {
         <form className="content-box" onSubmit={handleSubmit}>
           <div className="ress-logo">
             <div className="logo-box">
-              <IoIosUnlock size={30} />
+              <IoIosUnlock size={20} />
             </div>
           </div>
 

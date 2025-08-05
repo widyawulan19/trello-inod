@@ -126,7 +126,9 @@
 /* PROFILE SETTING  */
 .profile-left .profile-setting {
     border-top: 1px solid #ddd;
+    /* border: 1px solid red; */
     height: 60%;
+    width: 80%;
     gap: 5px;
     padding: 10px;
     display: flex;
