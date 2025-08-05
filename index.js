@@ -461,7 +461,6 @@ app.get('/api/users-setting/:userId', async (req, res) => {
 });
 
 // PUT user profile setting
-// PUT: Update user profile setting
 app.put('/api/users-setting/:userId', async (req, res) => {
   const { userId } = req.params;
   const {
@@ -487,13 +486,13 @@ app.put('/api/users-setting/:userId', async (req, res) => {
       WHERE id = $3
     `, [username, email, userId]);
 
-    // Update atau insert ke tabel `users_data`
+    // Manual cek users_data
     const usersDataResult = await client.query(`
       SELECT id FROM public.users_data WHERE user_id = $1
     `, [userId]);
 
     if (usersDataResult.rows.length > 0) {
-      // Jika sudah ada, update
+      // Sudah ada, UPDATE
       await client.query(`
         UPDATE public.users_data
         SET name = $1,
@@ -503,24 +502,21 @@ app.put('/api/users-setting/:userId', async (req, res) => {
         WHERE user_id = $5
       `, [name, nomor, divisi, jabatan, userId]);
     } else {
-      // Jika belum ada, insert
+      // Belum ada, INSERT
       await client.query(`
         INSERT INTO public.users_data (user_id, name, nomor, divisi, jabatan)
         VALUES ($1, $2, $3, $4, $5)
       `, [userId, name, nomor, divisi, jabatan]);
     }
 
-    // Update atau insert ke tabel `profil`
+    // Manual cek user_profil
     const userProfilResult = await client.query(`
-      SELECT up.profil_id FROM public.user_profil up
-      WHERE up.user_id = $1
+      SELECT profil_id FROM public.user_profil WHERE user_id = $1
     `, [userId]);
 
-    let profilId;
-
     if (userProfilResult.rows.length > 0) {
-      // Jika sudah ada, update photo_url di `profil`
-      profilId = userProfilResult.rows[0].profil_id;
+      // Sudah ada, UPDATE photo_url
+      const profilId = userProfilResult.rows[0].profil_id;
 
       await client.query(`
         UPDATE public.profil
@@ -528,14 +524,14 @@ app.put('/api/users-setting/:userId', async (req, res) => {
         WHERE id = $2
       `, [photo_url, profilId]);
     } else {
-      // Jika belum ada, insert ke `profil` dan `user_profil`
+      // Belum ada, INSERT ke profil dan user_profil
       const insertProfil = await client.query(`
         INSERT INTO public.profil (photo_url)
         VALUES ($1)
         RETURNING id
       `, [photo_url]);
 
-      profilId = insertProfil.rows[0].id;
+      const profilId = insertProfil.rows[0].id;
 
       await client.query(`
         INSERT INTO public.user_profil (user_id, profil_id)
@@ -547,7 +543,7 @@ app.put('/api/users-setting/:userId', async (req, res) => {
     res.status(200).json({ message: 'User setting updated successfully' });
   } catch (error) {
     await client.query('ROLLBACK');
-    console.error('Error updating user setting:', error);
+    console.error('Error updating user profile:', error);
     res.status(500).json({ message: 'Internal server error' });
   } finally {
     client.release();
