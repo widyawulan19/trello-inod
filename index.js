@@ -422,6 +422,9 @@ app.get('/api/user-setting/:userId', async (req, res) => {
 
 
 
+
+
+
 //8. Edit user profile setting
 // app.put('/api/user-setting/:userId', async (req, res) => {
 //   const { userId } = req.params;
