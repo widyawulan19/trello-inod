@@ -483,93 +483,76 @@ app.get('/api/user-setting/:userId', async (req, res) => {
 // 8. UPDATE user profile setting
 app.put('/api/user-setting/:userId', async (req, res) => {
   const { userId } = req.params;
-  const { username, email, name, nomor_wa, divisi, jabatan, photo_url } = req.body;
+  const {
+    username,
+    email,
+    name,
+    nomor,
+    divisi,
+    jabatan,
+    photo_url
+  } = req.body;
 
   try {
     await client.query('BEGIN');
 
-    await client.query(
-      `UPDATE users 
-       SET username = $1, email = $2, name = $3, nomor = $4, divisi = $5, jabatan = $6, photo_url = $7 
-       WHERE id = $8`,
-      [username, email, name, nomor_wa, divisi, jabatan, photo_url, userId]
-    );
+    // Update `users` table
+    await client.query(`
+      UPDATE users
+      SET username = $1, email = $2
+      WHERE id = $3
+    `, [username, email, userId]);
+
+    // Update `user_data` table
+    await client.query(`
+      UPDATE user_data
+      SET name = $1, nomor = $2, divisi = $3, jabatan = $4
+      WHERE user_id = $5
+    `, [name, nomor, divisi, jabatan, userId]);
+
+    // Cek apakah user sudah punya profil (melalui relasi user_profil)
+    const profilResult = await client.query(`
+      SELECT p.id AS profil_id
+      FROM user_profil up
+      JOIN profil p ON p.id = up.profil_id
+      WHERE up.user_id = $1
+    `, [userId]);
+
+    if (profilResult.rows.length > 0) {
+      // Jika profil sudah ada, update photo_url
+      const profilId = profilResult.rows[0].profil_id;
+
+      await client.query(`
+        UPDATE profil
+        SET photo_url = $1
+        WHERE id = $2
+      `, [photo_url, profilId]);
+    } else {
+      // Jika belum ada, buat profil baru lalu tautkan dengan user_profil
+      const insertProfil = await client.query(`
+        INSERT INTO profil (photo_url)
+        VALUES ($1)
+        RETURNING id
+      `, [photo_url]);
+
+      const newProfilId = insertProfil.rows[0].id;
+
+      await client.query(`
+        INSERT INTO user_profil (user_id, profil_id)
+        VALUES ($1, $2)
+      `, [userId, newProfilId]);
+    }
 
     await client.query('COMMIT');
-    res.status(200).json({ message: 'success' });
+
+    res.json({ message: 'User profile updated successfully' });
   } catch (error) {
     await client.query('ROLLBACK');
-    console.error('Error updating user setting:', error);
-    res.status(500).json({ message: 'Failed to update user setting' });
+    console.error('Error updating user profile:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 });
 
-
-// app.put('/api/user-setting/:userId', async (req, res) => {
-//   const { userId } = req.params;
-//   const { username, email, name, nomor, divisi, jabatan, photo_url } = req.body;
-
-//   try {
-//     // Mulai transaksi
-//     await client.query('BEGIN');
-
-//     // Update users table
-//     await client.query(`
-//       UPDATE users 
-//       SET username = $1, email = $2
-//       WHERE id = $3
-//     `, [username, email, userId]);
-
-//     // Update user_data table
-//     await client.query(`
-//       UPDATE user_data 
-//       SET name = $1, nomor = $2, divisi = $3, jabatan = $4
-//       WHERE user_id = $5
-//     `, [name, nomor, divisi, jabatan, userId]);
-
-//     // Cek apakah user_profil sudah ada
-//     const existingProfil = await client.query(`
-//       SELECT profil.id, profil.photo_url 
-//       FROM user_profil 
-//       JOIN profil ON user_profil.profil_id = profil.id
-//       WHERE user_profil.user_id = $1
-//     `, [userId]);
-
-//     if (existingProfil.rows.length > 0) {
-//       // Update profil table (photo_url)
-//       const profilId = existingProfil.rows[0].id;
-
-//       await client.query(`
-//         UPDATE profil 
-//         SET photo_url = $1
-//         WHERE id = $2
-//       `, [photo_url, profilId]);
-//     } else {
-//       // Insert new profil if doesn't exist and link to user_profil
-//       const insertProfil = await client.query(`
-//         INSERT INTO profil (photo_url)
-//         VALUES ($1)
-//         RETURNING id
-//       `, [photo_url]);
-
-//       const newProfilId = insertProfil.rows[0].id;
-
-//       await client.query(`
-//         INSERT INTO user_profil (user_id, profil_id)
-//         VALUES ($1, $2)
-//       `, [userId, newProfilId]);
-//     }
-
-//     // Commit transaksi
-//     await client.query('COMMIT');
-
-//     res.json({ message: 'User profile updated successfully' });
-//   } catch (error) {
-//     await client.query('ROLLBACK');
-//     console.error('Error updating user profile:', error);
-//     res.status(500).json({ message: 'Internal server error' });
-//   }
-// });
 
 
 // END USERS 
