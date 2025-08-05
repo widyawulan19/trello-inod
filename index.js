@@ -460,50 +460,100 @@ app.get('/api/users-setting/:userId', async (req, res) => {
   }
 });
 
-// update users setting 
 // PUT user profile setting
-// PUT user-setting
+// PUT: Update user profile setting
 app.put('/api/users-setting/:userId', async (req, res) => {
   const { userId } = req.params;
-  const { username, email, name, nomor, divisi, jabatan, photo_url } = req.body;
+  const {
+    username,
+    email,
+    name,
+    nomor,
+    divisi,
+    jabatan,
+    photo_url
+  } = req.body;
 
-  const client = new Client({ connectionString: process.env.DATABASE_URL });
-  await client.connect();
+  const client = await pool.connect();
 
   try {
     await client.query('BEGIN');
 
-    // Update users table
+    // Update tabel `users`
     await client.query(`
-      UPDATE users
-      SET username = $1, email = $2
+      UPDATE public.users
+      SET username = $1,
+          email = $2
       WHERE id = $3
     `, [username, email, userId]);
 
-    // Update users_data table
-    await client.query(`
-      INSERT INTO users_data (user_id, name, nomor, divisi, jabatan, photo_url, updated_at)
-      VALUES ($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP)
-      ON CONFLICT (user_id)
-      DO UPDATE SET
-        name = EXCLUDED.name,
-        nomor = EXCLUDED.nomor,
-        divisi = EXCLUDED.divisi,
-        jabatan = EXCLUDED.jabatan,
-        photo_url = EXCLUDED.photo_url,
-        updated_at = CURRENT_TIMESTAMP
-    `, [userId, name, nomor, divisi, jabatan, photo_url]);
+    // Update atau insert ke tabel `users_data`
+    const usersDataResult = await client.query(`
+      SELECT id FROM public.users_data WHERE user_id = $1
+    `, [userId]);
+
+    if (usersDataResult.rows.length > 0) {
+      // Jika sudah ada, update
+      await client.query(`
+        UPDATE public.users_data
+        SET name = $1,
+            nomor = $2,
+            divisi = $3,
+            jabatan = $4
+        WHERE user_id = $5
+      `, [name, nomor, divisi, jabatan, userId]);
+    } else {
+      // Jika belum ada, insert
+      await client.query(`
+        INSERT INTO public.users_data (user_id, name, nomor, divisi, jabatan)
+        VALUES ($1, $2, $3, $4, $5)
+      `, [userId, name, nomor, divisi, jabatan]);
+    }
+
+    // Update atau insert ke tabel `profil`
+    const userProfilResult = await client.query(`
+      SELECT up.profil_id FROM public.user_profil up
+      WHERE up.user_id = $1
+    `, [userId]);
+
+    let profilId;
+
+    if (userProfilResult.rows.length > 0) {
+      // Jika sudah ada, update photo_url di `profil`
+      profilId = userProfilResult.rows[0].profil_id;
+
+      await client.query(`
+        UPDATE public.profil
+        SET photo_url = $1
+        WHERE id = $2
+      `, [photo_url, profilId]);
+    } else {
+      // Jika belum ada, insert ke `profil` dan `user_profil`
+      const insertProfil = await client.query(`
+        INSERT INTO public.profil (photo_url)
+        VALUES ($1)
+        RETURNING id
+      `, [photo_url]);
+
+      profilId = insertProfil.rows[0].id;
+
+      await client.query(`
+        INSERT INTO public.user_profil (user_id, profil_id)
+        VALUES ($1, $2)
+      `, [userId, profilId]);
+    }
 
     await client.query('COMMIT');
-    res.json({ message: 'User setting updated successfully' });
+    res.status(200).json({ message: 'User setting updated successfully' });
   } catch (error) {
     await client.query('ROLLBACK');
     console.error('Error updating user setting:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ message: 'Internal server error' });
   } finally {
-    await client.end();
+    client.release();
   }
 });
+
 
 
 
