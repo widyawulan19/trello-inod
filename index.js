@@ -487,7 +487,7 @@ app.put('/api/user-setting/:userId', async (req, res) => {
     username,
     email,
     name,
-    nomor,
+    nomor_wa,
     divisi,
     jabatan,
     photo_url
@@ -497,18 +497,20 @@ app.put('/api/user-setting/:userId', async (req, res) => {
     await client.query('BEGIN');
 
     // Update `users` table
-    await client.query(`
-      UPDATE users
-      SET username = $1, email = $2
-      WHERE id = $3
-    `, [username, email, userId]);
+    await client.query(
+      `UPDATE users 
+       SET username = $1, email = $2, photo_url = $3 
+       WHERE id = $4`,
+      [username, email, photo_url, userId]
+    );
 
     // Update `user_data` table
-    await client.query(`
-      UPDATE user_data
-      SET name = $1, nomor = $2, divisi = $3, jabatan = $4
-      WHERE user_id = $5
-    `, [name, nomor, divisi, jabatan, userId]);
+    await client.query(
+      `UPDATE user_data 
+       SET name = $1, nomor_wa = $2, divisi = $3, jabatan = $4 
+       WHERE user_id = $5`,
+      [name, nomor_wa, divisi, jabatan, userId]
+    );
 
     // Cek apakah user sudah punya profil (melalui relasi user_profil)
     const profilResult = await client.query(`
