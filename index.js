@@ -199,46 +199,46 @@ app.post("/api/auth/login", async (req, res) => {
 });
 
 // RESSET PASS 
+app.post("/api/auth/reset-password", async (req, res) => {
+  const { email, security_question, security_answer, new_password } = req.body;
 
-// buat transporter seperti di atas dulu ya
-
-app.post("/api/auth/request-reset", async (req, res) => {
-  const { email } = req.body;
   try {
-    const user = await client.query(`SELECT * FROM users WHERE email = $1`, [email]);
-    if (user.rows.length === 0) {
-      return res.status(404).json({ message: "Email not found" });
-    }
-
-    const resetToken = crypto.randomBytes(32).toString("hex");
-    const resetExpires = new Date(Date.now() + 3600000); // 1 jam
-
-    await client.query(
-      `UPDATE users SET password_reset_token = $1, password_reset_expires = $2 WHERE email = $3`,
-      [resetToken, resetExpires, email]
+    // 1. Cari user berdasarkan email dan pertanyaan keamanan
+    const userResult = await client.query(
+      `SELECT id, security_answer_hash FROM users 
+       WHERE email = $1 AND security_question = $2`,
+      [email, security_question]
     );
 
-    const resetLink = `http://localhost:3000/reset-password?token=${resetToken}`;
+    if (userResult.rows.length === 0) {
+      return res.status(404).json({ message: "User not found with that question and email" });
+    }
 
-    // Kirim email
-    const mailOptions = {
-      from: "your.email@gmail.com",
-      to: email,
-      subject: "Password Reset",
-      html: `<p>Kamu meminta reset password. Klik link berikut untuk reset:</p>
-             <a href="${resetLink}">${resetLink}</a>
-             <p>Link berlaku selama 1 jam.</p>`,
-    };
+    const user = userResult.rows[0];
 
-    await transporter.sendMail(mailOptions);
+    // 2. Bandingkan jawaban dengan hash yang tersimpan
+    const isMatch = await bcrypt.compare(security_answer, user.security_answer_hash);
 
-    res.json({ message: "Reset link has been sent to your email" });
+    if (!isMatch) {
+      return res.status(401).json({ message: "Incorrect security answer" });
+    }
 
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Error requesting password reset" });
+    // 3. Hash password baru
+    const hashedNewPassword = await bcrypt.hash(new_password, 10);
+
+    // 4. Update password di DB
+    await client.query(
+      `UPDATE users SET password = $1 WHERE id = $2`,
+      [hashedNewPassword, user.id]
+    );
+
+    res.status(200).json({ message: "Password has been reset successfully" });
+  } catch (error) {
+    console.error("Error during password reset:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
+
 
 
 // HASH PASS MANUAL 
