@@ -123,9 +123,11 @@ app.post("/api/auth/register", async (req, res) => {
   const { username, email, password, security_question, security_answer } = req.body;
 
   try {
+    // Hash password dan security answer
     const hashedPassword = await bcrypt.hash(password, 10);
-    const hashedSecurityAnswer = await bcrypt.hash(security_answer, 10); // ini yang disimpan
+    const hashedSecurityAnswer = await bcrypt.hash(security_answer, 10);
 
+    // Simpan ke DB
     const userResult = await client.query(
       `INSERT INTO users (username, email, password, security_question, security_answer_hash)
        VALUES ($1, $2, $3, $4, $5)
@@ -135,12 +137,14 @@ app.post("/api/auth/register", async (req, res) => {
 
     const userId = userResult.rows[0].id;
 
+    // Insert default profil
     await client.query(
       `INSERT INTO user_profil (user_id, profil_id)
        VALUES ($1, $2)`,
       [userId, 1]
     );
 
+    // Insert default user_data
     await client.query(
       `INSERT INTO user_data (user_id, name, nomor, divisi, jabatan)
        VALUES ($1, $2, $3, $4, $5)`,
@@ -152,10 +156,11 @@ app.post("/api/auth/register", async (req, res) => {
       user: userResult.rows[0],
     });
   } catch (error) {
-    console.error("Error during registration:", error.message);
+    console.error("Error during registration:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
 
 
 
