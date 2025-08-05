@@ -120,16 +120,16 @@ const transporter = nodemailer.createTransport({
 
 //new register
 app.post("/api/auth/register", async (req, res) => {
-  const { username, email, password, security_question, security_answer } = req.body;
+  const { username, email, password, security_question, security_answer_hash } = req.body;
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const userResult = await client.query(
-      `INSERT INTO users (username, email, password, security_question, security_answer)
+      `INSERT INTO users (username, email, password, security_question, security_answer_hash)
        VALUES ($1, $2, $3, $4, $5)
        RETURNING id, username, email, security_question`,
-      [username, email, hashedPassword, security_question, security_answer]
+      [username, email, hashedPassword, security_question, security_answer_hash]
     );
 
     const userId = userResult.rows[0].id;
