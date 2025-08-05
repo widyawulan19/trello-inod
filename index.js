@@ -480,14 +480,13 @@ app.get('/api/user-setting/:userId', async (req, res) => {
 
 
 // PUT /api/user-setting/:userId
-// 8. UPDATE user profile setting
 app.put('/api/user-setting/:userId', async (req, res) => {
   const { userId } = req.params;
   const {
     username,
     email,
     name,
-    nomor_wa,
+    nomor, // gunakan "nomor", bukan "nomor_wa"
     divisi,
     jabatan,
     photo_url,
@@ -496,21 +495,22 @@ app.put('/api/user-setting/:userId', async (req, res) => {
   try {
     await client.query('BEGIN');
 
-    // Update `users` table
+    // Update `users` table (tanpa photo_url!)
     await client.query(
       `UPDATE users 
-       SET username = $1, email = $2, photo_url = $3 
-       WHERE id = $4`,
-      [username, email, photo_url, userId]
+       SET username = $1, email = $2 
+       WHERE id = $3`,
+      [username, email, userId]
     );
 
-    // Update `user_data` table
+    // Update `user_data` table (pakai field "nomor" bukan "nomor_wa")
     await client.query(
       `UPDATE user_data 
-       SET name = $1, nomor_wa = $2, divisi = $3, jabatan = $4 
+       SET name = $1, nomor = $2, divisi = $3, jabatan = $4 
        WHERE user_id = $5`,
-      [name, nomor_wa, divisi, jabatan, userId]
+      [name, nomor, divisi, jabatan, userId]
     );
+
     // Cek apakah user sudah punya profil (melalui relasi user_profil)
     const profilResult = await client.query(`
       SELECT p.id AS profil_id
