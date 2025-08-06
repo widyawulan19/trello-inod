@@ -85,11 +85,12 @@ const SearchGlobalCard = ({ userId }) => {
                 <li
                     key={card.card_id}
                     className="p-3 mb-2 border rounded cursor-pointer search-result-item hover:bg-gray-100"
-                    onClick={() =>
-                    navigate(
-                        `/workspaces/${card.workspace_id}/board/${card.board_id}/lists/${card.list_id}/cards/${card.card_id}`
-                    )
-                    }
+                    onClick={() => {
+                      navigate(
+                        `/layout/workspaces/${card.workspace_id}/board/${card.board_id}/lists/${card.list_id}/cards/${card.card_id}`
+                      );
+                      setKeyword(''); // ⬅️ Reset keyword biar result hilang
+                    }}
                 >
                     <div className="card-title">
                     <strong>{card.title}</strong>

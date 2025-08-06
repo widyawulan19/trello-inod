@@ -117,7 +117,7 @@ const PersonalNotification=({userId})=> {
     }
 
   return (
-    <div>
+    <div style={{ height:'70vh', overflowY:'auto'}}>
         <div className="notif-setting">
             <button 
                 className={`notif-button ${activeNotification === 'chat' ? 'active' : ''}`}

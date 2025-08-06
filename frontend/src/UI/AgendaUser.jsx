@@ -50,7 +50,7 @@ const AgendaUser = ({userId,onClose}) => {
 
     //3. function navigate to app router
     const handleNavigateToPage = () =>{
-        navigate('/agenda-page')
+        navigate('agenda-page')
         onClose()
     }
 

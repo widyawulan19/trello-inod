@@ -111,7 +111,7 @@ const Card=({card,boards, lists,userId,listName, listId,fetchBoardDetail,fetchLi
 
     //navigate to newCardDetail
     const handleNavigateToCardDetail = () =>{
-        navigate(`/workspaces/${workspaceId}/board/${boardId}/lists/${listId}/cards/${card.id} `)
+        navigate(`/layout/workspaces/${workspaceId}/board/${boardId}/lists/${listId}/cards/${card.id} `)
     }
 
     const handleShowModal = () =>{

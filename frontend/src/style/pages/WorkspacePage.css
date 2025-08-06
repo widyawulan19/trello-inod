@@ -1,4 +1,4 @@
-.wp-container{
+.wp-container {
     border: 1px solid #ddd;
     /* border: 1px solid green; */
     height: 97%;
@@ -12,7 +12,7 @@
 }
 
 /* HEADER  */
-.wp-header{
+.wp-header {
     border-bottom: 1px solid #ddd;
     border-radius: 8px;
     background-color: white;
@@ -22,7 +22,8 @@
     justify-content: space-between;
     position: relative;
 }
-.wp-header .nav{
+
+.wp-header .nav {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -34,25 +35,26 @@
     /* border: 1px solid green; */
 }
 
-.nav h5{
+.nav h5 {
     font-weight: bold;
     font-size: 15px;
     color: #333;
     letter-spacing: 0.5px;
 }
 
-.nav p{
+.nav p {
     width: 100%;
     font-size: 12px;
     color: #5e5e5e;
     text-align: left;
     cursor: pointer;
 }
-.nav p:hover{
+
+.nav p:hover {
     color: #5D12EB;
 }
 
-.more-action .create-board-btn{
+.more-action .create-board-btn {
     border: 1px solid #5D12EB;
     border-radius: 8px;
     background: linear-gradient(to right, #6a11cb, #2575fc);
@@ -65,108 +67,143 @@
     align-items: center;
     justify-content: center;
 }
-.more-action .create-board-btn:hover{
+
+.more-action .create-board-btn:hover {
     background: linear-gradient(to right, #2575fc, #6a11cb);
 }
 
-.bform-workspace{
+.bform-workspace {
     position: absolute;
-    top: 40px; 
-    left: 88%;
+    top: 10%;
+    left: 85%;
     /* right: 20%; */
     transform: translateX(-50%);
     background: white;
     border: 1px solid #ddd;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    padding: 10px 5px;
+    border-radius: 16px;
+    box-shadow: 0px 4px 8px #5e12eb46;
+    /* padding: 10px 5px; */
     z-index: 100;
-    width: auto;
-    min-width: 250px;
+    width: 30vw;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
-.bform-workspace .bheader p{
+
+.bform-workspace .bheader p {
     margin: 0px;
     font-size: 12px;
     font-weight: bold;
 }
-.bform-workspace .bheader{
-    border-bottom: 1px solid #eee;
-    padding: 5px 10px;
-    padding-left: 0px;
-    width: 90%;
-    text-align: center;
+
+.bform-workspace .bheader {
+    border-bottom: 1px solid #ddd;
+    padding: 10px;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
-.bheader-icon{
+
+.bheader .bheader-left {
+    gap: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.bform-workspace .board-icon {
+    margin-right: 5px;
+    color: white;
+    padding: 5px;
+    border-radius: 6px;
+    font-size: 12px;
+    background: linear-gradient(90deg, #7246eb, #532189)
+}
+
+.bheader-icon {
     border: 1px solid white;
     border-radius: 4px;
     /* padding: 2px; */
     cursor: pointer;
     font-size: 20px;
 }
-.bheader-icon:hover{
+
+.bheader-icon:hover {
     border: 1px solid #ddd;
     background-color: #ddd;
 
 }
-.bbody{
+
+.bbody {
     /* border: 1px solid #eee; */
-    padding: 10px;
+    padding: 10px 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    width: 100%;
 }
+
 .fname,
-.fdesc
-{
+.fdesc {
     /* border: 1px solid #333; */
     padding: 0px 2px;
     margin: 3px 0px;
+    width: 100%;
+}
+
+.fname span,
+.fdesc span {
+    color: red;
 }
 
 .fname label,
-.fdesc label
-{
+.fdesc label {
     font-size: 12px;
+    font-weight: bold;
+    color: #333;
 }
 
 
 .fname input,
-.fdesc input
-{
-    border: 0.5px solid #eee;
-    width: 90%;
-    border-radius: 4px;
-    padding: 5px;
+.fdesc input {
+    border: 1px solid #eee;
+    width: 100%;
+    border-radius: 8px;
+    padding: 8px;
+    margin: 5px 0px;
+    font-size: 10px;
+    outline: none;
+}
+
+.fdesc textarea {
+    border: 1px solid #eee;
+    width: 100%;
+    height: 10vh;
+    border-radius: 8px;
+    padding: 8px;
     margin: 5px 0px;
     font-size: 10px;
     outline: none;
 }
 
 .fname input:hover,
-.fdesc input:hover
-{
+.fdesc textarea:hover {
     /* background-color: #eee; */
     background: linear-gradient(to bottom, #6f30dc45, #5e12eb45);
-    border: 0.5px solid #5D12EB;
+    border: 1px solid #5D12EB;
 }
 
 .fname input:focus,
-.fdesc input:focus
-{
-    border: 0.5px solid #5D12EB;
+.fdesc textarea:focus {
+    border: 1px solid #5D12EB;
     box-shadow: 0px 4px 10px #5e12eb44;
 }
 
-.bbody button{
-    padding:10px;
+.bbody button {
+    padding: 5px 10px;
     font-weight: bold;
     width: 100%;
     border: 1px solid #5D12EB;
@@ -174,26 +211,30 @@
     margin-top: 5px;
     font-size: 13px;
     color: white;
+    cursor: pointer;
     background: linear-gradient(to bottom, #6E30DC, #5D12EB);
 }
-.bbody button:hover{
-    background: linear-gradient(to bottom,#5D12EB, #6E30DC);
-    color: white;
 
+.bbody button:hover {
+    background: linear-gradient(to bottom, #5D12EB, #6E30DC);
+    color: white;
+    box-shadow: 0px 4px 10px #5e12eb44;
 }
 
 /* BOARD TITLE  */
-.board-title{
+.board-title {
     /* border: 1px solid green; */
     padding: 5px 15px;
     padding-top: 10px;
 }
-.board-title h3{
+
+.board-title h3 {
     font-weight: bold;
     font-size: 18px;
     letter-spacing: 0.5px;
 }
-.board-title p{
+
+.board-title p {
     margin: 0px;
     font-size: 12px;
     color: #5e5e5e;
@@ -201,18 +242,19 @@
 
 
 /* BOARD BODY  */
-.wp-body-container{
+.wp-body-container {
     /* border: 1px solid blue; */
     padding: 20px;
     height: 75vh;
     overflow-x: auto;
     white-space: nowrap;
 }
-.wp-content{
+
+.wp-content {
     /* border: 1px solid red; */
     padding: 10px 0px;
     display: flex;
-    align-items:baseline;
+    align-items: baseline;
     justify-content: flex-start;
     gap: 20px;
     overflow-x: auto;
@@ -220,12 +262,14 @@
     height: 40vh;
     min-width: 80vw;
 }
-.wpf-create{
+
+.wpf-create {
     /* border: 1px solid #ddd; */
     height: 30vh;
-    
+
 }
-.wpf-content{
+
+.wpf-content {
     border: 1px dashed #5D12EB;
     box-shadow: 0px 4px 8px #5e12eb46;
     padding: 15px;
@@ -236,29 +280,32 @@
     border-radius: 8px;
     cursor: pointer;
 }
-.wpf-content p{
+
+.wpf-content p {
     margin: 0px;
     font-size: 13px;
     font-weight: bold;
     color: grey;
 }
-.wp-card{
+
+.wp-card {
     border: 1px solid #c5cad2;
     /* border: 1px solid orangered; */
     background-color: white;
-    min-height:15vh ;
+    min-height: 15vh;
     padding: 5px;
     width: 30%;
     border-radius: 10px;
     position: relative;
     cursor: pointer;
 }
-.wp-card:hover{
+
+.wp-card:hover {
     border: 1px solid #5D12EB;
     box-shadow: 0px 4px 8px #5e12eb46;
 }
 
-.wp-name{
+.wp-name {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -266,24 +313,27 @@
     /* border: 1px solid blue; */
     /* position: relative; */
 }
-.wp-name-text{
+
+.wp-name-text {
     display: flex;
     align-items: center;
     justify-content: flex-start;
     /* border: 1px solid red; */
 }
-.wp-name-text h5{
+
+.wp-name-text h5 {
     margin: 0px;
     margin-left: 5px;
     word-wrap: break-word;
     word-break: break-word;
     max-width: 200px;
-    overflow-wrap:break-word ;
+    overflow-wrap: break-word;
     font-size: 12px;
     font-weight: bold;
     /* border: 1px solid red; */
 }
-.wp-name-text input{
+
+.wp-name-text input {
     border: 0.5px solid #5D12EB;
     padding: 5px;
     border-radius: 4px;
@@ -291,23 +341,27 @@
     font-size: 12px;
     font-weight: bold;
 }
-.wp-name-text input:focus{
+
+.wp-name-text input:focus {
     outline: none;
     border: 0.5px solid #5D12EB;
 }
-.wp-setting{
+
+.wp-setting {
     cursor: pointer;
     border-radius: 4px;
     padding: 2px;
     border: 1px solid #eeeeee41;
 }
-.wp-setting:hover{
+
+.wp-setting:hover {
     border: 1px solid #ddd;
     background-color: #ddd;
 }
-.bs-pop{
+
+.bs-pop {
     position: absolute;
-    top: 30px; 
+    top: 30px;
     left: 80%;
     transform: translateX(-50%);
     background: white;
@@ -323,7 +377,8 @@
     align-items: center;
     justify-content: center;
 }
-.bs-pop button{
+
+.bs-pop button {
     padding: 8px;
     border: 1px solid white;
     background-color: white;
@@ -334,14 +389,17 @@
     justify-content: flex-start;
     font-size: 12px;
 }
-.bs-pop button:hover{
+
+.bs-pop button:hover {
     background-color: #eee;
 }
-.bs-pop .bs-icon{
+
+.bs-pop .bs-icon {
     margin-right: 5px;
     font-size: 15px;
 }
-.bs-pop .delete{
+
+.bs-pop .delete {
     padding: 8px;
     border: 1px solid white;
     background-color: white;
@@ -352,19 +410,23 @@
     justify-content: flex-start;
     color: red;
 }
-.bs-pop .delete:hover{
+
+.bs-pop .delete:hover {
     background-color: #eee;
 }
-.bs-pop .bs-delete{
+
+.bs-pop .bs-delete {
     margin-right: 5px;
     font-size: 15px;
     color: red;
 }
-.bs-pop hr{
+
+.bs-pop hr {
     width: 100%;
     border: 0.1px solid #eee;
 }
-.wp-body{
+
+.wp-body {
     background-color: #fff;
     border: 1px solid #ddd;
     /* border: 1px solid red; */
@@ -372,7 +434,8 @@
     margin: 5px;
     padding: 10px;
 }
-.wp-body textarea{
+
+.wp-body textarea {
     width: 95%;
     border: 1px solid #eee;
     border-radius: 4px;
@@ -381,7 +444,8 @@
     color: grey;
     font-size: 12px;
 }
-.wp-body p{
+
+.wp-body p {
     margin: 0px;
     font-size: 12px;
     padding-top: 10px;
@@ -394,7 +458,8 @@
     box-sizing: border-box;
     /* border: 1px solid red; */
 }
-.wp-body .priority{
+
+.wp-body .priority {
     /* border: 1px solid grey; */
     padding: 0px;
     display: flex;
@@ -402,40 +467,46 @@
     justify-content: space-between;
     position: relative;
 }
-.priority button{
-   padding: 5px;
-   background-color: #fff;
-   border: 1px solid #fff;
-   border-radius: 4px;
-   /* box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); */
-   /* cursor: pointer; */
+
+.priority button {
+    padding: 5px;
+    background-color: #fff;
+    border: 1px solid #fff;
+    border-radius: 4px;
+    /* box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); */
+    /* cursor: pointer; */
 }
-.priority .addPrio{
+
+.priority .addPrio {
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     border: 1px solid white;
 }
-.addPrio:hover{
+
+.addPrio:hover {
     background-color: #eee;
     border: 1px solid #ddd;
 }
-.priority .p-sett{
+
+.priority .p-sett {
     padding: 0px 2px;
     background-color: #fff;
     border: 1px solid #fff;
     border-radius: 4px;
     cursor: pointer;
     /* position: relative; */
- }
-.priority .p-sett:hover{
+}
+
+.priority .p-sett:hover {
     background-color: #eee;
     border: 1px solid #ddd;
 }
-.wp-prop{
+
+.wp-prop {
     position: absolute;
-    top: 85px; 
+    top: 85px;
     left: 40%;
     transform: translateX(-50%);
     background: white;
@@ -447,35 +518,42 @@
     width: auto;
     min-width: 200px;
 }
-.wp-prop .prop-header{
+
+.wp-prop .prop-header {
     border-bottom: 1px solid #ddd;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 10px 5px;
 }
-.prop-header h5{
+
+.prop-header h5 {
     margin: 0px;
     font-size: 12px;
 }
-.ph-lamp{
+
+.ph-lamp {
     margin-right: 5px;
 }
-.ph-icon{
+
+.ph-icon {
     border: 1px solid white;
     /* border: 1px solid #ddd; */
     border-radius: 4px !important;
     padding: 2px;
     cursor: pointer;
 }
-.ph-icon:hover{
+
+.ph-icon:hover {
     border: 1px solid #ddd;
     background-color: #ddd;
 }
-.prop-body{
+
+.prop-body {
     padding: 10px 5px;
 }
-.prop-component{
+
+.prop-component {
     border-radius: 4px;
     padding: 5px;
     font-size: 12px;
@@ -484,27 +562,32 @@
     justify-content: space-between;
 
 }
-.prop-component:hover{
+
+.prop-component:hover {
     background-color: #eee;
     /* background-color: #5e12eb46; */
 }
-.prop-right button{
+
+.prop-right button {
     padding: 5px;
     border: 1px solid white;
     border-radius: 4px;
     background-color: white;
 }
-.prop-right button:hover{
+
+.prop-right button:hover {
     border: 1px solid #ddd;
     border-radius: 4px;
     /* background-color: #eee; */
 }
-.wp-btm{
+
+.wp-btm {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
-.wp-btm .wp-create{
+
+.wp-btm .wp-create {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -514,7 +597,8 @@
     font-size: 10px;
     color: #5e5e5e;
 }
-.wp-btm .view{
+
+.wp-btm .view {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -528,19 +612,22 @@
     font-size: 12px;
     gap: 5px;
 }
-.wp-btm .view:hover{
+
+.wp-btm .view:hover {
     box-shadow: 0px 4px 10px #5e12eb44;
 }
-.wp-icon{
+
+.wp-icon {
     margin-right: 5px;
     font-size: 15px;
     color: #5e5e5e;
 }
+
 /* end body  */
 
 
 /* MOVE  */
-.workspace-move-modal{
+.workspace-move-modal {
     position: absolute;
     top: 70%;
     left: 50%;
@@ -554,7 +641,8 @@
     /* background-color: red; */
     /* border: 1px solid rgba(255, 255, 255, 0); */
 }
-.duplicate-modal{
+
+.duplicate-modal {
     border: 1px solid transparent;
     border-radius: 4px;
     position: absolute;
@@ -566,75 +654,85 @@
     /* background-color: rgba(255, 255, 255, 0); */
     /* padding-top: 20px; */
 }
+
 /* END MOVE  */
 
 
 /* MEDIA QUERY */
 /* Laptop (notebook, device besar) */
 @media (min-width: 992px) and (max-width: 1199.98px) {
-  /* CSS untuk layar laptop */
-  .bform-workspace{
-    /* border: 1px solid red; */
-    left: 85%;
-    /* right: 0; */
-  }
-  .wp-card{
-    width: 40%;
-  }
+
+    /* CSS untuk layar laptop */
+    .bform-workspace {
+        /* border: 1px solid red; */
+        left: 85%;
+        /* right: 0; */
+    }
+
+    .wp-card {
+        width: 40%;
+    }
 }
 
-@media (min-width: 768px) and (max-width: 991.98px){
-    .bform-workspace{
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .bform-workspace {
         /* border: 1px solid green; */
         left: 80%;
-  }
-  .wp-body-container{
-    padding: 10px;
-  }
-    .wp-card{
-    width: 50%;
-  }
+    }
+
+    .wp-body-container {
+        padding: 10px;
+    }
+
+    .wp-card {
+        width: 50%;
+    }
 }
 
 /* Tablet (iPad, device medium) */
-@media (min-width: 576px) and (max-width: 767.98px){
-  /* CSS untuk layar tablet */
-  .bform-workspace{
-    /* border: 1px solid blue; */
-    left: 78%;
-  }
+@media (min-width: 576px) and (max-width: 767.98px) {
 
-  .wp-body-container{
-    padding: 10px 5px;
-  }
+    /* CSS untuk layar tablet */
+    .bform-workspace {
+        /* border: 1px solid blue; */
+        left: 78%;
+    }
 
-   .wp-card{
-    width: 60%;
-  }
+    .wp-body-container {
+        padding: 10px 5px;
+    }
+
+    .wp-card {
+        width: 60%;
+    }
 }
 
 /* Ukuran layar iPhone 7 adalah 375px x 667px (atau 375 x 667) */
-@media (min-width: 375px) and (max-width:575px){
-    .wp-body-container{
+@media (min-width: 375px) and (max-width:575px) {
+    .wp-body-container {
         padding: 5px;
     }
-    .bform-workspace{
+
+    .bform-workspace {
         /* border: 1px solid orangered; */
         left: 60%;
-  }
-    .wp-container{
+    }
+
+    .wp-container {
         /* border: 1px solid red; */
     }
-    .wp-header{
+
+    .wp-header {
         /* border: 1px solid blue; */
         padding: 0px 2px;
         /* flex-direction: column; */
     }
 
-    .create-board-btn p{
+    .create-board-btn p {
         display: none;
     }
-    .wp-header .nav{
+
+    .wp-header .nav {
         /* border: 1px solid green; */
         margin-left: 0px;
         display: flex;
@@ -643,32 +741,35 @@
         justify-content: flex-start;
         padding: 0px 3px;
     }
-    .nav h5{
+
+    .nav h5 {
         /* border: 1px solid red; */
         text-align: left;
         width: 100%;
     }
 
-    .more-action .create-board-btn{
+    .more-action .create-board-btn {
         font-size: 8px;
-        padding: 10px;   
+        padding: 10px;
     }
-    .create-board-btn .cbb-icon{
+
+    .create-board-btn .cbb-icon {
         font-size: 15px;
     }
 
 
-   .wp-card{
-      width: 90%;
+    .wp-card {
+        width: 90%;
     }
 
 }
+
 /* END MEDIA QUERY */
 
 /* HEIGHT MEDIA QUERY  */
 /* HEIGHT BREAKPOIN  */
-@media  (min-height:400px) and (max-height:730px){
-    .wp-content{
+@media (min-height:400px) and (max-height:730px) {
+    .wp-content {
         height: 50vh;
         /* border: 1px solid red; */
     }

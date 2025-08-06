@@ -327,11 +327,11 @@ const handleArchiveLists = (listId) =>{
 //NAVIGATION
 // <Route path='/workspaces/:workspaceId' element={<WorkspacePage/>}/>
 const handleNavigateToWorkspace = (workspaceId) => {
-    navigate(`/workspaces/${workspaceId}`);
+    navigate(`/layout/workspaces/${workspaceId}`);
     console.log("Navigating to board:", boardId);
 }
 const handleNavigateToBoard = (workspaceId,boardId) =>{
-    navigate(`/workspaces/${workspaceId}/board/${boardId}`);
+    navigate(`/layout/workspaces/${workspaceId}/board/${boardId}`);
 }
 
   return (

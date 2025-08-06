@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { addEmployeeData } from '../services/ApiServices';
 import { useSnackbar } from '../context/Snackbar';
 import '../style/modules/FormDataEmployee.css'
-import { FaXmark } from 'react-icons/fa6';
+import { FaPlus, FaXmark } from 'react-icons/fa6';
 
 const FormDataEmployee=({onClose,fetchMember})=> {
     const {showSnackbar} = useSnackbar();
@@ -44,14 +44,20 @@ const FormDataEmployee=({onClose,fetchMember})=> {
   return (
     <div className="form-data-container">
       <div className="fdc-header">
+        <div className="fcd-left">
+          <div className="fcd-icon">
+            <FaPlus/>
+          </div>
           <h2>Add New Data Employee</h2>
+        </div>
+          
           <FaXmark onClick={onClose} className='fdc-icon'/>
       </div>
        
       <form onSubmit={handleSubmit} className='form-content'>
       
       <div className='form-box' >
-        <label>Name</label>
+        <label>Name <span style={{color:'red'}}>*</span></label>
         <input 
           type="text" 
           name="name" 
@@ -61,7 +67,7 @@ const FormDataEmployee=({onClose,fetchMember})=> {
         />
       </div>
       <div  className='form-box'>
-        <label>Divisi</label>
+        <label>Divisi <span style={{color:'red'}}>*</span></label>
          <input 
           type="text" 
           name="divisi" 
@@ -71,7 +77,7 @@ const FormDataEmployee=({onClose,fetchMember})=> {
         />
       </div>
       <div  className='form-box'>
-        <label>Jabatan</label>
+        <label>Jabatan <span style={{color:'red'}}>*</span></label>
          <input 
           type="text" 
           name="jabatan" 
@@ -81,7 +87,7 @@ const FormDataEmployee=({onClose,fetchMember})=> {
         />
       </div>
       <div  className='form-box'>
-        <label>Email</label>
+        <label>Email <span style={{color:'red'}}>*</span></label>
          <input 
           type="text" 
           name="email_employee" 
@@ -91,7 +97,7 @@ const FormDataEmployee=({onClose,fetchMember})=> {
         />
       </div>
        <div  className='form-box'>
-        <label>Nomor</label>
+        <label>Nomor <span style={{color:'red'}}>*</span></label>
          <input 
           type="text" 
           name="nomor_wa" 

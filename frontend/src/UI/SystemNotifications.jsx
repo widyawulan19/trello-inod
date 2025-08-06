@@ -81,12 +81,6 @@ const SystemNotifications=({
     };
 
 
-    // useEffect(()=>{
-    //     if(userId){
-    //         fetchNotificationSystem();
-    //     }
-    // },[userId]);
-
     useEffect(() => {
       if (notificationSystem && notificationSystem.length >= 0) {
         setLoading(false);

@@ -62,11 +62,11 @@ const Home=()=> {
 
   //4. navigate to recent
   const navigateToRecent = () =>{
-    navigate(`/recent`);
+    navigate(`recent`);
   }
   //5. navigate to workspace
   const navigateToWorkspace = () =>{
-    navigate(`/workspaces`)
+    navigate(`workspaces`)
   }
   //6. show form create workspace
   const handleShowForm = (e) =>{
@@ -89,7 +89,7 @@ const Home=()=> {
       }); 
       //ke halaman workspace berdasarkan id yang baru dibuat
       const workspaceId = response.data.id;
-      navigate(`/workspaces/${workspaceId}`)
+      navigate(`workspaces/${workspaceId}`)
       console.log('Workspace created:', response.data);
     }catch(error){
       setAlertInfo({
@@ -112,12 +112,12 @@ const Home=()=> {
 
   //9. navigate to agenda page
   const navigateToAgendaPage = () =>{
-    navigate('/agenda-page')
+    navigate('agenda-page')
   }
 
   //10. navigate to note page
   const navigateToNotePage = () =>{
-    navigate('/note-page')
+    navigate('note-page')
   }
 
   return (

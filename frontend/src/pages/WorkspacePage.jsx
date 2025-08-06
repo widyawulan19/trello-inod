@@ -14,6 +14,7 @@ import BoardDeleteConfirm from '../modals/BoardDeleteConfirm';
 import BoardProperties from '../modules/BoardProperties';
 import { IoTime } from 'react-icons/io5';
 import { handleArchive } from '../utils/handleArchive';
+import { HiViewBoards } from "react-icons/hi";
 
 const WorkspacePage=()=> {
   const location = useLocation();
@@ -357,14 +358,14 @@ const handleArchiveBoard = (boardId) =>{
 const handleNavigateToBoardList = (workspaceId, boardId) =>{
   // navigate(`/workspaces/${workspaceId}/board/${boardId}`);
   console.log("User ID sebelum navigate:", userId); //
-  navigate(`/workspaces/${workspaceId}/board/${boardId}`, {
+  navigate(`/layout/workspaces/${workspaceId}/board/${boardId}`, {
     state: { userId }  // Kirim userId ke BoardList
   });
 }
 
 //navigate to workspace
 const handleNavigateToWorkspace = () =>{
-  navigate(`/workspaces`);
+  navigate(`/layout/workspaces`);
 }
 
   return (
@@ -385,14 +386,20 @@ const handleNavigateToWorkspace = () =>{
       {showForm && (
         <form className='bform-workspace' onSubmit={handleSubmit} ref={showRef}>
           <div className="bheader">
+            <div className="bheader-left">
+              <div className="board-icon">
+              <HiViewBoards/>
+            </div>
             <p>CREATE NEW BOARD</p>
+            </div>
+            
             <BootstrapTooltip title='Close' placement='top'>
               <HiMiniXMark className='bheader-icon' onClick={handleCloseForm}/>
             </BootstrapTooltip>
           </div>
           <div className="bbody">
             <div className="fname">
-                <label>Board Name</label>
+                <label>Board Name <span>*</span></label>
                 <input 
                   type="text" 
                   value={boardName}
@@ -401,8 +408,8 @@ const handleNavigateToWorkspace = () =>{
                 />
             </div>
             <div className="fdesc">
-              <label>Board Description</label>
-              <input 
+              <label>Board Description <span>*</span></label>
+              <textarea
                 type="text" 
                 value={boardDescription}
                 onChange={(e)=> setBoardDescription(e.target.value)}
