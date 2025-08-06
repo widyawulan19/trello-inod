@@ -401,7 +401,8 @@ export const viewChatFromNotification = (chatId, userId) => axios.get(`${API_URL
 export const getPathToCardId = (chatId) => axios.get(`${API_URL}/chat/${chatId}/path`)
 
 //SYSTEM NOTIFICATION
-export const getSystemNotificationByUser = (userId) => axios.get(`${API_URL}/system-notification/user/${userId}`);
+export const getSystemNotificationByUser = (userId) => axios.get(`${API_URL}/system-notification/user-notif/${userId}`);
 export const marksNotificationSystem = (id) => axios.patch(`${API_URL}/system-notification/${id}`);
 export const deleteSystemNotification = (id) => axios.delete(`${API_URL}/system-notification/${id}`);
 export const getPathToCard = (cardId) => axios.get(`${API_URL}/card/${cardId}/card-location`);
+

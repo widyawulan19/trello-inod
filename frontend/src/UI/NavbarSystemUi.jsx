@@ -102,7 +102,7 @@ const NavbarSystemUi=({
 
           if (type === 'workspace_assigned') {
             await handleMarkAsRead(notif.id);
-            navigate(`/workspaces/${workspace_id}`);
+            navigate(`workspaces/${workspace_id}`);
           }
 
           if (type === 'card_assigned') {
@@ -113,7 +113,7 @@ const NavbarSystemUi=({
               // sebelum navigate tandai sudah dibaca
               await handleMarkAsRead(notif.id);
 
-              navigate(`/workspaces/${data.workspace_id}/board/${data.board_id}/lists/${data.list_id}/cards/${data.card_id}`);
+              navigate(`workspaces/${data.workspace_id}/board/${data.board_id}/lists/${data.list_id}/cards/${data.card_id}`);
             } catch (error) {
               console.error('Failed to get card path:', error);
             }
