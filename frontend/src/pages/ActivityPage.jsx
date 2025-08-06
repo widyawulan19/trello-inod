@@ -1,47 +1,43 @@
 import React, { useEffect, useState } from 'react';
 import { getActivityForUserId } from '../services/ApiServices';
 
-const ActivityPage = ({ userId }) => {
+function ActivityPage({ userId }) {
   const [activities, setActivities] = useState([]);
+  const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetchActivity = async () => {
-      try {
-        const response = await getActivityForUserId(userId);
-        setActivities(response.data.activities);
-      } catch (err) {
-        setError('Gagal mengambil data aktivitas');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchActivity();
+    getActivityForUserId(userId)
+      .then((res) => {
+        setActivities(res.data.activities);
+        setMessage(res.data.message);
+      })
+      .catch((err) => {
+        console.error(err);
+        setMessage('Terjadi kesalahan saat mengambil data aktivitas.');
+      })
+      .finally(() => setLoading(false));
   }, [userId]);
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
 
   return (
     <div>
-      <h2>Activity Logs</h2>
+      <h2>Aktivitas User</h2>
       {activities.length === 0 ? (
-        <p>Pengguna belum memiliki aktivitas</p>
+        <p>{message}</p>
       ) : (
         <ul>
-          {activities.map((log) => (
-            <li key={log.id}>
-              <strong>{log.action}</strong> pada {log.entity_type} #{log.entity_id} <br />
-              <small>{new Date(log.timestamp).toLocaleString()}</small>
-              {log.details && <p>Details: {log.details}</p>}
+          {activities.map((activity) => (
+            <li key={activity.id}>
+              <strong>{activity.action}</strong> on {activity.entity_type} (ID: {activity.entity_id}) at {new Date(activity.timestamp).toLocaleString()}
+              {activity.details && <p>Details: {activity.details}</p>}
             </li>
           ))}
         </ul>
       )}
     </div>
   );
-};
+}
 
 export default ActivityPage;
