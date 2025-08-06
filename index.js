@@ -7153,7 +7153,7 @@ app.get('/api/day-schedule-employee/:employeeId', async (req, res) => {
 //SYSTEM NOTIFICATION
 
 //1. get notification by user id
-app.get('/api/system-notification/user/:userId', async (req, res) => {
+app.get('/api/system-notification/user-notif/:userId', async (req, res) => {
   const { userId } = req.params;
 
   try {
