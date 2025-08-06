@@ -304,3 +304,6 @@ app.put('/api/user-setting/:userId', async (req, res) => {
     res.status(500).json({ message: 'Failed to update user setting' });
   }
 });
+
+
+export const getSystemNotificationByUser = (userId) => axios.get(`${API_URL}/system-notification/user/${userId}`);
