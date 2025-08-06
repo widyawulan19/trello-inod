@@ -6354,7 +6354,8 @@ app.get('/api/activity-logs/user/:userId', async (req, res) => {
   try {
     const result = await client.query(
       `SELECT * FROM activity_logs WHERE user_id = $1 ORDER BY "timestamp" DESC`,
-      [parseInt(userId)] // konversi ke integer
+      // [parseInt(userId)] // konversi ke integer
+      [userId]
     );
 
     if (result.rowCount === 0) {
