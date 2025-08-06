@@ -159,7 +159,10 @@ const NavbarNotification=({onClose})=> {
         <div className="navNotif-header">
             <div className="navNotif-left">
                 <h4>
-                    <FaBell/>
+                    <div className="bel-icon">
+                        <FaBell/>
+                    </div>
+                    
                     NOTIFICATION
                 </h4>
                 <p>Stay update on your tasks and mentions</p>

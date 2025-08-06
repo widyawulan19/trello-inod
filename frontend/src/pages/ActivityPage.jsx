@@ -27,20 +27,22 @@ function ActivityPage({ userId }) {
   return (
   <div className='activity-container'>
     <div className="activity-header">
-      <h3>Aktivitas User</h3>
+      <h3>Aktivitas Terbaru Kamu</h3>
+      <p>Lacak semua tindakan yang kamu lakukan di platform. Tetap terinformasi, tetap terorganisir.</p>
     </div>
 
     {activities.length === 0 ? (
       <p className='no-activity'>{message}</p>
     ) : (
+      <div className="table-table">
       <table className="activity-table">
         <thead>
           <tr>
-            <th>Aksi</th>
+            <th style={{borderTopLeftRadius:'8px'}}>Aksi</th>
             <th>Entity</th>
             <th>Entity ID</th>
             <th>Waktu</th>
-            <th>Details</th>
+            <th style={{borderTopRightRadius:'8px'}}>Details</th>
           </tr>
         </thead>
         <tbody>
@@ -55,6 +57,7 @@ function ActivityPage({ userId }) {
           ))}
         </tbody>
       </table>
+      </div>
     )}
   </div>
 );

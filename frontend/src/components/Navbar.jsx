@@ -289,14 +289,6 @@ const Navbar=()=> {
                         
                         }}
                     />
-                    {/* <span style={{
-                        fontSize: '12px',
-                        marginTop: '4px',
-                        display: 'block',
-                        color: '#333'
-                    }}>
-                        {profilUser?.username || user?.username || 'Guest'}
-                    </span> */}
                     </div>
                 </BootstrapTooltip>
             </div>
