@@ -373,7 +373,7 @@ export const updateProfileUser = (userId, data) => axios.put(`${API_URL}/profile
 
 
 //LOG ACTIVITY FOR USER
-export const getActivityForUserId = (userId) => axios.get(`${API_URL}/activity-logs/user/${userId}`)
+export const getActivityForUserId = (userId) => axios.get(`${API_URL}/user-log/${userId}`)
 
 //LOG ACTIVITY FOR CARD
 export const getActivityCard = (cardId) => axios.get(`${API_URL}/activity-card/card/${cardId}`)
