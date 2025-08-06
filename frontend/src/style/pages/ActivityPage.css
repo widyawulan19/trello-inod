@@ -1,11 +1,15 @@
-.activity-container{
+.activity-container {
     /* height: 100%;    */
     background-color: white;
     /* border: 1px solid green; */
     border-radius: 8px;
     padding-bottom: 5%;
+    width: 50vw;
+    height: 100%;
+
 }
-.activity-container .activity-header{
+
+.activity-container .activity-header {
     /* border: 1px solid red; */
     display: flex;
     align-items: center;
@@ -13,11 +17,13 @@
     padding: 5px 0px;
     position: relative;
 }
-.activity-header h3{
+
+.activity-header h3 {
     font-weight: bold;
     letter-spacing: 1px;
 }
-.activity-header button{
+
+.activity-header button {
     font-size: 12px;
     gap: 5px;
     padding: 5px 10px;
@@ -30,12 +36,22 @@
     color: white;
     cursor: pointer;
 }
-.activity-header button:hover{
+
+.activity-header button:hover {
     box-shadow: 0px 4px 8px #5e12eb46;
 }
 
+.no-activity {
+    /* border: 1px solid red; */
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: red;
+}
+
 /* DROPDOWN DATE FILTE  */
-.activity-filter{
+.activity-filter {
     border: 1px solid #ddd;
     border-radius: 6px;
     padding: 5px;
@@ -50,47 +66,66 @@
     /* align-items: center; */
     justify-content: flex-start;
 }
-.activity-filter label{
+
+.activity-filter label {
     color: #5e5e5e;
     font-size: 10px;
     margin-bottom: 5px;
 }
-.date-input{
+
+.date-input {
     border: 1px solid #ddd;
     border-radius: 4px;
     padding: 0px 5px;
     gap: 5px;
 }
-.date-input:hover{
+
+.date-input:hover {
     border: 1px solid #6E30DC;
 }
-.date-input .di-icon{
+
+.date-input .di-icon {
     font-size: 1.5rem;
     color: #6E30DC;
 }
-.date-input input{
+
+.date-input input {
     border: 1px solid white;
     border-radius: 4px;
     width: 100%;
     padding: 2px 3px;
     font-size: 10px;
 }
-.date-input input:hover{
+
+.date-input input:hover {
     border: 1px solid white;
 }
-.date-input input:focus{
+
+.date-input input:focus {
     outline: none;
 }
+
 /* END DROPDOWN DATE FILTE  */
 
-.activity-tabel{
-    /* border: 1px solid blue; */
-    /* height: 85vh; */
-    max-height: 70vh;
-    /* min-height: 85vh; */
-    overflow-y: auto;
+.activity-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
 }
-.activity-tabel table{
+
+.activity-table th,
+.activity-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.activity-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.activity-tabel table {
     /* border: 1px solid #ddd; */
     border-radius: 6px;
     padding: 10px;
@@ -98,23 +133,25 @@
     width: 100%;
     border-collapse: collapse;
 }
+
 .sticky-thead th {
-  position: sticky;
-  top: 0;
-  background-color: #eee; /* agar header tidak transparan saat scroll */
-  z-index: 1;
-  border-bottom: 1px solid #ccc;
-  letter-spacing: 1px;
-  color: #5e5e5e;
+    position: sticky;
+    top: 0;
+    background-color: #eee;
+    /* agar header tidak transparan saat scroll */
+    z-index: 1;
+    border-bottom: 1px solid #ccc;
+    letter-spacing: 1px;
+    color: #5e5e5e;
 }
 
-.td-date{
+.td-date {
     width: 10vw;
     min-width: 5vw;
     max-width: 5vw;
 }
 
- .td-date p{
+.td-date p {
     /* color: green;
     border: 1px solid rgb(206, 250, 206);
     border-radius: 6px;
@@ -125,32 +162,37 @@
     /* text-align: center; */
 
 }
+
 .activity-tabel th,
 .activity-tabel td {
-  padding: 10px;
-  border-bottom: 1px solid #ddd;
-  text-align: left;
-  /* width: 10vw; */
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+    /* width: 10vw; */
 }
+
 .activity-tabelr th {
-  /* background-color: #f4f4f4; */
-  background: linear-gradient(to bottom, #6E30DC, #5D12EB);
-  color: white;
-  font-weight: normal;
-  font-size: 15px;
-  text-align: center;
+    /* background-color: #f4f4f4; */
+    background: linear-gradient(to bottom, #6E30DC, #5D12EB);
+    color: white;
+    font-weight: normal;
+    font-size: 15px;
+    text-align: center;
 }
-.activity-tabel tr:hover{
+
+.activity-tabel tr:hover {
     /* background-color: #f5f5f5; */
     background-color: #d3c0f446;
 }
-.activity-tabel .th{
+
+.activity-tabel .th {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 5px;
 }
-.activity-tabel td{
+
+.activity-tabel td {
     font-size: 10px;
 }
 

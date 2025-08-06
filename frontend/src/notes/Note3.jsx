@@ -189,3 +189,27 @@ export default ActivityPage;
         ))}
       </ul>
     </div> */}
+
+// Logout.js atau di Navbar / Header / Sidebar component
+import { useNavigate } from 'react-router-dom';
+
+const LogoutButton = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Hapus token/user dari localStorage
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+
+    // Redirect ke halaman login
+    navigate('/login');
+  };
+
+  return (
+    <button onClick={handleLogout} className="logout-button">
+      Logout
+    </button>
+  );
+};
+
+// export default LogoutButton;

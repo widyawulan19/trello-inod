@@ -13,6 +13,7 @@ import ActivityPage from './ActivityPage';
 import NotificationPage from '../UI/NotificationPage';
 import PersonalNotification from '../UI/PersonalNotification';
 import { useUser } from '../context/UserContext';
+import Logout from '../auth/Logout';
 
 const formatDateToReadable = (dateString) => {
   if (!dateString) return '';
@@ -141,6 +142,8 @@ const Profile=()=> {
                 return <div className="fade"><div className="notif"><PersonalNotification userId={userId}/></div></div>;
             case 'security':
                 return <div className="fade"><h3>Security Settings</h3><p>Update your password and security settings.</p></div>;
+            case 'logout':
+                return <div className="fade"><Logout/></div>
             default:
                 return <div className="fade"><h3>Personal Information</h3></div>;
         }
@@ -213,6 +216,13 @@ const Profile=()=> {
                     >
                         <HiLockClosed className='ps-icon' />
                         <span className="ps-label">Security</span>
+                    </button>
+                    <button 
+                        className={activeSection === 'logout' ? 'active' : ''} 
+                        onClick={() => setActiveSection('logout')}
+                    >
+                        <HiLockClosed className='ps-icon' />
+                        <span className="ps-label">Logout</span>
                     </button>
                 </div>
             </div>
