@@ -6344,32 +6344,25 @@ app.put('/api/profile-user/:userId', async (req, res) => {
 app.get('/api/user-log/:userId', async (req, res) => {
   const { userId } = req.params;
 
-  console.log('📍 GET /api/activity-logs/user/:userId | userId:', userId);
-
-  // Validasi parameter
-  if (!userId || isNaN(userId)) {
-    return res.status(400).json({ error: 'Invalid or missing userId parameter' });
-  }
-
   try {
     const result = await client.query(
       `SELECT * FROM activity_logs WHERE user_id = $1 ORDER BY "timestamp" DESC`,
-      [parseInt(userId)]
+      [userId]
     );
 
     if (result.rowCount === 0) {
-      return res.status(404).json({ message: 'User belum memiliki activity sekarang' });
+      return res.status(200).json({ message: `User belum memiliki activity sekarang`, activities: [] });
     }
 
-    return res.status(200).json({
-      message: `Aktivitas ditemukan untuk user ID ${userId}`,
-      activities: result.rows
+    res.status(200).json({
+      message: `Activities for user ID ${userId}`,
+      activities: result.rows,
     });
   } catch (error) {
-    console.error('🔥 Error saat mengambil aktivitas:', error);
-    return res.status(500).json({ error: 'Gagal mengambil aktivitas' });
+    res.status(500).json({ error: error.message });
   }
 });
+
 
 
 //LOG ACTIVITY CARD
