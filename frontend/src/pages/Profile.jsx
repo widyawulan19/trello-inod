@@ -136,7 +136,7 @@ const Profile=()=> {
             case 'personal':
                 return <div className="fade"><PersonalInformation fetchUserSettingData={fetchUserSettingData} userData={userData} userId={userId}/></div>;
             case 'activity':
-                return <div className="fade"><div className='activity'><ActivityPage/></div></div>;
+                return <div className="fade"><div className='activity'><ActivityPage userId={userId}/></div></div>;
             case 'notification':
                 return <div className="fade"><div className="notif"><PersonalNotification userId={userId}/></div></div>;
             case 'security':

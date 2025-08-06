@@ -662,3 +662,77 @@ const ResetUserSetting = () => {
 
 // export default ResetUserSetting;
 
+// src/pages/UserSettingPage.js
+import React, { useEffect, useState } from 'react';
+import { getUserSettingData, updateUserSettingData } from '../services/ApiService';
+
+const UserSettingPage = ({ userId }) => {
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    name: '',
+    nomor: '',
+    divisi: '',
+    jabatan: '',
+    photo_url: ''
+  });
+
+  const [message, setMessage] = useState('');
+
+  // Ambil data saat komponen pertama kali dimuat
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getUserSettingData(userId);
+        setFormData(response.data);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        setMessage('Gagal mengambil data user');
+      }
+    };
+
+    fetchData();
+  }, [userId]);
+
+  // Handle input perubahan
+  const handleChange = (e) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
+
+  // Submit update
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await updateUserSettingData(userId, formData);
+      setMessage('Data berhasil diperbarui!');
+    } catch (error) {
+      console.error('Error updating data:', error);
+      setMessage('Gagal memperbarui data');
+    }
+  };
+
+  return (
+    <div className="user-setting-form">
+      <h2>Update User Setting</h2>
+
+      {message && <p>{message}</p>}
+
+      <form onSubmit={handleSubmit}>
+        <input name="username" value={formData.username} onChange={handleChange} placeholder="Username" />
+        <input name="email" value={formData.email} onChange={handleChange} placeholder="Email" />
+        <input name="name" value={formData.name} onChange={handleChange} placeholder="Nama Lengkap" />
+        <input name="nomor" value={formData.nomor} onChange={handleChange} placeholder="Nomor WA" />
+        <input name="divisi" value={formData.divisi} onChange={handleChange} placeholder="Divisi" />
+        <input name="jabatan" value={formData.jabatan} onChange={handleChange} placeholder="Jabatan" />
+        <input name="photo_url" value={formData.photo_url} onChange={handleChange} placeholder="Photo URL" />
+
+        <button type="submit">Simpan Perubahan</button>
+      </form>
+    </div>
+  );
+};
+
+// export default UserSettingPage;

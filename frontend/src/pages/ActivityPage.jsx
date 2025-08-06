@@ -5,9 +5,9 @@ import { HiMiniCalendarDateRange } from 'react-icons/hi2';
 import OutsideClick from '../hook/OutsideClick';
 import { useUser } from '../context/UserContext';
 
-const ActivityPage = () => {
-  const {user} = useUser();
-  const userId = user.id;
+const ActivityPage = ({userId}) => {
+  // const {user} = useUser();
+  // const userId = user.id;
   // const userId = 3;
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -122,48 +122,51 @@ const ActivityPage = () => {
       )}
     
       <div className="activity-tabel">
+      {filteredActivities.length === 0 ? (
+        <div className="no-activity-message">
+          <p style={{ textAlign: 'center', padding: '2rem', color: '#666' }}>
+            💤 User belum memiliki activity sekarang.
+          </p>
+        </div>
+      ) : (
         <table cellPadding="10" cellSpacing='0'>
           <thead className='sticky-thead'>
-              <tr>
-                <th style={{borderTopLeftRadius:'4px'}}>DATE / TIME</th>
-                <th>ENTITY</th>
-                <th>ACTION</th>
-                <th style={{textAlign:'left', borderTopRightRadius:'4px'}}>DETAILS</th>
-              </tr>
+            <tr>
+              <th style={{borderTopLeftRadius:'4px'}}>DATE / TIME</th>
+              <th>ENTITY</th>
+              <th>ACTION</th>
+              <th style={{textAlign:'left', borderTopRightRadius:'4px'}}>DETAILS</th>
+            </tr>
           </thead>
-    
+
           <tbody>
-            {filteredActivities.map((activity, index)=>(
+            {filteredActivities.map((activity) => (
               <tr key={activity.id}>
                 <td className='td-date'>
-                  <p>
-                      {/* {activity.timestamp} */}
-                      {formatToLocalTimestamp(activity.timestamp)}
-                  </p>
+                  <p>{formatToLocalTimestamp(activity.timestamp)}</p>
                 </td>
                 <td>{activity.entity_type}</td>
-                {/* <td>{activity.action}</td> */}
                 <td>
                   <p
                     style={{
-                    color: TEXT_ACTION_COLORS[activity.action],
-                    backgroundColor: ACTION_COLORS[activity.action],
-                    padding:'3px 8px',
-                    borderRadius:'8px',
-                    textAlign:'center'
-                  }}
+                      color: TEXT_ACTION_COLORS[activity.action],
+                      backgroundColor: ACTION_COLORS[activity.action],
+                      padding: '3px 8px',
+                      borderRadius: '8px',
+                      textAlign: 'center'
+                    }}
                   >
                     {activity.action}
                   </p>
                 </td>
-                <td>
-                    {activity.details}
-                </td>
+                <td>{activity.details}</td>
               </tr>
             ))}
           </tbody>
         </table>
-      </div>
+      )}
+    </div>
+
     </div>
   );
 };

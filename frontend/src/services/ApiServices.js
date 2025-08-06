@@ -105,8 +105,8 @@ export const getUserById = (userId) => axios.get(`${API_URL}/api/${userId}`);
 export const updateUser = (userId, username, email, password) => axios.put(`${API_URL}/users/${userId}`, { username, email, password });
 export const deleteUser = (userId) => axios.delete(`${API_URL}/users/${userId}`);
 export const resetPassword = (userId, newPassword) => axios.post(`${API_URL}/users/${userId}/password-reset`, { newPassword });
-export const getUserSettingData = (userId) => axios.get(`${API_URL}/user-setting/${userId}`);
-export const updateUserSettingData = (userId, data) => axios.put(`${API_URL}/user-setting/${userId}`, data)
+export const getUserSettingData = (userId) => axios.get(`${API_URL}/users-setting/${userId}`);
+export const updateUserSettingData = (userId, data) => axios.put(`${API_URL}/users-setting/${userId}`, data)
 
 //BOARDS
 export const getBoards = () => axios.get(`${API_URL}/boards`);
