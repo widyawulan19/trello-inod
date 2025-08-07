@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { createEmployeeSchedule, getAllEmployeeSchedule1, getAllShift, getDays, updateShiftByEmployeeAndDay } from '../services/ApiServices';
 import { useSnackbar } from '../context/Snackbar';
-import { IoTrashBin, IoInformationCircle } from 'react-icons/io5';
+import { IoTrashBin, IoInformationCircle, IoCalendar } from 'react-icons/io5';
 import '../style/pages/ScheduleEmployeePage.css';
 import { HiXMark } from 'react-icons/hi2';
 import { FaCalendarPlus, FaUserAlt, FaCalendarMinus, FaCircle } from "react-icons/fa";
@@ -177,7 +177,13 @@ const ScheduleEmployeePage=()=> {
     <div className='employee-schedule-container'>
         <div className="schedule-header">
             <div className="sh-left">
-                <h3>🗓️ SCHEDULE MEMBER</h3>
+                <div className="shl-title">
+                    <div className="shl-icon">
+                        <IoCalendar/>
+                    </div>
+                    <h3> SCHEDULE MEMBER</h3>
+                </div>
+                
                 <div className="sh-desc">
                     <strong>Atur Shift, Pantau Kehadiran, dan Pastikan Operasional Berjalan Lancar</strong>
                     <p>Kelola jadwal kerja karyawan dengan mudah dan fleksibel. Dengan fitur penjadwalan otomatis dan tampilan yang intuitif, Anda dapat memastikan setiap shift terisi tanpa tumpang tindih atau kekosongan.</p>

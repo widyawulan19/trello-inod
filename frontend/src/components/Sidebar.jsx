@@ -57,8 +57,8 @@ const Sidebar = () => {
             { to: 'data-marketing', icon: <HiOutlineCircleStack className='icon' />, label: 'Data Marketing', name: 'marketing' },
             { to: 'marketing-design', icon: <HiOutlineChartBar className='icon' />, label: 'Marketing Design', name: 'marketing-design' },
             { to: 'archive-data', icon: <HiOutlineArchiveBoxArrowDown className='icon' />, label: 'Archive Data', name: 'archive' },
-            { to: 'notif-icon', icon: <HiOutlineCog8Tooth className='icon' />, label: 'Setting', name: 'setting' },
-            { to: 'activity', icon: <HiAdjustmentsHorizontal className='icon' />, label: 'FaQ', name: 'faq' },
+            { to: 'activity', icon: <HiOutlineCog8Tooth className='icon' />, label: 'User Activity', name: 'User Activity' },
+            { to: 'faq', icon: <HiAdjustmentsHorizontal className='icon' />, label: 'FaQ', name: 'faq' },
           ].map((item) => (
             <div
               key={item.name}

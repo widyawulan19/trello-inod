@@ -8,17 +8,20 @@
     color: #333;
     display: flex;
     flex-direction: column;
-    /* align-items: baseline; */
-    /* justify-content: center; */
+    align-items: center;
+    justify-content: center;
 }
 
 /* HEADER  */
 .schedule-header {
-    border-bottom: 1px solid #ddd;
+    border-radius: 16px;
+    border: 1px solid #ddd;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 100%;
+    width: 98%;
+    padding: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .schedule-header .sh-left {
@@ -30,8 +33,26 @@
     width: 80%;
 }
 
+.sh-left .shl-title {
+    /* border: 1px solid red; */
+    width: 100%;
+    gap: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.shl-icon {
+    border: 1px solid #fff;
+    border-radius: 8px;
+    padding: 5px;
+    color: white;
+    background-color: #5e12ebb9;
+}
+
 .sh-left h3 {
     width: 100%;
+    color: #5320be;
 }
 
 .schedule-header .sh-right {
@@ -134,7 +155,7 @@
 .create-content {
     background-color: white;
     border: 1px solid #ddd;
-    border-radius: 8px;
+    border-radius: 16px;
     width: 60%;
     height: 85%;
 }
@@ -142,8 +163,8 @@
 .create-content .create-header {
     background: linear-gradient(90deg, #a34dff, #3a78ff);
     /* border: 1px solid red; */
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -159,10 +180,11 @@
 }
 
 .ch-left .ch-icon {
-    border: 1px solid #ffffff39;
+    border: 1px solid #ffffff8a;
     border-radius: 8px;
-    background-color: #ffffff39;
+    background-color: #ffffff8a;
     padding: 8px;
+    color: white;
 }
 
 .create-header h2 {
@@ -197,6 +219,7 @@
     justify-content: flex-start;
     width: 100%;
     margin: 10px 0px;
+    margin-bottom: 0px;
 }
 
 
@@ -241,13 +264,14 @@
 
 .box-identitas .box-input {
     display: flex;
+    flex-direction: row;
     align-items: center;
     justify-content: flex-start;
     width: 100%;
-    border: 1px solid #ddd;
+    /* border: 1px solid #ddd; */
     border-radius: 8px;
     gap: 5px;
-    padding: 5px 10px;
+    padding: 2px 10px;
 }
 
 .box-icon {
@@ -434,7 +458,7 @@
 .btn-submit button {
     background-color: #5320be;
     color: white;
-    padding: 10px;
+    padding: 5px 10px;
     border: 1px solid #5320be;
     border-radius: 8px;
     cursor: pointer;
@@ -469,8 +493,8 @@
 .sep-table thead th {
     position: sticky;
     top: 0;
-    background-color: #eeeff0;
-    color: #374151;
+    background-color: #5320be;
+    color: #fff;
     font-weight: 400;
     letter-spacing: 0.5px;
     text-transform: capitalize;
