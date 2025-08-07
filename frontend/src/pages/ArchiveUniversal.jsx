@@ -91,7 +91,13 @@ const ArchiveUniversal=()=> {
     <div className="archive-container">
         <div className="archive-header">
             <div className="ah-left">
-                <h2><HiArchiveBoxArrowDown/> Archive Data</h2>
+                <div className="left-title">
+                    <div className="lt-icon">
+                        <HiArchiveBoxArrowDown/>
+                    </div>
+                    <h2> Archive Data</h2>
+                </div>
+                
                 <div className="header-desc">
                     <strong>
                         Semua Aktivitas Terdokumentasi, Tersimpan dengan Aman
@@ -156,7 +162,7 @@ const ArchiveUniversal=()=> {
                             : item.data?.name || '-'}
                     </td>
                     <td>{new Date(item.archived_at).toLocaleString()}</td>
-                    <td style={{borderTopRightRadius:'8px', borderBottomRightRadius:'8px'}}>
+                    <td style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
                         <BootstrapTooltip title='Restore data' placement="top">
                             <button onClick={()=>
                                 handleRestoreArchive({
