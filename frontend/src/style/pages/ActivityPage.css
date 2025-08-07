@@ -1,167 +1,91 @@
 .activity-container {
-    /* height: 100%;    */
-    background-color: white;
-    /* border: 1px solid green; */
-    border-radius: 8px;
-    padding: 10px;
-    width: 50vw;
-    height: 100%;
-
-}
-
-.activity-container .activity-header {
-    /* border: 1px solid red; */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: left;
-    padding: 5px 0px;
+    height: 97%;
+    min-width: 80vw;
     position: relative;
+    background-color: white;
+    margin-left: 10px;
+    margin-top: 10px;
+    border-radius: 8px;
+    padding: 5px 10px;
 }
 
-.activity-header h3 {
-    font-weight: bold;
-    font-size: 15px;
-    /* letter-spacing: 1px; */
-    color: #5D12EB;
-    margin: 0px;
-    width: 100%;
-}
-
-.activity-header p {
-    width: 100%;
-    font-size: 12px;
-    color: #333;
-    padding: 0px;
-    margin: 0px;
-}
-
-.no-activity {
-    /* border: 1px solid red; */
-    width: 100%;
+.ac-header {
+    border: 1px solid #ddd;
+    border-radius: 16px;
+    padding: 10px 15px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    color: red;
+    justify-content: space-between;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* TABEL  */
-.table-table {
-    /* border: 1px solid red; */
+.ac-header .ac-title {
+    /* border: 1px solid blue; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
     width: 100%;
-    height: 63vh;
-    overflow-y: auto;
+}
+
+.ac-title .ac-icon {
+    border: 1px solid #fff;
+    border-radius: 8px;
+    padding: 5px;
+    font-size: 18px;
+    color: white;
+    background-color: #5e12ebb9;
+}
+
+.ac-title h2 {
+    color: #5D12EB;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.page-description {
+    margin-top: 4px;
+    color: #555;
+    width: 100%;
+    font-size: 13px;
+}
+
+.ac-header .ach-right {
+    border: 1px solid red;
+}
+
+
+/* BODY  */
+
+.activity-table-container {
+    overflow-x: auto;
+    /* border: 1px solid red; */
+    height: 75vh;
 }
 
 .activity-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 1rem;
 }
 
+.activity-table th,
 .activity-table td {
-    border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
 }
 
 .activity-table th {
-    background-color: #6E30DC;
-    font-weight: bold;
-    font-size: 13px;
-    color: #fff;
     position: sticky;
     top: 0;
+    background-color: #5D12EB;
+    color: white;
+    z-index: 1;
+    font-weight: normal;
     text-align: center;
-    /* atau warna header kamu */
-    z-index: 2;
-    padding: 8px;
-    border-bottom: 2px solid #ddd;
 }
-
 
 .activity-table td {
-    font-size: 11px;
-    color: #5e5e5e;
-}
-
-.activity-tabel table {
-    /* border: 1px solid #ddd; */
-    border-radius: 6px;
-    padding: 10px;
     font-size: 12px;
-    width: 100%;
-    border-collapse: collapse;
+    color: #555;
+    border: 1px solid #ddd;
 }
-
-.sticky-thead th {
-    position: sticky;
-    top: 0;
-    background-color: #eee;
-    /* agar header tidak transparan saat scroll */
-    z-index: 1;
-    border-bottom: 1px solid #ccc;
-    letter-spacing: 1px;
-    color: #5e5e5e;
-}
-
-.td-date {
-    width: 10vw;
-    min-width: 5vw;
-    max-width: 5vw;
-}
-
-.td-date p {
-    /* color: green;
-    border: 1px solid rgb(206, 250, 206);
-    border-radius: 6px;
-    background-color: rgb(206, 250, 206); */
-    padding: 3px 8px;
-    font-size: 10px;
-    color: green;
-    /* text-align: center; */
-
-}
-
-.activity-tabel th,
-.activity-tabel td {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-    text-align: left;
-    /* width: 10vw; */
-}
-
-.activity-tabelr th {
-    /* background-color: #f4f4f4; */
-    background: linear-gradient(to bottom, #6E30DC, #5D12EB);
-    color: white;
-    font-weight: normal;
-    font-size: 15px;
-    text-align: center;
-}
-
-.activity-tabel tr:hover {
-    /* background-color: #f5f5f5; */
-    background-color: #d3c0f446;
-}
-
-.activity-tabel .th {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-}
-
-.activity-tabel td {
-    font-size: 10px;
-}
-
-/* .color{
-    color: #1E90FF,#c7e2fe;
-    color: #28A745,#cbffd7;
-    color: #DC3545,#ffc2c8;
-    color: #F2C078,#F2C078;
-    color: #6C757D,#d8d8d8;
-    color: #533B4D,#f9d4f0;
-    color: #096B68, #e8fdfd;
-} */

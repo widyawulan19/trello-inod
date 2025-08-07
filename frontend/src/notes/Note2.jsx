@@ -245,3 +245,120 @@ const NewFormMarketingDesign = ({ onClose, fetchMarketingDesign }) => {
 };
 
 export default NewFormMarketingDesign;
+
+
+import React, { useEffect, useState } from 'react';
+import { getActivityForUserId } from '../services/ApiServices';
+import '../style/pages/ActivityPage.css';
+import { HiMiniCalendarDateRange } from 'react-icons/hi2';
+import OutsideClick from '../utils/OutsideClick';
+
+const ActivityPage = ({ userId }) => {
+  const [activities, setActivities] = useState([]);
+  const [message, setMessage] = useState('');
+  const [selectedAction, setSelectedAction] = useState('');
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  useEffect(() => {
+    fetchActivities();
+  }, []);
+
+  const fetchActivities = async () => {
+    try {
+      const response = await getActivityForUserId(userId);
+      const logs = response.data;
+
+      if (logs.length === 0) {
+        setMessage('User belum memiliki aktivitas saat ini');
+        setActivities([]);
+      } else {
+        setActivities(logs);
+      }
+    } catch (error) {
+      console.error(error);
+      setMessage('Gagal memuat aktivitas.');
+    }
+  };
+
+  const handleSelectAction = (action) => {
+    setSelectedAction(action);
+    setDropdownOpen(false);
+  };
+
+  const filteredActivities = selectedAction
+    ? activities.filter((log) => log.action === selectedAction)
+    : activities;
+
+  const renderActionLabel = (action) => {
+    switch (action) {
+      case 'create':
+        return 'Membuat';
+      case 'update':
+        return 'Memperbarui';
+      case 'delete':
+        return 'Menghapus';
+      default:
+        return action;
+    }
+  };
+
+  return (
+    <div className="activity-container">
+      <div className="activity-header">
+        <h3>Aktivitas User</h3>
+        <OutsideClick onClickOutside={() => setDropdownOpen(false)}>
+          <div className="custom-dropdown">
+            <div
+              className="dropdown-trigger"
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+            >
+              {selectedAction ? renderActionLabel(selectedAction) : 'Filter Aksi'}
+            </div>
+            {dropdownOpen && (
+              <ul className="dropdown-list">
+                <li onClick={() => handleSelectAction('')}>Semua Aksi</li>
+                <li onClick={() => handleSelectAction('create')}>Membuat</li>
+                <li onClick={() => handleSelectAction('update')}>Memperbarui</li>
+                <li onClick={() => handleSelectAction('delete')}>Menghapus</li>
+              </ul>
+            )}
+          </div>
+        </OutsideClick>
+      </div>
+
+      {filteredActivities.length === 0 ? (
+        <p>{message}</p>
+      ) : (
+        <div className="table-wrapper">
+          <table className="activity-table">
+            <thead className="sticky-header">
+              <tr>
+                <th>Aksi</th>
+                <th>Entity</th>
+                <th>Parent</th>
+                <th>Deskripsi</th>
+                <th>Tanggal</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredActivities.map((log) => (
+                <tr key={log.id}>
+                  <td>{renderActionLabel(log.action)}</td>
+                  <td>{log.entity_type} #{log.entity_id}</td>
+                  <td>{log.parent_entity} #{log.parent_entity_id}</td>
+                  <td>{log.details}</td>
+                  <td>
+                    <HiMiniCalendarDateRange />
+                    {new Date(log.timestamp).toLocaleString('id-ID')}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// export default ActivityPage;
