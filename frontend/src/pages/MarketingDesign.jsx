@@ -17,6 +17,7 @@ import NewFormMarketingDesign from './NewFormMarketingDesign';
 import { useNavigate } from 'react-router-dom';
 import OutsideClick from '../hook/OutsideClick';
 import { handleArchive } from '../utils/handleArchive';
+import ExportMarketingDesign from '../exports/ExportMarketingDesign';
 
 const MarketingDesign=()=> {
     //STATE
@@ -151,18 +152,6 @@ const MarketingDesign=()=> {
         showSnackbar: showSnackbar,
       })
     }
-    // const handleArchiveDataMarketingDesign = async(marketing_design_id) =>{
-    //   try{
-    //     const response = await archiveDataMarektingDesign(marketing_design_id);
-    //     console.log('Successfully archive workspace data');
-    //     showSnackbar('Succesfully archive workspace', 'success')
-    //     fetchMarketingDesign()
-    //   }catch(error){
-    //     console.error('Error archiving data marekting:',error)
-    //     showSnackbar('Failed to archive workspace','error')
-    //   }
-    // }
-
     //FUNCTION
     //1. fetch marketing design 
     const fetchMarketingDesign = async()=>{
@@ -279,6 +268,7 @@ const MarketingDesign=()=> {
                     />
                     <HiOutlineSearch className='mdh-search-icon'/>
                 </div>
+                <ExportMarketingDesign/>
               </div>
             </div>
             {/* SHOW COMPONENT  */}

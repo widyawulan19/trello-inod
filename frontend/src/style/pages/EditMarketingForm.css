@@ -1,7 +1,8 @@
-.em-container{
+.em-container {
     position: relative;
 }
-.em-header{
+
+.em-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -14,21 +15,24 @@
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
 }
-.em-header h4{
+
+.em-header h4 {
     margin: 0px;
     color: white;
     font-weight: bold;
 }
-.em-icon{
+
+.em-icon {
     cursor: pointer;
     font-size: 20px;
     border-radius: 4px;
 }
-.em-icon:hover{
+
+.em-icon:hover {
     color: #051937;
 }
 
-.em-container form{
+.em-container form {
     /* border: 1px solid red; */
     padding: 0px;
     height: 80vh;
@@ -39,20 +43,22 @@
     align-items: center;
     justify-content: flex-start;
 }
-form h4
-{
+
+form h4 {
     margin: 0px;
     font-size: 12px;
 }
+
 /* .em-container form{
 
 } */
-.section{
+.section {
     /* border: 1px solid blue; */
     width: 100%;
     margin: 15px 0px;
 }
-.sec-content{
+
+.sec-content {
     /* border: 1px solid red; */
     border-radius: 4px;
     padding: 5px;
@@ -61,15 +67,27 @@ form h4
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 10;
 }
-.sec-link-content{
-     /* border: 1px solid green; */
+
+.sec-content .box {
+    /* border: 1px solid red; */
+    border-radius: 4px;
+    padding: 5px;
+    gap: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.sec-link-content {
+    /* border: 1px solid green; */
     border-radius: 4px;
     padding: 5px;
     display: grid;
     gap: 10;
 }
 
-.sec-link-content .box{
+.sec-link-content .box {
     /* border: 1px solid red; */
     border-radius: 4px;
     padding: 5px;
@@ -81,54 +99,60 @@ form h4
     /* position: relative; */
 }
 
-.box textarea{
+.box textarea {
     width: 98%;
     border-radius: 4px;
     border: 1px solid #ddd;
     padding: 5px;
     font-size: 12px;
 }
-.box textarea:hover{
+
+.box textarea:hover {
     border: 1px solid #5D12EB;
     background-color: white;
 }
-.box textarea:focus{
+
+.box textarea:focus {
     outline: none;
     border: 1px solid #6f30dc47;
     box-shadow: 0px 4px 8px #6f30dc54;
 }
-.box label
-{
+
+.box label {
     margin: 0px;
     font-size: 10px;
     color: grey;
 }
-.box input{
-     border: 1px solid #ddd;
+
+.box input {
+    border: 1px solid #ddd;
     border-radius: 4px;
     padding: 5px;
     margin-top: 3px;
     font-size: 12px;
     /* width: 150px; */
 }
-.box input:hover{
+
+.box input:hover {
     border: 1px solid #5D12EB;
     /* background-color: white; */
     background: linear-gradient(to bottom, #6f30dc44, #1248eb50);
 }
-.box input:focus{
+
+.box input:focus {
     outline: none;
     border: 1px solid #6f30dc47;
     box-shadow: 0px 4px 8px #6f30dc54;
 }
 
-.button-update{
+.button-update {
     /* border: 1px solid #ddd; */
     display: flex;
     align-items: center;
     justify-content: end;
 }
-.button-update button{
+
+.button-update button {
     background: linear-gradient(to bottom, #6E30DC, #5D12EB);
     padding: 7px 20px;
     color: white;
@@ -142,18 +166,20 @@ form h4
     align-items: center;
     justify-content: center;
 }
-.button-update button:hover{
-    background: linear-gradient(to bottom,#5D12EB,#6E30DC);
+
+.button-update button:hover {
+    background: linear-gradient(to bottom, #5D12EB, #6E30DC);
     box-shadow: 0px 4px 8px #6f30dc7c;
 }
 
 
 /* DROPDOWN ACCEPT */
-.sec-content .emd-box{
+.sec-content .emd-box {
     /* border: 1px solid red; */
     position: relative;
 }
-.emd-box .dropdown-selected{
+
+.emd-box .dropdown-selected {
     border: 1px solid #ddd;
     border-radius: 4px;
     padding: 5px;
@@ -162,6 +188,7 @@ form h4
     font-size: 11px;
     position: relative;
 }
+
 /* 
 .dropdown-options {
     position: absolute;
@@ -179,14 +206,15 @@ form h4
 } */
 
 
-.dropdown-options li{
+.dropdown-options li {
     border: 1px solid white;
     border-radius: 4px;
     padding: 5px;
     margin-bottom: 5px;
     cursor: pointer;
 }
-.dropdown-options li:hover{
+
+.dropdown-options li:hover {
     /* background-color: #eee; */
     background-color: #d0b6ff46;
     border: 1px solid #eee;
@@ -213,13 +241,14 @@ form h4
 /* MEDIA QUERY  */
 /* ukuran handpone kecil */
 @media (min-width:375px) and (max-width:575px) {
-  .sec-content .emd-box{
-    /* border: 1px solid red; */
-    width: 90%;
-  }
-  .emd-box .dropdown-selected{
-    width: 100%;
-  }
+    .sec-content .emd-box {
+        /* border: 1px solid red; */
+        width: 90%;
+    }
 
-  
+    .emd-box .dropdown-selected {
+        width: 100%;
+    }
+
+
 }

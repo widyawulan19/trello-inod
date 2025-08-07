@@ -13,6 +13,7 @@ import DataMarketingDeleteConfirm from "../modals/DataMarketingDeleteConfirm";
 import OutsideClick from "../hook/OutsideClick";
 import { IoEyeSharp } from "react-icons/io5";
 import { handleArchive } from "../utils/handleArchive";
+import ExportDataMarketing from "../exports/ExportDataMarketing";
 
 const DataMarketing = () => {
   const location = useLocation();
@@ -147,24 +148,12 @@ const handleCloseForm = () =>{
      }));
    };
 
-  // const fetchDataMarketing = async () => {
-  //   try {
-  //     const response = await getAllDataMarketing();
-  //     setDataMarketing(response.data);
-  //     setFilteredData(response.data);
-  //   } catch (error) {
-  //     console.error("Error fetching data: ", error);
-  //   }
-  // };
-
-
-
   const handleEdit = (id) => {
-    navigate(`/edit-marketing/${id}`); // Redirect ke halaman edit
+    navigate(`/layout/edit-marketing/${id}`); // Redirect ke halaman edit
   };
 
   const handleToMarketingDetail = (marketinId) => {
-    navigate(`/data-marketing/${marketinId}`)
+    navigate(`/layout/data-marketing/${marketinId}`)
   }
 
   
@@ -221,17 +210,7 @@ const handleArchiveDataMarketing =(marketing_id)=>{
     showSnackbar: showSnackbar,
   })
 }
-// const handleArchiveDataMarketing = async(marketing_id)=>{
-//   try{
-//     const response = await archiveDataMarketing(marketing_id);
-//     console.log('Successfully archive workspace data');
-//     showSnackbar('Succesfully archive workspace', 'success');
-//     fetchDataMarketing();
-//   }catch(error){
-//     console.error('Error archiving data marekting:',error)
-//     showSnackbar('Failed to archive workspace','error')
-//   }
-// }
+
 
 //fungsi filtered data
 const handleFilterData = (selectedTerm) => {
@@ -306,6 +285,7 @@ const handleFilterButton = () =>{
                 />
                 <HiOutlineSearch className="dms-icon"/>
             </div>
+            <ExportDataMarketing/>
           </div>
         </div>
 

@@ -74,173 +74,282 @@ const NewFormMarketingDesign = ({ onClose, fetchMarketingDesign }) => {
     }
   };
 
-  const getFieldsByCategory = () => ({
-    "1. Informasi Pesanan": [
-      { name: "input_by", label: "Input By", type: "text" },
-      { name: "acc_by", label: "Acc By", type: "text" },
-      { name: "buyer_name", label: "Buyer Name", type: "text" },
-      { name: "code_order", label: "Code Order", type: "text" },
-      { name: "order_number", label: "Order Number", type: "text" },
-      { name: "account", label: "Account", type: "text" },
-    ],
-    "2. Detail Pesanan": [
-      { name: "jumlah_design", label: "Jumlah Design", type: "number" },
-      { name: "jumlah_revisi", label: "Jumlah Revisi", type: "number" },
-      { name: "order_type", label: "Order Type", type: "text" },
-      { name: "project_type", label: "Project Type", type: "text" },
-      { name: "offer_type", label: "Offer Type", type: "text" },
-      { name: "deadline", label: "Deadline", type: "datetime-local" },
-    ],
-    "3. Detail Design": [
-      { name: "style", label: "Style", type: "text" },
-      { name: "resolution", label: "Resolution", type: "text" },
-      { name: "required_files", label: "Required Files", type: "textarea" },
-    ],
-    "4. Detail Price": [
-      { name: "price_normal", label: "Price Normal", type: "text" },
-      { name: "price_discount", label: "Price Discount", type: "text" },
-      { name: "discount_percentage", label: "Discount Percentage", type: "text" },
-    ],
-    "5. Reference and File": [
-      { name: "reference", label: "Reference", type: "textarea" },
-      { name: "file_and_chat", label: "File and Chat", type: "textarea" },
-    ],
-    "6. Detail Project": [
-      { name: "detail_project", label: "Detail Project", type: "textarea" },
-    ],
-  });
-
-  const getCategoryCompletionStatus = () => {
-    const categories = getFieldsByCategory();
-    const status = [];
-
-    Object.entries(categories).forEach(([category, fields]) => {
-      const total = fields.length;
-      const filled = fields.filter(
-        (field) =>
-          formData[field.name] && formData[field.name].toString().trim() !== ""
-      ).length;
-      const isComplete = filled === total;
-
-      status.push({
-        category,
-        filled,
-        total,
-        isComplete,
-      });
-    });
-
-    return status;
-  };
-
-  const calculateGlobalProgress = () => {
-    const status = getCategoryCompletionStatus();
-    const totalCategories = status.length;
-    const completed = status.filter((cat) => cat.isComplete).length;
-
-    if (completed <= 1) return 0;
-
-    const adjustedCompleted = completed - 1;
-    const adjustedTotal = totalCategories - 1;
-
-    return Math.round((adjustedCompleted / adjustedTotal) * 100);
-  };
-
-  const getLabelByName = (name) => {
-    const allFields = Object.values(getFieldsByCategory()).flat();
-    const found = allFields.find((field) => field.name === name);
-    return found?.label || name;
-  };
-
-  const getTypeByName = (name) => {
-    const allFields = Object.values(getFieldsByCategory()).flat();
-    const found = allFields.find((field) => field.name === name);
-    return found?.type || "text";
-  };
 
   return (
     <div className='setting-container'>
       <div className="sc-header">
-        <h4> <IoCreate size={15}/> CREATE DATA MARKETING DESIGN</h4>
+        <div className="sch-left">
+          <div className="sch-icon">
+             <IoCreate size={15}/>
+          </div>
+          <h4> CREATE DATA MARKETING DESIGN</h4>
+        </div>
+        
         <BootstrapTooltip title='Close Form' placement='top'>
           <HiXMark onClick={onClose} className='sch-icon' />
         </BootstrapTooltip>
       </div>
 
-      <div className="sc-body">
-        <div className="scb-progres">
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', width: '100%' }}>
-            {getCategoryCompletionStatus().map(({ category, filled, total, isComplete }) => (
-              <p key={category}
-                style={{
-                  margin: "0px",
-                  fontWeight: isComplete ? "bold" : "normal",
-                  color: isComplete ? "#4caf50" : "#000",
-                  width: '25%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  fontSize: '10px'
-                }}>
-                {isComplete ? <span><CiCircleCheck size={15}/></span> : <GiCircle size={15} />} {filled}/{total}
-              </p>
-            ))}
-          </div>
-
-          <div>
-              <div style={{ height: "5px", backgroundColor: "#eee", borderRadius: "6px", overflow: "hidden", width: '85%' }}>
-                <div
-                  style={{
-                    width: `${calculateGlobalProgress()}%`,
-                    height: "100%",
-                    backgroundColor: "#4caf50",
-                    transition: "width 0.3s ease-in-out",
-                  }}
-                />
-              </div>
-              <p style={{ fontSize: "10px", marginTop: "6px", color: "#333", fontWeight: "bold" }}>
-                {getCategoryCompletionStatus().filter((cat) => cat.isComplete).length} /{" "}
-                {getCategoryCompletionStatus().length} kategori lengkap
-              </p>
-          </div>
-      </div>
-
-        <div className="scb-form">
-          <form onSubmit={handleSubmit}>
-            <div className="fmd-container">
-              {Object.entries(getFieldsByCategory()).map(([category, fields]) => (
-                <div key={category} className="category-section">
-                  <h4 style={{ marginTop: '20px' }}>{category}</h4>
-                  {fields.map(({ name, label, type }) => (
-                    <div className="box" key={name}>
-                      <label>{label}</label>
-                      {type === "textarea" ? (
-                        <textarea
-                          name={name}
-                          value={formData[name] || ""}
-                          onChange={handleChange}
-                        />
-                      ) : (
-                        <input
-                          type={type}
-                          name={name}
-                          value={formData[name] || ""}
-                          onChange={handleChange}
-                        />
-                      )}
-                    </div>
-                  ))}
-                </div>
-              ))}
-              
-              <div className="fmd-button">
-                <button type="submit">SUBMIT NEW DATA</button>
-              </div>
+      <form className="sc-body" onSubmit={handleSubmit}>
+        {/* INFORMASI PESANAN  */}
+        <div className="sc-main-container">
+          <h4>Informasi Pesanan</h4>
+          <div className="sc-main-box">
+            <div className="main-box">
+              <label>Input By</label>
+              <input 
+                type="text" 
+                name='input_by'
+                value={formData.input_by}
+                onChange={handleChange}
+                required
+              />
             </div>
-          </form>
+            <div className="main-box">
+              <label>Acc By</label>
+              <input 
+                type="text" 
+                name='acc_by'
+                value={formData.acc_by}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="main-box">
+              <label>Buyer Name</label>
+              <input 
+                type="text" 
+                name='buyer_name'
+                value={formData.buyer_name}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="main-box">
+              <label>Code Order</label>
+              <input 
+                type="text" 
+                name='code_order'
+                value={formData.code_order}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="main-box">
+              <label>Order Number</label>
+              <input 
+                type="text" 
+                name='order_number'
+                value={formData.order_number}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="main-box">
+              <label>Account</label>
+              <input 
+                type="text" 
+                name='account'
+                value={formData.account}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
         </div>
-      </div>
+
+        {/* DETAIL PESANAN  */}
+        <div className="sc-main-container">
+          <h4>Detail Pesanan</h4>
+          <div className="sc-main-box">
+            <div className="main-box">
+              <label>Jumlah Design</label>
+              <input 
+                type="number" 
+                name='jumlah_design'
+                value={formData.jumlah_design}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="main-box">
+              <label>Jumlah Revisi</label>
+              <input 
+                type="number" 
+                name='jumlah_revisi'
+                value={formData.jumlah_revisi}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="main-box">
+              <label>Order Type</label>
+              <input 
+                type="text" 
+                name='order_type'
+                value={formData.order_type}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="main-box">
+              <label>Project Type</label>
+              <input 
+                type="text" 
+                name='project_type'
+                value={formData.project_type}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="main-box">
+              <label>Offer Type</label>
+              <input 
+                type="text" 
+                name='offer_type'
+                value={formData.offer_type}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="main-box">
+              <label>Deadline</label>
+              <input 
+                type="date" 
+                name='deadline'
+                value={formData.deadline}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* DETAIL DESIGN  */}
+        <div className="sc-main-container">
+          <h4>Detail Design</h4>
+          <div className="sc-main-box">
+            <div className="main-box">
+              <label>Style</label>
+              <input 
+                type="text" 
+                name='style'
+                value={formData.style}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="main-box">
+              <label>Resolution</label>
+              <input 
+                type="text" 
+                name='resolution'
+                value={formData.resolution}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="main-box">
+              <label>Required File</label>
+              <input 
+                type="textarea" 
+                name='required_files'
+                value={formData.required_files}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* DETAIL PRICE  */}
+        <div className="sc-main-container">
+          <h4>Detail Price</h4>
+          <div className="sc-main-box">
+            <div className="main-box">
+              <label>Price Normal</label>
+              <input 
+                type="text" 
+                name='price_normal'
+                value={formData.price_normal}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="main-box">
+              <label>Price Discount</label>
+              <input 
+                type="text" 
+                name='price_discount'
+                value={formData.price_discount}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="main-box">
+              <label>Discount Precentage</label>
+              <input 
+                type="text" 
+                name='discount_percentage'
+                value={formData.discount_percentage}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* REFERENCE AND FILES  */}
+        <div className="sc-main-container">
+          <h4>Reference and Files</h4>
+          <div className="sc-main-box" style={{display:'grid', gridTemplateColumns:'repeat(2,1fr)'}}>
+            <div className="main-box">
+              <label>Reference</label>
+              <input 
+                type="textarea" 
+                name='reference'
+                value={formData.reference}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="main-box">
+              <label>File and Chat</label>
+              <input 
+                type="textarea" 
+                name='file_and_chat'
+                value={formData.file_and_chat}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* DETAILS  */}
+        <div className="sc-main-container">
+          <h4>Detail Project</h4>
+          <div className="sc-main-box">
+            <div className="main-box-detail">
+              <label>Detail Project</label>
+              <textarea 
+                type="textarea" 
+                name='detail_project'
+                value={formData.detail_project}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="btn-form">
+          <button type='submit'>SUBMIT NEW DATA</button>
+        </div>
+      </form>
     </div>
   );
 };
 
 export default NewFormMarketingDesign;
+//082286347194

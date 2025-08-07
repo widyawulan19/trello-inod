@@ -1,7 +1,8 @@
-.fdm-container{
+.fdm-container {
     width: 100%;
 }
-.fdm-header{
+
+.fdm-header {
     border-bottom: 1px solid #ddd;
     /* border-radius: 8px; */
     border-top-left-radius: 8px;
@@ -13,23 +14,40 @@
     justify-content: space-between;
     padding: 10px;
 }
-.fdm-header h4{
+
+.fdm-header .fmdh-left {
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+}
+
+.fmdh-left .header-icon {
+    border: 1px solid #ffffff72;
+    background-color: #ffffff72;
+    border-radius: 8px;
+    padding: 5px;
+    color: #fff;
+}
+
+.fdm-header h4 {
     margin: 0px;
     font-size: 12px;
     gap: 5px;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-
-    /* font-weight: normal; */
+    font-weight: bold;
 }
-.fdm-icon{
+
+.fdm-icon {
     cursor: pointer;
     font-size: 20px;
 }
 
 /* FORM  */
-.fdm-container form{
+.fdm-container form {
     /* border: 1px solid blue;  */
     padding: 10px;
     height: 82vh;
@@ -40,22 +58,25 @@
     justify-content: flex-start;
 }
 
-.fdm-container .section-main{
+.fdm-container .section-main {
     /* border: 1px solid red; */
     margin-bottom: 15px;
     /* height: fit-content; */
 }
-.fdm-container .section-reference{
+
+.fdm-container .section-reference {
     /* border: 1px solid red; */
     margin-bottom: 10px;
     width: 100%;
 }
-.fdm-container .section-desc{
+
+.fdm-container .section-desc {
     /* border: 1px solid red; */
     margin-bottom: 10px;
     width: 100%;
 }
-.sec-content{
+
+.sec-content {
     border: 1px solid #eee;
     border-radius: 4px;
     padding: 5px;
@@ -63,7 +84,8 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 10;
 }
-.section-reference .sec-link-content{
+
+.section-reference .sec-link-content {
     border: 1px solid #eee;
     border-radius: 4px;
     display: flex;
@@ -72,7 +94,8 @@
     justify-content: center;
     width: 100%;
 }
-.sec-link-content .box{
+
+.sec-link-content .box {
     /* border: 1px solid green; */
     border-radius: 4px;
     padding: 5px;
@@ -81,28 +104,56 @@
     flex-direction: column;
     justify-content: flex-start;
 }
-.box textarea{
+
+.sec-link-content .box-date {
+    /* border: 1px solid green; */
+    border-radius: 4px;
+    margin-top: 10px;
+    padding: 5px;
+    gap: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.box textarea {
     width: 100%;
     border-radius: 4px;
     border: 1px solid #ddd;
     padding: 5px;
 }
-.box textarea:hover{
+
+.box textarea:hover {
     border: 1px solid #5D12EB;
     background-color: white;
 }
-.box textarea:focus{
+
+.box textarea:focus {
     outline: none;
     border: 1px solid #6f30dc47;
     box-shadow: 0px 4px 8px #6f30dc54;
 }
-.box label
-{
+
+.box-date label,
+.box label {
     margin: 0px;
     font-size: 10px;
     color: grey;
 }
-.box input{
+
+
+.box-date input {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 2px;
+    margin-top: 3px;
+    margin-right: 5px;
+    width: 90%;
+    font-size: 12px;
+    color: #333;
+}
+
+.box input {
     border: 1px solid #ddd;
     border-radius: 4px;
     padding: 5px;
@@ -110,58 +161,67 @@
     margin-right: 5px;
     /* width: 150px; */
 }
-.box input:hover{
+
+.box-date input:hover,
+.box input:hover {
     /* outline: none; */
     border: 1px solid #5D12EB;
     background-color: white;
     /* box-shadow: 0px 4px 8px #6f30dc54; */
 }
-.box input:focus{
+
+.box-date input:focus,
+.box input:focus {
     outline: none;
     border: 1px solid #6f30dc47;
     box-shadow: 0px 4px 8px #6f30dc54;
 }
 
-.button-update{
+.button-update {
     /* border: 1px solid #ddd; */
     display: flex;
     align-items: center;
     justify-content: end;
     margin: 5px 0px;
 }
-.button-update button{
+
+.button-update button {
     background: linear-gradient(to bottom, #6E30DC, #5D12EB);
     color: white;
     font-weight: bold;
     font-size: 15px;
 }
-.button-update button:hover{
-    background: linear-gradient(to bottom,#5D12EB,#6E30DC);
+
+.button-update button:hover {
+    background: linear-gradient(to bottom, #5D12EB, #6E30DC);
     box-shadow: 0px 4px 8px #6f30dc7c;
 }
 
 /* MEDIA QUERY  */
 /* ukuran handpone kecil */
 @media (min-width:375px) and (max-width:575px) {
-  .fdm-container form{
-    width: 100%;
-    /* border: 1px solid orange; */
-  }
-    .fdm-container .section-main{
-    /* border: 1px solid red; */
-    width: 100%;
-  }
-  .sec-content{
-    /* border: 1px solid blue; */
-    width: 100%;
-    padding: 0px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-  }
-  .box input{
-    width: 100%;
-    padding: 8px;
-  }
+    .fdm-container form {
+        width: 100%;
+        /* border: 1px solid orange; */
+    }
+
+    .fdm-container .section-main {
+        /* border: 1px solid red; */
+        width: 100%;
+    }
+
+    .sec-content {
+        /* border: 1px solid blue; */
+        width: 100%;
+        padding: 0px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+    .box input {
+        width: 100%;
+        padding: 8px;
+    }
 }

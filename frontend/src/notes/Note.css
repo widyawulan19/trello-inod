@@ -1,524 +1,192 @@
-.profile-container {
-  border: 1px solid red;
-  background-color: white;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.profile-container .header-profile {
-  border: 1px solid blue !important;
-  width: 100%;
-}
-
-.profil-page-header .header-title {
-  border: 1px solid green;
-  gap: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-
-
-
-.pch-left {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  /* border: 1px solid yellow; */
-}
-
-.pch-left h2 {
-  margin: 0px;
-  font-weight: bold;
-  font-size: 20px;
-  color: #5D12EB;
-}
-
-.pchl-icon {
-  margin-right: 5px;
-  font-size: 25px;
-  color: #5D12EB;
-}
-
-.pc-header p {
-  margin: 0px;
-  /* margin-top: 5px; */
-  font-size: 12px;
-  color: #333;
-}
-
-/* BODY  */
-.pc-container .pc-body {
+.setting-container {
   /* border: 1px solid green; */
-  width: 100%;
-  /* min-width: 50vw; */
-  height: 90%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-}
-
-/* LEFT  */
-.pcb-left {
-  border: 1px solid #ddd;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  height: 100%;
-  width: 30%;
-}
-
-.profile-photo {
-  /* border: 1px solid blue; */
-  /* border-bottom: 1px solid #ddd; */
+  /* height: 100vh; */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding-top: 30px;
-  position: relative;
-}
-
-.profile-photo img {
-  height: 40%;
-  width: 40%;
-}
-
-.profile-photo h3 {
-  margin: 0px;
-  color: #5D12EB;
-  font-weight: bold;
-}
-
-.profile-photo p {
-  margin: 0px;
-  font-size: 12px;
-}
-
-.profile-photo button {
-  margin-top: 20px;
-  margin-bottom: 10px;
-  padding: 5px 10px;
-  width: 50%;
-  border: 1px solid #5e12eb8e;
-  border-radius: 4px;
-  background-color: white;
-  color: #5D12EB;
-  font-size: 12px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.profile-photo button:hover {
-  border: 1px solid #5D12EB;
-  background: linear-gradient(to right, #6b11cb41, #2574fc41);
-}
-
-.ps-icon {
-  margin-right: 10px;
-}
-
-/* END LEFT  */
-
-.pcb-right {
-  border: 1px solid #ddd;
-  /* border: 1px solid red !important; */
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  height: 100%;
-  width: 70%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  padding-top: 0px !important;
-}
-
-.pcb-right .pcb-content {
-  /* border: 1px solid green; */
-  padding-top: 0px !important;
-}
-
-.profile-setting {
-  border: 1px solid white;
-  gap: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
-}
-
-.profile-setting button {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: none;
-  border: none;
-  padding: 10px;
-  width: 80%;
-  text-align: left;
-  cursor: pointer;
-  font-size: 12px;
-  color: #555;
-  transition: background 0.3s, color 0.3s;
-  border-radius: 8px;
-}
-
-.fade .personal-info {
-  border: 1px solid #ddd;
-  height: 75vh;
-  width: 100%;
-  padding: 10px;
-  overflow-y: auto;
-}
-
-.fade .activity {
-  /* border: 1px solid red; */
-  height: 75vh;
-  padding: 10px;
-  overflow-y: auto;
-}
-
-.fade .notif {
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  height: 75vh;
-  width: 50vw;
-  padding: 10px;
-  /* overflow-y: auto; */
-}
-
-.profile-setting button:hover {
-  background: linear-gradient(to right, #6b11cb41, #2574fc41);
-}
-
-.profile-setting button.active {
-  background: linear-gradient(to right, #6b11cb41, #2574fc41);
-}
-
-/* Animasi halus untuk bagian kanan */
-.pcb-right .fade {
-  animation: fadeIn 0.5s ease;
-  /* border: 1px solid red; */
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* AVATAR */
-.ava-container {
-  /* ada hubungan dengan class profile-photo */
-  position: absolute;
-  top: 100%;
-  left: 0%;
-  z-index: 99;
-  min-width: 20vw;
-  width: 100%;
-  height: 30vh;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background-color: white;
-  box-shadow: 0px 4px 8px #5e12eb46;
-}
-
-.all-profile-cont .apc-header {
-  /* border: 1px solid #ddd; */
-  padding: 0px 10px;
-  /* padding-bottom: 0px; */
-  display: flex;
-  /* align-items: center; */
-  justify-content: space-between;
-}
-
-.apc-icon {
-  border: 1px solid white;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 20px;
   padding: 0px;
 }
 
-.apc-icon:hover {
-  border: 1px solid #eee;
-  background-color: #eee;
-}
-
-.apc-header h5 {
-  margin: 5px;
-  border: 1px solid blue;
-  /* font-weight: normal; */
-  font-size: 12px;
-  color: #333;
-}
-
-.apc-body {
-  /* border: 1px solid red; */
-  gap: 15px 10px;
-  padding: 10px;
-  display: grid;
-  grid-template-columns: repeat(5, 3vw);
-}
-
-.apc-body img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  /* border: 3px solid green; */
-}
-
-.apc-btn {
-  width: 100%;
+/* HEADER  */
+.setting-container .sc-header {
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  border-bottom: 1px solid #ddd;
+  /* background: linear-gradient(to bottom, #6E30DC, #5D12EB); */
+  background-color: #5D12EB;
+  color: white;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px;
 }
 
-.apc-btn button {
-  background: linear-gradient(to right, #6a11cb, #2575fc);
-  cursor: pointer;
-  border: 1px solid #5D12EB;
-  color: white;
+.sc-header h4 {
+  margin: 0px;
+  font-size: 12px;
   font-weight: bold;
+  gap: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  /* border: 1px solid green; */
 }
 
-.apc-btn button:hover {
-  background: linear-gradient(to right, #2575fc, #6a11cb);
+.sch-icon {
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 3px;
+  font-size: 25px;
 }
 
+
+/* END HEADER  */
+
+/* BODY  */
+.sc-body {
+  /* border: 1px solid grey; */
+  width: 95%;
+  margin-top: 20px;
+}
+
+.scb-progres {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  width: 100%;
+  padding: 10px;
+  box-shadow: 0px 4px 4px #6f30dc7c;
+}
+
+/* FORM  */
+.scb-form {
+  /* border: 1px solid red; */
+  /* padding-left: 30px; */
+  height: 73vh;
+  overflow-y: auto;
+}
+
+.scb-form form {
+  /* border: 1px solid blue; */
+  /* padding-left: 20px; */
+}
+
+.category-section {
+  /* border: 1px solid green; */
+  padding-bottom: 15px;
+  margin: 5px 0px;
+  border-bottom: 1px solid #9b7fca;
+}
+
+.category-section .box {
+  /* border: 1px solid yellow; */
+  width: 100%;
+  font-size: 10px;
+}
+
+/* INPUT STYLE  */
+
+.fmd-info-content .box {
+  /* border: 1px solid green; */
+}
+
+.fmd-info-content .box input {
+  border: 1px solid #ddd;
+  width: 100%;
+}
+
+.fmd-info-content .box input:hover {
+  border: 1px solid #9b7fca;
+}
+
+.fmd-info-content .box input:focus {
+  border: 1px solid #9b7fca;
+  box-shadow: 0px 4px 8px #6f30dc7c;
+}
+
+/* TEXT AREA  */
+.fmd-info-content .detail-box textarea {
+  width: 40vw;
+  height: 10vh;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+.fmd-info-content .detail-box textarea:hover {
+  border: 1px solid #6E30DC;
+}
+
+.fmd-info-content .detail-box textarea:focus {
+  outline: none;
+  border: 1px solid #9b7fca;
+  box-shadow: 0px 4px 8px #6f30dc7c;
+}
+
+/* BUTTON SUBMIT  */
+.fmd-button {
+  width: 100%;
+  /* padding: 5px; */
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  /* border: 1px solid green; */
+}
+
+.fmd-button button {
+  border: 1px solid #5D12EB;
+  border-radius: 6px;
+  background: linear-gradient(to bottom, #6E30DC, #5D12EB);
+  color: white;
+  padding: 5px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.fmd-button button:hover {
+  background: linear-gradient(to bottom, #5D12EB, #6E30DC);
+}
+
+/* END FORM  */
 
 /* MEDIA QUERY  */
+/* Extra large devices (large desktops, ≥1200px) */
+@media (min-width: 1200px) and (max-width:1400px) {
+  .wf-create {
+    width: 20%;
+  }
+}
+
+/* Large devices (desktops, ≥992px) */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .wf-create {
+    width: 30%;
+  }
+}
 
 /* Medium devices (tablets, ≥768px) */
 @media (min-width: 768px) and (max-width: 991.98px) {
-  .pc-container {
-    /* border: 1px solid green; */
-    width: 90%;
-  }
-
-  .profile-photo button {
-    width: 80%;
-  }
-
-  .profile-setting button {
-    width: 90%;
-    gap: 5px;
-  }
-
-  /* CSS tablet atau iPad */
-}
-
-/* ukuran handpone besar  */
-@media (min-width: 576px) and (max-width: 767.98px) {
-  .pc-container {
-    /* border: 1px solid #ddd; */
-    border-radius: 8px;
-  }
-
-  .pc-container .pc-body {
-    flex-direction: column;
-    height: 90%;
-    align-items: flex-start;
-    justify-content: flex-start;
-    /* border: 1px solid orange; */
-    overflow-y: auto;
-  }
-
-
-  .pcb-left {
-    /* border: 1px solid #5D12EB; */
-    width: 100%;
-    border: 1px solid #eeeeee00;
-    box-shadow: none;
-  }
-
-  .pcb-right {
-    width: 100% !important;
-    border: 1px solid #eeeeee00;
-  }
-
-  .profile-photo button {
-    width: 95%;
-  }
-
-  .profile-photo p {
-    font-size: 8px;
-  }
-
-  .profile-setting {
-    width: 100%;
-    gap: 5px;
-    /* border: 1px solid orangered; */
-  }
-
-  .profile-setting button {
-    width: 100%;
-    gap: 5px;
-    font-size: 8px;
-    /* border: 1px solid orangered; */
-  }
-
-  .ps-icon {
-    display: none;
-  }
-
-  .ps-label {
-    font-size: 12px;
-    font-weight: normal;
-  }
-
-  .pcb-right {
-    width: 80%;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    /* border: 1px solid green; */
-  }
-
-  .pcb-content {
-    width: 100%;
-  }
-
-  .fade .notif {
+  .scb-form {
     /* border: 1px solid blue; */
-    width: 100%;
-  }
-}
-
-/* ukuran handpone kecil  */
-@media (min-width:375px) and (max-width:575px) {
-
-  .pc-container {
-    width: 95%;
-    /* border: 1px solid green; */
-  }
-
-  .profile-photo img {
-    height: 50%;
-    width: 50%;
-  }
-
-  .profile-photo h3 {
-    /* border: 1px solid green; */
-    text-align: center;
+    height: 70vh;
     margin-top: 5px;
   }
-
-  .profile-photo p {
-    text-align: center;
-    /* border: 1px solid green; */
-    padding: 5px;
-  }
-
-  .profile-photo button {
-    width: 80%;
-    font-size: 11px;
-    border: 1px solid #5D12EB;
-  }
-
-  .profile-photo p {
-    font-size: 8px;
-  }
-
-  .profile-setting {
-    /* border: 1px solid blue; */
-
-  }
-
-  .profile-setting button {
-    width: 85%;
-    gap: 5px;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* border: 1px solid orangered; */
-  }
-
-  .ps-icon {
-    font-size: 15px;
-    margin: 0px;
-  }
-
-  /* layout  */
-  .pc-container {
-    /* border: 1px solid #ddd; */
-    border-radius: 8px;
-  }
-
-  .pc-container .pc-body {
-    flex-direction: column;
-    height: 90%;
-    align-items: flex-start;
-    justify-content: flex-start;
-    /* border: 1px solid orange; */
-    overflow-y: auto;
-  }
-
-
-  .pcb-left {
-    border: 1px solid #ddd !important;
-    width: 100%;
-    border: 1px solid #eeeeee00;
-    box-shadow: none;
-  }
-
-  .pcb-right {
-    border: 1px solid #ddd !important;
-    width: 100% !important;
-    border: 1px solid #eeeeee00;
-  }
-
-  .pcb-right .pcb-content {
-    width: 100%;
-  }
-
-  /* AVA CONTAINER  */
-  .ava-container {
-    border: 1px solid red;
-  }
-
-  .all-profile-cont .apc-header {
-    border: 1px solid red;
-  }
-
-  .apc-icon {
-    font-size: 30px;
-  }
-
-  .fade .notif {
-    /* border: 1px solid blue; */
-    width: 100%;
-  }
-
-
 }
 
-
-/* HEIGHT BREAKPOIN  */
-@media (min-height:400px) and (max-height:730px) {
-  .pcb-left {
-    height: 90vh;
+/* ukuran handpone besar */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .scb-form {
+    height: 70vh;
+    margin-top: 5px;
   }
+}
 
-  .pcb-right {
-    height: 100vh;
-  }
-
-  .pcb-right .pcb-content {
-    /* height: 100% !important; */
-    height: 100vh;
+/* ukuran handpone kecil */
+@media (min-width:375px) and (max-width:575px) {
+  .scb-form {
+    /* border: 1px solid blue; */
+    height: 66vh;
+    margin-top: 5px;
   }
 }
