@@ -3,6 +3,7 @@ import '../style/landingpage/MainLp.css';
 import heroPic from '../assets/hero1.jpg';
 import iconPic from '../assets/lpicon.png';
 import DATALP from '../landingpage/DATALP';
+import { SiMusicbrainz } from "react-icons/si";
 import {
   IoSwapVerticalSharp,
   IoPeople,
@@ -82,14 +83,17 @@ const MainLp = () => {
       <div className='lp-header'>
         <div className='header-container'>
           <div className='lp-logo'>
+             <span onClick={() => scrollToSection(section1Ref)}><SiMusicbrainz/></span>
             <h2 onClick={() => scrollToSection(section1Ref)}>InodStudio Management</h2>
           </div>
           <div className='lp-btn'>
-            <button onClick={() => scrollToSection(section2Ref)}>Features</button>
-            <button onClick={() => scrollToSection(section3Ref)}>About</button>
-            <button onClick={handleToLogin} className='start-btn'>
-              Get Started
-            </button>
+            <div className="btn-btn">
+              <div className="btn-show" onClick={() => scrollToSection(section2Ref)}>Features</div>
+              <div className="btn-show" onClick={() => scrollToSection(section3Ref)}>About</div>
+            </div>
+            <div className="btn-start" onClick={handleToLogin}>
+              <span>Get</span> Start
+            </div>
           </div>
         </div>
       </div>
