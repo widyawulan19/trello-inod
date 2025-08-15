@@ -45,6 +45,7 @@ import Register from '../auth/Register';
 import RequestPass from '../auth/RequestPass';
 import ResetPass from '../auth/ResetPass';
 import Faq from '../pages/Faq';
+import WelcomePage from '../auth/WelcomePage';
 
 const AppRoutes=()=> {
   return (
@@ -56,6 +57,7 @@ const AppRoutes=()=> {
         <Route path='/register' element={<Register/>}/>
         <Route path='/req-reset' element={<RequestPass/>}/>
         <Route path='/reset-pass' element={<ResetPass/>} />
+        <Route path='/welcome' element={<WelcomePage/>}/>
 
         {/* <Route path='/' element={<Layout/>}> */}
         <Route path='/layout' element={<Layout/>}>

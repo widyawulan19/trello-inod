@@ -22,6 +22,10 @@ const ResetPass = () => {
 
   const handleToLandingPage = () => navigate('/');
 
+  const handleToLogin = () =>{
+    navigate('/login')
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -73,11 +77,11 @@ const ResetPass = () => {
         </div>
       </div>
 
-      <div className="login-content-right">
+      <div className="reset-content-right">
         <form className="content-box" onSubmit={handleSubmit}>
           <div className="ress-logo">
             <div className="logo-box">
-              <IoIosUnlock size={20} />
+              <IoIosUnlock size={20} className='box-icon' />
             </div>
           </div>
 
@@ -161,9 +165,11 @@ const ResetPass = () => {
             </div>
           </div>
 
-          <button type="submit" className="btn-login">
+          <button type="submit" className="btn-reset">
             Reset Password
           </button>
+
+          <p>Back to <span className='span' onClick={handleToLogin}>Login</span></p>
         </form>
       </div>
     </div>

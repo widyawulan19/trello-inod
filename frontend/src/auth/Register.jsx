@@ -57,8 +57,8 @@ const Register = () => {
 
       <div className="register-content-right">
         <div className="content-box">
-          <div className="box-title" style={{gap:'0px', margin:'0px'}}>
-            <h2 style={{margin:'0px'}}>Create an Account</h2>
+          <div className="box-title">
+            <h2 >Create an Account</h2>
             <p className='sub-p'>Bergabung dan Mulai Kolaborasi Lebih Mudah</p>
           </div>
 

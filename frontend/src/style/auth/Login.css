@@ -8,16 +8,16 @@
 }
 
 /* LEFT  */
-.login-content-left {
+.login-container .login-content-left {
     /* border: 1px solid red; */
     width: 50%;
     height: 100vh;
-    padding: 30px;
-    padding-left: 50px;
+    padding: 30px 50px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
 }
 
 .login-content-left .h1 {
@@ -79,7 +79,7 @@
 
 
 /* RIGHT  */
-.login-content-right {
+.login-container .login-content-right {
     /* border: 1px solid blue; */
     width: 50%;
     height: 100vh;
@@ -87,23 +87,20 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
 }
 
 .login-content-right .content-box {
-    box-shadow:
-        0 8px 16px rgba(0, 0, 0, 0.4),
-        /* bayangan jatuh ke bawah */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4),
         0 4px 6px rgba(255, 255, 255, 0.336);
-    /* sedikit glow ke atas */
     background-color: white;
     border: 1px solid white;
     border-radius: 20px;
-    padding: 50px !important;
+    padding: 50px;
     width: 80%;
     height: 80%;
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
 }
 
@@ -279,6 +276,212 @@
     cursor: pointer;
 }
 
+.box-footer p {
+    font-size: 13px;
+    padding: 0px;
+    margin: 0px;
+}
+
 .box-footer span:hover {
     text-decoration: underline;
 }
+
+
+/* MEDIA QUERY  */
+/* Desktop (≥ 992px) */
+@media (min-width: 992px) {
+    .login-container .login-content-left {
+        width: 50%;
+    }
+
+    .login-container .login-content-right {
+        width: 50%;
+        /* border: 1px solid red; */
+        padding: 10px;
+        height: 100%;
+    }
+
+    .login-content-right .content-box {
+        width: 90%;
+        height: 90vh;
+        padding: 20px !important;
+        gap: 20px;
+        align-items: center;
+    }
+
+    .box-footer p {
+        display: none;
+    }
+}
+
+/* Medium devices (tablets, ≥768px) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+
+    .login-container .login-content-left {
+        width: 40%;
+        padding: 10px;
+        padding-left: 20px !important;
+        /* border: 1px solid red; */
+    }
+
+    .login-content-left h4 {
+        font-size: 15px !important;
+    }
+
+    .login-content-left p {
+        display: none;
+    }
+
+
+    .login-container .login-content-right {
+        width: 60%;
+        /* border: 1px solid red; */
+        padding: 10px;
+    }
+
+
+    .login-content-right .content-box {
+        width: 90%;
+        height: 90%;
+        padding: 20px !important;
+        /* gap: 20px; */
+    }
+
+    .content-box .box-title {
+        text-align: center;
+        height: 20%;
+    }
+
+    .another-login {
+        /* border: 1px solid blue; */
+        margin: 0;
+    }
+
+
+    .box-footer {
+        margin-top: 0px;
+    }
+
+    .box-footer p {
+        display: none;
+    }
+}
+
+/* CSS tablet atau iPad */
+
+
+/* Tablet (≥ 576px dan < 992px) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .login-container .login-content-left {
+        display: none;
+    }
+
+    .login-container .login-content-right {
+        width: 100% !important;
+        padding: 10px;
+        height: 100%;
+    }
+
+    .login-content-right .content-box {
+        width: 80%;
+        height: 90vh;
+        padding: 20px !important;
+        gap: 20px;
+        align-items: center;
+    }
+
+    .content-box .box-title {
+        text-align: center;
+        /* height: 20%; */
+    }
+
+    .box-input {
+        /* border: 1px solid blue; */
+        width: 80% !important;
+    }
+
+    .another-login {
+        /* border: 1px solid blue; */
+        margin: 0;
+        width: 80% !important;
+    }
+
+
+    .box-footer {
+        margin-top: 0px !important;
+    }
+}
+
+/* Mobile ( < 576px) */
+@media (max-width: 575.98px) {
+    .login-container .login-content-left {
+        display: none;
+    }
+
+    .login-container .login-content-right {
+        width: 100%;
+        padding: 15px 25px !important;
+        height: 100%;
+    }
+
+    .login-content-right .content-box {
+        width: 95% !important;
+        padding: 25px !important;
+        gap: 20px;
+        height: 90vh !important;
+    }
+
+    .content-box .box-title {
+        text-align: center;
+        /* height: 20%; */
+    }
+
+    .another-login {
+        /* border: 1px solid blue; */
+        margin: 0;
+    }
+
+
+    .box-footer {
+        margin-top: 0px !important;
+    }
+}
+
+
+/* HEIGHT BREAKPOIN  */
+@media (min-height:370px) and (max-height:650px) {
+    .login-container .login-content-left {
+        display: none;
+    }
+
+    .login-container .login-content-right {
+        width: 100%;
+        padding: 5px !important;
+        height: 100%;
+    }
+
+    .login-content-right .content-box {
+        width: 95% !important;
+        padding: 10px 20px !important;
+        gap: 20px;
+        height: 90vh !important;
+    }
+
+    .content-box .box-title {
+        text-align: center;
+        /* height: 20%; */
+    }
+
+    .another-login {
+        /* border: 1px solid blue; */
+        margin: 0;
+    }
+
+
+    .box-footer {
+        margin-top: 0px;
+    }
+}
+
+
+/* END MEDIA QUERY  */

@@ -32,18 +32,28 @@ const Login = () => {
     };
 
     const handleLogin = async () => {
+    // ✅ Cek input kosong
+        if (!email.trim() || !password.trim()) {
+            showSnackbar('Email dan Password wajib diisi', 'error');
+            return;
+        }
+
         try {
             const response = await loginUser({ email, password });
-            localStorage.setItem('token', response.data.token);
-            localStorage.setItem('user', JSON.stringify(response.data.user));
-            setUser(response.data.user);
-            // showSnackbar('Login Success', 'success');
-            navigate('/layout');
+            if (response?.data?.token) {
+                localStorage.setItem('token', response.data.token);
+                localStorage.setItem('user', JSON.stringify(response.data.user));
+                setUser(response.data.user);
+                navigate('/layout');
+            } else {
+                showSnackbar('Login gagal. Email atau password salah', 'error');
+            }
         } catch (error) {
             console.error('Login failed:', error.response?.data?.message || error.message);
             showSnackbar('Login gagal. Coba lagi', 'error');
         }
     };
+
 
     return (
         <div className='login-container'>
@@ -108,6 +118,7 @@ const Login = () => {
 
                     <div className="box-footer">
                         <h5>Don't have an account? <span onClick={handleToRegister}>Sign Up</span></h5>
+                        <p>Back to <span onClick={handleToLandingPage}>Landing Page</span> </p>
                     </div>
                 </div>
             </div>

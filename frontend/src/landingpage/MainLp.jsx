@@ -33,7 +33,7 @@ const MainLp = () => {
   };
 
   const handleToLogin = () => {
-    navigate('/login');
+    navigate('/welcome');
   };
 
   const scrollToSection = (ref) => {
