@@ -61,7 +61,7 @@ const PersonalAgendas = ({ userId }) => {
   };
 
    const navigateToAgenda = () =>{
-    navigate('/agenda-page')
+    navigate('agenda-page')
   }
 
   if (loading) return <p>Loading agenda...</p>;
