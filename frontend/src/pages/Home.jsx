@@ -128,8 +128,12 @@ const Home=()=> {
             <Greeting/>
           </div>
 
-          <div className="hh-btn" onClick={handleShowForm}>
+          {/* <div className="hh-btn" onClick={handleShowForm}>
               <HiPlus/>
+              CREATE WORKSPACE
+          </div> */}
+          <div className="hh-btn" onClick={navigateToWorkspace}>
+            <HiPlus/>
               CREATE WORKSPACE
           </div>
         
