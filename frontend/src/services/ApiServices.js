@@ -1,10 +1,7 @@
 import axios from 'axios';
 
-// const API_URL = 'http://localhost:3002/api'; //untuk development
-// const API_URL = 'https://trello-inod-production.up.railway.app/api'
-const API_URL = 'https://trello-inod-production.up.railway.app/api';
-// const API_URL = 'https://5eae-118-96-151-188.ngrok-free.app/api'; //kalau pakai ngrok
-
+// const API_URL = 'https://trello-inod-production.up.railway.app/api';
+const API_URL = process.env.REACT_APP_API_URL;
 // REGISTER 
 export const registerUser = (data) => axios.post(`${API_URL}/auth/register`, data);
 
