@@ -91,6 +91,7 @@ const Home=()=> {
       const workspaceId = response.data.id;
       navigate(`workspaces/${workspaceId}`)
       console.log('Workspace created:', response.data);
+      
     }catch(error){
       setAlertInfo({
         severity: 'error',

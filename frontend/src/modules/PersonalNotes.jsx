@@ -37,7 +37,7 @@ const PersonalNotes=({userId})=> {
     }, [userId])
 
     const navigateToNotePage = () =>{
-        navigate('/note-page')
+        navigate('note-page')
     }
 
 

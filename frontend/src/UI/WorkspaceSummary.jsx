@@ -46,7 +46,7 @@ const WorkspaceSummary = ({ userId }) => {
       const boards = response.data;
 
       if (boards.length > 0) {
-        navigate(`/workspaces/${workspaceId}`);
+        navigate(`workspaces/${workspaceId}`);
       } else {
         alert('No boards found in this workspace.');
       }
