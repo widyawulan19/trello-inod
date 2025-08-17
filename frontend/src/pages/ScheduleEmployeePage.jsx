@@ -6,6 +6,7 @@ import '../style/pages/ScheduleEmployeePage.css';
 import { HiXMark } from 'react-icons/hi2';
 import { FaCalendarPlus, FaUserAlt, FaCalendarMinus, FaCircle } from "react-icons/fa";
 import { FaBuilding, FaCloudSun, FaFaceGrinBeam, FaMoon, FaSun } from "react-icons/fa6";
+import BootstrapTooltip from '../components/Tooltip';
 
 const ScheduleEmployeePage=()=> {
     //STATE
@@ -185,7 +186,7 @@ const ScheduleEmployeePage=()=> {
                 </div>
                 
                 <div className="sh-desc">
-                    <strong>Atur Shift, Pantau Kehadiran, dan Pastikan Operasional Berjalan Lancar</strong>
+                    <strong>Atur Shift dan Pastikan Operasional Berjalan Lancar</strong>
                     <p>Kelola jadwal kerja karyawan dengan mudah dan fleksibel. Dengan fitur penjadwalan otomatis dan tampilan yang intuitif, Anda dapat memastikan setiap shift terisi tanpa tumpang tindih atau kekosongan.</p>
                 </div>
             </div>
@@ -303,7 +304,7 @@ const ScheduleEmployeePage=()=> {
                 </div>
                 
                 <form className='create-main-form' onSubmit={handleSubmit}>
-                    <div className="box-identitas">
+                    <div className="box-identitas-container">
                         <div className="bi-title">
                             <IoInformationCircle className='bi-icon'/>
                             <h4>Informasi Karyawan</h4>
@@ -348,7 +349,9 @@ const ScheduleEmployeePage=()=> {
                                 <h4>Jadwal Mingguan</h4>
                             </div>
                             <div className="st-right">
-                                <IoInformationCircle className='st-icon'/>
+                                <BootstrapTooltip title='Pilih shift untuk setiap hari dalam seminggu' placement='top'>
+                                    <IoInformationCircle className='st-icon'/>
+                                </BootstrapTooltip>
                                 <p>Pilih shift untuk setiap hari dalam seminggu</p>
                             </div>
                         </div>

@@ -196,9 +196,11 @@ const Home=()=> {
                   </div>
                   <h4><span className='sh-gradient'>Workspaces Summary</span></h4>
                 </div>
-                <div className="sh-right">
-                   {/* <BsArrowsAngleExpand className='sh-expand'/> */}
-                </div>
+                <BootstrapTooltip title='Show Workspaces' placement="top">
+                  <div className="sh-right">
+                    <BsArrowsAngleExpand onClick={navigateToWorkspace} className='sh-expand'/>
+                  </div>
+                </BootstrapTooltip>
                 
               </div>
               <div className="body-s">

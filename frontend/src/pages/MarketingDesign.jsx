@@ -236,8 +236,10 @@ const MarketingDesign=()=> {
         <div className="md-header">
             <div className="mdh-left">
               <div className="mdh-title">
-                <HiOutlineCircleStack className='mdh-header-icon'/>
-                <h4>{filterType}</h4>
+                <div className="mdh-icon">
+                  <HiOutlineCircleStack size={20} />
+                </div>
+                <h3>{filterType}</h3>
               </div>
               <div className="mdh-des">
                 <p><strong>Selamat datang di pusat informasi Divisi Marketing Design!</strong></p>
@@ -247,15 +249,15 @@ const MarketingDesign=()=> {
             <div className="mdh-right">
               <div className="mdhr-btn">
                 <button onClick={handleShowForm}>
-                      <HiOutlinePlus className='mdh-icon'/>
+                      {/* <HiOutlinePlus className='mdh-icon'/> */}
                       NEW DATA
                   </button>
                   <button onClick={handleShowDataMarketing}>
-                      <HiMiniTableCells className='mdh-icon'/>
+                      {/* <HiMiniTableCells className='mdh-icon'/> */}
                     SHOW DATA
                   </button>
                   <button onClick={handleFilterButton}>
-                      <HiChevronUpDown className='mdh-icon'/>
+                      {/* <HiChevronUpDown className='mdh-icon'/> */}
                     FILTER DATA
                   </button>
               </div>
@@ -268,7 +270,9 @@ const MarketingDesign=()=> {
                     />
                     <HiOutlineSearch className='mdh-search-icon'/>
                 </div>
-                <ExportMarketingDesign/>
+                <div className="export-btn">
+                  <ExportMarketingDesign/>
+                </div>
               </div>
             </div>
             {/* SHOW COMPONENT  */}

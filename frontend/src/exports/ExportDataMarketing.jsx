@@ -34,7 +34,9 @@ const ExportDataMarketing=()=> {
             cursor:'pointer',
             color:'white',
             padding:'5px 10px',
-            backgroundColor:'#6E30DC'
+            backgroundColor:'#6E30DC',
+            width:'100%',
+            height:'fit-content'
         }}
     >
       Export to Excel

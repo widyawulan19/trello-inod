@@ -48,9 +48,10 @@
 
 /* FORM  */
 .fdm-container form {
-    /* border: 1px solid blue;  */
+    /* border: 1px solid green; */
     padding: 10px;
     height: 82vh;
+    width: 100%;
     overflow-x: auto;
     display: flex;
     flex-direction: column;
@@ -61,6 +62,7 @@
 .fdm-container .section-main {
     /* border: 1px solid red; */
     margin-bottom: 15px;
+    width: 100%;
     /* height: fit-content; */
 }
 
@@ -78,11 +80,19 @@
 
 .sec-content {
     border: 1px solid #eee;
+    /* border: 1px solid green; */
     border-radius: 4px;
     padding: 5px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.sec-content .box {
+    /* border: 1px solid orange; */
+    width: 100%;
 }
 
 .section-reference .sec-link-content {
@@ -198,6 +208,29 @@
 }
 
 /* MEDIA QUERY  */
+@media (min-width: 992px) and (max-width: 1199.98px) {}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .sec-content {
+        /* border: 1px solid green; */
+        width: 100%;
+        gap: 0px;
+    }
+
+
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .sec-content {
+        /* border: 1px solid green; */
+        width: 100%;
+        gap: 0px;
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 575.98px) {}
+
 /* ukuran handpone kecil */
 @media (min-width:375px) and (max-width:575px) {
     .fdm-container form {

@@ -1,7 +1,8 @@
-.view-md-container{
+.view-md-container {
     position: relative;
 }
-.vmd-header{
+
+.vmd-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -15,31 +16,35 @@
     color: white;
     background: linear-gradient(to bottom, #6E30DC, #5D12EB);
 }
-.vmd-left{
+
+.vmd-left {
     /* color: #5D12EB; */
     color: white;
 }
-.vmd-left h4{
+
+.vmd-left h4 {
     margin: 0px;
     color: white;
     font-weight: bold;
 }
-.vmd-icon{
+
+.vmd-icon {
     cursor: pointer;
     font-size: 20px;
 }
-.vmd-icon:hover{
+
+.vmd-icon:hover {
     color: #051937;
 }
 
-.vmd-header .vmd-right{
+.vmd-header .vmd-right {
     /* border: 1px solid green; */
     display: flex;
     align-items: center;
     justify-content: flex-end;
 }
 
-.vmd-right .create-btn{
+.vmd-right .create-btn {
     border: 1px solid #6E30DC;
     background: linear-gradient(to bottom, #042887, #051937);
     color: white;
@@ -55,18 +60,20 @@
     align-items: center;
     justify-content: center;
 }
-.vmd-right .create-btn:hover{
+
+.vmd-right .create-btn:hover {
     background: linear-gradient(to bottom, #051937, #5D12EB);
     box-shadow: 0px 4px 8px #5e12eb46;
 }
 
-.vmd-right{
+.vmd-right {
     /* border: 1px solid blue; */
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
-.card-status .created{
+
+.card-status .created {
     border: 1px solid #5380EB;
     border-radius: 6px;
     font-weight: bold;
@@ -75,7 +82,8 @@
     /* background-color: #bec9e2; */
     background-color: white;
 }
-.card-status .uncreated{
+
+.card-status .uncreated {
     border: 1px solid #d9534f;
     padding: 5px 8px;
     font-weight: normal;
@@ -86,7 +94,7 @@
 }
 
 /* BODY Tabel */
-.view-md-container .vmd-body{
+.view-md-container .vmd-body {
     /* border: 1px solid red; */
     height: 80vh;
     min-height: 50vh;
@@ -94,30 +102,40 @@
     padding: 10px;
     overflow-y: auto;
 }
+
 .vmd-body p,
-.vmd-body h4{
+.vmd-body h4 {
     margin: 0px;
     font-size: 12px;
 }
-.sec-informasi
-.sec-detail-pesanan,
+
+.sec-informasi h4,
+.sec-detail-pesanan h4,
+.sec-detail-design h4,
+.sec-price h4,
+.sec-reference h4,
+.sec-detail-project h4 {
+    font-weight: bold;
+}
+
+.sec-informasi .sec-detail-pesanan,
 .sec-detail-design,
 .sec-price,
 .sec-reference,
-.sec-detail-project
-{
+.sec-detail-project {
     margin: 10px 0px;
     color: #333;
+    /* font-weight: bold; */
 }
 
-.vmd-detail{
+.vmd-detail {
     border: 1px solid #eee;
     border-radius: 4px;
     padding: 5px;
     padding-left: 0px;
 }
 
-.vmd-content{
+.vmd-content {
     border: 1px solid #eee;
     /* background: linear-gradient(to bottom, #6f30dc44, #5e12eb44); */
     border-radius: 4px;
@@ -131,12 +149,14 @@
     /* min-height: 20vh; */
     height: 100%;
 }
-.vmd-content .box-content{
+
+.vmd-content .box-content {
     /* border: 1px solid yellow; */
     margin: 5px 0px;
     width: 100%;
 }
-.vmd-ref-content{
+
+.vmd-ref-content {
     border: 1px solid #eee;
     border-radius: 4px;
     display: flex;
@@ -146,13 +166,14 @@
     display: grid;
     grid-template-columns: repeat(1, 1fr);
 }
-.vmd-ref-content .box-content{
+
+.vmd-ref-content .box-content {
     width: 100%;
     margin: 5px 0px;
     /* border: 1px solid blue; */
 }
 
-.box-content .box-ref{
+.box-content .box-ref {
     border: 1px solid #ddd;
     border-radius: 4px;
     padding: 10px;
@@ -161,18 +182,24 @@
     width: 95%;
     /* width: 300px; */
 }
-.box-content .box-detail{
+
+.box-content .box-detail {
     border: 1px solid #ddd;
     border-radius: 4px;
     padding: 5px 2px;
     margin-top: 3px;
-    word-wrap: break-word; /* Memastikan kata panjang bisa dipotong */
-    white-space: normal; /* Mengizinkan teks turun ke bawah */
-    overflow-wrap: break-word; /* Memastikan teks panjang tetap dalam batas */
-    max-width: 100%; /* Menghindari teks melebar keluar container */
+    word-wrap: break-word;
+    /* Memastikan kata panjang bisa dipotong */
+    white-space: normal;
+    /* Mengizinkan teks turun ke bawah */
+    overflow-wrap: break-word;
+    /* Memastikan teks panjang tetap dalam batas */
+    max-width: 100%;
+    /* Menghindari teks melebar keluar container */
     line-height: 1.5;
 }
-.box-content{
+
+.box-content {
     display: flex;
     flex-direction: column;
     /* align-items: center; */
@@ -181,31 +208,36 @@
     margin: 0px 4px;
     width: 100%;
 }
-.box-content p{
+
+.box-content p {
     font-size: 10px;
     color: grey;
 }
-.box-content .box-box{
+
+.box-content .box-box {
     border: 1px solid #ddd;
-    /* border: 1px solid green; */
     border-radius: 4px;
     padding: 5px;
     margin-top: 3px;
     width: 170px;
 }
-.box-box:hover{
+
+.box-box:hover {
     border: 1px solid #6f30dc47;
     box-shadow: 0px 4px 8px #6f30dc54;
 }
-.box-ref:hover{
+
+.box-ref:hover {
     border: 1px solid #6f30dc47;
     box-shadow: 0px 4px 8px #6f30dc54;
 }
-.box-box p{
+
+.box-box p {
     color: #333;
     font-size: 12px;
 }
-.box-ref p{
+
+.box-ref p {
     word-wrap: break-word;
     white-space: normal;
     overflow-wrap: break-word;
@@ -215,7 +247,7 @@
     /* height: 10vh; */
 }
 
-.vmd-form{
+.vmd-form {
     padding: 2px;
     border-radius: 4px;
     /* background-color: red; */
@@ -228,86 +260,112 @@
 
 
 /* Large devices (desktops, ≥992px) */
-@media (min-width: 992px) and (max-width: 1199.98px) {
-  
+@media (min-width: 992px) {
+    .box-content .box-box {
+        width: 95%;
+        padding: 5px;
+        /* border: 1px solid orange; */
+    }
 }
 
 /* Medium devices (tablets, ≥768px) */
-@media (min-width: 768px) and (max-width: 991.98px){
-  /* BODY TABEL  */
-    .view-md-container .vmd-body{
+@media (min-width: 768px) and (max-width: 991.98px) {
+
+    /* BODY TABEL  */
+    .view-md-container .vmd-body {
         height: 78vh;
     }
-    
-    .box-content .box-box{
-        width: 200px;
-        border: 1px solid orange;
+
+    .box-content .box-box {
+        width: 95%;
+        padding: 5px;
+        /* border: 1px solid orange; */
     }
 }
 
 /* ukuran handpone besar */
 /* @media (min-width: 576px) and (max-width: 767.98px) and (min-height:400px) and (max-height:700px) { */
-@media (min-width: 576px) and (max-width: 767.98px){
-/* HEADER  */
-.vmd-right{
-    width: 50%;
-    margin: 0px;
-    gap: 3px ;
-}
-.vmd-right .create-btn{
-    /* padding: 3px; */
-}
+@media (min-width: 576px) and (max-width: 767.98px) {
+
+    /* HEADER  */
+    .vmd-right {
+        width: 50%;
+        margin: 0px;
+        gap: 3px;
+    }
+
+    .vmd-right .create-btn {
+        /* padding: 3px; */
+    }
 
     /* BODY TABEL  */
-    .view-md-container .vmd-body{
+    .view-md-container .vmd-body {
         height: 78vh;
     }
-    
-    .box-content .box-box{
-        width: 200px;
-        border: 1px solid orange;
+
+
+    .box-content {
+        /* border: 1px solid red; */
+        /* gap: 5px; */
+    }
+
+    .box-content p {
+        width: 100%;
+    }
+
+    .box-content .box-box {
+        width: 95%;
+        padding: 10px;
+        /* border: 1px solid orange; */
     }
 }
 
 /* ukuran handpone kecil */
 /* @media (min-width:375px) and (max-width:575px) and (min-height:300px) and (max-height:600px) { */
-@media (min-width:375px) and (max-width:575px){
-  /* HEADER  */
-  .vmd-header{
-    /* border: 1px solid red; */
-    flex-direction: column;
-    justify-content: center;
-  }
-  .vmd-left{
-    display: flex;
-    flex-direction: column;
-    /* align-items: center; */
-    justify-content: flex-start;
-    width: 100%;
-  }
-  .vmd-right{
-    margin-top: 5px;
-    width: 100%;
-    margin-top: 5px;
-    /* border: 1px solid orange; */
-    display: flex;
-    align-items: center;
-    justify-content: center !important;
-  }
-  
+@media (max-width: 575.98px) {
+
+    /* HEADER  */
+    .vmd-header {
+        /* border: 1px solid red; */
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .vmd-left {
+        display: flex;
+        flex-direction: column;
+        /* align-items: center; */
+        justify-content: flex-start;
+        width: 100%;
+    }
+
+    .vmd-right {
+        margin-top: 5px;
+        width: 100%;
+        margin-top: 5px;
+        /* border: 1px solid orange; */
+        display: flex;
+        align-items: center;
+        justify-content: center !important;
+    }
+
     /* BODY TABEL  */
-    .view-md-container .vmd-body{
+    .view-md-container .vmd-body {
         height: 73vh;
         /* border: 1px solid blue; */
     }
-    
-    .box-content{
+
+    .box-content {
         width: 100%;
     }
-    .box-content .box-box{
+
+    .box-content .box-box {
         width: 100%;
+        padding: 10px;
+        /* border: 1px solid green; */
     }
-    .vmd-content{
+
+    .vmd-content {
         border: 1px solid #eee;
         display: flex;
         flex-direction: column;
@@ -316,17 +374,17 @@
     }
 
 
-    .vmd-ref-content{
+    .vmd-ref-content {
         /* border: 1px solid green; */
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        
+
     }
 
     /* form create card  */
-    .vmd-form{
+    .vmd-form {
         width: 100%;
     }
 }

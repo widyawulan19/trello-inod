@@ -355,6 +355,7 @@
     font-weight: bold;
     font-size: 15px;
     color: #5320be;
+    cursor: pointer;
     filter: drop-shadow(0 0 1px #5320be);
 }
 
@@ -366,6 +367,7 @@
     transition: transform 0.2s ease;
 }
 
+.sh-right .sh-expand:hover,
 .ah-right .sh-expand:hover {
     box-shadow: 0px 4px 8px #6b11cb40;
     filter: drop-shadow(0 0 1px #5320be);

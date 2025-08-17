@@ -34,10 +34,12 @@ const ExportMarketingDesign=()=> {
             cursor:'pointer',
             color:'white',
             padding:'5px 15px',
-            backgroundColor:'#6E30DC'
+            backgroundColor:'#6E30DC',
+            width:'100%',
+            
         }}
     >
-      Export to Excel
+      Excel Export
     </button>
   )
 }

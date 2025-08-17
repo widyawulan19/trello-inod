@@ -164,6 +164,7 @@
     /* padding: 8px; Memberikan sedikit padding */
     /* background-color: #f8f9fa; Warna latar belakang */
     border-radius: 5px;
+    /* border: 1px solid blue; */
     /* Membuat sudut lebih lembut */
     /* border: 1px solid #ddd; Menambahkan border tipis */
 }
@@ -213,7 +214,7 @@
 
 .box1 {
     border: 1px solid #ddd;
-    border-radius: 8px;
+    border-radius: 4px;
     padding: 5px;
     margin-top: 3px;
     width: 100%;
@@ -245,9 +246,13 @@
 }
 
 /* Large devices (desktops, ≥992px) */
-@media (min-width: 992px) and (max-width: 1199.98px) {
+@media (min-width: 992px) {
     .wf-create {
         width: 30%;
+    }
+
+    .box1 {
+        padding: 10px;
     }
 }
 
@@ -255,6 +260,10 @@
 @media (min-width: 768px) and (max-width: 991.98px) {
     .wf-create {
         width: 40%;
+    }
+
+    .box1 {
+        padding: 10px;
     }
 }
 
@@ -264,10 +273,14 @@
         grid-template-columns: repeat(2, 1fr);
         gap: 5px;
     }
+
+    .box1 {
+        padding: 10px;
+    }
 }
 
 /* ukuran handpone kecil */
-@media (min-width:375px) and (max-width:575px) {
+@media (max-width: 575.98px) {
 
     /* HEADER  */
     .vdm-header {
@@ -302,5 +315,9 @@
     .vdm-body {
         height: 74vh;
         /* border: 1px solid red; */
+    }
+
+    .box1 {
+        padding: 10px;
     }
 }
