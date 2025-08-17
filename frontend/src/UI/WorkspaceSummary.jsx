@@ -37,7 +37,7 @@ const WorkspaceSummary = ({ userId }) => {
   }, [userId]);
 
   const navigateToWorkspacePage = () => {
-    navigate('/workspaces');
+    navigate('workspaces');
   };
 
   const navigateToFirstBoard = async (workspaceId) => {
