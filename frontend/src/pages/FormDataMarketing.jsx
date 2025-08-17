@@ -85,7 +85,13 @@ const FormDataMarketing = ({ onClose, fetchData }) => {
   return (
     <div className="fdm-container">
       <div className="fdm-header">
-        <h4><IoCreate size={15}/> CREATE DATA MARKETING</h4>
+        <div className="fmdh-left">
+          <div className="header-icon">
+            <IoCreate size={15}/>
+          </div>
+          <h4> CREATE DATA MARKETING</h4>
+        </div>
+        
         <BootstrapTooltip title='close' placement='top'>
             <FaXmark onClick={onClose} className="fdm-icon" />
         </BootstrapTooltip>
@@ -235,8 +241,19 @@ const FormDataMarketing = ({ onClose, fetchData }) => {
                     onChange={handleChange}
                 />
             </div>
-            <div className="box">
-              <label>Deadline Project</label>
+            <div className="box-date">
+                <label>Deadline Project</label>
+                <input
+                    type="date"
+                    name="deadline"
+                    value={formData.deadline}
+                    onChange={handleChange}
+                    required
+                />
+            </div>
+            
+            {/* <div className="box" style={{border:'1px solid blue', display:'flex', flexDirection:'column', alignItems:'center'}}>
+              <label style={{width:'100%'}}>Deadline Project</label>
               <input
                 type="date"
                 name="deadline"
@@ -244,7 +261,7 @@ const FormDataMarketing = ({ onClose, fetchData }) => {
                 onChange={handleChange}
                 required
               />
-            </div>
+            </div> */}
           </div>
         </div>
 

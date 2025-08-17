@@ -2,7 +2,7 @@ import { useState } from "react";
 import { createWorkspaceUser } from '../services/ApiServices'
 import { useNavigate } from "react-router-dom";
 import '../style/pages/Workspace.css'
-import { HiOutlineSquaresPlus, HiOutlineXMark } from "react-icons/hi2";
+import { HiOutlineSquaresPlus, HiOutlineXMark, HiXMark } from "react-icons/hi2";
 import BootstrapTooltip from "../components/Tooltip";
 import { useSnackbar } from "../context/Snackbar";
 
@@ -46,29 +46,33 @@ const FormNewWorkspace = ({ userId,fetchWorkspaceUser, onCloseForm }) => {
         <div className="create-workspace-container">
             <div className="cwc-header">
                 <h4>
-                    <HiOutlineSquaresPlus className="cwch-icon"/>
-                    CREATE NEW WORKSPACE
+                    <div className="cwch-icon">
+                        <HiOutlineSquaresPlus/>
+                    </div>
+                    Create new workspace
                 </h4>
                 <BootstrapTooltip title='Close Form' placement='top'>
-                    <HiOutlineXMark  className='cwc-icon' onClick={onCloseForm} />
+                    <HiXMark  className='cwc-icon' onClick={onCloseForm} />
                 </BootstrapTooltip>
             </div>
            
             {error && <p className="error">{error}</p>}
             <form onSubmit={handleSubmit} className="form-workspace">
-                <div className="box">
-                    <label>Workspace Name:</label>
+                <div className="box-form">
+                    <label>Workspace Name: <span style={{color:'red'}}>*</span></label>
                     <input
                         type="text"
                         value={name}
+                        placeholder="Enter workspace title"
                         onChange={(e) => setName(e.target.value)}
                         required
                     />
                 </div>
-                <div className="box">
-                    <label>Description:</label>
+                <div className="box-form">
+                    <label>Description: <span style={{color:'red'}}>*</span></label>
                     <textarea
                         value={description}
+                        placeholder="Enter workspace description"
                         onChange={(e) => setDescription(e.target.value)}
                         required
                     />

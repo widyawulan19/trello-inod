@@ -1,134 +1,104 @@
-import React, { useEffect, useState } from 'react'
-import '../style/pages/PersonalInformation.css'
-import { useSnackbar } from '../context/Snackbar'
-import { updateUserSettingData } from '../services/ApiServices'
+import React, { useEffect, useState } from 'react';
+import '../style/pages/PersonalInformation.css';
+import { useSnackbar } from '../context/Snackbar';
+import { getUserSettingData, updateUserSettingData } from '../services/ApiServices';
 
-const PersonalInformation=({fetchUserSettingData,userData, userId})=> {
-    //DEBUG
-    console.log('Halaman personal information berhasil menerima data userData:', userData)
-    console.log('halaman ini berhasil menerima userId:', userId);
+const PersonalInformation = ({ fetchUserSettingData, userData, userId }) => {
+    console.log('file ini menerima data fetchUserSettingData', fetchUserSettingData);
+    console.log('file ini menerima data userData', userData);
+  const { showSnackbar } = useSnackbar();
+  
+//   const [message, setMessage] = useState('');
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    name: '',
+    nomor: '',
+    divisi: '',
+    jabatan: '',
+    photo_url: ''
+  });
 
-    //STATE
-    const {showSnackbar} = useSnackbar();
-    const [formData, setFormData] = useState({
-        name:'',
-        username:'',
-        email:'',
-        nomor:'',
-        jabatan:'',
-        divisi:'',
-        photo_url:'',
-    })
+  //ambil data saat komponen pertama kali dimuat
+ useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const res = await getUserSettingData(userId);
+      console.log("✅ Data dari API:", res.data);
+      setFormData(res.data);
+    } catch (err) {
+      console.error('Error fetching user setting:', err);
+    }
+  };
 
-    //FUNCTION
-     useEffect(() => {
-        if (userData) {
-          setFormData({
-            name: userData.name || '',
-            username: userData.username || '',
-            email: userData.email || '',
-            nomor: userData.nomor || '',
-            jabatan: userData.jabatan || '',
-            divisi: userData.divisi || '',
-            photo_url: userData.photo_url || '',
-          });
-        }
-      }, [userData]);
+  fetchData();
+}, [userId]);
 
-      const handleChange = (e)=>{
-        const {name, value} = e.target;
-        setFormData((prev)=> ({...prev, [name]: value}));
-      };
+ 
+   // Handle input perubahan
+   const handleChange = (e) => {
+     setFormData(prev => ({
+       ...prev,
+       [e.target.name]: e.target.value
+     }));
+   };
+ 
+   // Submit update
+   const handleSubmit = async (e) => {
+     e.preventDefault();
+     try {
+       await updateUserSettingData(userId, formData);
+       showSnackbar('Data berhasil diperbarui!', 'success');
+     } catch (error) {
+       console.error('Error updating data:', error);
+       showSnackbar('Gagal memperbarui data', 'error');
+     }
+   };
 
-      const handleSave = async()=>{
-        try{
-            await updateUserSettingData(userId, formData);
-            showSnackbar('User data updated successfully!','success');
-            fetchUserSettingData()
-        }catch(error){
-            console.error('Failed to update user data:', error)
-            showSnackbar('Failed to update data. Please try again!', 'error')
-        }
-      }
-    
   return (
     <div className='personal-container'>
-        <div className="pc-title">
-            <h3>Personal Information</h3>
-            <p>Atur informasi dasar akunmu di sini untuk memaksimalkan fitur aplikasi.</p>
+      <div className="pc-title">
+        <h3>Personal Information</h3>
+        <p>Atur informasi dasar akunmu di sini untuk memaksimalkan fitur aplikasi.</p>
+      </div>
+
+       <form onSubmit={handleSubmit} className='form-pc'>
+        <div className="box-form">
+            <label>Username</label>
+            <input name="username" value={formData.username || ''} onChange={handleChange} placeholder="Username" />
         </div>
-        {/* <div className="pc-header">
-            <h3>Personal Information</h3>
-            <p>Atur informasi dasar akunmu di sini untuk memaksimalkan fitur aplikasi.</p>
-        </div> */}
-        <div className="pch-body">
-            <div className="pi">
-                {/* <h4>Informasi Umum</h4> */}
-                <div className="pc-box">
-                    <label>Full Name</label>
-                    <input 
-                        type="text" 
-                        name='name'
-                        value={formData.name}
-                        onChange={handleChange}
-                    />
-                </div>
-                <div className="pc-box">
-                    <label>Username</label>
-                    <input 
-                        type="text" 
-                        name='username'
-                        value={formData.username}
-                        onChange={handleChange}
-                    />
-                </div>
-                <div className="pc-box">
-                    <label>Email Address</label>
-                    <input 
-                        type="text" 
-                        name='email'
-                        value={formData.email}
-                        onChange={handleChange}
-                    />
-                </div>
-                <div className="pc-box">
-                    <label>Nomor</label>
-                    <input 
-                        type="text" 
-                        name='nomor'
-                        value={formData.nomor}
-                        onChange={handleChange}
-                    />
-                </div>
-            </div>
-            <div className="pi-job">
-                {/* <h4>Informasi Pekerjaan</h4> */}
-                <div className="pc-box">
-                    <label>Position / Jabatan</label>
-                    <input 
-                        type="text" 
-                        name='jabatan'
-                        value={formData.jabatan}
-                        onChange={handleChange}
-                    />
-                </div>
-                <div className="pc-box">
-                    <label>Divisi</label>
-                    <input 
-                        type="text" 
-                        name='divisi'
-                        value={formData.divisi}
-                        onChange={handleChange}
-                    />
-                </div>
-            </div>
+        <div className="box-form">
+            <label>Email</label>
+            <input name="email" value={formData.email  || ''} onChange={handleChange} placeholder="Email" />
         </div>
-        <div className="save-btn-container">
-            <button onClick={handleSave} className='save-btn'>Save Change</button>
+        <div className="box-form">
+            <label>Name</label>
+            <input name="name" value={formData.name || ''} onChange={handleChange} placeholder="Nama Lengkap" />
         </div>
+        <div className="box-form">
+            <label>Nomor</label>
+            <input name="nomor" value={formData.nomor || ''} onChange={handleChange} placeholder="Nomor WA" />
+        </div>
+        <div className="box-form">
+            <label>Divisi</label>
+            <input name="divisi" value={formData.divisi || ''} onChange={handleChange} placeholder="Divisi" />
+        </div>
+        <div className="box-form">
+            <label>Jabatan</label>
+            <input name="jabatan" value={formData.jabatan  || ''} onChange={handleChange} placeholder="Jabatan" />
+        </div>
+        <div className="box-form">
+            <label>Photo</label>
+            <input name="photo_url" value={formData.photo_url  || ''} onChange={handleChange} placeholder="Photo URL" />
+        </div>
+        <div className='pc-btn'>
+            <button type="submit">Simpan Perubahan</button>
+        </div>
+      </form>
+
+     
     </div>
-  )
-}
+  );
+};
 
-export default PersonalInformation
-
+export default PersonalInformation;

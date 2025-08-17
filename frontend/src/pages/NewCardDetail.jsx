@@ -36,7 +36,7 @@ import NewRoomChat from '../fitur/NewRoomChat';
 const NewCardDetail=()=> {
     //STATE
     const {user} = useUser();
-    const userId = user.id;
+    const userId = user?.id;
     const {workspaceId, boardId, listId, cardId} = useParams();
     const navigate = useNavigate();
     const {showSnackbar} = useSnackbar();
@@ -449,7 +449,7 @@ const NewCardDetail=()=> {
 
     //FUNCTION NAVIGATE
     const handleNavigateToBoardList = () =>{
-        navigate(`/workspaces/${workspaceId}/board/${boardId}`)
+        navigate(`/layout/workspaces/${workspaceId}/board/${boardId}`)
     }
 
     //SHOW FUNCTION

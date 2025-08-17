@@ -13,6 +13,8 @@ import DataMarketingDeleteConfirm from "../modals/DataMarketingDeleteConfirm";
 import OutsideClick from "../hook/OutsideClick";
 import { IoEyeSharp } from "react-icons/io5";
 import { handleArchive } from "../utils/handleArchive";
+import ExportDataMarketing from "../exports/ExportDataMarketing";
+import { FaXmark } from "react-icons/fa6";
 
 const DataMarketing = () => {
   const location = useLocation();
@@ -147,24 +149,12 @@ const handleCloseForm = () =>{
      }));
    };
 
-  // const fetchDataMarketing = async () => {
-  //   try {
-  //     const response = await getAllDataMarketing();
-  //     setDataMarketing(response.data);
-  //     setFilteredData(response.data);
-  //   } catch (error) {
-  //     console.error("Error fetching data: ", error);
-  //   }
-  // };
-
-
-
   const handleEdit = (id) => {
-    navigate(`/edit-marketing/${id}`); // Redirect ke halaman edit
+    navigate(`/layout/edit-marketing/${id}`); // Redirect ke halaman edit
   };
 
   const handleToMarketingDetail = (marketinId) => {
-    navigate(`/data-marketing/${marketinId}`)
+    navigate(`/layout/data-marketing/${marketinId}`)
   }
 
   
@@ -221,17 +211,7 @@ const handleArchiveDataMarketing =(marketing_id)=>{
     showSnackbar: showSnackbar,
   })
 }
-// const handleArchiveDataMarketing = async(marketing_id)=>{
-//   try{
-//     const response = await archiveDataMarketing(marketing_id);
-//     console.log('Successfully archive workspace data');
-//     showSnackbar('Succesfully archive workspace', 'success');
-//     fetchDataMarketing();
-//   }catch(error){
-//     console.error('Error archiving data marekting:',error)
-//     showSnackbar('Failed to archive workspace','error')
-//   }
-// }
+
 
 //fungsi filtered data
 const handleFilterData = (selectedTerm) => {
@@ -259,9 +239,17 @@ const handleShowDataMarketing = () =>{
   setShowData(true)
 }
 
+const handleCloseShowData = () =>{
+  setShowData(false)
+}
+
 //show filtered data
 const handleFilterButton = () =>{
   setShowFilter(!showFilter);
+}
+
+const handleCloseFilterButton = () =>{
+  setShowFilter(false)
 }
 
 
@@ -270,8 +258,11 @@ const handleFilterButton = () =>{
       <div className="dm-panel">
         <div className="dm-left">
           <div className="dml-title">
-             <HiOutlineCircleStack className="dm-icon" />
-             <h4>{filterType}</h4>
+            <div className="dm-icon">
+              <HiOutlineCircleStack size={20} />
+            </div>
+             
+             <h3>{filterType}</h3>
             {/* <h4>DASHBOARD DATA MARKETING</h4> */}
           </div>
           <div className="dml-desc">
@@ -285,15 +276,15 @@ const handleFilterButton = () =>{
         <div className="dmc-right">
           <div className="dmcr-btn">
             <button onClick={handleShowForm}>
-                <HiOutlinePlus className="dm-icon"/>
+                {/* <HiOutlinePlus className="dm-icon"/> */}
                 NEW DATA
             </button>
             <button onClick={handleShowDataMarketing}>
-              <HiMiniTableCells className="dm-icon"/>
+              {/* <HiMiniTableCells className="dm-icon"/> */}
               SHOW DATA
             </button>
             <button onClick={handleFilterButton}>
-              <HiChevronUpDown className="dm-icon"/>
+              {/* <HiChevronUpDown className="dm-icon"/> */}
               SHORT DATA
             </button>
           </div>
@@ -306,6 +297,9 @@ const handleFilterButton = () =>{
                 />
                 <HiOutlineSearch className="dms-icon"/>
             </div>
+            <div className="dm-search-export">
+              <ExportDataMarketing/>
+            </div>   
           </div>
         </div>
 
@@ -322,22 +316,27 @@ const handleFilterButton = () =>{
       {/* SHOW DATA  */}
       {showData && (
         <div className="show-data-container">
-          <h5>Show Data By:</h5>
-          <button onClick={()=> {setFilterType('SEMUA DATA MARKETING'); {setShowData(!showData)}}}>
-            All Data
-          </button>
-          <button onClick={()=> {setFilterType('DATA MARKETING DENGAN CARD'); {setShowData(!showData)}}}>
-            Data Marketing Dengan Card
-          </button>
-          <button onClick={()=> {setFilterType('DATA MARKETING TANPA CARD'); {setShowData(!showData)}}}>
-            Data Marketing Tanpa Card
-          </button>
-          <button onClick={()=> {setFilterType('DATA MAREKTING ACCEPTED'); {setShowData(!showData)}}}>
-            Data Marketing Accepted
-          </button>
-          <button onClick={()=> {setFilterType('DATA MARKETING NOT ACCEPTED'); {setShowData(!showData)}}}>
-            Data Marketing Not Accepted
-          </button>
+          <div className="sdc-header">
+            <h5> <HiMiniTableCells className="h5-icons"/>Show Data By:</h5>
+            <FaXmark onClick={handleCloseShowData} style={{cursor:'pointer'}}/>
+          </div>
+          <div className="sdc-container">
+             <button onClick={()=> {setFilterType('SEMUA DATA MARKETING'); {setShowData(!showData)}}}>
+              All Data
+            </button>
+            <button onClick={()=> {setFilterType('DATA MARKETING DENGAN CARD'); {setShowData(!showData)}}}>
+              Data Marketing Dengan Card
+            </button>
+            <button onClick={()=> {setFilterType('DATA MARKETING TANPA CARD'); {setShowData(!showData)}}}>
+              Data Marketing Tanpa Card
+            </button>
+            <button onClick={()=> {setFilterType('DATA MAREKTING ACCEPTED'); {setShowData(!showData)}}}>
+              Data Marketing Accepted
+            </button>
+            <button onClick={()=> {setFilterType('DATA MARKETING NOT ACCEPTED'); {setShowData(!showData)}}}>
+              Data Marketing Not Accepted
+            </button>
+          </div>
         </div>
       )}
 
@@ -345,7 +344,8 @@ const handleFilterButton = () =>{
       {showFilter && (
         <div className="filter-container">
           <div className="filter-header">
-            <h5>Filter Data By:</h5>
+            <h5><HiChevronUpDown className="h5-icons"/>Filter Data By:</h5>
+            <FaXmark onClick={handleCloseFilterButton} style={{cursor:'pointer'}}/>
           </div>
           <div className="filter-content">
             <div className="filter-box">

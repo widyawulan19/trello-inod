@@ -1,7 +1,8 @@
-.view-dm-container{
+.view-dm-container {
     position: relative;
 }
-.vdm-header{
+
+.vdm-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -14,18 +15,21 @@
     color: white;
     background: linear-gradient(to bottom, #6E30DC, #5D12EB);
 }
-.vdm-header .vdm-left{
+
+.vdm-header .vdm-left {
     display: flex;
     flex-direction: column;
     /* align-items: center; */
     justify-content: flex-start;
 }
-.vdm-left h4{
+
+.vdm-left h4 {
     margin: 0px;
     font-size: 12px;
-    font-weight: bold;
+    /* font-weight: bold; */
 }
-.vdm-header .cc-btn{
+
+.vdm-header .cc-btn {
     border: 1px solid #6E30DC;
     background: linear-gradient(to bottom, #042887, #051937);
     color: white;
@@ -42,24 +46,27 @@
     justify-content: center;
 }
 
-.vdm-header .cc-btn:hover{
+.vdm-header .cc-btn:hover {
     background: linear-gradient(to bottom, #051937, #5D12EB);
     box-shadow: 0px 4px 8px #5e12eb46;
 }
-.vdm-right{
+
+.vdm-right {
     /* border: 1px solid #333; */
     display: flex;
     align-items: center;
     justify-content: center;
 }
-.card-status .created{
+
+.card-status .created {
     border: 1px solid #5380EB;
     border-radius: 6px;
     padding: 5px 8px;
     color: #5380EB;
     background-color: white;
 }
-.card-status .uncreated{
+
+.card-status .uncreated {
     border: 1px solid #d9534f;
     padding: 5px 8px;
     font-weight: normal;
@@ -68,7 +75,7 @@
     background-color: #FFCDD2;
 }
 
-.vdm-form{
+.vdm-form {
     padding: 2px;
     border-radius: 4px;
     /* background-color: #333; */
@@ -80,38 +87,46 @@
     /* background-color: red; */
 }
 
-.vdm-icon{
+.vdm-icon {
     cursor: pointer;
     font-size: 20px;
 }
-.vdm-icon:hover{
+
+.vdm-icon:hover {
     color: #042887;
 }
 
 /* BODY  */
-.vdm-body{
+.vdm-body {
     /* border: 1px solid green; */
     height: 80vh;
     /* height: 40vh; */
     padding: 10px;
     overflow-y: auto;
 }
+
+.vdm-body h4 {
+    font-weight: bold;
+}
+
 .vdm-body p,
-.vdm-body h4
-{
+.vdm-body h4 {
     margin: 0px;
     font-size: 12px;
 }
-.sec{
+
+.sec {
     margin-top: 10px;
 }
-.sec .sec-content{
+
+.sec .sec-content {
     border: 1px solid #eee;
     display: grid;
-    grid-template-columns: repeat(3,1fr);
+    gap: 10px;
+    grid-template-columns: repeat(3, 1fr);
 }
 
-.sec-content-link{
+.sec-content-link {
     border: 1px solid #eee;
     border-radius: 4px;
     display: flex;
@@ -122,66 +137,82 @@
     flex-direction: column;
     justify-content: flex-start !important;
 }
-.sec-content-link .box{
+
+.sec-content-link .box {
     /* border: 1px solid green; */
     width: 100%;
 }
+
 .sec-content-link .box1,
-.sec-desc-content .box1
-{
+.sec-desc-content .box1 {
     /* width: 42vw; */
     width: 98%;
     /* border: 1px solid blue; */
 }
 
-.sec-desc-content .box1 p{
-    word-wrap: break-word; /* Memastikan kata panjang bisa dipotong */
-    white-space: normal; /* Mengizinkan teks turun ke bawah */
-    overflow-wrap: break-word; /* Memastikan teks panjang tetap dalam batas */
-    max-width: 100%; /* Menghindari teks melebar keluar container */
-    line-height: 1.5; /* Menambah jarak antar baris agar lebih rapi */
+.sec-desc-content .box1 p {
+    word-wrap: break-word;
+    /* Memastikan kata panjang bisa dipotong */
+    white-space: normal;
+    /* Mengizinkan teks turun ke bawah */
+    overflow-wrap: break-word;
+    /* Memastikan teks panjang tetap dalam batas */
+    max-width: 100%;
+    /* Menghindari teks melebar keluar container */
+    line-height: 1.5;
+    /* Menambah jarak antar baris agar lebih rapi */
     /* padding: 8px; Memberikan sedikit padding */
     /* background-color: #f8f9fa; Warna latar belakang */
-    border-radius: 5px; /* Membuat sudut lebih lembut */
+    border-radius: 5px;
+    /* border: 1px solid blue; */
+    /* Membuat sudut lebih lembut */
     /* border: 1px solid #ddd; Menambahkan border tipis */
 }
 
 /* LINK  */
 
-.sec-content-link .box1 a{
+.sec-content-link .box1 a {
     color: #6E30DC;
     font-size: 12px;
-    text-decoration: none; /* Menghapus underline */
+    text-decoration: none;
+    /* Menghapus underline */
     transition: color 0.3s ease-in-out;
     word-wrap: break-word;
     white-space: normal;
     overflow-wrap: break-word;
 }
+
 .sec-content-link .box1 a:hover {
-    color: #6E30DC; /* Warna saat di-hover (merah) */
-    text-decoration: underline; /* Menambahkan underline saat hover */
+    color: #6E30DC;
+    /* Warna saat di-hover (merah) */
+    text-decoration: underline;
+    /* Menambahkan underline saat hover */
 }
 
 .sec-content-link .box1 a:visited {
-    color: #6c757d; /* Warna untuk link yang sudah dikunjungi */
+    color: #6c757d;
+    /* Warna untuk link yang sudah dikunjungi */
 }
 
 .sec-content-link .box1 a:active {
-    color: #d9534f; /* Warna saat link ditekan */
+    color: #d9534f;
+    /* Warna saat link ditekan */
 }
+
 /* END LINK  */
 
 
-.box{
+.box {
     /* border: 1px solid blue; */
     margin-top: 5px;
 }
 
-.box p{
+.box p {
     color: grey;
     font-size: 10px;
 }
-.box1{
+
+.box1 {
     border: 1px solid #ddd;
     border-radius: 4px;
     padding: 5px;
@@ -190,13 +221,14 @@
     min-width: 150px;
 
 }
-.box1:hover{
+
+.box1:hover {
     /* background-color: #6f30dc65; */
     border: 1px solid #6f30dc47;
     box-shadow: 0px 4px 8px #6f30dc54;
 }
-.box1 p
-{
+
+.box1 p {
     color: #333;
     font-size: 12px;
 }
@@ -208,37 +240,50 @@
 /* MEDIA QUERY  */
 /* Extra large devices (large desktops, ≥1200px) */
 @media (min-width: 1200px) and (max-width:1400px) {
-  .wf-create{
-     width:20%;
-  }
+    .wf-create {
+        width: 20%;
+    }
 }
 
 /* Large devices (desktops, ≥992px) */
-@media (min-width: 992px) and (max-width: 1199.98px)  {
-  .wf-create{
-     width:30%;
-  }
+@media (min-width: 992px) {
+    .wf-create {
+        width: 30%;
+    }
+
+    .box1 {
+        padding: 10px;
+    }
 }
 
 /* Medium devices (tablets, ≥768px) */
 @media (min-width: 768px) and (max-width: 991.98px) {
-  .wf-create{
-     width:40%;
-  }
+    .wf-create {
+        width: 40%;
+    }
+
+    .box1 {
+        padding: 10px;
+    }
 }
 
 /* ukuran handpone besar */
-@media (min-width: 576px) and (max-width: 767.98px)  {
-  .sec .sec-content{
-    grid-template-columns: repeat(2,1fr);
-    gap: 5px;
-  }
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .sec .sec-content {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 5px;
+    }
+
+    .box1 {
+        padding: 10px;
+    }
 }
 
 /* ukuran handpone kecil */
-@media (min-width:375px) and (max-width:575px){
+@media (max-width: 575.98px) {
+
     /* HEADER  */
-    .vdm-header{
+    .vdm-header {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -246,11 +291,11 @@
     }
 
     /* FORM CREATE  */
-    .vdm-form{
+    .vdm-form {
         width: 330px;
     }
 
-    .vdm-header .vdm-left{
+    .vdm-header .vdm-left {
         width: 100%;
         /* border: 1px solid red; */
         display: flex;
@@ -259,7 +304,7 @@
         margin-bottom: 5px;
     }
 
-    .sec .sec-content{
+    .sec .sec-content {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -267,8 +312,12 @@
         /* border: 1px solid blue; */
     }
 
-    .vdm-body{
+    .vdm-body {
         height: 74vh;
         /* border: 1px solid red; */
+    }
+
+    .box1 {
+        padding: 10px;
     }
 }

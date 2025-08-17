@@ -3,7 +3,7 @@ import '../style/pages/Home.css'
 import Greeting from '../utils/Greeting.jsx'
 import BootstrapTooltip from '../components/Tooltip.jsx'
 import { RxDragHandleDots2 } from "react-icons/rx";
-import { HiMiniCalendarDateRange,HiOutlineHome,HiOutlineCog8Tooth, HiOutlineClock,HiOutlineArrowsPointingOut,HiOutlineEllipsisHorizontal,HiOutlineSquares2X2,HiOutlineArrowTopRightOnSquare ,HiLink, HiOutlineTrash, HiOutlineXMark, HiClipboardDocumentList, HiPlus} from "react-icons/hi2";
+import { HiMiniCalendarDateRange,HiOutlineHome,HiOutlineCog8Tooth, HiOutlineClock,HiOutlineArrowsPointingOut,HiOutlineEllipsisHorizontal,HiOutlineSquares2X2,HiOutlineArrowTopRightOnSquare ,HiLink, HiOutlineTrash, HiOutlineXMark, HiClipboardDocumentList, HiPlus, HiXMark} from "react-icons/hi2";
 import { useNavigate } from 'react-router-dom';
 import { HiFolder } from "react-icons/hi2";
 import { GiMusicalScore } from "react-icons/gi";
@@ -18,14 +18,17 @@ import { HiOutlinePlus } from 'react-icons/hi';
 import { MdAddChart } from 'react-icons/md';
 import WorkspaceSummary from '../UI/WorkspaceSummary.jsx';
 import AgendaUser from '../UI/AgendaUser.jsx';
-import PersonalNote from '../modules/PersonalNote.jsx';
-import PersonalAgenda from '../modules/PersonalAgenda.jsx';
 import { IoCalendar, IoFlash } from 'react-icons/io5';
 import AksesCepat from '../modules/AksesCepat.jsx';
+import PersonalNotes from '../modules/PersonalNotes.jsx';
+import PersonalAgendas from '../modules/PersonalAgendas.jsx';
+import { useUser } from '../context/UserContext.jsx';
+
 
 const Home=()=> {
   //state
-  const userId = 3; //buat ketika pengguna login userIdnya sesuai database
+  const {user} = useUser();
+  const userId = user?.id;
   const [isGreeting, setIsGreeting] = useState(true);
   const [showSetting, setShowSetting] = useState(false);
   const [showForm, setShowForm] = useState(false);
@@ -59,11 +62,11 @@ const Home=()=> {
 
   //4. navigate to recent
   const navigateToRecent = () =>{
-    navigate(`/recent`);
+    navigate(`recent`);
   }
   //5. navigate to workspace
   const navigateToWorkspace = () =>{
-    navigate(`/workspaces`)
+    navigate(`workspaces`)
   }
   //6. show form create workspace
   const handleShowForm = (e) =>{
@@ -86,7 +89,7 @@ const Home=()=> {
       }); 
       //ke halaman workspace berdasarkan id yang baru dibuat
       const workspaceId = response.data.id;
-      navigate(`/workspaces/${workspaceId}`)
+      navigate(`workspaces/${workspaceId}`)
       console.log('Workspace created:', response.data);
     }catch(error){
       setAlertInfo({
@@ -105,6 +108,16 @@ const Home=()=> {
 
   const handleCancle = () =>{
     setShowForm(false)
+  }
+
+  //9. navigate to agenda page
+  const navigateToAgendaPage = () =>{
+    navigate('agenda-page')
+  }
+
+  //10. navigate to note page
+  const navigateToNotePage = () =>{
+    navigate('note-page')
   }
 
   return (
@@ -132,34 +145,40 @@ const Home=()=> {
             <div className='wf-create' ref={showRef}>
               <div className="wf-header">
                 <h5>
-                  <MdAddChart className='wf-icon'/>
-                  CREATE A WORKSPACE 
+                  <div className='wf-icon'>
+                    <MdAddChart/>
+                  </div>
+                  Create New Workspace
                 </h5>
                 <BootstrapTooltip title="Close Form" placement="top">
-                  <HiOutlineXMark onClick={handleCancle} className='wf-close'/>
+                  <HiXMark onClick={handleCancle} className='wf-close'/>
                 </BootstrapTooltip>
               </div>
                <div className="wf-content">
                 <div className="wf-input">
-                  <label>Workspace Title</label>
+                  <label>Workspace Title <span style={{color:'red'}}>*</span></label>
                   <input 
                     type="text"
                     value={name}
+                    placeholder='Enter workspace title'
                     onChange={(e) => setName(e.target.value)}
                     required
                   />
                 </div>
                 <div className="wf-input">
-                  <label>Descriptions</label>
-                  <input 
+                  <label>Descriptions <span style={{color:'red'}}>*</span></label>
+                  <textarea 
                     type="text" 
                     value={description}
+                    placeholder='Describe your workspace (optional)'
                     onChange={(e) => setDescription(e.target.value)}
                     required
                   />
                 </div>
-                <button onClick={handleSubmit}>Create Workspace</button>
-                {/* <button className='cancle-btn'>Cancle</button> */}
+                <div className="wf-btn">
+                  <div className='cancle-btn' onClick={handleCancle}>Cancle</div>
+                  <div className='submit-btn' onClick={handleSubmit}>Create Workspace</div>
+                </div>
                </div>
             </div>
           )}        
@@ -177,9 +196,11 @@ const Home=()=> {
                   </div>
                   <h4><span className='sh-gradient'>Workspaces Summary</span></h4>
                 </div>
-                <div className="sh-right">
-                   <BsArrowsAngleExpand className='sh-expand'/>
-                </div>
+                <BootstrapTooltip title='Show Workspaces' placement="top">
+                  <div className="sh-right">
+                    <BsArrowsAngleExpand onClick={navigateToWorkspace} className='sh-expand'/>
+                  </div>
+                </BootstrapTooltip>
                 
               </div>
               <div className="body-s">
@@ -197,17 +218,19 @@ const Home=()=> {
                   <h4><span className='nhl-gradient'>Personal Notes</span></h4>
                 </div>
                 <div className="nh-right">
-                  <div className="note-btn">
-                    <HiPlus/>
-                    <p>Add Note</p>
+                  <BootstrapTooltip title='Open Note Page' placement='top'>
+                  <div className="ah-right">
+                    <BsArrowsAngleExpand className='sh-expand' onClick={navigateToNotePage}/>
                   </div>
+                  </BootstrapTooltip>
                 </div>
               </div>
               <div className="notes-body">
-                <PersonalNote/>
+                <PersonalNotes userId={userId}/>
               </div>
             </div>
           </div>
+
           <div className="home-body-right">
             <div className="home-agenda">
               <div className="agenda-header">
@@ -217,12 +240,16 @@ const Home=()=> {
                   </div>
                   <h4>Your Agenda</h4>
                 </div>
+
+                <BootstrapTooltip title='Open Agenda Page' placement='top'>
                 <div className="ah-right">
-                  <BsArrowsAngleExpand className='sh-expand'/>
+                  <BsArrowsAngleExpand className='sh-expand' onClick={navigateToAgendaPage}/>
                 </div>
+                </BootstrapTooltip>
               </div>
               <div className="agenda-body">
-                <PersonalAgenda/>
+                {/* <PersonalAgenda/> */}
+                <PersonalAgendas userId={userId}/>
               </div>
             </div>
 
@@ -235,12 +262,12 @@ const Home=()=> {
                   <h4>Quick Actions</h4>
                 </div>
                 <div className="quick-right">
-                  <BsArrowsAngleExpand className='sh-expand'/>
+                  {/* <BsArrowsAngleExpand className='sh-expand'/> */}
                 </div>
               </div>
 
               <div className="quick-body">
-                <AksesCepat/>
+                <AksesCepat userId={userId} handleShowForm={handleShowForm}/>
               </div>
             </div>
           </div>

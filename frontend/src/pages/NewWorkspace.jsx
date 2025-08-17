@@ -144,7 +144,7 @@ function NewWorkspace() {
       // Re-fetch workspaces setelah berhasil create
       const workspaceResult = await getWorkspacesByUserId(userId);
       setWorkspaces(workspaceResult.data);
-      console.log('Create workspace successfully:', response.data); 
+      console.log('cworkspace successfully:', response.data); 
     }catch(error){
       setAlertInfo({
         severity: 'error',
@@ -201,7 +201,7 @@ function NewWorkspace() {
   };
   //8. navigate to workspace id
   const handleWorkspaceClick = (workspaceId, userId) =>{
-    navigate(`/workspaces/${workspaceId}`,{ state: { userId } })
+    navigate(`/layout/workspaces/${workspaceId}`,{ state: { userId } })
   }
   //9.fetch data admin
   const fetchAdmins = async (workspaces) => {
@@ -285,17 +285,6 @@ function NewWorkspace() {
       showSnackbar:showSnackbar,
     })
   }
-  // const archiveWorkspaceUserData = async(workspaceId)=>{
-  //   try{
-  //     const respone = await archiveWorkspaceUser(workspaceId);
-  //     console.log("Succesfully archive workspace data")
-  //     showSnackbar('Succesfully archive workspace', 'success')
-  //     fetchWorkspaceUser()
-  //   }catch(error){
-  //     console.error('Error archive data:', error)
-  //     showSnackbar('Failed to archive workspace', 'error')
-  //   }
-  // }
 
 
   const handleEditName = (e, workspaceId, currentName) =>{

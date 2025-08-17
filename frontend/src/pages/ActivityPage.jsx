@@ -1,185 +1,144 @@
 import React, { useEffect, useState } from 'react';
 import { getActivityForUserId } from '../services/ApiServices';
-import '../style/pages/ActivityPage.css'
-import { HiMiniCalendarDateRange } from 'react-icons/hi2';
-import OutsideClick from '../hook/OutsideClick';
+import '../style/pages/ActivityPage.css';
 import { useUser } from '../context/UserContext';
+import { MdOutlineHistory } from "react-icons/md";
+import OutsideClick from '../hook/OutsideClick';
 
-const ActivityPage = () => {
-  const {user} = useUser();
-  const userId = user.id;
-  // const userId = 3;
+const UserActivityPage = () => {
+  const { user } = useUser();
+  const userId = user?.id;
+
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [selectedDate, setSelectedDate] = useState('');
-  const [showFilterDate, setShowFIlterDate] = useState(false);
-  const filterData = OutsideClick(()=>setShowFIlterDate(false)); 
-
-  //debug
-  console.log('FIle activity page ini menerima user id:', userId);
-
-  //ACTION BACKGROUND COLOR
-  const ACTION_COLORS={
-    update: '#c7e2fe',  // DodgerBlue - menandakan pembaruan atau perubahan
-    add: '#cbffd7',     // Green - untuk penambahan, identik dengan positif
-    delete: '#ffc2c8',  // Red - umum digunakan untuk aksi hapus
-    create: '#E3D095',  // Blue - mirip "add" tapi bisa dibedakan sebagai aksi baru
-    archive: '#d8d8d8',
-    duplicate:'#f9d4f0',
-    move:'#e8fdfd'
-  }
-
-  //ACTION TEXT
-  const TEXT_ACTION_COLORS={
-    update: '#1E90FF',  // DodgerBlue - menandakan pembaruan atau perubahan
-    add: '#28A745',     // Green - untuk penambahan, identik dengan positif
-    delete: '#DC3545',  // Red - umum digunakan untuk aksi hapus
-    create: '#4B352A',  // Blue - mirip "add" tapi bisa dibedakan sebagai aksi baru
-    archive: '#6C757D',
-    duplicate:'#533B4D',
-    move:'#096B68'
-  }
-
-  //FORMAT DATE
-  function formatToLocalTimestamp(timestamp) {
-  const date = new Date(timestamp);
-
-  const day = date.getDate().toString().padStart(2, '0');
-  const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-                      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-  const month = monthNames[date.getMonth()];
-  const year = date.getFullYear();
-
-  let hour = date.getHours();
-  const minute = date.getMinutes().toString().padStart(2, '0');
-  const ampm = hour >= 12 ? 'PM' : 'AM';
-  hour = hour % 12 || 12;
-
-  return `${day} ${month} ${year}, ${hour.toString().padStart(2, '0')}.${minute}${ampm}`;
-}
-
+  const [message, setMessage] = useState('');
+  const [selectedAction, setSelectedAction] = useState('');
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   useEffect(() => {
-    const fetchActivities = async () => {
-      try {
-        const response = await getActivityForUserId(userId);
-        setActivities(response.data.activities);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchActivities();
+    if (userId) {
+      fetchActivities();
+    }
   }, [userId]);
 
-  if (loading) {
-    return <div>Loading activities...</div>;
-  }
+ const fetchActivities = async () => {
+    try {
+      const response = await getActivityForUserId(userId);
+      const logs = Array.isArray(response.data) ? response.data : response.data.activities || [];
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+      if (logs.length === 0) {
+        setMessage('Pengguna belum memiliki aktivitas saat ini.');
+      }
 
-  if (activities.length === 0) {
-    return <div>No activity logs found for user ID {userId}.</div>;
-  }
+      setActivities(logs);
+    } catch (error) {
+      console.error(error);
+      setMessage('Gagal memuat aktivitas.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  const handleSelectAction = (action) => {
+    setSelectedAction(action);
+    setDropdownOpen(false);
+  };
 
-  //function show filter date
-  const handleShowFilterDate = () =>{
-    setShowFIlterDate(!showFilterDate);
-  }
+  const filteredActivities = selectedAction
+    ? activities.filter((log) => log.action === selectedAction)
+    : activities;
 
- const filteredActivities = selectedDate
-  ? activities.filter((activity) => {
-      const activityDate = new Date(activity.timestamp).toISOString().split('T')[0];
-      return activityDate === selectedDate;
-    })
-  : activities; 
+  const renderActionLabel = (action) => {
+    switch (action) {
+      case 'create':
+        return 'Create';
+      case 'update':
+        return 'Update';
+      case 'delete':
+        return 'Delete';
+      default:
+        return action || 'Semua Aksi';
+    }
+  };
+
+  const formatDate = (isoDate) => {
+    return new Date(isoDate).toLocaleString('id-ID', {
+      dateStyle: 'medium',
+      timeStyle: 'short',
+    });
+  };
 
   return (
-    <div className='activity-container'>
-      <div className="activity-header">
-        <h3>Activity Logs</h3>
-        <button onClick={handleShowFilterDate}> <HiMiniCalendarDateRange/> View Logs by Date</button>
-      </div>
-      {/* SHOW ACTIVITY BY DATE  */}
-      {showFilterDate && (
-        <div className='activity-filter' ref={filterData}>
-            <label>Filter berdasarkan tanggal :</label>
-            <div className="date-input">
-              <HiMiniCalendarDateRange className='di-icon'/>
-              <input 
-                type="date"
-                value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)} 
-              />
+    <div className="activity-container">
+      <div className="ac-header">
+        <div className="ach-left">
+          <div className="ac-title">
+            <div className="ac-icon">
+              <MdOutlineHistory />
             </div>
+            <h2>Riwayat Aktivitas Pengguna</h2>
+          </div>
+          <p className="page-description">
+            Pantau semua tindakan yang telah dilakukan oleh pengguna pada kartu, list, dan board secara real-time.
+          </p>
+        </div>
+
+        <div className="ach-right">
+          {/* <OutsideClick onClickOutside={() => setDropdownOpen(false)}> */}
+            <div className="custom-dropdown">
+              <div
+                className="dropdown-trigger"
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+              >
+                {renderActionLabel(selectedAction)}
+              </div>
+              {dropdownOpen && (
+                <ul className="dropdown-list">
+                  <li onClick={() => handleSelectAction('')}>Semua Aksi</li>
+                  <li onClick={() => handleSelectAction('create')}>Membuat</li>
+                  <li onClick={() => handleSelectAction('update')}>Memperbarui</li>
+                  <li onClick={() => handleSelectAction('delete')}>Menghapus</li>
+                </ul>
+              )}
+            </div>
+          {/* </OutsideClick> */}
+        </div>
+      </div>
+
+      {loading ? (
+        <p>Memuat aktivitas...</p>
+      ) : filteredActivities.length === 0 ? (
+        <p>{message}</p>
+      ) : (
+        <div className="activity-table-container">
+          <table className="activity-table">
+            <thead>
+              <tr>
+                <th style={{ borderTopLeftRadius: '8px' }}>Aksi</th>
+                <th>Entitas</th>
+                <th>Detail</th>
+                <th style={{ borderTopRightRadius: '8px' }}>Waktu</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredActivities.map((activity) => (
+                <tr key={activity.id}>
+                  <td style={{ minWidth: '15vw' }}>{renderActionLabel(activity.action)}</td>
+                  <td style={{ minWidth: '18vw' }}>
+                    {activity.entity_type} #{activity.entity_id}
+                  </td>
+                  <td>{activity.details}</td>
+                  <td style={{ minWidth: '20vw', textAlign: 'center' }}>
+                    {formatDate(activity.timestamp)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
-    
-      <div className="activity-tabel">
-        <table cellPadding="10" cellSpacing='0'>
-          <thead className='sticky-thead'>
-              <tr>
-                <th style={{borderTopLeftRadius:'4px'}}>DATE / TIME</th>
-                <th>ENTITY</th>
-                <th>ACTION</th>
-                <th style={{textAlign:'left', borderTopRightRadius:'4px'}}>DETAILS</th>
-              </tr>
-          </thead>
-    
-          <tbody>
-            {filteredActivities.map((activity, index)=>(
-              <tr key={activity.id}>
-                <td className='td-date'>
-                  <p>
-                      {/* {activity.timestamp} */}
-                      {formatToLocalTimestamp(activity.timestamp)}
-                  </p>
-                </td>
-                <td>{activity.entity_type}</td>
-                {/* <td>{activity.action}</td> */}
-                <td>
-                  <p
-                    style={{
-                    color: TEXT_ACTION_COLORS[activity.action],
-                    backgroundColor: ACTION_COLORS[activity.action],
-                    padding:'3px 8px',
-                    borderRadius:'8px',
-                    textAlign:'center'
-                  }}
-                  >
-                    {activity.action}
-                  </p>
-                </td>
-                <td>
-                    {activity.details}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
     </div>
   );
 };
 
-export default ActivityPage;
-
-{/* <div className='bg-white rounded-lg'>
-      <h3>Activity Logs for User ID: {userId}</h3>
-      <ul>
-        {activities.map((activity) => (
-          <li key={activity.id}>
-            <strong>{activity.timestamp}</strong>: {activity.description}
-            <strong>{activity.entity_type}</strong>:
-            <strong>{activity.action}</strong>
-            <strong>{activity.details}</strong>
-          </li>
-        ))}
-      </ul>
-    </div> */}
+export default UserActivityPage;

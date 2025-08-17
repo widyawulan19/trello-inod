@@ -9,10 +9,10 @@ import NavbarSystemUi from './NavbarSystemUi';
 import NavbarAllNotifications from './NavbarAllNotifications';
 
 
-const NavbarNotification=({onClose})=> {
+const NavbarNotification=({onClose, userId})=> {
     //STATE
-    const {user} = useUser();
-    const userId = user.id;
+    // const {user} = useUser();
+    // const userId = user?.id;
     const [notifications, setNotifications] = useState([]);
     const [notificationSystem, setNotificationSystem] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -159,7 +159,10 @@ const NavbarNotification=({onClose})=> {
         <div className="navNotif-header">
             <div className="navNotif-left">
                 <h4>
-                    <FaBell/>
+                    <div className="bel-icon">
+                        <FaBell/>
+                    </div>
+                    
                     NOTIFICATION
                 </h4>
                 <p>Stay update on your tasks and mentions</p>

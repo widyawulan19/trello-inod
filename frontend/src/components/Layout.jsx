@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
 import Navbar from './Navbar';
 import '../style/components/Layout.css';
+import { Outlet } from 'react-router-dom';
 import { HiAdjustmentsHorizontal, HiArrowLeftCircle, HiArrowRightCircle } from 'react-icons/hi2';
 
 const Layout = ({ children }) => {
@@ -48,7 +49,8 @@ const Layout = ({ children }) => {
             background: 'linear-gradient(to bottom, #042787, #3927ab)',
           }}
         >
-          {children}
+          {/* {children} */}
+          <Outlet/>
         </div>
       </div>
     </div>

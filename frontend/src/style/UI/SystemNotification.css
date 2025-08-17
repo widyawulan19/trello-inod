@@ -1,12 +1,14 @@
-.notif-system-container{
+.notif-system-container {
     /* height: 69vh; */
     /* border: 1px solid red; */
-    
+
 }
-.notifBar-system-container{
+
+.notifBar-system-container {
     /* border: 1px solid blue; */
 }
-.ns-header{
+
+.ns-header {
     /* border: 1px solid green; */
     position: sticky;
     display: flex;
@@ -15,34 +17,39 @@
     /* margin-bottom: 10px; */
 }
 
-.ns-header .ns-left{
+.ns-header .ns-left {
     /* border: 1px solid blue; */
     display: flex;
     flex-direction: column;
     /* align-items: center; */
     justify-content: flex-start;
 }
-.ns-left h2{
+
+.ns-left h2 {
     font-weight: bold;
     font-size: 15px;
+    color: #6a11cb;
     gap: 5px;
     display: flex;
     align-items: center;
     justify-content: flex-start;
 }
-.ns-left p{
+
+.ns-left p {
     font-size: 12px;
-    color: grey;
+    color: #333;
+    /* color: ; */
 }
 
 
 /* RIGHT BUTTON */
-.ns-header .ns-right{
+.ns-header .ns-right {
     display: flex;
     align-items: center;
     justify-content: center;
 }
-.ns-right button{
+
+.ns-right button {
     font-size: 12px;
     display: flex;
     gap: 5px;
@@ -53,10 +60,11 @@
     cursor: pointer;
     color: #333;
 }
-.ns-right button:hover{
+
+.ns-right button:hover {
     border: 1px solid #ddd;
     background-color: #ddd;
-    box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* END RIGHT BUTTON */
@@ -66,20 +74,20 @@
 /* NAVBAR ALL NOTIFICATION  */
 
 /* BODY Navbar system UI  */
-.notif-system-container .nav-s-body{
-   /* margin-top: 10px; */
+.notif-system-container .nav-s-body {
+    /* margin-top: 10px; */
     /* border:1px solid blue; */
     /* height: 63vh; */
     /* overflow-y: auto; */
     padding: 5px;
 }
 
-.nav-s-body ul{
+.nav-s-body ul {
     /* border: 1px solid red; */
     gap: 5px;
 }
 
-.nav-s-body li{
+.nav-s-body li {
     border: 1px solid #ddd;
     border-radius: 6px;
     margin: 10px 0px;
@@ -91,26 +99,27 @@
     justify-content: space-between;
 }
 
-.nav-s-body li:hover{
+.nav-s-body li:hover {
     box-shadow: 0px 4px 8px #5e12eb46;
 }
+
 /* END BODY Navbar system UI  */
 
 /* BODY  */
-.notif-system-container .ns-body{
-   margin-top: 10px;
+.notif-system-container .ns-body {
+    margin-top: 10px;
     /* border:1px solid #ddd; */
     height: 60vh;
     overflow-y: auto;
     padding: 5px;
 }
 
-.ns-body ul{
+.ns-body ul {
     /* border: 1px solid red; */
     gap: 5px;
 }
 
-.ns-body li{
+.ns-body li {
     border: 1px solid #ddd;
     border-radius: 6px;
     margin: 10px 0px;
@@ -122,21 +131,22 @@
     justify-content: space-between;
 }
 
-.ns-body li:hover{
+.ns-body li:hover {
     box-shadow: 0px 4px 8px #5e12eb46;
 }
 
 
-.sn-text{
+.sn-text {
     /* border: 1px solid blue; */
 }
-.sn-text .sn-date{
+
+.sn-text .sn-date {
     color: grey;
     font-size: 10px;
 }
 
 /* BUTTON  */
-.sn-btn{
+.sn-btn {
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -145,7 +155,7 @@
     width: 30%;
 }
 
-.sn-btn button{
+.sn-btn button {
     border: 1px solid #dddddd00 !important;
     background-color: #ffffff00;
     border-radius: 4px;
@@ -154,7 +164,8 @@
     font-size: 10px;
     color: #6a11cb;
 }
-.sn-btn button:hover{
+
+.sn-btn button:hover {
     border: 1px solid #6a11cb !important;
     box-shadow: 0px 4px 8px #5e12eb46;
 }
@@ -163,54 +174,60 @@
 
 
 .notif-badge {
-  background-color: red;
-  color: white;
-  font-size: 10px;
-  padding: 2px 6px;
-  border-radius: 10px;
-  margin-left: 6px;
+    background-color: red;
+    color: white;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    margin-left: 6px;
 }
+
 /* END BODY  */
 
 /* COLOR RECOMENDATION  */
-.color{
-    color:#bf2e2e;
-    color:#F4D793;
-    color:#889E73;
-    color:#6a11cb;
+.color {
+    color: #bf2e2e;
+    color: #F4D793;
+    color: #889E73;
+    color: #6a11cb;
 }
 
 /* MEDIA QUERY  */
 /* ukuran handpone besar  */
-@media (min-width: 576px) and (max-width: 767.98px){
-   .ns-header{
-    flex-direction: column;
-    justify-content: center;
-   }
-   .ns-header .ns-left{
-    width: 100%;
-   }
-   .ns-header .ns-right{
-    width: 100%;
-    margin-top: 5px;
-   }
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .ns-header {
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .ns-header .ns-left {
+        width: 100%;
+    }
+
+    .ns-header .ns-right {
+        width: 100%;
+        margin-top: 5px;
+    }
 }
 
 /* ukuran handpone kecil  */
-@media (min-width:375px) and (max-width:575px){
-    .ns-header{
-    flex-direction: column;
-    justify-content: center;
-   }
-   .ns-header .ns-left{
-    width: 100%;
-   }
-   .ns-header .ns-right{
-    width: 100%;
-    margin-top: 5px;
-   }
-   .notif-system-container .ns-body{
-    height: 57vh;
-    /* border: 1px solid red; */
-   }
+@media (min-width:375px) and (max-width:575px) {
+    .ns-header {
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .ns-header .ns-left {
+        width: 100%;
+    }
+
+    .ns-header .ns-right {
+        width: 100%;
+        margin-top: 5px;
+    }
+
+    .notif-system-container .ns-body {
+        height: 57vh;
+        /* border: 1px solid red; */
+    }
 }

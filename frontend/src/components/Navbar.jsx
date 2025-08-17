@@ -1,17 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import '../style/components/Navbar.css'
-import logo from '../assets/logo2.png';
+import defaultPic from '../assets/manuser.png';
 import logo1 from '../assets/whiteLogo.png'
 import { HiMiniCalendarDateRange,HiOutlineMagnifyingGlass,HiOutlineClipboardDocumentList,HiMiniLanguage,HiMiniBellAlert,HiOutlineUserCircle,HiOutlineChevronDown } from "react-icons/hi2";
 import { Tooltip, tooltipClasses } from '@mui/material';
 import {styled} from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useNavigation } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
-import { getProfileByUserId, getUserTotalNotificationUnread } from '../services/ApiServices';
+import { getProfileByUserId, getUnfinishAgenda, getUserTotalNotificationUnread } from '../services/ApiServices';
 import FullNewCalendar from '../fitur/FullNewCalendar';
 import NotificationPage from '../UI/NotificationPage';
 import NavbarNotification from '../UI/NavbarNotification';
 import NotificationIcon from '../UI/NotificationIcon';
+import SearchGlobalCard from '../fitur/SearchGlobalCard';
+import PersonalNotes from '../modules/PersonalNotes';
+import PersonalAgendas from '../modules/PersonalAgendas';
+import AgendaUser from '../UI/AgendaUser';
+import { IoCalendar } from 'react-icons/io5';
 
 //tooltip
 const BootstrapTooltip = styled(({className, ...props}) =>(
@@ -32,17 +37,22 @@ const Navbar=()=> {
     const navigate = useNavigate();
     const [profilUser, setProfilUser] = useState(null);
     const {user} = useUser();
-    const userId = user.id;
+    const userId = user?.id;
     // const userId = 12;
     const [showCalendar, setShowCalendar] = useState(false);
     const [showNotif, setShowNotif] = useState(false);
+    const [showNotes, setShowNotes] = useState(false);
+    const [showAgenda, setShowAgenda] = useState(false);
     
     //unread total
     const [unreadCount, setUnreadCount] = useState(0);
+    const [unfinishedCount, setUnfinishedCount] = useState(0);
+    const [unfinishedAgendas, setUnfinishedAgendas] = useState([]);
 
     //debug
     console.log('NAVBAR ini menerima data user dan userId:', user, userId);
 
+    //function fetch total unread notif
     const fetchTotalUnreadNotif = async () => {
         try {
             const response = await getUserTotalNotificationUnread(userId);
@@ -61,6 +71,25 @@ const Navbar=()=> {
         }
     }, [userId])
 
+    //function fetch unfinished agenda
+    const fetchUnfinishedAgenda = async()=>{
+        try{
+            const response = await getUnfinishAgenda(userId);
+            console.log('API response:', response);
+
+            setUnfinishedCount(response.data.count)
+            setUnfinishedAgendas(response.data.data)
+        }catch(error){
+            console.log('Error to fetch unfinished count agenda', error);
+        }
+    }
+
+    useEffect(()=>{
+        if(userId){
+            fetchUnfinishedAgenda()
+        }
+    },[userId])
+
     //FUNGSI
     const fetchUserProfile = async() =>{
         try{
@@ -76,24 +105,29 @@ const Navbar=()=> {
         }
     },[userId]);
 
+
     const handleActive = (icon) => {
         setActive(icon); // Menetapkan icon yang dipilih
       };
 
     const handleToHome = () =>{
-        navigate(`/`)
+        navigate(`/layout`)
     }
 
     const navigateToProfile =()=>{
-        navigate(`/user-profile`)
+        navigate(`user-profile`)
     }
 
     const navigateToChat = () =>{
-        navigate(`/chat`)
+        navigate(`chat`)
     }
 
    const handleShowCalendar = () =>{
         setShowCalendar(!showCalendar)
+   }
+
+   const handleToNote = () =>{
+    navigate('note-page');
    }
 
    //SHOW NITIFICATION
@@ -104,6 +138,30 @@ const Navbar=()=> {
    const handleCloseNotif = () =>{
     setShowNotif(false)
    }
+
+   //SHOW NOTES
+   const handleShowNotes = () =>{
+    setShowNotes(!showNotes)
+   }
+
+   const handleCloseNotes = () =>{
+    setShowNotes(false)
+   }
+
+   //SHOW AGENDA
+   const handleShowAgenda = () =>{
+    setShowAgenda(!showAgenda)
+   }
+
+   const handleCloseAgenda = () =>{
+    setShowAgenda(false)
+   }
+
+   const handleClickAgenda = () => {
+        handleShowAgenda();           // Fungsi pertama
+        handleActive('calendar');     // Fungsi kedua dengan parameter
+    };
+
  
   return (
     <div className='navbar-container'>
@@ -111,23 +169,36 @@ const Navbar=()=> {
             <img src={logo1} alt={logo1} onClick={handleToHome}/>
         </div>
         <div className="more-fiture">
-            <div className="input">
-                <HiOutlineMagnifyingGlass className='input-icon'/>
-                <input 
-                    type="text"
-                    placeholder='search...'
-                />
-            </div>
+            <SearchGlobalCard userId={userId}/>
             <div className="more-action">
-                <BootstrapTooltip title="Calendar">
+                <BootstrapTooltip title="Agenda">
                     <div 
                         className={`icon-wrapper ${active === 'calendar' ? 'active' : ''}`} 
-                        onClick={() => handleActive('calendar')}
+                        onClick={handleClickAgenda}
                     >
-                        <HiMiniCalendarDateRange   
-                            className='icon-icon' 
-                            onClick={handleShowCalendar}
-                    />
+                        <div style={{display:'inline-box', position:'relative'}}>
+                            <IoCalendar className='icon-icon' />
+                            <div style={{
+                                position: 'absolute',
+                                top: '0px',
+                                right:'0px',
+                                backgroundColor: 'red',
+                                color: 'white',
+                                fontSize: '8px',
+                                padding: '2px 5px',
+                                borderRadius: '50%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                width: '10px',
+                                // width:'15px',
+                                height: '10px',
+                                }}>
+                                {unfinishedCount}
+                            </div>
+                        </div>
+
+                    
                     </div>
                     {showCalendar && (
                         <div className='calender-modal'>
@@ -138,7 +209,9 @@ const Navbar=()=> {
                 <BootstrapTooltip title="Notes">
                     <div 
                       className={`icon-wrapper ${active === 'notes' ? 'active' : ''}`} 
-                      onClick={() => handleActive('notes')}
+                    //   onClick={() => handleActive('notes')}
+                    // onClick={handleShowNotes}
+                    onClick={handleToNote}
                     >
                         <HiOutlineClipboardDocumentList className='icon-icon' />
                     </div>
@@ -186,18 +259,40 @@ const Navbar=()=> {
                         {/* <NotificationPage userId={userId}/> */}
                     </div>
                 )}
+
+                {/* SHOW NOTES  */}
+                {showNotes && (
+                    <div className="notes-modal">
+
+                        {/* <PersonalNotes userId={userId}/> */}
+                    </div>
+                )}
+
+                {/* SHOW AGENDA */}
+                {showAgenda && (
+                    <div className="agenda-modal">
+                        <AgendaUser userId={userId} onClose={handleCloseAgenda}/>
+                    </div>
+                )}
             </div>
-            <div className="profil">
+           <div className="profil">
                 <BootstrapTooltip title="Profile">
-                    {profilUser && (
-                        <div className='icon-wrapper'>
-                             <button onClick={navigateToProfile}>
-                                <img src={profilUser.photo_url} alt={profilUser.username} />
-                            </button>
-                        </div>
-                    )}
+                    <div className='icon-wrapper' onClick={navigateToProfile}>
+                    <img
+                        src={profilUser?.photo_url || defaultPic}
+                        alt={profilUser?.username || user?.username || 'User'}
+                        style={{
+                        width: '50px',
+                        height: '30px',
+                        borderRadius: '50%',
+                        objectFit: 'cover',
+                        
+                        }}
+                    />
+                    </div>
                 </BootstrapTooltip>
             </div>
+
         </div>
     </div>
   )

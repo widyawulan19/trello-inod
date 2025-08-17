@@ -35,7 +35,7 @@ const MESSAGE_ACTIVITY = {
 
 const CardActivity = ({ cardId, fetchCardById }) => {
   const { user } = useUser();
-  const userId = user.id;
+  const userId = user?.id;
   const [cardActivities, setCardActivities] = useState([]);
   const [loading, setLoading] = useState(false);
 

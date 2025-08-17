@@ -1,165 +1,91 @@
-.activity-container{
-    /* height: 100%;    */
+.activity-container {
+    height: 97%;
+    min-width: 80vw;
+    position: relative;
     background-color: white;
-    /* border: 1px solid green; */
+    margin-left: 10px;
+    margin-top: 10px;
     border-radius: 8px;
-    padding-bottom: 5%;
+    padding: 5px 10px;
 }
-.activity-container .activity-header{
-    /* border: 1px solid red; */
+
+.ac-header {
+    border: 1px solid #ddd;
+    border-radius: 16px;
+    padding: 10px 15px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 5px 0px;
-    position: relative;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
-.activity-header h3{
-    font-weight: bold;
-    letter-spacing: 1px;
-}
-.activity-header button{
-    font-size: 12px;
-    gap: 5px;
-    padding: 5px 10px;
+
+.ac-header .ac-title {
+    /* border: 1px solid blue; */
     display: flex;
     align-items: center;
-    justify-content: center;
-    border: 1px solid #5D12EB;
-    border-radius: 6px;
-    background: linear-gradient(to right, #6b11cb, #2574fc);
-    color: white;
-    cursor: pointer;
-}
-.activity-header button:hover{
-    box-shadow: 0px 4px 8px #5e12eb46;
-}
-
-/* DROPDOWN DATE FILTE  */
-.activity-filter{
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    padding: 5px;
-    position: absolute;
-    z-index: 99;
-    background-color: white;
-    /* top: 0px; */
-    right: 8rem;
-    font-size: 12px;
-    display: flex;
-    flex-direction: column;
-    /* align-items: center; */
     justify-content: flex-start;
-}
-.activity-filter label{
-    color: #5e5e5e;
-    font-size: 10px;
-    margin-bottom: 5px;
-}
-.date-input{
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 0px 5px;
     gap: 5px;
-}
-.date-input:hover{
-    border: 1px solid #6E30DC;
-}
-.date-input .di-icon{
-    font-size: 1.5rem;
-    color: #6E30DC;
-}
-.date-input input{
-    border: 1px solid white;
-    border-radius: 4px;
     width: 100%;
-    padding: 2px 3px;
-    font-size: 10px;
 }
-.date-input input:hover{
-    border: 1px solid white;
-}
-.date-input input:focus{
-    outline: none;
-}
-/* END DROPDOWN DATE FILTE  */
 
-.activity-tabel{
-    /* border: 1px solid blue; */
-    /* height: 85vh; */
-    max-height: 70vh;
-    /* min-height: 85vh; */
-    overflow-y: auto;
+.ac-title .ac-icon {
+    border: 1px solid #fff;
+    border-radius: 8px;
+    padding: 5px;
+    font-size: 18px;
+    color: white;
+    background-color: #5e12ebb9;
 }
-.activity-tabel table{
-    /* border: 1px solid #ddd; */
-    border-radius: 6px;
-    padding: 10px;
-    font-size: 12px;
+
+.ac-title h2 {
+    color: #5D12EB;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.page-description {
+    margin-top: 4px;
+    color: #555;
+    width: 100%;
+    font-size: 13px;
+}
+
+.ac-header .ach-right {
+    border: 1px solid red;
+}
+
+
+/* BODY  */
+
+.activity-table-container {
+    overflow-x: auto;
+    /* border: 1px solid red; */
+    height: 75vh;
+}
+
+.activity-table {
     width: 100%;
     border-collapse: collapse;
 }
-.sticky-thead th {
-  position: sticky;
-  top: 0;
-  background-color: #eee; /* agar header tidak transparan saat scroll */
-  z-index: 1;
-  border-bottom: 1px solid #ccc;
-  letter-spacing: 1px;
-  color: #5e5e5e;
+
+.activity-table th,
+.activity-table td {
+    padding: 8px;
+    text-align: left;
 }
 
-.td-date{
-    width: 10vw;
-    min-width: 5vw;
-    max-width: 5vw;
+.activity-table th {
+    position: sticky;
+    top: 0;
+    background-color: #5D12EB;
+    color: white;
+    z-index: 1;
+    font-weight: normal;
+    text-align: center;
 }
 
- .td-date p{
-    /* color: green;
-    border: 1px solid rgb(206, 250, 206);
-    border-radius: 6px;
-    background-color: rgb(206, 250, 206); */
-    padding: 3px 8px;
-    font-size: 10px;
-    color: green;
-    /* text-align: center; */
-
+.activity-table td {
+    font-size: 12px;
+    color: #555;
+    border: 1px solid #ddd;
 }
-.activity-tabel th,
-.activity-tabel td {
-  padding: 10px;
-  border-bottom: 1px solid #ddd;
-  text-align: left;
-  /* width: 10vw; */
-}
-.activity-tabelr th {
-  /* background-color: #f4f4f4; */
-  background: linear-gradient(to bottom, #6E30DC, #5D12EB);
-  color: white;
-  font-weight: normal;
-  font-size: 15px;
-  text-align: center;
-}
-.activity-tabel tr:hover{
-    /* background-color: #f5f5f5; */
-    background-color: #d3c0f446;
-}
-.activity-tabel .th{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-}
-.activity-tabel td{
-    font-size: 10px;
-}
-
-/* .color{
-    color: #1E90FF,#c7e2fe;
-    color: #28A745,#cbffd7;
-    color: #DC3545,#ffc2c8;
-    color: #F2C078,#F2C078;
-    color: #6C757D,#d8d8d8;
-    color: #533B4D,#f9d4f0;
-    color: #096B68, #e8fdfd;
-} */

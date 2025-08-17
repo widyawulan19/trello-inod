@@ -83,29 +83,6 @@ const handleChange = (e) => {
   }));
 };
 
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       setLoading(true);
-//       setError(null);
-//       try {
-//         const response = await getDataMarketingById(marketingId);
-//         setFormData(response.data); // Set form data based on the response from the API
-//         // setFormData(false);
-//       } catch (error) {
-//         setError('Error fetching data');
-//         console.error('Error fetching marketing data:', error);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     if (marketingId) {
-//       fetchData();
-//     }
-//   }, [marketingId]);
-
-  
-
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();

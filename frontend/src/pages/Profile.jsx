@@ -13,12 +13,23 @@ import ActivityPage from './ActivityPage';
 import NotificationPage from '../UI/NotificationPage';
 import PersonalNotification from '../UI/PersonalNotification';
 import { useUser } from '../context/UserContext';
+import Logout from '../auth/Logout';
+
+const formatDateToReadable = (dateString) => {
+  if (!dateString) return '';
+  return new Intl.DateTimeFormat('en-GB', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+  }).format(new Date(dateString));
+};
+
 
 const Profile=()=> {
     //STATE
-    // const userId = 12;
+    // const userId = 13;
     const {user} = useUser(); 
-    const userId = user.id;
+    const userId = user?.id;
     const {showSnackbar} = useSnackbar();
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -28,6 +39,7 @@ const Profile=()=> {
     const [allProfiles, setAllProfiles] = useState([]);
     const [selectedProfileId, setSelectedProfileId] = useState(null)
     const [currentProfileId, setCurrentProfileId] = useState(null);
+
 
     //DEBUG
     console.log('File Profile.jsx menerima data user dan userId:', userId);
@@ -113,6 +125,8 @@ const Profile=()=> {
         fetchUserProfile();
     },[])
 
+    
+
 
 
     if (loading) return <p>Loading...</p>;
@@ -123,11 +137,13 @@ const Profile=()=> {
             case 'personal':
                 return <div className="fade"><PersonalInformation fetchUserSettingData={fetchUserSettingData} userData={userData} userId={userId}/></div>;
             case 'activity':
-                return <div className="fade"><div className='activity'><ActivityPage/></div></div>;
+                return <div className="fade"><div className='activity'><ActivityPage userId={userId}/></div></div>;
             case 'notification':
                 return <div className="fade"><div className="notif"><PersonalNotification userId={userId}/></div></div>;
             case 'security':
                 return <div className="fade"><h3>Security Settings</h3><p>Update your password and security settings.</p></div>;
+            case 'logout':
+                return <div className="fade"><Logout/></div>
             default:
                 return <div className="fade"><h3>Personal Information</h3></div>;
         }
@@ -136,79 +152,87 @@ const Profile=()=> {
 
   return (
     <div className='profile-container'>
-        <div className="pc-container">
-            <div className="pc-header">
-                <div className="pch-left">
-                    <HiCog className='pchl-icon'/>
-                    <h2>Profile Settings</h2>
+        <div className="header-profile">
+            <div className="header-title">
+                <div className="pchl-icon">
+                    <HiCog/>
                 </div>
-                <p>Manage your profile, preferences, and account setting</p>
+                <h2>Profile Settings</h2>
             </div>
-            <div className="pc-body">
-                <div className="pcb-left">
-                    <div className="profile-photo">
-                        <img src={userData.photo_url} alt={profile} />
-                        {/* <img src={profile} alt={profile} /> */}
-                        <h3>{userData.name}</h3>
-                        <p>Member since May 2025</p>
-                        <button onClick={handleShowAvatar}>Change Avatar</button>
-                         {/* SHOW SELECT AVATAR  */}
-                            {showAvatar && (
-                                    <div className='ava-container'>
-                                        <AvatarUser 
-                                            userId={userId}
-                                            allProfiles={allProfiles}
-                                            selectedProfileId={selectedProfileId}
-                                            currentProfileId={currentProfileId}
-                                            handleSelectProfile={handleSelectProfile}
-                                            handleSave={handleSave}
-                                            onClose={handleCloseAvatar}
-                                        />
-                                    </div>
-                                )}
-                            {/* END SHOW SELECT AVATAR  */}
-                            
-                    </div>
-                    <div className="profile-setting">
-                        <button 
-                            className={activeSection === 'personal' ? 'active' : ''} 
-                            onClick={() => setActiveSection('personal')}
-                        >
-                            <HiMiniUser className='ps-icon' />
-                            <span className="ps-label">Personal Info</span>
-                        </button>
-                        <button 
-                            className={activeSection === 'activity' ? 'active' : ''} 
-                            onClick={() => setActiveSection('activity')}
-                        >
-                            <FaRegChartBar className='ps-icon' />
-                            <span className="ps-label">Activity & Schedule</span>
-                        </button>
-                        <button 
-                            className={activeSection === 'notification' ? 'active' : ''} 
-                            onClick={() => setActiveSection('notification')}
-                        >
-                            <HiBellAlert className='ps-icon' />
-                            <span className="ps-label">Notification</span>
-                        </button>
-                        <button 
-                            className={activeSection === 'security' ? 'active' : ''} 
-                            onClick={() => setActiveSection('security')}
-                        >
-                            <HiLockClosed className='ps-icon' />
-                            <span className="ps-label">Security</span>
-                        </button>
-                    </div>
+            <p>Manage your profile, preferences, and account setting</p>
+        </div>
+        <div className="profile-page-main">
+            <div className="profile-left">
+                <div className="profile-photo">
+                    <img src={userData.photo_url} alt={profile} />
+                    <h3>{userData.name}</h3>
+                    <p>
+                        Member since {formatDateToReadable(userData.create_at)}
+                    </p>
+
+                    <button onClick={handleShowAvatar}>Change Avatar</button>
+                     {/* SHOW SELECT AVATAR  */}
+                        {showAvatar && (
+                                <div className='ava-container'>
+                                    <AvatarUser 
+                                        userId={userId}
+                                        allProfiles={allProfiles}
+                                        selectedProfileId={selectedProfileId}
+                                        currentProfileId={currentProfileId}
+                                        handleSelectProfile={handleSelectProfile}
+                                        handleSave={handleSave}
+                                        onClose={handleCloseAvatar}
+                                    />
+                                </div>
+                            )}
+                        {/* END SHOW SELECT AVATAR  */}
+                        
                 </div>
-                
-                <div className="pcb-right">
-                    <div className="pcb-content">
-                         {renderContent()}
-                    </div>
-                  
+                <div className="profile-setting">
+                    <button 
+                        className={activeSection === 'personal' ? 'active' : ''} 
+                        onClick={() => setActiveSection('personal')}
+                    >
+                        <HiMiniUser className='ps-icon' />
+                        <span className="ps-label">Personal Info</span>
+                    </button>
+                    <button 
+                        className={activeSection === 'activity' ? 'active' : ''} 
+                        onClick={() => setActiveSection('activity')}
+                    >
+                        <FaRegChartBar className='ps-icon' />
+                        <span className="ps-label">Activity & Schedule</span>
+                    </button>
+                    <button 
+                        className={activeSection === 'notification' ? 'active' : ''} 
+                        onClick={() => setActiveSection('notification')}
+                    >
+                        <HiBellAlert className='ps-icon' />
+                        <span className="ps-label">Notification</span>
+                    </button>
+                    <button 
+                        className={activeSection === 'security' ? 'active' : ''} 
+                        onClick={() => setActiveSection('security')}
+                    >
+                        <HiLockClosed className='ps-icon' />
+                        <span className="ps-label">Security</span>
+                    </button>
+                    <button 
+                        className={activeSection === 'logout' ? 'active' : ''} 
+                        onClick={() => setActiveSection('logout')}
+                    >
+                        <HiLockClosed className='ps-icon' />
+                        <span className="ps-label">Logout</span>
+                    </button>
+                </div>
+            </div>
+            <div className="profile-right">
+                <div className="profil-content">
+                    {renderContent()}
                 </div>
             </div>
         </div>
+        
     </div>
   )
 }

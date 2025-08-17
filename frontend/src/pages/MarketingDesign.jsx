@@ -17,6 +17,7 @@ import NewFormMarketingDesign from './NewFormMarketingDesign';
 import { useNavigate } from 'react-router-dom';
 import OutsideClick from '../hook/OutsideClick';
 import { handleArchive } from '../utils/handleArchive';
+import ExportMarketingDesign from '../exports/ExportMarketingDesign';
 
 const MarketingDesign=()=> {
     //STATE
@@ -151,18 +152,6 @@ const MarketingDesign=()=> {
         showSnackbar: showSnackbar,
       })
     }
-    // const handleArchiveDataMarketingDesign = async(marketing_design_id) =>{
-    //   try{
-    //     const response = await archiveDataMarektingDesign(marketing_design_id);
-    //     console.log('Successfully archive workspace data');
-    //     showSnackbar('Succesfully archive workspace', 'success')
-    //     fetchMarketingDesign()
-    //   }catch(error){
-    //     console.error('Error archiving data marekting:',error)
-    //     showSnackbar('Failed to archive workspace','error')
-    //   }
-    // }
-
     //FUNCTION
     //1. fetch marketing design 
     const fetchMarketingDesign = async()=>{
@@ -247,8 +236,10 @@ const MarketingDesign=()=> {
         <div className="md-header">
             <div className="mdh-left">
               <div className="mdh-title">
-                <HiOutlineCircleStack className='mdh-header-icon'/>
-                <h4>{filterType}</h4>
+                <div className="mdh-icon">
+                  <HiOutlineCircleStack size={20} />
+                </div>
+                <h3>{filterType}</h3>
               </div>
               <div className="mdh-des">
                 <p><strong>Selamat datang di pusat informasi Divisi Marketing Design!</strong></p>
@@ -258,15 +249,15 @@ const MarketingDesign=()=> {
             <div className="mdh-right">
               <div className="mdhr-btn">
                 <button onClick={handleShowForm}>
-                      <HiOutlinePlus className='mdh-icon'/>
+                      {/* <HiOutlinePlus className='mdh-icon'/> */}
                       NEW DATA
                   </button>
                   <button onClick={handleShowDataMarketing}>
-                      <HiMiniTableCells className='mdh-icon'/>
+                      {/* <HiMiniTableCells className='mdh-icon'/> */}
                     SHOW DATA
                   </button>
                   <button onClick={handleFilterButton}>
-                      <HiChevronUpDown className='mdh-icon'/>
+                      {/* <HiChevronUpDown className='mdh-icon'/> */}
                     FILTER DATA
                   </button>
               </div>
@@ -278,6 +269,9 @@ const MarketingDesign=()=> {
                         onChange={(e)=> handleFilterData(e.target.value)}
                     />
                     <HiOutlineSearch className='mdh-search-icon'/>
+                </div>
+                <div className="export-btn">
+                  <ExportMarketingDesign/>
                 </div>
               </div>
             </div>

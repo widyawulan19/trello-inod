@@ -31,6 +31,7 @@ import { useSnackbar } from '../context/Snackbar'
 import { useUser } from '../context/UserContext'
 import { FaChevronRight, FaPlus } from 'react-icons/fa6'
 import { handleArchive } from '../utils/handleArchive'
+import SearchCard from '../fitur/SearchCard'
 
 const BoardList=()=> {
     //STATE
@@ -326,18 +327,18 @@ const handleArchiveLists = (listId) =>{
 //NAVIGATION
 // <Route path='/workspaces/:workspaceId' element={<WorkspacePage/>}/>
 const handleNavigateToWorkspace = (workspaceId) => {
-    navigate(`/workspaces/${workspaceId}`);
+    navigate(`/layout/workspaces/${workspaceId}`);
     console.log("Navigating to board:", boardId);
 }
 const handleNavigateToBoard = (workspaceId,boardId) =>{
-    navigate(`/workspaces/${workspaceId}/board/${boardId}`);
+    navigate(`/layout/workspaces/${workspaceId}/board/${boardId}`);
 }
 
   return (
     <div className='bl-container'>
         <div className="bl-header">
             <div className="blnav">
-                <h4>{boards.name} Boards</h4>
+                <h4 className='ellipsis-text'>{boards.name} Boards</h4>
                 <div className="blnav-sub" onClick={()=>handleNavigateToWorkspace(workspaceId)}>
                     <p>{boards.name}</p>
                     <HiOutlineChevronRight/>
@@ -345,8 +346,11 @@ const handleNavigateToBoard = (workspaceId,boardId) =>{
                 </div>
             </div>
             <div className="more-action">
+                <div className="search-btn">
+                    <SearchCard workspaceId={workspaceId}/>
+                </div>
                 <div className="btn-create-list" onClick={handleShowListForm}>
-                    <FaPlus/>
+                    <FaPlus className='cl-icon'/>
                     <p>Create List</p>
                 </div>
             </div>

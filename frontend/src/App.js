@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import { BrowserRouter } from 'react-router-dom';
 import { SnackbarProvider } from './context/Snackbar';
 import { UserProvider } from './context/UserContext';
+import MainLp from './landingpage/MainLp';
 
 
 function App() {
@@ -13,9 +14,9 @@ function App() {
     <BrowserRouter>
     <UserProvider>
      <SnackbarProvider>
-        <Layout>
+        {/* <Layout> */}
           <AppRoutes/>
-        </Layout>
+        {/* </Layout> */}
       </SnackbarProvider>
     </UserProvider>
     </BrowserRouter>

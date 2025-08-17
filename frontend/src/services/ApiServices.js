@@ -1,9 +1,18 @@
 import axios from 'axios';
 
 // const API_URL = 'http://localhost:3002/api'; //untuk development
-const API_URL = 'https://trello-inod-production.up.railway.app/api'
+// const API_URL = 'https://trello-inod-production.up.railway.app/api'
+const API_URL = 'https://trello-inod-production.up.railway.app/api';
 // const API_URL = 'https://5eae-118-96-151-188.ngrok-free.app/api'; //kalau pakai ngrok
 
+// REGISTER 
+export const registerUser = (data) => axios.post(`${API_URL}/auth/register`, data);
+
+//RESET PASSWORD 
+export const resetNewPassword = (data) => axios.post(`${API_URL}/auth/reset-password`, data);
+
+// LOGIN 
+export const loginUser = (data) => axios.post(`${API_URL}/auth/login`, data);
 
 //UPLOAD FILE
 export const uploadFile = (file, cardId) => {
@@ -18,13 +27,55 @@ export const uploadFile = (file, cardId) => {
 
 //UPLOADED FILE
 export const getAllUploadFiles = (cardId) => axios.get(`${API_URL}/uploaded-files/${cardId}`);
-export const getTotalFile = (cardId) =>  axios.get(`${API_URL}/uploaded-files/${cardId}/count`);
+export const getTotalFile = (cardId) => axios.get(`${API_URL}/uploaded-files/${cardId}/count`);
+
+//SEARCH CARD BY 1 WORKSPACE
+export const searchCards = (keyword, workspaceId) => axios.get(`${API_URL}/search`, { params: { keyword, workspaceId } });
+
+//SEARCH CARD BY WORKSPACE USER
+export const searchCardsByUser = (keyword, userId) => axios.get(`${API_URL}/search/global`, { params: { keyword, userId } });
+
+// PERSONAL NOTES 
+export const getAllPersonalNotes = () => axios.get(`${API_URL}/all-note`);
+export const getNotesByUserId = (userId) => axios.get(`${API_URL}/personal-note/user/${userId}`);
+export const getNoteByIdansUserId = (noteId, userId) => axios.get(`${API_URL}/personal-note/${noteId}/user/${userId}`)
+export const createNote = (data) => axios.post(`${API_URL}/personal-note`, data);
+export const updateNote = (noteId, data, userId) => axios.put(`${API_URL}/personal-note/${noteId}/user/${userId}`, data);
+export const deleteNote = (noteId, userId) => axios.delete(`${API_URL}/personal-note/${noteId}/user/${userId}`)
+export const updateIsiNote = (noteId, userId, data) => axios.put(`${API_URL}/personal-note/${noteId}/desc/${userId}`, data);
+export const updateNameNote = (noteId, userId, data) => axios.put(`${API_URL}/personal-note/${noteId}/name/${userId}`, data)
+export const updateNoteColor = (noteId, data) => axios.put(`${API_URL}/persona-note/${noteId}/bg-color`, data);
+
+//NOTE COLORS
+export const getAllColorNote = () => axios.get(`${API_URL}/note-colors`);
+export const addNewColorNote = (data) => axios.post(`${API_URL}/note-colors`, data);
+
+//PERSONAL AGENDA
+export const createNewAgenda = (data) => axios.post(`${API_URL}/agenda`, data);
+export const getAgendaUser = (userId) => axios.get(`${API_URL}/agenda-user/user/${userId}`);
+export const getAgendaUserById = (agendaId, userId) => axios.get(`${API_URL}/agenda-user/${agendaId}/user/${userId}`);
+export const updateAgendaUser = (agendaId, userId, data) => axios.put(`${API_URL}/agenda/${agendaId}/user/${userId}`, data);
+export const deletAgendaUser = (agendaId, userId) => axios.delete(`${API_URL}/agenda-user/${agendaId}/user/${userId}`);
+export const getUnfinishAgenda = (userId) => axios.get(`${API_URL}/unfinished-agendas/${userId}`);
+export const getFinishedAgenda = (userId) => axios.get(`${API_URL}/finish-agendas/${userId}`);
+export const updateAgenda = (agendaId, data) => axios.put(`${API_URL}/update-agenda-status/${agendaId}`, data);
+export const updateAgendaByUser = (agendaId, userId, data) => axios.put(`${API_URL}/update-agenda-status/${agendaId}/user/${userId}`, data);
+
+//STATUS AGENDA
+export const getAllAgendaStatus = () => axios.get(`${API_URL}/agenda-status`)
+export const getStatusById = (statusId) => axios.get(`${API_URL}/agenda-status/${statusId}`)
+export const createNewStatus = (data) => axios.post(`${API_URL}/agenda-status`, data)
+export const updateStatusAgenda = (statusId) => axios.put(`${API_URL}/agenda-status/${statusId}`)
+export const deleteStatus = (statusId) => axios.delete(`${API_URL}/agenda-status/${statusId}`)
+
+
+
 
 //WORKSPACE
 export const getWorkspaces = () => axios.get(`${API_URL}/workspace`)
 export const getWorkspaceById = (id) => axios.get(`${API_URL}/workspace/${id}`)
 export const createWorkspace = (data) => axios.post(`${API_URL}/workspace`, data);
-export const updateWorkspace = (id, data) => axios.put(`${API_URL}/workspace/${id}`,data)
+export const updateWorkspace = (id, data) => axios.put(`${API_URL}/workspace/${id}`, data)
 export const updateWorkspaceName = (id, name) => axios.put(`${API_URL}/workspace/${id}/name`, name)
 export const updateWorkspaceDescription = (id, description) => axios.put(`${API_URL}/workspace/${id}/description`, description)
 export const deleteWorkspace = (id) => axios.delete(`${API_URL}/workspace/${id}`)
@@ -51,11 +102,11 @@ export const getTotalUserWorkspace = (workspaceId) => axios.get(`${API_URL}/work
 export const createUser = (username, email, password) => axios.post(`${API_URL}/users`, { username, email, password });
 export const getAllUsers = () => axios.get(`${API_URL}/users`);
 export const getUserById = (userId) => axios.get(`${API_URL}/api/${userId}`);
-export const updateUser = (userId, username, email, password) =>  axios.put(`${API_URL}/users/${userId}`, { username, email, password });
+export const updateUser = (userId, username, email, password) => axios.put(`${API_URL}/users/${userId}`, { username, email, password });
 export const deleteUser = (userId) => axios.delete(`${API_URL}/users/${userId}`);
-export const resetPassword = (userId, newPassword) =>axios.post(`${API_URL}/users/${userId}/password-reset`, { newPassword });
-export const getUserSettingData = (userId) => axios.get(`${API_URL}/user-setting/${userId}`);
-export const updateUserSettingData = (userId, data) => axios.put(`${API_URL}/user-setting/${userId}`, data)
+export const resetPassword = (userId, newPassword) => axios.post(`${API_URL}/users/${userId}/password-reset`, { newPassword });
+export const getUserSettingData = (userId) => axios.get(`${API_URL}/users-setting/${userId}`);
+export const updateUserSettingData = (userId, data) => axios.put(`${API_URL}/users-setting/${userId}`, data)
 
 //BOARDS
 export const getBoards = () => axios.get(`${API_URL}/boards`);
@@ -72,22 +123,22 @@ export const archiveBoard = (boardId) => axios.post(`${API_URL}/boards/${boardId
 
 
 //BOARD PRIORITY
-export const addPriorityToBoard = (boardId, priorityId) => axios.post(`${API_URL}/board-priority`, {board_id:boardId, priority_id:priorityId})
-export const getBoardPriorities = (boardId) => axios.get(`${API_URL}/board-priority/${boardId}`) 
+export const addPriorityToBoard = (boardId, priorityId) => axios.post(`${API_URL}/board-priority`, { board_id: boardId, priority_id: priorityId })
+export const getBoardPriorities = (boardId) => axios.get(`${API_URL}/board-priority/${boardId}`)
 export const getALlPriorities = () => axios.get(`${API_URL}/priority`)
-export const deletePropertyFromBoard = (boardId, priorityId) => axios.delete(`${API_URL}/board-priority-remove`,{ data: {board_id:boardId, priority_id:priorityId}})
+export const deletePropertyFromBoard = (boardId, priorityId) => axios.delete(`${API_URL}/board-priority-remove`, { data: { board_id: boardId, priority_id: priorityId } })
 
 //CARD PRIORITY
-export const addPriorityToCard = (card_id, priority_id) => axios.post(`${API_URL}/card-priorities`, {card_id, priority_id})
+export const addPriorityToCard = (card_id, priority_id) => axios.post(`${API_URL}/card-priorities`, { card_id, priority_id })
 export const getAllCardPriority = () => axios.get(`${API_URL}/card-priorities`)
 export const getCardPriority = (cardId) => axios.get(`${API_URL}/card-priorities/${cardId}`)
-export const deletePriorityFromCard = (card_id, priority_id) => axios.delete(`${API_URL}/card-priority`, {data: {card_id, priority_id}})
+export const deletePriorityFromCard = (card_id, priority_id) => axios.delete(`${API_URL}/card-priority`, { data: { card_id, priority_id } })
 
 //LISTS
 export const getAllLists = () => axios.get(`${API_URL}/lists`)
 export const getListById = (listId) => axios.get(`${API_URL}/lists/${listId}`)
 export const getListByBoard = (boardId) => axios.get(`${API_URL}/lists/board/${boardId}`)
-export const createLists = (boardId, name) => axios.post(`${API_URL}/lists`,{board_id:boardId, name})
+export const createLists = (boardId, name) => axios.post(`${API_URL}/lists`, { board_id: boardId, name })
 export const updateLists = (id, name) => axios.put(`${API_URL}/lists/${id}`, name)
 export const deleteLists = (id) => axios.delete(`${API_URL}/lists/${id}`)
 export const moveListToBoard = (listId, data) => axios.put(`${API_URL}/move-list/${listId}`, data)
@@ -146,7 +197,7 @@ export const markReminderAsSent = (cardId) => axios.put(`${API_URL}/card-due-dat
 
 
 //DESCRIPTION CARD
-export const saveCardDescriptions = (cardId, description) => axios.post(`${API_URL}/card-description`, {card_id: cardId, description:description});
+export const saveCardDescriptions = (cardId, description) => axios.post(`${API_URL}/card-description`, { card_id: cardId, description: description });
 export const getCardDescription = (cardId) => axios.get(`${API_URL}/card-description/${cardId}`)
 export const updateCardDescription = (cardId, description) => axios.put(`${API_URL}/card-description/${cardId}`, description)
 //NOTE
@@ -155,11 +206,11 @@ export const updateCardDescription = (cardId, description) => axios.put(`${API_U
 //GABUNGAN CHECKLIST, CARD_CHECKLIST, CHECKLIST_ITEM
 export const getChecklistsWithItemsByCardId = (cardId) => axios.get(`${API_URL}/checklists-with-items/${cardId}`)
 export const createChecklist = (data) => axios.post(`${API_URL}/checklists-fix`, data)
-export const updateChecklistName = (id,data) => axios.put(`${API_URL}/checklists-fix/${id}`,data)
+export const updateChecklistName = (id, data) => axios.put(`${API_URL}/checklists-fix/${id}`, data)
 export const deleteChecklist = (id) => axios.delete(`${API_URL}/checklists-fix/${id}`)
 export const createChecklistItem = (data) => axios.post(`${API_URL}/checklists-fix-items`, data)
 export const updateCheckItem = (id, data) => axios.put(`${API_URL}/checklists-fix-items/${id}/check`, data)
-export const updateNameItem = (id,data) => axios.put(`${API_URL}/checklists-fix-items/${id}/name`, data)
+export const updateNameItem = (id, data) => axios.put(`${API_URL}/checklists-fix-items/${id}/name`, data)
 export const deleteChecklistItem = (id) => axios.delete(`${API_URL}/checklists-fix-items/${id}`)
 
 //CHECKLIST ITEM (TOTAL)
@@ -169,9 +220,9 @@ export const getChecklistItemUnchecked = (cardId) => axios.get(`${API_URL}/${car
 
 //LABELS
 export const getLabelByCard = (cardId) => axios.get(`${API_URL}/cards/${cardId}/labels`)
-export const getAllLabels = ()=> axios.get(`${API_URL}/labels`)
+export const getAllLabels = () => axios.get(`${API_URL}/labels`)
 export const deleteLabels = (cardId, labelId) => axios.delete(`${API_URL}/cards/${cardId}/labels/${labelId}`)
-export const createLabel = (data) => axios.post(`${API_URL}/labels`, data) 
+export const createLabel = (data) => axios.post(`${API_URL}/labels`, data)
 export const addLabelToCard = (cardId, labelId) => axios.post(`${API_URL}/cards/${cardId}/labels/${labelId}`)
 export const deleteLabelFromLabels = (labelId) => axios.delete(`${API_URL}/delete-label/${labelId}`)
 export const updateLabelName = (id, data) => axios.put(`${API_URL}/update-label-name/${id}`, data)
@@ -189,7 +240,7 @@ export const getStatusCard = (cardId) => axios.get(`${API_URL}/card-status/${car
 //DATA EMPLOYEE
 export const getEmployee = () => axios.get(`${API_URL}/employees`)
 export const getEmployeeById = (id) => axios.get(`${API_URL}/employees/${id}`)
-export const updateDataEmployee = (id,data) => axios.put(`${API_URL}/employees/${id}`, data)
+export const updateDataEmployee = (id, data) => axios.put(`${API_URL}/employees/${id}`, data)
 export const addEmployeeData = (data) => axios.post(`${API_URL}/data-employees`, data)
 export const deleteDataEmployee = (id) => axios.delete(`${API_URL}/employees/${id}`)
 // export const updateDataEmployeeLengkap = (id, data) => axios.put(`${API_URL}/data-employees/${id}`, data)
@@ -203,7 +254,7 @@ export const deleteDataEmployee = (id) => axios.delete(`${API_URL}/employees/${i
 export const addDataEmployee = (data) => axios.post(`${API_URL}/employees`, data)
 export const getAllEmploye = () => axios.get(`${API_URL}/employee`)
 export const getEmployeeDataById = (id) => axios.get(`${API_URL}/employee/${id}`)
-export const updateEmployee = (id,data) => axios.put(`${API_URL}/employee/${id}`, data)
+export const updateEmployee = (id, data) => axios.put(`${API_URL}/employee/${id}`, data)
 // export const deleteEmployeeData = (id) => axios.delete(`${API_URL}/employee/${id}`)
 
 //EMPLOYEE DETAIL
@@ -219,36 +270,46 @@ export const updateScheduleEmployee = (id, data) => axios.put(`${API_URL}/employ
 
 //EMPLOYEE SCHEDULE
 export const getScheduleEmployee = () => axios.get(`${API_URL}/schedule`)
-export const updateSchedule = (data) => axios.put(`${API_URL}/schedule`,data)
+export const updateSchedule = (data) => axios.put(`${API_URL}/schedule`, data)
+
+//NEW SCHEDULE EMPLOYEE 1
+export const getAllEmployeeSchedule1 = () => axios.get(`${API_URL}/employee-schedule/view`);
+export const getEmployeeScheduleByEmployeeId = (employeeId) => axios.get(`${API_URL}/employee-schedule/view/${employeeId}`);
+export const createEmployeeSchedule = (data) => axios.post(`${API_URL}/employee-schedule`, data);
+export const updateEmployeeSchedule = (employeeId, data) => axios.put(`${API_URL}/employee-schedule/${employeeId}`, data);
+export const updateEmployeeShift1 = (employeeId, data) => axios.put(`${API_URL}/employee-schedule/${employeeId}/schedules`, data);
+export const deleteEmployeeData1 = (employeeId) => axios.delete(`${API_URL}/employee-schedule/${employeeId}`);
+export const updateShiftByEmployeeAndDay = (employeeId, dayId, data) => axios.put(`${API_URL}/employee-schedule/${employeeId}/day/${dayId}`, data)
+
 
 //NEW EMPLOYEE SCHEDULE
 export const getAllEmployeeSchedule = () => axios.get(`${API_URL}/schedules`);
-export const getEmployeeByEmployeeId = (id) => axios.get(`${API_URL}/schedule-employee/${id}`) 
+export const getEmployeeByEmployeeId = (id) => axios.get(`${API_URL}/schedule-employee/${id}`)
 export const getWeeklyEmployeeSchedule = () => axios.get(`${API_URL}/schedule-weekly`)
 
 //DAYS
-export const getDays = () => axios.get(`${API_URL}/days`)
+export const getDays = () => axios.get(`${API_URL}/all-days`)
 export const getDaysEmployee = (employeeId) => axios.get(`${API_URL}/day-schedule-employee/${employeeId}`);
 
 //SHIFT
-export const getAllShift = () => axios.get(`${API_URL}/shift`)
-export const updateEmployeeShift = (data) => axios.put(`${API_URL}/schedule-weekly`,data)
+export const getAllShift = () => axios.get(`${API_URL}/all-shift`)
+export const updateEmployeeShift = (data) => axios.put(`${API_URL}/schedule-weekly`, data)
 
 //USER SCHEDULE
 export const createNewSchedule = (data) => axios.post(`${API_URL}/schedule`, data);
-export const updateScheduleUser = (scheduleId, data) => axios.put(`${API_URL}/update-schedule/${scheduleId}`,data)
+export const updateScheduleUser = (scheduleId, data) => axios.put(`${API_URL}/update-schedule/${scheduleId}`, data)
 export const deleteSchedule = (scheduleId) => axios.delete(`${API_URL}/delete-schedule/${scheduleId}`);
-export const getScheduleUser = (userId) => axios.get(`${API_URL}/user-schedule/${userId}`) 
+export const getScheduleUser = (userId) => axios.get(`${API_URL}/user-schedule/${userId}`)
 
 
 // DATA MARKETING 
 export const getAllDataMarketing = () => axios.get(`${API_URL}/marketing`)
 export const getCardIdMarketingByMarketingId = (id) => axios.get(`${API_URL}/get-card-id/${id}`)
 export const getDataMarketingById = (id) => axios.get(`${API_URL}/marketing/${id}`)
-export const updateDataMarketing = (id, data) => axios.put(`${API_URL}/marketing/${id}`,data)
+export const updateDataMarketing = (id, data) => axios.put(`${API_URL}/marketing/${id}`, data)
 export const deleteDataMarketing = (id) => axios.delete(`${API_URL}/marketing/${id}`)
 export const addDataMarketing = (data) => axios.post(`${API_URL}/marketing`, data)
-export const createCardFromMarketing = (listId,marketingId) => axios.put(`${API_URL}/create-card-marketing/${listId}/${marketingId}`)
+export const createCardFromMarketing = (listId, marketingId) => axios.put(`${API_URL}/create-card-marketing/${listId}/${marketingId}`)
 export const checkCardIdNullOrNot = (id) => axios.get(`${API_URL}/check-card-id/${id}`)
 export const getDataMarketingWithCardId = () => axios.get(`${API_URL}/data-marketing-cardId`)
 export const getDataMarketingWithCardIdNull = () => axios.get(`${API_URL}/data-marketing-cardId-null`)
@@ -261,7 +322,7 @@ export const getAllDataMarketingDesign = () => axios.get(`${API_URL}/marketing-d
 export const getCardIdMarketingDesignByMarketingId = (id) => axios.get(`${API_URL}/card-id-design/${id}`)
 export const getDataMarketingDesignById = (id) => axios.get(`${API_URL}/marketing-design/${id}`)
 export const createDataMarketingDesign = (data) => axios.post(`${API_URL}/marketing-design`, data)
-export const updateDataMarketingDesign = (id,data) => axios.put(`${API_URL}/marketing-design/${id}`, data)
+export const updateDataMarketingDesign = (id, data) => axios.put(`${API_URL}/marketing-design/${id}`, data)
 export const deleteDataMarketingDesign = (id) => axios.delete(`${API_URL}/marketing-design/${id}`)
 export const checkCardIdNullOrNotForDesign = (id) => axios.get(`${API_URL}/check-card-id-design/${id}`)
 export const createCardFromMarketingDesign = (listId, marketingDesignId) => axios.put(`${API_URL}/create-card-marketing-design/${listId}/${marketingDesignId}`)
@@ -285,7 +346,7 @@ export const createCardFromDataMarketing = (listId, marketingDesignId) => axios.
 export const archiveData = (entity, id) => axios.post(`${API_URL}/archive/${entity}/${id}`);
 export const getAllDataArchive = () => axios.get(`${API_URL}/archive-data`);
 export const deleteArchiveDataUniversalById = (id) => axios.delete(`${API_URL}/archive-data/${id}`);
-export const restoreDataArchive = (entity,id) => axios.post(`${API_URL}/restore/${entity}/${id}`)
+export const restoreDataArchive = (entity, id) => axios.post(`${API_URL}/restore/${entity}/${id}`)
 
 //ARCHIVE
 export const getArchiveWorkspace = () => axios.get(`${API_URL}/archive-workspace`)
@@ -298,7 +359,7 @@ export const getArchiveMarketingDesign = () => axios.get(`${API_URL}/archive-mar
 
 //WORKSPACE USER SUMMARY
 export const getWorkspaceSummary = (userId) => axios.get(`${API_URL}/workspaces/${userId}/summary`)
-export const getWorkspaceSummaryByWorkspaceId = (userId,workspaceId) => axios.get(`${API_URL}/workspaces/${userId}/summary/${workspaceId}`)
+export const getWorkspaceSummaryByWorkspaceId = (userId, workspaceId) => axios.get(`${API_URL}/workspaces/${userId}/summary/${workspaceId}`)
 
 //PROFILE
 export const getAllProfile = () => axios.get(`${API_URL}/profile`)
@@ -308,11 +369,11 @@ export const getProfileById = (id) => axios.get(`${API_URL}/profile/${id}`)
 export const getProfileByUserId = (userId) => axios.get(`${API_URL}/profile-user/${userId}`)
 export const addProfileToUser = (data) => axios.post(`${API_URL}/profile-user`, data)
 export const deleteUserProfile = (userId) => axios.delete(`${API_URL}/profile-user/${userId}`)
-export const updateProfileUser = (userId, data) => axios.put(`${API_URL}/profile-user/${userId}`,data)
+export const updateProfileUser = (userId, data) => axios.put(`${API_URL}/profile-user/${userId}`, data)
 
 
 //LOG ACTIVITY FOR USER
-export const getActivityForUserId = (userId) => axios.get(`${API_URL}/activity-logs/user/${userId}`)
+export const getActivityForUserId = (userId) => axios.get(`${API_URL}/user-log/${userId}`)
 
 //LOG ACTIVITY FOR CARD
 export const getActivityCard = (cardId) => axios.get(`${API_URL}/activity-card/card/${cardId}`)
@@ -322,9 +383,9 @@ export const getActivityCard = (cardId) => axios.get(`${API_URL}/activity-card/c
 
 //CHAT ROOM
 export const getAllCardChat = (cardId) => axios.get(`${API_URL}/cards/${cardId}/chats`);
-export const createMessage =  (cardId, data) => axios.post(`${API_URL}/cards/${cardId}/chats`,data);
+export const createMessage = (cardId, data) => axios.post(`${API_URL}/cards/${cardId}/chats`, data);
 export const deleteMessage = (chatId) => axios.delete(`${API_URL}/chats/${chatId}`);
-export const getTotalMessageInCard = (cardId) => axios.get(`${API_URL}/chats-total/cards/${cardId}`); 
+export const getTotalMessageInCard = (cardId) => axios.get(`${API_URL}/chats-total/cards/${cardId}`);
 
 //TOTAL NOTIFICATION UNREAD (NOTIFICTION CHAT + NOTIFICATION SYSTEM)
 export const getUserTotalNotificationUnread = (userId) => axios.get(`${API_URL}/notifications/unread-count/${userId}`);
@@ -340,7 +401,8 @@ export const viewChatFromNotification = (chatId, userId) => axios.get(`${API_URL
 export const getPathToCardId = (chatId) => axios.get(`${API_URL}/chat/${chatId}/path`)
 
 //SYSTEM NOTIFICATION
-export const getSystemNotificationByUser = (userId) => axios.get(`${API_URL}/system-notification/user/${userId}`);
+export const getSystemNotificationByUser = (userId) => axios.get(`${API_URL}/system-notification/user-notif/${userId}`);
 export const marksNotificationSystem = (id) => axios.patch(`${API_URL}/system-notification/${id}`);
 export const deleteSystemNotification = (id) => axios.delete(`${API_URL}/system-notification/${id}`);
 export const getPathToCard = (cardId) => axios.get(`${API_URL}/card/${cardId}/card-location`);
+
