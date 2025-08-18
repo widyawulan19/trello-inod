@@ -68,24 +68,14 @@ npm run dev
 
 ```mermaid
 flowchart TD
-    style WS fill:#ffdd99,stroke:#ff9900,stroke-width:2px
-    style B  fill:#ffe0b3,stroke:#ff9900,stroke-width:2px
-    style L  fill:#cce5ff,stroke:#3399ff,stroke-width:2px
-    style C  fill:#99ccff,stroke:#0066cc,stroke-width:2px
-    style CD fill:#66ffcc,stroke:#009966,stroke-width:2px
-    style O  fill:#ff9999,stroke:#cc0000,stroke-width:2px
-    style E  fill:#ffccff,stroke:#cc00cc,stroke-width:2px
-    style S  fill:#ffb366,stroke:#ff6600,stroke-width:2px
-    style LA fill:#cccccc,stroke:#666666,stroke-width:2px
+    WS[Workspace] --> B[Boards]
+    B --> L[Lists]
+    L --> C[Cards]
+    C --> CD[Card Details<br/>(Deskripsi, Labels, Files, Deadline)]
+    C --> O[Orders / Data Pemesanan]
 
-    WS[🏢 Workspace] --> B[📋 Boards]
-    B --> L[🗂️ Lists]
-    L --> C[📝 Cards]
-    C --> CD[🖊️ Card Details<br/>(Deskripsi, Labels, Files, Deadline)]
-    C --> O[📦 Orders / Data Pemesanan]
-
-    E[👥 Employees / Karyawan] --> S[📅 Schedule / Jadwal Shift]
-    E --> LA[🕵️ Log Activity / Aktivitas Pengguna]
+    E[Employees / Karyawan] --> S[Schedule / Jadwal Shift]
+    E --> LA[Log Activity / Aktivitas Pengguna]
     
     CD --> LA
     O --> LA
