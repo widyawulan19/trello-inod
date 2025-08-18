@@ -64,30 +64,4 @@ npm run dev
 
 ---
 
-## 📊 Flow Project Overview
 
-```mermaid
-flowchart TD
-    WS[Workspace] --> B[Boards]
-    B --> L[Lists]
-    L --> C[Cards]
-    C --> CD[Card Details - Deskripsi | Labels | Files | Deadline]
-    C --> O[Orders / Data Pemesanan]
-
-    E[Employees / Karyawan] --> S[Schedule / Jadwal Shift]
-    E --> LA[Log Activity / Aktivitas Pengguna]
-    
-    CD --> LA
-    O --> LA
-    S --> LA
-```
-
-### **Keterangan Flow**
-
-- **🏢 Workspace → 📋 Boards → 🗂️ Lists → 📝 Cards**: Struktur utama project seperti Trello.  
-- **🖊️ Card Details**: Info lengkap tiap card (deskripsi, label, file, deadline).  
-- **📦 Orders / Data Pemesanan**: Menyimpan semua project order/pemesanan.  
-- **👥 Employees / 📅 Schedule**: Data karyawan & jadwal shift.  
-- **🕵️ Log Activity**: Mencatat semua tindakan pengguna untuk monitoring & audit.  
-
----
