@@ -38,8 +38,8 @@ Project ini dibuat untuk memenuhi kebutuhan manajemen proyek internal untuk Inod
 
 ### Deployment
 
-- **Railway:** Backend  
-- **Vercel:** Frontend
+- **Railway:** Backend -> https://inod-backend.up.railway.app
+- **Vercel:** Frontend -> https://inodstudiomanagement.vercel.app
 
 ---
 
