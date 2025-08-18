@@ -71,7 +71,7 @@ flowchart TD
     WS[Workspace] --> B[Boards]
     B --> L[Lists]
     L --> C[Cards]
-    C --> CD[Card Details<br/>(Deskripsi, Labels, Files, Deadline)]
+    C --> CD[Card Details (Deskripsi, Labels, Files, Deadline)]
     C --> O[Orders / Data Pemesanan]
 
     E[Employees / Karyawan] --> S[Schedule / Jadwal Shift]
