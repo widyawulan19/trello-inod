@@ -31,8 +31,10 @@ Project ini dibuat untuk memenuhi kebutuhan manajemen proyek internal untuk Inod
 - **PostgreSQL:** Menyimpan data workspace, boards, lists, cards, labels, dan komentar.
 - **CORS & Middleware:** Mengatur komunikasi antara frontend dan backend dengan aman.
 
+### Deployment
 
-- **Deployment:** Railway (backend) dan Vercel (frontend)
+- **Railway:** Backend  
+- **Vercel:** Frontend
 
 ---
 
