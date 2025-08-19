@@ -25,10 +25,11 @@ const app = express();
 app.use(express.json());
 
 app.use(cors({
-  origin: "*",
-  // origin: "https://5eae-118-96-151-188.ngrok-free.app", // untuk test backend url dari ngrok
+  // origin: "*",
+  origin: ["*", "https://inodstudiomanagement-git-main-widyawulan19s-projects.vercel.app"],
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true
 }));
 
 
