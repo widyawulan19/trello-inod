@@ -4,11 +4,10 @@ import axios from 'axios';
 // const API_URL = 'https://trello-inod-production.up.railway.app/api'
 // const API_URL = 'https://trello-inod-production.up.railway.app/api';
 const API_URL = process.env.REACT_APP_API_URL;
-<<<<<<< HEAD
-=======
-// LOGIN 
+
+// LOGIN
 export const loginUser = (data) => axios.post(`${API_URL}/auth/login`, data);
->>>>>>> feature
+
 
 // REGISTER 
 export const registerUser = (data) => axios.post(`${API_URL}/auth/register`, data);
