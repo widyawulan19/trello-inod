@@ -173,37 +173,51 @@
     justify-content: center;
 }
 
+.no-agenda .no-icon {
+    border-radius: 16px;
+    border: 1px solid white;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    font-size: 25px;
+    color: #b597d5;
+    margin-bottom: 10px;
+}
+
+
 .no-agenda h2 {
     width: 100%;
-    font-size: 18px;
+    font-size: 15px;
     font-weight: bold;
     text-align: center;
     margin: 0px;
-    color: white;
+    color: #333;
+    /* color: white; */
 }
 
 .no-agenda p {
     padding: 0px;
-    font-size: 12px;
+    font-size: 10px;
     text-align: center;
     width: 100%;
-    color: white;
-    margin-bottom: 15px;
+    color: #5e5e5e;
+    /* color: white; */
+    /* margin-bottom: 15px; */
 }
 
 .no-agenda .btn-create-agenda {
     background-color: #6a11cb;
     border: 1px solid #6a11cb;
-    border-radius: 16px;
+    border-radius: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 10px;
+    padding: 7px 10px;
     font-size: 12px;
-    font-weight: bold;
+    /* font-weight: bold; */
     color: white;
     cursor: pointer;
+    margin-top: 10px;
 }
 
 .no-agenda .btn-create-agenda:hover {

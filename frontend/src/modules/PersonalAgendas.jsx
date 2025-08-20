@@ -5,7 +5,7 @@ import { getUnfinishAgenda, deletAgendaUser } from '../services/ApiServices';
 import BootstrapTooltip from '../components/Tooltip';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from '../context/Snackbar';
-import { IoTrash } from 'react-icons/io5';
+import { IoTrash, IoCalendar } from 'react-icons/io5';
 
 const PersonalAgendas = ({ userId }) => {
   const [agendas, setAgendas] = useState([]);
@@ -68,8 +68,12 @@ const PersonalAgendas = ({ userId }) => {
   if (agendas.length === 0) {
         return(
             <div className="no-agenda">
-                <h2>Catatanmu masih kosong saat ini</h2>
-                <p>Gunakan Personal Notes untuk menyimpan ide, daftar tugas, atau hal penting lainnya secara pribadi.</p>
+                {/* <h2>Your agenda will show here!</h2> */}
+                <div className="no-icon">
+                  <IoCalendar/>
+                </div>
+                <p>Your agenda will show here!</p>
+                {/* <p>Gunakan Personal Notes untuk menyimpan ide, daftar tugas, atau hal penting lainnya secara pribadi.</p> */}
                 <div className="btn-create-agenda" onClick={navigateToAgenda}>
                     Add New Agendas
                 </div>

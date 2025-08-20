@@ -6,6 +6,7 @@ import { FaEdit } from 'react-icons/fa'
 import { MdDelete } from 'react-icons/md'
 import { getNotesByUserId } from '../services/ApiServices'
 import { useNavigate } from 'react-router-dom'
+import { LiaNetworkWiredSolid } from "react-icons/lia";
 
 const PersonalNotes=({userId})=> {
     //DEBUG
@@ -45,7 +46,10 @@ const PersonalNotes=({userId})=> {
     if (notes.length === 0) {
         return(
             <div className="no-notes">
-                <h2>Catatanmu masih kosong saat ini</h2>
+                <div className="no-icon">
+                    <LiaNetworkWiredSolid/>
+                </div>
+                <h2>Let’s create your first Notes!</h2>
                 <p>Gunakan Personal Notes untuk menyimpan ide, daftar tugas, atau hal penting lainnya secara pribadi.</p>
                 <div className="btn-create-notes" onClick={navigateToNotePage}>
                     Add New Notes
