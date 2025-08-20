@@ -15,11 +15,14 @@ import BoardProperties from '../modules/BoardProperties';
 import { IoTime } from 'react-icons/io5';
 import { handleArchive } from '../utils/handleArchive';
 import { HiViewBoards } from "react-icons/hi";
+import { useUser } from '../context/UserContext';
 
 const WorkspacePage=()=> {
   const location = useLocation();
   // const userId = location.state?.userId;
-  const userId = 3;
+  // const userId = 3;
+  const {user} = useUser();
+  const userId = user.id;
   console.log("File workspace page berhasil menerima userId", userId)
   const navigate = useNavigate();
   const {workspaceId} = useParams();

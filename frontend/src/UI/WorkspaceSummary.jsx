@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../style/UI/WorkspaceSummary.css';
 import { GoDotFill } from "react-icons/go";
+import { LiaNetworkWiredSolid } from "react-icons/lia";
 import { getWorkspaceSummary, getBoardsWorkspace } from '../services/ApiServices';
 import { HiArrowRight } from 'react-icons/hi2';
 import { useNavigate } from 'react-router-dom';
@@ -61,7 +62,10 @@ const WorkspaceSummary = ({ userId }) => {
   if (!summaries || summaries.length === 0) {
     return (
       <div className='no-workspace'>
-        <h2>Belum Ada Workspace</h2>
+        <div className="no-icon">
+          <LiaNetworkWiredSolid/>
+        </div>
+        <h2>Let’s create your first Workspace!</h2>
         <p>Yuk mulai produktif! Buat workspace pertamamu untuk mengelola project dan kolaborasi tim.</p>
         <div className="btn-create-workspace" onClick={navigateToWorkspacePage}>
            Add New Workspace

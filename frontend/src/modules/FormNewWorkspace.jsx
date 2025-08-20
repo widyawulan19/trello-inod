@@ -58,8 +58,8 @@ const FormNewWorkspace = ({ userId,fetchWorkspaceUser, onCloseForm }) => {
            
             {error && <p className="error">{error}</p>}
             <form onSubmit={handleSubmit} className="form-workspace">
-                <div className="box-form">
-                    <label>Workspace Name: <span style={{color:'red'}}>*</span></label>
+                <div className="box-form-name">
+                    <label style={{fontSize:'12px', color:'#333', fontWeight:'bold'}}>Workspace Name: <span style={{color:'red'}}>*</span></label>
                     <input
                         type="text"
                         value={name}

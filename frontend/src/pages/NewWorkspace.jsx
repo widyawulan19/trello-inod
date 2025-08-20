@@ -35,7 +35,7 @@ import { PiCardsFill } from 'react-icons/pi';
 import { handleArchive } from '../utils/handleArchive';
 
 function NewWorkspace() {
-  const {user} = useUser()
+  const {user} = useUser();
   const userId = user.id;
 
   //state
@@ -102,7 +102,7 @@ function NewWorkspace() {
   //function
   //1. fungsi navigate home
   const navigateToHome = () =>{
-    navigate('/');
+    navigate('/layout');
   }
   //2. show form create workspace
   const handleShowForm = (e) =>{
@@ -436,20 +436,17 @@ function NewWorkspace() {
 
 
 
-
-
-
   return (
     <div className='workspace-container'>
       <div className="workspace-header">
         <div className="wnav">
           <div className="wnav-btn-con">
             <div className="wnav-btn">
-              <IoHome className='nav-icon'/>
+              <IoHome className='nav-icon' onClick={navigateToHome}/>
             </div>
             <HiOutlineChevronRight size={15}/>
             <div className="wnav-active">
-              Workspace
+              Workspace Page
             </div>
           </div>
         </div>
