@@ -26,7 +26,7 @@ app.use(express.json());
 
 app.use(cors({
   // origin: "*",
-  origin: ["http://localhost:3000", "https://inodstudiomanagement-git-main-widyawulan19s-projects.vercel.app"],
+  origin: ["http://localhost:3000", "https://inodstudiomanagement.vercel.app"],
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
