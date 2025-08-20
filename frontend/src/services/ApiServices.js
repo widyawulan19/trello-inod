@@ -2,14 +2,15 @@ import axios from 'axios';
 
 // const API_URL = 'https://trello-inod-production.up.railway.app/api';
 const API_URL = process.env.REACT_APP_API_URL;
+// LOGIN 
+export const loginUser = (data) => axios.post(`${API_URL}/auth/login`, data);
+
 // REGISTER 
 export const registerUser = (data) => axios.post(`${API_URL}/auth/register`, data);
 
 //RESET PASSWORD 
 export const resetNewPassword = (data) => axios.post(`${API_URL}/auth/reset-password`, data);
 
-// LOGIN 
-export const loginUser = (data) => axios.post(`${API_URL}/auth/login`, data);
 
 //UPLOAD FILE
 export const uploadFile = (file, cardId) => {
