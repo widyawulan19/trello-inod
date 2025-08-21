@@ -1,6 +1,6 @@
 .lp-container {
     /* border: 1px solid blue; */
-    padding-top: 120px;
+    /* padding-top: 80px; */
     padding-bottom: 0px !important;
     /* height: 100%; */
 }
@@ -103,7 +103,7 @@
 .lp-content .section1 {
     /* border: 1px solid #ddd; */
     padding: 20px;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     align-items: end;
     justify-content: end;
@@ -222,7 +222,7 @@
 .lp-content .section2 {
     /* border: 1px solid red; */
     padding: 30px;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -292,7 +292,7 @@
 .lp-content .section3 {
     /* border: 1px solid #ddd; */
     padding: 20px;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -522,6 +522,11 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
+}
+
+.fcr-right p {
+    padding: 0px;
+    margin: 0px;
 }
 
 /* END FOOTER  */
@@ -880,6 +885,9 @@
 
 /* === Mobile (< 576px) === */
 @media (max-width: 575.98px) {
+    .lp-container {
+        padding-top: 80px;
+    }
 
     .lp-header {
         padding: 0;
@@ -887,11 +895,8 @@
         /* border: 1px solid green; */
     }
 
-    .lp-content {
-        padding-bottom: 80px;
-    }
-
     .header-container {
+        /* border: 1px solid blue; */
         /* flex-direction: column; */
         align-items: center;
         justify-content: flex-start;
@@ -956,6 +961,8 @@
         height: auto;
         padding: 20px 10px;
         text-align: center;
+
+        /* border: 1px solid red; */
     }
 
     .hero-left {
@@ -1112,7 +1119,7 @@
     .footer {
         height: 100%;
         padding: 30px 10px;
-        /* border: 1px solid red; */
+        /* border: 1px solid green; */
     }
 
     .footer-container {
@@ -1158,7 +1165,22 @@
     .footer-cr {
         flex-direction: column;
         gap: 8px;
+        width: 100%;
+        padding: 10px 5px;
         text-align: center;
+        /* border: 1px solid orange; */
+    }
+
+    .fcr-left {
+        font-size: 12px;
+    }
+
+    .fcr-right {
+        gap: 5px;
+    }
+
+    .fcr-right p {
+        font-size: 12px;
     }
 
     /* END FOOTER  */
