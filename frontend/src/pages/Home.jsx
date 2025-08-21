@@ -10,7 +10,7 @@ import { GiMusicalScore } from "react-icons/gi";
 import { BsArrowsAngleExpand } from "react-icons/bs";
 import { FaNoteSticky } from "react-icons/fa6";
 import OutsideClick from '../hook/OutsideClick.jsx';
-import { createWorkspace } from '../services/ApiServices.js';
+import { createWorkspace, createWorkspaceUser, getWorkspaceSummary } from '../services/ApiServices.js';
 import { Alert } from '@mui/material';
 import {AlertTitle} from '@mui/material';
 import CustomAlert from '../hook/CustomAlert.jsx';
@@ -23,6 +23,7 @@ import AksesCepat from '../modules/AksesCepat.jsx';
 import PersonalNotes from '../modules/PersonalNotes.jsx';
 import PersonalAgendas from '../modules/PersonalAgendas.jsx';
 import { useUser } from '../context/UserContext.jsx';
+import { useSnackbar } from '../context/Snackbar.jsx';
 
 
 const Home=()=> {
@@ -32,13 +33,18 @@ const Home=()=> {
   const [isGreeting, setIsGreeting] = useState(true);
   const [showSetting, setShowSetting] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   // const settingRef = useRef(null);
   const settingRef = OutsideClick(()=> setShowSetting(false));
   const showRef = OutsideClick(()=> setShowForm(false));
   const navigate = useNavigate();
+  const {showSnackbar} = useSnackbar();
   //create workspace
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+  //WORKSPACE SUMMARY 
+    const [summaries, setSummaries] = useState([]);
   //alert
   const [alertInfo, setAlertInfo] = useState({
     severity: '',
@@ -73,34 +79,48 @@ const Home=()=> {
     e.stopPropagation();
     setShowForm((prev) => !prev);
   }
-  //7. create a new workspace
-  const handleSubmit = async(e) =>{
+  //7. fetch data Summary 
+    useEffect(() => {
+      fetchSummary();
+    }, [userId]);
+
+    const fetchSummary = async () => {
+      if (!userId) return;
+      try {
+        const response = await getWorkspaceSummary(userId);
+        setSummaries(response.data);
+      } catch (err) {
+        console.error("Gagal fetch summary:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+
+  //7.1 create new workspace by user
+  const handleNewSubmit = async(e)=>{
     e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    const workspaceData = {
+      name,
+      description,
+      userId,
+      role:'admin',
+    };
 
     try{
-      const response = await createWorkspace({name, description});
-      setName('');
-      setDescription('');
-      setAlertInfo({
-        severity: 'success',
-        title: 'Success',
-        message: 'successfully create a new workspace!',
-        showAlert: true,
-      }); 
-      //ke halaman workspace berdasarkan id yang baru dibuat
-      const workspaceId = response.data.id;
-      navigate(`workspaces/${workspaceId}`)
-      console.log('Workspace created:', response.data);
-      
+      await createWorkspaceUser(workspaceData);
+      showSnackbar('Workspace created successfully!', 'success');
+      //fetch workspace summary
+      fetchSummary()
     }catch(error){
-      setAlertInfo({
-        severity: 'error',
-        title: 'error',
-        message: 'Error to create a new workspace!',
-        showAlert: true,
-      });
+      showSnackbar('Failed to create new workspace', 'error')
+    }finally{
+      setLoading(false)
     }
-  }
+  } 
 
   //8. close alert
   const handleCloseAlert = () => {
@@ -182,7 +202,7 @@ const Home=()=> {
                 </div>
                 <div className="wf-btn">
                   <div className='cancle-btn' onClick={handleCancle}>Cancle</div>
-                  <div className='submit-btn' onClick={handleSubmit}>Create Workspace</div>
+                  <div className='submit-btn' onClick={handleNewSubmit}>Create Workspace</div>
                 </div>
                </div>
             </div>
@@ -210,7 +230,7 @@ const Home=()=> {
               </div>
               <div className="body-s">
                 {/* <GiMusicalScore size={50}/> */}
-                <WorkspaceSummary userId={userId}/>
+                <WorkspaceSummary userId={userId} summaries={summaries}/>
               </div>
             </div>
             
