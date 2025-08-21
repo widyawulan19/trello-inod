@@ -1,41 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import '../style/UI/WorkspaceSummary.css';
-import { GoDotFill } from "react-icons/go";
 import { LiaNetworkWiredSolid } from "react-icons/lia";
-import { getWorkspaceSummary, getBoardsWorkspace } from '../services/ApiServices';
 import { HiArrowRight } from 'react-icons/hi2';
 import { useNavigate } from 'react-router-dom';
+import { getBoardsWorkspace } from '../services/ApiServices';
 
-const WorkspaceSummary = ({ userId }) => {
-  const [summaries, setSummaries] = useState([]);
-  const [loading, setLoading] = useState(true);
+const WorkspaceSummary = ({ summaries, loading }) => {
   const navigate = useNavigate();
-
-  console.log('Halaman workspace summary menerima userId:', userId);
-
-  useEffect(() => {
-    const fetchSummary = async () => {
-      console.log('Fetching summary for userId:', userId);
-
-      if (!userId) {
-        console.warn('userId belum ada, fetch dibatalkan');
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const response = await getWorkspaceSummary(userId);
-        console.log('Hasil summary:', response.data);
-        setSummaries(response.data);
-      } catch (error) {
-        console.error('Gagal fetch summary:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchSummary();
-  }, [userId]);
 
   const navigateToWorkspacePage = () => {
     navigate('workspaces');
@@ -57,32 +28,38 @@ const WorkspaceSummary = ({ userId }) => {
     }
   };
 
+  // ✅ Kondisi loading
   if (loading) return <p>Loading workspace summaries...</p>;
 
+  // ✅ Kondisi jika tidak ada workspace
   if (!summaries || summaries.length === 0) {
     return (
       <div className='no-workspace'>
         <div className="no-icon">
-          <LiaNetworkWiredSolid/>
+          <LiaNetworkWiredSolid />
         </div>
         <h2>Let’s create your first Workspace!</h2>
         <p>Yuk mulai produktif! Buat workspace pertamamu untuk mengelola project dan kolaborasi tim.</p>
         <div className="btn-create-workspace" onClick={navigateToWorkspacePage}>
-           Add New Workspace
+          Add New Workspace
         </div>
       </div>
     );
   }
 
+  // ✅ Kondisi ada workspace
   return (
     <div className="summary-container">
-      {Array.isArray(summaries) && summaries.map((workspace) => (
+      {summaries.map((workspace) => (
         <div key={workspace.workspace_id} className='summary-content'>
           <div className="summary-header">
             <div className="sh-left">
               <h4 className="summary-title">{workspace.workspace_name}</h4>
             </div>
-            <div className='view' onClick={() => navigateToFirstBoard(workspace.workspace_id)}>
+            <div
+              className='view'
+              onClick={() => navigateToFirstBoard(workspace.workspace_id)}
+            >
               VIEW <HiArrowRight />
             </div>
           </div>

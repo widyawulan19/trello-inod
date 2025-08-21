@@ -17,6 +17,7 @@ import {
 } 
 from "react-icons/hi2";
 import { TbListCheck } from "react-icons/tb";
+import { FiLayers } from "react-icons/fi";
 import '../style/pages/Workspace.css'
 import { useNavigate, useParams } from 'react-router-dom';
 import OutsideClick from '../hook/OutsideClick';
@@ -54,6 +55,9 @@ function NewWorkspace() {
   //total user
   const [userCount, setUserCount] = useState(null);
   const [workspaceSummaries, setWorkspaceSummaries] = useState({});
+  //show detail workpace
+  const [detailWrokspace, setDetailWorkspace] = useState(false);
+  const detailRef = OutsideClick(()=>setDetailWorkspace(false))
 
 
 
@@ -433,6 +437,18 @@ function NewWorkspace() {
   }
 }, [userId, workspaces]);
 
+// SHOW DETAIL WORKSPACE 
+const handleShowWorkspace = (workspaceId) => {
+  setDetailWorkspace((prev) => ({
+    ...prev,
+    [workspaceId]: !prev[workspaceId]  // toggle show/hide
+  }));
+};
+
+const handleCloseDetail = () =>{
+  setDetailWorkspace(false)
+}
+
 
 
 
@@ -591,18 +607,27 @@ function NewWorkspace() {
 
                 <div className="summary-counts">
                   {workspaceSummaries[workspace.id] ? (
-                    <ul>
-                      <li> <HiViewBoards/> {workspaceSummaries[workspace.id].board_count} boards</li>
-                      <li> <TbListCheck/> {workspaceSummaries[workspace.id].list_count} lists</li>
-                      <li> <PiCardsFill/> {workspaceSummaries[workspace.id].card_count} cards</li>
-                      {/* <li> <UsersTotal workspaceId={workspace.id}/> </li> */}
-                    </ul>
+                    <BootstrapTooltip title='Detail Workspace' placement='top'>
+                      <div className="detail-icon" onClick={()=> handleShowWorkspace(workspace.id)}>
+                        <FiLayers/>
+                      </div>
+                    </BootstrapTooltip>
+                    
                   ) : (
                     <p>Loading summary...</p>
                   )}
                   <div className='btn-nav-board' onClick={() => handleWorkspaceClick(workspace.id, userId)}>
                     View Board
                   </div>
+
+                  {detailWrokspace[workspace.id] &&(
+                      <ul className='detail-ul' ref={detailRef}>
+                        <li> <HiViewBoards className='detail-icon'/> {workspaceSummaries[workspace.id].board_count} boards</li>
+                        <li> <TbListCheck className='detail-icon'/> {workspaceSummaries[workspace.id].list_count} lists</li>
+                        <li> <PiCardsFill className='detail-icon'/> {workspaceSummaries[workspace.id].card_count} cards</li>
+                        {/* <li> <UsersTotal workspaceId={workspace.id}/> </li> */}
+                      </ul>
+                    )}
                 </div>
 
               </div>
