@@ -68,6 +68,17 @@
     cursor: pointer;
 }
 
+.blnav-sub .back {
+    font-size: 12px;
+    color: #5D12EB;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.blnav-sub .back:hover {
+    text-decoration: underline;
+}
+
 .blnav-sub p:hover {
     color: #5D12EB;
 }
@@ -237,7 +248,7 @@
     width: 150px;
     background-color: #fff;
     padding: 10px 7px;
-    border-radius: 4px;
+    border-radius: 8px;
     /* border: 1px solid red; */
     display: flex;
     flex-direction: column;
@@ -450,7 +461,7 @@
     position: absolute;
     top: 0%;
     /* margin-top: 80px; */
-    height: 25vh;
+    height: 100%;
     right: 0;
     z-index: 100;
     background-color: rgba(255, 255, 255, 0) !important;
@@ -466,7 +477,7 @@
 /* Extra large devices (large desktops, ≥1200px) */
 @media (min-width: 1200px) and (max-width:1400px) {
     .bl-body {
-        height: 83vh !important;
+        height: 82vh !important;
         min-height: 0px;
         /* border: 1px solid red; */
     }
@@ -662,24 +673,55 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
+        /* justify-content: center; */
     }
 
     .bl-header {
-        margin-bottom: 10px;
+        margin-bottom: 5px;
+        /* border: 1px solid red; */
         width: 100%;
+        padding: 3px 5px;
     }
+
+    .blnav h4 {
+        display: none;
+    }
+
+
+    .bl-header .more-action {
+        /* border: 1px solid blue; */
+        padding: 0px;
+    }
+
+    .more-action .btn-create-list {
+        padding: 5px 10px;
+    }
+
+
+    /* CREATE BTN  */
+    .btn-create-list p {
+        font-size: 10px;
+        font-weight: normal;
+    }
+
+    .cl-icon {
+        font-size: 10px;
+        /* display: none; */
+    }
+
+    /* END HEADER  */
 
     .bl-body {
         /* border: 1px solid orange; */
-        height: 75vh !important;
+        /* height: 82vh !important; */
+        height: 93% !important;
         padding: 0px;
         width: 99%;
     }
 
     .bl-content {
         /* border: 1px solid violet; */
-        height: 75vh;
+        height: 83vh;
         width: 90vw;
     }
 
@@ -687,7 +729,7 @@
         /* border: 1px solid red; */
         min-width: 220px;
         max-width: 220px;
-        height: 75vh;
+        height: 81vh;
         overflow-y: auto;
     }
 
@@ -699,6 +741,16 @@
         flex-direction: column;
         align-items: center;
         /* justify-content: space-between; */
+    }
+
+    /* LIST SETTING  */
+    .list-setting {
+        width: 100px;
+    }
+
+    .list-setting button {
+        font-size: 10px;
+        padding: 4px;
     }
 
     /* LIST  */
@@ -714,7 +766,7 @@
     }
 
     .list-body {
-        border: 1px solid blue;
+        /* border: 1px solid blue; */
         overflow-y: auto;
         margin-top: 5px;
 
@@ -725,5 +777,15 @@
     }
 
     /* END LIST  */
+    .form-card .fc-cont {
+        font-size: 10px;
+    }
 
+
+    /* SETTING LIST  */
+
+    /* 1. MOVE  */
+    .move-modal {
+        border: 1px solid red;
+    }
 }

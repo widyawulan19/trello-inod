@@ -402,23 +402,6 @@
     /* border: 1px solid blue; */
 }
 
-/* selected label  */
-.c-selected-labels-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    /* jarak antar label */
-    align-items: center;
-    /* border: 1px solid red; */
-}
-
-.sl-icon {
-    font-size: 12px;
-    font-weight: bold;
-    cursor: pointer;
-    margin-left: 3px;
-    color: #333;
-}
 
 /* MEDIA QUERY  */
 

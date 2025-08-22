@@ -59,7 +59,7 @@ const SearchCard = ({ workspaceId }) => {
 
   return (
     <div className="search-card-container">
-      <IoSearchOutline size={18} />
+      <IoSearchOutline  className='sc-icon' />
       <input
         type="text"
         value={keyword}
@@ -80,7 +80,7 @@ const SearchCard = ({ workspaceId }) => {
                     key={card.card_id}
                     className="p-3 mb-2 border rounded cursor-pointer search-result-item hover:bg-gray-100"
                     onClick={() => navigate(
-                        `/workspaces/${card.workspace_id}/board/${card.board_id}/lists/${card.list_id}/cards/${card.card_id}`
+                        `/layout/workspaces/${card.workspace_id}/board/${card.board_id}/lists/${card.list_id}/cards/${card.card_id}`
                     )}
                 >
                 <div className='card-title'>

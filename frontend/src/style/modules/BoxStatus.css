@@ -67,6 +67,37 @@
     /* cover = penuh, contain = utuh */
 }
 
+/* CARD LABEL  */
+.c-selected-labels-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    /* jarak antar label */
+    align-items: center;
+    width: 100%;
+    padding: 0px 3px;
+    /* border: 1px solid red; */
+}
+
+.c-selected-labels-container .label-box {
+    padding: 3px;
+    /* padding-left: 5px; */
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    white-space: no-wrap;
+    width: fit-content;
+}
+
+.sl-icon {
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-left: 3px;
+    color: #333;
+}
 
 /* MEDIA QUERY  */
 @media screen and (max-height: 600px) {
@@ -92,5 +123,16 @@
 
     .cover-image .cover-img {
         height: 35px;
+    }
+
+    /* CARD LABEL  */
+    .c-selected-labels-container .label-box {
+        font-weight: normal;
+        font-size: 8px;
+        padding: 2px 4px;
+    }
+
+    .sl-icon {
+        font-size: 10px;
     }
 }

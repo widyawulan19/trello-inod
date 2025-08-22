@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getLabelByCard, deleteLabels } from '../services/ApiServices';
 import { HiXMark } from "react-icons/hi2";
-import '../style/modules/Labels.css';
+import '../style/modules/BoxStatus.css'
 import BootstrapTooltip from '../components/Tooltip';
 
 const SelectedLabelCard = ({ cardId }) => {
@@ -35,31 +35,21 @@ const SelectedLabelCard = ({ cardId }) => {
                 labels.map(label => (
                     <div 
                         key={label.id} 
+                        className='label-box'
                         style={{ 
                             // backgroundColor: label.bg_color.replace("rgb", "rgba").replace(")", ", 0.3)"),
                             backgroundColor: label.bg_color,
                             color: label.color,
-                            padding: "3px",
-                            paddingLeft:'5px',
-                            borderRadius: "4px",
-                            display: "inline-block",
-                            fontSize: '10px',
-                            fontWeight: 'bold',
-                            display:'flex',
-                            alignItems:'center',
-                            whiteSpace:'nowrap',
-                            // border:'1px solid green',
-                            width:'fit-content'
                         }}
                     >
                         {label.label_name}
                         
-                        <BootstrapTooltip title='Remove Labels' placement='top'>
+                        {/* <BootstrapTooltip title='Remove Labels' placement='top'>
                             <HiXMark 
                                 className='sl-icon'
                                 onClick={()=> handleRemoveLabel(label.id)}
                             />
-                        </BootstrapTooltip>
+                        </BootstrapTooltip> */}
                     </div>
                 ))
             ) : (
