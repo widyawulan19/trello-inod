@@ -419,12 +419,12 @@ const handleNavigateToBoard = (workspaceId,boardId) =>{
                                     listName={list.name}
                                 />
                                 {showMovePopup[list.id] && (
-                                    <div className="move-modal">
+                                    <div className="move-list-modal">
                                         <MoveList userId={userId} currentBoardId={boardId} listId={list.id} workspaceId={workspaceId} onClose={()=> handleCloseMovePopup(list.id)}/>
                                     </div>
                                 )}
                                 {showDuplicatePopup[list.id] && (
-                                    <div className="move-modal">
+                                    <div className="move-list-modal">
                                         <DuplicateList userId={userId} boardId={boardId} listId={list.id} workspaceId={workspaceId} onClose={()=> handleCloseDuplicate(list.id)} fetchLists={fetchLists}/>
                                     </div>
                                 )}
