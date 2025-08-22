@@ -13,7 +13,8 @@ import Checklist from '../modules/Checklist';
 import CardActivity from '../modules/CardActivity';
 import CoverSelect from '../UI/CoverSelect';
 import CoverCard from '../modules/CoverCard';
-import { IoCloudUpload, IoCloudUploadOutline } from 'react-icons/io5';
+import { IoDocumentAttachOutline, IoShareOutline } from "react-icons/io5";
+import { RiExpandDiagonalLine } from "react-icons/ri";
 import CardAssignedUsers from '../modules/CardAssignedUsers';
 import CardAssigment from '../modules/CardAssigment';
 import { useSnackbar } from '../context/Snackbar';
@@ -32,6 +33,7 @@ import DueDateDisplay from '../UI/DueDateDisplay';
 import FormUpload from '../modals/FormUpload';
 import UploadFile from '../modals/UploadFile';
 import NewRoomChat from '../fitur/NewRoomChat';
+import { FaXmark } from 'react-icons/fa6';
 
 const NewCardDetail=()=> {
     //STATE
@@ -94,6 +96,16 @@ const NewCardDetail=()=> {
     //status
     const [showStatusInput, setShowStatusInput] = useState(false);
     const [statusVisible, setStatusVisible] = useState(true); // default: visible
+    //MODAL DES
+    const [showModalDes, setShowModalDes] = useState(false);
+
+    const handleShowModalDes = () =>{
+        setShowModalDes(!showModalDes)
+    }
+
+    const handleCloseModalDes = () =>{
+        setShowModalDes(false)
+    }
 
     const toggleStatusVisibility = () => {
       setStatusVisible(!statusVisible);
@@ -491,14 +503,14 @@ const NewCardDetail=()=> {
     <div className='new-card-detail'>
         <div className="ncd-header">
             <div className="ncd-left">
-                <button onClick={handleNavigateToBoardList}>
-                    <HiOutlineListBullet className='ncd-icon'/>
+                <div className='ncd-board' onClick={handleNavigateToBoardList}>
+                    <HiOutlineListBullet size={15} className='ncd-icon'/>
                     Board Lists
-                </button>
+                </div>
                 <HiOutlineChevronRight className='ncd-icon'/>
-                <button className='ncd-active'>
+                <div className='ncd-active'>
                     Card Detail
-                </button>
+                </div>
             </div>  
             <div className="btn-chatroom">
                 <BootstrapTooltip title='Open Room Chat' placement='top'>
@@ -512,14 +524,6 @@ const NewCardDetail=()=> {
         {/* SHOW CHATROOM  */}
                 {showChat && (
                     <div className='modal-chatroom'>
-                        {/* <RoomCardChat 
-                            cards={cards} 
-                            cardId={cardId} 
-                            userId={userId} 
-                            onClose={handleCloseChatroom}
-                            assignedUsers={assignedUsers} 
-                            assignableUsers={assignableUsers}
-                        /> */}
                         <NewRoomChat
                             cardId={cardId}
                             userId={userId} 
@@ -670,9 +674,24 @@ const NewCardDetail=()=> {
                         {/* DESCRIPTION CARD  */}
                         <div className="ncd-desc">
                             <div className="des-header">
-                                Description
+                                <div className="des-left">
+                                    Description
+                                </div>
+                                <BootstrapTooltip title='Detail Description' placement='top'>
+                                    <div className="des-right" onClick={handleShowModalDes}>
+                                        <RiExpandDiagonalLine className='des-icon'/>
+                                    </div>
+                                </BootstrapTooltip>
                                 {/* <button>Edit</button> */}
                             </div>
+                            {/* MODAL DES  */}
+                            {/* {showModalDes && (
+                                <div className="modal-des-container">
+                                    <h1>DESKRIPSI MODAL</h1>
+                                </div>
+                            )} */}
+                            {/* END MODAL DES  */}
+
                             <div className="des-content">
                                 {cards && cardId && (
                                     <div className="des-content" style={{height:'fit-content'}}>
@@ -696,21 +715,41 @@ const NewCardDetail=()=> {
                                         style={{ whiteSpace: "pre-wrap", cursor: "pointer" }}
                                         className="div-p"
                                         >
-                                        {cards.description && renderDescription(cards.description)}
-                                        
-                                        {cards.description && cards.description.length > maxChars && (
-                                            <span
-                                            onClick={(e) => {
-                                                e.stopPropagation(); // biar gak masuk ke edit mode
-                                                toggleShowMore();
-                                            }}
-                                            style={{ color: '#5557e7', fontWeight: '500', cursor: 'pointer', display: 'flex', alignItems:'center', justifyContent:'flex-start', marginTop: '8px', gap:'5px' }}
-                                            >
-                                            {/* {showMore ? 'Show Less ▲' : 'Show More ▼'} */}
-                                                {showMore ? 'Show Less' : 'Show More'}
-                                                {showMore ? <HiChevronUp /> : <HiChevronDown />}
-                                            </span>
-                                        )}
+                                        {/* ✅ Kondisi cek deskripsi */}
+                                            {cards.description && cards.description.trim() !== "" ? (
+                                            <>
+                                                {renderDescription(cards.description)}
+
+                                                {cards.description.length > maxChars && (
+                                                <span
+                                                    onClick={(e) => {
+                                                    e.stopPropagation(); // biar gak masuk ke edit mode
+                                                    toggleShowMore();
+                                                    }}
+                                                    style={{
+                                                    color: '#5557e7',
+                                                    fontWeight: '500',
+                                                    cursor: 'pointer',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'flex-start',
+                                                    marginTop: '8px',
+                                                    gap: '5px',
+                                                    }}
+                                                >
+                                                    {showMore ? 'Show Less' : 'Show More'}
+                                                    {showMore ? <HiChevronUp /> : <HiChevronDown />}
+                                                </span>
+                                                )}
+                                            </>
+                                            ) : (
+                                            // ✅ Placeholder ketika deskripsi kosong
+                                            <div className="placeholder-desc">
+                                                <p>
+                                                    (click to add description)
+                                                </p>
+                                            </div>
+                                            )}
                                         </div>
                                     )}
                                     </div>
@@ -723,27 +762,40 @@ const NewCardDetail=()=> {
                             <div className="attach-header-cont">
                                 <h5>Attachment</h5>
                                 <div className="attach-header-btn">
-                                    <button className='total-file'>{totalFile} files</button>
-                                    <BootstrapTooltip title='add attachment' placement='top'>
-                                         <button className='add-attach' onClick={handleShowFormUpload}> <HiPlus/></button>
-                                         {/* <button className='add-attach' onClick={handleShowFormUpload}> <HiPlus/></button> */}
-                                    </BootstrapTooltip>
+                                <button className="total-file">{totalFile} files</button>
+                                <BootstrapTooltip title="add attachment" placement="top">
+                                    <button className="add-attach" onClick={handleShowFormUpload}>
+                                    <HiPlus />
+                                    </button>
+                                </BootstrapTooltip>
                                 </div>
-                                
                             </div>
-                            <div className='attach-body'>
+
+                            <div className="attach-body">
+                                {totalFile > 0 ? (
                                 <div className="file-cont">
-                                    <UploadFile cardId={cardId}/>
+                                    <UploadFile cardId={cardId} />
                                 </div>
-                            </div> 
-                        </div>
-                        {showFormUpload && (
-                            <div className="upload-form-modals">
-                                <FormUpload cardId={cardId} onClose={handleCloseFormUpload}/>
-                                {/* EXAMPLE FORM */}
+                                ) : (
+                                <div className="no-file">
+                                    <div className="no-icon">
+                                        <IoShareOutline/>
+                                    </div>
+                                    <div className="no-desc">
+                                        <h5>Attachment is empty <span onClick={handleShowFormUpload}>upload here</span></h5>
+                                    </div>
+                                </div>
+                                )}
                             </div>
-                        )}
-                        {/* END ATTACHMENT  */}
+                            </div>
+
+                            {showFormUpload && (
+                            <div className="upload-form-modals">
+                                <FormUpload cardId={cardId} onClose={handleCloseFormUpload} />
+                            </div>
+                            )}
+                            {/* END ATTACHMENT  */}
+
                     </div>
 
                     {/* 
@@ -839,7 +891,69 @@ const NewCardDetail=()=> {
 
         </div>
         
-       
+       {/* MODAL DES  */}
+        {showModalDes && (
+        <div className="modal-des-container">
+            <div className="modals-content">
+            <div className="modals-header">
+                {/* HEADER TITLE  */}
+                {cards && cardId && (
+                    <div className="ct-box">
+                        {/* <HiOutlineCreditCard className='ct-icon'/> */}
+                        {editingTitle === cardId ? (
+                        <input
+                            value={newTitle}
+                            onChange={(e) => setNewTitle(e.target.value)}
+                            onBlur={()=> handleSaveTitle(cardId)}
+                            onKeyDown={(e) =>handleKeyPressTitle(e, cardId)}
+                            autoFocus
+                        />
+                        ):(
+                        <h5 onClick={(e)=>handleEditingTitle(e, cardId, cards.title)}>
+                            {cards.title}
+                        </h5>
+                        )}
+                    </div>
+                )}
+                <div className="modal-close" onClick={() => setShowModalDes(false)}>
+                    <FaXmark/>
+                </div>
+            </div>
+
+            <div className="modals-body">
+                {editingDescription === cardId ? (
+                <div className="ta-cont">
+                    <textarea
+                        value={newDescription}
+                        onChange={(e) => setNewDescription(e.target.value)}
+                        onBlur={() => handleSaveDescription(cardId)}
+                        onKeyDown={(e) => handleKeyPressDescription(e, cardId)}
+                        autoFocus
+                    />
+                        <small className="text-muted">
+                        **Tekan Enter untuk simpan || Shift + Enter untuk baris baru
+                        </small>
+                </div>
+                ) : (
+                <div
+                    onClick={(e) => handleEditDescription(e, cardId, cards.description)}
+                    style={{ whiteSpace: "pre-wrap", cursor: "pointer", minHeight: "150px" }}
+                    className="div-p"
+                >
+                    {cards.description && cards.description.trim() !== "" ? (
+                    renderDescription(cards.description)
+                    ) : (
+                    <div className="placeholder-desc">
+                        <p>(click to add description)</p>
+                    </div>
+                    )}
+                </div>
+                )}
+            </div>
+            </div>
+        </div>
+        )}
+        {/* END MODAL DES  */}
     </div>
   )
 }

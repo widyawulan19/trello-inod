@@ -1,11 +1,12 @@
-.label-container{
+.label-container {
     /* border: 1px solid red; */
     border: 1px solid #E5E7EB;
     border-radius: 8px;
     padding: 0px;
     /* width: 50%; */
 }
-.label-container .lc-header{
+
+.label-container .lc-header {
     /* border: 1px solid red; */
     display: flex;
     align-items: center;
@@ -18,7 +19,8 @@
     background-color: #3863e7;
     /* background-image: linear-gradient(to right, #6d5aea, #715cea, #755eea, #7861ea, #7c63ea, #8266ea, #8768ea, #8c6bea, #946fea, #9b72ea, #a276ea, #a87aea); */
 }
-.lc-header h5{
+
+.lc-header h5 {
     margin: 0px;
     padding: 5px;
     margin-bottom: 5px;
@@ -31,18 +33,20 @@
     letter-spacing: 1px;
     /* border: 1px solid red; */
 }
-.l-close{
+
+.l-close {
     border: 1px solid rgba(255, 255, 255, 0);
     border-radius: 4px;
     cursor: pointer;
     font-size: 20px;
 }
-.l-close:hover{
+
+.l-close:hover {
     border: 1px solid #ddd;
     background-color: #ddd;
 }
 
-.labels-main-body{
+.labels-main-body {
     /* border: 1px solid red; */
     width: 100%;
     height: 70vh;
@@ -50,7 +54,7 @@
     padding: 10px 15px;
 }
 
-.labels-cont{
+.labels-cont {
     /* border: 1px solid #b8d2fe; */
     border: 1px solid #E5E7EB;
     border-radius: 8px;
@@ -59,7 +63,7 @@
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.sl-container{
+.sl-container {
     /* margin-bottom: 5px; */
     /* border: 1px solid #ddd; */
     display: flex;
@@ -70,24 +74,30 @@
     width: 35vw;
     overflow-x: auto;
 }
-.sl-container .slb-p{
-    white-space: nowrap;      /* ⛔ Jangan potong ke bawah */
-    overflow: hidden;         /* 🚫 Sembunyikan teks yang kepanjangan */
-    text-overflow: ellipsis;  /* … saat teks terlalu panjang */
-    margin: 0; 
+
+.sl-container .slb-p {
+    white-space: nowrap;
+    /* ⛔ Jangan potong ke bawah */
+    overflow: hidden;
+    /* 🚫 Sembunyikan teks yang kepanjangan */
+    text-overflow: ellipsis;
+    /* … saat teks terlalu panjang */
+    margin: 0;
 }
-.delete-label{
+
+.delete-label {
     margin-left: 2px;
     cursor: pointer;
     background-color: rgba(255, 255, 255, 0);
     border: 0.5px solid rgba(255, 255, 255, 0);
 }
-.l-icon{
+
+.l-icon {
     margin-right: 5px;
 }
 
 /* SHOW SELECT LABEL  */
-.show-label{
+.show-label {
     margin-top: 5px;
     padding: 10px;
     border: 1px solid #E5E7EB;
@@ -98,28 +108,36 @@
     /* padding: 10px; */
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
-.sl-content{
+
+.sl-content {
     /* padding: 10px; */
     /* border: 1px solid violet; */
     /* border-radius: 4px; */
-    
+
 }
+
 .l-box {
-    position: relative; /* Ubah absolute menjadi relative agar menyesuaikan */
+    position: relative;
+    /* Ubah absolute menjadi relative agar menyesuaikan */
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     /* Memastikan elemen turun ke bawah jika tidak muat */
-    gap: 5px; /* Jarak antar label */
-    align-items: flex-start; /* Atur agar label sejajar di atas */
-    width: 100%; /* Gunakan 100% agar mengikuti parent */
+    gap: 5px;
+    /* Jarak antar label */
+    align-items: flex-start;
+    /* Atur agar label sejajar di atas */
+    width: 100%;
+    /* Gunakan 100% agar mengikuti parent */
     height: 35vh;
-    max-width: 600px; /* Bisa disesuaikan sesuai kebutuhan */
+    max-width: 600px;
+    /* Bisa disesuaikan sesuai kebutuhan */
     padding: 8px;
     z-index: 100;
     overflow-y: auto;
     /* border: 1px solid red; */
 }
-.lb-content{
+
+.lb-content {
     position: relative;
     width: 15vw;
     border: 1px solid white;
@@ -137,10 +155,12 @@
     justify-content: space-between;
 
 }
-.lb-content:hover{
+
+.lb-content:hover {
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
-.lbox-icon{
+
+.lbox-icon {
     margin-left: 5px;
     padding: 2px;
     color: #333;
@@ -151,12 +171,13 @@
     border: 0.2px solid rgba(255, 255, 255, 0.31);
     border-radius: 4px;
 }
-.lbox-icon:hover{
+
+.lbox-icon:hover {
     background-color: #eee;
     border: 0.2px solid #eee;
 }
 
-.set-label{
+.set-label {
     position: absolute;
     top: 100%;
     right: 0px;
@@ -173,7 +194,8 @@
     gap: 5px;
     width: fit-content;
 }
-.delete-label-btn{
+
+.delete-label-btn {
     border: 1px solid white;
     border-radius: 4px;
     padding: 2px 3px;
@@ -186,12 +208,13 @@
     color: red;
     width: 100%;
 }
-.delete-label-btn:hover{
+
+.delete-label-btn:hover {
     border: 1px solid #eee;
     background-color: #eee;
 }
 
-.color-options{
+.color-options {
     border: 1px solid white;
     border-radius: 4px;
     padding: 2px 3px;
@@ -204,13 +227,14 @@
     color: #333;
     width: 100%;
 }
-.color-options:hover{
+
+.color-options:hover {
     border: 1px solid #eee;
     background-color: #eee;
 }
 
 /* MODAL COLOR  */
-.bg-color-list{
+.bg-color-list {
     position: absolute;
     top: 30px;
     right: 0px;
@@ -230,8 +254,8 @@
     gap: 5px;
 }
 
-.color-label-header{
-    border: 1px solid #9b72ea; 
+.color-label-header {
+    border: 1px solid #9b72ea;
     color: white;
     font-weight: bold;
     font-size: 12px;
@@ -244,23 +268,27 @@
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
 }
-.color-label-con{
+
+.color-label-con {
     display: flex;
     flex-wrap: wrap;
     gap: 5px;
     padding: 5px 10px;
     /* border: 1px solid red; */
 }
-.color-label-con .color-code{
+
+.color-label-con .color-code {
     border: 1px solid #eee;
 }
-.color-label-con .color-code:hover{
+
+.color-label-con .color-code:hover {
     border: 1px solid #9b72ea;
     box-shadow: 0px 4px 8px #5e12eb46;
 }
+
 /* END MODAL COLOR  */
 /* CREATE LABEL  */
-.fl-label{
+.fl-label {
     margin: 10px 0px;
     padding: 10px;
     position: relative;
@@ -275,14 +303,15 @@
     /* padding: 10px; */
 }
 
-.fl-label .form-label{
+.fl-label .form-label {
     display: flex;
     align-items: center;
     justify-content: flex-start;
     width: 100%;
     /* border: 1px solid green; */
 }
-.form-label input{
+
+.form-label input {
     width: 60%;
     color: #6551e7;
     border: 1px solid #ddd;
@@ -291,15 +320,18 @@
     margin-right: 5px;
     font-size: 12px;
 }
-.form-label input:hover{
+
+.form-label input:hover {
     border: 1px solid #6a11cb;
     background: linear-gradient(to right, #6b11cb41, #2574fc41);
 }
-.form-label input:focus{
+
+.form-label input:focus {
     outline: none;
     border: 1px solid #6a11cb;
 }
-.form-label button{
+
+.form-label button {
     color: white;
     width: fit-content;
     font-size: 12px;
@@ -308,10 +340,12 @@
     border-radius: 4px !important;
     background: linear-gradient(to right, #6a11cb, #2575fc);
 }
-.form-label button:hover{
-    background: linear-gradient(to right,#2575fc, #6a11cb );
+
+.form-label button:hover {
+    background: linear-gradient(to right, #2575fc, #6a11cb);
 }
-.show-form{
+
+.show-form {
     position: absolute;
     top: 20%;
     left: 20%;
@@ -326,36 +360,42 @@
     margin-top: 7px;
 }
 
-.show-form input{
+.show-form input {
     border: 1px solid #ddd;
     border-radius: 4px;
     padding: 4px;
     margin-right: 5px
 }
-.show-form input:focus{
+
+.show-form input:focus {
     outline: none;
 
 }
 
 
 /* SELECTED LABEL CARD  */
-.selected-labels{
+.selected-labels {
     /* border: 1px solid black; */
     display: flex;
-    flex-wrap: wrap; /* Memungkinkan label pindah ke baris bawah jika tidak cukup */
-    gap: 4px; /* Jarak antar label */
-    padding:0px;
-    max-width: 100%; /* Pastikan container tidak melewati batas parent */
+    flex-wrap: wrap;
+    /* Memungkinkan label pindah ke baris bawah jika tidak cukup */
+    gap: 4px;
+    /* Jarak antar label */
+    padding: 0px;
+    max-width: 100%;
+    /* Pastikan container tidak melewati batas parent */
     overflow: hidden;
-    margin-top: 5px;
+    /* margin-top: 5px; */
 }
-.label-item{
-    padding: 5px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: bold;
+
+.label-item {
+    padding: 5px 8px;
+    border-radius: 8px;
+    font-size: 11px;
+    /* font-weight: bold; */
 }
-.li-icon{
+
+.li-icon {
     font-size: 12px;
     margin-left: 5px;
     cursor: pointer;
@@ -366,12 +406,13 @@
 .c-selected-labels-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 4px; /* jarak antar label */
+    gap: 4px;
+    /* jarak antar label */
     align-items: center;
     /* border: 1px solid red; */
 }
 
-.sl-icon{
+.sl-icon {
     font-size: 12px;
     font-weight: bold;
     cursor: pointer;
@@ -383,82 +424,92 @@
 
 /* Large devices (desktops, ≥992px) */
 @media (min-width: 992px) and (max-width: 1199.98px) {
-  /* CSS laptop biasa */
-  .l-box{
-    /* border: 1px solid red; */
-    height: 35vh;
-    overflow-y: auto;
-  }
+
+    /* CSS laptop biasa */
+    .l-box {
+        /* border: 1px solid red; */
+        height: 35vh;
+        overflow-y: auto;
+    }
 }
 
 
 /* Medium devices (tablets, ≥768px) */
 @media (min-width: 768px) and (max-width: 991.98px) {
-    .form-label input{
+    .form-label input {
         width: 60%;
     }
-    .sl-container{
+
+    .sl-container {
         /* border: 1px solid red; */
         /* width: 39vw; */
         width: 100%;
     }
 
     /* COLOR SETTING  */
-    .label-container{
+    .label-container {
         /* border: 1px solid blue; */
         height: 65vh;
     }
-      .bg-color-list{
+
+    .bg-color-list {
         /* border: 1px solid red; */
         width: 30vw;
         height: 20vh;
         top: 15px;
     }
-     .l-box{
+
+    .l-box {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         height: 25vh;
         overflow-x: auto;
         flex-wrap: nowrap;
     }
-    .lb-content{
+
+    .lb-content {
         width: 100%;
         padding: 10px;
     }
 
-    
-  /* CSS tablet atau iPad */
+
+    /* CSS tablet atau iPad */
 }
+
 /* ukuran handpone besar  */
-@media (min-width: 576px) and (max-width: 767.98px){
-    .label-container{
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .label-container {
         /* border: 1px solid blue; */
         height: 63vh;
     }
-    .labels-main-body{
+
+    .labels-main-body {
         /* height: 80vh; */
     }
-   .form-label input{
+
+    .form-label input {
         width: 60%;
     }
-    .form-label button{
+
+    .form-label button {
         font-size: 10px;
     }
-    .sl-container{
+
+    .sl-container {
         /* border: 1px solid blue; */
         /* width: 39vw; */
         width: 100%;
     }
 
     /* COLOR SETTING  */
-    .bg-color-list{
+    .bg-color-list {
         /* border: 1px solid red; */
         width: 40vw;
         height: 20vh;
         top: 15px;
     }
 
-     .l-box{
+    .l-box {
         /* border: 1px solid red; */
         display: flex;
         flex-direction: column;
@@ -468,42 +519,45 @@
         overflow-x: auto;
         flex-wrap: nowrap;
     }
-    .lb-content{
+
+    .lb-content {
         width: 100%;
         padding: 10px;
     }
 }
 
 /* ukuran handpone kecil  */
-@media (min-width:375px) and (max-width:575px){
-    .label-container{
+@media (min-width:375px) and (max-width:575px) {
+    .label-container {
         /* border: 1px solid blue; */
         height: 65vh;
     }
-    .form-label input{
+
+    .form-label input {
         width: 55%;
     }
-    .sl-container{
+
+    .sl-container {
         /* border: 1px solid yellow; */
         /* width: 39vw; */
         width: 100%;
     }
 
     /* COLOR SETTING  */
-    .bg-color-list{
+    .bg-color-list {
         /* border: 1px solid red; */
         width: 40vw;
         height: 25vh;
         top: 15px;
     }
 
-    .color-label-con{
+    .color-label-con {
         /* border: 1px solid green; */
-        
+
     }
 
 
-    .l-box{
+    .l-box {
         /* border: 1px solid red; */
         display: flex;
         flex-direction: column;
@@ -513,13 +567,14 @@
         overflow-x: auto;
         flex-wrap: nowrap;
     }
-    .lb-content{
+
+    .lb-content {
         width: 100%;
         padding: 10px;
         /* border: 1px solid green; */
     }
 
-    .label-item{
+    .label-item {
         padding: 5px;
         border-radius: 4px;
         font-size: 10px;
@@ -527,13 +582,14 @@
     }
 }
 
-@media  (min-height:400px) and (max-height:730px){
-    .label-container{
+@media (min-height:400px) and (max-height:730px) {
+    .label-container {
         /* border: 1px solid blue; */
         height: 75vh;
     }
-     /* COLOR SETTING  */
-    .bg-color-list{
+
+    /* COLOR SETTING  */
+    .bg-color-list {
         /* border: 1px solid red; */
         width: 50vw;
         height: 30vh;

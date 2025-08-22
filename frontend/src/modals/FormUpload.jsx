@@ -30,7 +30,7 @@ const FormUpload = ({ cardId, onClose }) => {
 
       <div className="form-upload-input">
         <IoCloudUploadOutline className='fu-icon'/>
-        Drag & Drop to Upload or
+        {/* Drag & Drop to Upload or */}
         <div className="input-con">
           <label htmlFor="file-upload" className="custom-upload-button">
               browse in your device

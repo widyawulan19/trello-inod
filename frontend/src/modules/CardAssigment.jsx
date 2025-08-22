@@ -6,12 +6,14 @@ import {
   assignUserToCard,
   deleteUserFromCard,
 } from '../services/ApiServices';
+import { PiUserCirclePlusFill } from "react-icons/pi";
 import { HiOutlineTrash, HiOutlineUserGroup, HiPlus, HiXMark } from 'react-icons/hi2';
 import BootstrapTooltip from '../components/Tooltip';
 import user1 from '../assets/userwoman.png'
 import user2 from '../assets/manuser.png'
 import { IoCheckmarkCircleOutline } from 'react-icons/io5';
 import { useSnackbar } from '../context/Snackbar';
+import { FaXmark } from 'react-icons/fa6';
 
 const CardAssigment = ({ 
     cardId,
@@ -63,15 +65,24 @@ const CardAssigment = ({
   return (
     <div className="card-user-manager">
       <div className="cum-header">
-        <h5>Assigned User</h5>
-        <BootstrapTooltip title='Close' placement='top'>
-          <HiXMark className='cum-icon' onClick={onClose}/>
+        <div className="header-left">
+          <div className="left-icon">
+            <PiUserCirclePlusFill/>
+          </div>
+          <h5>Assigned User</h5>
+        </div>
+        <div className="header-right">
+          <BootstrapTooltip title='Close' placement='top'>
+            <FaXmark className='cum-icon' onClick={onClose}/>
         </BootstrapTooltip>
+        </div>
+        
+        
       </div>
       <div className="cum-body">
           {assignedUsers.length === 0 ? (
             <div className="no-user">
-                <p>No users assigned.</p>
+                <p>Gak punya temen ya :"</p>
             </div>
             ) : (
               <p></p>

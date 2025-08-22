@@ -110,7 +110,8 @@ const StatusDisplay = ({
                     style={{
                         border: '1px dashed #ccc',
                         borderRadius: '8px',
-                        padding: '12px',
+                        // padding: '12px',
+                        padding:'5px 10px',
                         textAlign: 'center',
                         fontSize: '12px',
                         color: '#888',
