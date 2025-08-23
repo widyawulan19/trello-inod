@@ -1518,7 +1518,7 @@ app.get('/api/boards/:id', async (req, res) => {
 //     res.status(500).json({ error: error.message });
 //   }
 // })
-app.post('/api/boards', verifyToken, async (req, res) => {
+app.post('/api/boards', async (req, res) => {
   const { userId, name, description, workspace_id } = req.body;
   // const userId = req.user.id; // ✅ ambil dari token user yang login
 
