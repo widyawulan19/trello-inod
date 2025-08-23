@@ -1518,11 +1518,11 @@ app.get('/api/boards/:id', async (req, res) => {
 //     res.status(500).json({ error: error.message });
 //   }
 // })
-app.post('/api/boards', async (req, res) => {
-  const { userId, name, description, workspace_id } = req.body;
+app.post('/api/boards', verifyToken, async (req, res) => {
+  const { name, description, workspace_id } = req.body;
+  const userId = req.user.id; // ✅ ambil dari token user yang login
 
   try {
-    // ✅ Simpan board baru
     const result = await client.query(
       `INSERT INTO boards (user_id, name, description, workspace_id, create_at) 
        VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP) 
@@ -1530,9 +1530,8 @@ app.post('/api/boards', async (req, res) => {
       [userId, name, description, workspace_id]
     );
 
-    //mengambil boardId
-    boardId = result.rows[0].id;
-    console.log('endpoin post ini menerima boardid', boardId);
+    const boardId = result.rows[0].id;
+    console.log('📍 endpoin post ini menerima boardId:', boardId);
 
     await logActivity(
       'board',
@@ -1542,14 +1541,15 @@ app.post('/api/boards', async (req, res) => {
       `Board '${name}' created `,
       'workspace',
       workspace_id
-    )
+    );
 
     res.status(201).json(result.rows[0]);
   } catch (error) {
-    console.error('Error creating board:', error);
+    console.error('❌ Error creating board:', error);
     res.status(500).json({ error: error.message });
   }
 });
+
 
 //4. update board
 app.put('/api/boards/:id', async (req, res) => {
