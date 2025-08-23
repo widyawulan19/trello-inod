@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { createCard, updateTitleCard } from '../services/ApiServices';
 import '../style/modules/CreateCard.css'
-import { HiOutlinePlus, HiOutlineXMark, HiPlus } from 'react-icons/hi2';
+import { HiOutlinePlus, HiOutlineXMark, HiPlus,HiOutlineCreditCard, } from 'react-icons/hi2';
 import BootstrapTooltip from '../components/Tooltip';
 import { useSnackbar } from '../context/Snackbar';
 
@@ -35,12 +35,14 @@ const CreateCard=({listId, onCardCreated, onClose})=> {
     <div className='cf-container'>
         <div className="cf-header">
             <div className="cfh-left">
-                {/* <HiOutlinePlus className='cfh-icon'/> */}
+                <div className="cfh-icon">
+                    <HiOutlineCreditCard className='icon-icon'/>
+                </div>
                 <h5>ADD NEW CARD</h5>
             </div>
             <div className="cfh-right">
                 <BootstrapTooltip title='Close' placement='top'>
-                    <HiOutlineXMark onClick={onClose}/>
+                    <HiOutlineXMark onClick={onClose} className='close-right'/>
                 </BootstrapTooltip>
             </div>
         </div>
@@ -56,7 +58,7 @@ const CreateCard=({listId, onCardCreated, onClose})=> {
                 />
             </div>
             <div className="desc">
-                <label>Card Description</label>
+                <label>Card Description <span style={{color:'red'}}>*</span></label>
                 <textarea
                     placeholder="Card Description"
                     value={description}
@@ -64,7 +66,7 @@ const CreateCard=({listId, onCardCreated, onClose})=> {
                     required
                 />
             </div>
-        <div className="cc-sub-btn">
+        <div className="btn-btn">
             <button type="submit">
                 <HiPlus/>
                 Add card

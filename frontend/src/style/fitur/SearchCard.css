@@ -15,6 +15,10 @@
     box-shadow: 0px 4px 8px #5e12eb46;
 }
 
+.search-card-container .sc-icon {
+    font-size: 18px;
+}
+
 .search-card-container input {
     border: 1px solid white;
     border-radius: 8px;
@@ -379,4 +383,17 @@ mark {
 
 
 /* HEIGHT BREAKPOIN  */
-@media (min-height:400px) and (max-height:730px) {}
+@media screen and (max-height: 600px) {
+    .search-card-container {
+        padding: 3px 5px;
+    }
+
+    .search-card-container input {
+        padding: 2px;
+        font-size: 8px;
+    }
+
+    .search-card-container .sc-icon {
+        font-size: 14px;
+    }
+}

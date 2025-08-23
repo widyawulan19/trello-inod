@@ -318,7 +318,7 @@ const handleKeyPressDescription = (e, boardId) =>{
 }
 
 //create board
-const handleSubmit = async (e, userId) =>{
+const handleSubmit = async (e) =>{
   e.preventDefault();
 
   if(!boardName || !workspaceId){
@@ -326,7 +326,7 @@ const handleSubmit = async (e, userId) =>{
   }
 
   const boardData = {
-    user_id : 3,
+    user_id:userId,
     name:boardName,
     description:boardDescription,
     workspace_id:workspaceId

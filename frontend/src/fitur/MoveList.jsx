@@ -63,7 +63,7 @@ const MoveList = ({ boardId, userId, onClose, listId }) => {
             // alert('List moved successfully!');
             showSnackbar('List moved successfully!', 'success')
             onClose();
-            navigate(`/workspaces/${selectedWorkspaceId}/board/${selectedBoardId}`);
+            navigate(`/layout/workspaces/${selectedWorkspaceId}/board/${selectedBoardId}`);
         } catch (error) {
             console.error('Error moving list:', error);
             showSnackbar('Failed to move the list. Please try again', 'error')
@@ -76,11 +76,20 @@ const MoveList = ({ boardId, userId, onClose, listId }) => {
     return (
         <div className='ml-container'>
             <div className="ml-head">
-                <p>Move List</p>
-                <BootstrapTooltip title="Close" placement='top'>
-                    <HiOutlineXMark className='ml-close' onClick={onClose}/>
-                </BootstrapTooltip>
+                <div className="head-left">
+                    <div className="move-icon">
+                        <HiMiniArrowLeftStartOnRectangle className='mini-icon'/>
+                    </div>
+                    <p>Move List</p>
+                </div>
+                
+                <div className="head-right">
+                    <BootstrapTooltip title="Close" placement='top'>
+                        <HiOutlineXMark className='ml-close' onClick={onClose}/>
+                    </BootstrapTooltip>
+                </div>
             </div>
+            
             <div className="ml-body">
                 <div className="ml-workspace">
                     <label>Choose Workspace</label>

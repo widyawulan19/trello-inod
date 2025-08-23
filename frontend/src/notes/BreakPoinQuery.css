@@ -90,6 +90,16 @@
 /* HEIGHT BREAKPOIN  */
 @media (min-height:400px) and (max-height:730px) {}
 
+@media screen and (max-height: 600px) {
+  .project-container {
+    height: auto;
+    /* jangan paksa full viewport */
+    overflow-y: auto;
+    /* biar bisa scroll */
+    padding: 1rem;
+    /* lebih rapet */
+  }
+}
 
 /* Desktop (≥ 992px) */
 @media (min-width: 992px) {

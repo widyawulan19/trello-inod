@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getCoverByCard } from '../services/ApiServices';
-import '../style/modules/CoverCard.css';
+// import '../style/modules/CoverCard.css';
+import '../style/modules/BoxStatus.css'
 
 const CardCoverDisplay = ({ cardId }) => {
     const [cover, setCover] = useState(null);
@@ -27,21 +28,14 @@ const CardCoverDisplay = ({ cardId }) => {
     if (!cover) return null;
 
     return (
-        <div className="card-cover-display" style={{ padding: '5px' }}>
-            <div
-                className="cover-image"
-                style={{
-                    width: '100%%',
-                    height: '40px',
-                    backgroundImage: cover.cover_image_url ? `url(${cover.cover_image_url})` : 'none',
-                    backgroundColor: cover.color_code || 'gray',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat',
-                    borderRadius: '4px',
-                    // border:'1px solid blue'
-                }}
-            />
+        <div className="card-cover-display">
+            <div className="cover-image">
+                {cover.cover_image_url ? (
+                    <img src={cover.cover_image_url} alt="cover" className="cover-img" />
+                ) : (
+                    <div className="color-mode" style={{ backgroundColor: cover.color_code || 'gray' }} />
+                )}
+            </div>
         </div>
     );
 };

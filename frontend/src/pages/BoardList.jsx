@@ -340,7 +340,7 @@ const handleNavigateToBoard = (workspaceId,boardId) =>{
             <div className="blnav">
                 <h4 className='ellipsis-text'>{boards.name} Boards</h4>
                 <div className="blnav-sub" onClick={()=>handleNavigateToWorkspace(workspaceId)}>
-                    <p>{boards.name}</p>
+                    <p className='back'>{boards.name}</p>
                     <HiOutlineChevronRight/>
                     <p>Board List</p>
                 </div>
@@ -419,12 +419,12 @@ const handleNavigateToBoard = (workspaceId,boardId) =>{
                                     listName={list.name}
                                 />
                                 {showMovePopup[list.id] && (
-                                    <div className="move-modal">
+                                    <div className="new-move-list-modal">
                                         <MoveList userId={userId} currentBoardId={boardId} listId={list.id} workspaceId={workspaceId} onClose={()=> handleCloseMovePopup(list.id)}/>
                                     </div>
                                 )}
                                 {showDuplicatePopup[list.id] && (
-                                    <div className="move-modal">
+                                    <div className="new-move-list-modal">
                                         <DuplicateList userId={userId} boardId={boardId} listId={list.id} workspaceId={workspaceId} onClose={()=> handleCloseDuplicate(list.id)} fetchLists={fetchLists}/>
                                     </div>
                                 )}

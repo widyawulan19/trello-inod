@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { getCardPriority } from '../services/ApiServices'
 import { HiMiniLightBulb } from 'react-icons/hi2'
+import '../style/modules/BoxStatus.css'
 
 const CardSelectedProperties=({cardId})=> {
     //STATE
@@ -27,23 +28,22 @@ const CardSelectedProperties=({cardId})=> {
           {priorities.map(priority => (
             <div 
               key={priority.id}
+              className='sp-box'
               style={{ 
                 backgroundColor: priority.color.startsWith('#') ? `${priority.color}55` : priority.color,
                 color: priority.color,
-                padding: "4px",
-                margin: "2px",
-                borderRadius: "4px",
-                // display: "inline-block",
-                display:'flex',
-                alignItems:'center',
-                justifyContent:'flex-start',
-                fontSize: '10px',
-                fontWeight: 'bold',
-                border:'1px solid transparent'
-                // border: `1px solid ${priority.color}`
+                // padding: "4px",
+                // margin: "2px",
+                // borderRadius: "4px",
+                // display:'flex',
+                // alignItems:'center',
+                // justifyContent:'flex-start',
+                // fontSize: '10px',
+                // fontWeight: 'bold',
+                // border:'1px solid transparent'
               }}
             >
-              <HiMiniLightBulb style={{ color: priority.color, marginRight: '5px' }} />
+              <HiMiniLightBulb style={{ color: priority.color}} />
               {priority.name}
             </div>
           ))}

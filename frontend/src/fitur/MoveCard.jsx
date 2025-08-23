@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getBoards, getAllLists, moveCardToList, getListByBoard } from '../services/ApiServices';
 import { HiMiniArrowLeftStartOnRectangle, HiOutlineChevronDown, HiOutlineXMark } from 'react-icons/hi2';
@@ -19,6 +19,16 @@ const MoveCard = ({ cardId, workspaceId, onClose, userId, currentBoardId,onCardM
 
     const navigate = useNavigate();
     const { showSnackbar } = useSnackbar();
+
+    useEffect(() => {
+        const handleClickOutside = () => setShowBoardDropdown(false);
+        if (showBoardDropdown) {
+            document.addEventListener("click", handleClickOutside);
+        }
+        return () => {
+            document.removeEventListener("click", handleClickOutside);
+        };
+    }, [showBoardDropdown]);
 
     // Fetch boards saat komponen dimount
     useEffect(() => {
@@ -68,19 +78,23 @@ const MoveCard = ({ cardId, workspaceId, onClose, userId, currentBoardId,onCardM
     return (
         <div className="mc-container">
             <div className="mc-header">
-                <p>Move Card</p>
-                <BootstrapTooltip title="Close" placement="top">
-                    <HiOutlineXMark className="mc-icon" onClick={onClose} />
-                </BootstrapTooltip>
+                <div className="mc-left">
+                    <div className="left-icon">
+                        <HiMiniArrowLeftStartOnRectangle className='mini-icon'/>
+                    </div>
+                    <p>Move Card</p>
+                </div>
+                <div className="mc-right">
+                     <BootstrapTooltip title="Close" placement="top">
+                        <HiOutlineXMark className="mc-icon" onClick={onClose} />
+                    </BootstrapTooltip>
+                </div>
             </div>
             <div className="mc-body">
                 {/* Select Board */}
                 <div className="mc-board">
                     <label>Choose Board</label>
-                    <div className='mcb-dropdown' onClick={(e) => {
-                            e.stopPropagation(); // Mencegah klik dalam dropdown menutupnya
-                            setShowBoardDropdown(true);
-                        }}>
+                    <div className='mcb-dropdown'>
                         <button 
                             className="mcb-btn"
                             onClick={(e) => {
@@ -93,6 +107,7 @@ const MoveCard = ({ cardId, workspaceId, onClose, userId, currentBoardId,onCardM
                                 : 'Select a board'}
                             <HiOutlineChevronDown />
                         </button>
+                        
                         {showBoardDropdown && (
                             <div className="mcb-menu-wrapper">
                                 {/* Input Search */}

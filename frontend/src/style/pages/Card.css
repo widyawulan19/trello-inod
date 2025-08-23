@@ -1,7 +1,8 @@
-.card{
+.card-box-container {
     position: relative;
 }
-.card-container{
+
+.card-container {
     border-radius: 16px;
     border: 1px solid #E5E7EB;
     background-color: #fff;
@@ -9,11 +10,13 @@
     overflow: visible;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
-.card-container:hover{
+
+.card-container:hover {
     border: 1px solid #6a11cb;
     box-shadow: 0px 4px 8px #5e12eb46;
 }
-.cc-top-header{
+
+.cc-top-header {
     border-bottom: 1px solid #eee;
     margin-bottom: 3px;
     padding: 2px;
@@ -21,22 +24,26 @@
     align-items: center;
     justify-content: space-between;
 }
-.cctop-status{
+
+.cctop-status {
     display: flex;
     align-items: center;
     justify-content: flex-start;
 }
-.cc-cover{
+
+.cc-cover {
     /* border: 1px solid red; */
     margin: 0px;
 }
-.cc-label{
+
+.cc-label {
     margin: 0px;
-    margin-top: 5px;    
-    /* border: 1px solid red; */
+    margin-top: 5px;
+    /* border: 1px solid blue; */
 }
+
 /* setting list  */
-.card-setting{
+.card-setting {
     position: absolute;
     top: 10%;
     right: 0;
@@ -54,7 +61,8 @@
     font-size: 15px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
-.card-setting button{
+
+.card-setting button {
     padding: 3px;
     display: flex;
     align-items: center;
@@ -65,26 +73,31 @@
     border-radius: 4px;
     color: #333;
 }
-.card-setting button:hover{
+
+.card-setting button:hover {
     background-color: #eee;
 }
-.delete button{
+
+.delete button {
     color: red;
     border-top: 1px solid #ddd;
 }
-.cs-icon{
+
+.cs-icon {
     margin-right: 5px;
     font-size: 13px;
     color: #333;
 }
-.cs-delete{
+
+.cs-delete {
     margin-right: 5px;
     font-size: 13px;
     color: red;
 }
+
 /* end setting list  */
 
-.cc-cover p{
+.cc-cover p {
     margin: 0px;
     /* padding: 5px; */
     width: 100%;
@@ -97,36 +110,43 @@
     align-items: center;
     justify-content: center;
 }
-.cc-header-card{
+
+.cc-header-card {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 3px;
     margin: 0px !important;
+    width: 100%;
 }
-.cc-title{
+
+.cc-title {
     /* border: 1px solid blue; */
+    width: 100%;
 }
-.cc-title input{
-    background-color:white;
+
+.cc-title input {
+    background-color: white;
     /* border: 1px solid red; */
     border: 1px solid white;
     border-radius: 4px;
     padding: 0px;
     /* padding: 3px 5px; */
     outline: none;
-    width: 200px;
+    width: 100%;
     font-size: 12px;
 }
-.cc-title input:hover{
+
+.cc-title input:hover {
     border: 1px solid white;
 }
-.cc-title input:focus{
+
+.cc-title input:focus {
     outline: none;
     border: 1px solid white;
 }
 
-.cc-title h5{
+.cc-title h5 {
     margin: 0px;
     font-size: 12px;
     font-weight: bold;
@@ -134,9 +154,10 @@
     word-wrap: break-word;
     overflow-wrap: break-word;
     white-space: normal;
-    color:#4F5966;
+    color: #4F5966;
 }
-.cc-setting{
+
+.cc-setting {
     cursor: pointer;
     border: 1px solid #fff;
     border-radius: 4px;
@@ -144,14 +165,15 @@
     align-items: center;
     justify-content: center;
 }
-.cc-setting:hover{
+
+.cc-setting:hover {
     border: 1px solid #eee;
     background-color: #eee;
 }
 
 
 /* BODY  */
-.cc-body{
+.cc-body {
     /* border: 1px solid #eee; */
     border-radius: 4px;
     min-height: 5vh;
@@ -164,31 +186,34 @@
     margin: 5px 0px;
     margin-bottom: 0px;
 }
-.cc-body p{
+
+.cc-body p {
     margin: 0px;
     font-size: 10px;
     padding: 5px;
     color: #4F5966;
 }
+
 .cc-body .p-full {
     height: 5vh;
     overflow-y: auto;
     overflow: hidden;
     transition: height 0.3s ease;
     /* border: 1px solid red; */
-  }
-  
-.cc-body  .p-empty {
+}
+
+.cc-body .p-empty {
     height: 0px;
     /* overflow: hidden; */
     transition: height 0.3s ease;
     /* border: 1px solid blue; */
     margin-bottom: 0px;
-  }
+}
+
 /* END BODY  */
 
 /* FOOTER  */
-.cc-footer{
+.cc-footer {
     /* border: 1px solid #eee; */
     display: flex;
     align-items: center;
@@ -196,24 +221,26 @@
     padding: 3px 0px;
     /* margin-top: 0px; */
 }
-.ficon{
+
+.ficon {
     /* margin-right: 2px; */
     font-size: 12px;
 }
-.left button
-{
+
+.left button {
     padding: 3px;
     margin: 2px;
     border: 1px solid #fff;
     background-color: #fff;
     border-radius: 4px;
 }
-.left button:hover
-{
+
+.left button:hover {
     border: 1px solid #eee;
     background-color: #eee;
 }
-.member button{
+
+.member button {
     padding: 3px 8px;
     color: white;
     /* color: #6a11cb; */
@@ -229,13 +256,14 @@
     background-color: #6a11cb;
     /* background: linear-gradient(to right, #6a11cb, #2575fc); */
 }
-.member button:hover{
-    box-shadow: 0px 4px 8px #6b11cb3c ;
+
+.member button:hover {
+    box-shadow: 0px 4px 8px #6b11cb3c;
     /* background: linear-gradient(to right,#2575fc, #6a11cb ); */
 }
 
 /* CFOOTER  */
-.cfooter{
+.cfooter {
     /* border: 1px solid #ddd; */
 }
 
@@ -244,33 +272,40 @@
 
 /* Modal container */
 .detail-con {
-    position: fixed; /* Menggunakan fixed untuk membuat popup tetap berada di atas layar */
+    position: fixed;
+    /* Menggunakan fixed untuk membuat popup tetap berada di atas layar */
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5); /* Transparansi untuk latar belakang */
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Transparansi untuk latar belakang */
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 9999; /* Pastikan popup berada di atas elemen lainnya */
-  }
-  
-  /* Card detail container */
-  .card-detail-container {
+    z-index: 9999;
+    /* Pastikan popup berada di atas elemen lainnya */
+}
+
+/* Card detail container */
+.card-detail-container {
     position: relative;
     background-color: white;
     padding: 20px;
     border-radius: 8px;
-    width: 80%; /* Ukuran modal */
-    max-width: 600px; /* Maksimal lebar modal */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Menambahkan bayangan untuk modal */
+    width: 80%;
+    /* Ukuran modal */
+    max-width: 600px;
+    /* Maksimal lebar modal */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    /* Menambahkan bayangan untuk modal */
     z-index: 10000;
-  }
+}
 
- /* Modal overlay (background) */
+/* Modal overlay (background) */
 .cc-detail {
-    position: fixed; /* Fix it to the screen */
+    position: fixed;
+    /* Fix it to the screen */
     top: 0;
     left: 0;
     right: 0;
@@ -278,11 +313,12 @@
     display: flex;
     justify-content: right;
     align-items: end;
-    z-index: 100; /* Make sure it appears above everything else */
-  }
-  
-  /* Background overlay (darkens the rest of the content) */
-  .cc-detail .modal-overlay {
+    z-index: 100;
+    /* Make sure it appears above everything else */
+}
+
+/* Background overlay (darkens the rest of the content) */
+.cc-detail .modal-overlay {
     position: absolute;
     top: 0%;
     left: 5%;
@@ -290,68 +326,55 @@
     bottom: 0;
     border-radius: 8px;
     background: rgba(0, 0, 0, 0.145);
-    z-index: 1; 
-  }
-  
-  .cc-detail .modal-content {
+    z-index: 1;
+}
+
+.cc-detail .modal-content {
     position: relative;
     border-radius: 8px;
-    max-width: 700px; 
+    max-width: 700px;
     width: 100%;
     height: 95vh;
     /* background-color: #6a11cb; */
-    z-index: 2; 
+    z-index: 2;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    animation: fadeIn 0.3s ease; 
-  }
-  
-  /* Optional: Animation for modal appearance */
-  @keyframes fadeIn {
+    animation: fadeIn 0.3s ease;
+}
+
+/* Optional: Animation for modal appearance */
+@keyframes fadeIn {
     0% {
-      opacity: 0;
-      transform: translateY(-50px);
+        opacity: 0;
+        transform: translateY(-50px);
     }
+
     100% {
-      opacity: 1;
-      transform: translateY(0);
+        opacity: 1;
+        transform: translateY(0);
     }
-  }
-  
-  /* move modal  */
-  .move-modal{
+}
+
+/* move modal  */
+
+.card-move-modal {
     position: absolute;
     top: 0;
     right: 0;
     z-index: 100;
-    width: 80%;
-    min-width: 250px;
-    height: 20vh;
-    padding: 2px !important;
-    /* border: 1px solid rgba(255, 255, 255, 0); */
-    border-radius: 6px;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    /* background-color: #ddd !important; */
-  }
-  .card-move-modal {
-    position: absolute;
-    top: 0; 
-    right: 0;
-    z-index: 100;
-    width: 80%;
-    min-width: 250px;
-    height: 20vh;
+    width: 100%;
+    /* min-width: 250px; */
+    height: fit-content;
     padding: 2px;
     border-radius: 6px;
     display: flex;
     align-items: flex-start;
     justify-content: center;
-    /* border: 1px solid red; */
-  }
+    border: 1px solid blue;
+}
 
-  .dc-modal {
-    position: fixed;  /* Fix it to the screen */
+.dc-modal {
+    position: fixed;
+    /* Fix it to the screen */
     top: 0;
     left: 0;
     right: 0;
@@ -361,23 +384,65 @@
     align-items: center;
     justify-content: center;
     padding-top: 10vh;
-    z-index: 99;  /* Ensure modal is on top */
-    background: rgba(0, 0, 0, 0.5); /* Add a background overlay */
+    z-index: 99;
+    /* Ensure modal is on top */
+    background: rgba(0, 0, 0, 0.5);
+    /* Add a background overlay */
 }
 
 .dcm-conten {
-    width: 80%; /* Adjust width to suit your needs */
-    max-width: 600px; /* Max width to avoid too wide */
-    padding: 20px;  /* Space inside the modal */
-    border-radius: 8px;  /* Rounded corners */
+    width: 80%;
+    /* Adjust width to suit your needs */
+    max-width: 600px;
+    /* Max width to avoid too wide */
+    padding: 20px;
+    /* Space inside the modal */
+    border-radius: 8px;
+    /* Rounded corners */
     /* border: 1px solid blue; */
     display: flex;
-    flex-direction: column;  /* Adjust if you have inner elements */
+    flex-direction: column;
+    /* Adjust if you have inner elements */
     align-items: center;
     justify-content: center;
 }
 
 /* MEDIA QUERY  */
-@media (min-width: 768px) and (max-width: 991.98px) {
-    
+@media (min-width: 768px) and (max-width: 991.98px) {}
+
+
+@media screen and (max-height: 600px) {
+    .cc-header-card {
+        /* border: 1px solid green; */
+    }
+
+    .cc-title input {
+        font-size: 10px;
+        padding: 5px;
+        width: 100% !important;
+    }
+
+    .cc-title input:focus {
+        outline: none;
+        /* border: 1px solid blue; */
+    }
+
+    .cc-title h5 {
+        font-size: 10px;
+    }
+
+    /* LABEL  */
+    .cc-label {
+        /* border: 1px solid red; */
+        width: 100%;
+    }
+
+    .cc-body p {
+        font-size: 8px;
+    }
+
+    /* VIEW BUTTON  */
+    .member button {
+        font-size: 9px;
+    }
 }

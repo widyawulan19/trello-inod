@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { deleteCard, getCardById, getCardByList,updateTitleCard , onCardMove, archiveCard, getCardPriority, getDueDateById, getAllDueDateByCardId, getStatusByCardId, getAllStatus, getStatusCard, getTotalMessageInCard} from '../services/ApiServices';
 import '../style/pages/Card.css'
+import '../style/modules/BoxStatus.css'
 import {    HiOutlineEllipsisHorizontal,
             HiOutlineChatBubbleLeftRight,
             HiOutlinePaperClip,
@@ -252,27 +253,17 @@ const Card=({card,boards, lists,userId,listName, listId,fetchBoardDetail,fetchLi
 
 
   return (
-    <div style={{position:'relative'}} >
+    <div className='card-box-container' >
      <div className='card-container'>
         <div className="cc-top-header">
             <div className="cctop-status">
                 <CardSelectedProperties cardId={card.id}/>
                 {currentStatus ?(
-                    <div>
+                    <div className='status-cont'>
                         <h5
                             style={{
                                 backgroundColor:currentStatus.background_color,
                                 color:currentStatus.text_color,
-                                border:`1px solid white`,
-                                borderRadius:'4px',
-                                fontWeight:'bold',
-                                fontSize:'10px',
-                                margin:'0px',
-                                padding:'5px 8px',
-                                gap:'3px',
-                                display:'flex',
-                                alignItems:'center',
-                                justifyContent:'flex-start'
                             }}
                         >
                             {ICON_STATUS[currentStatus.status_name]}
@@ -317,7 +308,7 @@ const Card=({card,boards, lists,userId,listName, listId,fetchBoardDetail,fetchLi
                 cardName ={card.title}
             />
             {showDuplicate[card.id] && (
-                <div className="move-modal">
+                <div className="card-move-modal">
                     <DuplicateCard cardId={card.id} boardId={boardId} listId={listId} workspaceId={workspaceId} onClose={()=> handleCloseDuplicate(card.id)} fetchCardList={fetchCardList}/>
                 </div>
             )}
