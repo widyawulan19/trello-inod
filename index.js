@@ -1519,7 +1519,7 @@ app.get('/api/boards/:id', async (req, res) => {
 //   }
 // })
 app.post('/api/boards', async (req, res) => {
-  const { userId, name, description, workspace_id } = req.body;
+  const { user_id, name, description, workspace_id } = req.body;
   // const userId = req.user.id; // ✅ ambil dari token user yang login
 
   try {
@@ -1527,7 +1527,7 @@ app.post('/api/boards', async (req, res) => {
       `INSERT INTO boards (user_id, name, description, workspace_id, create_at) 
        VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP) 
        RETURNING *`,
-      [userId, name, description, workspace_id]
+      [user_id, name, description, workspace_id]
     );
 
     const boardId = result.rows[0].id;
@@ -1537,7 +1537,7 @@ app.post('/api/boards', async (req, res) => {
       'board',
       boardId,
       'create',
-      userId,
+      user_id,
       `Board '${name}' created `,
       'workspace',
       workspace_id
