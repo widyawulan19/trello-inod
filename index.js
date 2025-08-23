@@ -1,20 +1,20 @@
-require('dotenv').config();
+require("dotenv").config(); // wajib paling atas sebelum import lain
 const express = require("express");
 const client = require('./connection');
-const dotenv = require("dotenv");
 const bodyParser = require('body-parser');
-const cors = require('cors')
-const moment = require('moment')
-const bcrypt = require('bcryptjs')
+const cors = require('cors');
+const moment = require('moment');
+const bcrypt = require('bcryptjs');
 const { logActivity } = require('./ActivityLogger');
 const { logCardActivity } = require('./CardLogActivity');
-require('./CronJob')
+require('./CronJob');
 const { SystemNotification } = require('./SystemNotification');
 const upload = require('./upload');
 const cloudinary = require('./CloudinaryConfig');
 const jwt = require("jsonwebtoken");
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
+// const dotenv = require("dotenv");
 
 
 //TOP
@@ -1492,32 +1492,66 @@ app.get('/api/boards/:id', async (req, res) => {
   }
 })
 //3. create board
+// app.post('/api/boards', async (req, res) => {
+//   const { user_id, name, description, workspace_id, } = req.body;
+//   try {
+//     const result = await client.query(
+//       'INSERT INTO boards (user_id, name, description, workspace_id, create_at) VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP) RETURNING *',
+//       [user_id, name, description, workspace_id || []]
+//     );
+
+//     //mengambil board id
+//     boardId = result.rows[0].id;
+//     console.log('endpoin post ini menerima boardId', boardId);
+
+//     await logActivity(
+//       'board',
+//       boardId,
+//       'create',
+//       user_id,
+//       `Board '${name}' created `,
+//       'workspace',
+//       workspace_id
+//     )
+//     res.status(201).json(result.rows[0]);
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// })
 app.post('/api/boards', async (req, res) => {
-  const { user_id, name, description, workspace_id, } = req.body;
+  const { userId, name, description, workspace_id } = req.body;
+
   try {
+    // ✅ Simpan board baru
     const result = await client.query(
-      'INSERT INTO boards (user_id, name, description, workspace_id, create_at) VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP) RETURNING *',
-      [user_id, name, description, workspace_id || []]
+      `INSERT INTO boards (user_id, name, description, workspace_id, create_at) 
+       VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP) 
+       RETURNING *`,
+      [userId, name, description, workspace_id]
     );
 
-    //mengambil board id
-    boardId = result.rows[0].id;
-    console.log('endpoin post ini menerima boardId', boardId);
+    const newBoard = result.rows[0];
 
-    await logActivity(
-      'board',
-      boardId,
-      'create',
-      user_id,
-      `Board '${name}' created `,
-      'workspace',
-      workspace_id
-    )
-    res.status(201).json(result.rows[0]);
+    // ✅ Tambahin log activity
+    await client.query(
+      `INSERT INTO activity_logs (user_id, action, target_type, target_id, workspace_id, created_at) 
+       VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP)`,
+      [
+        userId,
+        `created board "${name}"`,
+        'board',
+        newBoard.id,
+        workspace_id
+      ]
+    );
+
+    res.status(201).json(newBoard);
   } catch (error) {
+    console.error('Error creating board:', error);
     res.status(500).json({ error: error.message });
   }
-})
+});
+
 //4. update board
 app.put('/api/boards/:id', async (req, res) => {
   const { id } = req.params;
