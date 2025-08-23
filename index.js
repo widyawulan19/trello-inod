@@ -14,7 +14,7 @@ const cloudinary = require('./CloudinaryConfig');
 const jwt = require("jsonwebtoken");
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
-// const dotenv = require("dotenv");
+const dotenv = require("dotenv");
 
 
 //TOP
