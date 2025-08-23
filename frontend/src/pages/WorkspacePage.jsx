@@ -326,7 +326,7 @@ const handleSubmit = async (e, userId) =>{
   }
 
   const boardData = {
-    userId: userId,
+    user_id: userId,
     name:boardName,
     description:boardDescription,
     workspace_id:workspaceId
