@@ -307,3 +307,33 @@ app.put('/api/user-setting/:userId', async (req, res) => {
 
 
 export const getSystemNotificationByUser = (userId) => axios.get(`${API_URL}/system-notification/user/${userId}`);
+
+
+// CREATE BOARD BY USER 
+app.post('/api/boards', verifyToken, async (req, res) => {
+  const { name, description, workspace_id } = req.body;
+  const userId = req.user.id; // ✅ dari token login
+
+  try {
+    const result = await client.query(
+      'INSERT INTO boards (user_id, name, description, workspace_id, create_at) VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP) RETURNING *',
+      [userId, name, description, workspace_id]
+    );
+
+    const boardId = result.rows[0].id;
+
+    await logActivity(
+      'board',
+      boardId,
+      'create',
+      userId,
+      `Board '${name}' created `,
+      'workspace',
+      workspace_id
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
