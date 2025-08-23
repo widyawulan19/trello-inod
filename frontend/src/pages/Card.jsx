@@ -308,7 +308,7 @@ const Card=({card,boards, lists,userId,listName, listId,fetchBoardDetail,fetchLi
                 cardName ={card.title}
             />
             {showDuplicate[card.id] && (
-                <div className="move-modal">
+                <div className="card-move-modal">
                     <DuplicateCard cardId={card.id} boardId={boardId} listId={listId} workspaceId={workspaceId} onClose={()=> handleCloseDuplicate(card.id)} fetchCardList={fetchCardList}/>
                 </div>
             )}

@@ -63,7 +63,7 @@ const DuplicateList=({boardId, userId, onClose, listId})=> {
             // alert('List duplicated successfully!');
             showSnackbar('List duplicated successfully!', 'success');
             onClose();
-            navigate(`/workspaces/${selectedWorkspaceId}/board/${selectedBoardId}`);
+            navigate(`/layout/workspaces/${selectedWorkspaceId}/board/${selectedBoardId}`);
         }catch (error) {
             console.error('Error duplicate list:', error);
             showSnackbar('Failed to duplicate the list. Please try again.', 'error');
@@ -76,10 +76,19 @@ const DuplicateList=({boardId, userId, onClose, listId})=> {
   return (
     <div className='dl-container'>
         <div className="dl-header">
-            <p>Duplicate List</p>
-            <BootstrapTooltip title='Close' placement='top'>
-                <HiOutlineXMark className='dl-close' onClick={onClose}/>
-            </BootstrapTooltip>
+            <div className="dl-left">
+                <div className="dl-icon">
+                    <HiOutlineSquare2Stack className='mini-icon'/>
+                </div>
+                <p>Duplicate List</p>
+            </div>
+            <div className="dl-right">
+                <BootstrapTooltip title='Close' placement='top'>
+                  <HiOutlineXMark className='dl-close' onClick={onClose}/>
+                </BootstrapTooltip>
+            </div>
+            
+            
         </div>
         <div className="dl-body">
             <div className="dl-workspace">

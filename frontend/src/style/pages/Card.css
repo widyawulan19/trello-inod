@@ -355,37 +355,21 @@
 }
 
 /* move modal  */
-.move-modal {
-    position: absolute;
-    top: 0;
-    right: 0;
-    z-index: 100;
-    width: 80%;
-    /* min-width: 250px; */
-    height: 20vh;
-    padding: 2px !important;
-    /* border: 1px solid rgba(255, 255, 255, 0); */
-    border-radius: 6px;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    /* background-color: #ddd !important; */
-}
 
 .card-move-modal {
     position: absolute;
     top: 0;
     right: 0;
     z-index: 100;
-    width: 80%;
-    min-width: 250px;
-    height: 20vh;
+    width: 100%;
+    /* min-width: 250px; */
+    height: fit-content;
     padding: 2px;
     border-radius: 6px;
     display: flex;
     align-items: flex-start;
     justify-content: center;
-    /* border: 1px solid red; */
+    border: 1px solid blue;
 }
 
 .dc-modal {
