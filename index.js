@@ -1530,22 +1530,21 @@ app.post('/api/boards', async (req, res) => {
       [userId, name, description, workspace_id]
     );
 
-    const newBoard = result.rows[0];
+    //mengambil boardId
+    boardId = result.rows[0].id;
+    console.log('endpoin post ini menerima boardid', boardId);
 
-    // ✅ Tambahin log activity
-    await client.query(
-      `INSERT INTO activity_logs (user_id, action, target_type, target_id, workspace_id, created_at) 
-       VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP)`,
-      [
-        userId,
-        `created board "${name}"`,
-        'board',
-        newBoard.id,
-        workspace_id
-      ]
-    );
+    await logActivity(
+      'board',
+      boardId,
+      'create',
+      user_id,
+      `Board '${name}' created `,
+      'workspace',
+      workspace_id
+    )
 
-    res.status(201).json(newBoard);
+    res.status(201).json(result.rows[0]);
   } catch (error) {
     console.error('Error creating board:', error);
     res.status(500).json({ error: error.message });
