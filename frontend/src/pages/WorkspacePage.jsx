@@ -317,33 +317,44 @@ const handleKeyPressDescription = (e, boardId) =>{
   }
 }
 
-//create board
-const handleSubmit = async (e, userId) =>{
+// create board
+const handleSubmit = async (e) => {
   e.preventDefault();
 
-  if(!boardName || !workspaceId){
+  if (!boardName || !workspaceId) {
+    showSnackbar('Board name dan Workspace wajib diisi', 'error');
+    return;
+  }
+
+  // ✅ Ambil userId dari localStorage (hasil login)
+  const user = JSON.parse(localStorage.getItem('user'));
+  const userId = user?.id; 
+
+  if (!userId) {
+    showSnackbar('User tidak ditemukan, silakan login ulang', 'error');
     return;
   }
 
   const boardData = {
-    user_id: userId,
-    name:boardName,
-    description:boardDescription,
-    workspace_id:workspaceId
-  }
+    user_id: userId, // ✅ kirim sesuai body endpoint
+    name: boardName,
+    description: boardDescription,
+    workspace_id: workspaceId
+  };
 
-  try{
-    await createBoard(boardData);
-    fetchBoards();  // Perbarui daftar board setelah membuat board
-    setShowForm(false); // Tutup form setelah submit
-    setBoardName(''); 
+  try {
+    await createBoard(boardData);  // panggil API service
+    fetchBoards();                 // perbarui daftar board
+    setShowForm(false);            // tutup form
+    setBoardName('');              // reset input
     setBoardDescription('');
-    showSnackbar('Succesfully create a new board','success')
-  }catch(error){
+    showSnackbar('Successfully created a new board', 'success');
+  } catch (error) {
     console.error('Error create a new board:', error);
-    showSnackbar('Failed to create a new board','error')
+    showSnackbar('Failed to create a new board', 'error');
   }
-}
+};
+
 
 
 //fungsi archive board
