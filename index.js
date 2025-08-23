@@ -1538,7 +1538,7 @@ app.post('/api/boards', async (req, res) => {
       'board',
       boardId,
       'create',
-      user_id,
+      userId,
       `Board '${name}' created `,
       'workspace',
       workspace_id
