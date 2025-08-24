@@ -59,7 +59,7 @@ const DuplicateCard=({cardId, boardId, listId, workspaceId, onClose,fetchCardLis
             const result = await duplicateCard(cardId,  selectedList.id); // Pass the target listId
             console.log('✅ Card duplicated to target list:', result.data);
             showSnackbar('Card duplicated successfully!', 'success');
-            navigate(`/workspaces/${workspaceId}/board/${selectedBoardId}`);
+            navigate(`/layout/workspaces/${workspaceId}/board/${selectedBoardId}`);
             fetchCardList(selectedList.id)
             onClose()
         } catch (error) {
@@ -73,16 +73,23 @@ const DuplicateCard=({cardId, boardId, listId, workspaceId, onClose,fetchCardLis
     return (
     <div className='dc-container'>
         <div className="dc-header">
-            <p>Duplicate Card</p>
-            <BootstrapTooltip title='Close' placement='top'>
-                <HiOutlineXMark className='dc-icon' onClick={onClose}/>
-            </BootstrapTooltip>
+            <div className="dc-left">
+                <div className="left-icon">
+                    <HiOutlineSquare2Stack className='mini-icon'/>
+                </div>
+                <p>Duplicate Card</p>
+            </div>
+            <div className="dc-right">
+                <BootstrapTooltip title='Close' placement='top'>
+                    <HiOutlineXMark className='dc-icon' onClick={onClose}/>
+                </BootstrapTooltip>
+            </div>
         </div>
         <div className="dc-body">
             {/* SELECT BOARD  */}
             <div className="dc-board">
                 <label>Choose Board</label>
-                <div className="dcb-dropdown" onClick={(e)=>{e.stopPropagation(); setShowBoardDropdown(true)}}>
+                <div className="dcb-dropdown">
                     <button className='dcb-btn' onClick={(e)=>{e.stopPropagation(); setShowBoardDropdown((prev)=> !prev)}}>
                         {selectedBoardId ? boards.find((b)=> b.id === selectedBoardId)?.name : 'Select a board'}
                         <HiOutlineChevronDown/>
