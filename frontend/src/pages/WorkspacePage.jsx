@@ -1,7 +1,7 @@
 import React, { useEffect, useState,useCallback } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import '../style/pages/WorkspacePage.css';
-import {HiOutlineSquaresPlus,HiMiniSlash, HiOutlineEllipsisHorizontal,HiOutlineClock,HiMiniLightBulb,HiChevronRight, HiOutlinePlus, HiMiniXMark, HiOutlineSquare2Stack,HiMiniArrowLeftStartOnRectangle, HiOutlineArchiveBox, HiOutlineTrash, HiOutlineChevronRight, HiOutlineXMark, HiMiniCalendar, HiPlus } from 'react-icons/hi2';
+import {HiOutlineSquaresPlus,HiMiniSlash, HiOutlineEllipsisHorizontal,HiOutlineClock,HiMiniLightBulb,HiChevronRight, HiOutlinePlus, HiMiniXMark, HiOutlineSquare2Stack,HiMiniArrowLeftStartOnRectangle, HiOutlineArchiveBox, HiOutlineTrash, HiOutlineChevronRight, HiOutlineXMark, HiMiniCalendar, HiPlus,  } from 'react-icons/hi2';
 import { FaPlus } from "react-icons/fa";
 import { CiAlignTop } from "react-icons/ci";
 import { addPriorityToBoard, createBoard, deletePropertyFromBoard, duplicateBoards, getALlPriorities, getBoardById, getBoardPriorities, getBoardsWorkspace, getWorkspaceById, updateBoardDescription, updateBoardName, archiveBoard, deleteBoard } from '../services/ApiServices';
@@ -376,7 +376,11 @@ const handleNavigateToWorkspace = () =>{
       <div className="wp-header">
         <div className="nav">
           <h5> WORKSPACE {workspace.name}</h5>
-          <p onClick={handleNavigateToWorkspace}>{workspace.name}  /  Boards</p>
+          <div className="nav-title">
+            <p className='nav-p' onClick={handleNavigateToWorkspace}>{workspace.name}</p>
+            <HiChevronRight/>
+            <p style={{fontWeight:'normal'}}>Boards Page</p>
+          </div>
         </div>
         <div className="more-action">
           <div className="create-board-btn" onClick={handleShowForm}>
