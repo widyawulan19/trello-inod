@@ -956,4 +956,31 @@
         font-size: 10px;
         padding: 3px 5px;
     }
+
+    /* FORM CREATE BOARD  */
+    .bform-workspace {
+        /* border: 1px solid red; */
+        left: 85%;
+        width: 25vw;
+    }
+
+    .bbody {
+        /* border: 1px solid blue; */
+        padding: 5px 10px;
+    }
+
+    .fname,
+    .fdesc {
+        margin: 0px;
+    }
+
+    .fname label,
+    .fdesc label {
+        font-size: 10px;
+    }
+
+    .fname input,
+    .fdesc input {
+        margin: 0px;
+    }
 }
