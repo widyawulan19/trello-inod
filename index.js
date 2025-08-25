@@ -1671,10 +1671,10 @@ app.put('/api/boards/:id/description', async (req, res) => {
 })
 
 //8. Endpoint untuk menduplikasi board ke workspace baru
-// 8. Endpoint untuk menduplikasi board ke workspace baru
 app.post('/api/duplicate-board/:boardId/to-workspace/:workspaceId', async (req, res) => {
   const { boardId, workspaceId } = req.params;
-  const userId = req.user?.id || null; // ✅ amanin biar nggak undefined
+  const userId = req.user.id;
+
 
   try {
     await client.query('BEGIN');
@@ -1682,9 +1682,9 @@ app.post('/api/duplicate-board/:boardId/to-workspace/:workspaceId', async (req, 
     // 1. Salin Board ke Workspace Baru
     const boardResult = await client.query(
       `INSERT INTO boards (user_id, name, description, workspace_id, background_image_id, assign, create_at)
-       SELECT user_id, name || ' (Copy)', description, $1, background_image_id, assign, CURRENT_TIMESTAMP
-       FROM boards WHERE id = $2
-       RETURNING id, name`,
+            SELECT user_id, name || ' (Copy)', description, $1, background_image_id, assign, CURRENT_TIMESTAMP
+            FROM boards WHERE id = $2
+            RETURNING id`,
       [workspaceId, boardId]
     );
 
@@ -1693,36 +1693,34 @@ app.post('/api/duplicate-board/:boardId/to-workspace/:workspaceId', async (req, 
     }
 
     const newBoardId = boardResult.rows[0].id;
+    // const newBoardName = boardResult.rows[0].name;
 
-    // 2. Ambil semua list lama dulu
-    const oldLists = await client.query(
-      `SELECT id, name FROM lists WHERE board_id = $1`,
-      [boardId]
+    // 2. Salin Lists yang ada di Board Lama ke Board Baru
+    const listResult = await client.query(
+      `INSERT INTO lists (board_id, name)
+             SELECT $1, name FROM lists WHERE board_id = $2
+             RETURNING id, name`,
+      [newBoardId, boardId]
     );
 
-    // 3. Insert list baru dan mapping oldListId -> newListId
-    const listMap = {}; // { oldListId: newListId }
-    for (const oldList of oldLists.rows) {
-      const newList = await client.query(
-        `INSERT INTO lists (board_id, name)
-         VALUES ($1, $2)
-         RETURNING id`,
-        [newBoardId, oldList.name]
-      );
-      listMap[oldList.id] = newList.rows[0].id;
-    }
+    const listMap = {};
+    listResult.rows.forEach((list) => {
+      listMap[list.id] = list.name; // Simpan mapping ID list lama ke list baru
+    });
 
-    // 4. Salin semua cards berdasarkan mapping list lama -> list baru
-    for (const [oldListId, newListId] of Object.entries(listMap)) {
-      await client.query(
+    // 3. Salin Cards yang ada di Lists Lama ke Lists Baru
+    const cardInsertPromises = Object.entries(listMap).map(async ([oldListId, name]) => {
+      return client.query(
         `INSERT INTO cards (list_id, title, description)
-         SELECT $1, title, description
-         FROM cards WHERE list_id = $2`,
-        [newListId, oldListId]
+                 SELECT (SELECT id FROM lists WHERE board_id = $1 AND name = $2), title, description
+                 FROM cards WHERE list_id = $3`,
+        [newBoardId, name, oldListId]
       );
-    }
+    });
 
-    // 5. Add log activity
+    await Promise.all(cardInsertPromises);
+
+    //add log activity
     await logActivity(
       'board',
       newBoardId,
@@ -1731,21 +1729,20 @@ app.post('/api/duplicate-board/:boardId/to-workspace/:workspaceId', async (req, 
       `Board dengan ID ${boardId} diduplikasi ke workspace ${workspaceId}`,
       'workspace',
       workspaceId
-    );
+    )
 
     await client.query('COMMIT');
 
     res.status(200).json({
       message: `Board berhasil diduplikasi ke workspace ${workspaceId}.`,
-      newBoardId
+      newBoardId: newBoardId
     });
   } catch (err) {
     await client.query('ROLLBACK');
     console.error('Error duplicating board:', err.stack);
-    res.status(500).json({ error: 'Server error saat menduplikasi board!', detail: err.message });
+    res.status(500).json({ error: 'Server error saat menduplikasi board!' });
   }
 });
-
 
 //9. move board to workspace
 app.post('/api/move-board/:boardId/to-workspace/:workspaceId', async (req, res) => {
