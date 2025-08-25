@@ -36,7 +36,7 @@ const MoveBoard = ({ boardId, userId, onClose, fetchBoards }) => {
         try {
             const result = await moveBoardToWorkspace(boardId, selectedWorkspace.id);
             showSnackbar('Board berhasil dipindahkan!', 'success')
-            navigate(`/workspaces/${selectedWorkspace.id}`);
+            navigate(`/layout/workspaces/${selectedWorkspace.id}`);
             fetchBoards(selectedWorkspace.id)
         } catch (err) {
             console.error('Gagal memindahkan board:', err);
@@ -58,7 +58,7 @@ const MoveBoard = ({ boardId, userId, onClose, fetchBoards }) => {
             </div>
             <div className='move-content'>
                 <button className='select-btn' onClick={handleShowWorkspace}>
-                    Select Workspace <HiOutlineChevronDown />
+                    {selectedWorkspace ? selectedWorkspace.name : "Select Workspace"}
                 </button>
                 <button className='move-btn' onClick={handleMoveBoard} disabled={!selectedWorkspace}>
                     <HiMiniArrowLeftStartOnRectangle className='mb-icon'/>
@@ -87,7 +87,10 @@ const MoveBoard = ({ boardId, userId, onClose, fetchBoards }) => {
                                 <li
                                     key={ws.id}
                                     className={`workspace-list-item ${selectedWorkspace?.id === ws.id ? 'selected' : ''}`}
-                                    onClick={() => setSelectedWorkspace(ws)}
+                                   onClick={() => {
+                                    setSelectedWorkspace(ws);
+                                    setShowWorkspace(false); // ✅ auto-close dropdown
+                                    }}
                                 >
                                     {ws.name}
                                 </li>
