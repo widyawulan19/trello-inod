@@ -40,8 +40,10 @@ const PersonalAgendas = ({ userId }) => {
 
     return (
       <div className="pnh-right">
-        <h3>{day}</h3>
-        <p>{month} {year}</p>
+        <div className="right-box">
+          <h3>{day}</h3>
+          <p>{month} {year}</p>
+        </div>
       </div>
     );
   };
@@ -88,8 +90,8 @@ const PersonalAgendas = ({ userId }) => {
         <div key={agenda.id} className="personal-agenda-box">
           <div className="pn-header">
             <div className="pnh-left">
-              <FaCircle  style={{ color: agenda.color}} />
-              <h4 style={{ color: agenda.color, fontSize:'12px', fontWeight:'normal', }}>#{agenda.title}</h4>
+              <FaCircle className='pnh-icon' style={{ color: agenda.color}} />
+              <h4 style={{ color: agenda.color}}>#{agenda.title}</h4>
             </div>
             {renderAgendaDate(agenda.agenda_date)}
           </div>

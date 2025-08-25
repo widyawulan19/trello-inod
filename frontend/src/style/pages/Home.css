@@ -1,10 +1,8 @@
 .home-container {
     /* border: 1px solid red; */
     /* border:1px solid #6a11cb; */
-    height: 97%;
+    height: 100%;
     padding-top: 10px;
-    margin-bottom: 10px;
-    margin: 15px;
     /* background-color: white; */
     background-image: linear-gradient(to right bottom, #051937, #00235f, #042887, #3827ab, #6a11cb);
     border-radius: 8px;
@@ -372,7 +370,7 @@
 
 .sh-right .sh-expand:hover,
 .ah-right .sh-expand:hover {
-    box-shadow: 0px 4px 8px #6b11cb40;
+    /* box-shadow: 0px 4px 8px #6b11cb40; */
     filter: drop-shadow(0 0 1px #5320be);
     transform: scale(1.2);
     /* ✅ memperbesar */
@@ -856,7 +854,7 @@
     }
 }
 
-@media (min-height:400px) and (max-height:1500px) {
+@media screen and (max-height: 600px) {
     .home-summary .body-s {
         height: 35vh;
     }
@@ -865,6 +863,98 @@
         /* border: 1px solid blue; */
         height: 45vh;
     }
+
+    /* HEADER  */
+    .home-header {
+        /* border: 1px solid red; */
+        padding: 5px 10px;
+    }
+
+    .greeting-container h4 {
+        font-size: 15px;
+        margin: 0px;
+        /* border: 1px solid red; */
+    }
+
+    .greet-icon,
+    .gradient-text {
+        font-size: 18px;
+    }
+
+    /* FORM CREATE WORKSPACE  */
+    .wf-create {
+        width: 30vw !important;
+        /* border: 1px solid #532189; */
+    }
+
+    .wf-header {
+        padding: 8px 10px;
+    }
+
+    .wf-content {
+        /* border: 1px solid red; */
+        padding: 8px;
+    }
+
+    .wf-input input,
+    .wf-input textarea {
+        font-size: 10px;
+    }
+
+    .wf-content .wf-btn {
+        padding: 0px;
+        padding-top: 5px;
+        /* border: 1px solid red; */
+    }
+
+    .wf-btn .submit-btn,
+    .wf-btn .cancle-btn {
+        padding: 5px;
+    }
+
+    /* END HEADER  */
+
+    /* HOME BODY  */
+    .home-body-left .home-summary {
+        /* border: 1px solid red; */
+    }
+
+    .summary-header {
+        /* border: 1px solid red; */
+        padding: 5px 10px;
+    }
+
+    .sh-gradient,
+    .nhl-gradient,
+    .ah-left h4,
+    .quick-left h4 {
+        font-size: 15px;
+    }
+
+    .sh-icon,
+    .nh-left .nhl-icon,
+    .ah-left .ahl-icon,
+    .quick-icon {
+        padding: 5px;
+        font-size: 13px;
+    }
+
+    .sh-right .sh-expand,
+    .ah-right .sh-expand,
+    .quick-right .sh-expand {
+        font-size: 13px;
+    }
+
+    /* PERSONAL NOTE  */
+
+    /* QUICK BODY  */
+    .quick-body {
+        /* border: 1px solid green; */
+        height: fit-content;
+        padding: 5px;
+    }
+
+    /* END HOME BODY  */
 
 }
 
