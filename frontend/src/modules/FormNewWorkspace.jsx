@@ -2,7 +2,7 @@ import { useState } from "react";
 import { createWorkspaceUser } from '../services/ApiServices'
 import { useNavigate } from "react-router-dom";
 import '../style/pages/Workspace.css'
-import { HiOutlineSquaresPlus, HiOutlineXMark, HiXMark } from "react-icons/hi2";
+import { HiOutlineSquaresPlus, HiOutlineXMark, HiSquaresPlus, HiXMark } from "react-icons/hi2";
 import BootstrapTooltip from "../components/Tooltip";
 import { useSnackbar } from "../context/Snackbar";
 
@@ -47,7 +47,7 @@ const FormNewWorkspace = ({ userId,fetchWorkspaceUser, onCloseForm }) => {
             <div className="cwc-header">
                 <h4>
                     <div className="cwch-icon">
-                        <HiOutlineSquaresPlus/>
+                        <HiSquaresPlus/>
                     </div>
                     Create new workspace
                 </h4>
