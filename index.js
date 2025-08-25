@@ -1697,9 +1697,9 @@ app.post('/api/duplicate-board/:boardId/to-workspace/:workspaceId', async (req, 
 
     // 2. Salin Lists yang ada di Board Lama ke Board Baru
     const listResult = await client.query(
-      `INSERT INTO lists (board_id, name)
-             SELECT $1, name FROM lists WHERE board_id = $2
-             RETURNING id, name`,
+      `INSERT INTO lists (board_id, name, position)
+      SELECT $1, name, position FROM lists WHERE board_id = $2
+      RETURNING id, name, position`,
       [newBoardId, boardId]
     );
 
