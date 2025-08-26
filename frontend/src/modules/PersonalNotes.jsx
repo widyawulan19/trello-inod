@@ -63,7 +63,7 @@ const PersonalNotes=({userId})=> {
         {notes.map(note =>(
              <div key={note.id} className="personal-notes-box">
                 <div className="pn-header">
-                    <div className="pnh-left">
+                    <div className="note-left">
                         <FaCircle className='pnh-icon'/>
                         <h4>#{note.name} #1</h4>
                     </div>
@@ -93,3 +93,4 @@ const PersonalNotes=({userId})=> {
 }
 
 export default PersonalNotes
+// Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis deserunt eligendi necessitatibus laborum corrupti vel. Corrupti illo magnam hic illum dolorem autem deleniti sequi recusandae aperiam, ipsum dicta, ut maxime!
