@@ -259,7 +259,7 @@ const handleCloseFilterButton = () =>{
         <div className="dm-left">
           <div className="dml-title">
             <div className="dm-icon">
-              <HiOutlineCircleStack size={20} />
+              <HiOutlineCircleStack className="dm-mini" />
             </div>
              
              <h3>{filterType}</h3>

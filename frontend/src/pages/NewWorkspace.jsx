@@ -14,6 +14,7 @@ import {
   HiMiniUserGroup,
   HiMiniCalendar,
   HiOutlineUserGroup,
+  HiSquaresPlus,
 } 
 from "react-icons/hi2";
 import { TbListCheck } from "react-icons/tb";
@@ -30,7 +31,7 @@ import { useSnackbar } from '../context/Snackbar';
 import WorkspaceDeleteConfirm from '../modals/WorkspaceDeleteConfirm';
 import UsersTotal from '../modules/UsersTotal';
 import { useUser } from '../context/UserContext';
-import { IoHome, IoTimeSharp } from 'react-icons/io5';
+import { IoHome, IoLayers, IoTimeSharp } from 'react-icons/io5';
 import { HiViewBoards } from 'react-icons/hi';
 import { PiCardsFill } from 'react-icons/pi';
 import { handleArchive } from '../utils/handleArchive';
@@ -503,7 +504,9 @@ const handleCloseDetail = () =>{
               <div key={workspace.id} className="workspace-card" onClick={()=> setWorkspaceId(workspace.id)}>
                 <div className="wc-header">
                   <div className="wc-name">
-                    <HiOutlineSquaresPlus/>
+                    <div className="name-icon">
+                      <HiSquaresPlus className='ni-mini'/>
+                    </div>
                     {/* Editing nama  */}
                     {editingName === workspace.id ?(
                       <input
@@ -609,7 +612,10 @@ const handleCloseDetail = () =>{
                   {workspaceSummaries[workspace.id] ? (
                     <BootstrapTooltip title='Detail Workspace' placement='top'>
                       <div className="detail-icon" onClick={()=> handleShowWorkspace(workspace.id)}>
-                        <FiLayers/>
+                        <div className="mini-icon">
+                          <IoLayers className='mi'/>
+                        </div>
+                         <p>Workspace Detail</p>
                       </div>
                     </BootstrapTooltip>
                     

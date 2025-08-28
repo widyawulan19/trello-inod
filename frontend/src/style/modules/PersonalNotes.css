@@ -23,45 +23,80 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: 100%;
 }
 
-.pn-header .pnh-left {
+.pn-header .note-left {
     gap: 15px;
     display: flex;
     align-items: center;
     justify-content: flex-start;
     /* border: 1px solid green; */
-    width: 75%;
+    width: 90%;
 }
 
-.pnh-left .pnh-icon {
+.note-left .pnh-icon {
     color: #ba81f7;
 }
 
-.pnh-left h4 {
+.note-left h4 {
     color: #ba81f7;
     font-size: 15px;
     font-weight: bold;
+    /* border: 1px solid red; */
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .pn-header .pnh-right {
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    width: 25%;
+    width: 10%;
     gap: 10px;
-    padding-right: 10px;
 }
 
 .pnh-right p {
     margin: 0px;
     font-size: 10px;
     color: #333;
+    width: 100%;
+    text-align: right;
 }
 
 /* CONTENT  */
 .personal-notes-box .pn-content {
     margin: 10px 0px;
+    width: 100%;
+}
+
+.pn-content p {
+    margin: 5px 0px;
+    font-size: 12px;
+    /* padding-top: 10px; */
+    min-height: 3vh;
+    /* max-width: 250px; */
+    width: 100%;
+    box-sizing: border-box;
+    /* border: 1px solid red; */
+
+    /* tambahin ini */
+    overflow: hidden;
+    /* sembunyikan teks yang lebih */
+    display: -webkit-box;
+    /* bikin flexbox khusus */
+    -webkit-line-clamp: 2;
+    /* jumlah baris maksimal (misal 5 baris) */
+    -webkit-box-orient: vertical;
+    /* arah box vertical */
+    text-overflow: ellipsis;
+    /* kasih ... kalau kepotong */
+    white-space: normal;
+    /* biar tetap wrap */
+    word-break: break-word;
+    /* biar kata panjang bisa patah */
 }
 
 .personal-notes-box .pn-footer {
@@ -172,5 +207,12 @@
 @media (min-width:375px) and (max-width:575px) {
     .personal-notes-container {
         height: 35vh;
+    }
+}
+
+@media screen and (max-height: 600px) {
+    .pn-content p {
+        /* border: 1px solid red; */
+        font-size: 10px;
     }
 }

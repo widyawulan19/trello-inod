@@ -1,71 +1,80 @@
-.duplicate-container{
+.duplicate-container {
     background: #fff;
-    border: 1px solid #5D12EB;
+    border: 1px solid #ddd;
     border-radius: 8px;
     /* padding:  5px 10px; */
     width: 100%;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 4px 10px #5e12eb44;
     display: flex;
     flex-direction: column;
     align-items: center;
     margin: 0px;
 }
+
 /* .duplicate-container h5{
     margin: 5px 0px;
     font-weight: normal;
     font-size: 10px;
 } */
-.db-header{
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  align-items: center;
-  font-weight: bold;
-  font-size: 16px;
-  padding: 5px 10px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #ddd;
-  border-radius: 8px;
-  border-bottom-left-radius: 0px;
-  border-bottom-right-radius: 0px;
-  background-color: #5D12EB;
-  color: white;
-}
-.dbh-icon{
-  cursor: pointer;
-  font-size: 20px;
-  color: white;
+.db-header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 5px 10px;
+    /* padding-bottom: 10px; */
+    border-bottom: 1px solid #ddd;
+    border-radius: 8px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+    background-color: #5D12EB;
+    color: white;
 }
 
-.db-header p{
+.dbh-icon {
+    cursor: pointer;
+    font-size: 20px;
+    color: white;
+}
+
+.db-header p {
     font-size: 12px;
     font-weight: bold;
     margin: 0px;
 }
-.db-content{
+
+.db-content {
     position: relative;
-    margin-top: 10px;
+    /* margin-top: 10px; */
     /* border: 1px solid blue; */
     width: 100%;
     display: flex;
     justify-content: space-between;
     gap: 5px;
+    margin: 5px 0px;
     padding: 5px 10px;
 }
-.db-select{
-    font-size: 12px;
-    width: 60%;
+
+.db-content .db-select {
     background-color: white;
     border: 1px solid #ddd;
     border-radius: 4px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: 60% !important;
+    font-size: 12px;
+    color: #333;
+    padding: 2px 5px;
 }
-.db-select:hover{
+
+.db-select:hover {
     border: 1px solid #6E30DC;
-  }
-.db-content .db-sub{
+}
+
+.db-content .db-sub {
     background: linear-gradient(to bottom, #6E30DC, #5D12EB);
     color: white;
     font-weight: normal;
@@ -79,38 +88,42 @@
     cursor: pointer;
     gap: 5px;
 }
-.db-sub:hover{
+
+.db-sub:hover {
     box-shadow: 0px 4px 8px #5e12eb46;
 }
 
 /* DUPLICATE SEARCH  */
 
-.duplicate-box-con{
+.duplicate-box-con {
     padding: 0px 10px;
-    /* border: 1px solid blue; */
     width: 100%;
 }
 
-.duplicate-search{
+.duplicate-search {
     width: 100%;
-    padding: 5px;
     /* border: 1px solid blue; */
 }
+
 .duplicate-search input {
-    width: 100% ;
-    padding: 5px ;
+    width: 100%;
+    padding: 5px 8px;
+    font-size: 12px;
+    margin-bottom: 2px;
+    color: #333;
     border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 10px;
-  }
-  .duplicate-search input:hover {
+    border-radius: 8px !important;
+}
+
+.duplicate-search input:hover {
     border: 1px solid #6E30DC;
-  }
-  .duplicate-search input:focus {
+}
+
+.duplicate-search input:focus {
     border: 1px solid #6E30DC;
     box-shadow: 0px 4px 10px #5e12eb44;
     outline: none;
-  }
+}
 
 .db-list {
     list-style: none;
@@ -131,11 +144,61 @@
     border-radius: 4px;
 }
 
-.db-item:hover{
-    background-color: #c4adeb44;  
-} 
+.db-item:hover {
+    background-color: #c4adeb44;
+}
 
 .db-item.selected {
     background: linear-gradient(to bottom, #5D12EB, #6E30DC);
     color: white;
+}
+
+@media screen and (max-height: 600px) {
+    .db-header {
+        padding: 8px;
+    }
+
+    .db-header p {
+        font-size: 10px;
+    }
+
+    .dbh-icon {
+        font-size: 15px;
+    }
+
+    /* BODY  */
+    .db-content {
+        /* border: 1px solid red; */
+        padding: 5px;
+    }
+
+    .db-content .db-select {
+        font-size: 9px;
+        /* border: 1px solid green; */
+        padding: 5px;
+    }
+
+    .db-content .db-sub {
+        padding: 5px;
+        font-size: 9px;
+    }
+
+    /* DROPDOWN  */
+    .duplicate-box-con {
+        /* border: 1px solid red; */
+        padding: 0px 5px;
+    }
+
+    .duplicate-search input {
+        font-size: 8px;
+    }
+
+    .db-list {
+        font-size: 8px;
+    }
+
+    .db-item {
+        padding: 5px;
+    }
+
 }

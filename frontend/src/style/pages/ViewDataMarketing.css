@@ -127,7 +127,8 @@
 }
 
 .sec-content-link {
-    border: 1px solid #eee;
+    /* border: 1px solid #eee; */
+    /* border: 1px solid red; */
     border-radius: 4px;
     display: flex;
     width: 100%;
@@ -146,7 +147,7 @@
 .sec-content-link .box1,
 .sec-desc-content .box1 {
     /* width: 42vw; */
-    width: 98%;
+    width: 100%;
     /* border: 1px solid blue; */
 }
 
@@ -158,6 +159,7 @@
     overflow-wrap: break-word;
     /* Memastikan teks panjang tetap dalam batas */
     max-width: 100%;
+    /* width: 100%; */
     /* Menghindari teks melebar keluar container */
     line-height: 1.5;
     /* Menambah jarak antar baris agar lebih rapi */
@@ -231,6 +233,7 @@
 .box1 p {
     color: #333;
     font-size: 12px;
+    /* border: 1px solid blue; */
 }
 
 
@@ -319,5 +322,19 @@
 
     .box1 {
         padding: 10px;
+    }
+}
+
+@media screen and (max-height: 600px) {
+    .vdm-header {
+        padding: 5px 10px;
+    }
+
+    .box1 {
+        padding: 6px;
+    }
+
+    .box1 p {
+        font-size: 10px;
     }
 }

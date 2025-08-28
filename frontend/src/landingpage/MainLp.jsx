@@ -92,7 +92,7 @@ const MainLp = () => {
               <div className="btn-show" onClick={() => scrollToSection(section3Ref)}>About</div>
             </div>
             <div className="btn-start" onClick={handleToLogin}>
-              <span>Get</span> Start
+              Get Start
             </div>
           </div>
         </div>

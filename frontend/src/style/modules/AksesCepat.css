@@ -83,3 +83,10 @@
 
 /* ukuran handpone kecil  */
 @media (min-width:375px) and (max-width:575px) {}
+
+@media screen and (max-height: 600px) {
+    .akses-container {
+        /* border: 1px solid red; */
+        gap: 5px;
+    }
+}

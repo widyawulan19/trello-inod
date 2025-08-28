@@ -20,7 +20,7 @@
 }
 
 .header-container {
-    width: 70%;
+    width: 80%;
     padding: 20px;
     border: 1px solid #eee;
     border-radius: 16px;
@@ -80,13 +80,16 @@
 
 .lp-btn .btn-start {
     background-color: #4f46e5;
+    /* border: 1px solid red !important; */
     color: #fff;
     padding: 5px 15px;
     border-radius: 8px;
     border: none;
     cursor: pointer;
     font-size: 15px;
+    width: 10vw;
     cursor: pointer;
+    text-align: center;
 }
 
 .btn-start:hover {

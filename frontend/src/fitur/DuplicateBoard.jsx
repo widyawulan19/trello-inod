@@ -37,7 +37,7 @@ const DuplicateBoard = ({ boardId, userId, onClose, fetchBoards }) => {
             const result = await duplicateBoards(boardId, selectedWorkspace.id);
             // alert('Board berhasil diduplikasi!');
             showSnackbar('Board berhasil diduplikasi!', 'success')
-            navigate(`/workspaces/${selectedWorkspace.id}`);
+            navigate(`/layout/workspaces/${selectedWorkspace.id}`);
             // fetchBoards(selectedWorkspace.id)
             await fetchBoards(boardId)
         } catch (err) {
@@ -67,8 +67,8 @@ const DuplicateBoard = ({ boardId, userId, onClose, fetchBoards }) => {
     
             <div className="db-content">
                 <button className='db-select' onClick={handleShowWorkspace}>
-                    Select Workspace
-                    <HiOutlineChevronDown/>
+                    {selectedWorkspace ? selectedWorkspace.name : "Select Workspace"}
+                    {/* <HiOutlineChevronDown/> */}
                 </button>
                 <button  className='db-sub' onClick={handleDuplicateBoard} disabled={!selectedWorkspace}>
                     <HiOutlineSquare2Stack/>
@@ -93,7 +93,10 @@ const DuplicateBoard = ({ boardId, userId, onClose, fetchBoards }) => {
                             <li 
                             key={ws.id} 
                             className={`db-item ${selectedWorkspace?.id === ws.id ? 'selected' : ''}`}
-                            onClick={() => setSelectedWorkspace(ws)}
+                            onClick={() => {
+                                setSelectedWorkspace(ws);
+                                setShowWorkspace(false);
+                            }}
                             tabIndex="0"
                         >
                             {ws.name}

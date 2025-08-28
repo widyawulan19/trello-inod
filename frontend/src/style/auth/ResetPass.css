@@ -400,36 +400,16 @@
 }
 
 /* HEIGHT BREAKPOIN  */
-@media (min-height:375px) and (max-height:650px) {
-    .reset-content-right {
-        /* border: 1px solid blue; */
-        width: 100%;
-        padding: 5px;
-    }
-
-    .reset-content-right .content-box {
-        /* border: 1px solid red; */
-        padding: 10px 20px;
-        width: 95%;
-        height: 90vh;
-        gap: 7px;
-        overflow-y: auto;
-    }
-
-    .content-box .ress-logo {
-        /* border: 1px solid red; */
-        margin-top: 20px;
-    }
-
-    .ress-logo .logo-box {
-        padding: 15px;
-    }
-
-    .logo-box .box-icon {
-        font-size: 17px;
-    }
-
-    .box-title h2 {
-        margin-bottom: 2px;
+@media screen and (max-height: 600px) {
+    .login-content-left {
+        border: 1px solid red;
+        width: 50%;
+        height: 100vh;
+        padding: 30px;
+        /* padding-left: 50px; */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
     }
 }

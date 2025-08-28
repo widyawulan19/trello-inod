@@ -43,7 +43,11 @@
   border-radius: 8px;
   padding: 5px;
   color: white;
-  background-color: #5e12ebb9;
+  background: linear-gradient(90deg, #7246eb, #532189);
+}
+
+.dm-mini {
+  font-size: 20px;
 }
 
 .dml-title h3 {
@@ -79,7 +83,8 @@
 }
 
 .dmcr-btn button {
-  background: linear-gradient(to bottom, #6E30DC, #5D12EB);
+  background-color: #532189;
+  /* background: linear-gradient(90deg, #7246eb, #532189); */
   color: white;
   font-weight: bold;
   font-size: 12px;
@@ -93,7 +98,7 @@
 }
 
 .dmcr-btn button:hover {
-  background: linear-gradient(to bottom, #5D12EB, #6E30DC);
+  background: linear-gradient(90deg, #532189, #7246eb);
   box-shadow: 0px 4px 8px #6f30dc7c;
 }
 
@@ -147,10 +152,27 @@
   outline: none;
 }
 
+
+
+/* STYLE EXPORT  */
 .mdc-search-container .dm-search-export {
   width: 30%;
   /* border: 1px solid red; */
 }
+
+.btn-export {
+  font-size: 12px;
+  border: 1px solid white;
+  border-radius: 6px;
+  cursor: pointer;
+  color: white;
+  padding: 5px 10px;
+  background-color: rgb(18, 120, 18);
+  width: 100%;
+  height: fit-content;
+}
+
+/* END STYLE EXPORT  */
 
 .dm-search-box .dms-icon {
   background-color: white;
@@ -260,9 +282,7 @@
 }
 
 .dm-container th {
-  /* background-color: white; */
   background: linear-gradient(to bottom, #6E30DC, #5D12EB);
-  /* color: #333; */
   color: white;
   padding: 8px;
   font-size: 12px;
@@ -1040,10 +1060,7 @@
 
 /* HEIGHT BREAKPOIN  */
 /* HEIGHT BREAKPOIN  */
-@media (min-height:375px) and (max-height:1400px) {
-  /* .dm-icon {
-    display: none;
-  } */
+/* @media (min-height:375px) and (max-height:1400px) {
 
   .mdc-search-container .dm-search-box {
     width: 50%;
@@ -1053,4 +1070,102 @@
     width: 50%;
   }
 
+} */
+
+@media screen and (max-height: 600px) {
+  .dm-panel {
+    /* border: 1px solid blue; */
+    padding: 5px 10px;
+  }
+
+  .dm-left {
+    /* border: 1px solid red; */
+
+  }
+
+  .dml-title {
+
+    /* border: 1px solid blue; */
+  }
+
+  .dm-mini,
+  .dml-title h3 {
+    font-size: 15px;
+  }
+
+  .dml-desc {
+    font-size: 8px;
+    /* border: 1px solid blue; */
+  }
+
+  /* PANEL KANAN  */
+  .dmc-right {
+    /* border: 1px solid red; */
+  }
+
+  .dmcr-btn button {
+    font-size: 9px;
+    padding: 5px 15px;
+  }
+
+  /* SEARCH FITUR  */
+  .mdc-search-container {
+    /* border: 1px solid red; */
+  }
+
+  .mdc-search-container .dm-search-box {
+    /* border: 1px solid blue; */
+    width: 50% !important;
+  }
+
+  .dm-search-box input {
+    padding: 3px;
+  }
+
+  /* btn export  */
+  .btn-export {
+    font-size: 11px;
+    font-weight: bold;
+  }
+
+
+  /* FILTER CONTAINER  */
+  .filter-box .filter-btn {
+    font-size: 10px;
+    padding: 5px 15px;
+  }
+
+  .ul-filter,
+  .filter-input input {
+    font-size: 10px;
+  }
+
+
+  /* FORM CREATE  */
+  .dmf-content {
+    width: 70%;
+    /* border: 1px solid orange; */
+  }
+
+
+  /* TABEL  */
+  .dm-container {
+    /* border: 1px solid red; */
+  }
+
+  .dm-container th,
+  .dm-container td {
+    font-size: 10px;
+  }
+
+  /* ACTION  */
+  .detail-data-marketing .detail-data-box,
+  .edit-data-marketing .edit-data-box {
+    height: 90%;
+    margin-top: 5%;
+  }
+
+
+
+  /* END ACTION  */
 }

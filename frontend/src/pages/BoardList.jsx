@@ -339,8 +339,8 @@ const handleNavigateToBoard = (workspaceId,boardId) =>{
         <div className="bl-header">
             <div className="blnav">
                 <h4 className='ellipsis-text'>{boards.name} Boards</h4>
-                <div className="blnav-sub" onClick={()=>handleNavigateToWorkspace(workspaceId)}>
-                    <p className='back'>{boards.name}</p>
+                <div className="blnav-sub">
+                    <p className='back' onClick={()=>handleNavigateToWorkspace(workspaceId)}>{boards.name}</p>
                     <HiOutlineChevronRight/>
                     <p>Board List</p>
                 </div>

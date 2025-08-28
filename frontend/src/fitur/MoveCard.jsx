@@ -64,7 +64,7 @@ const MoveCard = ({ cardId, workspaceId, onClose, userId, currentBoardId,onCardM
         try {
             await moveCardToList(cardId, selectedList.id);
             showSnackbar('Card moved successfully!', 'success');
-            navigate(`/workspaces/${workspaceId}/board/${selectedBoardId}`);
+            navigate(`/layout/workspaces/${workspaceId}/board/${selectedBoardId}`);
             fetchCardList(selectedList.id)
             onClose();
         } catch (error) {

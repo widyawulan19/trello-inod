@@ -290,4 +290,9 @@
   .mcb-menu-wrapper .mcb-search-input {
     font-size: 8px !important;
   }
+
+  .mc-select-list label {
+    font-size: 8px !important;
+    font-weight: normal !important;
+  }
 }

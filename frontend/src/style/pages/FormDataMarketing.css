@@ -7,7 +7,8 @@
     /* border-radius: 8px; */
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
-    background-color: #5D12EB;
+    background: linear-gradient(90deg, #7246eb, #532189);
+    /* background-color: #5D12EB; */
     color: white;
     display: flex;
     align-items: center;
@@ -85,7 +86,7 @@
     padding: 5px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 10;
+    /* gap: 10; */
     width: 100%;
     box-sizing: border-box;
 }
@@ -256,5 +257,48 @@
     .box input {
         width: 100%;
         padding: 8px;
+    }
+}
+
+@media screen and (max-height: 600px) {
+    .fdm-header {
+        padding: 5px 10px;
+    }
+
+    .fmdh-left .header-icon {
+        font-size: 12px;
+        background: linear-gradient(90deg, #7246eb, #532189);
+        color: white;
+    }
+
+    /* FORM  */
+    .fdm-container form {
+        /* border: 1px solid green; */
+        /* width: 70%; */
+    }
+
+    .section-main h4,
+    .section-reference h4,
+    .section-desc h4 {
+        font-size: 10px;
+        font-weight: bold;
+    }
+
+    .sec-content {
+        /* border: 1px solid red; */
+        /* border: 1px solid #eee; */
+        border-radius: 4px;
+        width: 100%;
+    }
+
+    .box-date label,
+    .box label {
+        font-size: 8px !important;
+    }
+
+    /* button  */
+    .button-update button {
+        font-size: 12px;
+        padding: 5px 20px !important;
     }
 }

@@ -9,6 +9,7 @@ import '../style/modules/BoardProperties.css'
 import { HiOutlineAdjustmentsHorizontal, HiOutlineEllipsisHorizontal, HiOutlineLightBulb, HiOutlinePlus, HiXMark } from 'react-icons/hi2';
 import BootstrapTooltip from '../components/Tooltip';
 import { useSnackbar } from '../context/Snackbar';
+import { FaXmark } from 'react-icons/fa6';
 
 const BoardProperties = ({ boardId }) => {
   const {showSnackbar} = useSnackbar();
@@ -86,31 +87,23 @@ const BoardProperties = ({ boardId }) => {
       {showBoardProperties && (
         <ul className='sbp-container'>
             <div className="sbp-header">
+              <div className="header-left">
+                <div className="left-icon">
+                  <HiOutlineLightBulb className='mini-icon'/>
+                </div>
                 <h4>Select Property</h4>
+              </div>
+              <div className="header-right">
                 <BootstrapTooltip title='Close' placement='top'>
-                    <HiXMark onClick={handleCloseBoard} className='sbp-close'/>
+                    <FaXmark onClick={handleCloseBoard} className='sbp-close'/>
                 </BootstrapTooltip>
+              </div>
             </div>
             {allPriorities.map((priority) => (
                 <li
                 key={priority.id}
                 onClick={() => handleSelect(priority)}
-                style={{
-                    margin:'0px 5px',
-                    borderRadius:'4px',
-                    padding: '5px 7px',
-                    fontSize:'12px',
-                    cursor: 'pointer',
-                    display:'flex',
-                    alignItems:'center',
-                    justifyContent:'flex-start',
-                    backgroundColor:
-                    selectedPriority?.id === priority.id ?  priority.color : '#fff',
-                    color:
-                    selectedPriority?.id === priority.id ?  '#fff' :  priority.color,
-                    fontWeight:
-                    selectedPriority?.id === priority.id ? 'bold' : 'normal',
-                }}
+                style={{color:priority.color}}
                 className='sbp-li'
                 >
                     <HiOutlineLightBulb className='sbp-icon'/>
