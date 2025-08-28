@@ -250,5 +250,21 @@ form h4 {
         width: 100%;
     }
 
+}
 
+@media screen and (max-height: 600px) {
+    .em-header {
+        padding: 5px 10px;
+    }
+
+    .box input {
+        font-size: 10px !important;
+        /* border: 1px solid red !important; */
+        padding: 8px !important;
+    }
+
+    .em-container form {
+        height: 80vh;
+        padding: 5px 10px;
+    }
 }

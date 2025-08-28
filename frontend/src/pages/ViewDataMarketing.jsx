@@ -339,7 +339,7 @@ const ViewDataMarketing=({marketingId, onClose})=> {
           <div className="sec-desc-content">
             <div className="box" style={{width:'100%', padding:'0px 5px'}}>
               {/* <p>Description</p> */}
-              <div className='box1' style={{height:'10vh', width:'100%'}}>
+              <div className='box1' style={{minHeight:'10vh',maxHeight:'20vh', width:'100%', overflowY:'auto'}}>
                 <p>{dataMarketings.detail_project}</p>
               </div>
             </div>
@@ -363,3 +363,4 @@ export default ViewDataMarketing
 //       <p><strong>Account:</strong> {dataMarketings.account}</p>
 //       <p><strong>Deadline:</strong> {new Date(dataMarketings.deadline).toLocaleDateString()}</p>
 //       {/* Tambahkan detail lainnya sesuai kebutuhan */}
+

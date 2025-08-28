@@ -59,7 +59,7 @@ const ResetPass = () => {
   };
 
   return (
-    <div className="login-container">
+    <div className='login-container'>
       <div className="login-content-left">
         <div className="h1">
           <div className="h1-icon">

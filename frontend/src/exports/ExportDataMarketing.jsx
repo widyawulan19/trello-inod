@@ -2,6 +2,7 @@ import React from 'react'
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { getAllDataMarketing } from '../services/ApiServices';
+import '../style/pages/DataMarketing.css'
 
 const ExportDataMarketing=()=> {
     const handleExport = async () => {
@@ -27,17 +28,7 @@ const ExportDataMarketing=()=> {
   return (
     <button 
         onClick={handleExport}
-        style={{
-            fontSize:'12px',
-            border:'1px solid #fff',
-            borderRadius:'6px',
-            cursor:'pointer',
-            color:'white',
-            padding:'5px 10px',
-            backgroundColor:'#6E30DC',
-            width:'100%',
-            height:'fit-content'
-        }}
+        className='btn-export'
     >
       Export to Excel
     </button>
