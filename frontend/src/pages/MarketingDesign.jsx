@@ -18,6 +18,7 @@ import { useNavigate } from 'react-router-dom';
 import OutsideClick from '../hook/OutsideClick';
 import { handleArchive } from '../utils/handleArchive';
 import ExportMarketingDesign from '../exports/ExportMarketingDesign';
+import { FaXmark } from 'react-icons/fa6';
 
 const MarketingDesign=()=> {
     //STATE
@@ -228,7 +229,12 @@ const MarketingDesign=()=> {
     const hasCardId = (item) => {
       return item.card_id !== null && item.card_id !== undefined;
     };
-    
+
+  // SHOW DATA CONTENT 
+  const handleShowData = () =>{
+    setShowData(false)
+  }  
+
 
 
   return (
@@ -237,7 +243,7 @@ const MarketingDesign=()=> {
             <div className="mdh-left">
               <div className="mdh-title">
                 <div className="mdh-icon">
-                  <HiOutlineCircleStack size={20} />
+                  <HiOutlineCircleStack className='dm-mini' />
                 </div>
                 <h3>{filterType}</h3>
               </div>
@@ -289,6 +295,10 @@ const MarketingDesign=()=> {
             {/* SHOW DATA  */}
             {showData && (
             <div className='sd-cont' ref={showDataRef}>
+              <div className="sd-header">
+                <h5><HiMiniTableCells className='h5-icon'/>Show Data By </h5>
+                <FaXmark onClick={handleShowData} style={{cursor:'pointer'}}/>
+              </div>
                 <div className="sd-box">
                   <h5>Show Data By:</h5>
                   <button onClick={() => {setFilterType('DATA MARKETING DESIGN'); {setShowData(!showData)}}} >

@@ -1,165 +1,191 @@
 /* Styling untuk kontainer utama */
 .create-card-container {
-    padding: 5px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    width: 100%;
-    margin: auto;
-    background-color: #fff;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
-  }
-  
-  /* Styling untuk header */
-   .cc-header{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 5px;
-    margin-bottom: 15px;
-    border-bottom: 1px solid #ddd !important ;
-  }
-  .cc-header p {
-    font-size: 12px;
-    font-weight: bold;
-    margin: 0px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
- 
-  /* Icon close button */
-  .cc-icon {
-    font-size: 18px;
-    cursor: pointer;
-  }
-  
-  /* Styling untuk konten utama */
-  .cc-content {
-    display: flex;
-    flex-direction: column;
-    /* align-items:flex-end; */
-    justify-content: center;
-    padding: 5px;
-    /* gap: 5px; */
-    margin-top: 10px;
-    /* border: 1px solid violet; */
-  }
-  .cc-content .cc-left{
-    /* border: 1px solid green; */
-    width: 100%;
-    gap: 3px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-  .cc-select-box{
-    /* border: 1px solid blue; */
-    display: flex;
-    flex-direction: column;
-    align-items: first baseline;
-    justify-content: center;
-    width: 100%;
-    position: relative;
-    margin-bottom: 5px;
-  }
-  .cc-select-box label,
-  .cc-select-list label
-  {
-    font-size: 12px;
-    color: #333;
-    /* margin-bottom: 5px; */
-  }
-  .cc-dropdown,
-  .cc-lists-dropdown
-  {
-    /* border: 1px solid red; */
-    width: 100%;
-  }
-  .cc-dropdown .ccd-btn
-  {
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    /* width: 13vw; */
-    font-size: 10px; 
-    cursor: pointer;
-  }
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  width: 100%;
+  margin: auto;
+  background-color: #fff;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
+}
 
-  .ccd-btn:hover{
-    border: 1px solid #5D12EB;
-  }
+/* Styling untuk header */
+.cc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #ddd !important;
+}
 
-  /* SEARCH DROPDOWN  */
-  .form-create-card{
-    border-radius: 6px;
-    /* background-color: white; */
-    height: 50vh;
-    position: absolute;
-    z-index: 99;
-    top: 100%;
-    width: 100%;
-    /* padding: 5px; */
-  }
-  .form-create-card input{
-    /* border: 1px solid #ddd; */    
-    border: 1px solid #5D12EB;
-    border-radius: 4px;
-    background-color: white;
-    font-size: 11px;
-    padding: 5px;
-    width: 100%;
-  }
-  .form-create-card input:hover{
-    background-color: white;
-    border: 1px solid #5D12EB;
-  }
-  .form-create-card input:focus{
-    outline: none;
-    border: 1px solid #5D12EB;
-  }
+.cc-header .cch-title {
+  /* border: 1px solid red; */
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
 
-  /* DROPDOWN BOARD */
-  .ccd-menu{
-    border: 1px solid #5D12EB;
-    border-radius: 4px;
-    position: absolute;
-    background-color: white;
-    margin-top: 0px;
-    box-shadow: 0px 4px 8px #6f30dc54;
-    height: 30vh;
-    width: 100%;
-    overflow-y: auto;
-    list-style: none;
-    padding: 0px 5px;
-  }
-  .ccd-item{
-    /* border: 1px solid green; */
-    border-radius: 4px;
-    padding: 5px;
-    font-size: 12px;
-  }
-  .ccd-item:hover{
-    background-color: #ede6fb;
-    color: #5D12EB;
-  }
+.cch-title .cch-icon {
+  border: 1px solid white;
+  border-radius: 8px;
+  padding: 5px;
+  color: white;
+  background: linear-gradient(90deg, #7246eb, #532189);
+}
+
+.mini-icon {
+  font-size: 15px;
+}
+
+.cc-header p {
+  font-size: 12px;
+  font-weight: bold;
+  margin: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Icon close button */
+.cc-icon {
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* Styling untuk konten utama */
+.cc-content {
+  display: flex;
+  flex-direction: column;
+  /* align-items:flex-end; */
+  justify-content: center;
+  padding: 5px;
+  /* gap: 5px; */
+  margin-top: 10px;
+  /* border: 1px solid violet; */
+}
+
+.cc-content .cc-left {
+  /* border: 1px solid green; */
+  width: 100%;
+  gap: 3px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.cc-select-box {
+  /* border: 1px solid blue; */
+  display: flex;
+  flex-direction: column;
+  align-items: first baseline;
+  justify-content: center;
+  width: 100%;
+  position: relative;
+  margin-bottom: 5px;
+}
+
+.cc-select-box label,
+.cc-select-list label {
+  font-size: 12px;
+  color: #333;
+  /* margin-bottom: 5px; */
+}
+
+.cc-dropdown,
+.cc-lists-dropdown {
+  /* border: 1px solid red; */
+  width: 100%;
+}
+
+.cc-dropdown .ccd-btn {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  /* width: 13vw; */
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.ccd-btn:hover {
+  border: 1px solid #5D12EB;
+}
+
+/* SEARCH DROPDOWN  */
+.form-create-card {
+  border-radius: 6px;
+  /* background-color: white; */
+  height: 50vh;
+  position: absolute;
+  z-index: 99;
+  top: 100%;
+  width: 100%;
+  /* padding: 5px; */
+}
+
+.form-create-card input {
+  /* border: 1px solid #ddd; */
+  border: 1px solid #5D12EB;
+  border-radius: 4px;
+  background-color: white;
+  font-size: 11px;
+  padding: 5px;
+  width: 100%;
+}
+
+.form-create-card input:hover {
+  background-color: white;
+  border: 1px solid #5D12EB;
+}
+
+.form-create-card input:focus {
+  outline: none;
+  border: 1px solid #5D12EB;
+}
+
+/* DROPDOWN BOARD */
+.ccd-menu {
+  border: 1px solid #5D12EB;
+  border-radius: 4px;
+  position: absolute;
+  background-color: white;
+  margin-top: 0px;
+  box-shadow: 0px 4px 8px #6f30dc54;
+  height: 30vh;
+  width: 100%;
+  overflow-y: auto;
+  list-style: none;
+  padding: 0px 5px;
+}
+
+.ccd-item {
+  /* border: 1px solid green; */
+  border-radius: 4px;
+  padding: 5px;
+  font-size: 12px;
+}
+
+.ccd-item:hover {
+  background-color: #ede6fb;
+  color: #5D12EB;
+}
 
 /* LIST SELECT  */
-  .cc-select-list{
-    /* border: 1px solid violet; */
-    display: flex;
-    flex-direction: column;
-    align-items: first baseline;
-    justify-content: center;
-    width: 100%;
-  }
+.cc-select-list {
+  /* border: 1px solid violet; */
+  display: flex;
+  flex-direction: column;
+  align-items: first baseline;
+  justify-content: center;
+  width: 100%;
+}
 
-.cc-lists-dropdown .cc-lists-btn
-{
+.cc-lists-dropdown .cc-lists-btn {
   border: 1px solid #ddd;
   padding: 5px;
   display: flex;
@@ -168,11 +194,12 @@
   width: 100%;
   font-size: 10px;
 }
-.cc-lists-btn:hover{
+
+.cc-lists-btn:hover {
   border: 1px solid #5D12EB;
 }
 
-.btn-form-create{
+.btn-form-create {
   margin-top: 10px;
   /* border: 1px solid green; */
   width: 100%;
@@ -181,10 +208,10 @@
   justify-content: center;
 }
 
-.cc-content .cc-sub-btn{
+.cc-content .cc-sub-btn {
   color: white;
   /* font-weight: bold; */
- border: 1px solid #5D12EB;
+  border: 1px solid #5D12EB;
   border-radius: 6px;
   padding: 5px 7px;
   background: linear-gradient(to right, #6a11cb, #2575fc);
@@ -196,16 +223,18 @@
   width: 90%;
   cursor: pointer;
 }
-.cc-content .cc-sub-btn:hover{
-  background: linear-gradient(to right,#2575fc, #6a11cb) ;
+
+.cc-content .cc-sub-btn:hover {
+  background: linear-gradient(to right, #2575fc, #6a11cb);
   box-shadow: 0px 4px 8px #5e12eb46;
 }
-.cc-sub-icon{
+
+.cc-sub-icon {
   margin-left: 5px;
 }
 
 /* DROPDOWN BOARD */
-.ccl-menu{
+.ccl-menu {
   border: 1px solid #5D12EB;
   border-radius: 4px;
   position: absolute;
@@ -218,13 +247,15 @@
   list-style: none;
   padding: 0px 5px;
 }
-.ccl-item{
+
+.ccl-item {
   /* border: 1px solid green; */
   border-radius: 4px;
   padding: 5px;
   font-size: 12px;
 }
-.ccl-item:hover{
+
+.ccl-item:hover {
   background-color: #ede6fb;
   color: #5D12EB;
 }
@@ -251,17 +282,19 @@
 
 /* Medium devices (tablets, ≥768px) */
 @media (min-width: 768px) and (max-width: 991.98px) {
-  .create-card-container{
+  .create-card-container {
     width: 50vw;
   }
-   .cc-content{
+
+  .cc-content {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     /* border: 1px solid red; */
   }
-  .cc-content .cc-left{
+
+  .cc-content .cc-left {
     width: 100%;
     gap: 10px;
     display: flex;
@@ -269,29 +302,33 @@
     align-items: center;
     justify-content: center;
   }
-  .btn-form-create{
+
+  .btn-form-create {
     width: 100%;
     margin-top: 5px;
   }
 
-  .form-create-card{
+  .form-create-card {
     /* border: 1px solid green; */
     width: 100%;
   }
 }
+
 /* ukuran handpone besar */
 @media (min-width: 576px) and (max-width: 767.98px) {
-  .create-card-container{
+  .create-card-container {
     width: 60vw;
   }
-  .cc-content{
+
+  .cc-content {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     /* border: 1px solid red; */
   }
-  .cc-content .cc-left{
+
+  .cc-content .cc-left {
     width: 100%;
     gap: 10px;
     display: flex;
@@ -299,11 +336,13 @@
     align-items: center;
     justify-content: center;
   }
-  .btn-form-create{
+
+  .btn-form-create {
     width: 100%;
     margin-top: 5px;
   }
-  .form-create-card{
+
+  .form-create-card {
     /* border: 1px solid green; */
     width: 100%;
   }
@@ -311,30 +350,35 @@
 
 /* ukuran handpone kecil */
 @media (min-width:375px) and (max-width:575px) {
-  .create-card-container{
+  .create-card-container {
     width: 80vw;
   }
 
-  .cc-content{
+  .cc-content {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     /* border: 1px solid red; */
   }
-  .cc-content .cc-left{
+
+  .cc-content .cc-left {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
   }
-  .btn-form-create{
+
+  .btn-form-create {
     width: 100%;
     margin-top: 5px;
   }
-  .form-create-card{
+
+  .form-create-card {
     /* border: 1px solid green; */
     width: 100%;
   }
 }
+
+@media screen and (max-height: 600px) {}

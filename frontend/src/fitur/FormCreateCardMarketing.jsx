@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { getListByBoard } from '../services/ApiServices'; // Import endpoint baru
 import { useSnackbar } from '../context/Snackbar';
 import { FaXmark } from 'react-icons/fa6';
+import { IoIosCreate } from "react-icons/io";
 
 const FormCreateCardMarketing = ({ marketingId, onClose }) => {
   const [boards, setBoards] = useState([]); // Menyimpan daftar board
@@ -96,7 +97,7 @@ const FormCreateCardMarketing = ({ marketingId, onClose }) => {
 
         if (data) {
           const { workspaceId, boardId } = data;
-          navigate(`/workspaces/${workspaceId}/board/${boardId}`);
+          navigate(`/layout/workspaces/${workspaceId}/board/${boardId}`);
         } else {
           // alert('Workspace atau Board tidak ditemukan');
           showSnackbar('Workspace atau board tidak ditemukan','error')
@@ -147,7 +148,12 @@ const FormCreateCardMarketing = ({ marketingId, onClose }) => {
   return (
     <div className="create-card-container">
       <div className="cc-header">
-        <p>CREATE CARD</p>
+        <div className="cch-title">
+          <div className="cch-icon">
+            <IoIosCreate className='mini-icon'/>
+          </div>
+            <p>CREATE CARD</p>
+        </div>
         <BootstrapTooltip title="Close" placement="top">
           <FaXmark className="cc-icon" onClick={onClose} />
         </BootstrapTooltip>

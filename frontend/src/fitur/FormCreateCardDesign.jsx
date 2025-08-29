@@ -7,6 +7,7 @@ import BootstrapTooltip from '../components/Tooltip';
 import { useNavigate } from 'react-router-dom';
 import { getListByBoard } from '../services/ApiServices';
 import { useSnackbar } from '../context/Snackbar';
+import { IoIosCreate } from "react-icons/io";
 
 const FormCreateCardDesign = ({ marketingDesignId, onClose }) => {
   const [boards, setBoards] = useState([]);
@@ -91,7 +92,7 @@ const FormCreateCardDesign = ({ marketingDesignId, onClose }) => {
 
         if (data) {
           const { workspaceId, boardId } = data;
-          navigate(`/workspaces/${workspaceId}/board/${boardId}`);
+          navigate(`/layout/workspaces/${workspaceId}/board/${boardId}`);
         } else {
           // alert('Workspace atau Board tidak ditemukan');
           showSnackbar('Workspace atau Board tidak ditemukan!', 'error');
@@ -122,7 +123,12 @@ const FormCreateCardDesign = ({ marketingDesignId, onClose }) => {
   return (
     <div className="form-card-design">
       <div className="cc-head">
-        <p>CREATE CARD</p>
+        <div className="cc-title">
+          <div className="cch-icon">
+            <IoIosCreate className='mini-icon'/>
+          </div>
+           <p>CREATE CARD</p>
+        </div>
         <BootstrapTooltip title="Close" placement="top">
           <HiOutlineXMark className="cch-icon2" onClick={onClose} />
         </BootstrapTooltip>

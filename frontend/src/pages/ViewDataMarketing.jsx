@@ -119,7 +119,7 @@ const ViewDataMarketing=({marketingId, onClose})=> {
     <div className='view-dm-container'>
       <div className="vdm-header">
         <div className="vdm-left">
-          <h4>DATA MARKETING</h4>
+          <h4>DETAIL DATA MARKETING</h4>
           {dataMarketings.genre} | {dataMarketings.buyer_name} | {dataMarketings.account} | {getLastFiveCodeOrder(dataMarketings.code_order)}
         </div>
         <div className="vdm-right">
