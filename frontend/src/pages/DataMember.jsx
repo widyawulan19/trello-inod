@@ -164,7 +164,7 @@ const DataMember=()=> {
             <div className="dep-right">
               <h3>👋 Meet the Team</h3>
               <div className="dep-desc">
-                <strong style={{fontSize:'12px'}}>Satu Tim. Banyak Cerita. Satu Visi.</strong>
+                <strong >Satu Tim. Banyak Cerita. Satu Visi.</strong>
                 <p>
                   Halaman ini adalah tempat kamu bisa mengenal lebih dekat siapa saja orang-orang hebat yang membangun dan menggerakkan Inod Studio, mulai dari latar belakang mereka, peran di tim, hingga kontribusinya di setiap proyek.
                 </p>

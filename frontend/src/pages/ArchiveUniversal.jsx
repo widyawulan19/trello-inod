@@ -108,6 +108,7 @@ const ArchiveUniversal=()=> {
                 </div>
             </div>
             <div className="ah-right">
+                <h4>Search Archive :</h4>
                 <div className="search-archive">
                     <IoSearchOutline className='sa-icon'/>
                      <input

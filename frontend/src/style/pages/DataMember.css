@@ -15,6 +15,7 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  padding: 5px 10px;
 }
 
 /* LEFT  */
@@ -38,6 +39,10 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+}
+
+.dep-desc strong {
+  font-size: 12px;
 }
 
 .dep-desc p {
@@ -401,10 +406,10 @@
 .employee-card {
   /* border: 1px solid red; */
   border: 1px solid #ddd;
-  border-radius: 8px;
+  border-radius: 12px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   padding: 10px;
-  height: 30vh;
+  height: fit-content;
   cursor: pointer;
 }
 
@@ -873,9 +878,69 @@
 }
 
 /* HEIGHT BREAKPOIN  */
-@media (min-height:400px) and (max-height:730px) {
+@media screen and (max-height: 600px) {
   .employee-card {
     height: 35vh;
     /* border: 1px solid red; */
   }
+
+  .de-panel {
+    /* border: 1px solid blue; */
+  }
+
+  .dep-right h3 {
+    font-size: 15px;
+    color: #5D12EB;
+  }
+
+  .dep-desc strong,
+  .dep-desc p {
+    font-size: 8px;
+  }
+
+  .de-panel .dep-left {
+    /* border: 1px solid red; */
+  }
+
+  /* TABLE  */
+  .employee-table-wrapper {
+    padding: 10px 5px;
+    height: 75vh;
+  }
+
+  .employee-table-wrapper th,
+  .employee-table-wrapper td {
+    font-size: 10px;
+  }
+
+  /* EMPLOYEE CNTAINER  */
+
+  .employee-container {
+    /* border: 1px solid green; */
+    height: 75vh;
+  }
+
+  .ch-left img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid #5D12EB;
+  }
+
+  .ch-left h4 {
+    font-weight: bold;
+    font-size: 10px;
+    margin: 0px;
+  }
+
+  .ch-left p {
+    margin: 0px;
+    font-size: 8px;
+    color: #5e5e5e;
+  }
+
+  .card-setting-menu {
+    width: 15vw;
+  }
+
 }
