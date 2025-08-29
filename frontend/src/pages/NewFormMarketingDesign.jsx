@@ -329,7 +329,7 @@ const NewFormMarketingDesign = ({ onClose, fetchMarketingDesign }) => {
         {/* DETAILS  */}
         <div className="sc-main-container">
           <h4>Detail Project</h4>
-          <div className="sc-main-box">
+          <div className="sc-main-box" style={{border:'none'}}>
             <div className="main-box-detail">
               <label>Detail Project</label>
               <textarea 

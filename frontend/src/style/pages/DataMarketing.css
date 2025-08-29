@@ -857,6 +857,9 @@
     width: 100%;
     min-width: 25vw;
     max-width: 25vw;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .acc-container,
@@ -874,6 +877,9 @@
     width: 100%;
     min-width: 20vw;
     max-width: 20vw;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   /* STATUS HEAD TABLE  */

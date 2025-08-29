@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { addDataMarketing } from "../services/ApiServices";
 import "../style/pages/FormDataMarketing.css";
-import { HiOutlineXMark } from "react-icons/hi2";
+import { HiOutlineXMark, HiXMark } from "react-icons/hi2";
 import BootstrapTooltip from "../components/Tooltip";
 import { IoCreate } from "react-icons/io5";
 import { FaXmark } from "react-icons/fa6";
@@ -93,7 +93,7 @@ const FormDataMarketing = ({ onClose, fetchData }) => {
         </div>
         
         <BootstrapTooltip title='close' placement='top'>
-            <FaXmark onClick={onClose} className="fdm-icon" />
+            <HiXMark onClick={onClose} className="fdm-icon" />
         </BootstrapTooltip>
       </div>
 

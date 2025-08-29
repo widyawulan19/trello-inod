@@ -52,7 +52,11 @@
     border-radius: 8px;
     padding: 5px;
     color: white;
-    background-color: #5e12ebb9;
+    background: linear-gradient(90deg, #7246eb, #532189);
+}
+
+.dm-mini {
+    font-size: 20px;
 }
 
 .mdh-title h3 {
@@ -97,7 +101,8 @@
 
 /* FORM  */
 .mdhr-btn button {
-    background: linear-gradient(to bottom, #6E30DC, #5D12EB);
+    /* background: linear-gradient(to bottom, #6E30DC, #5D12EB); */
+    background-color: #532189;
     color: white;
     font-weight: bold;
     font-size: 12px;
@@ -133,14 +138,26 @@
     justify-content: flex-start;
     border: 1px solid #ddd;
     border-radius: 8px;
-    width: 70% !important;
+    width: 60% !important;
     width: fit-content;
     padding: 2px;
 }
 
 .export-btn {
-    width: 40%;
+    width: 30%;
     /* border: 1px solid red; */
+}
+
+.btn-export {
+    font-size: 12px;
+    border: 1px solid white;
+    border-radius: 6px;
+    cursor: pointer;
+    color: white;
+    padding: 5px 10px;
+    background-color: rgb(18, 120, 18);
+    width: 100%;
+    height: fit-content;
 }
 
 .mdh-search:hover {
@@ -208,7 +225,7 @@
     /* padding: 0.75rem; */
     text-align: left;
     border-bottom: 1px solid #ddd;
-    font-size: 12px
+    font-size: 12px;
 }
 
 .data-accept-design th {
@@ -254,12 +271,19 @@
     width: 100%;
     min-width: 13vw;
     max-width: 13vw;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* border: 1px solid blue; */
 }
 
 .action-container {
     width: 100%;
     min-width: 15vw;
     max-width: 15vw;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 
@@ -269,6 +293,9 @@
     width: 100%;
     min-width: 20vw;
     max-width: 20vw;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 
@@ -307,7 +334,7 @@
     background-color: white;
     border: 1px solid #5D12EB;
     border-radius: 8px;
-    width: 60%;
+    width: 65% !important;
     margin-top: 2%;
     height: 90vh;
     /* height: 100%; */
@@ -382,7 +409,38 @@
     top: 5%;
     right: 10%;
     z-index: 100;
-    padding: 10px;
+    /* padding: 10px; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.sd-cont .sd-header {
+    border: 1px solid #ddd;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    color: white;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 10px;
+    background: linear-gradient(90deg, #7246eb, #532189)
+}
+
+.sd-header h5 {
+    gap: 5px;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.h5-icon {
+    font-size: 15px;
 }
 
 .sd-cont .sd-box {
@@ -891,12 +949,76 @@
 }
 
 /* HEIGHT BREAKPOIN  */
-@media (min-height:375px) and (max-height:1400px) {
-    /* .new-data {
-        height: 100%;
+@media screen and (max-height: 600px) {
+    .md-header {
+        padding: 5px 10px;
     }
 
-    .data-accept-design {
-        height: 100%;
-    } */
+    .dm-mini,
+    .mdh-icon h3 {
+        font-size: 12px;
+    }
+
+    .mdh-des p {
+        font-size: 8px;
+    }
+
+    /* PANEL KANAN  */
+    .mdh-right {
+        /* border: 1px solid red; */
+        gap: 2px;
+    }
+
+    .mdhr-btn {
+        /* border: 1px solid blue; */
+    }
+
+    .mdhr-btn button {
+        font-size: 9px;
+        padding: 5px 15px;
+        margin-left: 0px;
+    }
+
+    /* SEARCH MENU  */
+    .mdh-search input {
+        padding: 3px;
+    }
+
+    .mdh-search-container .mdh-search {
+        width: 40% !important;
+    }
+
+    .mdh-search input {
+        /* border: 1px solid red; */
+        padding: 3px;
+        width: 100%;
+    }
+
+    /* btn export  */
+    .export-btn {
+        font-size: 11px;
+        font-weight: bold;
+    }
+
+    /* FORM  */
+    .md-content {
+        width: 70%;
+    }
+
+    /* TABEL  */
+    .data-accept-design th,
+    .data-accept-design td {
+        font-size: 10px;
+    }
+
+    .detail-data-design,
+    .edit-data-design {
+        height: 90%;
+        margin-top: 5%;
+    }
+
+    .detail-data-design .detail-cont,
+    .edit-data-design .edit-cont {
+        margin-top: 0%;
+    }
 }

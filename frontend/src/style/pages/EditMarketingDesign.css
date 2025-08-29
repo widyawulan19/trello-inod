@@ -1,7 +1,8 @@
-.emd-container{
+.emd-container {
     position: relative;
 }
-.emd-header{
+
+.emd-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -14,22 +15,27 @@
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
 }
-.emd-header h4{
+
+.emd-header h4 {
     margin: 0px;
     color: white;
     font-weight: bold;
 }
-.emd-left{
+
+.emd-left {
     color: white;
 }
-.emd-icon{
+
+.emd-icon {
     cursor: pointer;
     font-size: 20px;
 }
-.emd-icon:hover{
+
+.emd-icon:hover {
     color: #051937;
 }
-.emd-container form{
+
+.emd-container form {
     /* border: 1px solid red; */
     padding: 0px;
     height: 80vh;
@@ -40,15 +46,18 @@
     align-items: center;
     justify-content: flex-start;
 }
-.emd-informasi{
+
+.emd-informasi {
     width: 100%;
     margin-bottom: 10px;
 }
-.emd-informasi h4{
+
+.emd-informasi h4 {
     margin: 0px;
     font-size: 12px;
 }
-.emd-content{
+
+.emd-content {
     border: 1px solid #eee;
     border-radius: 4px;
     padding: 5px;
@@ -57,7 +66,8 @@
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 10;
 }
-.emd-content .emd-box{
+
+.emd-content .emd-box {
     /* border: 1px solid red; */
     border-radius: 4px;
     padding: 5px;
@@ -67,13 +77,14 @@
     justify-content: flex-start;
     position: relative;
 }
-.emd-box label
-{
+
+.emd-box label {
     margin: 0px;
     font-size: 10px;
     color: grey;
 }
-.emd-box input{
+
+.emd-box input {
     border: 1px solid #ddd;
     border-radius: 4px;
     padding: 5px;
@@ -81,27 +92,31 @@
     font-size: 12px;
     /* width: 150px; */
 }
-.emd-box input:hover{
+
+.emd-box input:hover {
     border: 1px solid #5D12EB;
-     background: linear-gradient(to bottom, #6f30dc44, #1248eb50);
+    background: linear-gradient(to bottom, #6f30dc44, #1248eb50);
 }
-.emd-box input:focus{
+
+.emd-box input:focus {
     outline: none;
     border: 1px solid #6f30dc47;
     box-shadow: 0px 4px 8px #6f30dc54;
 }
 
 /* REFERENSI  */
-.emd-reference{
+.emd-reference {
     width: 100%;
     margin-bottom: 10px;
     /* border: 1px solid blue;  */
 }
-.emd-reference h4{
+
+.emd-reference h4 {
     margin: 0px;
     font-size: 12px;
 }
-.emd-ref-content{
+
+.emd-ref-content {
     border: 1px solid #eee;
     border-radius: 4px;
     padding: 5px;
@@ -110,7 +125,8 @@
     justify-content: flex-start;
     gap: 10;
 }
-.emd-ref-content .emd-ref-box{
+
+.emd-ref-content .emd-ref-box {
     /* border: 1px solid red; */
     border-radius: 4px;
     padding: 5px;
@@ -119,13 +135,14 @@
     flex-direction: column;
     justify-content: flex-start;
 }
-.emd-ref-box label
-{
+
+.emd-ref-box label {
     margin: 0px;
     font-size: 10px;
     color: grey;
 }
-.emd-ref-box input{
+
+.emd-ref-box input {
     border: 1px solid #ddd;
     border-radius: 4px;
     padding: 5px;
@@ -133,17 +150,19 @@
     width: 100%;
     font-size: 12px;
 }
-.emd-ref-box input:hover{
+
+.emd-ref-box input:hover {
     border: 1px solid #5D12EB;
     background: linear-gradient(to bottom, #6f30dc44, #1248eb50);
 }
-.emd-ref-box input:focus{
+
+.emd-ref-box input:focus {
     outline: none;
     border: 1px solid #6f30dc47;
     box-shadow: 0px 4px 8px #6f30dc54;
 }
 
-.emd-ref-box textarea{
+.emd-ref-box textarea {
     border: 1px solid #ddd;
     border-radius: 4px;
     padding: 5px;
@@ -152,17 +171,20 @@
     height: 10vh;
     font-size: 12px;
 }
-.emd-ref-box textarea:hover{
+
+.emd-ref-box textarea:hover {
     /* outline: none; */
     border: 1px solid #5D12EB;
-     background: linear-gradient(to bottom, #6f30dc44, #1248eb50);
+    background: linear-gradient(to bottom, #6f30dc44, #1248eb50);
 }
-.emd-ref-box textarea:focus{
+
+.emd-ref-box textarea:focus {
     outline: none;
     border: 1px solid #6f30dc47;
     box-shadow: 0px 4px 8px #6f30dc54;
 }
-.emd-btn{
+
+.emd-btn {
     /* border: 1px solid rebeccapurple; */
     width: 100%;
     display: flex;
@@ -170,7 +192,8 @@
     justify-content: center;
     padding: 5px 0px;
 }
-.emd-btn button{
+
+.emd-btn button {
     background: linear-gradient(to bottom, #6E30DC, #5D12EB);
     padding: 7px 10px;
     color: white;
@@ -184,17 +207,18 @@
     align-items: center;
     justify-content: center;
 }
-.emd-btn button:hover{
-    background: linear-gradient(to bottom,#5D12EB, #6E30DC) ;
+
+.emd-btn button:hover {
+    background: linear-gradient(to bottom, #5D12EB, #6E30DC);
 }
 
-.emd-sub-icon{
+.emd-sub-icon {
     margin-right: 10px;
 }
 
 
 /* DROPDOWN ACCEPT */
-.emd-box .dropdown-selected{
+.emd-box .dropdown-selected {
     border: 1px solid #ddd;
     border-radius: 4px;
     padding: 5px;
@@ -203,7 +227,7 @@
     font-size: 11px;
 }
 
-.emd-box .dropdown-options{
+.emd-box .dropdown-options {
     position: absolute;
     top: 90%;
     left: 3%;
@@ -212,20 +236,21 @@
     width: 95%;
     border: 1px solid #ddd;
     border-radius: 4px;
-    background-color: white; 
+    background-color: white;
     list-style: none;
-    font-size: 10px;  
-    gap: 10px; 
+    font-size: 10px;
+    gap: 10px;
 }
 
-.dropdown-options li{
+.dropdown-options li {
     border: 1px solid white;
     border-radius: 4px;
     padding: 5px;
     margin-bottom: 5px;
     cursor: pointer;
 }
-.dropdown-options li:hover{
+
+.dropdown-options li:hover {
     /* background-color: #eee; */
     background-color: #d0b6ff46;
     border: 1px solid #eee;
@@ -268,12 +293,19 @@
 /* media query  */
 /* ukuran handpone kecil */
 @media (min-width:375px) and (max-width:575px) {
-  .emd-container form{
-    height: 75vh;
-    /* border: 1px solid green; */
-  }
+    .emd-container form {
+        height: 75vh;
+        /* border: 1px solid green; */
+    }
 
-  .emd-btn button{
-    width: 90%;
-  }
+    .emd-btn button {
+        width: 90%;
+    }
+}
+
+@media screen and (max-height: 600px) {
+    .emd-container form {
+        /* border: 1px solid red; */
+        height: 78vh;
+    }
 }

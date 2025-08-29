@@ -118,7 +118,7 @@ const renderTextWithLinks = (text) => {
     <div className='view-md-container'>
       <div className="vmd-header">
         <div className="vmd-left">
-          <h4>DATA MARKETING</h4>
+          <h4>DETAIL DATA MARKETING DESIGN</h4>
           {dataMarketingDesign.style} | {dataMarketingDesign.buyer_name} | {dataMarketingDesign.account} | {getLastFiveCodeOrder(dataMarketingDesign.code_order)}
         </div>
         <div className="vmd-right">

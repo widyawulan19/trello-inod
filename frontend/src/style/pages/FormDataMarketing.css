@@ -26,7 +26,7 @@
 
 .fmdh-left .header-icon {
     border: 1px solid #ffffff72;
-    background-color: #ffffff72;
+    background: linear-gradient(90deg, #7246eb, #532189);
     border-radius: 8px;
     padding: 5px;
     color: #fff;

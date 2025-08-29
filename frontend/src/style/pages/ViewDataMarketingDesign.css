@@ -387,4 +387,11 @@
     .vmd-form {
         width: 100%;
     }
+
+}
+
+@media screen and (max-height: 600px) {
+    .view-md-container .vmd-body {
+        height: 79vh;
+    }
 }
