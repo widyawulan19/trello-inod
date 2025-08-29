@@ -5,8 +5,9 @@ import { IoTrashBin, IoInformationCircle, IoCalendar } from 'react-icons/io5';
 import '../style/pages/ScheduleEmployeePage.css';
 import { HiXMark } from 'react-icons/hi2';
 import { FaCalendarPlus, FaUserAlt, FaCalendarMinus, FaCircle } from "react-icons/fa";
-import { FaBuilding, FaCloudSun, FaFaceGrinBeam, FaMoon, FaSun } from "react-icons/fa6";
+import { FaBuilding, FaCloudSun, FaFaceGrinBeam, FaMoon, FaSun, FaXmark } from "react-icons/fa6";
 import BootstrapTooltip from '../components/Tooltip';
+import { FaFilter } from "react-icons/fa6";
 
 const ScheduleEmployeePage=()=> {
     //STATE
@@ -131,6 +132,10 @@ const ScheduleEmployeePage=()=> {
         setShowDivisi(!showDivisi);
     }
 
+    const handleCloseDivisi = () =>{
+        setShowDivisi(false);
+    }
+
     // 11. function icon schedule
     const iconSchedule = {
         "Pagi": <FaSun/>,
@@ -192,27 +197,36 @@ const ScheduleEmployeePage=()=> {
             </div>
             <div className="sh-right">
                 <div className='schedule-filter' onClick={handleShowDivisi}>
-                    <label>Filter Divisi</label>
+                    <label>FILTER DIVISI</label>
                 </div>
-                <div className='schedule-form' onClick={handleShowForm}>Add New</div>
+                <div className='schedule-form' onClick={handleShowForm}>ADD NEW</div>
                 {showDivisi && (
                     <div className='filter-modal'>
-                        <ul className='filter-box'>
-                            <li className='filter-li'
-                            onClick={() => setFilterDivisi('')}
-                            >
-                            Semua Divisi
-                            </li>
-                            {[...new Set(schedules.map(emp => emp.divisi))].map((div, i) => (
-                            <li
-                                key={i}
-                                onClick={() => setFilterDivisi(div)}
-                                className='filter-li'
-                            >
-                                {div}
-                            </li>
-                            ))}
-                        </ul>
+                        <div className="filter-header">
+                            <div className="header-left">
+                                <FaFilter/>
+                                <p>Filter By:</p>
+                            </div>
+                            <FaXmark className='close-header' onClick={handleCloseDivisi}/>
+                        </div>
+                        <div className="filter-body">
+                            <ul className='filter-box'>
+                                <li className='filter-li'
+                                onClick={() => setFilterDivisi('')}
+                                >
+                                Semua Divisi
+                                </li>
+                                {[...new Set(schedules.map(emp => emp.divisi))].map((div, i) => (
+                                <li
+                                    key={i}
+                                    onClick={() => setFilterDivisi(div)}
+                                    className='filter-li'
+                                >
+                                    {div}
+                                </li>
+                                ))}
+                            </ul>
+                        </div>
                     </div>
                 )}
             </div>

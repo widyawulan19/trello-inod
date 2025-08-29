@@ -84,7 +84,7 @@ const FormEditDataEmployee = ({ fetchMember, onClose, employee }) => {
     <div className='form-edit-cont'>
       <div className="fec-header">
         <div className="fec-title">
-          <h4>UPDATE DATA {employee.username}</h4>
+          <h4>FORM UPDATE DATA {employee.username}</h4>
           {/* <p>{employee.username}</p> */}
         </div>
         <BootstrapTooltip title='Close Form' placement='top'>
