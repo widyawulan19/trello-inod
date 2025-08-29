@@ -317,3 +317,38 @@
 }
 
 /* END AVATAR USER  */
+
+@media screen and (max-height: 600px) {
+    .profile-container {
+        padding: 15px 20px;
+    }
+
+    /* PROFIL LEFT  */
+    .profile-page-main {
+        /* border: 1px solid red; */
+    }
+
+    .profile-left .profile-photo {
+        /* border: 1px solid blue; */
+    }
+
+    .profile-photo img {
+        width: 70px;
+        height: 70px;
+    }
+
+    .profile-photo p {
+        font-size: 10px;
+    }
+
+    /* PROFILE SETTING  */
+    .profile-left .profile-setting {
+        /* border: 1px solid blue; */
+        padding: 10px 0px;
+        width: 90%;
+    }
+
+    .profile-setting button {
+        font-size: 10px;
+    }
+}

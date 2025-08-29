@@ -179,3 +179,22 @@
     }
 
 }
+
+@media screen and (max-height: 600px) {
+    .personal-container {
+        /* border: 1px solid green; */
+        width: 60vw;
+    }
+
+    .personal-container .pc-title {
+        margin-bottom: 10px;
+    }
+
+    .pc-title {
+        /* border: 1px solid blue; */
+    }
+
+    .pc-title h3 {
+        font-size: 15px;
+    }
+}
