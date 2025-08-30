@@ -101,7 +101,7 @@
 }
 
 .pc-btn button:hover {
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 
@@ -109,9 +109,14 @@
 /* Medium devices (tablets, ≥768px) */
 @media (min-width: 768px) and (max-width: 991.98px) {
 
-    /* CSS tablet atau iPad */
-    .personal-container .pc-body {
+    .personal-container {
         /* border: 1px solid orange; */
+        height: 65vh;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 5px;
     }
 }
 
@@ -119,7 +124,8 @@
 @media (min-width: 576px) and (max-width: 767.98px) {
     .personal-container {
         /* border: 1px solid orange; */
-        height: 65vh;
+        overflow-y: auto;
+        height: 100%;
         width: 100%;
         display: flex;
         align-items: center;
@@ -130,6 +136,15 @@
     .personal-container .pc-title {
         /* border: 1px solid green; */
         width: 100%;
+        margin-bottom: 5px;
+    }
+
+    .pc-title h3 {
+        font-size: 15px;
+    }
+
+    .pc-title p {
+        font-size: 10px;
     }
 
     .personal-container .pch-body {
@@ -139,38 +154,107 @@
         align-items: center;
         width: 100%;
         margin-top: 0px;
+        gap: 0px;
     }
+
+
+
 
     .pc-body .pi,
     .pc-body .pi-job {
         width: 100%;
     }
 
+    .personal-container .form-pc {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        /* border: 1px solid blue; */
+        gap: 0px;
+    }
+
+    .form-pc .box-form {
+        /* border: 1px solid red; */
+        gap: 3px;
+    }
+
+    .box-form label {
+        font-size: 10px;
+    }
+
+    .box-form input {
+        margin-top: 0px;
+        font-size: 10px;
+        padding: 5px;
+    }
+
+    .form-pc .pc-btn {
+        /* border: 1px solid blue; */
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .pc-btn button {
+        border: 1px solid white;
+        border-radius: 16px;
+        padding: 5px 15px;
+        color: white;
+        font-size: 12px;
+        background-color: #5D12EB;
+        cursor: pointer;
+    }
 }
 
 /* ukuran handpone kecil  */
-@media (min-width:375px) and (max-width:575px) {
+@media (max-width: 575.98px) {
     .personal-container {
         /* border: 1px solid red; */
         width: 100%;
+        height: fit-content;
+        padding: 0px 10px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
     }
 
-    .personal-container .pch-body {
+    .personal-container .pc-title {
+        /* border: 1px solid green; */
+        margin-bottom: 5px;
+        width: 100%;
+    }
+
+    .personal-container .form-pc {
         /* border: 1px solid blue; */
         display: flex;
         flex-direction: column;
         align-items: center;
         width: 100%;
+        height: 36vh;
+        overflow-y: auto;
+        gap: 0px;
     }
 
     .pc-title p {
-        font-size: 10px;
+        font-size: 8px;
     }
 
-    .pch-body .pi,
-    .pch-body .pi-job {
+    .form-pc .box-form {
+        /* border: 1px solid orange; */
+    }
+
+    .box-form label,
+    .box-form input {
+        font-size: 10px;
+        margin: 0px;
+    }
+
+    .pc-btn button {
+        font-size: 12px;
+        padding: 5px 15px;
         width: 100%;
-        /* border: 1px solid grey; */
     }
 
     .save-btn-container .save-btn {

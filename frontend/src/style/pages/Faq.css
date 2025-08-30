@@ -48,7 +48,7 @@
     border-radius: 8px;
     padding: 5px;
     color: white;
-    background-color: #5e12ebb9;
+    background: linear-gradient(90deg, #7246eb, #532189)
 }
 
 /* MAIN CONTENT  */
@@ -90,4 +90,15 @@
     font-size: 13px;
     color: #333;
     font-weight: bold;
+}
+
+@media screen and (max-height: 600px) {
+    .faq-left h2 {
+        font-size: 15px;
+    }
+
+    .faq-item button,
+    .faq-item .answer-box {
+        font-size: 12px;
+    }
 }
