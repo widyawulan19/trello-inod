@@ -157,8 +157,7 @@
     background-color: white;
     height: fit-content;
     border-radius: 10px;
-    height: fit-content;
-    overflow-y: auto;
+    /* overflow-y: auto; */
     padding: 10px;
     position: relative;
     cursor: pointer;
@@ -946,7 +945,8 @@
     }
 
     .workspace-card {
-        height: 26vh;
+        height: 50vh !important;
+        /* border: 1px solid blue; */
     }
 
     .form-workspace-card {
