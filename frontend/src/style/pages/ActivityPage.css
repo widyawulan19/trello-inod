@@ -34,7 +34,7 @@
     padding: 5px;
     font-size: 18px;
     color: white;
-    background-color: #5e12ebb9;
+    background: linear-gradient(90deg, #7246eb, #532189)
 }
 
 .ac-title h2 {
@@ -51,6 +51,21 @@
 }
 
 .ac-header .ach-right {
+    border: 1px solid #5D12EB;
+    background-color: #5D12EB;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 13px;
+    position: relative;
+}
+
+.ach-right:hover {
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.custom-dropdown .dropdwon-list {
     border: 1px solid red;
 }
 
@@ -88,4 +103,27 @@
     font-size: 12px;
     color: #555;
     border: 1px solid #ddd;
+}
+
+@media screen and (max-height: 600px) {
+    .ac-title h2 {
+        font-size: 15px;
+    }
+
+    .ac-title .ac-icon {
+        font-size: 12px;
+    }
+
+    .page-description {
+        font-size: 10px;
+    }
+
+    .activity-table-container {
+        height: 70vh;
+    }
+
+    .activity-table th,
+    .activity-table td {
+        font-size: 10px;
+    }
 }

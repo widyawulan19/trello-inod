@@ -83,8 +83,7 @@ const UserActivityPage = () => {
           </p>
         </div>
 
-        <div className="ach-right">
-          {/* <OutsideClick onClickOutside={() => setDropdownOpen(false)}> */}
+        {/* <div className="ach-right">
             <div className="custom-dropdown">
               <div
                 className="dropdown-trigger"
@@ -101,8 +100,7 @@ const UserActivityPage = () => {
                 </ul>
               )}
             </div>
-          {/* </OutsideClick> */}
-        </div>
+        </div> */}
       </div>
 
       {loading ? (
