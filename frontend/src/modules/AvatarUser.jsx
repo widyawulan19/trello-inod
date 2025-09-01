@@ -28,13 +28,15 @@ const AvatarUser = ({
       <div className="apc-body">
         {allProfiles.map((profile) => (
           <div
+          className='img-box'
             key={profile.id}
             onClick={() => handleSelectProfile(profile.id)}
             style={{
-              borderRadius: '8px',
-              cursor: 'pointer',
-              width: '60px',
-              height: '30px',
+              // border:'1px solid red',
+              // borderRadius: '8px',
+              // cursor: 'pointer',
+              // width: '60px',
+              // height: '30px',
               // marginTop: '5px',
             }}
           >
