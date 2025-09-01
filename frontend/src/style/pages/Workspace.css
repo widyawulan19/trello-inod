@@ -845,20 +845,19 @@
 
     .workspace-content {
         padding: 0px;
-        display: flex;
+        /* display: flex;
         flex-direction: column;
-        justify-content: flex-start;
-        height: 75vh;
+        justify-content: flex-start; */
+        grid-template-columns: repeat(2, 1fr);
+        height: 70vh;
+        gap: 5px;
         overflow-y: auto;
         align-items: center;
         /* align-items: stretch; */
+        border: 1px solid blue;
     }
 
-    .workspace-card {
-        height: 24vh;
-        width: 90%;
-        /* border: 1px solid red; */
-    }
+    .workspace-card {}
 
     .form-workspace-card {
         /* border: 1px solid red; */
@@ -945,7 +944,7 @@
     }
 
     .workspace-card {
-        height: 50vh !important;
+        height: 100%;
         /* border: 1px solid blue; */
     }
 

@@ -125,7 +125,7 @@
     .personal-container {
         /* border: 1px solid orange; */
         overflow-y: auto;
-        height: 100%;
+        /* height: 80vh; */
         width: 100%;
         display: flex;
         align-items: center;
@@ -145,6 +145,16 @@
 
     .pc-title p {
         font-size: 10px;
+    }
+
+    .personal-container .form-pc {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        overflow-y: auto;
+        gap: 0px;
     }
 
     .personal-container .pch-body {

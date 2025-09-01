@@ -473,6 +473,10 @@
         display: none;
     }
 
+    .fade .notif {
+        width: 100%;
+    }
+
     /* PROFIL RIGHT  */
     .profile-page-main .profile-right {
         /* border: 1px solid green; */
