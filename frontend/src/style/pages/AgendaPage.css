@@ -22,12 +22,29 @@
   background-color: white;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
+  box-shadow: 0px 4px 8px (0, 0, 0, 0.1);
+}
+
+.agenda-page-header .ap-title {
+  /* border: 1px solid red; */
+  gap: 5px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.ap-title .ap-icon {
+  background: linear-gradient(to bottom, #6E30DC, #5D12EB);
+  color: white;
+  border-radius: 8px;
+  padding: 5px;
 }
 
 .agenda-page-header h2 {
-  font-size: 25px;
+  font-size: 20px;
   font-weight: bold;
-  color: #333;
+  color: #5320be;
   margin: 0px;
 }
 
@@ -51,11 +68,11 @@
   border: 1px solid #ddd;
   border-radius: 10px;
   background-color: white;
-  width: 90%;
+  width: 98%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px;
+  padding: 10px 20px;
   position: relative;
 
 }
@@ -138,7 +155,7 @@
   width: 65%;
   z-index: 100;
   border-radius: 6px;
-  padding: 0;
+  padding: 2px;
   list-style: none;
   max-height: 200px;
   overflow-y: auto;
@@ -148,11 +165,14 @@
 .dropdown-menu li {
   padding: 8px 12px;
   cursor: pointer;
+  border: 1px solid white;
+  border-radius: 8px;
 }
 
 .dropdown-menu li:hover,
 .dropdown-menu li.active {
-  background-color: #f0f0f0;
+  color: #5320be;
+  background-color: #e5d3f8;
   font-weight: bold;
 }
 
@@ -164,7 +184,8 @@
   border-radius: 8px;
   background-color: #6a11cb;
   color: white;
-  padding: 5px 10px;
+  padding: 7px 10px;
+  font-size: 12px;
   gap: 5px;
   display: flex;
   align-items: center;
@@ -178,7 +199,7 @@
   border-radius: 16px;
   background-color: white;
   padding: 10px;
-  top: 30%;
+  top: 20%;
   right: 5%;
   z-index: 101;
   width: 30%;
@@ -284,11 +305,13 @@ form .ap-box {
 
 .create-agenda-form button {
   padding: 5px 10px;
+  font-size: 12px;
   background-color: #6a11cb;
   color: white;
   border: 1px solid #6a11cb;
   border-radius: 8px;
   cursor: pointer;
+  width: 100%;
 }
 
 .create-agenda-form button:hover {
@@ -299,7 +322,8 @@ form .ap-box {
 
 /* AGENDA TABLE  */
 .agenda-page-content {
-  width: 95%;
+  width: 98%;
+  height: 70vh;
   background-color: #f8f9fb;
   border-radius: 10px;
   border: 1px solid #ddd;
@@ -380,7 +404,6 @@ form .ap-box {
   width: 100%;
   border-collapse: collapse;
   font-family: 'Segoe UI', sans-serif;
-
   position: relative;
 }
 
@@ -422,8 +445,8 @@ form .ap-box {
 /* DETAILS AGENDA MODALS  */
 .agenda-modals {
   width: 100%;
-  height: 90%;
-  top: 7%;
+  height: 95%;
+  top: 5%;
   left: 0px;
   z-index: 200;
   background-color: rgba(0, 0, 0, 0.155);
@@ -439,13 +462,13 @@ form .ap-box {
   height: 80%;
   padding: 0px;
   border: 1px solid #ddd;
-  border-radius: 16px;
+  border-radius: 12px;
 }
 
 .agenda-modals-box .modals-header {
   border-bottom: 1px solid #6a11cb;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
   color: white;
   padding: 10px 20px;
   display: flex;
@@ -466,6 +489,7 @@ form .ap-box {
   border: 1px solid rgba(255, 255, 255, 0.291);
   border-radius: 10px;
   padding: 5px 8px;
+  font-size: 18px;
   background-color: rgba(255, 255, 255, 0.291);
   color: white;
 }
@@ -478,13 +502,28 @@ form .ap-box {
   gap: 0px;
 }
 
+.title input {
+  border: none;
+  width: 100%;
+  font-size: 15px;
+  background: linear-gradient(to right, #5c48f5, #9A40F8);
+  color: white;
+}
+
+.title input:focus {
+  outline: none;
+}
+
 .title h3 {
   font-weight: bold;
+  font-size: 15px;
+  margin: 0px;
 }
 
 .title p {
   font-size: 10px;
   width: 100%;
+  padding: 0px;
 }
 
 .close-icon {
@@ -505,8 +544,9 @@ form .ap-box {
 /* MODALS MAIN CONTENT  */
 .modals-content {
   /* border: 1px solid red; */
-  padding: 20px;
-  padding-top: 10px;
+  padding: 10px;
+  height: fit-content;
+  /* padding-top: 10px; */
 }
 
 .modals-content .modals-action {
@@ -540,8 +580,11 @@ form .ap-box {
 
 /* MODAL DATE  */
 .modals-date {
-  border: 1px solid #f6f6f6;
-  background-color: #f6f6f6;
+  /* border: 1px solid #f6f6f6;
+  background-color: #f6f6f6; */
+  border: 1px solid #eee;
+  background-color: white;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 10px;
   margin: 10px 0px;
@@ -606,7 +649,7 @@ form .ap-box {
 }
 
 .modals-main .mm-header {
-  gap: 10px;
+  gap: 5px;
   margin-bottom: 10px;
   display: flex;
   align-items: center;
@@ -614,10 +657,19 @@ form .ap-box {
   /* border: 1px solid blue; */
 }
 
+.mm-icon {
+  border: 1px solid white;
+  background: linear-gradient(90deg, #7246eb, #532189);
+  color: white;
+  font-size: 15px;
+  border-radius: 8px;
+  padding: 5px;
+}
+
 .mm-header h4 {
   font-size: 15px;
   font-weight: bold;
-  color: #5e5e5e;
+  color: #333;
 }
 
 .mm-desc {
@@ -625,9 +677,22 @@ form .ap-box {
   border-radius: 10px;
   padding: 10px;
   width: 100%;
-  height: 35vh;
+  height: 43vh;
   overflow-y: auto;
   background-color: #f6f6f6;
+}
+
+.mm-desc textarea {
+  /* border: 1px solid red; */
+  color: #5320be;
+  width: 100%;
+  height: 100%;
+  font-size: 12px;
+  background-color: #f6f6f6;
+}
+
+.mm-desc textarea:focus {
+  outline: none;
 }
 
 .mm-desc p {
@@ -658,6 +723,7 @@ form .ap-box {
   border: 1px solid #ddd;
 }
 
+
 .title-container {
   /* border: 1px solid red; */
   display: flex;
@@ -665,6 +731,7 @@ form .ap-box {
   /* align-items: center; */
   justify-content: flex-start;
   width: 100%;
+  padding: 0px;
 }
 
 .title-container h5 {
@@ -691,6 +758,26 @@ form .ap-box {
   overflow: hidden;
   /* Sembunyikan teks yang overflow */
   text-overflow: ellipsis;
+}
+
+.status {
+  border: 1px solid white;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 4px 15px;
+  width: fit-content;
+  color: white;
+}
+
+.done-agenda {
+  padding: 5px 8px;
+  border: 1px solid white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 10px;
+  width: fit-content;
+  text-align: center;
 }
 
 /* Status Badge */
@@ -725,3 +812,416 @@ form .ap-box {
 }
 
 /* END AGENDA TABLE */
+
+
+/* MEDIA QUERY  */
+
+/* Desktop (≥ 992px) */
+@media (min-width: 992px) {
+  .agenda-modals-box {
+    /* border: 1px solid red; */
+    width: 55%;
+  }
+
+  .mh-left .icon {
+    font-size: 15px;
+  }
+
+  .title h3 {
+    font-size: 12px;
+  }
+
+  .title p {
+    font-size: 8px;
+  }
+
+  /* MODAL DATE  */
+  .top-right h4,
+  .mm-header h4 {
+    font-size: 12px;
+  }
+
+  .mm-icon {
+    font-size: 12px;
+    padding: 4px;
+  }
+
+  .mm-desc {
+    /* font-size: 10px !important; */
+  }
+
+  /* .create-agenda-form {
+    width: 40%;
+  } */
+
+}
+
+/* Medium devices (tablets, ≥768px) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+
+  /* AGENDA ACTION  */
+  .agenda-page-container .agenda-page-action {
+    /* border: 1px solid red; */
+    padding: 10px !important;
+  }
+
+  .agenda-page-action .action-left {
+    /* border: 1px solid blue; */
+    width: 30%;
+  }
+
+  .agenda-page-action .action-right {
+    width: 70%;
+    /* border: 1px solid blue; */
+  }
+
+  /* MODALS  */
+  .agenda-modals-box {
+    /* border: 1px solid red; */
+    width: 60%;
+  }
+
+  .mh-left .icon {
+    font-size: 15px;
+  }
+
+  .title h3 {
+    font-size: 12px;
+  }
+
+  .title p {
+    font-size: 8px;
+  }
+
+  /* MODAL DATE  */
+  .top-right h4,
+  .mm-header h4 {
+    font-size: 12px;
+  }
+
+  .mm-icon {
+    font-size: 12px;
+    padding: 4px;
+  }
+
+  .mm-desc {
+    /* height: 45vh !important;
+    font-size: 10px !important; */
+  }
+
+  .create-agenda-form {
+    width: 50%;
+  }
+}
+
+/* ukuran handpone besar  */
+@media (min-width: 576px) and (max-width: 767.98px) {
+
+  /* AGENDA ACTION  */
+  .agenda-page-container .agenda-page-action {
+    /* border: 1px solid red; */
+    padding: 10px !important;
+  }
+
+  .agenda-page-action .action-left {
+    /* border: 1px solid blue; */
+    width: 30%;
+  }
+
+  .agenda-page-action .action-right {
+    width: 70%;
+    /* border: 1px solid blue; */
+  }
+
+  .dropdown-wrapper {
+    justify-content: flex-end;
+  }
+
+  .dropdown-wrapper p {
+    margin-right: 5px !important;
+    /* border: 1px solid red; */
+    font-size: 10px;
+  }
+
+  .dropdown-toggle {
+    min-width: 15vw !important;
+    padding: 7px;
+  }
+
+  .dropdown-menu {
+    width: 60%;
+    /* border: 1px solid red; */
+  }
+
+  .dropdown-menu li {
+    font-size: 10px;
+    padding: 8px;
+  }
+
+  .agenda-modals-box {
+    /* border: 1px solid red; */
+    width: 80%;
+  }
+
+  /* TABLE  */
+  .agenda-page-table thead th {
+    font-size: 12px;
+  }
+
+  .agenda-page-table tbody td {
+    padding: 5px;
+  }
+
+  .mh-left .icon {
+    font-size: 15px;
+  }
+
+  .title h3 {
+    font-size: 12px;
+  }
+
+  .title p {
+    font-size: 8px;
+  }
+
+
+  /* END TABLE  */
+
+  /* MODAL DATE  */
+  .top-right h4,
+  .mm-header h4 {
+    font-size: 12px;
+  }
+
+  .mm-icon {
+    font-size: 12px;
+    padding: 4px;
+  }
+
+  .mm-desc {
+    /* height: 45vh !important;
+    font-size: 10px !important; */
+  }
+
+  .create-agenda-form {
+    width: 70%;
+  }
+}
+
+/* Mobile ( < 576px) */
+@media (max-width: 575.98px) {
+  .agenda-page-header p {
+    display: none;
+  }
+
+  /* AGENDA ACTION  */
+  .agenda-page-container .agenda-page-action {
+    /* border: 1px solid red; */
+    padding: 10px !important;
+    gap: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .agenda-page-action .action-left {
+    /* border: 1px solid blue; */
+    width: 100%;
+  }
+
+  .dropdown-wrapper {
+    width: 70%;
+  }
+
+  .dropdown-wrapper p {
+    margin-right: 5px;
+    font-size: 10px;
+  }
+
+  .agenda-page-action .action-right {
+    width: 100%;
+    /* border: 1px solid blue; */
+  }
+
+  .dropdown-toggle {
+    min-width: 145px;
+  }
+
+  /* TABLE  */
+  .agenda-page-table thead th {
+    font-size: 10px;
+  }
+
+  .agenda-page-table tbody td {
+    padding: 5px;
+  }
+
+  .mh-left .icon {
+    font-size: 15px;
+  }
+
+  .title h3 {
+    font-size: 12px;
+  }
+
+  .title p {
+    font-size: 8px;
+  }
+
+
+  .title-box {
+    /* border: 1px solid blue; */
+    width: 50vw;
+    min-width: 50vw;
+    max-width: 50vw;
+    padding: 0px;
+    margin: 0px;
+  }
+
+  .title-container p {
+    width: 45vw;
+  }
+
+  .date-cont,
+  .status-cont,
+  .done-cont {
+    width: 30vw;
+    min-width: 30vw;
+    max-width: 30vw;
+    padding: 0px;
+    margin: 0px;
+    /* border: 1px solid blue; */
+    font-size: 10px;
+  }
+
+  .modals-content {
+    padding: 10px;
+    padding-top: 0px;
+  }
+
+
+  /* END TABLE  */
+
+  /* MODAL DATE  */
+  .top-right h4,
+  .mm-header h4 {
+    font-size: 10px;
+  }
+
+  .mm-icon {
+    font-size: 12px;
+    padding: 4px;
+  }
+
+  .mm-desc {
+    /* height: 47vh !important; */
+    /* font-size: 10px !important; */
+  }
+
+  /* FORM  */
+  .create-agenda-form {
+    width: 90%;
+  }
+}
+
+@media screen and (max-height: 600px) {
+  .agenda-page-header h2 {
+    font-size: 15px;
+  }
+
+  .agenda-page-header p {
+    font-size: 10px;
+  }
+
+  /* ACTION  */
+  .agenda-page-container .agenda-page-action {
+    padding: 5px 20px;
+  }
+
+  .agenda-page-action .action-left {
+    /* border: 1px solid red; */
+    padding: 2px;
+  }
+
+  .ac-icon {
+    font-size: 20px;
+  }
+
+  .action-left input {
+    font-size: 10px;
+    /* padding: 5px; */
+  }
+
+  .dropdown-toggle {
+    font-size: 10px;
+  }
+
+  /* form  */
+  .create-agenda-form {
+    /* border: 1px solid red; */
+    padding: 5px;
+  }
+
+  .create-agenda-form .create-agenda-header {
+    padding: 5px;
+  }
+
+  .create-agenda-header h3 {
+    font-size: 12px;
+  }
+
+  .create-agenda-form form {
+    padding: 5px;
+    gap: 5px;
+  }
+
+  .ap-box label {
+    font-size: 10px;
+  }
+
+  .ap-box input,
+  .ap-box textarea,
+  .ap-box select {
+    padding: 5px;
+    font-size: 10px;
+  }
+
+
+  /* TABEL  */
+  .title-container h5 {
+    font-size: 12px;
+  }
+
+
+  /* AGENDA MODALS  */
+  .agenda-modals {
+    height: 100%;
+    top: 0%;
+  }
+
+  .agenda-modals-box {
+    height: 90%;
+  }
+
+  .agenda-modals-box .modals-header {
+    padding: 10px;
+  }
+
+  /* MODALS ACTION  */
+  .modals-action {
+    /* border: 1px solid blue; */
+    padding: 0px;
+  }
+
+  /* MODALS DATE   */
+  .modals-date {
+    /* border: 1px solid red; */
+  }
+
+  .mm-desc {
+    height: 45vh;
+    /* border: 1px solid red; */
+  }
+
+}
