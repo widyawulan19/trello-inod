@@ -117,25 +117,36 @@ const PersonalNotification=({userId})=> {
     }
 
   return (
-    <div style={{ height:'70vh', overflowY:'auto'}}>
-        <div className="notif-setting">
+    <div className='pn-container'>
+        <div className="pn-header">
+            <div className="pn-left">
+                <div className="pn-icon">
+                    <h2>
+                        <GoBell size={18}/>
+                        Notification Chat
+                    </h2>
+                    <p>Stay update on your tasks and mention</p>
+                </div>
+            </div>
+            <div className="notif-setting">
+                <button 
+                    className={`notif-button ${activeNotification === 'chat' ? 'active' : ''}`}
+                    onClick={() => setActiveNotification('chat')}    
+                >
+                    Notification Chat
+                    {unreadCountMessage > 0 && <span className='notif-badge'>{unreadCountMessage}</span>}
+                </button>
             <button 
-                className={`notif-button ${activeNotification === 'chat' ? 'active' : ''}`}
-                onClick={() => setActiveNotification('chat')}    
-            >
-                Notification Chat
-                {unreadCountMessage > 0 && <span className='notif-badge'>{unreadCountMessage}</span>}
-            </button>
-           <button 
-                className={`notif-button ${activeNotification === 'system' ? 'active' : ''}`}
-                onClick={() => setActiveNotification('system')}    
-            >
-                Notification System
-                {unreadCount > 0 && <span className="notif-badge">{unreadCount}</span>}
-            </button>
+                    className={`notif-button ${activeNotification === 'system' ? 'active' : ''}`}
+                    onClick={() => setActiveNotification('system')}    
+                >
+                    Notification System
+                    {unreadCount > 0 && <span className="notif-badge">{unreadCount}</span>}
+                </button>
+            </div>
         </div>
 
-        <div className="notif-body">
+        <div className="pn-body">
             {renderNotification()}
         </div>
     </div>

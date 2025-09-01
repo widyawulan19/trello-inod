@@ -72,7 +72,7 @@ const NavbarMessageNotif=({
         handleMarkAsRead(notificationId);
     
         const { workspaceId, boardId, listId, cardId } = response.data;
-        navigate(`/workspaces/${workspaceId}/board/${boardId}/lists/${listId}/cards/${cardId}`);
+        navigate(`/layout/workspaces/${workspaceId}/board/${boardId}/lists/${listId}/cards/${cardId}`);
       } catch (error) {
         console.error('Failed to navigate to card details:', error);
       }

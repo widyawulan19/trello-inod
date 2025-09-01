@@ -1008,6 +1008,11 @@
 
   /* TABEL  */
 
+  .dm-container {
+    height: 95% !important;
+    /* border: 1px solid red; */
+  }
+
   .input-container,
   .buyer-name-container,
   .code-order-container,
@@ -1130,7 +1135,7 @@
 
   /* btn export  */
   .btn-export {
-    font-size: 11px;
+    font-size: 10px !important;
     font-weight: bold;
   }
 
@@ -1157,6 +1162,7 @@
   /* TABEL  */
   .dm-container {
     /* border: 1px solid red; */
+    height: 98%;
   }
 
   .dm-container th,

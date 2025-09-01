@@ -95,7 +95,7 @@ const SystemNotifications=({
 
   return (
     <div className="notif-system-container">
-      <div className="ns-header">
+      {/* <div className="ns-header">
         <div className="ns-left">
             <h2>
               <GoBell size={18}/> Notifications System
@@ -106,7 +106,7 @@ const SystemNotifications=({
             <button onClick={handleMarkAllAsRead}><HiCheck/>Mark all as Read</button>
             <button><HiOutlineExclamationCircle/>Notification setting</button>
         </div>
-      </div>
+      </div> */}
 
       {/* BODY  */}
       <div className="ns-body">
@@ -114,7 +114,7 @@ const SystemNotifications=({
           {notificationSystem.map((notif) => (
             <li key={notif.id} style={{borderLeft:`3px solid ${NOTIF_TYPE[notif.type] || '#fff'}` , backgroundColor: notif.is_read ? '#eee' : '#fff'}}>
               <div className='sn-text'>
-                <p style={{fontWeight:'bold', fontSize:'14px'}}>{notif.message}</p>
+                <p className='mess-p'>{notif.message}</p>
                  <p className='sn-date'>
                  {new Date(notif.created_at).toLocaleString()}
                 </p>

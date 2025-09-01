@@ -75,7 +75,7 @@ const handleNavigateToCard = async (chatId, notificationId) => {
     handleMarkAsRead(notificationId);
 
     const { workspaceId, boardId, listId, cardId } = response.data;
-    navigate(`/workspaces/${workspaceId}/board/${boardId}/lists/${listId}/cards/${cardId}`);
+    navigate(`/layout/workspaces/${workspaceId}/board/${boardId}/lists/${listId}/cards/${cardId}`);
   } catch (error) {
     console.error('Failed to navigate to card details:', error);
   }
@@ -84,18 +84,14 @@ const handleNavigateToCard = async (chatId, notificationId) => {
 
   return (
     <div className='notif-container'>
-      <div className="notif-header">
+      {/* <div className="notif-header">
         <div className="notif-left">
           <h2>
             <GoBell size={18}/> Notifications Chat
           </h2>
           <p>Stay update on your tasks and mention</p> 
         </div>
-        <div className="notif-right">
-          <button><HiCheck/>Mark all as Read</button>
-          <button><HiOutlineExclamationCircle/>Notification setting</button>
-        </div>
-      </div>
+      </div> */}
      
      <div className="notif-body">
       {notifications.length === 0 ? (
@@ -116,10 +112,10 @@ const handleNavigateToCard = async (chatId, notificationId) => {
                             ? '💬 Balasan untukmu:'
                             : '🔔 Notifikasi'}
                         </p>
-                        <p style={{color:'#5e5e5e', fontSize:'12px'}}>{notif.message}</p>
+                        <p  className='nch-p'>{notif.message}</p>
                       </div>
                       <div className="nch-right">
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-gray-500" >
                           {new Date(notif.created_at).toLocaleString()}
                         </p>
                       </div>

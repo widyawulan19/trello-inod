@@ -1,7 +1,6 @@
 .notif-system-container {
-    /* height: 69vh; */
+    height: 65vh;
     /* border: 1px solid red; */
-
 }
 
 .notifBar-system-container {
@@ -107,11 +106,11 @@
 
 /* BODY  */
 .notif-system-container .ns-body {
-    margin-top: 10px;
-    /* border:1px solid #ddd; */
-    height: 60vh;
+    /* margin-top: 10px; */
+    /* border: 1px solid blue; */
+    height: 65vh;
     overflow-y: auto;
-    padding: 5px;
+    padding: 0px 5px;
 }
 
 .ns-body ul {
@@ -136,8 +135,9 @@
 }
 
 
-.sn-text {
-    /* border: 1px solid blue; */
+.sn-text .mess-p {
+    font-size: 14px;
+    font-weight: bold;
 }
 
 .sn-text .sn-date {
@@ -193,6 +193,12 @@
 }
 
 /* MEDIA QUERY  */
+/* Desktop (≥ 992px) */
+@media (min-width: 992px) {}
+
+/* Medium devices (tablets, ≥768px) */
+@media (min-width: 768px) and (max-width: 991.98px) {}
+
 /* ukuran handpone besar  */
 @media (min-width: 576px) and (max-width: 767.98px) {
     .ns-header {
@@ -211,23 +217,29 @@
 }
 
 /* ukuran handpone kecil  */
-@media (min-width:375px) and (max-width:575px) {
-    .ns-header {
-        flex-direction: column;
-        justify-content: center;
-    }
-
-    .ns-header .ns-left {
-        width: 100%;
-    }
-
-    .ns-header .ns-right {
-        width: 100%;
-        margin-top: 5px;
+@media (max-width: 575.98px) {
+    .notif-system-container {
+        height: 40vh;
     }
 
     .notif-system-container .ns-body {
-        height: 57vh;
-        /* border: 1px solid red; */
+        /* border: 1px solid orange; */
+        height: 30vh;
     }
+
+    .sn-text .mess-p {
+        font-size: 10px;
+    }
+
+    .sn-text .sn-date {
+        font-size: 8px;
+    }
+}
+
+/* HEIGHT BREAKPOIN  */
+@media screen and (max-height: 600px) {
+    .sn-text .mess-p {
+        font-size: 11px;
+    }
+
 }

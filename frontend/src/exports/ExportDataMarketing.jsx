@@ -30,7 +30,7 @@ const ExportDataMarketing=()=> {
         onClick={handleExport}
         className='btn-export'
     >
-      Export to Excel
+      Export Excel
     </button>
   )
 }
