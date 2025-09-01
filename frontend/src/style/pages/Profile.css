@@ -110,19 +110,7 @@
     box-shadow: 4px 4px 8px #6b11cb87;
 }
 
-/* AVATAR MODAL  */
-.ava-container {
-    position: absolute;
-    border: 1px solid #e1d5ed;
-    border-radius: 16px;
-    background-color: white;
-    padding: 5px;
-    top: 100%;
-    left: 0;
-    width: 20vw;
-    height: 30vh;
-    box-shadow: 0px 4px 8px #4e089941;
-}
+
 
 /* PROFILE SETTING  */
 .profile-left .profile-setting {
@@ -164,9 +152,25 @@
 
 .fade .activity {
     /* border: 1px solid red; */
-    height: 75vh;
+    height: 50vh;
+    font-size: 15px;
     padding: 10px;
     overflow-y: auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    color: #5e5e5e;
+}
+
+.fade .security {
+    height: 50vh;
+    font-size: 15px;
+    padding: 10px;
+    overflow-y: auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    color: #5e5e5e;
 }
 
 .fade .notif {
@@ -176,6 +180,30 @@
     width: 58vw;
     padding: 10px;
     /* overflow-y: auto; */
+}
+
+.fade .out {
+    height: 50vh;
+    font-size: 15px;
+    padding: 10px;
+    overflow-y: auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.fade .logout-button {
+    color: red;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: 1px solid red;
+    background-color: #f7bfbf;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .profile-setting button:hover {
@@ -236,6 +264,22 @@
 
 
 /* AVATAR USER  */
+
+/* AVATAR MODAL  */
+.ava-container {
+    position: absolute;
+    /* border: 1px solid red; */
+    border: 1px solid #e1d5ed;
+    border-radius: 16px;
+    background-color: white;
+    padding: 5px;
+    top: 100%;
+    left: 0;
+    width: 20vw;
+    height: fit-content;
+    box-shadow: 0px 4px 8px #4e089941;
+}
+
 .all-profile-cont .apc-header {
     border-bottom: 1px solid #ddd;
     padding: 5px 10px;
@@ -284,24 +328,30 @@
 
 .apc-body {
     /* border: 1px solid red; */
-    gap: 15px 10px;
+    gap: 10px;
     padding: 10px;
     display: grid;
-    grid-template-columns: repeat(5, 3vw);
+    grid-template-columns: repeat(5, 1fr);
     align-items: center;
     justify-content: center;
-    margin: 15px 0px;
+    /* margin: 15px 0px; */
 }
 
-.apc-body img {
+.apc-body .img-box {
+    /* border: 1px solid green; */
+    width: 100%;
+    height: 100%;
+}
+
+.img-box img {
     width: 40px;
-    height: 40px;
+    height: 35px;
     border-radius: 50%;
     border: 3px solid green;
     cursor: pointer;
 }
 
-.apc-body img:hover {
+.img-box img:hover {
     box-shadow: 0px 4px 8px #4e089941;
     border: 1px solid #5D12EB;
 }
@@ -326,6 +376,11 @@
 }
 
 /* END AVATAR USER  */
+@media (min-width: 992px) {
+    .all-profile-cont .apc-header {
+        /* border: 1px solid blue; */
+    }
+}
 
 /* Medium devices (tablets, ≥768px) */
 @media (min-width: 768px) and (max-width: 991.98px) {
@@ -346,6 +401,26 @@
         width: 90%;
     }
 
+    /* AVATAR  */
+    .ava-container {
+        /* border: 1px solid red; */
+        width: 30vw;
+    }
+
+    .apc-body {
+        gap: 5px;
+        /* border: 1px solid orange; */
+        grid-template-columns: repeat(5, 1fr);
+    }
+
+    .apc-body .img-box {
+        width: 100%;
+    }
+
+    .img-box img {
+        width: 40px;
+        height: 40px;
+    }
 }
 
 /* ukuran handpone besar  */
@@ -398,6 +473,26 @@
         /* border: 1px solid red; */
         height: 100%;
     }
+
+    /* AVATAR  */
+    .ava-container {
+        /* border: 1px solid red; */
+        width: 40vw;
+    }
+
+    .apc-body {
+        gap: 2px;
+    }
+
+    .apc-body .img-box {
+        width: 100%;
+    }
+
+    .img-box img {
+        width: 40px;
+        height: 40px;
+    }
+
 }
 
 @media (max-width: 575.98px) {
@@ -492,6 +587,26 @@
         overflow-y: auto;
     }
 
+
+    /* AVATAR  */
+    .ava-container {
+        /* border: 1px solid red; */
+        width: 60vw;
+    }
+
+    .apc-body {
+        gap: 2px;
+    }
+
+    .apc-body .img-box {
+        width: 100%;
+    }
+
+    .img-box img {
+        width: 40px;
+        height: 40px;
+    }
+
 }
 
 @media screen and (max-height: 600px) {
@@ -527,4 +642,26 @@
     .profile-setting button {
         font-size: 10px;
     }
+
+    /* AVATAR  */
+    .ava-container {
+        /* border: 1px solid red; */
+        width: 25vw;
+    }
+
+    .apc-body {
+        gap: 2px;
+        /* border: 1px solid orange; */
+        grid-template-columns: repeat(5, 1fr);
+    }
+
+    .apc-body .img-box {
+        width: 100%;
+    }
+
+    .img-box img {
+        width: 40px;
+        height: 40px;
+    }
+
 }

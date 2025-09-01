@@ -47,7 +47,10 @@ const NavbarAllNotifications=({userId})=> {
     if (loading) return <p>Loading notifications...</p>;
     
     if (allNotif.length === 0)
-    return <p>No notifications available.</p>;
+    return <div class="empty-mess">
+            <h3>You're all caught up 🎉</h3>
+            <p>We’ll notify you when there’s something new.</p>
+          </div>;
         
   return (
     <div className="allNotif-nav">

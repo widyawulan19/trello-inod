@@ -82,7 +82,10 @@ const NavbarMessageNotif=({
       <div className='notif-mess-container'>
        <div className="nav-notif-body">
         {notifications.length === 0 ? (
-          <p>Tidak ada notifikasi</p>
+          <div class="empty-mess">
+            <h3>You're all caught up 🎉</h3>
+            <p>We’ll notify you when there’s something new.</p>
+          </div>
           ):(
             <div className='notif-box'>
               <ul>

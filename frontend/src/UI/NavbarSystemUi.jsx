@@ -125,7 +125,10 @@ const NavbarSystemUi=({
         if (loading) return <p>Loading notifications...</p>;
     
         if (notificationSystem.length === 0)
-        return <p>No notifications available.</p>;
+        return <div class="empty-mess">
+                <h3>You're all caught up 🎉</h3>
+                <p>We’ll notify you when there’s something new.</p>
+              </div>;
 
   return (
       <div className="notifBar-system-container">
