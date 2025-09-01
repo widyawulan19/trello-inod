@@ -130,6 +130,7 @@ input:hover {
     padding: 0px;
     color: white;
     cursor: pointer;
+    /* background-color: white; */
     /* border: 1px solid blue; */
 }
 
@@ -137,6 +138,7 @@ input:hover {
     width: 50px;
     height: 30px;
     border-radius: 50%;
+    background-color: white;
 
 }
 
@@ -205,6 +207,13 @@ input:hover {
 /* END AGENDA  */
 
 /* MEDIA QUERY  */
+@media (min-width: 992px) {
+    .agenda-modal {
+        width: 40vw;
+        right: 0px;
+    }
+}
+
 
 @media (min-width:768px) and (max-width: 991.98px) {
     .navbar-container .logo {
@@ -233,6 +242,7 @@ input:hover {
 
     .agenda-modal {
         width: 50vw;
+        right: 0%;
         /* border: 1px solid red; */
     }
 }

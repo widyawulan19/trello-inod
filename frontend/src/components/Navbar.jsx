@@ -286,7 +286,7 @@ const Navbar=()=> {
                         height: '30px',
                         borderRadius: '50%',
                         objectFit: 'cover',
-                        
+                        backgroundColor:'white'                        
                         }}
                     />
                     </div>

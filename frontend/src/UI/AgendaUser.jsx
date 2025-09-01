@@ -72,10 +72,11 @@ const AgendaUser = ({userId,onClose}) => {
     {loading ? (
       <p>Loading agenda...</p>
     ) : (
-      <div className="personal-agenda-box">
+      <div className="personal-agenda-container">
         {agendas.length === 0 ? (
-          <div style={{ textAlign: 'center', width: '100%', color: 'red', height:'100%' }}>
-            No agendas found for this user.
+          <div class="empty-mess">
+            <h3>You're all caught up 🎉</h3>
+            <p>We’ll notify you when there’s something new.</p>
           </div>
         ) : (
           agendas.map(agenda => (
