@@ -1,6 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { IoMdLogOut } from "react-icons/io";
+import '../style/pages/Profile.css'
 
 const Logout=()=> {
     const navigate = useNavigate();
@@ -20,21 +21,8 @@ const Logout=()=> {
   
   return (
     <button 
-      onClick={handleLogout}
-      style={{
-        color:'red',
-        fontSize: 16,
-        fontWeight:'bold',
-        padding: '10px 20px',
-        border:'1px solid red',
-        borderRadius:'8px',
-        cursor:'pointer',
-        backgroundColor:'#f7bfbf',
-        display:'flex',
-        alignItems:'center',
-        justifyContent:'center'
-      }}
-    >
+      className='logout-button'
+      onClick={handleLogout}>
       <IoMdLogOut size={20} style={{marginRight: 10}} />
       Logout
     </button>

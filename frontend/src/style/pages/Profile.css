@@ -164,9 +164,25 @@
 
 .fade .activity {
     /* border: 1px solid red; */
-    height: 75vh;
+    height: 50vh;
+    font-size: 15px;
     padding: 10px;
     overflow-y: auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    color: #5e5e5e;
+}
+
+.fade .security {
+    height: 50vh;
+    font-size: 15px;
+    padding: 10px;
+    overflow-y: auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    color: #5e5e5e;
 }
 
 .fade .notif {
@@ -176,6 +192,30 @@
     width: 58vw;
     padding: 10px;
     /* overflow-y: auto; */
+}
+
+.fade .out {
+    height: 50vh;
+    font-size: 15px;
+    padding: 10px;
+    overflow-y: auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.fade .logout-button {
+    color: red;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: 1px solid red;
+    background-color: #f7bfbf;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .profile-setting button:hover {
