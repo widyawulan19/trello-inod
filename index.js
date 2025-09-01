@@ -6025,6 +6025,58 @@ app.put('/api/agenda/:id/user/:user_id', async (req, res) => {
   }
 });
 
+//4. 1 Update description
+app.put('/api/agenda/:id/user/:user_id/description', async (req, res) => {
+  const { id, user_id } = req.params;
+  const { description } = req.body;
+
+  try {
+    const result = await client.query(
+      `UPDATE agenda_personal
+       SET description = $1,
+           updated_at = NOW()
+       WHERE id = $2 AND user_id = $3
+       RETURNING *`,
+      [description, id, user_id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'Agenda not found or unauthorized' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+//4.2 update name agenda
+app.put('/api/agenda/:id/user/:user_id/title', async (req, res) => {
+  const { id, user_id } = req.params;
+  const { title } = req.body;
+
+  try {
+    const result = await client.query(
+      `UPDATE agenda_personal
+       SET title = $1,
+           updated_at = NOW()
+       WHERE id = $2 AND user_id = $3
+       RETURNING *`,
+      [title, id, user_id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'Agenda not found or unauthorized' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+
 //5. delete agenda
 app.delete('/api/agenda-user/:id/user/:user_id', async (req, res) => {
   const { id, user_id } = req.params;
