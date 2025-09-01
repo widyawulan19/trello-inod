@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../style/pages/AgendaPage.css';
 import { useUser } from '../context/UserContext';
-import { createNewAgenda, deletAgendaUser, getAgendaUser, updateAgendaByUser, updateAgendaUser } from '../services/ApiServices';
+import { createNewAgenda, deletAgendaUser, getAgendaUser, updateAgendaByUser, updateAgendaDescription, updateAgendaTitle, updateAgendaUser } from '../services/ApiServices';
 import { FaXmark } from 'react-icons/fa6';
 import { IoCheckmarkSharp, IoSearch, IoTrash } from "react-icons/io5";
 import { HiCalendarDateRange, HiOutlineClock, HiOutlinePlus, HiXMark } from 'react-icons/hi2';
@@ -20,11 +20,21 @@ function AgendaPage() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedAgenda, setSelectedAgenda] = useState(null);
 
-
   // Search & Filter
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
   const [showFormAgenda, setShowFormAgenda] = useState(false);
+
+  // edit desc 
+  const [editAgendaDescription, setEditAgendaDescription] = useState(null);
+  const [newDescriptionAgenda, setNewDescriptionAgenda] = useState('');
+
+  // edit title
+  const [editAgendaTitle, setEditAgendaTitle] = useState(null);
+  const [newTitleAgenda, setNewTitleAgenda] = useState('');
+
+
+
   const [editAgendaId, setEditAgendaId] = useState(null);
   const [newAgenda, setNewAgenda] = useState({
     title: '',
@@ -170,6 +180,57 @@ function AgendaPage() {
         showSnackbar('Error updating finished status!', 'error')
       }
     }
+
+    //10. edit description 
+    const handleEditDescription = (e, agendaId, currentDescription) =>{
+      e.stopPropagation();
+      setEditAgendaDescription(agendaId);
+      setNewDescriptionAgenda(currentDescription);
+    }
+
+    const handleSaveDescription = async(agendaId) =>{
+      try{
+        await updateAgendaDescription(agendaId, {description:newDescriptionAgenda})
+        setEditAgendaDescription(null);
+        fetchDataAgenda();
+      }catch(error){
+        console.error('Error updating agenda description:', error);
+      }
+    }
+
+    const handleKeyPressDescription = (e, agendaId) => {
+      if (e.key === 'Enter' && !e.shiftKey) { // Enter = save, Shift+Enter = line break
+        e.preventDefault();
+        handleSaveDescription(agendaId);
+      }
+    };
+
+    //11. edit title
+    const handleEditTitle = (e, agendaId, currentTitle) => {
+      e.stopPropagation();
+      setEditAgendaTitle(agendaId);
+      setNewTitleAgenda(currentTitle);
+    };
+
+    // simpan title baru
+    const handleSaveTitle = async (agendaId) => {
+      try {
+        await updateAgendaTitle(agendaId, userId, newTitleAgenda); 
+        setEditAgendaTitle(null);
+        fetchDataAgenda(); // refresh data
+      } catch (error) {
+        console.error('Error updating agenda title:', error);
+      }
+    };
+
+    // tekan enter untuk save
+    const handleKeyPressTitle = (e, agendaId) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleSaveTitle(agendaId);
+      }
+    };
+
 
 
   return (
@@ -340,7 +401,7 @@ function AgendaPage() {
             <tbody>
                 {filteredAgendas.map(agenda => (
                 <tr key={agenda.id}>
-                    <td style={{width:'50%'}}>
+                    <td className='title-box'>
                         <div className='title-container'>
                             <h5
                               onClick={()=> handleShowModals(agenda)}
@@ -348,13 +409,13 @@ function AgendaPage() {
                             <p>{agenda.description}</p>
                         </div>
                     </td>
-                    <td>{formatDate(agenda.agenda_date)}</td>
-                    <td>
+                    <td className='date-cont'>{formatDate(agenda.agenda_date)}</td>
+                    <td className='status-cont'>
                         <div className='status' style={{backgroundColor:agenda.color}}>
                             {agenda.status_name}
                         </div>
                     </td>
-                    <td>
+                    <td className='done-cont'>
                       <BootstrapTooltip title='Click to Change status' placement='top'>
                         <div
                         className='done-agenda'
@@ -417,9 +478,27 @@ function AgendaPage() {
                           <AiFillSchedule/>
                         </div>
                         <div className="title">
-                          <h3>{selectedAgenda.title}</h3>
+                          {editAgendaTitle === selectedAgenda.id ? (
+                            <input
+                              type="text"
+                              value={newTitleAgenda}
+                              onChange={(e) => setNewTitleAgenda(e.target.value)}
+                              onBlur={() => handleSaveTitle(selectedAgenda.id)}
+                              onKeyDown={(e) => handleKeyPressTitle(e, selectedAgenda.id)}
+                              autoFocus
+                            />
+                          ) : (
+                            <h3
+                              onClick={(e) =>
+                                handleEditTitle(e, selectedAgenda.id, selectedAgenda.title)
+                              }
+                            >
+                              {selectedAgenda.title}
+                            </h3>
+                          )}
                           <p>Agenda Details</p>
                         </div>
+
                       </div>
                       
                       <FaXmark className='close-icon' onClick={handleCloseModals} />
@@ -504,7 +583,17 @@ function AgendaPage() {
                            <h4>Descriptions</h4>
                         </div>
                         <div className="mm-desc">
-                          <p> {selectedAgenda.description}</p>
+                          {/* <p> {selectedAgenda.description}</p> */}
+                          {editAgendaDescription === selectedAgenda.id ? (
+                            <textarea 
+                              value={newDescriptionAgenda}
+                              onChange={(e) => setNewDescriptionAgenda(e.target.value)}
+                              onBlur={() => handleSaveDescription(selectedAgenda.id)}
+                              onKeyDown={(e) => handleKeyPressDescription(e, selectedAgenda.id)}
+                            />
+                          ):(
+                            <p onClick={(e) => handleEditDescription(e, selectedAgenda.id, selectedAgenda.description)}> {selectedAgenda.description}</p> 
+                          )}
                         </div>
                       </div>
                     </div>

@@ -58,6 +58,9 @@ export const getUnfinishAgenda = (userId) => axios.get(`${API_URL}/unfinished-ag
 export const getFinishedAgenda = (userId) => axios.get(`${API_URL}/finish-agendas/${userId}`);
 export const updateAgenda = (agendaId, data) => axios.put(`${API_URL}/update-agenda-status/${agendaId}`, data);
 export const updateAgendaByUser = (agendaId, userId, data) => axios.put(`${API_URL}/update-agenda-status/${agendaId}/user/${userId}`, data);
+export const updateAgendaDescription = (agendaId, userId, description) => axios.put(`${API_URL}/agenda/${agendaId}/user/${userId}/description`, { description });
+export const updateAgendaTitle = (agendaId, userId, title) => axios.put(`${API_URL}/agenda/${agendaId}/user/${userId}/title`, { title });
+
 
 //STATUS AGENDA
 export const getAllAgendaStatus = () => axios.get(`${API_URL}/agenda-status`)
