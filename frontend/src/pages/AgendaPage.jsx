@@ -7,7 +7,7 @@ import { IoCheckmarkSharp, IoSearch, IoTrash } from "react-icons/io5";
 import { HiCalendarDateRange, HiOutlineClock, HiOutlinePlus, HiXMark } from 'react-icons/hi2';
 import { AiFillClockCircle, AiFillSchedule } from "react-icons/ai";
 import { useSnackbar } from '../context/Snackbar';
-import { IoCreateOutline } from "react-icons/io5";
+import { IoCreateOutline, IoCalendar } from "react-icons/io5";
 import { HiDocumentText } from "react-icons/hi2";
 import BootstrapTooltip from '../components/Tooltip';
 
@@ -175,8 +175,14 @@ function AgendaPage() {
   return (
     <div className='agenda-page-container'>
       <div className='agenda-page-header'>
-        <h2>Your Personal Agenda</h2>
-        <h4>Stay organized, stay ahead.</h4>
+        <div className="ap-title">
+          <div className="ap-icon">
+            <IoCalendar className='mini-icon'/>
+          </div>
+          <h2>Your Personal Agenda</h2>
+        </div>
+        
+        {/* <h4>Stay organized, stay ahead.</h4> */}
         <p>
           Here's everything you've planned — from deadlines and meetings, to daily to-dos. Keep track of what matters most and never miss a thing.
         </p>
@@ -344,22 +350,16 @@ function AgendaPage() {
                     </td>
                     <td>{formatDate(agenda.agenda_date)}</td>
                     <td>
-                        <div style={{border:`1px solid white`,borderRadius:'8px', fontWeight:'bold',padding:'4px 10px',width:'fit-content', color:'white',backgroundColor:agenda.color}}>
+                        <div className='status' style={{backgroundColor:agenda.color}}>
                             {agenda.status_name}
                         </div>
                     </td>
                     <td>
                       <BootstrapTooltip title='Click to Change status' placement='top'>
                         <div
+                        className='done-agenda'
                           onClick={()=> handleToggleDone(agenda.id, agenda.user_id, agenda.is_done)}
                           style={{
-                          padding:'5px 8px',
-                          border:'1px solid white',
-                          borderRadius:'8px',
-                          cursor:'pointer',
-                          fontSize:'12px',
-                          width:'fit-content',
-                          textAlign:'center',
                           color: agenda.is_done ? '#246c12' : '#821715',
                           backgroundColor: agenda.is_done ? '#b6f7a6' : '#f7a7a6'
                         }}>
@@ -424,6 +424,7 @@ function AgendaPage() {
                       
                       <FaXmark className='close-icon' onClick={handleCloseModals} />
                     </div>
+                    
                     <div className="modals-content">
                       {/* MODAL ACTIONS  */}
                       <div className="modals-action">
@@ -435,9 +436,9 @@ function AgendaPage() {
                               border:`1px solid white`,
                               borderRadius:'8px',
                               backgroundColor: selectedAgenda.color,
-                              color: '#333',
+                              color: '#fff',
                               padding: '5px 8px',
-                              fontSize:'12px'
+                              fontSize:'10px'
                             }}
                             > {selectedAgenda.status_name} 
                           </div>
@@ -449,7 +450,7 @@ function AgendaPage() {
                               border:'1px solid white',
                               borderRadius:'8px',
                               cursor:'pointer',
-                              fontSize:'12px',
+                              fontSize:'10px',
                               width:'fit-content',
                               textAlign:'center',
                               color: selectedAgenda.is_done ? '#821715' : '#246c12',
@@ -497,7 +498,9 @@ function AgendaPage() {
                       </div>
                       <div className="modals-main">
                         <div className="mm-header"> 
-                           <HiDocumentText style={{color:'#5e5e5e'}}/>
+                          <div className="mm-icon">
+                            <HiDocumentText/>
+                          </div>
                            <h4>Descriptions</h4>
                         </div>
                         <div className="mm-desc">
@@ -518,4 +521,5 @@ function AgendaPage() {
 }
 
 export default AgendaPage;
+
 
