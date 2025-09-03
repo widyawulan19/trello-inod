@@ -1,4 +1,4 @@
-.upload-file-container{
+.upload-file-container {
     /* border:1px solid blue; */
     width: 100%;
     gap: 5px;
@@ -9,20 +9,23 @@
     justify-content: flex-start;
 }
 
-.upload-cont{
+.upload-cont {
     cursor: pointer;
+    /* border: 1px solid red; */
     border: 1px solid #ddd;
     border-radius: 8px;
     width: fit-content;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
-.upload-cont:hover{
+
+.upload-cont:hover {
     border: 1px solid #6a11cb;
     box-shadow: 0px 4px 8px #5e12eb46;
 }
 
-.upload-cont .upload-cont-prev{
+.upload-cont .upload-cont-prev {
     /* border: 1px solid red; */
+    border-radius: 8px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -31,11 +34,11 @@
     cursor: pointer;
 }
 
-.upload-cont-prev:hover{
-    background-color: #ddd;
+.upload-cont-prev:hover {
+    /* background-color: #ddd; */
 }
 
-.upload-cont-header{
+.upload-cont-header {
     /* border: 1px solid blue; */
     display: flex;
     align-items: baseline;
@@ -44,21 +47,22 @@
     padding: 5px;
 }
 
-.upload-cont-prev button{
+.upload-cont-prev button {
     border: 1px solid white;
     width: fit-content;
     margin: 0px;
 }
 
-.upload-icon{
+.upload-icon {
     font-size: 50px;
-    padding: 20px;
+    /* border: 1px solid red; */
+    padding: 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.upload-cont-body{
+.upload-cont-body {
     /* border: 1px solid blue; */
     border-top: 1px solid #ddd;
     padding: 10px;
@@ -68,17 +72,19 @@
     justify-content: space-between;
 }
 
-.upload-desc h5{
+.upload-desc h5 {
     margin: 0px;
     font-size: 12px;
     color: #333;
     font-weight: bold;
 }
-.upload-desc p{
+
+.upload-desc p {
     margin: 0px;
     font-size: 10px;
 }
-.upload-desc a{
+
+.upload-desc a {
     border: 1px solid #8688fa;
     background: linear-gradient(to right, #6a11cb, #2575fc);
     color: white;
@@ -88,15 +94,17 @@
     font-size: 12px;
     margin: 5px 0px;
 }
-.upload-desc a:hover{
-    background: linear-gradient(to right,#2575fc, #6a11cb );
+
+.upload-desc a:hover {
+    background: linear-gradient(to right, #2575fc, #6a11cb);
 }
 
 
-.upload-user{
+.upload-user {
     /* border: 1px solid red; */
 }
-.upload-user img{
+
+.upload-user img {
     width: 30px;
     height: 30px;
     border-radius: 50%;
@@ -106,18 +114,40 @@
 
 
 /* MEDIA QUERY  */
-
-@media (min-width: 768px) and (max-width: 991.98px) {
-    .upload-cont{
-        /* border: 1px solid green; */
-        width: 20vw;
-    }
-    .upload-cont-body{
-        /* border: 1px solid red; */
+@media screen and (max-height: 600px) {
+    .upload-cont-body {
+        /* border: 1px solid magenta; */
         width: 20vw;
         padding: 7px;
     }
-    .upload-icon{
+
+    .upload-desc h5 {
+        font-size: 10px;
+    }
+
+    .upload-desc p {
+        font-size: 8px;
+    }
+
+    .upload-desc a {
+        font-size: 10px;
+        padding: 3px 10px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .upload-cont {
+        /* border: 1px solid green; */
+        width: 20vw;
+    }
+
+    .upload-cont-body {
+        /* border: 1px solid magenta; */
+        width: 20vw;
+        padding: 7px;
+    }
+
+    .upload-icon {
         padding: 10px;
         font-size: 70px;
     }
@@ -125,17 +155,19 @@
 }
 
 /* Medium devices (tablets, ≥768px) */
-@media (min-width: 576px) and (max-width: 767.98px){
-    .upload-cont{
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .upload-cont {
         /* border: 1px solid green; */
         width: 30vw;
     }
-    .upload-cont-body{
+
+    .upload-cont-body {
         /* border: 1px solid red; */
         width: 30vw;
         padding: 7px;
     }
-    .upload-icon{
+
+    .upload-icon {
         padding: 10px;
         font-size: 70px;
     }
@@ -143,17 +175,21 @@
 
 /* ukuran handpone kecil */
 @media (min-width:375px) and (max-width:575px) {
-  .upload-cont{
+    .upload-cont {
         /* border: 1px solid green; */
         width: 45vw;
     }
-    .upload-cont-body{
+
+    .upload-cont-body {
         /* border: 1px solid red; */
         width: 45vw;
         padding: 10px;
     }
-    .upload-icon{
+
+    .upload-icon {
         padding: 10px;
         font-size: 70px;
     }
 }
+
+@media screen and (max-height: 600px) {}

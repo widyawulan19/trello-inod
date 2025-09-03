@@ -97,9 +97,9 @@ const UploadFile=({cardId})=> {
                         <a href={file.file_url} target="_blank" rel="noopener noreferrer">View</a>
                     </BootstrapTooltip>
                 </div>
-                <div className="upload-user">
+                {/* <div className="upload-user">
                     <img src={file.photo_url} alt={file.username} />
-                </div>
+                </div> */}
                 
             </div>
             

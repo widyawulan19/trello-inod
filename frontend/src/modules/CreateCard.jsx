@@ -47,7 +47,7 @@ const CreateCard=({listId, onCardCreated, onClose})=> {
             </div>
         </div>
         <form onSubmit={handleSubmit} className='create-card-form'>
-            <div className="title">
+            <div className="title-card">
                 <label>Card Title</label>
                 <input
                     type="text"
