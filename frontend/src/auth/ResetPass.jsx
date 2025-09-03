@@ -78,99 +78,104 @@ const ResetPass = () => {
       </div>
 
       <div className="reset-content-right">
-        <form className="content-box" onSubmit={handleSubmit}>
-          <div className="ress-logo">
-            <div className="logo-box">
-              <IoIosUnlock size={20} className='box-icon' />
-            </div>
-          </div>
-
-          <div className="box-title">
-            <h2>Reset Password</h2>
-            <p className="sub-p">
-              Masukkan password baru yang kuat dan pastikan kamu mengingatnya dengan baik.
-            </p>
-          </div>
-
-          <div className="box-input">
-            <div className="regis-input">
-              <label>Email <span className="required">*</span></label>
-              <input
-                type="email"
-                placeholder="Masukkan email kamu"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-
-            <div className="regis-input">
-              <label>Pertanyaan Keamanan <span className="required">*</span></label>
-              <input
-                type="text"
-                placeholder="Contoh: Apa nama hewan peliharaan pertamamu?"
-                value={securityQuestion}
-                onChange={(e) => setSecurityQuestion(e.target.value)}
-              />
-            </div>
-
-            <div className="regis-input">
-              <label>Jawaban Keamanan <span className="required">*</span></label>
-              <input
-                type="text"
-                placeholder="Jawaban dari pertanyaan keamanan"
-                value={securityAnswer}
-                onChange={(e) => setSecurityAnswer(e.target.value)}
-              />
-            </div>
-
-            <div className="regis-input-pass">
-              <label>Password Baru <span className="required">*</span></label>
-              <div className="password-wrapper">
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="Masukkan password baru"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  style={{ margin: '0px' }}
-                />
-                <BootstrapTooltip
-                  title={showPassword ? 'Sembunyikan Password' : 'Tampilkan Password'}
-                  placement="top"
-                >
-                  <span className="toggle-password" onClick={() => setShowPassword(!showPassword)}>
-                    {showPassword ? <IoEyeOff /> : <IoEye />}
-                  </span>
-                </BootstrapTooltip>
+        <div className="content-right-box">
+          <div className="right-box">
+            <div className="ress-logo">
+              <div className="logo-box">
+                <IoIosUnlock className='logo-icon'/>
+              </div>
+              <div className="box-title">
+                <h2>Reset Password</h2>
+                <p className="sub-p">
+                  Masukkan password baru yang kuat dan pastikan kamu mengingatnya dengan baik.
+                </p>
               </div>
             </div>
 
-            <div className="regis-input-pass">
-              <label>Konfirmasi Password <span className="required">*</span></label>
-              <div className="password-wrapper">
+          <form className="content-box" onSubmit={handleSubmit}>
+            <div className="box-input">
+              <div className="regis-input">
+                <label>Email <span className="required">*</span></label>
                 <input
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="Ulangi password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  type="email"
+                  placeholder="Masukkan email kamu"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
-                <BootstrapTooltip
-                  title={showPassword ? 'Sembunyikan Password' : 'Tampilkan Password'}
-                  placement="top"
-                >
-                  <span className="toggle-password" onClick={() => setShowPassword(!showPassword)}>
-                    {showPassword ? <IoEyeOff /> : <IoEye />}
-                  </span>
-                </BootstrapTooltip>
+              </div>
+
+              <div className="regis-input">
+                <label>Pertanyaan Keamanan <span className="required">*</span></label>
+                <input
+                  type="text"
+                  placeholder="Contoh: Apa nama hewan peliharaan pertamamu?"
+                  value={securityQuestion}
+                  onChange={(e) => setSecurityQuestion(e.target.value)}
+                />
+              </div>
+
+              <div className="regis-input">
+                <label>Jawaban Keamanan <span className="required">*</span></label>
+                <input
+                  type="text"
+                  placeholder="Jawaban dari pertanyaan keamanan"
+                  value={securityAnswer}
+                  onChange={(e) => setSecurityAnswer(e.target.value)}
+                />
+              </div>
+
+              <div className="regis-input-pass">
+                <label>Password Baru <span className="required">*</span></label>
+                <div className="password-wrapper">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="Masukkan password baru"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    style={{ margin: '0px' }}
+                  />
+                  <BootstrapTooltip
+                    title={showPassword ? 'Sembunyikan Password' : 'Tampilkan Password'}
+                    placement="top"
+                  >
+                    <span className="toggle-password" onClick={() => setShowPassword(!showPassword)}>
+                      {showPassword ? <IoEyeOff /> : <IoEye />}
+                    </span>
+                  </BootstrapTooltip>
+                </div>
+              </div>
+
+              <div className="regis-input-pass">
+                <label>Konfirmasi Password <span className="required">*</span></label>
+                <div className="password-wrapper">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="Ulangi password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                  />
+                  <BootstrapTooltip
+                    title={showPassword ? 'Sembunyikan Password' : 'Tampilkan Password'}
+                    placement="top"
+                  >
+                    <span className="toggle-password" onClick={() => setShowPassword(!showPassword)}>
+                      {showPassword ? <IoEyeOff /> : <IoEye />}
+                    </span>
+                  </BootstrapTooltip>
+                </div>
               </div>
             </div>
+
+            <div className="btn-reset">
+              <button type="submit">
+                Reset Password
+              </button>
+              <p>Back to <span className='span' onClick={handleToLogin}>Login</span></p>
+            </div>
+
+          </form>
           </div>
-
-          <button type="submit" className="btn-reset">
-            Reset Password
-          </button>
-
-          <p>Back to <span className='span' onClick={handleToLogin}>Login</span></p>
-        </form>
+        </div>
       </div>
     </div>
   );

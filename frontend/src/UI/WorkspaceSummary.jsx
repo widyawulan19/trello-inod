@@ -28,6 +28,8 @@ const WorkspaceSummary = ({ summaries, loading }) => {
     }
   };
 
+
+
   // ✅ Kondisi loading
   if (loading) return <p>Loading workspace summaries...</p>;
 
