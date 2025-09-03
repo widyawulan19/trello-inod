@@ -666,7 +666,7 @@ const NewCardDetail=()=> {
                             />
                         </div>
                     </div>
-                    </div>
+                </div>
 
                 <div className="ncd-main-content">
                     <div className="ncd-main-left">

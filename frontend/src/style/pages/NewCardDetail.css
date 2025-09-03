@@ -167,7 +167,7 @@
 /* RIGHT SIDE  */
 .cmb-right {
     border: 1px solid #ddd;
-    border: 1px solid red;
+    /* border: 1px solid red; */
     width: 25%;
     height: 75vh;
     position: relative;
@@ -375,7 +375,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    padding: 20px;
+    padding: 5px 20px;
     width: 100%;
     height: 100%;
     position: relative;
@@ -384,9 +384,9 @@
 .ncd-main-header {
     border-radius: 8px;
     background-color: white;
-    /* border: 1px solid red; */
     color: white;
     width: 90%;
+    /* border: 1px solid red; */
     /* padding: 10px; */
     display: flex;
     flex-direction: column;
@@ -404,7 +404,7 @@
     /* border: 1px solid red; */
     width: 100%;
     padding: 10px;
-    border: 1px solid #5c38db;
+    /* border: 1px solid #5c38db; */
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
     background-image: linear-gradient(to right, #2d66e7, #3863e7, #425fe8, #4c5be7, #5557e7, #5d54e7, #6551e7, #6d4de7, #764ae7, #7e47e7, #8743e7, #8f3fe6);
@@ -624,7 +624,7 @@
 .ncd-main-content {
     /* border: 1px solid green; */
     width: 90%;
-    height: 55vh;
+    height: 63vh;
     gap: 15px;
     margin-top: 10px;
     display: flex;
@@ -636,7 +636,7 @@
     /* border: 1px solid #E2E8F0; */
     /* border: 1px solid blue; */
     width: 70%;
-    height: 58vh;
+    height: 62vh;
     overflow-y: auto;
     padding: 10px 5px;
     gap: 15px;
@@ -690,7 +690,7 @@
 /* DESKRIPSI MODALS   */
 .modal-des-container {
     position: absolute;
-    border: 1px solid red;
+    /* border: 1px solid red; */
     border-radius: 8px;
     width: 100%;
     height: 100%;
@@ -748,7 +748,7 @@
 }
 
 .modals-body {
-    border: 1px solid red;
+    /* border: 1px solid red; */
     padding: 10px 20px;
     /* max-height: 60vh; */
     height: 90%;
@@ -795,7 +795,7 @@
     /* border: 1px solid green; */
     width: 30%;
     padding: 10px 0px;
-    height: 57vh;
+    height: 62vh;
     /* gap: 10px; */
     overflow-y: auto;
     /* gap: 10px; */
@@ -1527,7 +1527,7 @@
 
 /* HEIGHT BREAKPOIN  */
 /* @media (min-height:400px) and (max-height:730px) { */
-@media (min-height:400px) and (max-height:550px) {
+@media screen and (max-height: 600px) {
     .ncd-body {
         /* border: 1px solid blue; */
         padding: 5px 10px;
@@ -1553,18 +1553,15 @@
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
     }
 
-    /* .ncd-status {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
+    .ncd-main-content {
+        height: 63vh;
     }
 
-    .ncd-status-container,
-    .ncd-status-priority,
-    .ncd-status-due {
-        width: 100%;
-    } */
+    .ncd-main-content .ncd-main-left {
+        height: 62vh;
+    }
 
-    /* END STATUS BTN  */
+    .ncd-main-content .ncd-main-right {
+        height: 62vh;
+    }
 }

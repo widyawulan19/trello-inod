@@ -57,7 +57,7 @@
     /* border: 1px solid red; */
 }
 
-.create-card-form .title,
+.create-card-form .title-card,
 .create-card-form .desc {
     display: flex;
     flex-direction: column;
@@ -69,7 +69,7 @@
     font-size: 12px;
 }
 
-.title label,
+.title-card label,
 .desc label {
     font-size: 12px;
     margin-bottom: 2px;
@@ -77,7 +77,7 @@
     font-weight: normal;
 }
 
-.title input,
+.title-card input,
 .desc textarea {
     padding: 5px;
     border: 1px solid #ddd;
@@ -86,7 +86,7 @@
     background-color: white;
 }
 
-.title input:hover,
+.title-card input:hover,
 .desc textarea:hover {
     padding: 5px;
     border: 1px solid #ddd;
@@ -95,7 +95,7 @@
     background: linear-gradient(to right, #6b11cb41, #2574fc41);
 }
 
-.title input:focus,
+.title-card input:focus,
 .desc textarea:focus {
     border: 1px solid #d1bde6;
     background-color: white;
