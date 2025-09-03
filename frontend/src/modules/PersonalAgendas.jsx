@@ -6,6 +6,7 @@ import BootstrapTooltip from '../components/Tooltip';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from '../context/Snackbar';
 import { IoTrash, IoCalendar } from 'react-icons/io5';
+import { LiaNetworkWiredSolid } from "react-icons/lia";
 
 const PersonalAgendas = ({ userId }) => {
   const [agendas, setAgendas] = useState([]);
@@ -31,6 +32,11 @@ const PersonalAgendas = ({ userId }) => {
       fetchUnfinishedAgenda();
     }
   }, [userId]);
+
+    //navigate to agenda page
+  const navigateToAgendaPage = () =>{
+    navigate('agenda-page')
+  }
 
   const renderAgendaDate = (isoDate) => {
     const date = new Date(isoDate);
@@ -68,19 +74,18 @@ const PersonalAgendas = ({ userId }) => {
 
   if (loading) return <p>Loading agenda...</p>;
   if (agendas.length === 0) {
-        return(
-            <div className="no-agenda">
-                {/* <h2>Your agenda will show here!</h2> */}
+        return (
+              <div className='no-workspace'>
                 <div className="no-icon">
-                  <IoCalendar/>
+                  <LiaNetworkWiredSolid />
                 </div>
-                <p>Your agenda will show here!</p>
-                {/* <p>Gunakan Personal Notes untuk menyimpan ide, daftar tugas, atau hal penting lainnya secara pribadi.</p> */}
-                <div className="btn-create-agenda" onClick={navigateToAgenda}>
-                    Add New Agendas
+                <h2>Let’s create your first Agenda!</h2>
+                <p>Yuk mulai produktif! tambahkan agenda pertamamu untuk mengelola project dan kolaborasi tim.</p>
+                <div className="btn-create-workspace" onClick={navigateToAgendaPage}>
+                  Add New Agenda
                 </div>
-            </div>
-        )
+              </div>
+            );
     };
   
  

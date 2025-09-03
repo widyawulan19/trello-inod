@@ -20,7 +20,7 @@
 }
 
 .header-container {
-    width: 80%;
+    width: 90%;
     padding: 20px;
     border: 1px solid #eee;
     border-radius: 16px;
@@ -79,7 +79,7 @@
 }
 
 .lp-btn .btn-start {
-    background-color: #4f46e5;
+    background: linear-gradient(90deg, #7246eb, #532189);
     /* border: 1px solid red !important; */
     color: #fff;
     padding: 5px 15px;
@@ -87,7 +87,7 @@
     border: none;
     cursor: pointer;
     font-size: 15px;
-    width: 10vw;
+    width: 20vw;
     cursor: pointer;
     text-align: center;
 }
@@ -164,7 +164,7 @@
 .hero-btn .start-btn {
     border: 1px solid #5D12EB;
     border-radius: 8px;
-    background-color: #5D12EB;
+    background: linear-gradient(90deg, #7246eb, #532189);
     letter-spacing: 0.5px;
     color: white;
     padding: 10px 15px;
@@ -175,6 +175,7 @@
 
 .hero-btn .start-btn:hover {
     box-shadow: 0px 4px 8px #5e12eb46;
+    background: linear-gradient(to right, #6a11cb, #2575fc);
 }
 
 .hero-btn button {
@@ -1193,5 +1194,9 @@
 @media (min-height: 376px) and (max-height: 600px) {
     .lp-container {
         padding-top: 80px;
+    }
+
+    .header-container {
+        width: 90%;
     }
 }

@@ -82,34 +82,53 @@
 .login-container .login-content-right {
     /* border: 1px solid blue; */
     width: 50%;
-    height: 100vh;
-    padding: 30px;
+    height: 100%;
+    padding: 30px !important;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-sizing: border-box;
 }
 
-.login-content-right .content-box {
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4),
-        0 4px 6px rgba(255, 255, 255, 0.336);
+.login-content-right .content-box-right {
+    box-shadow: 0px 4px 8px #ffffff78;
     background-color: white;
     border: 1px solid white;
     border-radius: 20px;
-    padding: 50px;
+    padding: 20px;
     width: 80%;
-    height: 80%;
+    height: 90%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    align-items: center;
 }
 
-.content-box .box-title {
+.content-box-right .box-right {
+    /* border: 1px solid red; */
+    height: 60%;
+    width: 90%;
+}
+
+.content-box-right .box-title {
     /* border: 1px solid blue; */
     width: 100%;
     text-align: center;
-    margin-bottom: 30px;
+    /* margin-bottom: 30px; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     /* Tambahkan di sini supaya semua anaknya default align center */
+}
+
+.box-title .title-icon {
+    background: linear-gradient(90deg, #7246eb, #532189);
+    padding: 8px;
+    border-radius: 16px;
+}
+
+.title-icon .logo-icon {
+    color: white;
+    font-size: 25px;
 }
 
 .box-title h2 {
@@ -132,6 +151,7 @@
 .box-input {
     /* border: 1px solid red; */
     width: 100%;
+    height: 100%;
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -223,7 +243,7 @@
     width: 100%;
     padding: 10px;
     gap: 10px;
-    margin: 10px 0px;
+    margin: 0px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -452,36 +472,22 @@
 /* HEIGHT BREAKPOIN  */
 /* HEIGHT BREAKPOIN  */
 @media screen and (max-height: 600px) {
-    .login-container .login-content-left {
-        display: none;
-    }
-
     .login-container .login-content-right {
-        width: 100%;
+        /* border: 1px solid red; */
         padding: 5px !important;
-        height: 100%;
     }
 
-    .login-content-right .content-box {
-        width: 95% !important;
-        padding: 10px 20px !important;
-        gap: 20px;
-        height: 90vh !important;
+    .login-content-right .content-box-right {
+        height: 95% !important;
     }
 
-    .content-box .box-title {
-        text-align: center;
-        /* height: 20%; */
+    .content-box-right .box-right {
+        width: 100%;
     }
 
-    .another-login {
-        /* border: 1px solid blue; */
-        margin: 0;
-    }
-
-
-    .box-footer {
-        margin-top: 0px;
+    .another-login .google,
+    .another-login .ios {
+        font-size: 12px;
     }
 }
 

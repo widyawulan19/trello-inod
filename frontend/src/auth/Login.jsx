@@ -10,6 +10,7 @@ import { useUser } from '../context/UserContext';
 import { useSnackbar } from '../context/Snackbar';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 import BootstrapTooltip from '../components/Tooltip';
+import { MdWavingHand } from "react-icons/md";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -73,52 +74,57 @@ const Login = () => {
             </div>
 
             <div className="login-content-right">
-                <div className="content-box">
-                    <div className="box-title">
-                        <h2>Welcome Back</h2>
-                        <p className='sub-p'>Silakan login untuk melanjutkan produktivitasmu!</p>
-                    </div>
+                <div className="content-box-right">
+                    <div className="box-right">
+                        <div className="box-title">
+                            <div className="title-icon">
+                                <MdWavingHand className='logo-icon'/>
+                            </div>
+                            <h2>Welcome Back</h2>
+                            <p className='sub-p'>Silakan login untuk melanjutkan produktivitasmu!</p>
+                        </div>
 
-                    <div className="box-input">
-                        <input
-                            type="text"
-                            placeholder='Email'
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-
-                        <div className="password-wrapper">
+                        <div className="box-input">
                             <input
-                                type={showPassword ? "text" : "password"} // ✅ Tipe dinamis
-                                placeholder='Password'
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
+                                type="text"
+                                placeholder='Email'
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                             />
-                            <BootstrapTooltip title={showPassword ? 'Hide password': 'Show password'} placement='top'>
-                            <span className="toggle-password" onClick={() => setShowPassword(!showPassword)}>
-                                {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
-                            </span>
-                            </BootstrapTooltip>
+
+                            <div className="password-wrapper">
+                                <input
+                                    type={showPassword ? "text" : "password"} // ✅ Tipe dinamis
+                                    placeholder='Password'
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                />
+                                <BootstrapTooltip title={showPassword ? 'Hide password': 'Show password'} placement='top'>
+                                <span className="toggle-password" onClick={() => setShowPassword(!showPassword)}>
+                                    {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
+                                </span>
+                                </BootstrapTooltip>
+                            </div>
+
+                            <p onClick={handleToReqRes}>Forgot Password ?</p>
+                            <div className="btn-login" onClick={handleLogin}>Login</div>
                         </div>
 
-                        <p onClick={handleToReqRes}>Forgot Password ?</p>
-                        <div className="btn-login" onClick={handleLogin}>Login</div>
-                    </div>
-
-                    <div className="another-login">
-                        <div className="google">
-                            <FcGoogle />
-                            Google
+                        <div className="another-login">
+                            <div className="google">
+                                <FcGoogle />
+                                Google
+                            </div>
+                            <div className="ios">
+                                <IoLogoApple />
+                                Apple ID
+                            </div>
                         </div>
-                        <div className="ios">
-                            <IoLogoApple />
-                            Apple ID
-                        </div>
-                    </div>
 
-                    <div className="box-footer">
-                        <h5>Don't have an account? <span onClick={handleToRegister}>Sign Up</span></h5>
-                        <p>Back to <span onClick={handleToLandingPage}>Landing Page</span> </p>
+                        <div className="box-footer">
+                            <h5>Don't have an account? <span onClick={handleToRegister}>Sign Up</span></h5>
+                            <p>Back to <span onClick={handleToLandingPage}>Landing Page</span> </p>
+                        </div>
                     </div>
                 </div>
             </div>
