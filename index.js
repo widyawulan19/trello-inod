@@ -5407,17 +5407,18 @@ app.get("/api/marketing-design/reports", async (req, res) => {
         FLOOR((EXTRACT(DAY FROM create_at) - 1) / 10) + 1 AS period,
         COUNT(*) AS total,
         ARRAY_AGG(id) AS ids
-      FROM data_marketing
+      FROM marketing_design
       GROUP BY month, period
       ORDER BY month DESC, period ASC;
     `);
 
     res.json(result.rows);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Internal server error" });
+    console.error("❌ Query error:", err.message);
+    res.status(500).json({ error: err.message });
   }
 });
+
 
 
 
