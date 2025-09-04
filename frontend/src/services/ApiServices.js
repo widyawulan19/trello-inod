@@ -332,19 +332,25 @@ export const getDataWhereCardIdIsNull = () => axios.get(`${API_URL}/marketing-de
 export const getDataMarketingDesignNotAccept = () => axios.get(`${API_URL}/marketing-design-not-accepted`)
 export const getDataMarketingDesignAccept = () => axios.get(`${API_URL}/marketing-design-accepted`);
 export const archiveDataMarektingDesign = (id) => axios.post(`${API_URL}/archive-data-marketing-design/${id}`);
-// ambil data laporan marketing design
-export const getMarketingDesignReport = async (mode, bulan = null, periode = null) => {
-  try {
-    const params = { mode };
-    if (mode === "manual") {
-      params.bulan = bulan;
-      params.periode = periode;
-    }
 
-    const response = await axios.get(`${API_URL}/marketing-design/reports`, { params });
+// ✅ Ambil laporan marketing hari ini
+export const getTodayMarketingDesign = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/marketing-design/reports/today`);
     return response.data;
   } catch (error) {
-    console.error("❌ Gagal ambil laporan marketing design:", error);
+    console.error("❌ Gagal ambil laporan hari ini:", error);
+    throw error;
+  }
+};
+
+// ✅ Ambil laporan marketing per 10 hari
+export const getTenDaysMarketingDesign = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/marketing-design/reports/10days`);
+    return response.data;
+  } catch (error) {
+    console.error("❌ Gagal ambil laporan 10 hari:", error);
     throw error;
   }
 };
