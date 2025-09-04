@@ -340,18 +340,18 @@ export const getTodayMarketingDesign = async () => {
     return response.data;
   } catch (error) {
     console.error("❌ Gagal ambil laporan hari ini:", error);
-    throw error;
+    return [];
   }
 };
 
-// ✅ Ambil laporan marketing per 10 hari
+// ✅ Ambil laporan marketing per 10 hari (semua bulan)
 export const getTenDaysMarketingDesign = async () => {
   try {
-    const response = await axios.get(`${API_URL}/marketing-design/reports/10days`);
+    const response = await axios.get(`${API_URL}/marketing-design/reports`);
     return response.data;
   } catch (error) {
     console.error("❌ Gagal ambil laporan 10 hari:", error);
-    throw error;
+    return [];
   }
 };
 
