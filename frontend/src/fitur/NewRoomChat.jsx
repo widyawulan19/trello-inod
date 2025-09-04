@@ -301,7 +301,7 @@ return (
         </div>
 
         {/* Input Message */}
-        <div className="chat-input-box">
+        <div className="chat-input-box" >
             <div
                 className="chat-editor"
                 contentEditable

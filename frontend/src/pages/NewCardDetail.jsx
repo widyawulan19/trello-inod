@@ -895,61 +895,60 @@ const NewCardDetail=()=> {
         {showModalDes && (
         <div className="modal-des-container">
             <div className="modals-content">
-            <div className="modals-header">
-                {/* HEADER TITLE  */}
-                {cards && cardId && (
-                    <div className="ct-box">
-                        {/* <HiOutlineCreditCard className='ct-icon'/> */}
-                        {editingTitle === cardId ? (
-                        <input
-                            value={newTitle}
-                            onChange={(e) => setNewTitle(e.target.value)}
-                            onBlur={()=> handleSaveTitle(cardId)}
-                            onKeyDown={(e) =>handleKeyPressTitle(e, cardId)}
+                <div className="modals-header">
+                    {/* HEADER TITLE  */}
+                    {cards && cardId && (
+                        <div className="ct-box">
+                            {/* <HiOutlineCreditCard className='ct-icon'/> */}
+                            {editingTitle === cardId ? (
+                            <input
+                                value={newTitle}
+                                onChange={(e) => setNewTitle(e.target.value)}
+                                onBlur={()=> handleSaveTitle(cardId)}
+                                onKeyDown={(e) =>handleKeyPressTitle(e, cardId)}
+                                autoFocus
+                            />
+                            ):(
+                            <h5 onClick={(e)=>handleEditingTitle(e, cardId, cards.title)}>
+                                {cards.title}
+                            </h5>
+                            )}
+                        </div>
+                    )}
+                    <div className="modal-close" onClick={() => setShowModalDes(false)}>
+                        <FaXmark/>
+                    </div>
+                </div>
+
+                <div className="modals-body">
+                    {editingDescription === cardId ? (
+                    <div className="ta-cont" style={{border:'1px solid red'}}>
+                        <textarea
+                            value={newDescription}
+                            onChange={(e) => setNewDescription(e.target.value)}
+                            onBlur={() => handleSaveDescription(cardId)}
+                            onKeyDown={(e) => handleKeyPressDescription(e, cardId)}
                             autoFocus
                         />
-                        ):(
-                        <h5 onClick={(e)=>handleEditingTitle(e, cardId, cards.title)}>
-                            {cards.title}
-                        </h5>
-                        )}
+                            <small className="text-muted">
+                            **Tekan Enter untuk simpan || Shift + Enter untuk baris baru
+                            </small>
                     </div>
-                )}
-                <div className="modal-close" onClick={() => setShowModalDes(false)}>
-                    <FaXmark/>
-                </div>
-            </div>
-
-            <div className="modals-body">
-                {editingDescription === cardId ? (
-                <div className="ta-cont">
-                    <textarea
-                        value={newDescription}
-                        onChange={(e) => setNewDescription(e.target.value)}
-                        onBlur={() => handleSaveDescription(cardId)}
-                        onKeyDown={(e) => handleKeyPressDescription(e, cardId)}
-                        autoFocus
-                    />
-                        <small className="text-muted">
-                        **Tekan Enter untuk simpan || Shift + Enter untuk baris baru
-                        </small>
-                </div>
-                ) : (
-                <div
-                    onClick={(e) => handleEditDescription(e, cardId, cards.description)}
-                    style={{ whiteSpace: "pre-wrap", cursor: "pointer", minHeight: "150px" }}
-                    className="div-p"
-                >
-                    {cards.description && cards.description.trim() !== "" ? (
-                    renderDescription(cards.description)
                     ) : (
-                    <div className="placeholder-desc">
-                        <p>(click to add description)</p>
+                    <div
+                        onClick={(e) => handleEditDescription(e, cardId, cards.description)}
+                        className="div-des"
+                    >
+                        {cards.description && cards.description.trim() !== "" ? (
+                        renderDescription(cards.description)
+                        ) : (
+                        <div className="placeholder-desc">
+                            <p>(click to add description)</p>
+                        </div>
+                        )}
                     </div>
                     )}
                 </div>
-                )}
-            </div>
             </div>
         </div>
         )}
