@@ -235,6 +235,11 @@ const MarketingDesign=()=> {
     setShowData(false)
   }  
 
+  // go to report page 
+  const handleGoToReportPage = () =>{
+    navigate('/layout/design-report')
+  }
+
 
 
   return (
@@ -254,6 +259,7 @@ const MarketingDesign=()=> {
             </div>
             <div className="mdh-right">
               <div className="mdhr-btn">
+                <button onClick={handleGoToReportPage}>REPORT DATA</button>
                 <button onClick={handleShowForm}>
                       {/* <HiOutlinePlus className='mdh-icon'/> */}
                       NEW DATA

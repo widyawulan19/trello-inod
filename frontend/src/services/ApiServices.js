@@ -332,6 +332,12 @@ export const getDataWhereCardIdIsNull = () => axios.get(`${API_URL}/marketing-de
 export const getDataMarketingDesignNotAccept = () => axios.get(`${API_URL}/marketing-design-not-accepted`)
 export const getDataMarketingDesignAccept = () => axios.get(`${API_URL}/marketing-design-accepted`);
 export const archiveDataMarektingDesign = (id) => axios.post(`${API_URL}/archive-data-marketing-design/${id}`);
+export const getMarketingDesignReportAuto = () =>
+  axios.get(`${API_URL}/marketing-design/reports?mode=auto`);
+
+export const getMarketingDesignReportManual = (bulan, periode) =>
+  axios.get(`${API_URL}/marketing-design/reports?mode=manual&bulan=${bulan}&periode=${periode}`);
+
 
 //menampilkan semua detai data (marketing, design) dalm card
 export const getAllDataMarketingCard = (cardId) => axios.get(`${API_URL}/cards/${cardId}/marketing-detail`);
