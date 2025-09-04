@@ -352,6 +352,16 @@
     text-decoration: underline;
 }
 
+/* Extra large devices (large desktops, ≥1200px) */
+@media (min-width: 992px) and (max-width:1400px) {
+    .register-content-right {
+        padding: 10px;
+    }
+
+    .register-content-right .content-box {
+        height: 100%;
+    }
+}
 
 /* Desktop (≥ 992px) */
 @media (min-width: 992px) {
