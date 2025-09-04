@@ -613,6 +613,11 @@
         /* border: 1px solid red; */
         height: 80vh;
     }
+
+    .home-body-right .agenda-body {
+        /* border: 1px solid red; */
+        height: 42vh;
+    }
 }
 
 
@@ -860,7 +865,7 @@
     }
 
     .home-body-right .agenda-body {
-        /* border: 1px solid blue; */
+        /* border: 1px solid red; */
         height: 45vh;
     }
 
