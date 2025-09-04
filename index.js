@@ -4813,29 +4813,29 @@ app.put('/api/create-card-marketing/:listId/:marketingId', async (req, res) => {
     const marketing = marketingData.rows[0];
 
     const description = `
-        📦 Order Code: ${marketing.code_order}
-        👤 Input By: ${marketing.input_by}
-        ✅ Approved By: ${marketing.acc_by}
-        🧑‍💼 Buyer: ${marketing.buyer_name}
-        📋 Order Number: ${marketing.order_number}
-        🏷️ Account: ${marketing.account}
-        ⏰ Deadline: ${marketing.deadline ? new Date(marketing.deadline).toISOString().split('T')[0] : 'N/A'}
-        🔁 Jumlah Revisi: ${marketing.jumlah_revisi}
-        🎚️ Order Type: ${marketing.order_type}
-        🎁 Offer Type: ${marketing.offer_type}
-        🥁 Jenis Track: ${marketing.jenis_track}
-        🎵 Genre: ${marketing.genre}
-        🎧 Jumlah Track: ${marketing.jumlah_track}
-        💰 Normal Price: $${marketing.price_normal}
-        💸 Discount: ${marketing.discount ?? 'N/A'}
-        💵 Basic Price: $${marketing.basic_price ?? 'N/A'}
-        📁 Required Files: ${marketing.required_files}
-        🎤 Project Type: ${marketing.project_type}
-        ⏳ Duration: ${marketing.duration}
-        🔗 Gig Link: ${marketing.gig_link}
-        🔍 Reference: ${marketing.reference_link}
-        📎 File & Chat: ${marketing.file_and_chat_link}
-        📝 Detail: ${marketing.detail_project}
+        Order Code: ${marketing.code_order}
+        Input By: ${marketing.input_by}
+        Approved By: ${marketing.acc_by}
+        Buyer: ${marketing.buyer_name}
+        Order Number: ${marketing.order_number}
+        Account: ${marketing.account}
+        Deadline: ${marketing.deadline ? new Date(marketing.deadline).toISOString().split('T')[0] : 'N/A'}
+        Jumlah Revisi: ${marketing.jumlah_revisi}
+        Order Type: ${marketing.order_type}
+        Offer Type: ${marketing.offer_type}
+        Jenis Track: ${marketing.jenis_track}
+        Genre: ${marketing.genre}
+        Jumlah Track: ${marketing.jumlah_track}
+        Normal Price: $${marketing.price_normal}
+        Discount: ${marketing.discount ?? 'N/A'}
+        Basic Price: $${marketing.basic_price ?? 'N/A'}
+        Required Files: ${marketing.required_files}
+        Project Type: ${marketing.project_type}
+        Duration: ${marketing.duration}
+        Gig Link: ${marketing.gig_link}
+        Reference: ${marketing.reference_link}
+        File & Chat: ${marketing.file_and_chat_link}
+        Detail: ${marketing.detail_project}
     `.trim();
 
 
