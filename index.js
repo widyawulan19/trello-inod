@@ -5387,7 +5387,7 @@ app.get('/api/marketing-design-not-accepted', async (req, res) => {
 // ✅ Endpoint untuk data hari ini
 app.get('/api/marketing-design/reports/today', async (req, res) => {
   try {
-    const result = await pool.query(`
+    const result = await client.query(`
       SELECT * FROM marketing_design
       WHERE DATE(create_at) = CURRENT_DATE
     `);
@@ -5400,7 +5400,7 @@ app.get('/api/marketing-design/reports/today', async (req, res) => {
 // ✅ Endpoint untuk per 10 hari
 app.get('/api/marketing-design/reports/10days', async (req, res) => {
   try {
-    const result = await pool.query(`
+    const result = await client.query(`
       SELECT
         FLOOR(EXTRACT(DAY FROM create_at) / 10) AS period,
         DATE_TRUNC('month', create_at) AS month,
