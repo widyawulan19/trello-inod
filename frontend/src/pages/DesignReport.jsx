@@ -1,35 +1,25 @@
+// src/pages/DesignReport.jsx
 import { useState, useEffect } from "react";
-import {
-  getMarketingDesignReportAuto,
-  getMarketingDesignReportManual,
-} from "../services/ApiServices";
+import {getMarketingDesignReport} from '../services/ApiServices';
 
 export default function DesignReport() {
-  const today = new Date();
-  const defaultBulan = today.toISOString().slice(0, 7); // format YYYY-MM
-
-  const [mode, setMode] = useState("auto");
-  const [bulan, setBulan] = useState(defaultBulan); // default bulan berjalan
+  const [mode, setMode] = useState("auto"); // auto/manual
+  const [bulan, setBulan] = useState("2025-05");
   const [periode, setPeriode] = useState(1);
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const fetchData = async () => {
-  try {
-    let result;
-    if (mode === "auto") {
-      result = await getMarketingDesignReportAuto();
-      console.log("AUTO RESULT:", result.data);
-    } else {
-      result = await getMarketingDesignReportManual(bulan, periode);
-      console.log("MANUAL RESULT:", result.data, { bulan, periode });
+    setLoading(true);
+    try {
+      const result = await getMarketingDesignReport(mode, bulan, periode);
+      setData(result);
+    } catch (err) {
+      console.error("❌ Gagal fetch data:", err);
+    } finally {
+      setLoading(false);
     }
-    setData(result?.data || []);
-  } catch (err) {
-    console.error("Gagal fetch data:", err);
-    setData([]);
-  }
-};
-
+  };
 
   useEffect(() => {
     fetchData();
@@ -48,7 +38,7 @@ export default function DesignReport() {
             checked={mode === "auto"}
             onChange={() => setMode("auto")}
           />{" "}
-          Auto (sesuai kalender)
+          Auto (sesuai kalender hari ini)
         </label>
         <label>
           <input
@@ -68,20 +58,21 @@ export default function DesignReport() {
             type="month"
             value={bulan}
             onChange={(e) => setBulan(e.target.value)}
-            className="p-2 border"
+            className="p-2 border rounded"
           />
           <select
             value={periode}
-            onChange={(e) => setPeriode(Number(e.target.value))}
-            className="p-2 border"
+            onChange={(e) => setPeriode(e.target.value)}
+            className="p-2 border rounded"
           >
-            <option value={1}>1 - 10</option>
-            <option value={2}>11 - 20</option>
-            <option value={3}>21 - akhir</option>
+            <option value="1">1 - 10</option>
+            <option value="2">11 - 20</option>
+            <option value="3">21 - akhir</option>
           </select>
         </div>
       )}
 
+      {/* Tombol refresh */}
       <button
         onClick={fetchData}
         className="px-4 py-2 text-white bg-blue-500 rounded"
@@ -89,7 +80,10 @@ export default function DesignReport() {
         Refresh
       </button>
 
-      {/* Tabel */}
+      {/* Loading */}
+      {loading && <p className="mt-4">⏳ Loading...</p>}
+
+      {/* Tabel data */}
       <table className="w-full mt-4 border">
         <thead>
           <tr className="bg-gray-200">
@@ -109,14 +103,14 @@ export default function DesignReport() {
                 <td className="px-2 py-1 border">{d.order_number}</td>
                 <td className="px-2 py-1 border">{d.input_by}</td>
                 <td className="px-2 py-1 border">
-                  {new Date(d.create_at).toLocaleDateString()}
+                  {new Date(d.create_at).toLocaleDateString("id-ID")}
                 </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="5" className="p-2 text-center border">
-                Tidak ada data untuk bulan {bulan}
+              <td colSpan="5" className="p-4 text-center border">
+                Tidak ada data
               </td>
             </tr>
           )}
