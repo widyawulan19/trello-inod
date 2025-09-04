@@ -1,25 +1,22 @@
 import React, { useEffect, useState } from "react";
+import { getTenDaysMarketingDesign, getTodayMarketingDesign } from "../services/ApiServices";
 
 const ReportPage = () => {
+  const [todayData, setTodayData] = useState([]);
   const [tenDaysData, setTenDaysData] = useState([]);
   const [selectedMonth, setSelectedMonth] = useState("");
   const [selectedRange, setSelectedRange] = useState("all");
 
-  // ambil data dari backend
+  // ambil data hari ini
   useEffect(() => {
-    fetch("/api/marketing-design/reports")
-      .then((res) => res.json())
-      .then((data) => setTenDaysData(data))
-      .catch((err) => console.error("Error fetching data:", err));
+    getTodayMarketingDesign().then(setTodayData).catch(console.error);
+    getTenDaysMarketingDesign().then(setTenDaysData).catch(console.error);
   }, []);
 
   // helper parse tanggal
-  const parseDate = (dateStr) => {
-    if (!dateStr) return null;
-    return new Date(dateStr);
-  };
+  const parseDate = (dateStr) => (dateStr ? new Date(dateStr) : null);
 
-  // daftar bulan unik dari data
+  // daftar bulan unik dari data 10 harian
   const uniqueMonths = [
     ...new Set(
       tenDaysData.map((row) => {
@@ -36,7 +33,7 @@ const ReportPage = () => {
     }
   }, [uniqueMonths, selectedMonth]);
 
-  // filter data berdasarkan bulan & periode
+  // filter data 10 harian
   const filteredTenDays = tenDaysData.filter((row) => {
     const d = parseDate(row.month);
     if (!d) return false;
@@ -47,12 +44,46 @@ const ReportPage = () => {
     if (selectedRange === "1-10") return row.period === 1;
     if (selectedRange === "11-20") return row.period === 2;
     if (selectedRange === "21-31") return row.period === 3;
-    return true; // "all"
+    return true; // all
   });
 
   return (
     <div>
       <h2>Laporan Marketing Design</h2>
+
+      {/* === Data Hari Ini === */}
+      <h3>📌 Data Hari Ini</h3>
+      {todayData.length === 0 ? (
+        <p>Tidak ada data hari ini.</p>
+      ) : (
+        <table border="1" style={{ marginBottom: "2rem" }}>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Input By</th>
+              <th>Create At</th>
+            </tr>
+          </thead>
+          <tbody>
+            {todayData.map((row) => (
+              <tr key={row.id}>
+                <td>{row.id}</td>
+                <td>{row.input_by}</td>
+                <td>
+                  {new Date(row.create_at).toLocaleString("id-ID", {
+                    day: "2-digit",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+
+      {/* === Data Per 10 Hari === */}
+      <h3>📌 Data Per 10 Hari</h3>
 
       {/* Dropdown bulan */}
       <label>Pilih Bulan: </label>
@@ -82,7 +113,6 @@ const ReportPage = () => {
         <option value="21-31">21 - 31</option>
       </select>
 
-      {/* Tabel laporan */}
       <table border="1" style={{ marginTop: "1rem", borderCollapse: "collapse" }}>
         <thead>
           <tr>
