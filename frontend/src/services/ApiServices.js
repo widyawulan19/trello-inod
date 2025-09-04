@@ -333,10 +333,14 @@ export const getDataMarketingDesignNotAccept = () => axios.get(`${API_URL}/marke
 export const getDataMarketingDesignAccept = () => axios.get(`${API_URL}/marketing-design-accepted`);
 export const archiveDataMarektingDesign = (id) => axios.post(`${API_URL}/archive-data-marketing-design/${id}`);
 export const getMarketingDesignReportAuto = () =>
-  axios.get(`${API_URL}/marketing-design/reports?mode=auto`);
+  axios.get(`${API_URL}/marketing-design/reports`, {
+    params: { mode: "auto" },
+  });
 
 export const getMarketingDesignReportManual = (bulan, periode) =>
-  axios.get(`${API_URL}/marketing-design/reports?mode=manual&bulan=${bulan}&periode=${periode}`);
+  axios.get(`${API_URL}/marketing-design/reports`, {
+    params: { mode: "manual", bulan, periode },
+  });
 
 
 //menampilkan semua detai data (marketing, design) dalm card

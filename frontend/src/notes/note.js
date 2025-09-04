@@ -308,3 +308,70 @@
         "is_accepted": false
     }
 ]
+
+
+//12. get laporan data otomatis per 10 hari berjalan
+app.get("/api/marketing-design/reports", async (req, res) => {
+    try {
+        const { mode, bulan, periode } = req.query;
+
+        let query = "";
+        let params = [];
+
+        if (mode === "auto") {
+            query = `
+        SELECT *
+        FROM marketing_design
+        WHERE create_at::date BETWEEN
+          DATE_TRUNC('month', CURRENT_DATE) +
+          CASE 
+            WHEN EXTRACT(DAY FROM CURRENT_DATE) BETWEEN 1 AND 10
+                THEN INTERVAL '0 day'
+            WHEN EXTRACT(DAY FROM CURRENT_DATE) BETWEEN 11 AND 20
+                THEN INTERVAL '10 day'
+            ELSE INTERVAL '20 day'
+          END
+          AND
+          CASE 
+            WHEN EXTRACT(DAY FROM CURRENT_DATE) BETWEEN 1 AND 10
+                THEN DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '10 day' - INTERVAL '1 day'
+            WHEN EXTRACT(DAY FROM CURRENT_DATE) BETWEEN 11 AND 20
+                THEN DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '20 day' - INTERVAL '1 day'
+            ELSE (DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '1 month' - INTERVAL '1 day')
+          END
+      `;
+        } else if (mode === "manual" && bulan && periode) {
+            query = `
+        WITH range AS (
+          SELECT 
+            DATE_TRUNC('month', $1::date) AS start_month,
+            DATE_TRUNC('month', $1::date) + INTERVAL '1 month' - INTERVAL '1 day' AS end_month
+        )
+        SELECT *
+        FROM marketing_design, range
+        WHERE create_at::date BETWEEN
+          CASE 
+            WHEN $2 = 1 THEN start_month
+            WHEN $2 = 2 THEN start_month + INTERVAL '10 day'
+            ELSE start_month + INTERVAL '20 day'
+          END
+          AND
+          CASE 
+            WHEN $2 = 1 THEN start_month + INTERVAL '10 day' - INTERVAL '1 day'
+            WHEN $2 = 2 THEN start_month + INTERVAL '20 day' - INTERVAL '1 day'
+            ELSE end_month
+          END
+      `;
+            params = [bulan + "-01", parseInt(periode, 10)];
+            // params = [bulan + "-01", periode]; // contoh: bulan=2025-05, periode=2
+        } else {
+            return res.status(400).json({ error: "Invalid parameters" });
+        }
+
+        const result = await pool.query(query, params);
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Server error" });
+    }
+});
