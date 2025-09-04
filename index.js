@@ -5397,25 +5397,26 @@ app.get('/api/marketing-design/reports/today', async (req, res) => {
   }
 });
 
-// ✅ Endpoint untuk per 10 hari
+
+// ✅ Endpoint untuk per 10 hari (semua bulan)
 app.get('/api/marketing-design/reports/10days', async (req, res) => {
   try {
     const result = await client.query(`
       SELECT
-        FLOOR(EXTRACT(DAY FROM create_at) / 10) AS period,
+        FLOOR((EXTRACT(DAY FROM create_at) - 1) / 10) + 1 AS period,
         DATE_TRUNC('month', create_at) AS month,
         COUNT(*) AS total,
         ARRAY_AGG(marketing_design_id) AS ids
       FROM marketing_design
-      WHERE DATE_TRUNC('month', create_at) = DATE_TRUNC('month', CURRENT_DATE)
       GROUP BY period, month
-      ORDER BY month, period
+      ORDER BY month DESC, period
     `);
     res.json(result.rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
+
 
 
 
