@@ -5399,23 +5399,26 @@ app.get('/api/marketing-design/reports/today', async (req, res) => {
 
 
 // ✅ Endpoint untuk per 10 hari (semua bulan)
-app.get('/api/marketing-design/reports/10days', async (req, res) => {
+app.get("/api/marketing-design/reports", async (req, res) => {
   try {
     const result = await client.query(`
       SELECT
-        FLOOR((EXTRACT(DAY FROM create_at) - 1) / 10) + 1 AS period,
         DATE_TRUNC('month', create_at) AS month,
+        FLOOR((EXTRACT(DAY FROM create_at) - 1) / 10) + 1 AS period,
         COUNT(*) AS total,
-        ARRAY_AGG(marketing_design_id) AS ids
-      FROM marketing_design
-      GROUP BY period, month
-      ORDER BY month DESC, period
+        ARRAY_AGG(id) AS ids
+      FROM data_marketing
+      GROUP BY month, period
+      ORDER BY month DESC, period ASC;
     `);
+
     res.json(result.rows);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error(err);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
+
 
 
 
