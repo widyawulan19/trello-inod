@@ -5435,7 +5435,8 @@ app.get("/api/marketing-design/reports", async (req, res) => {
             ELSE end_month
           END
       `;
-      params = [bulan + "-01", periode]; // contoh: bulan=2025-05, periode=2
+      params = [bulan + "-01", parseInt(periode, 10)];
+      // params = [bulan + "-01", periode]; // contoh: bulan=2025-05, periode=2
     } else {
       return res.status(400).json({ error: "Invalid parameters" });
     }
