@@ -1,10 +1,15 @@
 import { useState, useEffect } from "react";
-import { getMarketingDesignReportAuto, getMarketingDesignReportManual } from "../services/ApiServices";
-
+import {
+  getMarketingDesignReportAuto,
+  getMarketingDesignReportManual,
+} from "../services/ApiServices";
 
 export default function DesignReport() {
+  const today = new Date();
+  const defaultBulan = today.toISOString().slice(0, 7); // format YYYY-MM
+
   const [mode, setMode] = useState("auto");
-  const [bulan, setBulan] = useState("2025-05");
+  const [bulan, setBulan] = useState(defaultBulan); // default bulan berjalan
   const [periode, setPeriode] = useState(1);
   const [data, setData] = useState([]);
 
@@ -13,12 +18,15 @@ export default function DesignReport() {
     let result;
     if (mode === "auto") {
       result = await getMarketingDesignReportAuto();
+      console.log("AUTO RESULT:", result.data);
     } else {
       result = await getMarketingDesignReportManual(bulan, periode);
+      console.log("MANUAL RESULT:", result.data, { bulan, periode });
     }
-    setData(result.data); // penting: pakai .data
+    setData(result?.data || []);
   } catch (err) {
     console.error("Gagal fetch data:", err);
+    setData([]);
   }
 };
 
@@ -31,6 +39,7 @@ export default function DesignReport() {
     <div className="p-4">
       <h2 className="mb-4 text-xl font-bold">📊 Laporan Marketing Design</h2>
 
+      {/* Pilihan mode */}
       <div className="flex gap-4 mb-4">
         <label>
           <input
@@ -52,6 +61,7 @@ export default function DesignReport() {
         </label>
       </div>
 
+      {/* Filter manual */}
       {mode === "manual" && (
         <div className="flex gap-2 mb-4">
           <input
@@ -79,6 +89,7 @@ export default function DesignReport() {
         Refresh
       </button>
 
+      {/* Tabel */}
       <table className="w-full mt-4 border">
         <thead>
           <tr className="bg-gray-200">
@@ -90,17 +101,25 @@ export default function DesignReport() {
           </tr>
         </thead>
         <tbody>
-          {data.map((d) => (
-            <tr key={d.marketing_design_id}>
-              <td className="px-2 py-1 border">{d.marketing_design_id}</td>
-              <td className="px-2 py-1 border">{d.buyer_name}</td>
-              <td className="px-2 py-1 border">{d.order_number}</td>
-              <td className="px-2 py-1 border">{d.input_by}</td>
-              <td className="px-2 py-1 border">
-                {new Date(d.create_at).toLocaleDateString()}
+          {data.length > 0 ? (
+            data.map((d) => (
+              <tr key={d.marketing_design_id}>
+                <td className="px-2 py-1 border">{d.marketing_design_id}</td>
+                <td className="px-2 py-1 border">{d.buyer_name}</td>
+                <td className="px-2 py-1 border">{d.order_number}</td>
+                <td className="px-2 py-1 border">{d.input_by}</td>
+                <td className="px-2 py-1 border">
+                  {new Date(d.create_at).toLocaleDateString()}
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="5" className="p-2 text-center border">
+                Tidak ada data untuk bulan {bulan}
               </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     </div>
