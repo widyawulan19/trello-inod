@@ -308,6 +308,18 @@
 
 
 /* MEDIA QUERY  */
+/* Extra large devices (large desktops, ≥1200px) */
+@media (min-width: 992px) and (max-width:1400px) {
+    .login-container .login-content-right {
+        padding: 10px;
+    }
+
+    .login-content-right .content-box-right {
+
+        height: 100%;
+    }
+}
+
 /* Desktop (≥ 992px) */
 @media (min-width: 992px) {
     .login-container .login-content-left {

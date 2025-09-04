@@ -264,6 +264,17 @@
 
 /* MEDIA QUERY  */
 
+/* Extra large devices (large desktops, ≥1200px) */
+@media (min-width: 992px) and (max-width:1400px) {
+    .reset-content-right {
+        padding: 10px;
+    }
+
+    .reset-content-right .content-right-box {
+        height: 100%;
+    }
+}
+
 /* Medium devices (tablets, ≥768px) */
 @media (min-width: 768px) and (max-width: 991.98px) {
     .reset-content-right {
