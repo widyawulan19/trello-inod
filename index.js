@@ -5384,72 +5384,39 @@ app.get('/api/marketing-design-not-accepted', async (req, res) => {
 });
 
 //12. get laporan data otomatis per 10 hari berjalan
-app.get('/api/marketing-design/reports', async (req, res) => {
+// ✅ Endpoint untuk data hari ini
+app.get('/api/marketing-design/reports/today', async (req, res) => {
   try {
-    const { mode, bulan, periode } = req.query;
-    let query = "";
-    let values = [];
-
-    if (mode === "auto") {
-      // ✅ ambil data create_at = hari ini
-      query = `
-        SELECT * 
-        FROM marketing_design 
-        WHERE DATE(create_at) = CURRENT_DATE
-        ORDER BY create_at DESC
-      `;
-    } else if (mode === "manual") {
-      if (!bulan || !periode) {
-        return res.status(400).json({ error: "bulan dan periode wajib diisi untuk mode manual" });
-      }
-
-      // ambil tahun & bulan dari string "YYYY-MM"
-      const [year, month] = bulan.split("-");
-
-      let startDay, endDay;
-      if (periode === "1") {
-        startDay = 1;
-        endDay = 10;
-      } else if (periode === "2") {
-        startDay = 11;
-        endDay = 20;
-      } else if (periode === "3") {
-        startDay = 21;
-        // last day of month pakai fungsi PostgreSQL
-        query = `
-          SELECT * 
-          FROM marketing_design
-          WHERE create_at >= $1::date
-          AND create_at < (DATE_TRUNC('month', $1::date) + INTERVAL '1 month')
-          ORDER BY create_at DESC
-        `;
-        values = [`${year}-${month}-21`];
-      }
-
-      if (periode === "1" || periode === "2") {
-        query = `
-          SELECT * 
-          FROM marketing_design
-          WHERE create_at >= $1::date
-          AND create_at <= $2::date
-          ORDER BY create_at DESC
-        `;
-        values = [
-          `${year}-${month}-${String(startDay).padStart(2, "0")}`,
-          `${year}-${month}-${String(endDay).padStart(2, "0")}`,
-        ];
-      }
-    } else {
-      return res.status(400).json({ error: "mode harus 'auto' atau 'manual'" });
-    }
-
-    const result = await pool.query(query, values);
+    const result = await pool.query(`
+      SELECT * FROM marketing_design
+      WHERE DATE(create_at) = CURRENT_DATE
+    `);
     res.json(result.rows);
-  } catch (error) {
-    console.error("❌ Error fetching report:", error);
-    res.status(500).json({ error: error.message });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
+
+// ✅ Endpoint untuk per 10 hari
+app.get('/api/marketing-design/reports/10days', async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT
+        FLOOR(EXTRACT(DAY FROM create_at) / 10) AS period,
+        DATE_TRUNC('month', create_at) AS month,
+        COUNT(*) AS total,
+        ARRAY_AGG(marketing_design_id) AS ids
+      FROM marketing_design
+      WHERE DATE_TRUNC('month', create_at) = DATE_TRUNC('month', CURRENT_DATE)
+      GROUP BY period, month
+      ORDER BY month, period
+    `);
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 
 
