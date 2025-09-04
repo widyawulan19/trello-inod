@@ -403,7 +403,7 @@
     justify-content: space-between;
     /* border: 1px solid red; */
     width: 100%;
-    padding: 10px;
+    padding: 5px 10px;
     /* border: 1px solid #5c38db; */
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
@@ -481,7 +481,7 @@
     border-radius: 6px;
     cursor: pointer;
     color: white;
-    padding: 7px;
+    padding: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -524,8 +524,8 @@
 
 /* STATUS  */
 .ncd-status {
-    border: 1px solid #ddd;
-    /* border: 1px solid red; */
+    /* border: 1px solid #ddd; */
+    border: 1px solid red;
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
     padding: 10px 20px;
@@ -580,13 +580,15 @@
 /* responsive toggle button */
 .status-toggle-btn-wrapper {
     display: none;
-    margin-bottom: 8px;
+    padding: 3px;
+    /* margin-bottom: 8px; */
     text-align: center;
+    /* border: 1px solid red; */
 }
 
 .status-toggle-btn {
-    font-size: 12px;
-    padding: 4px 10px;
+    font-size: 10px;
+    padding: 2px 10px;
     background-color: white;
     border: 1px solid white;
     border-radius: 6px;
@@ -1585,7 +1587,7 @@
     .ncd-status {
         position: absolute;
         z-index: 9999;
-        top: 20%;
+        top: 16%;
         width: 88.5%;
         height: fit-content;
         border: 1px solid white;

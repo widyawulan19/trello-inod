@@ -325,6 +325,45 @@
 
 @media screen and (max-height: 600px) {
     .reset-content-right .content-right-box {
+        border: 1px solid red;
+        height: 98%;
+        /* width: 100%; */
+    }
+
+    .ress-logo .box-title {
+        /* border: 1px solid red;mainL */
+    }
+
+    .box-title h2 {
+        font-size: 20px;
+    }
+
+    .box-title p {
+        font-size: 10px;
+    }
+
+    .content-right-box .content-box {
+        height: 75% !important;
+    }
+
+    .regis-input input,
+    .regis-input-pass input {
+        font-size: 10px;
+        padding: 5px 12px;
+    }
+
+    .btn-reset p {
+        font-size: 10px;
+    }
+
+}
+
+@media screen and (max-height: 599px) {
+    .reset-content-right {
+        padding: 5px;
+    }
+
+    .reset-content-right .content-right-box {
         /* border: 1px solid red; */
         height: 98%;
         /* width: 100%; */
