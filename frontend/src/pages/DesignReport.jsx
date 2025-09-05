@@ -13,21 +13,21 @@ const ReportPage = () => {
     getTenDaysMarketingDesign().then(setTenDaysData).catch(console.error);
   }, []);
 
-  // helper parse tanggal (cek beberapa kemungkinan field)
-// const parseDate = (row) => {
-//   const dateStr = row.create_at || row.created_at || row.tanggal || row.date;
-//   return dateStr ? new Date(dateStr) : null;
-// };
-const parseDate = (row) => {
-  const dateStr = row.month;
-  return dateStr ? new Date(dateStr) : null;
-};
+  // Untuk daftar bulan (YYYY-MM) dari row.month
+    const parseMonth = (row) => {
+      return row && row.month ? new Date(row.month) : null;
+    };
+
+    // Untuk tanggal detail marketing design
+    const parseDate = (row) => {
+      return row && row.create_at ? new Date(row.create_at) : null;
+    };
 
   // daftar bulan unik dari data create_at
   const uniqueMonths = [
     ...new Set(
       tenDaysData.map((row) => {
-        const d = parseDate(row.create_at);
+        const d = parseMonth(row);
         return d ? d.toISOString().slice(0, 7) : null; // YYYY-MM
       })
     ),
@@ -40,38 +40,19 @@ const parseDate = (row) => {
     }
   }, [uniqueMonths, selectedMonth]);
 
-   const filteredTenDays = tenDaysData.filter((row) => {
-    const d = parseDate(row);
-    if (!d) return false;
-
-    const monthKey = d.toISOString().slice(0, 7); // YYYY-MM
+  const filteredTenDays = tenDaysData
+  .filter((row) => {
+    const monthKey = new Date(row.month).toISOString().slice(0, 7);
     if (monthKey !== selectedMonth) return false;
 
     if (selectedRange === "1-10") return row.period === 1;
     if (selectedRange === "11-20") return row.period === 2;
     if (selectedRange === "21-31") return row.period === 3;
-    return true; // all
-  });
+    return true;
+  })
+  .flatMap((row) => row.details); // ambil semua details dari periode
 
-  // filter data 10 harian
-  // const filteredTenDays = tenDaysData.filter((row) => {
-  //   const d = parseDate(row.create_at);
-  //   if (!d) return false;
 
-  //   const monthKey = d.toISOString().slice(0, 7); // YYYY-MM
-  //   if (monthKey !== selectedMonth) return false;
-
-  //   // hitung periodenya
-  //   const day = d.getDate();
-  //   let period = 1;
-  //   if (day >= 11 && day <= 20) period = 2;
-  //   else if (day >= 21) period = 3;
-
-  //   if (selectedRange === "1-10") return period === 1;
-  //   if (selectedRange === "11-20") return period === 2;
-  //   if (selectedRange === "21-31") return period === 3;
-  //   return true; // all
-  // });
 
   return (
     <div>
@@ -150,20 +131,15 @@ const parseDate = (row) => {
           </tr>
         </thead>
         <tbody>
-          {filteredTenDays.map((row, idx) => {
-            const d = parseDate(row.create_at);
-            const day = d.getDate();
-            let period = 1;
-            if (day >= 11 && day <= 20) period = 2;
-            else if (day >= 21) period = 3;
-
+          {filteredTenDays.map((row) => {
+            const d = parseDate(row);
             return (
-              <tr key={idx}>
+              <tr key={row.marketing_design_id}>
+                <td>{d.toLocaleString("id-ID", { month: "long", year: "numeric" })}</td>
                 <td>
-                  {d.toLocaleString("id-ID", { month: "long", year: "numeric" })}
+                  {row.period === 1 ? "1-10" : row.period === 2 ? "11-20" : "21-31"}
                 </td>
-                <td>{period === 1 ? "1-10" : period === 2 ? "11-20" : "21-31"}</td>
-                <td>{row.id}</td>
+                <td>{row.marketing_design_id}</td>
                 <td>{row.input_by}</td>
                 <td>{d.toLocaleString("id-ID")}</td>
               </tr>

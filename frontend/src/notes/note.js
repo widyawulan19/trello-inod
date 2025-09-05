@@ -375,3 +375,74 @@ app.get("/api/marketing-design/reports", async (req, res) => {
         res.status(500).json({ error: "Server error" });
     }
 });
+
+
+// ✅ Endpoint marketing-design per 10 hari dengan detail
+app.get("/api/marketing-design/reports", async (req, res) => {
+    try {
+        const result = await client.query(`
+      SELECT
+        DATE_TRUNC('month', create_at) AS month,
+        FLOOR((EXTRACT(DAY FROM create_at) - 1) / 10) + 1 AS period,
+        COUNT(*) AS total,
+        ARRAY_AGG(marketing_design_id) AS ids,
+        JSON_AGG(
+          JSON_BUILD_OBJECT(
+            'marketing_design_id', marketing_design_id,
+            'card id', card_id,
+            'input by', input_by,
+            'buyer name', buyer_name,
+            'code order', code_order,
+            'jumlah design', jumlah_design,
+            'order number', order_number,
+            'account', account,
+            'deadline', deadline,
+            'jumlah revisi', jumlah_revisi,
+            'order type', order_type,
+            'offer type', offer_type,
+            'style', style,
+            'resolution', resolution,
+            'price normal', price_normal,
+            'price discount', price_discount,
+            'discount percentage', discount_percentage,
+            'required files', required_files,
+            'project type', project_type,
+            'reference', reference,
+            'file and chat', file_and_chat,
+            'detail project', detail_project,
+            'acc by', acc_by,
+            'create at', create_at,
+            'update at', update_at,
+            'is accepted', is_accepted
+          )
+        ) AS details
+      FROM marketing_design
+      GROUP BY month, period
+      ORDER BY month DESC, period ASC;
+    `);
+
+        res.json(result.rows);
+    } catch (err) {
+        console.error("❌ Query error:", err.message);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+const parseDate = (row) => {
+    const dateStr = row.month;
+    return dateStr ? new Date(dateStr) : null;
+};
+
+
+const filteredTenDays = tenDaysData
+    .filter((row) => {
+        const monthKey = new Date(row.month).toISOString().slice(0, 7);
+        if (monthKey !== selectedMonth) return false;
+
+        if (selectedRange === "1-10") return row.period === 1;
+        if (selectedRange === "11-20") return row.period === 2;
+        if (selectedRange === "21-31") return row.period === 3;
+        return true;
+    })
+    .flatMap((row) => row.details); // ambil semua details dari periode
