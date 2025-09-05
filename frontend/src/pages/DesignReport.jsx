@@ -1,154 +1,103 @@
-import React, { useEffect, useState } from "react";
-import { getTenDaysMarketingDesign, getTodayMarketingDesign } from "../services/ApiServices";
+import React, { useState, useEffect } from "react";
+import { getTodayMarketingDesign, getTenDaysMarketingDesign } from "../services/ApiServices";
 
-const ReportPage = () => {
-  const [todayData, setTodayData] = useState([]);
-  const [tenDaysData, setTenDaysData] = useState([]);
-  const [selectedMonth, setSelectedMonth] = useState("");
-  const [selectedRange, setSelectedRange] = useState("all");
+const MarketingReport = () => {
+  const [option, setOption] = useState("today"); // "today" atau "period"
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  // ambil data hari ini & 10 harian
-  useEffect(() => {
-    getTodayMarketingDesign().then(setTodayData).catch(console.error);
-    getTenDaysMarketingDesign().then(setTenDaysData).catch(console.error);
-  }, []);
+  // Helper untuk format bulan dengan aman
+  const formatMonth = (month) => {
+    if (!month) return "-"; // null, undefined, atau string kosong
+    const d = new Date(month);
+    if (isNaN(d.getTime())) return "-"; // tanggal invalid
+    return d.toLocaleString("id-ID", { month: "long", year: "numeric" });
+  };
 
-  // Untuk daftar bulan (YYYY-MM) dari row.month
-    const parseMonth = (row) => {
-      return row && row.month ? new Date(row.month) : null;
-    };
 
-    // Untuk tanggal detail marketing design
-    const parseDate = (row) => {
-      return row && row.create_at ? new Date(row.create_at) : null;
-    };
-
-  // daftar bulan unik dari data create_at
-  const uniqueMonths = [
-    ...new Set(
-      tenDaysData.map((row) => {
-        const d = parseMonth(row);
-        return d ? d.toISOString().slice(0, 7) : null; // YYYY-MM
-      })
-    ),
-  ].filter(Boolean);
-
-  // atur default bulan ke bulan terbaru
-  useEffect(() => {
-    if (uniqueMonths.length > 0 && !selectedMonth) {
-      setSelectedMonth(uniqueMonths[0]);
+  const fetchData = async () => {
+    setLoading(true);
+    if (option === "today") {
+      const todayData = await getTodayMarketingDesign();
+      setData(todayData);
+    } else {
+      const periodData = await getTenDaysMarketingDesign();
+      setData(periodData);
     }
-  }, [uniqueMonths, selectedMonth]);
+    setLoading(false);
+  };
 
-  const filteredTenDays = tenDaysData
-  .filter((row) => {
-    const monthKey = new Date(row.month).toISOString().slice(0, 7);
-    if (monthKey !== selectedMonth) return false;
+  useEffect(() => {
+    fetchData();
+  }, [option]);
 
-    if (selectedRange === "1-10") return row.period === 1;
-    if (selectedRange === "11-20") return row.period === 2;
-    if (selectedRange === "21-31") return row.period === 3;
-    return true;
-  })
-  .flatMap((row) => row.details); // ambil semua details dari periode
-
-
+  const renderDetails = (details) => {
+    return details.map((item) => (
+      <div key={item.marketing_design_id} style={{border:'1px solid red', height:'80vh', overflowY:'auto'}}>
+      <div style={{ border: "1px solid #ccc", padding: "10px", marginBottom: "10px", overflowY:'auto', height:'50vh' }}>
+        <p><strong>Input By:</strong> {item["input by"]}</p>
+        <p><strong>Buyer Name:</strong> {item["buyer name"]}</p>
+        <p><strong>Code Order:</strong> {item["code order"]}</p>
+        <p><strong>Jumlah Design:</strong> {item["jumlah design"]}</p>
+        <p><strong>Deadline:</strong> {item.deadline}</p>
+        <p><strong>Detail Project:</strong> {item["detail project"]}</p>
+      </div>
+      </div>
+    ));
+  };
 
   return (
     <div>
-      <h2>Laporan Marketing Design</h2>
+      <h2>Marketing Report</h2>
 
-      {/* === Data Hari Ini === */}
-      <h3>📌 Data Hari Ini</h3>
-      {todayData.length === 0 ? (
-        <p>Tidak ada data hari ini.</p>
+      <div style={{ marginBottom: "20px" }}>
+        <label>
+          <input
+            type="radio"
+            name="reportOption"
+            value="today"
+            checked={option === "today"}
+            onChange={() => setOption("today")}
+          />{" "}
+          Hari Ini
+        </label>
+
+        <label style={{ marginLeft: "20px" }}>
+          <input
+            type="radio"
+            name="reportOption"
+            value="period"
+            checked={option === "period"}
+            onChange={() => setOption("period")}
+          />{" "}
+          Per Periode (10 Hari)
+        </label>
+      </div>
+
+      {loading ? (
+        <p>Loading...</p>
+      ) : option === "today" ? (
+        <div>
+          {data.length === 0 ? <p>Tidak ada data hari ini.</p> : renderDetails(data)}
+        </div>
       ) : (
-        <table border="1" style={{ marginBottom: "2rem" }}>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Input By</th>
-              <th>Create At</th>
-            </tr>
-          </thead>
-          <tbody>
-            {todayData.map((row) => (
-              <tr key={row.id}>
-                <td>{row.id}</td>
-                <td>{row.input_by}</td>
-                <td>
-                  {new Date(row.create_at).toLocaleString("id-ID", {
-                    day: "2-digit",
-                    month: "long",
-                    year: "numeric",
-                  })}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div>
+          {data.length === 0 ? (
+            <p>Tidak ada data per periode.</p>
+          ) : (
+            data.map((periodItem, index) => (
+              <div key={index} style={{ marginBottom: "20px" }}>
+                <h3>
+                  Bulan: {formatMonth(periodItem.month)} | Periode: {periodItem.period || "-"} | Total: {periodItem.total}
+                </h3>
+                {renderDetails(periodItem.details)}
+              </div>
+            ))
+          )}
+        </div>
       )}
-
-      {/* === Data Per 10 Hari === */}
-      <h3>📌 Data Per 10 Hari</h3>
-
-      {/* Dropdown bulan */}
-      <label>Pilih Bulan: </label>
-      <select
-        value={selectedMonth}
-        onChange={(e) => setSelectedMonth(e.target.value)}
-      >
-        {uniqueMonths.map((m) => (
-          <option key={m} value={m}>
-            {new Date(m + "-01").toLocaleString("id-ID", {
-              month: "long",
-              year: "numeric",
-            })}
-          </option>
-        ))}
-      </select>
-
-      {/* Dropdown periode */}
-      <label style={{ marginLeft: "1rem" }}>Pilih Periode: </label>
-      <select
-        value={selectedRange}
-        onChange={(e) => setSelectedRange(e.target.value)}
-      >
-        <option value="all">Semua</option>
-        <option value="1-10">1 - 10</option>
-        <option value="11-20">11 - 20</option>
-        <option value="21-31">21 - 31</option>
-      </select>
-
-      <table border="1" style={{ marginTop: "1rem", borderCollapse: "collapse" }}>
-        <thead>
-          <tr>
-            <th>Bulan</th>
-            <th>Periode</th>
-            <th>ID</th>
-            <th>Input By</th>
-            <th>Create At</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredTenDays.map((row) => {
-            const d = parseDate(row);
-            return (
-              <tr key={row.marketing_design_id}>
-                <td>{d.toLocaleString("id-ID", { month: "long", year: "numeric" })}</td>
-                <td>
-                  {row.period === 1 ? "1-10" : row.period === 2 ? "11-20" : "21-31"}
-                </td>
-                <td>{row.marketing_design_id}</td>
-                <td>{row.input_by}</td>
-                <td>{d.toLocaleString("id-ID")}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
     </div>
   );
 };
 
-export default ReportPage;
+export default MarketingReport;
