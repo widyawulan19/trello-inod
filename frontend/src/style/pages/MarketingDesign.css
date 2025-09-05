@@ -259,6 +259,14 @@
     max-width: 10vw;
 }
 
+.input-container {
+    cursor: pointer;
+}
+
+.input-container:hover {
+    text-decoration: underline;
+}
+
 .input-container,
 .buyer-name-container,
 .status-container,

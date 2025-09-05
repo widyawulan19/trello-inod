@@ -235,7 +235,17 @@ const MarketingDesign=()=> {
     setShowData(false)
   }  
 
+  // go to report page 
+  const handleGoToReportPage = () =>{
+    navigate('/layout/design-report')
+  }
 
+  const handleReport = () =>{
+    navigate('/layout/design-report2')
+  }
+    const handleReportPage = () =>{
+    navigate('/layout/marketing-design-report')
+  }
 
   return (
     <div className='md-container'>
@@ -254,6 +264,9 @@ const MarketingDesign=()=> {
             </div>
             <div className="mdh-right">
               <div className="mdhr-btn">
+                <button onClick={handleReportPage}>REPORT</button>
+                {/* <button onClick={handleReport}>10 DAYS REPORT</button>
+                <button onClick={handleGoToReportPage}>REPORT DATA</button> */}
                 <button onClick={handleShowForm}>
                       {/* <HiOutlinePlus className='mdh-icon'/> */}
                       NEW DATA
@@ -441,7 +454,7 @@ const MarketingDesign=()=> {
                   {filteredData.map((item, index)=>(
                     <tr key={item.marketing_design_id}>
                       <td>{index + 1}</td>
-                      <td className='input-container'>{item.input_by}
+                      <td className='input-container'  onClick={()=> handleShowDetail(item.marketing_design_id)}>{item.input_by}
                         {hasCardId(item) && (
                           <span style={{
                             backgroundColor: '#e0f7fa',

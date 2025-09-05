@@ -337,6 +337,28 @@ export const getDataMarketingDesignNotAccept = () => axios.get(`${API_URL}/marke
 export const getDataMarketingDesignAccept = () => axios.get(`${API_URL}/marketing-design-accepted`);
 export const archiveDataMarektingDesign = (id) => axios.post(`${API_URL}/archive-data-marketing-design/${id}`);
 
+// ✅ Ambil laporan marketing hari ini
+export const getTodayMarketingDesign = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/marketing-design/reports/today`);
+    return response.data;
+  } catch (error) {
+    console.error("❌ Gagal ambil laporan hari ini:", error);
+    return [];
+  }
+};
+
+// ✅ Ambil laporan marketing per 10 hari (semua bulan)
+export const getTenDaysMarketingDesign = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/marketing-design/reports`);
+    return response.data;
+  } catch (error) {
+    console.error("❌ Gagal ambil laporan 10 hari:", error);
+    return [];
+  }
+};
+
 //menampilkan semua detai data (marketing, design) dalm card
 export const getAllDataMarketingCard = (cardId) => axios.get(`${API_URL}/cards/${cardId}/marketing-detail`);
 
