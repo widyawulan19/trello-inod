@@ -5030,7 +5030,7 @@ app.get("/api/marketing-design/reports", async (req, res) => {
         DATE_TRUNC('month', create_at) AS month,
         FLOOR((EXTRACT(DAY FROM create_at) - 1) / 10) + 1 AS period,
         COUNT(*) AS total,
-        ARRAY_AGG(id) AS ids
+        ARRAY_AGG(marketing_design_id) AS ids
       FROM marketing_design
       GROUP BY month, period
       ORDER BY month DESC, period ASC;
