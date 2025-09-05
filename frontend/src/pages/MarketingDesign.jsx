@@ -240,7 +240,12 @@ const MarketingDesign=()=> {
     navigate('/layout/design-report')
   }
 
-
+  const handleReport = () =>{
+    navigate('/layout/design-report2')
+  }
+    const handleReportPage = () =>{
+    navigate('/layout/marketing-design-report')
+  }
 
   return (
     <div className='md-container'>
@@ -259,7 +264,9 @@ const MarketingDesign=()=> {
             </div>
             <div className="mdh-right">
               <div className="mdhr-btn">
-                <button onClick={handleGoToReportPage}>REPORT DATA</button>
+                <button onClick={handleReportPage}>REPORT</button>
+                {/* <button onClick={handleReport}>10 DAYS REPORT</button>
+                <button onClick={handleGoToReportPage}>REPORT DATA</button> */}
                 <button onClick={handleShowForm}>
                       {/* <HiOutlinePlus className='mdh-icon'/> */}
                       NEW DATA
