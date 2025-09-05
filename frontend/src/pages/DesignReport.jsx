@@ -14,20 +14,24 @@ const ReportPage = () => {
   }, []);
 
   // helper parse tanggal (cek beberapa kemungkinan field)
+// const parseDate = (row) => {
+//   const dateStr = row.create_at || row.created_at || row.tanggal || row.date;
+//   return dateStr ? new Date(dateStr) : null;
+// };
 const parseDate = (row) => {
-  const dateStr = row.create_at || row.created_at || row.tanggal || row.date;
+  const dateStr = row.month;
   return dateStr ? new Date(dateStr) : null;
 };
 
- // daftar bulan unik dari data 10 harian
-const uniqueMonths = [
-  ...new Set(
-    tenDaysData.map((row) => {
-      const d = parseDate(row);
-      return d ? d.toISOString().slice(0, 7) : null; // YYYY-MM
-    })
-  ),
-].filter(Boolean);
+  // daftar bulan unik dari data create_at
+  const uniqueMonths = [
+    ...new Set(
+      tenDaysData.map((row) => {
+        const d = parseDate(row.create_at);
+        return d ? d.toISOString().slice(0, 7) : null; // YYYY-MM
+      })
+    ),
+  ].filter(Boolean);
 
   // atur default bulan ke bulan terbaru
   useEffect(() => {
@@ -36,25 +40,38 @@ const uniqueMonths = [
     }
   }, [uniqueMonths, selectedMonth]);
 
-  // filter data 10 harian
-  const filteredTenDays = tenDaysData.filter((row) => {
-    const d = parseDate(row.create_at);
+   const filteredTenDays = tenDaysData.filter((row) => {
+    const d = parseDate(row);
     if (!d) return false;
 
     const monthKey = d.toISOString().slice(0, 7); // YYYY-MM
     if (monthKey !== selectedMonth) return false;
 
-    // hitung periodenya
-    const day = d.getDate();
-    let period = 1;
-    if (day >= 11 && day <= 20) period = 2;
-    else if (day >= 21) period = 3;
-
-    if (selectedRange === "1-10") return period === 1;
-    if (selectedRange === "11-20") return period === 2;
-    if (selectedRange === "21-31") return period === 3;
+    if (selectedRange === "1-10") return row.period === 1;
+    if (selectedRange === "11-20") return row.period === 2;
+    if (selectedRange === "21-31") return row.period === 3;
     return true; // all
   });
+
+  // filter data 10 harian
+  // const filteredTenDays = tenDaysData.filter((row) => {
+  //   const d = parseDate(row.create_at);
+  //   if (!d) return false;
+
+  //   const monthKey = d.toISOString().slice(0, 7); // YYYY-MM
+  //   if (monthKey !== selectedMonth) return false;
+
+  //   // hitung periodenya
+  //   const day = d.getDate();
+  //   let period = 1;
+  //   if (day >= 11 && day <= 20) period = 2;
+  //   else if (day >= 21) period = 3;
+
+  //   if (selectedRange === "1-10") return period === 1;
+  //   if (selectedRange === "11-20") return period === 2;
+  //   if (selectedRange === "21-31") return period === 3;
+  //   return true; // all
+  // });
 
   return (
     <div>
