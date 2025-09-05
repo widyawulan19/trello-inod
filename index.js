@@ -5054,10 +5054,32 @@ app.get("/api/marketing-design/reports", async (req, res) => {
         ARRAY_AGG(marketing_design_id) AS ids,
         JSON_AGG(
           JSON_BUILD_OBJECT(
-            'id', marketing_design_id,
+            'marketing_design_id', marketing_design_id,
+            'card id', card_id,
             'input by', input_by,
             'buyer name', buyer_name,
-            'create at', create_at
+            'code order', code_order,
+            'jumlah design', jumlah_design,
+            'order number', order_number,
+            'account', account,
+            'deadline', deadline,
+            'jumlah revisi', jumlah_revisi,
+            'order type', order_type,
+            'offer type', offer_type,
+            'style', style,
+            'resolution', resolution,
+            'price normal', price_normal,
+            'price discount', price_discount,
+            'discount percentage', discount_percentage,
+            'required files', required_files,
+            'project type', project_type,
+            'reference', reference,
+            'file and chat', file_and_chat,
+            'detail project', detail_project,
+            'acc by', acc_by,
+            'create at', create_at,
+            'update at', update_at,
+            'is accepted', is_accepted
           )
         ) AS details
       FROM marketing_design
