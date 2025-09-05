@@ -5007,6 +5007,42 @@ app.post('/api/archive-data-marketing/:id', async (req, res) => {
 
 
 //DATA MARKETING DESIGN
+//12. get laporan data otomatis per 10 hari berjalan
+// ✅ Endpoint untuk data hari ini
+app.get('/api/marketing-design/reports/today', async (req, res) => {
+  try {
+    const result = await client.query(`
+      SELECT * FROM marketing_design
+      WHERE DATE(create_at) = CURRENT_DATE
+    `);
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+// ✅ Endpoint untuk per 10 hari (semua bulan)
+app.get("/api/marketing-design/reports", async (req, res) => {
+  try {
+    const result = await client.query(`
+      SELECT
+        DATE_TRUNC('month', create_at) AS month,
+        FLOOR((EXTRACT(DAY FROM create_at) - 1) / 10) + 1 AS period,
+        COUNT(*) AS total,
+        ARRAY_AGG(id) AS ids
+      FROM marketing_design
+      GROUP BY month, period
+      ORDER BY month DESC, period ASC;
+    `);
+
+    res.json(result.rows);
+  } catch (err) {
+    console.error("❌ Query error:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 //1. menampilkan semua data
 app.get('/api/marketing-design', async (req, res) => {
   try {
@@ -5383,41 +5419,7 @@ app.get('/api/marketing-design-not-accepted', async (req, res) => {
   }
 });
 
-//12. get laporan data otomatis per 10 hari berjalan
-// ✅ Endpoint untuk data hari ini
-app.get('/api/marketing-design/reports/today', async (req, res) => {
-  try {
-    const result = await client.query(`
-      SELECT * FROM marketing_design
-      WHERE DATE(create_at) = CURRENT_DATE
-    `);
-    res.json(result.rows);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
 
-
-// ✅ Endpoint untuk per 10 hari (semua bulan)
-app.get("/api/marketing-design/reports", async (req, res) => {
-  try {
-    const result = await client.query(`
-      SELECT
-        DATE_TRUNC('month', create_at) AS month,
-        FLOOR((EXTRACT(DAY FROM create_at) - 1) / 10) + 1 AS period,
-        COUNT(*) AS total,
-        ARRAY_AGG(id) AS ids
-      FROM marketing_design
-      GROUP BY month, period
-      ORDER BY month DESC, period ASC;
-    `);
-
-    res.json(result.rows);
-  } catch (err) {
-    console.error("❌ Query error:", err.message);
-    res.status(500).json({ error: err.message });
-  }
-});
 
 
 
