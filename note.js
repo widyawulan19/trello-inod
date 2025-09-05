@@ -337,3 +337,94 @@ app.post('/api/boards', verifyToken, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+// server.js atau routes/report.js
+import express from "express";
+import pool from "./connect.js"; // koneksi PostgreSQL
+
+const router = express.Router();
+
+// GET /api/marketing-design/reports?mode=auto
+// GET /api/marketing-design/reports?mode=manual&bulan=2025-05&period=2
+router.get("/marketing-design/reports", async (req, res) => {
+  try {
+    const { mode, bulan, periode } = req.query;
+    let query = "";
+    let values = [];
+
+    if (mode === "auto") {
+      // ✅ ambil data create_at = hari ini
+      query = `
+        SELECT * 
+        FROM marketing_design 
+        WHERE DATE(create_at) = CURRENT_DATE
+        ORDER BY create_at DESC
+      `;
+    } else if (mode === "manual") {
+      if (!bulan || !periode) {
+        return res.status(400).json({ error: "bulan dan periode wajib diisi untuk mode manual" });
+      }
+
+      // ambil tahun & bulan dari string "YYYY-MM"
+      const [year, month] = bulan.split("-");
+
+      let startDay, endDay;
+      if (periode === "1") {
+        startDay = 1;
+        endDay = 10;
+      } else if (periode === "2") {
+        startDay = 11;
+        endDay = 20;
+      } else if (periode === "3") {
+        startDay = 21;
+        // last day of month pakai fungsi PostgreSQL
+        query = `
+          SELECT * 
+          FROM marketing_design
+          WHERE create_at >= $1::date
+          AND create_at < (DATE_TRUNC('month', $1::date) + INTERVAL '1 month')
+          ORDER BY create_at DESC
+        `;
+        values = [`${year}-${month}-21`];
+      }
+
+      if (periode === "1" || periode === "2") {
+        query = `
+          SELECT * 
+          FROM marketing_design
+          WHERE create_at >= $1::date
+          AND create_at <= $2::date
+          ORDER BY create_at DESC
+        `;
+        values = [
+          `${year}-${month}-${String(startDay).padStart(2, "0")}`,
+          `${year}-${month}-${String(endDay).padStart(2, "0")}`,
+        ];
+      }
+    } else {
+      return res.status(400).json({ error: "mode harus 'auto' atau 'manual'" });
+    }
+
+    const result = await pool.query(query, values);
+    res.json(result.rows);
+  } catch (error) {
+    console.error("❌ Error fetching report:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+export default router;
+
+
+const filteredTenDays = tenDaysData.filter((row) => {
+  const d = parseDate(row);
+  if (!d) return false;
+
+  const monthKey = d.toISOString().slice(0, 7);
+  if (monthKey !== selectedMonth) return false;
+
+  if (selectedRange === "1-10") return row.period === 1;
+  if (selectedRange === "11-20") return row.period === 2;
+  if (selectedRange === "21-31") return row.period === 3;
+  return true; // all
+});
