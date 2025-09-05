@@ -5055,9 +5055,9 @@ app.get("/api/marketing-design/reports", async (req, res) => {
         JSON_AGG(
           JSON_BUILD_OBJECT(
             'id', marketing_design_id,
-            'input_by', input_by,
-            'buyer_name', buyer_name,
-            'create_at', create_at
+            'input by', input_by,
+            'buyer name', buyer_name,
+            'create at', create_at
           )
         ) AS details
       FROM marketing_design
