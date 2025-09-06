@@ -4634,6 +4634,23 @@ app.put('/api/employees/:id', async (req, res) => {
 
 
 //DATA MARKERING
+
+//get laporan today berdasarkan create at
+app.get('/api/marketing/reports/today', async (req, res) => {
+  try {
+    const result = await client.query(`
+      SELECT * FROM data_marketing
+      WHERE DATE(create_at) = CURRENT_DATE 
+    `);
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: err.message });
+  }
+})
+
+//get laporan per 10 hari by create at
+
+
 //1. get all marketing data
 app.get('/api/marketing', async (req, res) => {
   try {
