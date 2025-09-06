@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { FiUsers } from "react-icons/fi";
 import { HiChatBubbleLeftRight, HiChevronDown, HiChevronUp, HiCog8Tooth, HiMiniArrowLeftStartOnRectangle, HiMiniChatBubbleLeftRight, HiMiniListBullet, HiMiniPhoto, HiOutlineArchiveBox, HiOutlineArrowsPointingOut, HiOutlineCalendar, HiOutlineChevronRight, HiOutlineCreditCard, HiOutlineListBullet, HiOutlineSquare2Stack, HiOutlineTrash, HiPaperClip, HiPlus, HiTag, HiXMark } from 'react-icons/hi2';
 import { useNavigate, useParams } from 'react-router-dom'
@@ -34,6 +34,9 @@ import FormUpload from '../modals/FormUpload';
 import UploadFile from '../modals/UploadFile';
 import NewRoomChat from '../fitur/NewRoomChat';
 import { FaXmark } from 'react-icons/fa6';
+import CardDescription from '../modals/CardDesctiption';
+import ReactQuill from "react-quill-new";   // ✅ beda disini
+import "react-quill-new/dist/quill.snow.css"; // ✅ CSS dari react-quill-new
 
 const NewCardDetail=()=> {
     //STATE
@@ -98,6 +101,8 @@ const NewCardDetail=()=> {
     const [statusVisible, setStatusVisible] = useState(true); // default: visible
     //MODAL DES
     const [showModalDes, setShowModalDes] = useState(false);
+
+    const quillRef = useRef(null);
 
     const handleShowModalDes = () =>{
         setShowModalDes(!showModalDes)
@@ -528,6 +533,36 @@ const NewCardDetail=()=> {
     }
 
 
+    // ✅ Toolbar custom, selalu tampil
+    const modules = {
+        toolbar: {
+        container: "#toolbar",
+        },
+        keyboard: {
+        bindings: {
+            tab: {
+            key: 9,
+            handler: () => true,
+            },
+            enter: {
+            key: 13,
+            handler: () => {
+                handleSaveDescription(cardId);
+                return false; // jangan newline
+            },
+            },
+            shift_enter: {
+            key: 13,
+            shiftKey: true,
+            handler: () => {
+                const editor = quillRef.current.getEditor();
+                editor.insertText(editor.getSelection().index, "\n");
+            },
+            },
+        },
+        },
+    };
+
     
   
 
@@ -714,15 +749,7 @@ const NewCardDetail=()=> {
                                         <RiExpandDiagonalLine className='des-icon'/>
                                     </div>
                                 </BootstrapTooltip>
-                                {/* <button>Edit</button> */}
                             </div>
-                            {/* MODAL DES  */}
-                            {/* {showModalDes && (
-                                <div className="modal-des-container">
-                                    <h1>DESKRIPSI MODAL</h1>
-                                </div>
-                            )} */}
-                            {/* END MODAL DES  */}
 
                             <div className="des-content">
                                 {cards && cardId && (
@@ -747,7 +774,6 @@ const NewCardDetail=()=> {
                                         style={{ whiteSpace: "pre-wrap", cursor: "pointer" }}
                                         className="div-p"
                                         >
-                                        {/* ✅ Kondisi cek deskripsi */}
                                             {cards.description && cards.description.trim() !== "" ? (
                                             <>
                                                 {renderDescription(cards.description)}
@@ -755,7 +781,7 @@ const NewCardDetail=()=> {
                                                 {cards.description.length > maxChars && (
                                                 <span
                                                     onClick={(e) => {
-                                                    e.stopPropagation(); // biar gak masuk ke edit mode
+                                                    e.stopPropagation(); 
                                                     toggleShowMore();
                                                     }}
                                                     style={{
@@ -775,7 +801,6 @@ const NewCardDetail=()=> {
                                                 )}
                                             </>
                                             ) : (
-                                            // ✅ Placeholder ketika deskripsi kosong
                                             <div className="placeholder-desc">
                                                 <p>
                                                     (click to add description)
@@ -788,6 +813,7 @@ const NewCardDetail=()=> {
                                 )}
                             </div>
                         </div>
+                        
 
                         {/* ATTACHMENT  */}
                         <div className="ncd-attach">
@@ -953,69 +979,7 @@ const NewCardDetail=()=> {
                 </div>
 
                 <div className="modals-body" style={{height:'fit-content'}}>
-                    {editingDescription === cardId ? (
-  <div className="ta-cont" style={{ border: "1px solid red" }}>
-    <textarea
-      value={newDescription}
-      onChange={(e) => setNewDescription(e.target.value)}
-      onBlur={() => saveEditedDescription(cardId)}
-      onKeyDown={(e) => handleDescriptionKeyPress(e, cardId)}
-      autoFocus
-    />
-    <small className="text-muted">
-      **Tekan Enter untuk simpan || Shift + Enter untuk baris baru
-    </small>
-  </div>
-) : (
-  <div
-    style={{ whiteSpace: "pre-wrap", cursor: "pointer" }}
-    className="div-p"
-    onClick={(e) => {
-      // ⛔ Kalau deskripsi kosong, jangan langsung hilang
-      if (!cards.description || cards.description.trim() === "") {
-        e.stopPropagation();
-        setEditingDescription(cardId); // baru masuk mode edit
-        setNewDescription(""); // biar kosong dulu
-      } else {
-        startEditingDescription(e, cardId, cards.description);
-      }
-    }}
-  >
-    {/* ✅ Kalau ada deskripsi */}
-    {cards.description && cards.description.trim() !== "" ? (
-      <>
-        {renderDescription(cards.description)}
-        {cards.description.length > maxChars && (
-          <span
-            onClick={(e) => {
-              e.stopPropagation();
-              toggleShowMore();
-            }}
-            style={{
-              color: "#5557e7",
-              fontWeight: "500",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "flex-start",
-              marginTop: "8px",
-              gap: "5px",
-            }}
-          >
-            {showMore ? "Show Less" : "Show More"}
-            {showMore ? <HiChevronUp /> : <HiChevronDown />}
-          </span>
-        )}
-      </>
-    ) : (
-      // ✅ Placeholder tetap ada sampai diklik
-      <div className="placeholder-desc">
-        <p>(click to add description)</p>
-      </div>
-    )}
-  </div>
-)}
-
+                   <CardDescription card={cards} onUpdate={(newDesc) => setCards({ ...cards, description: newDesc })} />
                 </div>
             </div>
         </div>

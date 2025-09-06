@@ -164,7 +164,7 @@ export const getAllCardUsers = (cardId) => axios.get(`${API_URL}/cards/${cardId}
 
 //UPDATE CARDS
 export const updateTitleCard = (id, title) => axios.put(`${API_URL}/cards/${id}/title`, title)
-export const updateDescCard = (id, description) => axios.put(`${API_URL}/cards/${id}/desc`, description)
+export const updateDescCard = (id, description) => axios.put(`${API_URL}/cards/${id}/desc`, { description })
 export const updateDueDataCard = (id, due_date) => axios.put(`${API_URL}/cards/${id}/due_date`, due_date)
 export const updateCoverCard = (id, cover_id) => axios.put(`${API_URL}/cards/${id}/cover`, cover_id)
 export const updateLabelCard = (id, label_id) => axios.put(`${API_URL}/cards/${id}/label`, label_id)
