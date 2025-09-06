@@ -4649,6 +4649,60 @@ app.get('/api/marketing/reports/today', async (req, res) => {
 })
 
 //get laporan per 10 hari by create at
+app.get("/api/marketing/reports", async (req, res) => {
+  try {
+    const result = await client.query(`
+      SELECT
+        DATE_TRUNC('month', create_at) AS month,
+        FLOOR((EXTRACT(DAY FROM create_at) - 1) / 10) + 1 AS period,
+        COUNT(*) AS total,
+        ARRAY_AGG(marketing_id) AS ids,
+        JSON_AGG(
+          JSON_BUILD_OBJECT(
+            'marketing_id', marketing_id,
+            'card_id', card_id,
+            'input_by', input_by,
+            'acc_by', acc_by,
+            'buyer_name', buyer_name,
+            'code_order', code_order,
+            'jumlah_track', jumlah_track,
+            'order_number', order_number,
+            'account', account,
+            'deadline', deadline,
+            'jumlah_revisi', jumlah_revisi,
+            'order_type', order_type,
+            'offer_type', offer_type,
+            'jenis_track', jenis_track,
+            'genre', genre,
+            'price_normal', price_normal,
+            'price_discount', price_discount,
+            'discount', discount,
+            'basic_price', basic_price,
+            'gig_link', gig_link,
+            'required_files', required_files,
+            'project_type', project_type,
+            'duration', duration,
+            'reference_link', reference_link,
+            'file_and_chat_link', file_and_chat_link,
+            'detail_project', detail_project,
+            'create_at', create_at,
+            'update_at', update_at,
+            'is_accepted', is_accepted
+          )
+        ) AS details
+      FROM data_marketing
+      GROUP BY month, period
+      ORDER BY month DESC, period ASC;
+    `);
+
+    res.json(result.rows);
+  } catch (err) {
+    console.error("❌ Query error:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
 
 
 //1. get all marketing data
