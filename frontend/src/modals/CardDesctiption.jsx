@@ -29,12 +29,14 @@ const handleSave = async () => {
     setDesc(res.data.description); // ✅ sync ke data backend
     // props.onUpdate(res.data.description);
     setIsEditing(false);
+    if (onUpdate) onUpdate(res.data.description);
   } catch (err) {
     console.error("❌ Gagal update desc:", err);
   } finally {
     setLoading(false);
   }
 };
+
 
   const modules = {
     toolbar: [
