@@ -47,6 +47,7 @@ import ResetPass from '../auth/ResetPass';
 import Faq from '../pages/Faq';
 import WelcomePage from '../auth/WelcomePage';
 import MarketingDesignReport from '../pages/MarketingDesignReport';
+import DataMarketingReport from '../pages/DataMarketingReport';
 
 const AppRoutes=()=> {
   return (
@@ -103,6 +104,7 @@ const AppRoutes=()=> {
         <Route path='new-employee-schedules' element={<ScheduleEmployeePage/>}/>
         <Route path='faq' element={<Faq/>}/>
         <Route path='marketing-design-report' element={<MarketingDesignReport/>}/>
+        <Route path='marketing-report' element={<DataMarketingReport/>}/>
         </Route>
     </Routes>
   )

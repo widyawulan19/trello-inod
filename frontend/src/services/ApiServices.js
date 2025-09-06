@@ -317,6 +317,25 @@ export const getDataMarketingWithCardIdNull = () => axios.get(`${API_URL}/data-m
 export const getDataMarketingAccepted = () => axios.get(`${API_URL}/data-marketing-accepted`)
 export const getDataMarketingRejected = () => axios.get(`${API_URL}/data-marketing-rejected`)
 export const archiveDataMarketing = (id) => axios.post(`${API_URL}/archive-data-marketing/${id}`);
+export const getTodayReportMarketing = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/marketing/reports/today`);
+    return response.data;
+  } catch (error) {
+    console.error('gagal mengambil data report hari ini', error);
+    return [];
+  }
+};
+
+export const getTenDaysMarketing = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/marketing/reports`);
+    return response.data;
+  } catch (error) {
+    console.error('gagal mengambil data report', error);
+    return [];
+  }
+}
 
 //DATA MARKERING DESIGN
 export const getAllDataMarketingDesign = () => axios.get(`${API_URL}/marketing-design`)

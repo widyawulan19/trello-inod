@@ -252,6 +252,9 @@ const handleCloseFilterButton = () =>{
   setShowFilter(false)
 }
 
+const handleToReportPage = () =>{
+  navigate('/layout/marketing-report')
+}
 
   return (
     <div className="dmc-container">
@@ -275,6 +278,7 @@ const handleCloseFilterButton = () =>{
         </div>
         <div className="dmc-right">
           <div className="dmcr-btn">
+            <button onClick={handleToReportPage}>REPORT</button>
             <button onClick={handleShowForm}>
                 {/* <HiOutlinePlus className="dm-icon"/> */}
                 NEW DATA
