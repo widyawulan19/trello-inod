@@ -6903,6 +6903,95 @@ app.delete('/api/offer-types-music/:id', async (req, res) => {
   }
 });
 
+// TYPE TRACK 
+// ✅ Get all track types
+app.get('/api/track-types', async (req, res) => {
+  try {
+    const result = await client.query('SELECT * FROM track_types ORDER BY id ASC');
+    res.json(result.rows);
+  } catch (err) {
+    console.error('❌ Error ambil track types:', err);
+    res.status(500).json({ error: 'Gagal ambil data track types' });
+  }
+});
+
+// ✅ Get track type by ID
+app.get('/api/track-types/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await client.query('SELECT * FROM track_types WHERE id = $1', [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Track type tidak ditemukan' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('❌ Error ambil track type by ID:', err);
+    res.status(500).json({ error: 'Gagal ambil track type' });
+  }
+});
+
+// ✅ Create new track type
+app.post('/api/track-types', async (req, res) => {
+  try {
+    const { track_name } = req.body;
+    const result = await client.query(
+      'INSERT INTO track_types (track_name) VALUES ($1) RETURNING *',
+      [track_name]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error('❌ Error tambah track type:', err);
+    res.status(500).json({ error: 'Gagal tambah track type' });
+  }
+});
+
+// ✅ Update track type
+app.put('/api/track-types/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { track_name } = req.body;
+
+    const result = await client.query(
+      `UPDATE track_types 
+       SET track_name = $1, update_at = CURRENT_TIMESTAMP
+       WHERE id = $2 RETURNING *`,
+      [track_name, id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Track type tidak ditemukan' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('❌ Error update track type:', err);
+    res.status(500).json({ error: 'Gagal update track type' });
+  }
+});
+
+// ✅ Delete track type
+app.delete('/api/track-types/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await client.query(
+      'DELETE FROM track_types WHERE id = $1 RETURNING *',
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Track type tidak ditemukan' });
+    }
+
+    res.json({ message: 'Track type berhasil dihapus' });
+  } catch (err) {
+    console.error('❌ Error hapus track type:', err);
+    res.status(500).json({ error: 'Gagal hapus track type' });
+  }
+});
+
+
 //LOG ACTIVITY USER
 //1. menampilkan semua activity berdasarkan userId
 app.get('/api/user-log/:userId', async (req, res) => {
