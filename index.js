@@ -6727,6 +6727,94 @@ app.delete("/api/accounts-music/:id", async (req, res) => {
   }
 });
 
+// PROJECT TYPE MUSIC 
+// ✅ Get all project types
+app.get('/api/project-types-music', async (req, res) => {
+  try {
+    const result = await client.query('SELECT * FROM project_type ORDER BY id ASC');
+    res.json(result.rows);
+  } catch (err) {
+    console.error('❌ Error ambil project types:', err);
+    res.status(500).json({ error: 'Gagal ambil data project type' });
+  }
+});
+
+// ✅ Get project type by ID
+app.get('/api/project-types-music/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await client.query('SELECT * FROM project_type WHERE id = $1', [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Project type tidak ditemukan' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('❌ Error ambil project type by ID:', err);
+    res.status(500).json({ error: 'Gagal ambil project type' });
+  }
+});
+
+// ✅ Create new project type
+app.post('/api/project-types-music', async (req, res) => {
+  try {
+    const { nama_project } = req.body;
+    const result = await client.query(
+      'INSERT INTO project_type (nama_project) VALUES ($1) RETURNING *',
+      [nama_project]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error('❌ Error tambah project type:', err);
+    res.status(500).json({ error: 'Gagal tambah project type' });
+  }
+});
+
+// ✅ Update project type
+app.put('/api/project-types-music/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { nama_project } = req.body;
+
+    const result = await client.query(
+      `UPDATE project_type 
+       SET nama_project = $1, update_at = CURRENT_TIMESTAMP
+       WHERE id = $2 RETURNING *`,
+      [nama_project, id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Project type tidak ditemukan' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('❌ Error update project type:', err);
+    res.status(500).json({ error: 'Gagal update project type' });
+  }
+});
+
+// ✅ Delete project type
+app.delete('/api/project-types-music/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await client.query(
+      'DELETE FROM project_type WHERE id = $1 RETURNING *',
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Project type tidak ditemukan' });
+    }
+
+    res.json({ message: 'Project type berhasil dihapus' });
+  } catch (err) {
+    console.error('❌ Error hapus project type:', err);
+    res.status(500).json({ error: 'Gagal hapus project type' });
+  }
+});
+
 
 //LOG ACTIVITY USER
 //1. menampilkan semua activity berdasarkan userId
