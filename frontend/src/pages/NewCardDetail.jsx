@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { FiUsers } from "react-icons/fi";
 import { HiChatBubbleLeftRight, HiChevronDown, HiChevronUp, HiCog8Tooth, HiMiniArrowLeftStartOnRectangle, HiMiniChatBubbleLeftRight, HiMiniListBullet, HiMiniPhoto, HiOutlineArchiveBox, HiOutlineArrowsPointingOut, HiOutlineCalendar, HiOutlineChevronRight, HiOutlineCreditCard, HiOutlineListBullet, HiOutlineSquare2Stack, HiOutlineTrash, HiPaperClip, HiPlus, HiTag, HiXMark } from 'react-icons/hi2';
 import { useNavigate, useParams } from 'react-router-dom'
@@ -34,6 +34,9 @@ import FormUpload from '../modals/FormUpload';
 import UploadFile from '../modals/UploadFile';
 import NewRoomChat from '../fitur/NewRoomChat';
 import { FaXmark } from 'react-icons/fa6';
+import CardDescription from '../modals/CardDesctiption';
+import ReactQuill from "react-quill-new";   // ✅ beda disini
+import "react-quill-new/dist/quill.snow.css"; // ✅ CSS dari react-quill-new
 
 const NewCardDetail=()=> {
     //STATE
@@ -53,6 +56,7 @@ const NewCardDetail=()=> {
     const [newDescription, setNewDescription] = useState('');
     const [showMore, setShowMore] = useState(false);
     const maxChars = 1000;
+    
     //LABEL
     const [labels, setLabels] = useState([]);
     const [selectedProperties, setSelectedProperties] = useState([]);
@@ -98,6 +102,51 @@ const NewCardDetail=()=> {
     const [statusVisible, setStatusVisible] = useState(true); // default: visible
     //MODAL DES
     const [showModalDes, setShowModalDes] = useState(false);
+
+    const quillRef = useRef(null);
+
+    const handleSaveDesc = async () => {
+    try {
+        setLoading(true);
+        const res = await updateDescCard(cards.id, newDescription);
+
+        setNewDescription(res.data.description); // ✅ sync ke local state
+        setEditingDescription(null); // ✅ tutup edit mode
+
+         // ⬅️ update state di parent
+        setCards({ ...cards, description: res.data.description });
+    } catch (err) {
+        console.error("❌ Gagal update desc:", err);
+    } finally {
+        setLoading(false);
+    }
+    };
+
+
+    const modules = {
+    toolbar: [
+      [{ header: [1, 2, false] }],
+      ["bold", "italic", "underline", "strike"],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["blockquote", "code-block"],
+      [{ align: [] }],
+      ["link"],
+      ["clean"],
+    ],
+    keyboard: {
+      bindings: {
+        tab: {
+          key: 9,
+          handler: function (range, context) {
+          this.quill.insertText(range.index, "    "); // ⬅️ tambahin 4 spasi
+          this.quill.setSelection(range.index + 4, 0); // ⬅️ cursor geser setelah spasi
+          return false; // cegah pindah fokus
+        },
+        },
+      },
+    },
+  };
+
 
     const handleShowModalDes = () =>{
         setShowModalDes(!showModalDes)
@@ -211,6 +260,38 @@ const NewCardDetail=()=> {
           e.stopPropagation();
         }
       }
+
+
+    //another edit desc
+    const startEditingDescription = (e, cardId, currentDesc) => {
+    console.log("startEditingDescription triggered", { cardId, currentDesc });
+    if (!cardId) {
+        console.warn("Card ID is invalid");
+        return;
+    }
+    e.stopPropagation();
+    setEditingDescription(cardId);
+    setNewDescription(currentDesc);
+    };
+
+    // ✅ Simpan perubahan deskripsi baru
+    const saveEditedDescription = async (cardId) => {
+    try {
+        await updateDescCard(cardId, { description: newDescription });
+        setEditingDescription(null);
+        fetchCardById(cardId); // refresh data dari API
+    } catch (error) {
+        console.error("Error updating card description:", error);
+    }
+    };
+
+    // ✅ Handle keyboard input saat edit deskripsi baru
+    const handleDescriptionKeyPress = (e, cardId) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+        saveEditedDescription(cardId);
+        e.stopPropagation();
+    }
+    };
 
     //2. edit card title
         const handleEditingTitle = (e, cardId, currentCardTitle) =>{
@@ -496,6 +577,8 @@ const NewCardDetail=()=> {
     }
 
 
+
+
     
   
 
@@ -682,80 +765,83 @@ const NewCardDetail=()=> {
                                         <RiExpandDiagonalLine className='des-icon'/>
                                     </div>
                                 </BootstrapTooltip>
-                                {/* <button>Edit</button> */}
                             </div>
-                            {/* MODAL DES  */}
-                            {/* {showModalDes && (
-                                <div className="modal-des-container">
-                                    <h1>DESKRIPSI MODAL</h1>
-                                </div>
-                            )} */}
-                            {/* END MODAL DES  */}
 
                             <div className="des-content">
-                                {cards && cardId && (
-                                    <div className="des-content" style={{height:'fit-content'}}>
-                                    {editingDescription === cardId ? (
-                                        <div className="ta-cont">
-                                            <textarea
-                                                value={newDescription}
-                                                onChange={(e) => setNewDescription(e.target.value)}
-                                                onBlur={() => handleSaveDescription(cardId)}
-                                                onKeyDown={(e) => handleKeyPressDescription(e, cardId)}
-                                                autoFocus
-                                                rows={5}
-                                            />
-                                            <small className="text-muted">
-                                                **Tekan Enter untuk simpan || Shift + Enter untuk baris baru
-                                            </small>
-                                        </div>
-                                    ) : (
-                                        <div
-                                        onClick={(e) => handleEditDescription(e, cardId, cards.description)}
-                                        style={{ whiteSpace: "pre-wrap", cursor: "pointer" }}
+                            {cards && cardId && (
+                                <div className="des-content" style={{ height: "fit-content" }}>
+                                {editingDescription === cardId ? (
+                                    <div className="ta-cont">
+                                    <ReactQuill
+                                        ref={quillRef}
+                                        theme="snow"
+                                        value={newDescription}
+                                        onChange={setNewDescription}
+                                        onBlur={handleSaveDesc} // ✅ save otomatis saat blur
+                                        modules={modules}
+                                        className="toolbar-box"
+                                    />
+                                    {loading && (
+                                        <small className="text-muted">Saving...</small>
+                                    )}
+                                    </div>
+                                ) : (
+                                    <div
+                                        onClick={(e) =>
+                                            handleEditDescription(e, cardId, cards.description)
+                                        }
+                                        style={{ cursor: "pointer", whiteSpace: "pre-wrap" }}
                                         className="div-p"
-                                        >
-                                        {/* ✅ Kondisi cek deskripsi */}
-                                            {cards.description && cards.description.trim() !== "" ? (
-                                            <>
-                                                {renderDescription(cards.description)}
+                                    >
+                                    {cards.description && cards.description.trim() !== "" ? (
+                                        <>
+                                        {/* ✅ Render HTML langsung */}
+                                        <div
+                                            dangerouslySetInnerHTML={{
+                                            __html: showMore
+                                                ? cards.description
+                                                : cards.description.substring(0, maxChars),
+                                            }}
+                                            style={{cursor:'text'}}
+                                        />
 
-                                                {cards.description.length > maxChars && (
-                                                <span
-                                                    onClick={(e) => {
-                                                    e.stopPropagation(); // biar gak masuk ke edit mode
-                                                    toggleShowMore();
-                                                    }}
-                                                    style={{
-                                                    color: '#5557e7',
-                                                    fontWeight: '500',
-                                                    cursor: 'pointer',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'flex-start',
-                                                    marginTop: '8px',
-                                                    gap: '5px',
-                                                    }}
-                                                >
-                                                    {showMore ? 'Show Less' : 'Show More'}
-                                                    {showMore ? <HiChevronUp /> : <HiChevronDown />}
-                                                </span>
-                                                )}
-                                            </>
-                                            ) : (
-                                            // ✅ Placeholder ketika deskripsi kosong
-                                            <div className="placeholder-desc">
-                                                <p>
-                                                    (click to add description)
-                                                </p>
-                                            </div>
-                                            )}
+                                        {/* ✅ Show More / Less */}
+                                        {cards.description.length > maxChars && (
+                                            <span
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                toggleShowMore();
+                                            }}
+                                            style={{
+                                                color: "#5557e7",
+                                                fontWeight: "500",
+                                                cursor: "pointer",
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "flex-start",
+                                                marginTop: "8px",
+                                                gap: "5px",
+                                            }}
+                                            >
+                                            {showMore ? "Show Less" : "Show More"}
+                                            {showMore ? <HiChevronUp /> : <HiChevronDown />}
+                                            </span>
+                                        )}
+                                        </>
+                                    ) : (
+                                        // ✅ Placeholder kalau kosong
+                                        <div className="placeholder-desc">
+                                        <p>(click to add description)</p>
                                         </div>
                                     )}
                                     </div>
                                 )}
+                                </div>
+                            )}
                             </div>
+
                         </div>
+                        
 
                         {/* ATTACHMENT  */}
                         <div className="ncd-attach">
@@ -920,34 +1006,8 @@ const NewCardDetail=()=> {
                     </div>
                 </div>
 
-                <div className="modals-body">
-                    {editingDescription === cardId ? (
-                    <div className="ta-cont" style={{border:'1px solid red'}}>
-                        <textarea
-                            value={newDescription}
-                            onChange={(e) => setNewDescription(e.target.value)}
-                            onBlur={() => handleSaveDescription(cardId)}
-                            onKeyDown={(e) => handleKeyPressDescription(e, cardId)}
-                            autoFocus
-                        />
-                            <small className="text-muted">
-                            **Tekan Enter untuk simpan || Shift + Enter untuk baris baru
-                            </small>
-                    </div>
-                    ) : (
-                    <div
-                        onClick={(e) => handleEditDescription(e, cardId, cards.description)}
-                        className="div-des"
-                    >
-                        {cards.description && cards.description.trim() !== "" ? (
-                        renderDescription(cards.description)
-                        ) : (
-                        <div className="placeholder-desc">
-                            <p>(click to add description)</p>
-                        </div>
-                        )}
-                    </div>
-                    )}
+                <div className="modals-body" style={{height:'fit-content'}}>
+                   <CardDescription card={cards} onUpdate={(newDesc) => setCards({ ...cards, description: newDesc })} />
                 </div>
             </div>
         </div>

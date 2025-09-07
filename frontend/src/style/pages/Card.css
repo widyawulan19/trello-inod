@@ -196,6 +196,7 @@
 .cc-body .p-full {
     height: 5vh;
     overflow-y: auto;
+    font-size: 8px;
     overflow: hidden;
     transition: height 0.3s ease;
     /* border: 1px solid red; */

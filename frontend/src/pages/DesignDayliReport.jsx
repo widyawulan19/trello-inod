@@ -35,6 +35,17 @@ const getLastFiveCodeOrder = (codeOrder) =>{
         <div className="dayli-title">
             <h2>Data Marketing Design Hari Ini</h2>
         </div>
+        <div className="daily-total">
+            <p style={{ marginTop: "4px", fontWeight: "bold", color: "#5D12EB" }}>
+                Date: {new Date().toLocaleDateString("id-ID", { 
+                    weekday: "long", year: "numeric", month: "long", day: "numeric" 
+                })}
+            </p>
+
+            <p style={{ marginTop: "4px",padding:'0px'}}>
+                Total Data Hari Ini: {data.length} Project
+            </p>
+        </div>
         <div className="dayli-table">
             <table border="1" cellPadding="8" cellSpacing="0">
                 <thead>

@@ -86,7 +86,7 @@ const DesignTenDaysReport = () => {
           .map((item, idx) => (
             <div key={idx} className='table-report-content'>
               <h2 className="font-bold mb-2">
-                Periode {getPeriodLabel(item.period)} - Total: {item.total}
+                Periode {getPeriodLabel(item.period)} - Total: {item.total} Data
               </h2>
               <table className="min-w-full border border-gray-300">
                 <thead>

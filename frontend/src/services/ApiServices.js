@@ -168,7 +168,7 @@ export const getAllCardUsers = (cardId) => axios.get(`${API_URL}/cards/${cardId}
 
 //UPDATE CARDS
 export const updateTitleCard = (id, title) => axios.put(`${API_URL}/cards/${id}/title`, title)
-export const updateDescCard = (id, description) => axios.put(`${API_URL}/cards/${id}/desc`, description)
+export const updateDescCard = (id, description) => axios.put(`${API_URL}/cards/${id}/desc`, { description })
 export const updateDueDataCard = (id, due_date) => axios.put(`${API_URL}/cards/${id}/due_date`, due_date)
 export const updateCoverCard = (id, cover_id) => axios.put(`${API_URL}/cards/${id}/cover`, cover_id)
 export const updateLabelCard = (id, label_id) => axios.put(`${API_URL}/cards/${id}/label`, label_id)
@@ -321,6 +321,25 @@ export const getDataMarketingWithCardIdNull = () => axios.get(`${API_URL}/data-m
 export const getDataMarketingAccepted = () => axios.get(`${API_URL}/data-marketing-accepted`)
 export const getDataMarketingRejected = () => axios.get(`${API_URL}/data-marketing-rejected`)
 export const archiveDataMarketing = (id) => axios.post(`${API_URL}/archive-data-marketing/${id}`);
+export const getTodayReportMarketing = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/marketing/reports/today`);
+    return response.data;
+  } catch (error) {
+    console.error('gagal mengambil data report hari ini', error);
+    return [];
+  }
+};
+
+export const getTenDaysMarketing = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/marketing/reports`);
+    return response.data;
+  } catch (error) {
+    console.error('gagal mengambil data report', error);
+    return [];
+  }
+}
 
 //DATA MARKERING DESIGN
 export const getAllDataMarketingDesign = () => axios.get(`${API_URL}/marketing-design`)

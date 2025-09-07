@@ -1,0 +1,90 @@
+/* MAKETING DESIGN MUSIK  */
+.marketing-report-container {
+    height: 97%;
+    min-width: 80vw;
+    position: relative;
+    background-color: white;
+    margin-left: 10px;
+    margin-top: 10px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.marketing-report-container .marketing-report-content {
+    /* border: 1px solid red; */
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.marketing-report-content .report-header {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 10px;
+    width: 100%;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.report-header .report-title {
+    /* border: 1px solid red; */
+    gap: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.report-title .report-icon {
+    border: 1px solid white;
+    border-radius: 8px;
+    padding: 5px;
+    color: white;
+    background: linear-gradient(90deg, #7246eb, #532189);
+}
+
+.report-title h2 {
+    margin: 0px;
+    font-weight: bold;
+    width: 100%;
+    font-size: 15px;
+    color: #5320be;
+}
+
+.report-header p {
+    font-size: 10px;
+}
+
+/* button  */
+.marketing-report-content .report-button {
+    /* border: 1px solid blue; */
+    width: 100%;
+    padding: 5px 10px;
+}
+
+.report-button button {
+    background-color: #532189;
+    color: white;
+    font-size: 12px;
+}
+
+.report-button button.active {
+    background: linear-gradient(90deg, #532189, #7246eb);
+    box-shadow: 0px 4px 8px #6f30dc7c;
+}
+
+.report-button button:hover {
+    background: linear-gradient(90deg, #532189, #7246eb);
+    box-shadow: 0px 4px 8px #6f30dc7c;
+}
+
+/* body  */
+.marketing-report-content .report-body {
+    /* border: 1px solid red; */
+    height: 80vh;
+    overflow-y: auto;
+}
