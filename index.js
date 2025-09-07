@@ -6650,7 +6650,7 @@ app.delete("/api/marketing-users/:id", async (req, res) => {
 
 // ACCOUNT MUSIC 
 // ✅ Ambil semua account
-app.get("/api/accounts", async (req, res) => {
+app.get("/api/accounts-music", async (req, res) => {
   try {
     const result = await client.query("SELECT * FROM account_music ORDER BY id ASC");
     res.json(result.rows);
@@ -6661,7 +6661,7 @@ app.get("/api/accounts", async (req, res) => {
 });
 
 // ✅ Ambil 1 account by ID
-app.get("/api/accounts/:id", async (req, res) => {
+app.get("/api/accounts-music/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const result = await client.query("SELECT * FROM account_music WHERE id = $1", [id]);
@@ -6676,7 +6676,7 @@ app.get("/api/accounts/:id", async (req, res) => {
 });
 
 // ✅ Tambah account baru
-app.post("/api/accounts", async (req, res) => {
+app.post("/api/accounts-music", async (req, res) => {
   try {
     const { nama_account } = req.body;
     const result = await client.query(
@@ -6692,7 +6692,7 @@ app.post("/api/accounts", async (req, res) => {
 });
 
 // ✅ Update account
-app.put("/api/accounts/:id", async (req, res) => {
+app.put("/api/accounts-music/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const { nama_account } = req.body;
@@ -6713,7 +6713,7 @@ app.put("/api/accounts/:id", async (req, res) => {
 });
 
 // ✅ Hapus account
-app.delete("/api/accounts/:id", async (req, res) => {
+app.delete("/api/accounts-music/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const result = await client.query("DELETE FROM account_music WHERE id=$1 RETURNING *", [id]);
