@@ -6621,7 +6621,7 @@ app.put("/api/marketing-users/:id", async (req, res) => {
       `UPDATE marketing_musik_user 
        SET nama_marketing=$1, divisi=$2, update_at=NOW() 
        WHERE id=$5 RETURNING *`,
-      [nama_marketing, divisi,id]
+      [nama_marketing, divisi, id]
     );
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "User tidak ditemukan" });
@@ -6645,6 +6645,85 @@ app.delete("/api/marketing-users/:id", async (req, res) => {
   } catch (err) {
     console.error("❌ Error delete user:", err);
     res.status(500).json({ error: "Gagal hapus user" });
+  }
+});
+
+// ACCOUNT MUSIC 
+// ✅ Ambil semua account
+app.get("/api/accounts", async (req, res) => {
+  try {
+    const result = await client.query("SELECT * FROM account_music ORDER BY id ASC");
+    res.json(result.rows);
+  } catch (err) {
+    console.error("❌ Error get accounts:", err);
+    res.status(500).json({ error: "Gagal ambil data accounts" });
+  }
+});
+
+// ✅ Ambil 1 account by ID
+app.get("/api/accounts/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await client.query("SELECT * FROM account_music WHERE id = $1", [id]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Account tidak ditemukan" });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error get account:", err);
+    res.status(500).json({ error: "Gagal ambil account" });
+  }
+});
+
+// ✅ Tambah account baru
+app.post("/api/accounts", async (req, res) => {
+  try {
+    const { nama_account } = req.body;
+    const result = await client.query(
+      `INSERT INTO account_music (nama_account) 
+       VALUES ($1) RETURNING *`,
+      [nama_account]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error create account:", err);
+    res.status(500).json({ error: "Gagal buat account baru" });
+  }
+});
+
+// ✅ Update account
+app.put("/api/accounts/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { nama_account } = req.body;
+    const result = await client.query(
+      `UPDATE account_music 
+       SET nama_account=$1, update_at=NOW() 
+       WHERE id=$2 RETURNING *`,
+      [nama_account, id]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Account tidak ditemukan" });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error update account:", err);
+    res.status(500).json({ error: "Gagal update account" });
+  }
+});
+
+// ✅ Hapus account
+app.delete("/api/accounts/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await client.query("DELETE FROM account_music WHERE id=$1 RETURNING *", [id]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Account tidak ditemukan" });
+    }
+    res.json({ message: "Account berhasil dihapus" });
+  } catch (err) {
+    console.error("❌ Error delete account:", err);
+    res.status(500).json({ error: "Gagal hapus account" });
   }
 });
 
