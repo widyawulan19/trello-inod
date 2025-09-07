@@ -6991,6 +6991,95 @@ app.delete('/api/track-types/:id', async (req, res) => {
   }
 });
 
+// MUSIC GENRE 
+// ✅ GET semua genre
+app.get("/api/genre-music", async (req, res) => {
+  try {
+    const result = await client.query("SELECT * FROM genre_music ORDER BY id ASC");
+    res.json(result.rows);
+  } catch (err) {
+    console.error("❌ Error ambil genre:", err);
+    res.status(500).json({ error: "Gagal ambil genre" });
+  }
+});
+
+// ✅ GET genre by ID
+app.get("/api/genre-music/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await client.query("SELECT * FROM genre_music WHERE id = $1", [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Genre tidak ditemukan" });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error ambil genre by ID:", err);
+    res.status(500).json({ error: "Gagal ambil genre" });
+  }
+});
+
+// ✅ CREATE genre baru
+app.post("/api/genre-music", async (req, res) => {
+  try {
+    const { genre_name } = req.body;
+    const result = await client.query(
+      "INSERT INTO genre_music (genre_name) VALUES ($1) RETURNING *",
+      [genre_name]
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error tambah genre:", err);
+    res.status(500).json({ error: "Gagal tambah genre" });
+  }
+});
+
+// ✅ UPDATE genre
+app.put("/api/genre-music/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { genre_name } = req.body;
+
+    const result = await client.query(
+      `UPDATE genre_music 
+       SET genre_name = $1, update_at = CURRENT_TIMESTAMP 
+       WHERE id = $2 RETURNING *`,
+      [genre_name, id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Genre tidak ditemukan" });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error update genre:", err);
+    res.status(500).json({ error: "Gagal update genre" });
+  }
+});
+
+// ✅ DELETE genre
+app.delete("/api/genre-music/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await client.query(
+      "DELETE FROM genre_music WHERE id = $1 RETURNING *",
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Genre tidak ditemukan" });
+    }
+
+    res.json({ message: "Genre berhasil dihapus" });
+  } catch (err) {
+    console.error("❌ Error hapus genre:", err);
+    res.status(500).json({ error: "Gagal hapus genre" });
+  }
+});
+
 
 //LOG ACTIVITY USER
 //1. menampilkan semua activity berdasarkan userId
