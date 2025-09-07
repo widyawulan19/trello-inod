@@ -6815,6 +6815,93 @@ app.delete('/api/project-types-music/:id', async (req, res) => {
   }
 });
 
+// OFFER TYPE MUSIC 
+// ✅ Get all offer types
+app.get('/api/offer-types-music', async (req, res) => {
+  try {
+    const result = await client.query('SELECT * FROM offer_type_music ORDER BY id ASC');
+    res.json(result.rows);
+  } catch (err) {
+    console.error('❌ Error ambil offer types:', err);
+    res.status(500).json({ error: 'Gagal ambil data offer types' });
+  }
+});
+
+// ✅ Get offer type by ID
+app.get('/api/offer-types-music/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await client.query('SELECT * FROM offer_type_music WHERE id = $1', [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Offer type tidak ditemukan' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('❌ Error ambil offer type by ID:', err);
+    res.status(500).json({ error: 'Gagal ambil offer type' });
+  }
+});
+
+// ✅ Create new offer type
+app.post('/api/offer-types-music', async (req, res) => {
+  try {
+    const { offer_name } = req.body;
+    const result = await client.query(
+      'INSERT INTO offer_type_music (offer_name) VALUES ($1) RETURNING *',
+      [offer_name]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error('❌ Error tambah offer type:', err);
+    res.status(500).json({ error: 'Gagal tambah offer type' });
+  }
+});
+
+// ✅ Update offer type
+app.put('/api/offer-types-music/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { offer_name } = req.body;
+
+    const result = await client.query(
+      `UPDATE offer_type_music 
+       SET offer_name = $1, update_at = CURRENT_TIMESTAMP
+       WHERE id = $2 RETURNING *`,
+      [offer_name, id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Offer type tidak ditemukan' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('❌ Error update offer type:', err);
+    res.status(500).json({ error: 'Gagal update offer type' });
+  }
+});
+
+// ✅ Delete offer type
+app.delete('/api/offer-types-music/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await client.query(
+      'DELETE FROM offer_type_music WHERE id = $1 RETURNING *',
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Offer type tidak ditemukan' });
+    }
+
+    res.json({ message: 'Offer type berhasil dihapus' });
+  } catch (err) {
+    console.error('❌ Error hapus offer type:', err);
+    res.status(500).json({ error: 'Gagal hapus offer type' });
+  }
+});
 
 //LOG ACTIVITY USER
 //1. menampilkan semua activity berdasarkan userId
