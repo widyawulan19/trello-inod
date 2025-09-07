@@ -6570,6 +6570,85 @@ app.put('/api/profile-user/:userId', async (req, res) => {
   }
 })
 
+// MARKETRING USER 
+// 1. Get semua marketing_user
+app.get("/api/marketing-users", async (req, res) => {
+  try {
+    const result = await client.query("SELECT * FROM marketing_musik_user ORDER BY id ASC");
+    res.json(result.rows);
+  } catch (err) {
+    console.error("❌ Error get marketing_musik_user:", err);
+    res.status(500).json({ error: "Gagal ambil data" });
+  }
+});
+// 2.Get 1 user by ID
+app.get("/api/marketing-users/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await client.query("SELECT * FROM marketing_musik_user WHERE id = $1", [id]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "User tidak ditemukan" });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error get user:", err);
+    res.status(500).json({ error: "Gagal ambil user" });
+  }
+});
+
+// 3. Create user baru
+app.post("/api/marketing-users", async (req, res) => {
+  try {
+    const { nama_marketing, divisi } = req.body;
+    const result = await client.query(
+      `INSERT INTO marketing_musik_user (nama_marketing, divisi) 
+       VALUES ($1, $2, $3, $4) RETURNING *`,
+      [nama_marketing, divisi]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error create user:", err);
+    res.status(500).json({ error: "Gagal buat user baru" });
+  }
+});
+
+// 4. Update user
+app.put("/api/marketing-users/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { nama_marketing, divisi } = req.body;
+    const result = await client.query(
+      `UPDATE marketing_musik_user 
+       SET nama_marketing=$1, divisi=$2, update_at=NOW() 
+       WHERE id=$5 RETURNING *`,
+      [nama_marketing, divisi,id]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "User tidak ditemukan" });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error update user:", err);
+    res.status(500).json({ error: "Gagal update user" });
+  }
+});
+
+// 5. Delete user
+app.delete("/api/marketing-users/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await client.query("DELETE FROM marketing_musik_user WHERE id=$1 RETURNING *", [id]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "User tidak ditemukan" });
+    }
+    res.json({ message: "User berhasil dihapus" });
+  } catch (err) {
+    console.error("❌ Error delete user:", err);
+    res.status(500).json({ error: "Gagal hapus user" });
+  }
+});
+
+
 //LOG ACTIVITY USER
 //1. menampilkan semua activity berdasarkan userId
 app.get('/api/user-log/:userId', async (req, res) => {
