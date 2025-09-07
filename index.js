@@ -6602,7 +6602,7 @@ app.post("/api/marketing-users", async (req, res) => {
     const { nama_marketing, divisi } = req.body;
     const result = await client.query(
       `INSERT INTO marketing_musik_user (nama_marketing, divisi) 
-       VALUES ($1, $2, $3, $4) RETURNING *`,
+       VALUES ($1, $2) RETURNING *`,
       [nama_marketing, divisi]
     );
     res.status(201).json(result.rows[0]);
