@@ -7080,6 +7080,90 @@ app.delete("/api/genre-music/:id", async (req, res) => {
   }
 });
 
+// ORDER TYPE MUSIC 
+// ✅ CREATE - Tambah order type baru
+app.post("/api/music-order-types", async (req, res) => {
+  try {
+    const { order_name } = req.body;
+    const result = await client.query(
+      `INSERT INTO music_order_type (order_name) 
+       VALUES ($1) RETURNING *`,
+      [order_name]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error tambah music_order_type:", err);
+    res.status(500).json({ error: "Gagal tambah order type" });
+  }
+});
+
+// ✅ READ - Ambil semua order type
+app.get("/api/music-order-types", async (req, res) => {
+  try {
+    const result = await client.query("SELECT * FROM music_order_type ORDER BY id ASC");
+    res.json(result.rows);
+  } catch (err) {
+    console.error("❌ Error ambil music_order_type:", err);
+    res.status(500).json({ error: "Gagal ambil order type" });
+  }
+});
+
+// ✅ READ by ID - Ambil order type tertentu
+app.get("/api/music-order-types/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await client.query("SELECT * FROM music_order_type WHERE id = $1", [id]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Order type tidak ditemukan" });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error ambil order type by ID:", err);
+    res.status(500).json({ error: "Gagal ambil order type" });
+  }
+});
+
+// ✅ UPDATE - Edit order type
+app.put("/api/music-order-types/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { order_name } = req.body;
+    const result = await client.query(
+      `UPDATE music_order_type 
+       SET order_name = $1, update_at = CURRENT_TIMESTAMP 
+       WHERE id = $2 RETURNING *`,
+      [order_name, id]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Order type tidak ditemukan" });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error update music_order_type:", err);
+    res.status(500).json({ error: "Gagal update order type" });
+  }
+});
+
+// ✅ DELETE - Hapus order type
+app.delete("/api/music-order-types/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await client.query(
+      "DELETE FROM music_order_type WHERE id = $1 RETURNING *",
+      [id]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Order type tidak ditemukan" });
+    }
+    res.json({ message: "Order type berhasil dihapus" });
+  } catch (err) {
+    console.error("❌ Error hapus music_order_type:", err);
+    res.status(500).json({ error: "Gagal hapus order type" });
+  }
+});
+
+
+// END ORDER TYPE MUSIC 
 
 //LOG ACTIVITY USER
 //1. menampilkan semua activity berdasarkan userId
