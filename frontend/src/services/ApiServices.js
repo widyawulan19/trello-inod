@@ -302,6 +302,30 @@ export const updateScheduleUser = (scheduleId, data) => axios.put(`${API_URL}/up
 export const deleteSchedule = (scheduleId) => axios.delete(`${API_URL}/delete-schedule/${scheduleId}`);
 export const getScheduleUser = (userId) => axios.get(`${API_URL}/user-schedule/${userId}`)
 
+// MARKETING MUSIK 
+// ✅ Ambil semua marketing users
+export const getAllMarketingUsers = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/marketing-users`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil marketing users:", err);
+    return [];
+  }
+};
+
+// ✅ Tambah marketing user baru
+export const addMarketingUser = async (userData) => {
+  try {
+    const response = await axios.post(`${API_URL}/marketing-users`, userData, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal tambah marketing user:", err);
+    throw err;
+  }
+};
 
 // DATA MARKETING 
 export const getAllDataMarketing = () => axios.get(`${API_URL}/marketing`)
