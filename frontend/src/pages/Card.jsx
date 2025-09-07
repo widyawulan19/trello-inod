@@ -348,9 +348,14 @@ const Card=({card,boards, lists,userId,listName, listId,fetchBoardDetail,fetchLi
             <SelectedLabelCard cardId={card.id} />
         </div>
         <div className="cc-body">
-            <p className={card.description?.trim()?'p-full':'p-empty'}>
-                {card.description || ''}
-            </p>
+            {card.description ? (
+                <div
+                className={card.description.trim() ? "p-full" : "p-empty"}
+                dangerouslySetInnerHTML={{ __html: card.description }}
+                />
+            ) : (
+                <p className="p-empty">(no description)</p>
+            )}
         </div>
         <div className="cc-footer">
             <div className="left">
