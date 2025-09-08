@@ -866,3 +866,32 @@ export const addKepalaDivisi = (data) => axios.post(`${API_URL}/kepala-divisi`, 
 export const getKepalaDivisiById = (id) => axios.get(`${API_URL}/kepala-divisi/${id}`);
 export const updateKepalaDivisi = (id, data) => axios.put(`${API_URL}/kepala-divisi/${id}`, data);
 export const deleteKepalaDivisi = (id) => axios.delete(`${API_URL}/kepala-divisi/${id}`);
+
+
+// =======================
+// Kupon Diskon
+// =======================
+export const getAllKuponDiskon = async () => {
+  const res = await axios.get(`${API_URL}/kupon-diskon`);
+  return res.data;
+};
+
+export const getKuponDiskonById = async (id) => {
+  const res = await axios.get(`${API_URL}/kupon-diskon/${id}`);
+  return res.data;
+};
+
+export const addKuponDiskon = async (data) => {
+  const res = await axios.post(`${API_URL}/kupon-diskon`, data);
+  return res.data;
+};
+
+export const updateKuponDiskon = async (id, data) => {
+  const res = await axios.put(`${API_URL}/kupon-diskon/${id}`, data);
+  return res.data;
+};
+
+export const deleteKuponDiskon = async (id) => {
+  const res = await axios.delete(`${API_URL}/kupon-diskon/${id}`);
+  return res.data;
+};

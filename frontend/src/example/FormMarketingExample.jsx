@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getAllMarketingUsers, addMarketingUser, addDataMarketing, getAllAccountsMusic, addAccountMusic, getAllOfferTypesMusic, addOfferTypeMusic, getAllTrackTypes, addTrackType, getAllGenresMusic, addGenreMusic, getAllProjectTypesMusic, addProjectTypeMusic, getAllOrderTypesMusic, addOrderTypeMusic } from "../services/ApiServices";
+import { getAllMarketingUsers, addMarketingUser, addDataMarketing, getAllAccountsMusic, addAccountMusic, getAllOfferTypesMusic, addOfferTypeMusic, getAllTrackTypes, addTrackType, getAllGenresMusic, addGenreMusic, getAllProjectTypesMusic, addProjectTypeMusic, getAllOrderTypesMusic, addOrderTypeMusic, getAllKuponDiskon, addKuponDiskon } from "../services/ApiServices";
 import { getAllKepalaDivisi, addKepalaDivisi } from "../services/ApiServices";
 import CustomDropdown from "../marketing/CustomDropdown";
 
@@ -14,6 +14,7 @@ const DataMarketingForm = () => {
   const [newGenre, setNewGenre] = useState("");
   const [newProject, setNewProject] = useState("");
   const [newOrder, setNewOrder] = useState("");
+  const [newKupon, setNewKupon] = useState("");
 
 useEffect(() => {
   const fetchData = async () => {
@@ -43,7 +44,10 @@ useEffect(() => {
 
       //Fetch Order type music
       const orderType = await getAllOrderTypesMusic();
-      console.log('bentuk data tabel project type:', projectType);
+
+      //fetch kupon
+      const kuponDiskon = await getAllKuponDiskon();
+      console.log('bentuk data tabel Kupon diskon:', kuponDiskon);
       
 
 
@@ -56,6 +60,7 @@ useEffect(() => {
         genres: genres.map(g => ({id: g.id, name: g.genre_name})),
         projectType: projectType.map(pt => ({id: pt.id, name: pt.nama_project})),
         orderType: orderType.map(ot => ({id: ot.id, name: ot.order_name})),
+        kuponDiskon: kuponDiskon.map(kd => ({ id: kd.id, name: kd.nama_kupon})),
       });
 
     } catch (error) {
@@ -149,6 +154,17 @@ useEffect(() => {
   }
 
 
+  //tambah Kupon Diskon 
+  const handleAddKupon = async () =>{
+    if (!newKupon.trim()) return;
+    const created = await addKuponDiskon({ nama_kupon: newKupon });
+    const newOption = { id: created.id, name: created.nama_kupon };
+    setDropdownData({ ...dropdownData, kuponDiskon: [...dropdownData.kuponDiskon, newOption] });
+    setForm({ ...form, kuponDiskon: created.id });
+    setNewKupon("");
+  }
+
+
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
@@ -169,7 +185,7 @@ useEffect(() => {
           <label className="block text-sm font-medium">Input By</label>
           <CustomDropdown
             options={dropdownData.users}
-            value={form.input_by}
+            value={form.input_by} // harus sama dengan nama column di db
             onChange={(val) => setForm({ ...form, input_by: val })}
             newItem={inputByNew}
             setNewItem={setInputByNew}
@@ -258,8 +274,8 @@ useEffect(() => {
           <label className="block text-sm font-medium">Order Type</label>
           <CustomDropdown
             options={dropdownData.orderType}        // data dari API
-            value={form.orderType}
-            onChange={(val) => setForm({ ...form, orderType: val })}
+            value={form.order_type}
+            onChange={(val) => setForm({ ...form, order_type: val })}
             newItem={newOrder}
             setNewItem={setNewOrder}
             addNew={handleAddOrderType}
@@ -274,8 +290,8 @@ useEffect(() => {
           <label className="block text-sm font-medium">Offer Type</label>
           <CustomDropdown
             options={dropdownData.offers}        // data dari API
-            value={form.offers}
-            onChange={(val) => setForm({ ...form, offers: val })}
+            value={form.offer_type}
+            onChange={(val) => setForm({ ...form, offer_type: val })}
             newItem={offerNew}
             setNewItem={setOfferNew}
             addNew={handleAddOfferMusic}
@@ -303,8 +319,8 @@ useEffect(() => {
           <label className="block text-sm font-medium">Jenis Track</label>
           <CustomDropdown
             options={dropdownData.trackTypes}        // data dari API
-            value={form.trackTypes}
-            onChange={(val) => setForm({ ...form, trackTypes: val })}
+            value={form.jenis_track}
+            onChange={(val) => setForm({ ...form, jenis_track: val })}
             newItem={newTrack}
             setNewItem={setNewTrack}
             addNew={handleAddTrack}
@@ -319,8 +335,8 @@ useEffect(() => {
           <label className="block text-sm font-medium">Genre</label>
           <CustomDropdown
             options={dropdownData.genres}        // data dari API
-            value={form.genres}
-            onChange={(val) => setForm({ ...form, genres: val })}
+            value={form.genre}
+            onChange={(val) => setForm({ ...form, genre: val })}
             newItem={newGenre}
             setNewItem={setNewGenre}
             addNew={handleAddGenre}
@@ -335,8 +351,8 @@ useEffect(() => {
           <label className="block text-sm font-medium">Project Type</label>
           <CustomDropdown
             options={dropdownData.projectType}        // data dari API
-            value={form.projectType}
-            onChange={(val) => setForm({ ...form, projectType: val })}
+            value={form.project_type}
+            onChange={(val) => setForm({ ...form, project_type: val })}
             newItem={newProject}
             setNewItem={setNewProject}
             addNew={handleAddProjectType}
@@ -426,18 +442,18 @@ useEffect(() => {
           />
         </div>
 
-        {/*  Discount */}
-        <div>
-          <label className="block text-sm font-medium">Kupon Diskon</label>
-          <input
-            type="text"
-            name="kupon_discount_id"
-            value={form.kupon_discount_id}
-            onChange={handleChange}
-            placeholder="kupon discount"
-            className="w-full p-2 border rounded"
-          />
-        </div>
+        {/* KUPON DISKON  */}
+        <CustomDropdown
+          options={dropdownData.kuponDiskon}
+          value={form.kupon_diskon_id}
+          onChange={(val) => setForm({ ...form, kupon_diskon_id: val })}  // ambil id saja
+          newItem={newKupon}
+          setNewItem={setNewKupon}
+          addNew={handleAddKupon}
+          placeholder="Pilih Kupon Diskon"
+          searchPlaceholder="Search Kupon diskon..."
+          addPlaceholder="Add new kupon..."
+        />
 
         {/*  Basic Price */}
         <div>
@@ -522,10 +538,6 @@ useEffect(() => {
             />
           </div>
         </div>
-
-
-
-        
       </div>
 
       <button type="submit" className="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700">
