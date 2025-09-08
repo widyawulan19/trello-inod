@@ -446,3 +446,671 @@ const filteredTenDays = tenDaysData
         return true;
     })
     .flatMap((row) => row.details); // ambil semua details dari periode
+
+
+
+// MARKETRING USER 
+// 1. Get semua marketing_user
+app.get("/api/marketing-users", async (req, res) => {
+  try {
+    const result = await client.query("SELECT * FROM marketing_musik_user ORDER BY id ASC");
+    res.json(result.rows);
+  } catch (err) {
+    console.error("❌ Error get marketing_musik_user:", err);
+    res.status(500).json({ error: "Gagal ambil data" });
+  }
+});
+// 2.Get 1 user by ID
+app.get("/api/marketing-users/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await client.query("SELECT * FROM marketing_musik_user WHERE id = $1", [id]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "User tidak ditemukan" });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error get user:", err);
+    res.status(500).json({ error: "Gagal ambil user" });
+  }
+});
+
+// 3. Create user baru
+app.post("/api/marketing-users", async (req, res) => {
+  try {
+    const { nama_marketing, divisi } = req.body;
+    const result = await client.query(
+      `INSERT INTO marketing_musik_user (nama_marketing, divisi) 
+       VALUES ($1, $2) RETURNING *`,
+      [nama_marketing, divisi]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error create user:", err);
+    res.status(500).json({ error: "Gagal buat user baru" });
+  }
+});
+
+// 4. Update user
+app.put("/api/marketing-users/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { nama_marketing, divisi } = req.body;
+    const result = await client.query(
+      `UPDATE marketing_musik_user 
+       SET nama_marketing=$1, divisi=$2, update_at=NOW() 
+       WHERE id=$5 RETURNING *`,
+      [nama_marketing, divisi, id]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "User tidak ditemukan" });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error update user:", err);
+    res.status(500).json({ error: "Gagal update user" });
+  }
+});
+
+// 5. Delete user
+app.delete("/api/marketing-users/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await client.query("DELETE FROM marketing_musik_user WHERE id=$1 RETURNING *", [id]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "User tidak ditemukan" });
+    }
+    res.json({ message: "User berhasil dihapus" });
+  } catch (err) {
+    console.error("❌ Error delete user:", err);
+    res.status(500).json({ error: "Gagal hapus user" });
+  }
+});
+
+// ACCOUNT MUSIC 
+// ✅ Ambil semua account
+app.get("/api/accounts-music", async (req, res) => {
+  try {
+    const result = await client.query("SELECT * FROM account_music ORDER BY id ASC");
+    res.json(result.rows);
+  } catch (err) {
+    console.error("❌ Error get accounts:", err);
+    res.status(500).json({ error: "Gagal ambil data accounts" });
+  }
+});
+
+// ✅ Ambil 1 account by ID
+app.get("/api/accounts-music/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await client.query("SELECT * FROM account_music WHERE id = $1", [id]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Account tidak ditemukan" });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error get account:", err);
+    res.status(500).json({ error: "Gagal ambil account" });
+  }
+});
+
+// ✅ Tambah account baru
+app.post("/api/accounts-music", async (req, res) => {
+  try {
+    const { nama_account } = req.body;
+    const result = await client.query(
+      `INSERT INTO account_music (nama_account) 
+       VALUES ($1) RETURNING *`,
+      [nama_account]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error create account:", err);
+    res.status(500).json({ error: "Gagal buat account baru" });
+  }
+});
+
+// ✅ Update account
+app.put("/api/accounts-music/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { nama_account } = req.body;
+    const result = await client.query(
+      `UPDATE account_music 
+       SET nama_account=$1, update_at=NOW() 
+       WHERE id=$2 RETURNING *`,
+      [nama_account, id]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Account tidak ditemukan" });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error update account:", err);
+    res.status(500).json({ error: "Gagal update account" });
+  }
+});
+
+// ✅ Hapus account
+app.delete("/api/accounts-music/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await client.query("DELETE FROM account_music WHERE id=$1 RETURNING *", [id]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Account tidak ditemukan" });
+    }
+    res.json({ message: "Account berhasil dihapus" });
+  } catch (err) {
+    console.error("❌ Error delete account:", err);
+    res.status(500).json({ error: "Gagal hapus account" });
+  }
+});
+
+// PROJECT TYPE MUSIC 
+// ✅ Get all project types
+app.get('/api/project-types-music', async (req, res) => {
+  try {
+    const result = await client.query('SELECT * FROM project_type ORDER BY id ASC');
+    res.json(result.rows);
+  } catch (err) {
+    console.error('❌ Error ambil project types:', err);
+    res.status(500).json({ error: 'Gagal ambil data project type' });
+  }
+});
+
+// ✅ Get project type by ID
+app.get('/api/project-types-music/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await client.query('SELECT * FROM project_type WHERE id = $1', [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Project type tidak ditemukan' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('❌ Error ambil project type by ID:', err);
+    res.status(500).json({ error: 'Gagal ambil project type' });
+  }
+});
+
+// ✅ Create new project type
+app.post('/api/project-types-music', async (req, res) => {
+  try {
+    const { nama_project } = req.body;
+    const result = await client.query(
+      'INSERT INTO project_type (nama_project) VALUES ($1) RETURNING *',
+      [nama_project]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error('❌ Error tambah project type:', err);
+    res.status(500).json({ error: 'Gagal tambah project type' });
+  }
+});
+
+// ✅ Update project type
+app.put('/api/project-types-music/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { nama_project } = req.body;
+
+    const result = await client.query(
+      `UPDATE project_type 
+       SET nama_project = $1, update_at = CURRENT_TIMESTAMP
+       WHERE id = $2 RETURNING *`,
+      [nama_project, id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Project type tidak ditemukan' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('❌ Error update project type:', err);
+    res.status(500).json({ error: 'Gagal update project type' });
+  }
+});
+
+// ✅ Delete project type
+app.delete('/api/project-types-music/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await client.query(
+      'DELETE FROM project_type WHERE id = $1 RETURNING *',
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Project type tidak ditemukan' });
+    }
+
+    res.json({ message: 'Project type berhasil dihapus' });
+  } catch (err) {
+    console.error('❌ Error hapus project type:', err);
+    res.status(500).json({ error: 'Gagal hapus project type' });
+  }
+});
+
+// OFFER TYPE MUSIC 
+// ✅ Get all offer types
+app.get('/api/offer-types-music', async (req, res) => {
+  try {
+    const result = await client.query('SELECT * FROM offer_type_music ORDER BY id ASC');
+    res.json(result.rows);
+  } catch (err) {
+    console.error('❌ Error ambil offer types:', err);
+    res.status(500).json({ error: 'Gagal ambil data offer types' });
+  }
+});
+
+// ✅ Get offer type by ID
+app.get('/api/offer-types-music/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await client.query('SELECT * FROM offer_type_music WHERE id = $1', [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Offer type tidak ditemukan' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('❌ Error ambil offer type by ID:', err);
+    res.status(500).json({ error: 'Gagal ambil offer type' });
+  }
+});
+
+// ✅ Create new offer type
+app.post('/api/offer-types-music', async (req, res) => {
+  try {
+    const { offer_name } = req.body;
+    const result = await client.query(
+      'INSERT INTO offer_type_music (offer_name) VALUES ($1) RETURNING *',
+      [offer_name]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error('❌ Error tambah offer type:', err);
+    res.status(500).json({ error: 'Gagal tambah offer type' });
+  }
+});
+
+// ✅ Update offer type
+app.put('/api/offer-types-music/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { offer_name } = req.body;
+
+    const result = await client.query(
+      `UPDATE offer_type_music 
+       SET offer_name = $1, update_at = CURRENT_TIMESTAMP
+       WHERE id = $2 RETURNING *`,
+      [offer_name, id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Offer type tidak ditemukan' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('❌ Error update offer type:', err);
+    res.status(500).json({ error: 'Gagal update offer type' });
+  }
+});
+
+// ✅ Delete offer type
+app.delete('/api/offer-types-music/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await client.query(
+      'DELETE FROM offer_type_music WHERE id = $1 RETURNING *',
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Offer type tidak ditemukan' });
+    }
+
+    res.json({ message: 'Offer type berhasil dihapus' });
+  } catch (err) {
+    console.error('❌ Error hapus offer type:', err);
+    res.status(500).json({ error: 'Gagal hapus offer type' });
+  }
+});
+
+// TYPE TRACK 
+// ✅ Get all track types
+app.get('/api/track-types', async (req, res) => {
+  try {
+    const result = await client.query('SELECT * FROM track_types ORDER BY id ASC');
+    res.json(result.rows);
+  } catch (err) {
+    console.error('❌ Error ambil track types:', err);
+    res.status(500).json({ error: 'Gagal ambil data track types' });
+  }
+});
+
+// ✅ Get track type by ID
+app.get('/api/track-types/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await client.query('SELECT * FROM track_types WHERE id = $1', [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Track type tidak ditemukan' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('❌ Error ambil track type by ID:', err);
+    res.status(500).json({ error: 'Gagal ambil track type' });
+  }
+});
+
+// ✅ Create new track type
+app.post('/api/track-types', async (req, res) => {
+  try {
+    const { track_name } = req.body;
+    const result = await client.query(
+      'INSERT INTO track_types (track_name) VALUES ($1) RETURNING *',
+      [track_name]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error('❌ Error tambah track type:', err);
+    res.status(500).json({ error: 'Gagal tambah track type' });
+  }
+});
+
+// ✅ Update track type
+app.put('/api/track-types/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { track_name } = req.body;
+
+    const result = await client.query(
+      `UPDATE track_types 
+       SET track_name = $1, update_at = CURRENT_TIMESTAMP
+       WHERE id = $2 RETURNING *`,
+      [track_name, id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Track type tidak ditemukan' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('❌ Error update track type:', err);
+    res.status(500).json({ error: 'Gagal update track type' });
+  }
+});
+
+// ✅ Delete track type
+app.delete('/api/track-types/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await client.query(
+      'DELETE FROM track_types WHERE id = $1 RETURNING *',
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Track type tidak ditemukan' });
+    }
+
+    res.json({ message: 'Track type berhasil dihapus' });
+  } catch (err) {
+    console.error('❌ Error hapus track type:', err);
+    res.status(500).json({ error: 'Gagal hapus track type' });
+  }
+});
+
+// MUSIC GENRE 
+// ✅ GET semua genre
+app.get("/api/genre-music", async (req, res) => {
+  try {
+    const result = await client.query("SELECT * FROM genre_music ORDER BY id ASC");
+    res.json(result.rows);
+  } catch (err) {
+    console.error("❌ Error ambil genre:", err);
+    res.status(500).json({ error: "Gagal ambil genre" });
+  }
+});
+
+// ✅ GET genre by ID
+app.get("/api/genre-music/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await client.query("SELECT * FROM genre_music WHERE id = $1", [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Genre tidak ditemukan" });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error ambil genre by ID:", err);
+    res.status(500).json({ error: "Gagal ambil genre" });
+  }
+});
+
+// ✅ CREATE genre baru
+app.post("/api/genre-music", async (req, res) => {
+  try {
+    const { genre_name } = req.body;
+    const result = await client.query(
+      "INSERT INTO genre_music (genre_name) VALUES ($1) RETURNING *",
+      [genre_name]
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error tambah genre:", err);
+    res.status(500).json({ error: "Gagal tambah genre" });
+  }
+});
+
+// ✅ UPDATE genre
+app.put("/api/genre-music/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { genre_name } = req.body;
+
+    const result = await client.query(
+      `UPDATE genre_music 
+       SET genre_name = $1, update_at = CURRENT_TIMESTAMP 
+       WHERE id = $2 RETURNING *`,
+      [genre_name, id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Genre tidak ditemukan" });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error update genre:", err);
+    res.status(500).json({ error: "Gagal update genre" });
+  }
+});
+
+// ✅ DELETE genre
+app.delete("/api/genre-music/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await client.query(
+      "DELETE FROM genre_music WHERE id = $1 RETURNING *",
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Genre tidak ditemukan" });
+    }
+
+    res.json({ message: "Genre berhasil dihapus" });
+  } catch (err) {
+    console.error("❌ Error hapus genre:", err);
+    res.status(500).json({ error: "Gagal hapus genre" });
+  }
+});
+
+// ORDER TYPE MUSIC 
+// ✅ CREATE - Tambah order type baru
+app.post("/api/music-order-types", async (req, res) => {
+  try {
+    const { order_name } = req.body;
+    const result = await client.query(
+      `INSERT INTO music_order_type (order_name) 
+       VALUES ($1) RETURNING *`,
+      [order_name]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error tambah music_order_type:", err);
+    res.status(500).json({ error: "Gagal tambah order type" });
+  }
+});
+
+// ✅ READ - Ambil semua order type
+app.get("/api/music-order-types", async (req, res) => {
+  try {
+    const result = await client.query("SELECT * FROM music_order_type ORDER BY id ASC");
+    res.json(result.rows);
+  } catch (err) {
+    console.error("❌ Error ambil music_order_type:", err);
+    res.status(500).json({ error: "Gagal ambil order type" });
+  }
+});
+
+// ✅ READ by ID - Ambil order type tertentu
+app.get("/api/music-order-types/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await client.query("SELECT * FROM music_order_type WHERE id = $1", [id]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Order type tidak ditemukan" });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error ambil order type by ID:", err);
+    res.status(500).json({ error: "Gagal ambil order type" });
+  }
+});
+
+// ✅ UPDATE - Edit order type
+app.put("/api/music-order-types/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { order_name } = req.body;
+    const result = await client.query(
+      `UPDATE music_order_type 
+       SET order_name = $1, update_at = CURRENT_TIMESTAMP 
+       WHERE id = $2 RETURNING *`,
+      [order_name, id]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Order type tidak ditemukan" });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error update music_order_type:", err);
+    res.status(500).json({ error: "Gagal update order type" });
+  }
+});
+
+// ✅ DELETE - Hapus order type
+app.delete("/api/music-order-types/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await client.query(
+      "DELETE FROM music_order_type WHERE id = $1 RETURNING *",
+      [id]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Order type tidak ditemukan" });
+    }
+    res.json({ message: "Order type berhasil dihapus" });
+  } catch (err) {
+    console.error("❌ Error hapus music_order_type:", err);
+    res.status(500).json({ error: "Gagal hapus order type" });
+  }
+});
+
+
+
+export const getAllMarketingUsers = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/marketing-users`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil marketing users:", err);
+    return [];
+  }
+};
+
+
+export const getAllAccountsMusic = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/accounts-music`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil accounts:", err);
+    return [];
+  }
+};
+
+export const getAllProjectTypesMusic = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/project-types-music`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil project types:", err);
+    return [];
+  }
+};
+
+export const getAllOfferTypesMusic = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/offer-types-music`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil offer types:", err);
+    return [];
+  }
+};
+
+export const getAllTrackTypes = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/track-types`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil track types:", err);
+    return [];
+  }
+};
+
+export const getAllGenresMusic = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/genre-music`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil genre:", err);
+    return [];
+  }
+};
+
+export const getAllOrderTypesMusic = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/music-order-types`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil order types:", err);
+    return [];
+  }
+};
+

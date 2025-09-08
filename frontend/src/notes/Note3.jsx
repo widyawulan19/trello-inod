@@ -1,418 +1,234 @@
-// const CardDescription = ({ card }) => {
-//   const [isEditing, setIsEditing] = useState(false);
-//   const [desc, setDesc] = useState(card.description || "");
-//   const [loading, setLoading] = useState(false);
-//   const quillRef = useRef(null);
+import React, { useEffect, useState, useRef } from "react";
+import {
+  getAllMarketingUsers,
+  getAllAccountsMusic,
+  getAllProjectTypesMusic,
+  getAllOfferTypesMusic,
+  getAllTrackTypes,
+  getAllGenresMusic,
+  getAllOrderTypesMusic,
+} from "../services/ApiServices";
+import axios from "axios";
 
-//   const handleSave = async () => {
-//     try {
-//       setLoading(true);
-//       await updateDescCard(card.id, desc);
-//       setIsEditing(false);
-//     } catch (err) {
-//       console.error("❌ Gagal update desc:", err);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
+const API_URL = "http://localhost:5000/api";
 
-//   const modules = {
-//     toolbar: [
-//       [{ header: [1, 2, false] }],
-//       ["bold", "italic", "underline", "strike"],
-//       [{ list: "ordered" }, { list: "bullet" }],
-//       ["blockquote", "code-block"],
-//       [{ align: [] }],
-//       ["link"],
-//       ["clean"],
-//     ],
-//     keyboard: {
-//       bindings: {
-//         tab: {
-//           key: 9,
-//           handler: function () {
-//             this.quill.insertText(this.quill.getSelection().index, "    ");
-//           },
-//         },
-//       },
-//     },
-//   };
+const CustomDropdown = ({ options, value, onChange, placeholder }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  // add marketing user 
+  const [newItem, setNewItem] = useState("");
+  const [list, setList] = useState(options || []);
 
-//   return (
-//     <div className="card-desc">
-//       {isEditing ? (
-//         <div>
-//           <ReactQuill
-//             ref={quillRef}
-//             theme="snow"
-//             value={desc}
-//             onChange={setDesc}
-//             onBlur={handleSave} // ✅ auto-save saat blur
-//             modules={modules}
-//             className="toolbar-box"
-//           />
-//           {loading && <p className="text-sm text-gray-500 mt-1">Saving...</p>}
-//         </div>
-//       ) : (
-//         <div
-//           className="description-body"
-//           onClick={() => setIsEditing(true)}
-//           dangerouslySetInnerHTML={{
-//             __html:
-//               desc ||
-//               "<span class='text-gray-400'>Click to add description...</span>",
-//           }}
-//         />
-//       )}
-//     </div>
-//   );
-// };
+  const ref = useRef();
 
-// export default CardDescription;
+  const handleSelect = (id) => {
+    onChange(id);
+    setIsOpen(false);
+  };
 
+  // Tutup dropdown kalau klik di luar
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
-// import React, { useState, useRef } from "react";
-// import ReactQuill from "react-quill";
-// import "react-quill/dist/quill.snow.css";
-// import { RiExpandDiagonalLine } from "react-icons/ri";
-// import { HiChevronUp, HiChevronDown } from "react-icons/hi";
-// import BootstrapTooltip from "@mui/material/Tooltip";
+  // marketing user 
+  const handleAddNew = async () => {
+    if (!newItem.trim()) return;
+    try {
+      const created = await addMarketingUser({ nama_marketing: newItem, divisi: "Marketing" });
+      setList([...list, created]);
+      setNewItem("");
+      onChange(created.id); // langsung pilih item baru
+      setIsOpen(false);
+    } catch (err) {
+      console.error("❌ Gagal tambah marketing user:", err);
+      alert("Gagal tambah marketing user");
+    }
+  };
 
-// const DescriptionCard = ({
-//   cards,
-//   cardId,
-//   editingDescription,
-//   newDescription,
-//   setNewDescription,
-//   handleSaveDescription,
-//   handleEditDescription,
-//   renderDescription,
-//   maxChars,
-//   showMore,
-//   toggleShowMore,
-//   handleShowModalDes,
-// }) => {
-//   const quillRef = useRef(null);
+  return (
+    <div className="relative w-full" ref={ref}>
+      <div
+        className="p-2 border rounded cursor-pointer"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        {options.find((o) => o.id === value)?.name || placeholder}
+      </div>
 
-//   // ✅ Toolbar custom, selalu tampil
-//   const modules = {
-//     toolbar: {
-//       container: "#toolbar",
-//     },
-//     keyboard: {
-//       bindings: {
-//         tab: {
-//           key: 9,
-//           handler: () => true,
-//         },
-//         enter: {
-//           key: 13,
-//           handler: () => {
-//             handleSaveDescription(cardId);
-//             return false; // jangan newline
-//           },
-//         },
-//         shift_enter: {
-//           key: 13,
-//           shiftKey: true,
-//           handler: () => {
-//             const editor = quillRef.current.getEditor();
-//             editor.insertText(editor.getSelection().index, "\n");
-//           },
-//         },
-//       },
-//     },
-//   };
+      {isOpen && (
+        <ul className="absolute z-10 w-full overflow-y-auto bg-white border max-h-48">
+          {options.map((o) => (
+            <li
+              key={o.id}
+              className="p-2 cursor-pointer hover:bg-blue-100"
+              onClick={() => handleSelect(o.id)}
+            >
+              {o.name}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
 
-//   return (
-//     <div className="ncd-desc">
-//       <div className="des-header">
-//         <div className="des-left">Description</div>
-//         <BootstrapTooltip title="Detail Description" placement="top">
-//           <div className="des-right" onClick={handleShowModalDes}>
-//             <RiExpandDiagonalLine className="des-icon" />
-//           </div>
-//         </BootstrapTooltip>
-//       </div>
+const DataMarketingForm = () => {
+  const [dropdownData, setDropdownData] = useState({});
+  const [form, setForm] = useState({
+    buyer_name: "",
+    code_order: "",
+    input_by: "",
+    account: "",
+    project_type: "",
+    offer_type: "",
+    track_type: "",
+    genre: "",
+    order_type: "",
+  });
 
-//       {/* ✅ Toolbar global */}
-//       <div id="toolbar" className="mb-2 border-b pb-1">
-//         <select className="ql-header" defaultValue={""} onChange={(e) => e.persist()}>
-//           <option value="1"></option>
-//           <option value="2"></option>
-//           <option value=""></option>
-//         </select>
-//         <button className="ql-bold"></button>
-//         <button className="ql-italic"></button>
-//         <button className="ql-underline"></button>
-//         <button className="ql-list" value="ordered"></button>
-//         <button className="ql-list" value="bullet"></button>
-//         <button className="ql-link"></button>
-//       </div>
+  useEffect(() => {
+    const fetchDropdowns = async () => {
+      const users = await getAllMarketingUsers();
+      const accounts = await getAllAccountsMusic();
+      const projects = await getAllProjectTypesMusic();
+      const offers = await getAllOfferTypesMusic();
+      const tracks = await getAllTrackTypes();
+      const genres = await getAllGenresMusic();
+      const orders = await getAllOrderTypesMusic();
 
-//       <div className="des-content">
-//         {cards && cardId && (
-//           <div className="des-content" style={{ height: "fit-content" }}>
-//             {editingDescription === cardId ? (
-//               <div className="ta-cont">
-//                 <ReactQuill
-//                   ref={quillRef}
-//                   theme="snow"
-//                   value={newDescription}
-//                   onChange={setNewDescription}
-//                   onBlur={() => handleSaveDescription(cardId)}
-//                   modules={modules}
-//                 />
-//                 <small className="text-muted">
-//                   ** Tekan <b>Enter</b> untuk simpan || <b>Shift + Enter</b> untuk baris baru
-//                 </small>
-//               </div>
-//             ) : (
-//               <div
-//                 onClick={(e) =>
-//                   handleEditDescription(e, cardId, cards.description)
-//                 }
-//                 style={{ whiteSpace: "pre-wrap", cursor: "pointer" }}
-//                 className="div-p"
-//               >
-//                 {cards.description && cards.description.trim() !== "" ? (
-//                   <>
-//                     <div
-//                       dangerouslySetInnerHTML={{
-//                         __html: cards.description,
-//                       }}
-//                     />
-//                     {cards.description.length > maxChars && (
-//                       <span
-//                         onClick={(e) => {
-//                           e.stopPropagation();
-//                           toggleShowMore();
-//                         }}
-//                         style={{
-//                           color: "#5557e7",
-//                           fontWeight: "500",
-//                           cursor: "pointer",
-//                           display: "flex",
-//                           alignItems: "center",
-//                           justifyContent: "flex-start",
-//                           marginTop: "8px",
-//                           gap: "5px",
-//                         }}
-//                       >
-//                         {showMore ? "Show Less" : "Show More"}
-//                         {showMore ? <HiChevronUp /> : <HiChevronDown />}
-//                       </span>
-//                     )}
-//                   </>
-//                 ) : (
-//                   <div className="placeholder-desc">
-//                     <p>(click to add description)</p>
-//                   </div>
-//                 )}
-//               </div>
-//             )}
-//           </div>
-//         )}
-//       </div>
-//     </div>
-//   );
-// };
+      setDropdownData({
+        users,
+        accounts,
+        projects,
+        offers,
+        tracks,
+        genres,
+        orders,
+      });
+    };
 
-// export default DescriptionCard;
+    fetchDropdowns();
+  }, []);
 
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
-// import React, { useRef } from "react";
-// import ReactQuill from "react-quill";
-// import "react-quill/dist/quill.snow.css";
-// import { RiExpandDiagonalLine } from "react-icons/ri";
-// import { HiChevronUp, HiChevronDown } from "react-icons/hi";
-// import BootstrapTooltip from "@mui/material/Tooltip";
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post(`${API_URL}/data-marketing`, form);
+      alert("✅ Data marketing berhasil ditambahkan!");
+      setForm({
+        buyer_name: "",
+        code_order: "",
+        input_by: "",
+        account: "",
+        project_type: "",
+        offer_type: "",
+        track_type: "",
+        genre: "",
+        order_type: "",
+      });
+    } catch (err) {
+      console.error("❌ Gagal simpan data marketing:", err);
+      alert("❌ Gagal simpan data marketing");
+    }
+  };
 
-// {/* DESCRIPTION CARD */}
-// <div className="ncd-desc">
-//   <div className="des-header">
-//     <div className="des-left">Description</div>
-//     <BootstrapTooltip title="Detail Description" placement="top">
-//       <div className="des-right" onClick={handleShowModalDes}>
-//         <RiExpandDiagonalLine className="des-icon" />
-//       </div>
-//     </BootstrapTooltip>
-//   </div>
+  return (
+    <form onSubmit={handleSubmit} className="p-4 space-y-4 bg-white rounded shadow w-96">
+      <h2 className="text-lg font-bold">Tambah Data Marketing</h2>
 
-//   <div className="des-content">
-//     {cards && cardId && (
-//       <div className="des-content" style={{ height: "fit-content" }}>
-//         {editingDescription === cardId ? (
-//           <div className="ta-cont">
-//             {/* ✅ ReactQuill sebagai editor */}
-//             <ReactQuill
-//               ref={useRef(null)}
-//               theme="snow"
-//               value={newDescription}
-//               onChange={setNewDescription}
-//               onBlur={() => handleSaveDescription(cardId)}
-//               modules={{
-//                 toolbar: [
-//                   [{ header: [1, 2, false] }],
-//                   ["bold", "italic", "underline", "strike"],
-//                   [{ list: "ordered" }, { list: "bullet" }],
-//                   ["blockquote", "code-block"],
-//                   [{ align: [] }],
-//                   ["link"],
-//                   ["clean"],
-//                 ],
-//                 keyboard: {
-//                   bindings: {
-//                     tab: {
-//                       key: 9,
-//                       handler: function () {
-//                         this.quill.insertText(
-//                           this.quill.getSelection().index,
-//                           "    "
-//                         );
-//                       },
-//                     },
-//                     enter: {
-//                       key: 13,
-//                       handler: () => {
-//                         handleSaveDescription(cardId);
-//                         return false; // jangan newline
-//                       },
-//                     },
-//                     shift_enter: {
-//                       key: 13,
-//                       shiftKey: true,
-//                       handler: () => {
-//                         const editor = this.quill;
-//                         editor.insertText(editor.getSelection().index, "\n");
-//                       },
-//                     },
-//                   },
-//                 },
-//               }}
-//             />
-//             <small className="text-muted">
-//               ** Tekan <b>Enter</b> untuk simpan ||{" "}
-//               <b>Shift + Enter</b> untuk baris baru
-//             </small>
-//           </div>
-//         ) : (
-//           <div
-//             onClick={(e) =>
-//               handleEditDescription(e, cardId, cards.description)
-//             }
-//             style={{ whiteSpace: "pre-wrap", cursor: "pointer" }}
-//             className="div-p"
-//           >
-//             {/* ✅ tetap pakai renderDescription biar tampilan lama aman */}
-//             {cards.description && cards.description.trim() !== "" ? (
-//               <>
-//                 {renderDescription(cards.description)}
+      {/* Buyer Name */}
+      <input
+        type="text"
+        name="buyer_name"
+        value={form.buyer_name}
+        onChange={handleChange}
+        placeholder="Buyer Name"
+        className="w-full p-2 border rounded"
+      />
 
-//                 {cards.description.length > maxChars && (
-//                   <span
-//                     onClick={(e) => {
-//                       e.stopPropagation();
-//                       toggleShowMore();
-//                     }}
-//                     style={{
-//                       color: "#5557e7",
-//                       fontWeight: "500",
-//                       cursor: "pointer",
-//                       display: "flex",
-//                       alignItems: "center",
-//                       justifyContent: "flex-start",
-//                       marginTop: "8px",
-//                       gap: "5px",
-//                     }}
-//                   >
-//                     {showMore ? "Show Less" : "Show More"}
-//                     {showMore ? <HiChevronUp /> : <HiChevronDown />}
-//                   </span>
-//                 )}
-//               </>
-//             ) : (
-//               <div className="placeholder-desc">
-//                 <p>(click to add description)</p>
-//               </div>
-//             )}
-//           </div>
-//         )}
-//       </div>
-//     )}
-//   </div>
-// </div>;
+      {/* Code Order */}
+      <input
+        type="text"
+        name="code_order"
+        value={form.code_order}
+        onChange={handleChange}
+        placeholder="Code Order"
+        className="w-full p-2 border rounded"
+      />
 
+      {/* Input By */}
+      <CustomDropdown
+        options={dropdownData.users?.map(u => ({ id: u.id, name: `${u.nama_marketing} (${u.divisi})` })) || []}
+        value={form.input_by}
+        onChange={(val) => setForm({ ...form, input_by: val })}
+        placeholder="Pilih Marketing User"
+      />
 
+      {/* Account */}
+      <CustomDropdown
+        options={dropdownData.accounts?.map(a => ({ id: a.id, name: a.nama_account })) || []}
+        value={form.account}
+        onChange={(val) => setForm({ ...form, account: val })}
+        placeholder="Pilih Account"
+      />
 
-// const handleSave = async () => {
-//   try {
-//     setLoading(true);
-//     const res = await updateDescCard(card.id, desc);
-//     setDesc(res.data.description); // ✅ pakai data yang sudah benar-benar dari DB
-//     setIsEditing(false);
-//   } catch (err) {
-//     console.error("❌ Gagal update desc:", err);
-//   } finally {
-//     setLoading(false);
-//   }
-// };
+      {/* Project Type */}
+      <CustomDropdown
+        options={dropdownData.projects?.map(p => ({ id: p.id, name: p.nama_project })) || []}
+        value={form.project_type}
+        onChange={(val) => setForm({ ...form, project_type: val })}
+        placeholder="Pilih Project Type"
+      />
 
+      {/* Offer Type */}
+      <CustomDropdown
+        options={dropdownData.offers?.map(o => ({ id: o.id, name: o.offer_name })) || []}
+        value={form.offer_type}
+        onChange={(val) => setForm({ ...form, offer_type: val })}
+        placeholder="Pilih Offer Type"
+      />
 
-// const handleSave = async () => {
-//   try {
-//     setLoading(true);
-//     const res = await updateDescCard(card.id, desc);
-//     setDesc(res.data.description);   // ✅ sync ke database value
-//     setIsEditing(false);
+      {/* Track Type */}
+      <CustomDropdown
+        options={dropdownData.tracks?.map(t => ({ id: t.id, name: t.track_name })) || []}
+        value={form.track_type}
+        onChange={(val) => setForm({ ...form, track_type: val })}
+        placeholder="Pilih Track Type"
+      />
 
-//     // kalau parent butuh update juga:
-//     if (onUpdate) onUpdate(res.data.description);
-//   } catch (err) {
-//     console.error("❌ Gagal update desc:", err);
-//   } finally {
-//     setLoading(false);
-//   }
-// };
+      {/* Genre */}
+      <CustomDropdown
+        options={dropdownData.genres?.map(g => ({ id: g.id, name: g.genre_name })) || []}
+        value={form.genre}
+        onChange={(val) => setForm({ ...form, genre: val })}
+        placeholder="Pilih Genre"
+      />
 
+      {/* Order Type */}
+      <CustomDropdown
+        options={dropdownData.orders?.map(o => ({ id: o.id, name: o.order_name })) || []}
+        value={form.order_type}
+        onChange={(val) => setForm({ ...form, order_type: val })}
+        placeholder="Pilih Order Type"
+      />
 
-// <div
-//   onClick={(e) => handleEditDescription(e, cardId, cards.description)}
-//   style={{ whiteSpace: "pre-wrap", cursor: "pointer" }}
-//   className="div-p"
-// >
-//   {cards.description && cards.description.trim() !== "" ? (
-//     <>
-//       <div
-//         dangerouslySetInnerHTML={{
-//           __html: showMore
-//             ? cards.description
-//             : cards.description.substring(0, maxChars),
-//         }}
-//         style={{ cursor: "text" }} // biar bisa select text & klik link
-//       />
-//       {cards.description.length > maxChars && (
-//         <span
-//           onClick={(e) => {
-//             e.stopPropagation();
-//             toggleShowMore();
-//           }}
-//           style={{
-//             color: "#5557e7",
-//             fontWeight: "500",
-//             cursor: "pointer",
-//             display: "flex",
-//             alignItems: "center",
-//             gap: "5px",
-//           }}
-//         >
-//           {showMore ? "Show Less" : "Show More"}
-//         </span>
-//       )}
-//     </>
-//   ) : (
-//     <div className="placeholder-desc">
-//       <p>(click to add description)</p>
-//     </div>
-//   )}
-// </div>
+      <button
+        type="submit"
+        className="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700"
+      >
+        Simpan
+      </button>
+    </form>
+  );
+};
+
+export default DataMarketingForm;

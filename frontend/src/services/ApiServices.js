@@ -302,31 +302,6 @@ export const updateScheduleUser = (scheduleId, data) => axios.put(`${API_URL}/up
 export const deleteSchedule = (scheduleId) => axios.delete(`${API_URL}/delete-schedule/${scheduleId}`);
 export const getScheduleUser = (userId) => axios.get(`${API_URL}/user-schedule/${userId}`)
 
-// MARKETING MUSIK 
-// ✅ Ambil semua marketing users
-export const getAllMarketingUsers = async () => {
-  try {
-    const response = await axios.get(`${API_URL}/marketing-users`);
-    return response.data;
-  } catch (err) {
-    console.error("❌ Gagal ambil marketing users:", err);
-    return [];
-  }
-};
-
-// ✅ Tambah marketing user baru
-export const addMarketingUser = async (userData) => {
-  try {
-    const response = await axios.post(`${API_URL}/marketing-users`, userData, {
-      headers: { "Content-Type": "application/json" },
-    });
-    return response.data;
-  } catch (err) {
-    console.error("❌ Gagal tambah marketing user:", err);
-    throw err;
-  }
-};
-
 // DATA MARKETING 
 export const getAllDataMarketing = () => axios.get(`${API_URL}/marketing`)
 export const getCardIdMarketingByMarketingId = (id) => axios.get(`${API_URL}/get-card-id/${id}`)
@@ -472,3 +447,414 @@ export const marksNotificationSystem = (id) => axios.patch(`${API_URL}/system-no
 export const deleteSystemNotification = (id) => axios.delete(`${API_URL}/system-notification/${id}`);
 export const getPathToCard = (cardId) => axios.get(`${API_URL}/card/${cardId}/card-location`);
 
+
+// =============================
+// MARKETING USER
+// =============================
+
+// ✅ Ambil semua marketing users
+export const getAllMarketingUsers = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/marketing-users`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil marketing users:", err);
+    return [];
+  }
+};
+
+// ✅ Ambil 1 user by ID
+export const getMarketingUserById = async (id) => {
+  try {
+    const response = await axios.get(`${API_URL}/marketing-users/${id}`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil marketing user:", err);
+    throw err;
+  }
+};
+
+// ✅ Tambah user baru
+export const addMarketingUser = async (userData) => {
+  try {
+    const response = await axios.post(`${API_URL}/marketing-users`, userData, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal tambah marketing user:", err);
+    throw err;
+  }
+};
+
+// ✅ Update user
+export const updateMarketingUser = async (id, userData) => {
+  try {
+    const response = await axios.put(`${API_URL}/marketing-users/${id}`, userData, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal update marketing user:", err);
+    throw err;
+  }
+};
+
+// ✅ Hapus user
+export const deleteMarketingUser = async (id) => {
+  try {
+    const response = await axios.delete(`${API_URL}/marketing-users/${id}`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal hapus marketing user:", err);
+    throw err;
+  }
+};
+
+// =============================
+// ACCOUNT MUSIC
+// =============================
+
+export const getAllAccountsMusic = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/accounts-music`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil accounts:", err);
+    return [];
+  }
+};
+
+export const getAccountMusicById = async (id) => {
+  try {
+    const response = await axios.get(`${API_URL}/accounts-music/${id}`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil account:", err);
+    throw err;
+  }
+};
+
+export const addAccountMusic = async (data) => {
+  try {
+    const response = await axios.post(`${API_URL}/accounts-music`, data, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal tambah account:", err);
+    throw err;
+  }
+};
+
+export const updateAccountMusic = async (id, data) => {
+  try {
+    const response = await axios.put(`${API_URL}/accounts-music/${id}`, data, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal update account:", err);
+    throw err;
+  }
+};
+
+export const deleteAccountMusic = async (id) => {
+  try {
+    const response = await axios.delete(`${API_URL}/accounts-music/${id}`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal hapus account:", err);
+    throw err;
+  }
+};
+
+// =============================
+// PROJECT TYPE MUSIC
+// =============================
+
+export const getAllProjectTypesMusic = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/project-types-music`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil project types:", err);
+    return [];
+  }
+};
+
+export const getProjectTypeMusicById = async (id) => {
+  try {
+    const response = await axios.get(`${API_URL}/project-types-music/${id}`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil project type:", err);
+    throw err;
+  }
+};
+
+export const addProjectTypeMusic = async (data) => {
+  try {
+    const response = await axios.post(`${API_URL}/project-types-music`, data, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal tambah project type:", err);
+    throw err;
+  }
+};
+
+export const updateProjectTypeMusic = async (id, data) => {
+  try {
+    const response = await axios.put(`${API_URL}/project-types-music/${id}`, data, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal update project type:", err);
+    throw err;
+  }
+};
+
+export const deleteProjectTypeMusic = async (id) => {
+  try {
+    const response = await axios.delete(`${API_URL}/project-types-music/${id}`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal hapus project type:", err);
+    throw err;
+  }
+};
+
+// =============================
+// OFFER TYPE MUSIC
+// =============================
+
+export const getAllOfferTypesMusic = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/offer-types-music`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil offer types:", err);
+    return [];
+  }
+};
+
+export const getOfferTypeMusicById = async (id) => {
+  try {
+    const response = await axios.get(`${API_URL}/offer-types-music/${id}`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil offer type:", err);
+    throw err;
+  }
+};
+
+export const addOfferTypeMusic = async (data) => {
+  try {
+    const response = await axios.post(`${API_URL}/offer-types-music`, data, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal tambah offer type:", err);
+    throw err;
+  }
+};
+
+export const updateOfferTypeMusic = async (id, data) => {
+  try {
+    const response = await axios.put(`${API_URL}/offer-types-music/${id}`, data, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal update offer type:", err);
+    throw err;
+  }
+};
+
+export const deleteOfferTypeMusic = async (id) => {
+  try {
+    const response = await axios.delete(`${API_URL}/offer-types-music/${id}`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal hapus offer type:", err);
+    throw err;
+  }
+};
+
+// =============================
+// TRACK TYPE MUSIC
+// =============================
+
+export const getAllTrackTypes = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/track-types`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil track types:", err);
+    return [];
+  }
+};
+
+export const getTrackTypeById = async (id) => {
+  try {
+    const response = await axios.get(`${API_URL}/track-types/${id}`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil track type:", err);
+    throw err;
+  }
+};
+
+export const addTrackType = async (data) => {
+  try {
+    const response = await axios.post(`${API_URL}/track-types`, data, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal tambah track type:", err);
+    throw err;
+  }
+};
+
+export const updateTrackType = async (id, data) => {
+  try {
+    const response = await axios.put(`${API_URL}/track-types/${id}`, data, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal update track type:", err);
+    throw err;
+  }
+};
+
+export const deleteTrackType = async (id) => {
+  try {
+    const response = await axios.delete(`${API_URL}/track-types/${id}`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal hapus track type:", err);
+    throw err;
+  }
+};
+
+// =============================
+// GENRE MUSIC
+// =============================
+
+export const getAllGenresMusic = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/genre-music`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil genre:", err);
+    return [];
+  }
+};
+
+export const getGenreMusicById = async (id) => {
+  try {
+    const response = await axios.get(`${API_URL}/genre-music/${id}`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil genre:", err);
+    throw err;
+  }
+};
+
+export const addGenreMusic = async (data) => {
+  try {
+    const response = await axios.post(`${API_URL}/genre-music`, data, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal tambah genre:", err);
+    throw err;
+  }
+};
+
+export const updateGenreMusic = async (id, data) => {
+  try {
+    const response = await axios.put(`${API_URL}/genre-music/${id}`, data, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal update genre:", err);
+    throw err;
+  }
+};
+
+export const deleteGenreMusic = async (id) => {
+  try {
+    const response = await axios.delete(`${API_URL}/genre-music/${id}`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal hapus genre:", err);
+    throw err;
+  }
+};
+
+// =============================
+// ORDER TYPE MUSIC
+// =============================
+
+export const getAllOrderTypesMusic = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/music-order-types`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil order types:", err);
+    return [];
+  }
+};
+
+export const getOrderTypeMusicById = async (id) => {
+  try {
+    const response = await axios.get(`${API_URL}/music-order-types/${id}`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil order type:", err);
+    throw err;
+  }
+};
+
+export const addOrderTypeMusic = async (data) => {
+  try {
+    const response = await axios.post(`${API_URL}/music-order-types`, data, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal tambah order type:", err);
+    throw err;
+  }
+};
+
+export const updateOrderTypeMusic = async (id, data) => {
+  try {
+    const response = await axios.put(`${API_URL}/music-order-types/${id}`, data, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal update order type:", err);
+    throw err;
+  }
+};
+
+export const deleteOrderTypeMusic = async (id) => {
+  try {
+    const response = await axios.delete(`${API_URL}/music-order-types/${id}`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal hapus order type:", err);
+    throw err;
+  }
+};
