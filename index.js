@@ -4740,14 +4740,14 @@ app.get("/api/data-marketing/joined", async (req, res) => {
         k.nama_kupon AS kupon_diskon_name
 
       FROM data_marketing dm
-      LEFT JOIN marketing_user mu ON mu.id = dm.input_by
+      LEFT JOIN marketing_musik_user mu ON mu.id = dm.input_by
       LEFT JOIN kepala_divisi kd ON kd.id = dm.acc_by
       LEFT JOIN account_music am ON am.id = dm.account
-      LEFT JOIN order_type_music ot ON ot.id = dm.order_type
+      LEFT JOIN music_order_type ot ON ot.id = dm.order_type
       LEFT JOIN offer_type_music oft ON oft.id = dm.offer_type
-      LEFT JOIN track_type tt ON tt.id = dm.jenis_track
+      LEFT JOIN track_types tt ON tt.id = dm.jenis_track
       LEFT JOIN genre_music g ON g.id = dm.genre
-      LEFT JOIN project_type_music pt ON pt.id = dm.project_type
+      LEFT JOIN project_type pt ON pt.id = dm.project_type
       LEFT JOIN kupon_diskon k ON k.id = dm.kupon_diskon_id
       ORDER BY dm.id DESC;
     `;
@@ -6626,7 +6626,7 @@ app.put('/api/profile-user/:userId', async (req, res) => {
   }
 })
 
-// MARKETRING USER 
+// MARKETING USER 
 // 1. Get semua marketing_user
 app.get("/api/marketing-users", async (req, res) => {
   try {
