@@ -7252,9 +7252,91 @@ app.delete("/api/kepala-divisi/:id", async (req, res) => {
     res.status(500).json({ error: "Gagal hapus kepala divisi" });
   }
 });
-
-
 //END KEPALA DIVISI
+
+// KUPON DISKON 
+// =======================
+// CRUD Kupon Diskon
+// =======================
+
+// ✅ Get semua kupon diskon
+app.get("/api/kupon-diskon", async (req, res) => {
+  try {
+    const result = await client.query("SELECT * FROM kupon_diskon ORDER BY id ASC");
+    res.json(result.rows);
+  } catch (err) {
+    console.error("❌ Error get kupon_diskon:", err);
+    res.status(500).json({ error: "Gagal mengambil data kupon diskon" });
+  }
+});
+
+// ✅ Get kupon diskon by ID
+app.get("/api/kupon-diskon/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await client.query("SELECT * FROM kupon_diskon WHERE id = $1", [id]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Kupon diskon tidak ditemukan" });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error get kupon_diskon by id:", err);
+    res.status(500).json({ error: "Gagal mengambil data kupon diskon" });
+  }
+});
+
+// ✅ Create kupon diskon baru
+app.post("/api/kupon-diskon", async (req, res) => {
+  try {
+    const { nama_kupon } = req.body;
+    const result = await client.query(
+      "INSERT INTO kupon_diskon (nama_kupon) VALUES ($1) RETURNING *",
+      [nama_kupon]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error tambah kupon_diskon:", err);
+    res.status(500).json({ error: "Gagal tambah kupon diskon" });
+  }
+});
+
+// ✅ Update kupon diskon
+app.put("/api/kupon-diskon/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { nama_kupon } = req.body;
+    const result = await client.query(
+      `UPDATE kupon_diskon 
+       SET nama_kupon = $1, update_at = CURRENT_TIMESTAMP
+       WHERE id = $2 RETURNING *`,
+      [nama_kupon, id]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Kupon diskon tidak ditemukan" });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error update kupon_diskon:", err);
+    res.status(500).json({ error: "Gagal update kupon diskon" });
+  }
+});
+
+// ✅ Delete kupon diskon
+app.delete("/api/kupon-diskon/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await client.query("DELETE FROM kupon_diskon WHERE id = $1 RETURNING *", [id]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Kupon diskon tidak ditemukan" });
+    }
+    res.json({ message: "Kupon diskon berhasil dihapus" });
+  } catch (err) {
+    console.error("❌ Error delete kupon_diskon:", err);
+    res.status(500).json({ error: "Gagal hapus kupon diskon" });
+  }
+});
+
+// END KUPON DISKON 
 
 //LOG ACTIVITY USER
 //1. menampilkan semua activity berdasarkan userId
