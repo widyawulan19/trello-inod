@@ -232,3 +232,110 @@ const DataMarketingForm = () => {
 };
 
 export default DataMarketingForm;
+
+
+import React, { useState, useEffect, useRef } from "react";
+
+const DoubleDropdown = ({ options, value, onChange, placeholder, accOptions, accValue }) => {
+  const [isOpen, setIsOpen] = useState(false);        // INPUT BY
+  const [search, setSearch] = useState("");
+  
+  const [openAcc, setOpenAcc] = useState(false);      // ACC BY
+  const [searchAcc, setSearchAcc] = useState("");
+
+  const ref = useRef();
+
+  const handleSelect = (id, type) => {
+    onChange(id, type);
+    setIsOpen(false);
+    setOpenAcc(false);
+    setSearch("");
+    setSearchAcc("");
+  };
+
+  // Tutup dropdown jika klik di luar
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) {
+        setIsOpen(false);
+        setOpenAcc(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const filteredOptions = options.filter(o =>
+    o.name.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const filteredAccOptions = accOptions.filter(o =>
+    o.name.toLowerCase().includes(searchAcc.toLowerCase())
+  );
+
+  return (
+    <div className="space-y-4" ref={ref}>
+      {/* INPUT BY */}
+      <div className="relative w-full">
+        <div
+          className="border p-2 rounded cursor-pointer flex justify-between items-center"
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          <span>{options.find(o => o.id === value)?.name || placeholder}</span>
+          <span className={isOpen ? "rotate-180 transition-transform" : "transition-transform"}>▼</span>
+        </div>
+        {isOpen && (
+          <div className="absolute border w-full mt-1 bg-white z-10 max-h-60 overflow-y-auto">
+            <input
+              className="border-b w-full p-1"
+              placeholder="Search..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            {filteredOptions.map((o) => (
+              <div
+                key={o.id}
+                className="p-2 hover:bg-gray-100 cursor-pointer"
+                onClick={() => handleSelect(o.id, "inputBy")}
+              >
+                {o.name}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* ACC BY */}
+      <div className="relative w-full">
+        <div
+          className="border p-2 rounded cursor-pointer flex justify-between items-center"
+          onClick={() => setOpenAcc(!openAcc)}
+        >
+          <span>{accOptions.find(o => o.id === accValue)?.name || "Select ACC"}</span>
+          <span className={openAcc ? "rotate-180 transition-transform" : "transition-transform"}>▼</span>
+        </div>
+        {openAcc && (
+          <div className="absolute border w-full mt-1 bg-white z-10 max-h-60 overflow-y-auto">
+            <input
+              className="border-b w-full p-1"
+              placeholder="Search ACC..."
+              value={searchAcc}
+              onChange={(e) => setSearchAcc(e.target.value)}
+            />
+            {filteredAccOptions.map((o) => (
+              <div
+                key={o.id}
+                className="p-2 hover:bg-gray-100 cursor-pointer"
+                onClick={() => handleSelect(o.id, "accBy")}
+              >
+                {o.name}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// export default DoubleDropdown;

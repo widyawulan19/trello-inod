@@ -858,3 +858,11 @@ export const deleteOrderTypeMusic = async (id) => {
     throw err;
   }
 };
+
+
+// KEPALA DIVISI 
+export const getAllKepalaDivisi = () => axios.get(`${API_URL}/kepala-divisi`);
+export const addKepalaDivisi = (data) => axios.post(`${API_URL}/kepala-divisi`, data);
+export const getKepalaDivisiById = (id) => axios.get(`${API_URL}/kepala-divisi/${id}`);
+export const updateKepalaDivisi = (id, data) => axios.put(`${API_URL}/kepala-divisi/${id}`, data);
+export const deleteKepalaDivisi = (id) => axios.delete(`${API_URL}/kepala-divisi/${id}`);
