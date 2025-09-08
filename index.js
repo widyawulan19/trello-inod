@@ -7161,9 +7161,100 @@ app.delete("/api/music-order-types/:id", async (req, res) => {
     res.status(500).json({ error: "Gagal hapus order type" });
   }
 });
-
-
 // END ORDER TYPE MUSIC 
+
+//KEPALA DIVISI
+// ✅ GET semua kepala divisi
+app.get("/api/kepala-divisi", async (req, res) => {
+  try {
+    const result = await client.query(`
+      SELECT * FROM kepala_divisi
+      ORDER BY id ASC
+    `);
+    res.json(result.rows);
+  } catch (err) {
+    console.error("❌ Gagal ambil kepala divisi:", err.message);
+    res.status(500).json({ error: "Gagal ambil data kepala divisi" });
+  }
+});
+
+// ✅ POST tambah kepala divisi baru
+app.post("/api/kepala-divisi", async (req, res) => {
+  try {
+    const { nama, divisi } = req.body;
+
+    const result = await client.query(`
+      INSERT INTO kepala_divisi (nama, divisi, create_at, update_at)
+      VALUES ($1, $2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+      RETURNING *
+    `, [nama, divisi]);
+
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Gagal tambah kepala divisi:", err.message);
+    res.status(500).json({ error: "Gagal tambah kepala divisi" });
+  }
+});
+
+// ✅ Optional: GET kepala divisi by id
+app.get("/api/kepala-divisi/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await client.query(`SELECT * FROM kepala_divisi WHERE id = $1`, [id]);
+    if (result.rows.length === 0) return res.status(404).json({ error: "Kepala divisi tidak ditemukan" });
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error ambil kepala divisi:", err.message);
+    res.status(500).json({ error: "Gagal ambil kepala divisi" });
+  }
+});
+
+// ✅ UPDATE Kepala Divisi
+app.put("/api/kepala-divisi/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { nama, divisi } = req.body;
+
+    const result = await client.query(`
+      UPDATE kepala_divisi
+      SET nama = $1,
+          divisi = $2,
+          update_at = CURRENT_TIMESTAMP
+      WHERE id = $3
+      RETURNING *
+    `, [nama, divisi, id]);
+
+    if (result.rows.length === 0) return res.status(404).json({ error: "Kepala divisi tidak ditemukan" });
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Gagal update kepala divisi:", err.message);
+    res.status(500).json({ error: "Gagal update kepala divisi" });
+  }
+});
+
+// ✅ DELETE Kepala Divisi
+app.delete("/api/kepala-divisi/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const result = await client.query(`
+      DELETE FROM kepala_divisi
+      WHERE id = $1
+      RETURNING *
+    `, [id]);
+
+    if (result.rows.length === 0) return res.status(404).json({ error: "Kepala divisi tidak ditemukan" });
+
+    res.json({ message: "✅ Kepala divisi berhasil dihapus", deleted: result.rows[0] });
+  } catch (err) {
+    console.error("❌ Gagal hapus kepala divisi:", err.message);
+    res.status(500).json({ error: "Gagal hapus kepala divisi" });
+  }
+});
+
+
+//END KEPALA DIVISI
 
 //LOG ACTIVITY USER
 //1. menampilkan semua activity berdasarkan userId
