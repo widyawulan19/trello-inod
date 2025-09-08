@@ -4708,7 +4708,7 @@ app.get("/api/data-marketing/joined", async (req, res) => {
   try {
     const query = `
       SELECT 
-        dm.id,
+        dm.marketing_id,
         dm.buyer_name,
         dm.code_order,
         dm.order_number,
