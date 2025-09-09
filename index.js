@@ -4705,7 +4705,7 @@ app.get("/api/marketing/reports", async (req, res) => {
 
 
 
-// ✅ Endpoint get data marketing + join
+// ✅ Endpoint get all data marketing + join
 app.get("/api/data-marketing/joined", async (req, res) => {
   try {
     const result = await client.query(`
@@ -4730,17 +4730,36 @@ app.get("/api/data-marketing/joined", async (req, res) => {
         dm.create_at,
         dm.update_at,
 
-        -- JOIN ke tabel lain (tampilkan nama bukan id)
+        -- Relasi (balikin ID + Nama)
+        mu.id AS input_by,
         mu.nama_marketing AS input_by_name,
+
+        kd.id AS acc_by,
         kd.nama AS acc_by_name,
+
+        am.id AS account,
         am.nama_account AS account_name,
+
+        ot.id AS order_type,
         ot.order_name AS order_type_name,
+
+        oft.id AS offer_type,
         oft.offer_name AS offer_type_name,
+
+        tt.id AS jenis_track,
         tt.track_name AS track_type_name,
+
+        g.id AS genre,
         g.genre_name AS genre_name,
+
+        pt.id AS project_type,
         pt.nama_project AS project_type_name,
+
+        k.id AS kupon_diskon_id,
         k.nama_kupon AS kupon_diskon_name,
-        s.status_name AS status_accept_name,
+
+        s.id AS accept_status_id,
+        s.status_name AS accept_status_name
 
       FROM data_marketing dm
       LEFT JOIN marketing_musik_user mu ON mu.id = dm.input_by
@@ -4762,6 +4781,7 @@ app.get("/api/data-marketing/joined", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch joined data" });
   }
 });
+
 
 // // ✅ Endpoint get data marketing + join by ID
 // app.get("/api/data-marketing/joined/:id", async (req, res) => {
