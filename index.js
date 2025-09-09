@@ -4761,7 +4761,71 @@ app.get("/api/data-marketing/joined", async (req, res) => {
   }
 });
 
-// ✅ Endpoint get data marketing + join by ID
+// // ✅ Endpoint get data marketing + join by ID
+// app.get("/api/data-marketing/joined/:id", async (req, res) => {
+//   const { id } = req.params;
+//   try {
+//     const result = await client.query(
+//       `
+//       SELECT 
+//         dm.marketing_id,
+//         dm.buyer_name,
+//         dm.code_order,
+//         dm.order_number,
+//         dm.jumlah_track,
+//         dm.duration,
+//         dm.jumlah_revisi,
+//         dm.deadline,
+//         dm.price_normal,
+//         dm.price_discount,
+//         dm.discount,
+//         dm.basic_price,
+//         dm.gig_link,
+//         dm.reference_link,
+//         dm.required_files,
+//         dm.file_and_chat_link,
+//         dm.detail_project,
+//         dm.create_at,
+//         dm.update_at,
+
+//         -- JOIN ke tabel lain (nama bukan id)
+//         mu.nama_marketing AS input_by_name,
+//         kd.nama AS acc_by_name,
+//         am.nama_account AS account_name,
+//         ot.order_name AS order_type_name,
+//         oft.offer_name AS offer_type_name,
+//         tt.track_name AS track_type_name,
+//         g.genre_name AS genre_name,
+//         pt.nama_project AS project_type_name,
+//         k.nama_kupon AS kupon_diskon_name
+
+//       FROM data_marketing dm
+//       LEFT JOIN marketing_musik_user mu ON mu.id = dm.input_by
+//       LEFT JOIN kepala_divisi kd ON kd.id = dm.acc_by
+//       LEFT JOIN account_music am ON am.id = dm.account
+//       LEFT JOIN music_order_type ot ON ot.id = dm.order_type
+//       LEFT JOIN offer_type_music oft ON oft.id = dm.offer_type
+//       LEFT JOIN track_types tt ON tt.id = dm.jenis_track
+//       LEFT JOIN genre_music g ON g.id = dm.genre
+//       LEFT JOIN project_type pt ON pt.id = dm.project_type
+//       LEFT JOIN kupon_diskon k ON k.id = dm.kupon_diskon_id
+//       WHERE dm.marketing_id = $1
+//       LIMIT 1;
+//       `,
+//       [id]
+//     );
+
+//     if (result.rows.length === 0) {
+//       return res.status(404).json({ error: "Data marketing not found" });
+//     }
+
+//     res.json(result.rows[0]);
+//   } catch (err) {
+//     console.error("❌ Error get joined data marketing by ID:", err);
+//     res.status(500).json({ error: "Failed to fetch joined data by id" });
+//   }
+// });
+// ✅ Endpoint get data marketing + join by ID (fix with IDs)
 app.get("/api/data-marketing/joined/:id", async (req, res) => {
   const { id } = req.params;
   try {
@@ -4788,15 +4852,32 @@ app.get("/api/data-marketing/joined/:id", async (req, res) => {
         dm.create_at,
         dm.update_at,
 
-        -- JOIN ke tabel lain (nama bukan id)
+        -- Balikin ID + Nama dari relasi
+        mu.id AS input_by,
         mu.nama_marketing AS input_by_name,
+
+        kd.id AS acc_by,
         kd.nama AS acc_by_name,
+
+        am.id AS account,
         am.nama_account AS account_name,
+
+        ot.id AS order_type,
         ot.order_name AS order_type_name,
+
+        oft.id AS offer_type,
         oft.offer_name AS offer_type_name,
+
+        tt.id AS jenis_track,
         tt.track_name AS track_type_name,
+
+        g.id AS genre,
         g.genre_name AS genre_name,
+
+        pt.id AS project_type,
         pt.nama_project AS project_type_name,
+
+        k.id AS kupon_diskon_id,
         k.nama_kupon AS kupon_diskon_name
 
       FROM data_marketing dm
@@ -4825,6 +4906,7 @@ app.get("/api/data-marketing/joined/:id", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch joined data by id" });
   }
 });
+
 
 // ✅ Endpoint update data marketing by ID
 app.put("/api/data-marketing/joined/:id", async (req, res) => {
