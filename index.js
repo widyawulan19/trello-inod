@@ -4976,7 +4976,7 @@ app.put("/api/data-marketing/joined/:id", async (req, res) => {
         genre = $23,
         project_type = $24,
         kupon_diskon_id = $25,
-        accept_status_id = $26
+        accept_status_id = $26,
         update_at = NOW()
       WHERE marketing_id = $27
       RETURNING *;
@@ -5007,7 +5007,7 @@ app.put("/api/data-marketing/joined/:id", async (req, res) => {
         genre,
         project_type,
         kupon_diskon_id,
-        accept_status_id
+        accept_status_id,
         id,
       ]
     );
