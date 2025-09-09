@@ -849,4 +849,139 @@ const EditDataMarketingForm = ({ marketingId }) => {
   );
 };
 
-export default EditDataMarketingForm;
+// export default EditDataMarketingForm;
+
+
+import React, { useState, useEffect } from "react";
+
+const NewEditDataMarketing = ({ marketingId, onClose, fetchDataMarketing }) => {
+  const [form, setForm] = useState({
+    buyer_name: "",
+    code_order: "",
+    order_number: "",
+    jumlah_track: "",
+    duration: "",
+    jumlah_revisi: "",
+    deadline: "",
+    price_normal: "",
+    price_discount: "",
+    discount: "",
+    basic_price: "",
+    gig_link: "",
+    reference_link: "",
+    required_files: "",
+    file_and_chat_link: "",
+    detail_project: "",
+    input_by: "",
+    acc_by: "",
+    account: "",
+    order_type: "",
+    offer_type: "",
+    jenis_track: "",
+    genre: "",
+    project_type: "",
+    kupon_diskon_id: "",
+  });
+
+  const handleChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      // panggil API update
+      await updateDataMarketing(marketingId, form);
+
+      // refresh data parent
+      fetchDataMarketing();
+
+      // tutup modal
+      onClose();
+    } catch (err) {
+      console.error("❌ Error updating:", err);
+    }
+  };
+
+  return (
+    <div className="p-4 bg-white rounded-md shadow">
+      <h2 className="mb-4 text-lg font-semibold">Edit Data Marketing</h2>
+      <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
+        {/* contoh input text */}
+        <div>
+          <label className="block text-sm">Buyer Name</label>
+          <input
+            type="text"
+            name="buyer_name"
+            value={form.buyer_name}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm">Code Order</label>
+          <input
+            type="text"
+            name="code_order"
+            value={form.code_order}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+          />
+        </div>
+
+        {/* contoh input date */}
+        <div>
+          <label className="block text-sm">Deadline</label>
+          <input
+            type="date"
+            name="deadline"
+            value={form.deadline}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+          />
+        </div>
+
+        {/* contoh select dropdown (input_by) */}
+        <div>
+          <label className="block text-sm">Input By</label>
+          <select
+            name="input_by"
+            value={form.input_by}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+          >
+            <option value="">-- Pilih --</option>
+            {dropdownData.users?.map((user) => (
+              <option key={user.id} value={user.id}>
+                {user.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* tombol */}
+        <div className="flex justify-end col-span-2 gap-2 mt-4">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-4 py-2 bg-gray-300 rounded"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="px-4 py-2 text-white bg-blue-500 rounded"
+          >
+            Save
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default NewEditDataMarketing;

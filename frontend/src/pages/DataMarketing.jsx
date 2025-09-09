@@ -111,10 +111,11 @@ const handleCloseForm = () =>{
         response = await getAllDataMarketingJoined();
       }
 
-      setData(response.data);
-      setFilteredData(response.data);
+      setData(response.data || response);
+      setFilteredData(response.data || response);
+
     }catch(error){
-      console.error('Error fetching data marekting:', error)
+      console.error('Error fetching data marekting woi:', error)
     }finally{
       setLoading(false)
     }

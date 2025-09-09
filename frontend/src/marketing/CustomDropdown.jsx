@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
+import '../style/pages/EditMarketingForm.css'
+import { HiPlus } from "react-icons/hi2";
+import { FaPlus } from "react-icons/fa6";
 
 const CustomDropdown = ({
   options = [],          // data list
@@ -35,10 +38,10 @@ const CustomDropdown = ({
   );
 
   return (
-    <div className="relative w-full" ref={ref}>
+    <div className="dropdown-custom-container" ref={ref}>
       {/* Dropdown Trigger */}
       <div
-        className="border p-2 rounded cursor-pointer flex justify-between items-center"
+      className='dropdown-trigger'
         onClick={() => setIsOpen(!isOpen)}
       >
         <span>{options.find(o => o.id === value)?.name || placeholder}</span>
@@ -47,54 +50,54 @@ const CustomDropdown = ({
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <ul className="absolute z-10 w-full border bg-white max-h-56 overflow-y-auto mt-1 shadow-md rounded">
+        <ul className='menu-ul'>
           {/* Search Input */}
-          <li className="p-2 border-b">
+          <li>
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={searchPlaceholder}
-              className="w-full p-1 border rounded"
               disabled={loading}
             />
           </li>
 
           {/* Loading */}
-          {loading && <li className="p-2 text-gray-500 text-center">Loading...</li>}
+          {loading && <li className="p-2 text-center text-gray-500">Loading...</li>}
 
           {/* Empty state */}
           {!loading && filteredOptions.length === 0 && (
-            <li className="p-2 text-gray-500 text-center">Data tidak tersedia</li>
+            <li className="p-2 text-center text-gray-500">Data tidak tersedia</li>
           )}
 
-          {/* List options */}
+           {/* List options */}
+          <div className="menu-option">
           {!loading && filteredOptions.map((o) => (
-            <li
-              key={o.id}
-              className="p-2 cursor-pointer hover:bg-blue-100"
-              onClick={() => handleSelect(o.id)}
-            >
-              {o.name}
-            </li>
+            
+              <li
+                key={o.id}
+                className='li-option'
+                onClick={() => handleSelect(o.id)}
+              >
+                {o.name}
+              </li>
           ))}
+          </div>
 
           {/* Add new */}
           {!loading && (
-            <li className="p-2 border-t mt-1 flex space-x-2">
+            <li className='new-li'>
               <input
                 type="text"
                 value={newItem}
                 onChange={(e) => setNewItem(e.target.value)}
                 placeholder={addPlaceholder}
-                className="border p-1 flex-1 rounded"
               />
               <button
                 type="button"
                 onClick={addNew}
-                className="px-2 text-white bg-green-500 rounded hover:bg-green-600"
               >
-                Tambah
+                <FaPlus/>
               </button>
             </li>
           )}
