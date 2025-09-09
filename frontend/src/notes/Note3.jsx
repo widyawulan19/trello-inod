@@ -381,7 +381,7 @@ const FormDataMarketing = ({ onClose, fetchData }) => {
   );
 };
 
-export default FormDataMarketing;
+// export default FormDataMarketing;
 
 
 
@@ -566,7 +566,7 @@ const DataMarketingDetail = ({ id }) => {
 
   return (
     <div className="p-4 border rounded">
-      <h2 className="font-bold text-lg mb-2">Detail Marketing #{detail.marketing_id}</h2>
+      <h2 className="mb-2 text-lg font-bold">Detail Marketing #{detail.marketing_id}</h2>
       <p><b>Buyer:</b> {detail.buyer_name}</p>
       <p><b>Order Code:</b> {detail.code_order}</p>
       <p><b>Account:</b> {detail.account_name}</p>
@@ -577,4 +577,276 @@ const DataMarketingDetail = ({ id }) => {
   );
 };
 
-export default DataMarketingDetail;
+// export default DataMarketingDetail;
+
+import React, { useState, useEffect } from "react";
+import {
+  getAllMarketingUsers,
+  getAllAccountsMusic,
+  getAllOfferTypesMusic,
+  getAllTrackTypes,
+  getAllGenresMusic,
+  getAllProjectTypesMusic,
+  getAllOrderTypesMusic,
+  getAllKuponDiskon,
+  getAllKepalaDivisi,
+  getDataMarketingById,   // ✅ endpoint baru
+  updateDataMarketing,    // ✅ update API
+  addMarketingUser,
+  addAccountMusic,
+  addOfferTypeMusic,
+  addTrackType,
+  addGenreMusic,
+  addProjectTypeMusic,
+  addOrderTypeMusic,
+  addKuponDiskon,
+  addKepalaDivisi
+} from "../services/ApiServices";
+
+import CustomDropdown from "../marketing/CustomDropdown";
+
+// const EditDataMarketingForm = ({ marketingId }) => {
+  const [dropdownData, setDropdownData] = useState({});
+  const [form, setForm] = useState(null);
+
+  const [inputByNew, setInputByNew] = useState("");
+  const [accByNew, setAccByNew] = useState("");
+  const [accountNew, setAccountNew] = useState("");
+  const [offerNew, setOfferNew] = useState("");
+  const [newTrack, setNewTrack] = useState("");
+  const [newGenre, setNewGenre] = useState("");
+  const [newProject, setNewProject] = useState("");
+  const [newOrder, setNewOrder] = useState("");
+  const [newKupon, setNewKupon] = useState("");
+
+  // ✅ Fetch dropdown + data by id
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [users, accs, accounts, offers, trackTypes, genres, projectType, orderType, kuponDiskon, marketing] = await Promise.all([
+          getAllMarketingUsers(),
+          getAllKepalaDivisi(),
+          getAllAccountsMusic(),
+          getAllOfferTypesMusic(),
+          getAllTrackTypes(),
+          getAllGenresMusic(),
+          getAllProjectTypesMusic(),
+          getAllOrderTypesMusic(),
+          getAllKuponDiskon(),
+          getDataMarketingById(marketingId), // fetch data marketing by id
+        ]);
+
+        setDropdownData({
+          users: users.map((u) => ({ id: u.id, name: u.nama_marketing })),
+          accs: accs.data.map((a) => ({ id: a.id, name: a.nama })),
+          accounts: accounts.map((ac) => ({ id: ac.id, name: ac.nama_account })),
+          offers: offers.map((of) => ({ id: of.id, name: of.offer_name })),
+          trackTypes: trackTypes.map((tt) => ({ id: tt.id, name: tt.track_name })),
+          genres: genres.map((g) => ({ id: g.id, name: g.genre_name })),
+          projectType: projectType.map((pt) => ({ id: pt.id, name: pt.nama_project })),
+          orderType: orderType.map((ot) => ({ id: ot.id, name: ot.order_name })),
+          kuponDiskon: kuponDiskon.map((kd) => ({ id: kd.id, name: kd.nama_kupon })),
+        });
+
+        // ✅ set form awal dengan data dari API
+        setForm(marketing);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [marketingId]);
+
+  if (!form) return <p>Loading...</p>;
+
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await updateDataMarketing(marketingId, form);
+      alert("✅ Data marketing berhasil diperbarui!");
+    } catch (err) {
+      alert("❌ Gagal update data marketing");
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="p-4 space-y-4 bg-white rounded shadow w-100">
+      <h2 className="text-lg font-bold">Edit Data Marketing</h2>
+
+      {/* contoh: Buyer Name */}
+      <div>
+        <label className="block text-sm font-medium">Buyer Name</label>
+        <input
+          type="text"
+          name="buyer_name"
+          value={form.buyer_name || ""}
+          onChange={handleChange}
+          className="w-full p-2 border rounded"
+        />
+      </div>
+
+      {/* contoh: Input By pakai dropdown */}
+      <div>
+        <label className="block text-sm font-medium">Input By</label>
+        <CustomDropdown
+          options={dropdownData.users}
+          value={form.input_by}
+          onChange={(val) => setForm({ ...form, input_by: val })}
+          newItem={inputByNew}
+          setNewItem={setInputByNew}
+          addNew={addMarketingUser}
+          placeholder="Pilih Marketing user"
+        />
+      </div>
+
+      {/* kamu bisa copy dropdown lain persis dari DataMarketingForm */}
+      {/* tinggal ganti value={form.field} onChange={(val) => setForm({...form, field: val})} */}
+
+      <button type="submit" className="px-4 py-2 text-white bg-green-600 rounded hover:bg-green-700">
+        Update
+      </button>
+    </form>
+  );
+// };
+
+// export default EditDataMarketingForm;
+
+
+
+import React, { useState, useEffect } from "react";
+import {
+  getAllMarketingUsers,
+  getAllAccountsMusic,
+  getAllOfferTypesMusic,
+  getAllTrackTypes,
+  getAllGenresMusic,
+  getAllProjectTypesMusic,
+  getAllOrderTypesMusic,
+  getAllKuponDiskon,
+  getAllKepalaDivisi,
+  getDataMarketingById,   // ✅ endpoint baru
+  updateDataMarketing,    // ✅ update API
+  addMarketingUser,
+  addAccountMusic,
+  addOfferTypeMusic,
+  addTrackType,
+  addGenreMusic,
+  addProjectTypeMusic,
+  addOrderTypeMusic,
+  addKuponDiskon,
+  addKepalaDivisi
+} from "../services/ApiServices";
+
+import CustomDropdown from "../marketing/CustomDropdown";
+
+const EditDataMarketingForm = ({ marketingId }) => {
+  const [dropdownData, setDropdownData] = useState({});
+  const [form, setForm] = useState(null);
+
+  const [inputByNew, setInputByNew] = useState("");
+  const [accByNew, setAccByNew] = useState("");
+  const [accountNew, setAccountNew] = useState("");
+  const [offerNew, setOfferNew] = useState("");
+  const [newTrack, setNewTrack] = useState("");
+  const [newGenre, setNewGenre] = useState("");
+  const [newProject, setNewProject] = useState("");
+  const [newOrder, setNewOrder] = useState("");
+  const [newKupon, setNewKupon] = useState("");
+
+  // ✅ Fetch dropdown + data by id
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [users, accs, accounts, offers, trackTypes, genres, projectType, orderType, kuponDiskon, marketing] = await Promise.all([
+          getAllMarketingUsers(),
+          getAllKepalaDivisi(),
+          getAllAccountsMusic(),
+          getAllOfferTypesMusic(),
+          getAllTrackTypes(),
+          getAllGenresMusic(),
+          getAllProjectTypesMusic(),
+          getAllOrderTypesMusic(),
+          getAllKuponDiskon(),
+          getDataMarketingById(marketingId), // fetch data marketing by id
+        ]);
+
+        setDropdownData({
+          users: users.map((u) => ({ id: u.id, name: u.nama_marketing })),
+          accs: accs.data.map((a) => ({ id: a.id, name: a.nama })),
+          accounts: accounts.map((ac) => ({ id: ac.id, name: ac.nama_account })),
+          offers: offers.map((of) => ({ id: of.id, name: of.offer_name })),
+          trackTypes: trackTypes.map((tt) => ({ id: tt.id, name: tt.track_name })),
+          genres: genres.map((g) => ({ id: g.id, name: g.genre_name })),
+          projectType: projectType.map((pt) => ({ id: pt.id, name: pt.nama_project })),
+          orderType: orderType.map((ot) => ({ id: ot.id, name: ot.order_name })),
+          kuponDiskon: kuponDiskon.map((kd) => ({ id: kd.id, name: kd.nama_kupon })),
+        });
+
+        // ✅ set form awal dengan data dari API
+        setForm(marketing);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [marketingId]);
+
+  if (!form) return <p>Loading...</p>;
+
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await updateDataMarketing(marketingId, form);
+      alert("✅ Data marketing berhasil diperbarui!");
+    } catch (err) {
+      alert("❌ Gagal update data marketing");
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="p-4 space-y-4 bg-white rounded shadow w-100">
+      <h2 className="text-lg font-bold">Edit Data Marketing</h2>
+
+      {/* contoh: Buyer Name */}
+      <div>
+        <label className="block text-sm font-medium">Buyer Name</label>
+        <input
+          type="text"
+          name="buyer_name"
+          value={form.buyer_name || ""}
+          onChange={handleChange}
+          className="w-full p-2 border rounded"
+        />
+      </div>
+
+      {/* contoh: Input By pakai dropdown */}
+      <div>
+        <label className="block text-sm font-medium">Input By</label>
+        <CustomDropdown
+          options={dropdownData.users}
+          value={form.input_by}
+          onChange={(val) => setForm({ ...form, input_by: val })}
+          newItem={inputByNew}
+          setNewItem={setInputByNew}
+          addNew={addMarketingUser}
+          placeholder="Pilih Marketing user"
+        />
+      </div>
+
+      {/* kamu bisa copy dropdown lain persis dari DataMarketingForm */}
+      {/* tinggal ganti value={form.field} onChange={(val) => setForm({...form, field: val})} */}
+
+      <button type="submit" className="px-4 py-2 text-white bg-green-600 rounded hover:bg-green-700">
+        Update
+      </button>
+    </form>
+  );
+};
+
+export default EditDataMarketingForm;

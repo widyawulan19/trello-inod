@@ -338,6 +338,7 @@ export const getTenDaysMarketing = async () => {
 
 export const getAllDataMarketingJoined = () => axios.get(`${API_URL}/data-marketing/joined`)
 export const getAllDataMarketingJoinedById = (id) => axios.get(`${API_URL}/data-marketing/joined/${id}`)
+export const updateDataMarketingJoined = (id, data) => axios.put(`${API_URL}/data-marketing/joined/${id}`, data)
 
 //DATA MARKERING DESIGN
 export const getAllDataMarketingDesign = () => axios.get(`${API_URL}/marketing-design`)

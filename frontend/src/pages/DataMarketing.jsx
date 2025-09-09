@@ -7,6 +7,7 @@ import { HiOutlineFilter, HiOutlineSearch } from "react-icons/hi";
 import BootstrapTooltip from "../components/Tooltip";
 import ViewDataMarketing from "./ViewDataMarketing";
 import EditMarketingForm from "./EditMarketingForm";
+import NewEditDataMarketing from "./NewEditDataMarketing";
 import FormDataMarketing from "./FormDataMarketing";
 import { useSnackbar } from "../context/Snackbar";
 import DataMarketingDeleteConfirm from "../modals/DataMarketingDeleteConfirm";
@@ -544,7 +545,8 @@ const handleToReportPage = () =>{
                 {showEditForm && selectedMarketingId && (
                     <div className="edit-data-marketing">
                         <div className="edit-data-box">
-                            <EditMarketingForm marketingId={selectedMarketingId} onClose={handleCloseEditForm} fetchDataMarketing={fetchDataMarketing}/>
+                          <NewEditDataMarketing marketingId={selectedMarketingId} onClose={handleCloseEditForm} fetchDataMarketing={fetchDataMarketing}/>
+                            {/* <EditMarketingForm marketingId={selectedMarketingId} onClose={handleCloseEditForm} fetchDataMarketing={fetchDataMarketing}/> */}
                         </div>
                     </div>
                 )}
