@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { getAllDataMarketing, deleteDataMarketing, getDataMarketingAccepted, getDataMarketingWithCardId, getDataMarketingWithCardIdNull, getDataMarketingRejected, archiveDataMarketing } from "../services/ApiServices";
+import { getAllDataMarketing,getAllDataMarketingJoined, deleteDataMarketing, getDataMarketingAccepted, getDataMarketingWithCardId, getDataMarketingWithCardIdNull, getDataMarketingRejected, archiveDataMarketing } from "../services/ApiServices";
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import "../style/pages/DataMarketing.css";
 import { HiArrowsUpDown, HiChevronUpDown, HiMiniTableCells, HiOutlineArchiveBox, HiOutlineCircleStack, HiOutlinePencil, HiOutlinePlus, HiOutlineTrash, HiOutlineXCircle } from "react-icons/hi2";
@@ -106,7 +106,8 @@ const handleCloseForm = () =>{
       }else if(filterType === 'DATA MARKETING NOT ACCEPTED'){
         response = await getDataMarketingRejected();
       }else if(filterType === 'SEMUA DATA MARKETING'){
-        response = await getAllDataMarketing();
+        // response = await getAllDataMarketing();
+        response = await getAllDataMarketingJoined();
       }
 
       setData(response.data);
@@ -194,7 +195,8 @@ const hasCardId = (item) =>{
 //fetch marketing design
 const fetchDataMarketing = async()=>{
   try{
-    const response = await getAllDataMarketing()
+    // const response = await getAllDataMarketing()
+    const response = await getAllDataMarketingJoined();
     setDataMarketing(response.data)
     setFilteredData(response.data)
   }catch(error){
@@ -446,6 +448,7 @@ const handleToReportPage = () =>{
                   <th>Price Normal</th>
                   <th>Price Discount</th>
                   <th>Discount</th>
+                  <th>Kupon Diskon</th>
                   <th>Basic Price</th>
                   <th>Project Type</th>
                   <th>Duration</th>
@@ -456,7 +459,7 @@ const handleToReportPage = () =>{
                 {filteredData.map((item, index) => (
                   <tr key={item.marketing_id}>
                     <td>{index + 1}</td>
-                    <td className="input-container">{item.input_by}
+                    <td className="input-container">{item.input_by_name}
                       {hasCardId(item) && (
                         <span style={{
                           backgroundColor: '#e0f7fa',
@@ -475,7 +478,7 @@ const handleToReportPage = () =>{
                         </span>
                       )}
                     </td>
-                    <td className="acc-container">{item.acc_by}</td>
+                    <td className="acc-container">{item.acc_by_name}</td>
                     <td className="status-container">
                         <span style={{
                           padding: '2px 8px',
@@ -489,19 +492,20 @@ const handleToReportPage = () =>{
                       </td>
                     <td className="buyer-name-container">{item.buyer_name}</td>
                     <td className="order-number-container" >{item.order_number}</td>
-                    <td className="account-container">{item.account}</td>
+                    <td className="account-container">{item.account_name}</td>
                     <td className="deadline-container" style={{textAlign:'center' }}>{new Date(item.deadline).toLocaleDateString()}</td>
                     <td className="code-order-container">{item.code_order}</td>
                     <td style={{textAlign:'center'}}>{item.jumlah_track}</td>
-                    <td className="order-type-container">{item.order_type}</td>
-                    <td className="offer-type-container">{item.offer_type}</td>
-                    <td className="jenis-track-container" >{item.jenis_track}</td>
-                    <td className="genre-container">{item.genre}</td>
+                    <td className="order-type-container">{item.order_type_name}</td>
+                    <td className="offer-type-container">{item.offer_type_name}</td>
+                    <td className="jenis-track-container" >{item.track_type_name}</td>
+                    <td className="genre-container">{item.genre_name}</td>
                     <td className="price-normal-container" style={{textAlign:'center', color:'#1E1E1E'}}>${item.price_normal}</td>
                     <td className="price-discount-container" style={{textAlign:'center', color:'#E53935'}}>{item.price_discount ? `$${item.price_discount}` : "N/A"}</td>
                     <td className="discount-container" style={{textAlign:'center', color:'#388E3C'}}>{item.discount}</td>
+                    <td className="discount-container" style={{textAlign:'center', color:'#388E3C'}}>{item.kupon_diskon_name}</td>
                     <td className="basic-price-container" style={{color:'#388E3C',textAlign:'center'}}>{item.basic_price}</td>
-                    <td className="project-type-container" >{item.project_type}</td>
+                    <td className="project-type-container" >{item.project_type_name}</td>
                     <td className="duration-container">{item.duration}</td>
                     <td className="action-container">
                       <div className="action-data-marketing">
