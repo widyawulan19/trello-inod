@@ -4883,7 +4883,7 @@ app.get("/api/data-marketing/joined/:id", async (req, res) => {
         k.nama_kupon AS kupon_diskon_name,
 
         s.id AS accept_status_id,
-        s.status_name AS accept_status_id,
+        s.status_name AS accept_status_id
 
       FROM data_marketing dm
       LEFT JOIN marketing_musik_user mu ON mu.id = dm.input_by
