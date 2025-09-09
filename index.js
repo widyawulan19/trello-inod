@@ -5360,32 +5360,40 @@ app.get('/api/data-marketing-cardId-null', async (req, res) => {
   }
 })
 
-//11. menampilkan data yang accepted
-app.get('/api/data-marketing-accepted', async (req, res) => {
+// ✅ Get Data Marketing Accepted
+app.get("/api/data-marketing/accepted", async (req, res) => {
   try {
     const result = await client.query(`
-                SELECT * FROM public.data_marketing
-                WHERE is_accepted = true
-            `);
-    res.json(result.rows)
-  } catch (error) {
-    console.error('Error Fetching data marketing accepted:', error);
-    res.json(500).json({ message: 'Internal server error' })
+      SELECT dm.*, s.status_name AS accept_status_name
+      FROM data_marketing dm
+      LEFT JOIN accept_status s ON s.id = dm.accept_status_id
+      WHERE s.status_name = 'Accepted'
+      ORDER BY dm.marketing_id DESC
+    `);
+    res.json(result.rows);
+  } catch (err) {
+    console.error("❌ Error get accepted data:", err);
+    res.status(500).json({ error: "Failed to fetch accepted data" });
   }
-})
-//12. menampilkan data yang rejected
-app.get('/api/data-marketing-rejected', async (req, res) => {
+});
+
+// ✅ Get Data Marketing Not Accepted
+app.get("/api/data-marketing/rejected", async (req, res) => {
   try {
     const result = await client.query(`
-            SELECT * FROM public.data_marketing
-            WHERE is_accepted = false    
-        `);
-    res.json(result.rows)
-  } catch (error) {
-    console.error('Error Fetching data marketing rejected:', error);
-    res.json(500).json({ message: 'Internal server error' })
+      SELECT dm.*, s.status_name AS accept_status_name
+      FROM data_marketing dm
+      LEFT JOIN accept_status s ON s.id = dm.accept_status_id
+      WHERE s.status_name = 'Not Accepted'
+      ORDER BY dm.marketing_id DESC
+    `);
+    res.json(result.rows);
+  } catch (err) {
+    console.error("❌ Error get not accepted data:", err);
+    res.status(500).json({ error: "Failed to fetch not accepted data" });
   }
-})
+});
+
 
 //13. archive data marketing
 app.post('/api/archive-data-marketing/:id', async (req, res) => {
