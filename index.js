@@ -4739,7 +4739,8 @@ app.get("/api/data-marketing/joined", async (req, res) => {
         tt.track_name AS track_type_name,
         g.genre_name AS genre_name,
         pt.nama_project AS project_type_name,
-        k.nama_kupon AS kupon_diskon_name
+        k.nama_kupon AS kupon_diskon_name,
+        s.status_name AS status_accept_name,
 
       FROM data_marketing dm
       LEFT JOIN marketing_musik_user mu ON mu.id = dm.input_by
@@ -4751,6 +4752,7 @@ app.get("/api/data-marketing/joined", async (req, res) => {
       LEFT JOIN genre_music g ON g.id = dm.genre
       LEFT JOIN project_type pt ON pt.id = dm.project_type
       LEFT JOIN kupon_diskon k ON k.id = dm.kupon_diskon_id
+      LEFT JOIN accept_status s ON s.id = dm.accept_status_id
       ORDER BY dm.marketing_id DESC;
     `);
 
@@ -4878,7 +4880,10 @@ app.get("/api/data-marketing/joined/:id", async (req, res) => {
         pt.nama_project AS project_type_name,
 
         k.id AS kupon_diskon_id,
-        k.nama_kupon AS kupon_diskon_name
+        k.nama_kupon AS kupon_diskon_name,
+
+        s.id AS accept_status_id,
+        s.status_name AS accept_status_id,
 
       FROM data_marketing dm
       LEFT JOIN marketing_musik_user mu ON mu.id = dm.input_by
@@ -4890,6 +4895,7 @@ app.get("/api/data-marketing/joined/:id", async (req, res) => {
       LEFT JOIN genre_music g ON g.id = dm.genre
       LEFT JOIN project_type pt ON pt.id = dm.project_type
       LEFT JOIN kupon_diskon k ON k.id = dm.kupon_diskon_id
+      LEFT JOIN accept_status s ON s.id = dm.accept_status_id
       WHERE dm.marketing_id = $1
       LIMIT 1;
       `,
@@ -4937,6 +4943,7 @@ app.put("/api/data-marketing/joined/:id", async (req, res) => {
     genre,
     project_type,
     kupon_diskon_id,
+    accept_status_id
   } = req.body;
 
   try {
@@ -4969,8 +4976,9 @@ app.put("/api/data-marketing/joined/:id", async (req, res) => {
         genre = $23,
         project_type = $24,
         kupon_diskon_id = $25,
+        accept_status_id = $26
         update_at = NOW()
-      WHERE marketing_id = $26
+      WHERE marketing_id = $27
       RETURNING *;
       `,
       [
@@ -4999,6 +5007,7 @@ app.put("/api/data-marketing/joined/:id", async (req, res) => {
         genre,
         project_type,
         kupon_diskon_id,
+        accept_status_id
         id,
       ]
     );
@@ -5391,6 +5400,90 @@ app.post('/api/archive-data-marketing/:id', async (req, res) => {
   }
 });
 
+
+// STATUS ACCEPT 
+
+// ✅ Get semua status accept
+app.get("/api/accept-status", async (req, res) => {
+  try {
+    const result = await client.query("SELECT * FROM accept_status ORDER BY id ASC");
+    res.json(result.rows);
+  } catch (err) {
+    console.error("❌ Error get accept_status:", err);
+    res.status(500).json({ error: "Gagal mengambil data accept status" });
+  }
+});
+
+// ✅ Get status accept by ID
+app.get("/api/accept-status/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await client.query("SELECT * FROM accept_status WHERE id = $1", [id]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Status accept tidak ditemukan" });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error get accept_status by id:", err);
+    res.status(500).json({ error: "Gagal mengambil data accept status" });
+  }
+});
+
+// ✅ Create status accept baru
+app.post("/api/accept-status", async (req, res) => {
+  try {
+    const { status_name } = req.body;
+    const result = await client.query(
+      "INSERT INTO accept_status (status_name) VALUES ($1) RETURNING *",
+      [status_name]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error tambah accept_status:", err);
+    res.status(500).json({ error: "Gagal tambah status accept" });
+  }
+});
+
+// ✅ Update status accept
+app.put("/api/accept-status/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status_name } = req.body;
+    const result = await client.query(
+      `UPDATE accept_status 
+       SET status_name = $1, update_at = CURRENT_TIMESTAMP
+       WHERE id = $2 RETURNING *`,
+      [status_name, id]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Status accept tidak ditemukan" });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error update accept_status:", err);
+    res.status(500).json({ error: "Gagal update status accept" });
+  }
+});
+
+// ✅ Delete status accept
+app.delete("/api/accept-status/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await client.query(
+      "DELETE FROM accept_status WHERE id = $1 RETURNING *",
+      [id]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Status accept tidak ditemukan" });
+    }
+    res.json({ message: "Status accept berhasil dihapus" });
+  } catch (err) {
+    console.error("❌ Error delete accept_status:", err);
+    res.status(500).json({ error: "Gagal hapus status accept" });
+  }
+});
+
+// END STATUS ACCEPT 
 
 //DATA MARKETING DESIGN
 //12. get laporan data otomatis per 10 hari berjalan
