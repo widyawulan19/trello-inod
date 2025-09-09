@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { getAllLists, getDataMarketingById, createCardFromMarketing, checkCardIdNullOrNot } from '../services/ApiServices';
+import { getAllLists, getDataMarketingById,getAllDataMarketingJoinedById, createCardFromMarketing, checkCardIdNullOrNot } from '../services/ApiServices';
 import { data, useParams } from 'react-router-dom';
 import '../style/pages/ViewDataMarketing.css'
 import { HiCube, HiCubeTransparent, HiOutlinePlus, HiOutlineXMark } from 'react-icons/hi2';
@@ -46,7 +46,8 @@ const ViewDataMarketing=({marketingId, onClose})=> {
     //1. fetch data marketing by id
     const fetchData = async()=>{
         try{
-            const response = await getDataMarketingById(marketingId)
+            // const response = await getDataMarketingById(marketingId)
+            const response = await getAllDataMarketingJoinedById(marketingId)
             setDataMarketings(response.data)
         }catch(error){
             console.log('Error fetching data marketing:', error)
@@ -158,13 +159,13 @@ const ViewDataMarketing=({marketingId, onClose})=> {
             <div className="box">
               <p>Input By</p>
               <div className='box1'>
-                <p>{dataMarketings.input_by}</p>
+                <p>{dataMarketings.input_by_name}</p>
               </div>
             </div>
             <div className="box">
               <p>Accepted By</p>
               <div className='box1'>
-                <p>{dataMarketings.acc_by}</p>
+                <p>{dataMarketings.acc_by_name}</p>
               </div>
             </div>
             <div className="box">
@@ -194,7 +195,7 @@ const ViewDataMarketing=({marketingId, onClose})=> {
             <div className="box">
               <p>Account</p>
               <div className='box1'>
-                <p>{dataMarketings.account}</p>
+                <p>{dataMarketings.account_name}</p>
               </div>
             </div>
           </div>
@@ -220,7 +221,7 @@ const ViewDataMarketing=({marketingId, onClose})=> {
             <div className="box">
               <p>Order Type</p>
               <div className='box1'>
-                <p>{dataMarketings.order_type}</p>
+                <p>{dataMarketings.order_type_name}</p>
               </div>
             </div>
             <div className="box">
@@ -232,19 +233,19 @@ const ViewDataMarketing=({marketingId, onClose})=> {
             <div className="box">
               <p>Jenis Track</p>
               <div className='box1'>
-                <p>{dataMarketings.jenis_track}</p>
+                <p>{dataMarketings.track_type_name}</p>
               </div>
             </div>
             <div className="box">
               <p>Genre</p>
               <div className='box1'>
-                <p>{dataMarketings.genre}</p>
+                <p>{dataMarketings.genre_name}</p>
               </div>
             </div>
             <div className="box">
               <p>Project Type</p>
               <div className='box1'>
-                <p>{dataMarketings.project_type}</p>
+                <p>{dataMarketings.project_type_name}</p>
               </div>
             </div>
             <div className="box">
@@ -289,6 +290,12 @@ const ViewDataMarketing=({marketingId, onClose})=> {
               <p>Discount</p>
               <div className='box1'>
                 <p>{dataMarketings.discount}</p>
+              </div>
+            </div>
+            <div className="box">
+              <p>Kupon Discount</p>
+              <div className='box1'>
+                <p>{dataMarketings.kupon_diskon_name}</p>
               </div>
             </div>
             <div className="box">

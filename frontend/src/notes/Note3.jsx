@@ -541,3 +541,40 @@ app.get("/api/data-marketing/joined/:id", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch joined data by id" });
   }
 });
+
+
+import React, { useEffect, useState } from "react";
+import { getJoinedDataMarketingById } from "../services/ApiServices";
+
+const DataMarketingDetail = ({ id }) => {
+  const [detail, setDetail] = useState(null);
+
+  useEffect(() => {
+    const fetchDetail = async () => {
+      try {
+        const result = await getJoinedDataMarketingById(id);
+        setDetail(result);
+      } catch (error) {
+        console.error("❌ Gagal ambil detail data marketing:", error);
+      }
+    };
+
+    fetchDetail();
+  }, [id]);
+
+  if (!detail) return <p>Loading detail...</p>;
+
+  return (
+    <div className="p-4 border rounded">
+      <h2 className="font-bold text-lg mb-2">Detail Marketing #{detail.marketing_id}</h2>
+      <p><b>Buyer:</b> {detail.buyer_name}</p>
+      <p><b>Order Code:</b> {detail.code_order}</p>
+      <p><b>Account:</b> {detail.account_name}</p>
+      <p><b>Input By:</b> {detail.input_by_name}</p>
+      <p><b>Acc By:</b> {detail.acc_by_name}</p>
+      <p><b>Kupon:</b> {detail.kupon_diskon_name || "-"}</p>
+    </div>
+  );
+};
+
+export default DataMarketingDetail;
