@@ -4827,7 +4827,7 @@ app.get("/api/data-marketing/joined", async (req, res) => {
 //     res.status(500).json({ error: "Failed to fetch joined data by id" });
 //   }
 // });
-// ✅ Endpoint get data marketing + join by ID (fix with IDs)
+// ✅ GET Data Marketing by ID (Joined dengan semua relasi)
 app.get("/api/data-marketing/joined/:id", async (req, res) => {
   const { id } = req.params;
   try {
@@ -4854,7 +4854,7 @@ app.get("/api/data-marketing/joined/:id", async (req, res) => {
         dm.create_at,
         dm.update_at,
 
-        -- Balikin ID + Nama dari relasi
+        -- Relasi (balikin ID + Nama)
         mu.id AS input_by,
         mu.nama_marketing AS input_by_name,
 
@@ -4903,7 +4903,7 @@ app.get("/api/data-marketing/joined/:id", async (req, res) => {
     );
 
     if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Data marketing not found" });
+      return res.status(404).json({ error: "❌ Data marketing not found" });
     }
 
     res.json(result.rows[0]);
@@ -4914,7 +4914,9 @@ app.get("/api/data-marketing/joined/:id", async (req, res) => {
 });
 
 
-// ✅ Endpoint update data marketing by ID
+
+
+// ✅ UPDATE Data Marketing by ID
 app.put("/api/data-marketing/joined/:id", async (req, res) => {
   const { id } = req.params;
   const {
@@ -4951,33 +4953,33 @@ app.put("/api/data-marketing/joined/:id", async (req, res) => {
       `
       UPDATE data_marketing
       SET 
-        buyer_name = $1,
-        code_order = $2,
-        order_number = $3,
-        jumlah_track = $4,
-        duration = $5,
-        jumlah_revisi = $6,
-        deadline = $7,
-        price_normal = $8,
-        price_discount = $9,
-        discount = $10,
-        basic_price = $11,
-        gig_link = $12,
-        reference_link = $13,
-        required_files = $14,
+        buyer_name       = $1,
+        code_order       = $2,
+        order_number     = $3,
+        jumlah_track     = $4,
+        duration         = $5,
+        jumlah_revisi    = $6,
+        deadline         = $7,
+        price_normal     = $8,
+        price_discount   = $9,
+        discount         = $10,
+        basic_price      = $11,
+        gig_link         = $12,
+        reference_link   = $13,
+        required_files   = $14,
         file_and_chat_link = $15,
-        detail_project = $16,
-        input_by = $17,
-        acc_by = $18,
-        account = $19,
-        order_type = $20,
-        offer_type = $21,
-        jenis_track = $22,
-        genre = $23,
-        project_type = $24,
-        kupon_diskon_id = $25,
+        detail_project   = $16,
+        input_by         = $17,
+        acc_by           = $18,
+        account          = $19,
+        order_type       = $20,
+        offer_type       = $21,
+        jenis_track      = $22,
+        genre            = $23,
+        project_type     = $24,
+        kupon_diskon_id  = $25,
         accept_status_id = $26,
-        update_at = NOW()
+        update_at        = NOW()
       WHERE marketing_id = $27
       RETURNING *;
       `,
@@ -5013,7 +5015,7 @@ app.put("/api/data-marketing/joined/:id", async (req, res) => {
     );
 
     if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Data marketing not found" });
+      return res.status(404).json({ error: "❌ Data marketing not found" });
     }
 
     res.json({
