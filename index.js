@@ -4827,7 +4827,7 @@ app.get("/api/data-marketing/joined/:id", async (req, res) => {
 });
 
 // ✅ Endpoint update data marketing by ID
-app.put("/api/data-marketing/:id", async (req, res) => {
+app.put("/api/data-marketing/joined/:id", async (req, res) => {
   const { id } = req.params;
   const {
     buyer_name,
