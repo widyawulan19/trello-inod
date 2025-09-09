@@ -4826,6 +4826,116 @@ app.get("/api/data-marketing/joined/:id", async (req, res) => {
   }
 });
 
+// ✅ Endpoint update data marketing by ID
+app.put("/api/data-marketing/:id", async (req, res) => {
+  const { id } = req.params;
+  const {
+    buyer_name,
+    code_order,
+    order_number,
+    jumlah_track,
+    duration,
+    jumlah_revisi,
+    deadline,
+    price_normal,
+    price_discount,
+    discount,
+    basic_price,
+    gig_link,
+    reference_link,
+    required_files,
+    file_and_chat_link,
+    detail_project,
+    input_by,
+    acc_by,
+    account,
+    order_type,
+    offer_type,
+    jenis_track,
+    genre,
+    project_type,
+    kupon_diskon_id,
+  } = req.body;
+
+  try {
+    const result = await client.query(
+      `
+      UPDATE data_marketing
+      SET 
+        buyer_name = $1,
+        code_order = $2,
+        order_number = $3,
+        jumlah_track = $4,
+        duration = $5,
+        jumlah_revisi = $6,
+        deadline = $7,
+        price_normal = $8,
+        price_discount = $9,
+        discount = $10,
+        basic_price = $11,
+        gig_link = $12,
+        reference_link = $13,
+        required_files = $14,
+        file_and_chat_link = $15,
+        detail_project = $16,
+        input_by = $17,
+        acc_by = $18,
+        account = $19,
+        order_type = $20,
+        offer_type = $21,
+        jenis_track = $22,
+        genre = $23,
+        project_type = $24,
+        kupon_diskon_id = $25,
+        update_at = NOW()
+      WHERE marketing_id = $26
+      RETURNING *;
+      `,
+      [
+        buyer_name,
+        code_order,
+        order_number,
+        jumlah_track,
+        duration,
+        jumlah_revisi,
+        deadline,
+        price_normal,
+        price_discount,
+        discount,
+        basic_price,
+        gig_link,
+        reference_link,
+        required_files,
+        file_and_chat_link,
+        detail_project,
+        input_by,
+        acc_by,
+        account,
+        order_type,
+        offer_type,
+        jenis_track,
+        genre,
+        project_type,
+        kupon_diskon_id,
+        id,
+      ]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Data marketing not found" });
+    }
+
+    res.json({
+      message: "✅ Data marketing updated successfully",
+      data: result.rows[0],
+    });
+  } catch (err) {
+    console.error("❌ Error updating data marketing:", err);
+    res.status(500).json({ error: "Failed to update data marketing" });
+  }
+});
+
+
 
 
 //1. get all marketing data
