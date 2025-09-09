@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getAllMarketingUsers, addMarketingUser, addDataMarketing, getAllAccountsMusic, addAccountMusic, getAllOfferTypesMusic, addOfferTypeMusic, getAllTrackTypes, addTrackType, getAllGenresMusic, addGenreMusic, getAllProjectTypesMusic, addProjectTypeMusic, getAllOrderTypesMusic, addOrderTypeMusic, getAllKuponDiskon, addKuponDiskon } from "../services/ApiServices";
+import { getAllMarketingUsers, addMarketingUser, addDataMarketing, getAllAccountsMusic, addAccountMusic, getAllOfferTypesMusic, addOfferTypeMusic, getAllTrackTypes, addTrackType, getAllGenresMusic, addGenreMusic, getAllProjectTypesMusic, addProjectTypeMusic, getAllOrderTypesMusic, addOrderTypeMusic, getAllKuponDiskon, addKuponDiskon,getAllAcceptStatus } from "../services/ApiServices";
 import { getAllKepalaDivisi, addKepalaDivisi } from "../services/ApiServices";
 import CustomDropdown from "../marketing/CustomDropdown";
 
@@ -47,7 +47,10 @@ useEffect(() => {
 
       //fetch kupon
       const kuponDiskon = await getAllKuponDiskon();
-      console.log('bentuk data tabel Kupon diskon:', kuponDiskon);
+
+      //fetch status 
+      const statusAccept = await getAllAcceptStatus();
+      console.log('bentuk data tabel status:', statusAccept);
       
 
 
@@ -61,6 +64,7 @@ useEffect(() => {
         projectType: projectType.map(pt => ({id: pt.id, name: pt.nama_project})),
         orderType: orderType.map(ot => ({id: ot.id, name: ot.order_name})),
         kuponDiskon: kuponDiskon.map(kd => ({ id: kd.id, name: kd.nama_kupon})),
+        statusAccept: statusAccept.msp(s => ({id: s.id, name: s.status_name})),
       });
 
     } catch (error) {
@@ -209,6 +213,22 @@ useEffect(() => {
             placeholder="Accepted by"
             searchPlaceholder="Search kadiv..."
             addPlaceholder="Add new accepted user..."
+          />
+        </div>
+
+        {/* STATUS ACCEPT */}
+        <div>
+          <label className="block text-sm font-medium">Status</label>
+          <CustomDropdown
+            options={dropdownData.statusAccept}  // <- benar-benar dari kepala_divisi
+            value={form.acc_by}
+            onChange={(val) => setForm({ ...form, accept_status_id: val })}
+            // newItem={accByNew}
+            // setNewItem={setAccByNew}
+            // addNew={handleAddAccBy}
+            placeholder="Status Accept"
+            searchPlaceholder="Search status..."
+            // addPlaceholder="Add new accepted user..."
           />
         </div>
 
@@ -524,7 +544,7 @@ useEffect(() => {
           </div>
 
         {/* PROJECT DESCRIPTION */}
-        <div className="section-desc space-y-4 mt-6">
+        <div className="mt-6 space-y-4 section-desc">
           <h4 className="text-lg font-semibold">Project Description</h4>
           <div>
             <label className="block text-sm font-medium">Detail Project</label>

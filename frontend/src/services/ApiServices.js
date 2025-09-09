@@ -899,3 +899,32 @@ export const deleteKuponDiskon = async (id) => {
   const res = await axios.delete(`${API_URL}/kupon-diskon/${id}`);
   return res.data;
 };
+
+
+// =======================
+// Accept Status
+// =======================
+export const getAllAcceptStatus = async () => {
+  const res = await axios.get(`${API_URL}/accept-status`);
+  return res.data;
+};
+
+export const getAcceptStatusById = async (id) => {
+  const res = await axios.get(`${API_URL}/accept-status/${id}`);
+  return res.data;
+};
+
+export const addAcceptStatus = async (data) => {
+  const res = await axios.post(`${API_URL}/accept-status`, data);
+  return res.data;
+};
+
+export const updateAcceptStatus = async (id, data) => {
+  const res = await axios.put(`${API_URL}/accept-status/${id}`, data);
+  return res.data;
+};
+
+export const deleteAcceptStatus = async (id) => {
+  const res = await axios.delete(`${API_URL}/accept-status/${id}`);
+  return res.data;
+};
