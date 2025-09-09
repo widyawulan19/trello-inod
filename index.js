@@ -4704,7 +4704,7 @@ app.get("/api/marketing/reports", async (req, res) => {
 
 
 // server.js
-app.get("/api/data-marketing/joined", async (req, res) => {
+app.get("/api/data-marketing/joined/false", async (req, res) => {
   try {
     const query = `
       SELECT 
@@ -4755,6 +4755,63 @@ app.get("/api/data-marketing/joined", async (req, res) => {
     res.json(result.rows);
   } catch (err) {
     console.error("❌ Error join data_marketing:", err);
+    res.status(500).json({ error: "Failed to fetch joined data" });
+  }
+});
+
+
+// ✅ Endpoint get data marketing + join
+app.get("/api/data-marketing/joined", async (req, res) => {
+  try {
+    const result = await client.query(`
+      SELECT 
+        dm.marketing_id,
+        dm.buyer_name,
+        dm.code_order,
+        dm.order_number,
+        dm.jumlah_track,
+        dm.duration,
+        dm.jumlah_revisi,
+        dm.deadline,
+        dm.price_normal,
+        dm.price_discount,
+        dm.discount,
+        dm.basic_price,
+        dm.gig_link,
+        dm.reference_link,
+        dm.required_files,
+        dm.file_and_chat_link,
+        dm.detail_project,
+        dm.create_at,
+        dm.update_at,
+
+        -- JOIN ke tabel lain (tampilkan nama bukan id)
+        mu.nama_marketing AS input_by_name,
+        kd.nama AS acc_by_name,
+        am.nama_account AS account_name,
+        ot.order_name AS order_type_name,
+        oft.offer_name AS offer_type_name,
+        tt.track_name AS track_type_name,
+        g.genre_name AS genre_name,
+        pt.nama_project AS project_type_name,
+        k.nama_kupon AS kupon_diskon_name
+
+      FROM data_marketing dm
+      LEFT JOIN marketing_musik_user mu ON mu.id = dm.input_by
+      LEFT JOIN kepala_divisi kd ON kd.id = dm.acc_by
+      LEFT JOIN account_music am ON am.id = dm.account
+      LEFT JOIN music_order_type ot ON ot.id = dm.order_type
+      LEFT JOIN offer_type_music oft ON oft.id = dm.offer_type
+      LEFT JOIN track_types tt ON tt.id = dm.jenis_track
+      LEFT JOIN genre_music g ON g.id = dm.genre
+      LEFT JOIN project_type pt ON pt.id = dm.project_type
+      LEFT JOIN kupon_diskon k ON k.id = dm.kupon_diskon_id
+      ORDER BY dm.marketing_id DESC;
+    `);
+
+    res.json(result.rows);
+  } catch (err) {
+    console.error("❌ Error get joined data marketing:", err);
     res.status(500).json({ error: "Failed to fetch joined data" });
   }
 });
