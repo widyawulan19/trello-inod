@@ -175,14 +175,14 @@ const ViewDataMarketing=({marketingId, onClose})=> {
                   style={{
                     padding: '5px 8px',
                     borderRadius: '3px',
-                    backgroundColor: dataMarketings.is_accepted ? '#C8E6C9' : '#FFCDD2',
-                    color: dataMarketings.is_accepted ? '#2E7D32' : '#C62828',
+                    backgroundColor: dataMarketings.accept_status_name ? '#C8E6C9' : '#FFCDD2',
+                    color: dataMarketings.accept_status_name ? '#2E7D32' : '#C62828',
                     fontWeight: 'bold',
                     textAlign:'center',
                     margin:"0px"
                   }}
                 >
-                  {dataMarketings.is_accepted ?  'Accepted':'Not Accepted'}
+                  {dataMarketings.accept_status_name}
                 </p>
               </div>
             </div>

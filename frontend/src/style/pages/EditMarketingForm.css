@@ -64,7 +64,7 @@ form h4 {
 .form-edit .form-content {
     /* border: 1px solid red; */
     width: 100%;
-    margin: 10px 0px;
+    margin: 20px 0px;
 }
 
 .form-content h4 {
@@ -320,6 +320,7 @@ form h4 {
 
 .dropdown-custom-container .dropdown-trigger {
     border: 1px solid #ddd;
+    background-color: white;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -347,6 +348,8 @@ form h4 {
 
 .dropdown-custom-container .menu-ul {
     position: absolute;
+    background-color: white;
+    z-index: 1000;
     /* border: 1px solid blue; */
     border: 1px solid #ddd;
     border-radius: 8px;

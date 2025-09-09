@@ -16,6 +16,7 @@ import { IoEyeSharp } from "react-icons/io5";
 import { handleArchive } from "../utils/handleArchive";
 import ExportDataMarketing from "../exports/ExportDataMarketing";
 import { FaXmark } from "react-icons/fa6";
+import FormMarketingExample from "../example/FormMarketingExample";
 
 const DataMarketing = () => {
   const location = useLocation();
@@ -201,6 +202,7 @@ const fetchDataMarketing = async()=>{
     const response = await getAllDataMarketingJoined();
     setDataMarketing(response.data)
     setFilteredData(response.data)
+    console.log("✅ Data marketing fetched:", fetchDataMarketing);
   }catch(error){
     console.error('Error fetching data marekting:', error)
   }
@@ -315,38 +317,40 @@ const handleToReportPage = () =>{
         {showFormCreate && (
             <div className="dmf-cont">
                 <div className="dmf-content">
-                    <FormDataMarketing onClose={handleCloseForm} fetchData={fetchData}/>
+                    {/* <FormDataMarketing onClose={handleCloseForm} fetchData={fetchData}/> */}
+                    <FormMarketingExample onClose={handleCloseForm} fetchData={fetchDataMarketing}/>
                 </div>
             </div>
         )}
       </div>
 
-      {/* SHOW DATA  */}
+      {/* SHOW DATA */}
       {showData && (
         <div className="show-data-container">
           <div className="sdc-header">
-            <h5> <HiMiniTableCells className="h5-icons"/>Show Data By:</h5>
+            <h5><HiMiniTableCells className="h5-icons"/> Show Data By:</h5>
             <FaXmark onClick={handleCloseShowData} style={{cursor:'pointer'}}/>
           </div>
           <div className="sdc-container">
-             <button onClick={()=> {setFilterType('SEMUA DATA MARKETING'); {setShowData(!showData)}}}>
+            <button onClick={() => { setFilterType("SEMUA DATA MARKETING"); setShowData(false); }}>
               All Data
             </button>
-            <button onClick={()=> {setFilterType('DATA MARKETING DENGAN CARD'); {setShowData(!showData)}}}>
+            <button onClick={() => { setFilterType("DATA MARKETING DENGAN CARD"); setShowData(false); }}>
               Data Marketing Dengan Card
             </button>
-            <button onClick={()=> {setFilterType('DATA MARKETING TANPA CARD'); {setShowData(!showData)}}}>
+            <button onClick={() => { setFilterType("DATA MARKETING TANPA CARD"); setShowData(false); }}>
               Data Marketing Tanpa Card
             </button>
-            <button onClick={()=> {setFilterType('DATA MAREKTING ACCEPTED'); {setShowData(!showData)}}}>
+            <button onClick={() => { setFilterType("DATA MARKETING ACCEPTED"); setShowData(false); }}>
               Data Marketing Accepted
             </button>
-            <button onClick={()=> {setFilterType('DATA MARKETING NOT ACCEPTED'); {setShowData(!showData)}}}>
+            <button onClick={() => { setFilterType("DATA MARKETING NOT ACCEPTED"); setShowData(false); }}>
               Data Marketing Not Accepted
             </button>
           </div>
         </div>
       )}
+
 
       {/* SHOW DATA FILTER  */}
       {showFilter && (
@@ -483,13 +487,14 @@ const handleToReportPage = () =>{
                     <td className="acc-container">{item.acc_by_name}</td>
                     <td className="status-container">
                         <span style={{
-                          padding: '2px 8px',
-                          borderRadius: '12px',
-                          backgroundColor: item.is_accepted ? '#C8E6C9' : '#FFCDD2',
-                          color: item.is_accepted ? '#2E7D32' : '#C62828',
-                          fontWeight: 'bold'
+                          padding: "2px 8px",
+                          borderRadius: "12px",
+                          backgroundColor:
+                            item.accept_status_name === "Accepted" ? "#C8E6C9" : "#FFCDD2",
+                          color: item.accept_status_name === "Accepted" ? "#2E7D32" : "#C62828",
+                          fontWeight: "bold",
                         }}>
-                          {item.is_accepted ? 'Accepted' : 'Not Accepted'}
+                          {item.accept_status_name}
                         </span>
                       </td>
                     <td className="buyer-name-container">{item.buyer_name}</td>

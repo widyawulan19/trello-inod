@@ -19,7 +19,8 @@ import {
   addProjectTypeMusic,
   addOrderTypeMusic,
   addKuponDiskon,
-  addKepalaDivisi
+  addKepalaDivisi,
+  getAllAcceptStatus
 } from "../services/ApiServices";
 
 import CustomDropdown from "../marketing/CustomDropdown";
@@ -55,6 +56,7 @@ const initialFormState = {
   genre: "",
   project_type: "",
   kupon_diskon_id: "",
+  accept_status_id:"",
 };
 
 const NewEditDataMarketing = ({ marketingId , onClose, fetchDataMarketing }) => {
@@ -88,6 +90,7 @@ useEffect(() => {
         projectType,
         orderType,
         kuponDiskon,
+        statusAccept,
         marketingData,
       ] = await Promise.all([
         getAllMarketingUsers(),
@@ -99,6 +102,7 @@ useEffect(() => {
         getAllProjectTypesMusic(),
         getAllOrderTypesMusic(),
         getAllKuponDiskon(),
+        getAllAcceptStatus(),
         getAllDataMarketingJoinedById(marketingId),
       ]);
       console.log("marketingData:", marketingData.data);
@@ -114,6 +118,7 @@ useEffect(() => {
         projectType: projectType.map((pt) => ({ id: String(pt.id), name: pt.nama_project })),
         orderType: orderType.map((ot) => ({ id: String(ot.id), name: ot.order_name })),
         kuponDiskon: kuponDiskon.map((kd) => ({ id: String(kd.id), name: kd.nama_kupon })),
+        statusAccept: statusAccept.map((s) => ({id: String(s.id), name: s.status_name})),
       });
 
      if (marketingData?.data) {
@@ -159,6 +164,7 @@ useEffect(() => {
         genre: m.genre ? String(m.genre) : "",
         project_type: m.project_type ? String(m.project_type) : "",
         kupon_diskon_id: m.kupon_diskon_id ? String(m.kupon_diskon_id) : "",
+        accept_status_id: m.accept_status_id ? String(m.accept_status_id): "",
       });
     }
 
@@ -290,10 +296,22 @@ console.log('data selcted acc:', selectedAccById);
     try {
       await updateDataMarketingJoined(marketingId, form);
       showSnackbar('Data Marketing berhasil diperbarui!', 'success');
+
+      // 🔥 Panggil fetch data dari parent biar refresh list
+      if (fetchDataMarketing) {
+        await fetchDataMarketing();
+      }
+
+      // 🔥 Tutup form kalau ada onClose
+      if (onClose) {
+        onClose();
+      }
     } catch (err) {
-      showSnackbar('Gagal update data marketing', 'error')
+      console.error("❌ Error update data marketing:", err);
+      showSnackbar('Gagal update data marketing', 'error');
     }
   };
+
 
 
   //fungsi untuk mengambil 5 karakter terakhir code order
@@ -367,23 +385,21 @@ console.log('data selcted acc:', selectedAccById);
                 {/* )} */}
               </div>
 
+               {/* ACCEPT STATUS */}
               <div className="box-content">
-                   <label>Status Accept</label>
-                   <div
-                       className={`dropdown-selected ${form.is_accepted ? 'accepted-status' : 'not-accepted-status'}`}
-                       onClick={() => setIsDropdownOpen((prev) => !prev)}
-                   >
-                       {form.is_accepted ? "Accepted" : "Not Accepted"}
-                   </div>
-                   {/* DROPDOWN OPTION  */}
-                   {isDropdownOpen && (
-                       <ul className="dropdown-options">
-                           <li onClick={() => handleOptionClick("not_accepted")}>Not Accepted</li>
-                           <li onClick={() => handleOptionClick("accepted")}>Accepted</li>
-                       </ul>
-                   )}
-                   {/* END DROPDOWN OPTION  */}
-               </div>
+                <label>Status Accept</label>
+                  <CustomDropdown
+                    options={dropdownData.statusAccept}
+                    value={form.accept_status_id}  // pakai ID string, misal "2"
+                    onChange={(val) => setForm({ ...form, accept_status_id: val })}
+                    // newItem={accByNew}
+                    // setNewItem={setAccByNew}
+                    // addNew={handleAddAccBy}
+                    placeholder="Status Accept"
+                    searchPlaceholder="Search status..."
+                    // addPlaceholder="Add new accepted user..."
+                  />
+              </div>
 
               {/* Buyer Name */}
               <div className="box-content">
@@ -659,7 +675,7 @@ console.log('data selcted acc:', selectedAccById);
                   name="gig_link"
                   value={form.gig_link}
                   onChange={handleChange}
-                  pattern="https?://.*"
+                  pattern="(https?://.*)?"
                   placeholder="https://example.com"
                 />
               </div>
@@ -671,7 +687,7 @@ console.log('data selcted acc:', selectedAccById);
                   name="reference_link"
                   value={form.reference_link}
                   onChange={handleChange}
-                  pattern="https?://.*"
+                  pattern="(https?://.*)?"
                   placeholder="https://example.com"
                 />
               </div>
@@ -694,7 +710,7 @@ console.log('data selcted acc:', selectedAccById);
                   name="file_and_chat_link"
                   value={form.file_and_chat_link}
                   onChange={handleChange}
-                  pattern="https?://.*"
+                  pattern="(https?://.*)?"
                   placeholder="https://example.com"
                 />
               </div>

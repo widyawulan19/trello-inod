@@ -2,10 +2,16 @@ import React, { useState, useEffect } from "react";
 import { getAllMarketingUsers, addMarketingUser, addDataMarketing, getAllAccountsMusic, addAccountMusic, getAllOfferTypesMusic, addOfferTypeMusic, getAllTrackTypes, addTrackType, getAllGenresMusic, addGenreMusic, getAllProjectTypesMusic, addProjectTypeMusic, getAllOrderTypesMusic, addOrderTypeMusic, getAllKuponDiskon, addKuponDiskon,getAllAcceptStatus } from "../services/ApiServices";
 import { getAllKepalaDivisi, addKepalaDivisi } from "../services/ApiServices";
 import CustomDropdown from "../marketing/CustomDropdown";
+import '../style/pages/FormDataMarketing.css'
+import { IoCreate } from "react-icons/io5";
+import BootstrapTooltip from "../components/Tooltip";
+import { HiXMark } from "react-icons/hi2";
+import { useSnackbar } from "../context/Snackbar";
 
-const DataMarketingForm = () => {
+const FormMarketingExample = ({onClose, fetchData}) => {
+  const {showSnackbar} = useSnackbar();
   const [dropdownData, setDropdownData] = useState({ users: [], accs: [], accounts:[] });
-  const [form, setForm] = useState({ buyer_name: "", code_order: "", input_by: "", acc_by: "" });
+  const [form, setForm] = useState({ buyer_name: "", code_order: "", input_by: "", acc_by: "",  kupon_diskon_id: "", accept_status_id: "" });
   const [inputByNew, setInputByNew] = useState("");
   const [accByNew, setAccByNew] = useState("");
   const [accountNew, setAccountNew] = useState("");
@@ -64,7 +70,7 @@ useEffect(() => {
         projectType: projectType.map(pt => ({id: pt.id, name: pt.nama_project})),
         orderType: orderType.map(ot => ({id: ot.id, name: ot.order_name})),
         kuponDiskon: kuponDiskon.map(kd => ({ id: kd.id, name: kd.nama_kupon})),
-        statusAccept: statusAccept.msp(s => ({id: s.id, name: s.status_name})),
+        statusAccept: statusAccept.map(s => ({id: s.id, name: s.status_name})),
       });
 
     } catch (error) {
@@ -172,401 +178,452 @@ useEffect(() => {
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    await addDataMarketing(form);
-    alert("✅ Data marketing berhasil ditambahkan!");
-    setForm({ buyer_name: "", code_order: "", input_by: "", acc_by: "" });
-  };
+      e.preventDefault();
+      try {
+        await addDataMarketing(form);
+        showSnackbar('Data Marketing berhasil ditambahkan!', 'success');
+        // alert("✅ Data marketing berhasil ditambahkan!");
+
+        // Reset form
+        setForm({
+          buyer_name: "",
+          code_order: "",
+          input_by: "",
+          acc_by: "",
+          kupon_diskon_id: "",
+          accept_status_id: "",
+        });
+
+        // 🔥 Trigger fetch data parent
+        if (fetchData) {
+           console.log("🚀 Trigger fetchData from child");
+          await fetchData();
+        }
+
+        // 🔥 Close form
+        if (onClose) {
+          onClose();
+        }
+      } catch (err) {
+        console.error("❌ Error submit data marketing:", err);
+        // alert("Gagal menyimpan data marketing!");
+        showSnackbar('Gagal menyimpan data marketing!', 'error');
+      }
+    };
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 space-y-4 bg-white rounded shadow w-100">
-      <h2 className="text-lg font-bold">Tambah Data Marketing</h2>
-
-      <div className="grid grid-cols-3 gap-4" style={{border:'1px solid blue', height:'80vh', overflowY:'auto'}}>
-        
-        {/* Input By */}
-        <div>
-          <label className="block text-sm font-medium">Input By</label>
-          <CustomDropdown
-            options={dropdownData.users}
-            value={form.input_by} // harus sama dengan nama column di db
-            onChange={(val) => setForm({ ...form, input_by: val })}
-            newItem={inputByNew}
-            setNewItem={setInputByNew}
-            addNew={handleAddInputBy}
-            placeholder="Pilih Marketing user"
-            searchPlaceholder="Search marketing user..."
-            addPlaceholder="Add new marketing user..."
-          />
-        </div>
-
-        {/* Acc By */}
-        <div>
-          <label className="block text-sm font-medium">Accept By</label>
-          <CustomDropdown
-            options={dropdownData.accs}  // <- benar-benar dari kepala_divisi
-            value={form.acc_by}
-            onChange={(val) => setForm({ ...form, acc_by: val })}
-            newItem={accByNew}
-            setNewItem={setAccByNew}
-            addNew={handleAddAccBy}
-            placeholder="Accepted by"
-            searchPlaceholder="Search kadiv..."
-            addPlaceholder="Add new accepted user..."
-          />
-        </div>
-
-        {/* STATUS ACCEPT */}
-        <div>
-          <label className="block text-sm font-medium">Status</label>
-          <CustomDropdown
-            options={dropdownData.statusAccept}  // <- benar-benar dari kepala_divisi
-            value={form.acc_by}
-            onChange={(val) => setForm({ ...form, accept_status_id: val })}
-            // newItem={accByNew}
-            // setNewItem={setAccByNew}
-            // addNew={handleAddAccBy}
-            placeholder="Status Accept"
-            searchPlaceholder="Search status..."
-            // addPlaceholder="Add new accepted user..."
-          />
-        </div>
-
-        {/* Buyer Name */}
-        <div>
-          <label className="block text-sm font-medium">Buyer Name</label>
-          <input
-            type="text"
-            name="buyer_name"
-            value={form.buyer_name}
-            onChange={handleChange}
-            placeholder="Buyer Name"
-            className="w-full p-2 border rounded"
-          />
-        </div>
-
-        {/* Account */}
-        <div>
-          <label className="block text-sm font-medium">Account</label>
-          <CustomDropdown
-            options={dropdownData.accounts}        // data dari API
-            value={form.account}
-            onChange={(val) => setForm({ ...form, account: val })}
-            newItem={accountNew}
-            setNewItem={setAccountNew}
-            addNew={handleAddAccount}
-            placeholder="Pilih Account"
-            searchPlaceholder="Search account..."
-            addPlaceholder="Add new account..."
-          />
-        </div>
-
-
-        {/* DETAIL PESANAN  */}
-        {/* Code Order */}
-        <div>
-          <label className="block text-sm font-medium">Code Order</label>
-          <input
-            type="text"
-            name="code_order"
-            value={form.code_order}
-            onChange={handleChange}
-            placeholder="Code Order"
-            className="w-full p-2 border rounded"
-          />
-        </div>
-
-        {/* Order Number */}
-        <div>
-          <label className="block text-sm font-medium">Order Number</label>
-          <input
-            type="text"
-            name="order_number"
-            value={form.order_number}
-            onChange={handleChange}
-            placeholder="Order Number"
-            className="w-full p-2 border rounded"
-          />
-        </div>
-
-        {/* Order type */}
-        <div>
-          <label className="block text-sm font-medium">Order Type</label>
-          <CustomDropdown
-            options={dropdownData.orderType}        // data dari API
-            value={form.order_type}
-            onChange={(val) => setForm({ ...form, order_type: val })}
-            newItem={newOrder}
-            setNewItem={setNewOrder}
-            addNew={handleAddOrderType}
-            placeholder="Pilih Order type"
-            searchPlaceholder="Search order type..."
-            addPlaceholder="Add new order type..."
-          />
-        </div>
-
-        {/* Offers type */}
-        <div>
-          <label className="block text-sm font-medium">Offer Type</label>
-          <CustomDropdown
-            options={dropdownData.offers}        // data dari API
-            value={form.offer_type}
-            onChange={(val) => setForm({ ...form, offer_type: val })}
-            newItem={offerNew}
-            setNewItem={setOfferNew}
-            addNew={handleAddOfferMusic}
-            placeholder="Pilih Offer type"
-            searchPlaceholder="Search offer..."
-            addPlaceholder="Add new offer..."
-          />
-        </div>
-
-        {/* Jumlah Track */}
-        <div>
-          <label className="block text-sm font-medium">Jumlah Track</label>
-          <input
-            type="text"
-            name="jumlah_track"
-            value={form.jumlah_track}
-            onChange={handleChange}
-            placeholder="Jumlah Track"
-            className="w-full p-2 border rounded"
-          />
-        </div>
-
-        {/* Jenis Track */}
-        <div>
-          <label className="block text-sm font-medium">Jenis Track</label>
-          <CustomDropdown
-            options={dropdownData.trackTypes}        // data dari API
-            value={form.jenis_track}
-            onChange={(val) => setForm({ ...form, jenis_track: val })}
-            newItem={newTrack}
-            setNewItem={setNewTrack}
-            addNew={handleAddTrack}
-            placeholder="Pilih Track"
-            searchPlaceholder="Search track..."
-            addPlaceholder="Add new track..."
-          />
-        </div>
-
-        {/* Genre */}
-        <div>
-          <label className="block text-sm font-medium">Genre</label>
-          <CustomDropdown
-            options={dropdownData.genres}        // data dari API
-            value={form.genre}
-            onChange={(val) => setForm({ ...form, genre: val })}
-            newItem={newGenre}
-            setNewItem={setNewGenre}
-            addNew={handleAddGenre}
-            placeholder="Pilih Genre"
-            searchPlaceholder="Search genre..."
-            addPlaceholder="Add new genre..."
-          />
-        </div>
-
-        {/* Project Type */}
-        <div>
-          <label className="block text-sm font-medium">Project Type</label>
-          <CustomDropdown
-            options={dropdownData.projectType}        // data dari API
-            value={form.project_type}
-            onChange={(val) => setForm({ ...form, project_type: val })}
-            newItem={newProject}
-            setNewItem={setNewProject}
-            addNew={handleAddProjectType}
-            placeholder="Pilih Project type"
-            searchPlaceholder="Search Project type..."
-            addPlaceholder="Add new project ..."
-          />
-        </div>
-
-        {/* Duration */}
-        <div>
-          <label className="block text-sm font-medium">Duration Needed</label>
-          <input
-            type="text"
-            name="duration"
-            value={form.duration}
-            onChange={handleChange}
-            placeholder="duration needed"
-            className="w-full p-2 border rounded"
-          />
-        </div>
-
-         {/* Jumlah Revisi */}
-        <div>
-          <label className="block text-sm font-medium">Jumlah Revisi</label>
-          <input
-            type="text"
-            name="jumlah_revisi"
-            value={form.jumlah_revisi}
-            onChange={handleChange}
-            placeholder="Jumlah revisi"
-            className="w-full p-2 border rounded"
-          />
-        </div>
-
-        {/* Deadline */}
-        <div>
-          <label className="block text-sm font-medium">Deadline</label>
-          <input
-            type="Date"
-            name="deadline"
-            value={form.deadline}
-            onChange={handleChange}
-            placeholder="Deadline"
-            className="w-full p-2 border rounded"
-          />
-        </div>
-
-
-        {/* INFORMASI HARGA DAN DISKON  */}
-        {/* Price Normal */}
-        <div>
-          <label className="block text-sm font-medium">Price Normal</label>
-          <input
-            type="text"
-            name="price_normal"
-            value={form.price_normal}
-            onChange={handleChange}
-            placeholder="Price normal"
-            className="w-full p-2 border rounded"
-          />
-        </div>
-
-         {/* Price Discount */}
-        <div>
-          <label className="block text-sm font-medium">Price Discount</label>
-          <input
-            type="text"
-            name="price_discount"
-            value={form.price_discount}
-            onChange={handleChange}
-            placeholder="Price discount"
-            className="w-full p-2 border rounded"
-          />
-        </div>
-
-        {/*  Discount */}
-        <div>
-          <label className="block text-sm font-medium">Discount %</label>
-          <input
-            type="text"
-            name="discount"
-            value={form.discount}
-            onChange={handleChange}
-            placeholder="discount"
-            className="w-full p-2 border rounded"
-          />
-        </div>
-
-        {/* KUPON DISKON  */}
-        <CustomDropdown
-          options={dropdownData.kuponDiskon}
-          value={form.kupon_diskon_id}
-          onChange={(val) => setForm({ ...form, kupon_diskon_id: val })}  // ambil id saja
-          newItem={newKupon}
-          setNewItem={setNewKupon}
-          addNew={handleAddKupon}
-          placeholder="Pilih Kupon Diskon"
-          searchPlaceholder="Search Kupon diskon..."
-          addPlaceholder="Add new kupon..."
-        />
-
-        {/*  Basic Price */}
-        <div>
-          <label className="block text-sm font-medium">Basic Price</label>
-          <input
-            type="text"
-            name="basic_price"
-            value={form.basic_price}
-            onChange={handleChange}
-            placeholder="basic price"
-            className="w-full p-2 border rounded"
-          />
-        </div>
-
-        {/* REFERENSI DAN FILE PENDUKUNG */}
-
-          <div>
-            <label className="block text-sm font-medium">GIG Link</label>
-            <input
-              type="url"
-              name="gig_link"
-              value={form.gig_link}
-              onChange={handleChange}
-              pattern="https?://.*"
-              placeholder="https://example.com"
-              className="w-full p-2 border rounded"
-            />
+    <div className="fdm-container">
+      <div className="fdm-header">
+        <div className="fmdh-left">
+          <div className="header-icon">
+            <IoCreate size={15}/>
           </div>
-
-          <div>
-            <label className="block text-sm font-medium">Reference Link</label>
-            <input
-              type="url"
-              name="reference_link"
-              value={form.reference_link}
-              onChange={handleChange}
-              pattern="https?://.*"
-              required
-              placeholder="https://example.com"
-              className="w-full p-2 border rounded"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium">Required Files</label>
-            <input
-              type="text"
-              name="required_files"
-              value={form.required_files}
-              onChange={handleChange}
-              placeholder="List of required files"
-              className="w-full p-2 border rounded"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium">File & Chat</label>
-            <input
-              type="url"
-              name="file_and_chat_link"
-              value={form.file_and_chat_link}
-              onChange={handleChange}
-              pattern="https?://.*"
-              required
-              placeholder="https://example.com"
-              className="w-full p-2 border rounded"
-            />
-          </div>
-
-        {/* PROJECT DESCRIPTION */}
-        <div className="mt-6 space-y-4 section-desc">
-          <h4 className="text-lg font-semibold">Project Description</h4>
-          <div>
-            <label className="block text-sm font-medium">Detail Project</label>
-            <textarea
-              name="detail_project"
-              value={form.detail_project}
-              onChange={handleChange}
-              required
-              placeholder="Deskripsikan detail project..."
-              className="w-full p-2 border rounded min-h-[100px]"
-            />
-          </div>
+          <h4>CREATE DATA MARKETING</h4>
         </div>
+
+        <BootstrapTooltip title='close' placement='top'>
+              <HiXMark className="fdm-icon" />
+          </BootstrapTooltip>
       </div>
 
-      <button type="submit" className="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700">
-        Simpan
-      </button>
-    </form>
+      <form onSubmit={handleSubmit}>
+          <div className="form-new">
+            <div className="form-content" style={{marginTop:'5px'}}>
+              <h4>INFORMASI PESANAN</h4>
+              <div className="sec-content">
+                {/* Input By */}
+                <div className="box-content">
+                  <label>Input By</label>
+                  <CustomDropdown
+                    options={dropdownData.users}
+                    value={form.input_by} // harus sama dengan nama column di db
+                    onChange={(val) => setForm({ ...form, input_by: val })}
+                    newItem={inputByNew}
+                    setNewItem={setInputByNew}
+                    addNew={handleAddInputBy}
+                    placeholder="Pilih Marketing user"
+                    searchPlaceholder="Search marketing user..."
+                    addPlaceholder="Add new marketing user..."
+                  />
+                </div>
+
+                {/* Acc By */}
+                <div className="box-content">
+                  <label >Accept By</label>
+                  <CustomDropdown
+                    options={dropdownData.accs}  // <- benar-benar dari kepala_divisi
+                    value={form.acc_by}
+                    onChange={(val) => setForm({ ...form, acc_by: val })}
+                    newItem={accByNew}
+                    setNewItem={setAccByNew}
+                    addNew={handleAddAccBy}
+                    placeholder="Accepted by"
+                    searchPlaceholder="Search kadiv..."
+                    addPlaceholder="Add new accepted user..."
+                  />
+                </div>
+
+                {/* STATUS ACCEPT */}
+                <div className="box-content">
+                  <label>Status</label>
+                  <CustomDropdown
+                    options={dropdownData.statusAccept}  // <- benar-benar dari kepala_divisi
+                    value={form.accept_status_id}
+                    onChange={(val) => setForm({ ...form, accept_status_id: val })}
+                    // newItem={accByNew}
+                    // setNewItem={setAccByNew}
+                    // addNew={handleAddAccBy}
+                    placeholder="Status Accept"
+                    searchPlaceholder="Search status..."
+                    // addPlaceholder="Add new accepted user..."
+                  />
+                </div>
+
+                {/* Buyer Name */}
+                <div className="box-content">
+                  <label >Buyer Name</label>
+                  <input
+                    type="text"
+                    name="buyer_name"
+                    value={form.buyer_name}
+                    onChange={handleChange}
+                    placeholder="Buyer Name"
+                    className="w-full p-2 border rounded"
+                  />
+                </div>
+
+                {/* Account */}
+                <div className="box-content">
+                  <label>Account</label>
+                  <CustomDropdown
+                    options={dropdownData.accounts}        // data dari API
+                    value={form.account}
+                    onChange={(val) => setForm({ ...form, account: val })}
+                    newItem={accountNew}
+                    setNewItem={setAccountNew}
+                    addNew={handleAddAccount}
+                    placeholder="Pilih Account"
+                    searchPlaceholder="Search account..."
+                    addPlaceholder="Add new account..."
+                  />
+                </div>
+              </div>
+            </div>
+            
+            
+
+            {/* DETAIL PESANAN  */}
+            <div className="form-content">
+              <h4>INFORMASI PESANAN</h4>
+              <div className="sec-content">
+                {/* Code Order */}
+                <div className="box-content">
+                  <label >Code Order</label>
+                  <input
+                    type="text"
+                    name="code_order"
+                    value={form.code_order}
+                    onChange={handleChange}
+                    placeholder="Code Order"
+                  />
+                </div>
+
+                {/* Order Number */}
+                <div className="box-content">
+                  <label >Order Number</label>
+                  <input
+                    type="text"
+                    name="order_number"
+                    value={form.order_number}
+                    onChange={handleChange}
+                    placeholder="Order Number"
+                  />
+                </div>
+
+                {/* Order type */}
+                <div className="box-content">
+                  <label >Order Type</label>
+                  <CustomDropdown
+                    options={dropdownData.orderType}        // data dari API
+                    value={form.order_type}
+                    onChange={(val) => setForm({ ...form, order_type: val })}
+                    newItem={newOrder}
+                    setNewItem={setNewOrder}
+                    addNew={handleAddOrderType}
+                    placeholder="Pilih Order type"
+                    searchPlaceholder="Search order type..."
+                    addPlaceholder="Add new order type..."
+                  />
+                </div>
+
+                {/* Offers type */}
+                <div className="box-content">
+                  <label >Offer Type</label>
+                  <CustomDropdown
+                    options={dropdownData.offers}        // data dari API
+                    value={form.offer_type}
+                    onChange={(val) => setForm({ ...form, offer_type: val })}
+                    newItem={offerNew}
+                    setNewItem={setOfferNew}
+                    addNew={handleAddOfferMusic}
+                    placeholder="Pilih Offer type"
+                    searchPlaceholder="Search offer..."
+                    addPlaceholder="Add new offer..."
+                  />
+                </div>
+
+                {/* Jumlah Track */}
+                <div className="box-content">
+                  <label >Jumlah Track</label>
+                  <input
+                    type="text"
+                    name="jumlah_track"
+                    value={form.jumlah_track}
+                    onChange={handleChange}
+                    placeholder="Jumlah Track"
+                  />
+                </div>
+
+                {/* Jenis Track */}
+                <div className="box-content">
+                  <label >Jenis Track</label>
+                  <CustomDropdown
+                    options={dropdownData.trackTypes}        // data dari API
+                    value={form.jenis_track}
+                    onChange={(val) => setForm({ ...form, jenis_track: val })}
+                    newItem={newTrack}
+                    setNewItem={setNewTrack}
+                    addNew={handleAddTrack}
+                    placeholder="Pilih Track"
+                    searchPlaceholder="Search track..."
+                    addPlaceholder="Add new track..."
+                  />
+                </div>
+
+                {/* Genre */}
+                <div className="box-content">
+                  <label >Genre</label>
+                  <CustomDropdown
+                    options={dropdownData.genres}        // data dari API
+                    value={form.genre}
+                    onChange={(val) => setForm({ ...form, genre: val })}
+                    newItem={newGenre}
+                    setNewItem={setNewGenre}
+                    addNew={handleAddGenre}
+                    placeholder="Pilih Genre"
+                    searchPlaceholder="Search genre..."
+                    addPlaceholder="Add new genre..."
+                  />
+                </div>
+
+                {/* Project Type */}
+                <div className="box-content">
+                  <label >Project Type</label>
+                  <CustomDropdown
+                    options={dropdownData.projectType}        // data dari API
+                    value={form.project_type}
+                    onChange={(val) => setForm({ ...form, project_type: val })}
+                    newItem={newProject}
+                    setNewItem={setNewProject}
+                    addNew={handleAddProjectType}
+                    placeholder="Pilih Project type"
+                    searchPlaceholder="Search Project type..."
+                    addPlaceholder="Add new project ..."
+                  />
+                </div>
+
+                {/* Duration */}
+                <div className="box-content">
+                  <label>Duration Needed</label>
+                  <input
+                    type="text"
+                    name="duration"
+                    value={form.duration}
+                    onChange={handleChange}
+                    placeholder="duration needed"
+                  />
+                </div>
+
+                {/* Jumlah Revisi */}
+                <div className="box-content">
+                  <label >Jumlah Revisi</label>
+                  <input
+                    type="text"
+                    name="jumlah_revisi"
+                    value={form.jumlah_revisi}
+                    onChange={handleChange}
+                    placeholder="Jumlah revisi"
+                  />
+                </div>
+
+                {/* Deadline */}
+                <div className="box-content">
+                  <label>Deadline</label>
+                  <input
+                    type="Date"
+                    name="deadline"
+                    value={form.deadline}
+                    onChange={handleChange}
+                    placeholder="Deadline"
+                  />
+                </div>
+              </div>
+            </div>
+            
+
+
+            {/* INFORMASI HARGA DAN DISKON  */}
+            <div className="form-content">
+              <h4>INFORMASI HARGA DAN DISKON</h4>
+              <div className="sec-content">
+                {/* Price Normal */}
+                <div className="box-content">
+                  <label >Price Normal</label>
+                  <input
+                    type="text"
+                    name="price_normal"
+                    value={form.price_normal}
+                    onChange={handleChange}
+                    placeholder="Price normal"
+                  />
+                </div>
+
+                {/* Price Discount */}
+                <div className="box-content">
+                  <label >Price Discount</label>
+                  <input
+                    type="text"
+                    name="price_discount"
+                    value={form.price_discount}
+                    onChange={handleChange}
+                    placeholder="Price discount"
+                  />
+                </div>
+
+                {/*  Discount */}
+                <div className="box-content">
+                  <label>Discount %</label>
+                  <input
+                    type="text"
+                    name="discount"
+                    value={form.discount}
+                    onChange={handleChange}
+                    placeholder="discount"
+                  />
+                </div>
+
+                {/* KUPON DISKON  */}
+                <div className="box-content">
+                  <label>KUPON DISKON</label>
+                  <CustomDropdown
+                    options={dropdownData.kuponDiskon}
+                    value={form.kupon_diskon_id}
+                    onChange={(val) => setForm({ ...form, kupon_diskon_id: val })}  // ambil id saja
+                    newItem={newKupon}
+                    setNewItem={setNewKupon}
+                    addNew={handleAddKupon}
+                    placeholder="Pilih Kupon Diskon"
+                    searchPlaceholder="Search Kupon diskon..."
+                    addPlaceholder="Add new kupon..."
+                  />
+                </div>
+
+                {/*  Basic Price */}
+                <div className="box-content">
+                  <label>Basic Price</label>
+                  <input
+                    type="text"
+                    name="basic_price"
+                    value={form.basic_price}
+                    onChange={handleChange}
+                    placeholder="basic price"
+                  />
+                </div>
+              </div>
+            </div>
+            
+
+            {/* REFERENSI DAN FILE PENDUKUNG */}
+            <div className="form-content">
+              <h4>REFERENSI DAN FILE PENDUKUNG</h4>
+              <div className="sec-content">
+                  <div className="box-content">
+                    <label>GIG Link</label>
+                    <input
+                      type="url"
+                      name="gig_link"
+                      value={form.gig_link}
+                      onChange={handleChange}
+                      pattern="(https?://.*)?"
+                      placeholder="https://example.com"
+                    />
+                  </div>
+
+                  <div className="box-content">
+                    <label>Reference Link</label>
+                    <input
+                      type="url"
+                      name="reference_link"
+                      value={form.reference_link}
+                      onChange={handleChange}
+                      pattern="(https?://.*)?"
+                      placeholder="https://example.com"
+                    />
+                  </div>
+
+                  <div className="box-content">
+                    <label >Required Files</label>
+                    <input
+                      type="text"
+                      name="required_files"
+                      value={form.required_files}
+                      onChange={handleChange}
+                      placeholder="List of required files"
+                    />
+                  </div>
+
+                  <div className="box-content">
+                    <label >File & Chat</label>
+                    <input
+                      type="url"
+                      name="file_and_chat_link"
+                      value={form.file_and_chat_link}
+                      onChange={handleChange}
+                      pattern="(https?://.*)?"
+                      placeholder="https://example.com"
+                    />
+                  </div>
+              </div>
+              
+              </div>
+            
+
+            {/* PROJECT DESCRIPTION */}
+            <div className="form-content">
+              <h4>PROJECT DESCRIPTION</h4>
+              <div className="sec-content" style={{border:'1px solid white'}}>
+                <div className="box-content">
+                  <label>Detail Project</label>
+                  <textarea
+                    name="detail_project"
+                    value={form.detail_project}
+                    onChange={handleChange}
+                    placeholder="Deskripsikan detail project..."
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" className="form-submit">
+            Simpan Data
+          </button>
+        </form>
+    </div>
+    
   );
 };
 
-export default DataMarketingForm;
+export default FormMarketingExample;
 
 
