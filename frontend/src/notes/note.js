@@ -1,1116 +1,380 @@
-[
-    {
-        "marketing_design_id": 33,
-        "card_id": null,
-        "input_by": "AYU",
-        "buyer_name": "hebrewenglish99",
-        "code_order": "#FO62E1B7BE148",
-        "jumlah_design": 3,
-        "order_number": "0249",
-        "account": "FAHMISANS",
-        "deadline": "2025-05-02T17:00:00.000Z",
-        "jumlah_revisi": 6,
-        "order_type": "REGULAR",
-        "offer_type": "NEW",
-        "style": "PIXEL ART",
-        "resolution": "960x540",
-        "price_normal": "85.00",
-        "price_discount": "0.00",
-        "discount_percentage": "0.00",
-        "required_files": "{\"JPG\",\"PNG\",\"SOURCE FILE\"}",
-        "project_type": "IMAGE 1 & 2 SIMILAR 40%",
-        "reference": "CEK DETAIL PROJECT",
-        "file_and_chat": "https://drive.google.com/drive/folders/1REwV4tyI57MvcOODjjBiJYURnEIPjnqZ",
-        "detail_project": "FULL BRIEF BISA CEK DI SINI\nNOTE MARKETING\nBuatkan 3 image dengan rincian 2 karakter dan 1 background\nKarakter 1 : Djinni dengan looks not too muscular, looks friendly and without a sword. CEK DI SINI\nKarakter 2 : Deity a woman with 8 arms just like the reference you attached, only maybe I will create her face. CEK DI SINI\nAnimasi: hand flipping coin pada 6 tangannya (2 frame)\nImage 3: Background yang sama seperti referensi Deity buyer dengan tambahan awan di bawahnya",
-        "acc_by": "FAHMI",
-        "create_at": "2025-05-04T13:06:23.973Z",
-        "update_at": "2025-05-14T15:08:43.282Z",
-        "is_accepted": false
-    },
-    {
-        "marketing_design_id": 36,
-        "card_id": null,
-        "input_by": "MIKA",
-        "buyer_name": "terrortrove",
-        "code_order": "#FO834B94EA708",
-        "jumlah_design": 3,
-        "order_number": "0254",
-        "account": "FAHMISANS",
-        "deadline": "2025-05-10T17:00:00.000Z",
-        "jumlah_revisi": 10,
-        "order_type": "REGULAR",
-        "offer_type": "REPEAT",
-        "style": "(diisi kadiv OP)",
-        "resolution": "HIGH RESOLUTION",
-        "price_normal": "100.00",
-        "price_discount": "0.00",
-        "discount_percentage": "0.00",
-        "required_files": "{\"JPG\",\"PNG\",\"SOURCE FILE\"}",
-        "project_type": "SIMILAR 60%",
-        "reference": "CEK FILE",
-        "file_and_chat": "https://drive.google.com/drive/folders/1RMHbu8S_oWo8WUOBoHu5gp7h9o2HYR-_",
-        "detail_project": "3 ilustrasi untuk point & click game. Lokasi: Abbey Front Door, Abbey Gate, Abbey Path 1. Tambahkan elemen interaktif seperti yang ditandai di gambar. Jaga konsistensi antar ruangan. Semua ilustrasi untuk waktu siang hari.",
-        "acc_by": "-",
-        "create_at": "2025-05-04T13:08:26.275Z",
-        "update_at": "2025-05-04T13:33:42.237Z",
-        "is_accepted": false
-    },
-    {
-        "marketing_design_id": 35,
-        "card_id": null,
-        "input_by": "MIKA",
-        "buyer_name": "plywooddavid",
-        "code_order": "#FO72E20670147",
-        "jumlah_design": 1,
-        "order_number": "0252",
-        "account": "ETERNAL",
-        "deadline": "2025-05-10T00:00:00.000Z",
-        "jumlah_revisi": 10,
-        "order_type": "REGULAR",
-        "offer_type": "NEW",
-        "style": "(diisi kadiv OP)",
-        "resolution": "HIGH RESOLUTION",
-        "price_normal": "95.00",
-        "price_discount": "0.00",
-        "discount_percentage": "0.00",
-        "required_files": "{\"JPG\",\"PNG\",\"SOURCE FILE\"}",
-        "project_type": "SIMILAR 40%",
-        "reference": "CEK DETAIL",
-        "file_and_chat": "https://drive.google.com/drive/folders/1q_16T66U-Q3Z0kUwzukAIpiwNLNubzl5",
-        "detail_project": "Original character design berdasarkan referensi. Buyer ingin fully rendered. Tidak ada ukuran khusus (gunakan high-res standard).",
-        "acc_by": "",
-        "create_at": "2025-05-04T13:07:51.982Z",
-        "update_at": null,
-        "is_accepted": false
-    },
-    {
-        "marketing_design_id": 39,
-        "card_id": 395,
-        "input_by": "MIKA",
-        "buyer_name": "illustramax",
-        "code_order": "#FO9271A4BXC5",
-        "jumlah_design": 8,
-        "order_number": "0235",
-        "account": "BLAUPATKA",
-        "deadline": "2025-06-12T17:00:00.000Z",
-        "jumlah_revisi": 15,
-        "order_type": "EXPRESS",
-        "offer_type": "NEW",
-        "style": "MANGA COVER ART",
-        "resolution": "HIGH RESOLUTION",
-        "price_normal": "$350.00",
-        "price_discount": "$50.00",
-        "discount_percentage": "14.29%",
-        "required_files": "JPG, PNG, PSD",
-        "project_type": "CUSTOM ARTWORK",
-        "reference": "TERLAMPIR \nhttps://drive.google.com/drive/folders/abc123folderLink001",
-        "file_and_chat": "https://drive.google.com/drive/folders/abc123folderLink001",
-        "detail_project": "Project ini bertujuan untuk membuat 8 cover manga dengan gaya ilustrasi shounen yang dinamis dan ekspresif. Masing-masing cover harus menonjolkan karakter utama dengan pose yang kuat dan ekspresi wajah yang sesuai dengan kepribadian masing-masing karakter. Detail lengkap mengenai desain karakter seperti gaya rambut, pakaian, warna dominan, dan atribut khusus sudah dikirim dalam file referensi.\\n\\nMohon diperhatikan:\\n- Ekspresi wajah harus sesuai dengan karakter (contoh: heroik, penuh semangat, tenang, misterius, dll).\\n- Proporsi tubuh, terutama tangan dan wajah, harus realistis dan konsisten antar cover.\\n- Latar belakang (background) diharapkan mendukung suasana cerita atau dunia dari masing-masing karakter.\\n\\nFile referensi (desain karakter, referensi pose, dan skema warna) serta catatan revisi awal dapat diakses melalui Google Drive (link sudah dikirim sebelumnya).\\n\\nNOTE PENTING:\\n- Perhatikan secara khusus ekspresi wajah dan proporsi tangan.\\n- Pastikan resolusi cukup tinggi untuk keperluan cetak.\\n- Gunakan layer terpisah untuk karakter dan background agar mudah direvisi jika diperlukan.",
-        "acc_by": "OKTA",
-        "create_at": "2025-05-25T08:11:15.812Z",
-        "update_at": "2025-05-25T08:44:50.526Z",
-        "is_accepted": true
-    },
-    {
-        "marketing_design_id": 41,
-        "card_id": 400,
-        "input_by": "RAKA",
-        "buyer_name": "illustramax",
-        "code_order": "#FO9271A4BXC5",
-        "jumlah_design": 8,
-        "order_number": "0235",
-        "account": "BLAUPATKA",
-        "deadline": "2025-01-01T12:30:00.000Z",
-        "jumlah_revisi": 15,
-        "order_type": "EXPRESS",
-        "offer_type": "NEW",
-        "style": "MANGA COVER ART",
-        "resolution": "HIGH RESOLUTION",
-        "price_normal": "$350.00",
-        "price_discount": "$50.00",
-        "discount_percentage": "14.29%",
-        "required_files": "JPG, PNG, PSD",
-        "project_type": "CUSTOM ARTWORK",
-        "reference": "LINK",
-        "file_and_chat": "https://drive.google.com/drive/folders/abc123folderLink001",
-        "detail_project": "Project ini bertujuan untuk membuat 8 cover manga dengan gaya ilustrasi shounen yang dinamis dan ekspresif. Masing-masing cover harus menonjolkan karakter utama dengan pose yang kuat dan ekspresi wajah yang sesuai dengan kepribadian masing-masing karakter. Detail lengkap mengenai desain karakter seperti gaya rambut, pakaian, warna dominan, dan atribut khusus sudah dikirim dalam file referensi.\\n\\nMohon diperhatikan:\\n- Ekspresi wajah harus sesuai dengan karakter (contoh: heroik, penuh semangat, tenang, misterius, dll).\\n- Proporsi tubuh, terutama tangan dan wajah, harus realistis dan konsisten antar cover.\\n- Latar belakang (background) diharapkan mendukung suasana cerita atau dunia dari masing-masing karakter.\\n\\nFile referensi (desain karakter, referensi pose, dan skema warna) serta catatan revisi awal dapat diakses melalui Google Drive (link sudah dikirim sebelumnya).\\n\\nNOTE PENTING:\\n- Perhatikan secara khusus ekspresi wajah dan proporsi tangan.\\n- Pastikan resolusi cukup tinggi untuk keperluan cetak.\\n- Gunakan layer terpisah untuk karakter dan background agar mudah direvisi jika diperlukan.",
-        "acc_by": "SARI",
-        "create_at": "2025-05-25T19:43:03.006Z",
-        "update_at": "2025-05-25T19:50:14.775Z",
-        "is_accepted": true
-    },
-    {
-        "marketing_design_id": 40,
-        "card_id": 397,
-        "input_by": "LIAANA",
-        "buyer_name": "studioaluna",
-        "code_order": "#FO1928830QWE9",
-        "jumlah_design": 15,
-        "order_number": "0788",
-        "account": "ALUNASTUDIO",
-        "deadline": "2025-06-01T13:00:00.000Z",
-        "jumlah_revisi": 5,
-        "order_type": "PREMIUM",
-        "offer_type": "NEW",
-        "style": "REALISTIC DIGITAL PAINTING",
-        "resolution": "ULTRA HD",
-        "price_normal": "750.00",
-        "price_discount": "500.00",
-        "discount_percentage": "33.33",
-        "required_files": "TIFF, PNG, PSD",
-        "project_type": "NEW PROJECT",
-        "reference": "cek PDF brief dari buyer",
-        "file_and_chat": "https://drive.google.com/drive/folders/folderC456HIJ",
-        "detail_project": "Lukisan digital realistis untuk seri novel. Fokus pada karakter utama dan latar tempat. Terdiri dari 15 scene penting. Referensi dan urutan scene ada di brief.",
-        "acc_by": "SUPERVISOR2",
-        "create_at": "2025-05-25T12:31:31.744Z",
-        "update_at": "2025-05-25T12:33:12.477Z",
-        "is_accepted": false
-    },
-    {
-        "marketing_design_id": 23,
-        "card_id": 378,
-        "input_by": "MIKA",
-        "buyer_name": " r_almeida",
-        "code_order": "#FO2D1DAB4342",
-        "jumlah_design": 1,
-        "order_number": "0211",
-        "account": "ETERNAL",
-        "deadline": "2025-04-09T05:47:00.000Z",
-        "jumlah_revisi": 20,
-        "order_type": "REGULAR ",
-        "offer_type": "NEW",
-        "style": "FUTURISTIC",
-        "resolution": "90cm x 135cm",
-        "price_normal": "100.00",
-        "price_discount": "0.00",
-        "discount_percentage": "0.00",
-        "required_files": "JPG, PNG, SOURCE FILE",
-        "project_type": "SIMILAR 60%",
-        "reference": "https://drive.google.com/drive/folders/1O7M8fmjKr5UIGGIMF8S63AYd1QCuQ3fG",
-        "file_and_chat": "https://drive.google.com/drive/folders/1k1NoZ0pKSq2lhhTB6sBlJeSqBPXYcICp",
-        "detail_project": "I have finally found what I am looking for\nThis is what I’m looking for but this is in perspective I’d like to have it seen from above like a drone (CEK FILE BUYER)\nColor should be black, gold and red\nCan you do this king of 3d drawing? Seen from above? Like a drone or Birds Eye view. Not sure how to call it\nThis is for a big area remember. Can’t just be copy paste it will require some work\nCEK FULL BRIEF DENGAN BAIK SIRR KARENA CUKUP PANJANG: FULL BRIEF\nGASSS 👍\n",
-        "acc_by": "-",
-        "create_at": "2025-05-04T12:49:07.696Z",
-        "update_at": "2025-05-24T11:43:55.713Z",
-        "is_accepted": true
-    },
-    {
-        "marketing_design_id": 34,
-        "card_id": 421,
-        "input_by": "AYU",
-        "buyer_name": "vickyj154",
-        "code_order": "#FO11A5903E387",
-        "jumlah_design": 1,
-        "order_number": "0250",
-        "account": "BLAUPATKA",
-        "deadline": "2025-05-08T00:00:00.000Z",
-        "jumlah_revisi": 10,
-        "order_type": "REGULAR",
-        "offer_type": "NEW",
-        "style": "RETRO COMIC",
-        "resolution": "HIGH RESOLUTION",
-        "price_normal": "75.00",
-        "price_discount": "0.00",
-        "discount_percentage": "0.00",
-        "required_files": "{\"JPG\",\"PNG\",\"SOURCE FILE\"}",
-        "project_type": "ORIGINAL",
-        "reference": "CEK DETAIL PROJECT",
-        "file_and_chat": "https://drive.google.com/drive/folders/1VCm0Hu0j5otwbwyQEwzwOWXP0n3s77cv",
-        "detail_project": "Cover art untuk buku puisi/art dengan tema mental health, LGBT, grief, dll.\nGaya komik, ilustrasi monster androgini dengan kepala rusak/bergelombang.\nWarna background: lesbian flag (oranye, ungu, pink). Dalam kepala monster ada anak/monster kecil terperangkap.",
-        "acc_by": "FAHMI",
-        "create_at": "2025-05-04T13:07:10.240Z",
-        "update_at": "2025-08-29T16:10:20.928Z",
-        "is_accepted": false
-    },
-    {
-        "marketing_design_id": 22,
-        "card_id": 388,
-        "input_by": "SUSAN",
-        "buyer_name": "trend_designs_black_maroon_black_maroon",
-        "code_order": "#PO549YTR765",
-        "jumlah_design": 7,
-        "order_number": "5054",
-        "account": "TRENDSETTER",
-        "deadline": "2025-08-12T23:24:00.000Z",
-        "jumlah_revisi": 4,
-        "order_type": "PREMIUM",
-        "offer_type": "NEW COLLECTION",
-        "style": "FASHION POSTER WITH A NEW BRAND",
-        "resolution": "PRINT READY",
-        "price_normal": "120.00",
-        "price_discount": "100.00",
-        "discount_percentage": "16.67",
-        "required_files": "AI, PNG",
-        "project_type": "GRAPHIC DESIGN",
-        "reference": "INSTAGRAM CAMPAIGN",
-        "file_and_chat": "https://drive.google.com/drive/folders/example9",
-        "detail_project": "Create a series of posters for the new fashion collection, showcasing a minimalist aesthetic.",
-        "acc_by": "ANDY",
-        "create_at": "2025-05-04T10:56:19.233Z",
-        "update_at": "2025-08-29T16:24:14.037Z",
-        "is_accepted": true
-    },
-    {
-        "marketing_design_id": 25,
-        "card_id": null,
-        "input_by": "MIKA",
-        "buyer_name": "davemarsh912",
-        "code_order": "#FO8277306ADC4",
-        "jumlah_design": 10,
-        "order_number": "0234",
-        "account": "BLAUPATKA",
-        "deadline": "2025-05-08T00:00:00.000Z",
-        "jumlah_revisi": 20,
-        "order_type": "REGULAR",
-        "offer_type": "REPEAT",
-        "style": "TAROT CARD ILLUSTRATION",
-        "resolution": "HIGH RESOLUTION",
-        "price_normal": "400.00",
-        "price_discount": "0.00",
-        "discount_percentage": "0.00",
-        "required_files": "JPG, PNG, SOURCE FILE (PSD)",
-        "project_type": "SIMILAR 60%",
-        "reference": "CEK DI SINI",
-        "file_and_chat": "https://drive.google.com/drive/folders/123nycR4tpxFI8V7Wd0XKDhKNu0UQulFX",
-        "detail_project": "Okay, so there are 25 cards. I have PSD file with all of them in it. These will be shown on a page like this at the beginning of the first (of six) books… (CEK FILE BUYER)\nEach card represents a character or event throughout the books\nIn each book, 3-4 will be revealed so the back inside cover of that book will have those highlighted like this. (CEK FILE BUYER)\nEXCEPT, I will give you a panel from the comic that you will turn into a wood cut, replacing the existing one like this… (CEK FILE BUYER)\nLANJUTAN DETAILNYA: CEK FULL BRIEF SIRR\nNOTE: STYLENYA SEPERTI PROJEK SEBELUMNYA (Kode order BAFC6)\nGASSSS 👍",
-        "acc_by": "",
-        "create_at": "2025-05-04T12:56:01.098Z",
-        "update_at": null,
-        "is_accepted": false
-    },
-    {
-        "marketing_design_id": 20,
-        "card_id": 377,
-        "input_by": "MIKA",
-        "buyer_name": "mimimei",
-        "code_order": "#FO51A54770D83",
-        "jumlah_design": 1,
-        "order_number": "0243",
-        "account": "ETERNAL",
-        "deadline": "2025-08-27T10:12:00.000Z",
-        "jumlah_revisi": 10,
-        "order_type": "REGULAR",
-        "offer_type": "NEW",
-        "style": "(diisi kadiv OP)",
-        "resolution": " HIGH RESOLUTION (Best for Print)",
-        "price_normal": "50.00",
-        "price_discount": "0.00",
-        "discount_percentage": "0.00",
-        "required_files": "JPG, PNG, SOURCE FILE",
-        "project_type": "ORIGINAL",
-        "reference": "CEK DI SINI",
-        "file_and_chat": "https://drive.google.com/drive/folders/15xgfcLYc0q9UjoCFkcn8xGI1T9n8JhBI ",
-        "detail_project": "Hello! I am working on a project for university, we are making a visual idea of a game and we were informed that we are allowed to get help from other artists. I have made up an island and drew small concepts of it but I am not very good at drawing concepts, I was wondering if you could help by drawing this made up island?\nI need Vector illustration! I have some concepts and notes of what I want included in this drawing\nI will share my concepts and notes, let me know if it's clear enough\nHello! I am working on a project for university, we are making a visual idea of a game and we were informed that we are allowed to get help from other artists. I have made up an island and drew small concepts of it but I am not very good at drawing concepts, I was wondering if you could help by drawing this made up island?\nI need Vector illustration! I have some concepts and notes of what I want included in this drawing\nI will share my concepts and notes, let me know if it's clear enough\nHello! I am working on a project for university, we are making a visual idea of a game and we were informed that we are allowed to get help from other artists. I have made up an island and drew small concepts of it but I am not very good at drawing concepts, I was wondering if you could help by drawing this made up island?\nI need Vector illustration! I have some concepts and notes of what I want included in this drawing\nI will share my concepts and notes, let me know if it's clear enough\nHello! I am working on a project for university, we are making a visual idea of a game and we were informed that we are allowed to get help from other artists. I have made up an island and drew small concepts of it but I am not very good at drawing concepts, I was wondering if you could help by drawing this made up island?\nI need Vector illustration! I have some concepts and notes of what I want included in this drawing\nI will share my concepts and notes, let me know if it's clear enough\nHello! I am working on a project for university, we are making a visual idea of a game and we were informed that we are allowed to get help from other artists. I have made up an island and drew small concepts of it but I am not very good at drawing concepts, I was wondering if you could help by drawing this made up island?\nI need Vector illustration! I have some concepts and notes of what I want included in this drawing\nI will share my concepts and notes, let me know if it's clear enough\nHello! I am working on a project for university, we are making a visual idea of a game and we were informed that we are allowed to get help from other artists. I have made up an island and drew small concepts of it but I am not very good at drawing concepts, I was wondering if you could help by drawing this made up island?\nI need Vector illustration! I have some concepts and notes of what I want included in this drawing\nI will share my concepts and notes, let me know if it's clear enough\n",
-        "acc_by": "-",
-        "create_at": null,
-        "update_at": "2025-08-29T16:02:17.093Z",
-        "is_accepted": false
-    }
-]
 
+//MARKETING DESIGN JOINED
+// ✅ Get all marketing_design + join
+app.get("/api/marketing-design/joined", async (req, res) => {
+  try {
+    const result = await client.query(`
+      SELECT 
+        md.marketing_design_id,
+        md.buyer_name,
+        md.code_order,
+        md.jumlah_design,
+        md.order_number,
+        md.deadline,
+        md.jumlah_revisi,
+        md.price_normal,
+        md.price_discount,
+        md.discount_percentage,
+        md.required_files,
+        md.file_and_chat,
+        md.detail_project,
+        md.create_at,
+        md.update_at,
 
-//12. get laporan data otomatis per 10 hari berjalan
-app.get("/api/marketing-design/reports", async (req, res) => {
-    try {
-        const { mode, bulan, periode } = req.query;
+        -- Relasi (balikin ID + Nama)
+        mdu.id AS input_by,
+        mdu.nama_marketing AS input_by_name,
+        mdu.divisi AS input_by_divisi,
 
-        let query = "";
-        let params = [];
+        ad.id AS account,
+        ad.nama_account AS account_name,
 
-        if (mode === "auto") {
-            query = `
-        SELECT *
-        FROM marketing_design
-        WHERE create_at::date BETWEEN
-          DATE_TRUNC('month', CURRENT_DATE) +
-          CASE 
-            WHEN EXTRACT(DAY FROM CURRENT_DATE) BETWEEN 1 AND 10
-                THEN INTERVAL '0 day'
-            WHEN EXTRACT(DAY FROM CURRENT_DATE) BETWEEN 11 AND 20
-                THEN INTERVAL '10 day'
-            ELSE INTERVAL '20 day'
-          END
-          AND
-          CASE 
-            WHEN EXTRACT(DAY FROM CURRENT_DATE) BETWEEN 1 AND 10
-                THEN DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '10 day' - INTERVAL '1 day'
-            WHEN EXTRACT(DAY FROM CURRENT_DATE) BETWEEN 11 AND 20
-                THEN DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '20 day' - INTERVAL '1 day'
-            ELSE (DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '1 month' - INTERVAL '1 day')
-          END
-      `;
-        } else if (mode === "manual" && bulan && periode) {
-            query = `
-        WITH range AS (
-          SELECT 
-            DATE_TRUNC('month', $1::date) AS start_month,
-            DATE_TRUNC('month', $1::date) + INTERVAL '1 month' - INTERVAL '1 day' AS end_month
-        )
-        SELECT *
-        FROM marketing_design, range
-        WHERE create_at::date BETWEEN
-          CASE 
-            WHEN $2 = 1 THEN start_month
-            WHEN $2 = 2 THEN start_month + INTERVAL '10 day'
-            ELSE start_month + INTERVAL '20 day'
-          END
-          AND
-          CASE 
-            WHEN $2 = 1 THEN start_month + INTERVAL '10 day' - INTERVAL '1 day'
-            WHEN $2 = 2 THEN start_month + INTERVAL '20 day' - INTERVAL '1 day'
-            ELSE end_month
-          END
-      `;
-            params = [bulan + "-01", parseInt(periode, 10)];
-            // params = [bulan + "-01", periode]; // contoh: bulan=2025-05, periode=2
-        } else {
-            return res.status(400).json({ error: "Invalid parameters" });
-        }
+        ot.id AS offer_type,
+        ot.offer_name AS offer_type_name,
 
-        const result = await pool.query(query, params);
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "Server error" });
-    }
+        pt.id AS project_type,
+        pt.project_name AS project_type_name,
+
+        sd.id AS style,
+        sd.style_name AS style_name,
+
+        sp.id AS status_project,
+        sp.status_name AS status_project_name
+
+      FROM marketing_design md
+      LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
+      LEFT JOIN account_design ad ON md.account = ad.id
+      LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
+      LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
+      LEFT JOIN style_design sd ON md.style_id = sd.id
+      LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
+      ORDER BY md.marketing_design_id DESC;
+    `);
+
+    res.json(result.rows);
+  } catch (err) {
+    console.error("❌ Error get joined marketing_design:", err);
+    res.status(500).json({ error: "Failed to fetch joined data" });
+  }
 });
 
 
-// ✅ Endpoint marketing-design per 10 hari dengan detail
+// ✅ Get marketing_design by ID + join
+app.get("/api/marketing-design/joined/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await client.query(`
+      SELECT 
+        md.marketing_design_id,
+        md.buyer_name,
+        md.code_order,
+        md.jumlah_design,
+        md.order_number,
+        md.deadline,
+        md.jumlah_revisi,
+        md.price_normal,
+        md.price_discount,
+        md.discount_percentage,
+        md.required_files,
+        md.file_and_chat,
+        md.detail_project,
+        md.create_at,
+        md.update_at,
+
+        -- Relasi (balikin ID + Nama)
+        mdu.id AS input_by,
+        mdu.nama_marketing AS input_by_name,
+        mdu.divisi AS input_by_divisi,
+
+        ad.id AS account,
+        ad.nama_account AS account_name,
+
+        ot.id AS offer_type,
+        ot.offer_name AS offer_type_name,
+
+        pt.id AS project_type,
+        pt.project_name AS project_type_name,
+
+        sd.id AS style,
+        sd.style_name AS style_name,
+
+        sp.id AS status_project,
+        sp.status_name AS status_project_name
+
+      FROM marketing_design md
+      LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
+      LEFT JOIN account_design ad ON md.account = ad.id
+      LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
+      LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
+      LEFT JOIN style_design sd ON md.style_id = sd.id
+      LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
+      WHERE md.marketing_design_id = $1;
+    `, [id]);
+
+    if (result.rows.length === 0) return res.status(404).json({ error: "Marketing design not found" });
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error get marketing_design by ID:", err);
+    res.status(500).json({ error: "Failed to fetch joined data" });
+  }
+});
+
+// ✅ UPDATE Data Marketing Design by ID
+app.put("/api/marketing-design/joined/:id", async (req, res) => {
+  const { id } = req.params;
+  const {
+    buyer_name,
+    code_order,
+    order_number,
+    jumlah_design,
+    deadline,
+    jumlah_revisi,
+    price_normal,
+    price_discount,
+    discount_percentage,
+    required_files,
+    file_and_chat,
+    detail_project,
+    input_by,
+    account,
+    offer_type,
+    project_type_id,
+    style_id,
+    status_project_id
+  } = req.body;
+
+  try {
+    const result = await client.query(
+      `
+      UPDATE marketing_design
+      SET 
+        buyer_name        = $1,
+        code_order        = $2,
+        order_number      = $3,
+        jumlah_design     = $4,
+        deadline          = $5,
+        jumlah_revisi     = $6,
+        price_normal      = $7,
+        price_discount    = $8,
+        discount_percentage = $9,
+        required_files    = $10,
+        file_and_chat     = $11,
+        detail_project    = $12,
+        input_by          = $13,
+        account           = $14,
+        offer_type        = $15,
+        project_type_id   = $16,
+        style_id          = $17,
+        status_project_id = $18,
+        update_at         = NOW()
+      WHERE marketing_design_id = $19
+      RETURNING *;
+      `,
+      [
+        buyer_name,
+        code_order,
+        order_number,
+        jumlah_design,
+        deadline,
+        jumlah_revisi,
+        price_normal,
+        price_discount,
+        discount_percentage,
+        required_files,
+        file_and_chat,
+        detail_project,
+        input_by,
+        account,
+        offer_type,
+        project_type_id,
+        style_id,
+        status_project_id,
+        id,
+      ]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "❌ Marketing design not found" });
+    }
+
+    // Ambil data dengan join supaya konsisten
+    const joined = await client.query(
+      `
+      SELECT 
+        md.marketing_design_id,
+        md.buyer_name,
+        md.code_order,
+        md.order_number,
+        md.jumlah_design,
+        md.deadline,
+        md.jumlah_revisi,
+        md.price_normal,
+        md.price_discount,
+        md.discount_percentage,
+        md.required_files,
+        md.file_and_chat,
+        md.detail_project,
+        md.create_at,
+        md.update_at,
+
+        mdu.id AS input_by,
+        mdu.nama_marketing AS input_by_name,
+        mdu.divisi AS input_by_divisi,
+
+        ad.id AS account,
+        ad.nama_account AS account_name,
+
+        ot.id AS offer_type,
+        ot.offer_name AS offer_type_name,
+
+        pt.id AS project_type,
+        pt.project_name AS project_type_name,
+
+        sd.id AS style,
+        sd.style_name AS style_name,
+
+        sp.id AS status_project,
+        sp.status_name AS status_project_name
+
+      FROM marketing_design md
+      LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
+      LEFT JOIN account_design ad ON md.account = ad.id
+      LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
+      LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
+      LEFT JOIN style_design sd ON md.style_id = sd.id
+      LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
+      WHERE md.marketing_design_id = $1
+      `,
+      [id]
+    );
+
+    res.json({
+      message: "✅ Marketing design updated successfully",
+      data: joined.rows[0],
+    });
+  } catch (err) {
+    console.error("❌ Error updating marketing_design:", err);
+    res.status(500).json({ error: "Failed to update marketing_design" });
+  }
+});
+
+
+// END MARKERING DESING JOINED 
+
+//12. get laporan data otomatis per 10 hari berjalan
+// ✅ Endpoint untuk data marketing_design hari ini + join
+app.get('/api/marketing-design/reports/today', async (req, res) => {
+  try {
+    const result = await client.query(`
+      SELECT 
+        md.marketing_design_id,
+        md.buyer_name,
+        md.code_order,
+        md.order_number,
+        md.jumlah_design,
+        md.deadline,
+        md.jumlah_revisi,
+        md.price_normal,
+        md.price_discount,
+        md.discount_percentage,
+        md.required_files,
+        md.file_and_chat,
+        md.detail_project,
+        md.create_at,
+        md.update_at,
+
+        mdu.id AS input_by,
+        mdu.nama_marketing AS input_by_name,
+        ad.id AS account,
+        ad.nama_account AS account_name,
+        ot.id AS offer_type,
+        ot.offer_name AS offer_type_name,
+        pt.id AS project_type,
+        pt.project_name AS project_type_name,
+        sd.id AS style,
+        sd.style_name AS style_name,
+        sp.id AS status_project,
+        sp.status_name AS status_project_name
+
+      FROM marketing_design md
+      LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
+      LEFT JOIN account_design ad ON md.account = ad.id
+      LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
+      LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
+      LEFT JOIN style_design sd ON md.style_id = sd.id
+      LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
+      WHERE DATE(md.create_at) = CURRENT_DATE
+      ORDER BY md.marketing_design_id DESC
+    `);
+
+    res.json(result.rows);
+  } catch (err) {
+    console.error("❌ Error report today:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+
+// ✅ Endpoint marketing-design per 10 hari dengan detail + join
 app.get("/api/marketing-design/reports", async (req, res) => {
-    try {
-        const result = await client.query(`
+  try {
+    const result = await client.query(`
       SELECT
-        DATE_TRUNC('month', create_at) AS month,
-        FLOOR((EXTRACT(DAY FROM create_at) - 1) / 10) + 1 AS period,
+        DATE_TRUNC('month', md.create_at) AS month,
+        FLOOR((EXTRACT(DAY FROM md.create_at) - 1) / 10) + 1 AS period,
         COUNT(*) AS total,
-        ARRAY_AGG(marketing_design_id) AS ids,
+        ARRAY_AGG(md.marketing_design_id) AS ids,
         JSON_AGG(
           JSON_BUILD_OBJECT(
-            'marketing_design_id', marketing_design_id,
-            'card id', card_id,
-            'input by', input_by,
-            'buyer name', buyer_name,
-            'code order', code_order,
-            'jumlah design', jumlah_design,
-            'order number', order_number,
-            'account', account,
-            'deadline', deadline,
-            'jumlah revisi', jumlah_revisi,
-            'order type', order_type,
-            'offer type', offer_type,
-            'style', style,
-            'resolution', resolution,
-            'price normal', price_normal,
-            'price discount', price_discount,
-            'discount percentage', discount_percentage,
-            'required files', required_files,
-            'project type', project_type,
-            'reference', reference,
-            'file and chat', file_and_chat,
-            'detail project', detail_project,
-            'acc by', acc_by,
-            'create at', create_at,
-            'update at', update_at,
-            'is accepted', is_accepted
+            'marketing_design_id', md.marketing_design_id,
+            'card_id', md.card_id,
+            'buyer_name', md.buyer_name,
+            'code_order', md.code_order,
+            'order_number', md.order_number,
+            'jumlah_design', md.jumlah_design,
+            'deadline', md.deadline,
+            'jumlah_revisi', md.jumlah_revisi,
+            'price_normal', md.price_normal,
+            'price_discount', md.price_discount,
+            'discount_percentage', md.discount_percentage,
+            'required_files', md.required_files,
+            'file_and_chat', md.file_and_chat,
+            'detail_project', md.detail_project,
+            'create_at', md.create_at,
+            'update_at', md.update_at,
+
+            -- Relasi (balikin ID + Nama)
+            'input_by', mdu.id,
+            'input_by_name', mdu.nama_marketing,
+            'account', ad.id,
+            'account_name', ad.nama_account,
+            'offer_type', ot.id,
+            'offer_type_name', ot.offer_name,
+            'project_type', pt.id,
+            'project_type_name', pt.project_name,
+            'style', sd.id,
+            'style_name', sd.style_name,
+            'status_project', sp.id,
+            'status_project_name', sp.status_name
           )
         ) AS details
-      FROM marketing_design
+      FROM marketing_design md
+      LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
+      LEFT JOIN account_design ad ON md.account = ad.id
+      LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
+      LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
+      LEFT JOIN style_design sd ON md.style_id = sd.id
+      LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
       GROUP BY month, period
       ORDER BY month DESC, period ASC;
     `);
 
-        res.json(result.rows);
-    } catch (err) {
-        console.error("❌ Query error:", err.message);
-        res.status(500).json({ error: err.message });
-    }
-});
-
-
-const parseDate = (row) => {
-    const dateStr = row.month;
-    return dateStr ? new Date(dateStr) : null;
-};
-
-
-const filteredTenDays = tenDaysData
-    .filter((row) => {
-        const monthKey = new Date(row.month).toISOString().slice(0, 7);
-        if (monthKey !== selectedMonth) return false;
-
-        if (selectedRange === "1-10") return row.period === 1;
-        if (selectedRange === "11-20") return row.period === 2;
-        if (selectedRange === "21-31") return row.period === 3;
-        return true;
-    })
-    .flatMap((row) => row.details); // ambil semua details dari periode
-
-
-
-// MARKETRING USER 
-// 1. Get semua marketing_user
-app.get("/api/marketing-users", async (req, res) => {
-  try {
-    const result = await client.query("SELECT * FROM marketing_musik_user ORDER BY id ASC");
     res.json(result.rows);
   } catch (err) {
-    console.error("❌ Error get marketing_musik_user:", err);
-    res.status(500).json({ error: "Gagal ambil data" });
-  }
-});
-// 2.Get 1 user by ID
-app.get("/api/marketing-users/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await client.query("SELECT * FROM marketing_musik_user WHERE id = $1", [id]);
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "User tidak ditemukan" });
-    }
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Error get user:", err);
-    res.status(500).json({ error: "Gagal ambil user" });
+    console.error("❌ Query error:", err.message);
+    res.status(500).json({ error: err.message });
   }
 });
 
-// 3. Create user baru
-app.post("/api/marketing-users", async (req, res) => {
-  try {
-    const { nama_marketing, divisi } = req.body;
-    const result = await client.query(
-      `INSERT INTO marketing_musik_user (nama_marketing, divisi) 
-       VALUES ($1, $2) RETURNING *`,
-      [nama_marketing, divisi]
-    );
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Error create user:", err);
-    res.status(500).json({ error: "Gagal buat user baru" });
-  }
-});
-
-// 4. Update user
-app.put("/api/marketing-users/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { nama_marketing, divisi } = req.body;
-    const result = await client.query(
-      `UPDATE marketing_musik_user 
-       SET nama_marketing=$1, divisi=$2, update_at=NOW() 
-       WHERE id=$5 RETURNING *`,
-      [nama_marketing, divisi, id]
-    );
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "User tidak ditemukan" });
-    }
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Error update user:", err);
-    res.status(500).json({ error: "Gagal update user" });
-  }
-});
-
-// 5. Delete user
-app.delete("/api/marketing-users/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await client.query("DELETE FROM marketing_musik_user WHERE id=$1 RETURNING *", [id]);
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "User tidak ditemukan" });
-    }
-    res.json({ message: "User berhasil dihapus" });
-  } catch (err) {
-    console.error("❌ Error delete user:", err);
-    res.status(500).json({ error: "Gagal hapus user" });
-  }
-});
-
-// ACCOUNT MUSIC 
-// ✅ Ambil semua account
-app.get("/api/accounts-music", async (req, res) => {
-  try {
-    const result = await client.query("SELECT * FROM account_music ORDER BY id ASC");
-    res.json(result.rows);
-  } catch (err) {
-    console.error("❌ Error get accounts:", err);
-    res.status(500).json({ error: "Gagal ambil data accounts" });
-  }
-});
-
-// ✅ Ambil 1 account by ID
-app.get("/api/accounts-music/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await client.query("SELECT * FROM account_music WHERE id = $1", [id]);
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Account tidak ditemukan" });
-    }
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Error get account:", err);
-    res.status(500).json({ error: "Gagal ambil account" });
-  }
-});
-
-// ✅ Tambah account baru
-app.post("/api/accounts-music", async (req, res) => {
-  try {
-    const { nama_account } = req.body;
-    const result = await client.query(
-      `INSERT INTO account_music (nama_account) 
-       VALUES ($1) RETURNING *`,
-      [nama_account]
-    );
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Error create account:", err);
-    res.status(500).json({ error: "Gagal buat account baru" });
-  }
-});
-
-// ✅ Update account
-app.put("/api/accounts-music/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { nama_account } = req.body;
-    const result = await client.query(
-      `UPDATE account_music 
-       SET nama_account=$1, update_at=NOW() 
-       WHERE id=$2 RETURNING *`,
-      [nama_account, id]
-    );
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Account tidak ditemukan" });
-    }
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Error update account:", err);
-    res.status(500).json({ error: "Gagal update account" });
-  }
-});
-
-// ✅ Hapus account
-app.delete("/api/accounts-music/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await client.query("DELETE FROM account_music WHERE id=$1 RETURNING *", [id]);
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Account tidak ditemukan" });
-    }
-    res.json({ message: "Account berhasil dihapus" });
-  } catch (err) {
-    console.error("❌ Error delete account:", err);
-    res.status(500).json({ error: "Gagal hapus account" });
-  }
-});
-
-// PROJECT TYPE MUSIC 
-// ✅ Get all project types
-app.get('/api/project-types-music', async (req, res) => {
-  try {
-    const result = await client.query('SELECT * FROM project_type ORDER BY id ASC');
-    res.json(result.rows);
-  } catch (err) {
-    console.error('❌ Error ambil project types:', err);
-    res.status(500).json({ error: 'Gagal ambil data project type' });
-  }
-});
-
-// ✅ Get project type by ID
-app.get('/api/project-types-music/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await client.query('SELECT * FROM project_type WHERE id = $1', [id]);
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Project type tidak ditemukan' });
-    }
-
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error('❌ Error ambil project type by ID:', err);
-    res.status(500).json({ error: 'Gagal ambil project type' });
-  }
-});
-
-// ✅ Create new project type
-app.post('/api/project-types-music', async (req, res) => {
-  try {
-    const { nama_project } = req.body;
-    const result = await client.query(
-      'INSERT INTO project_type (nama_project) VALUES ($1) RETURNING *',
-      [nama_project]
-    );
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.error('❌ Error tambah project type:', err);
-    res.status(500).json({ error: 'Gagal tambah project type' });
-  }
-});
-
-// ✅ Update project type
-app.put('/api/project-types-music/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { nama_project } = req.body;
-
-    const result = await client.query(
-      `UPDATE project_type 
-       SET nama_project = $1, update_at = CURRENT_TIMESTAMP
-       WHERE id = $2 RETURNING *`,
-      [nama_project, id]
-    );
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Project type tidak ditemukan' });
-    }
-
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error('❌ Error update project type:', err);
-    res.status(500).json({ error: 'Gagal update project type' });
-  }
-});
-
-// ✅ Delete project type
-app.delete('/api/project-types-music/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await client.query(
-      'DELETE FROM project_type WHERE id = $1 RETURNING *',
-      [id]
-    );
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Project type tidak ditemukan' });
-    }
-
-    res.json({ message: 'Project type berhasil dihapus' });
-  } catch (err) {
-    console.error('❌ Error hapus project type:', err);
-    res.status(500).json({ error: 'Gagal hapus project type' });
-  }
-});
-
-// OFFER TYPE MUSIC 
-// ✅ Get all offer types
-app.get('/api/offer-types-music', async (req, res) => {
-  try {
-    const result = await client.query('SELECT * FROM offer_type_music ORDER BY id ASC');
-    res.json(result.rows);
-  } catch (err) {
-    console.error('❌ Error ambil offer types:', err);
-    res.status(500).json({ error: 'Gagal ambil data offer types' });
-  }
-});
-
-// ✅ Get offer type by ID
-app.get('/api/offer-types-music/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await client.query('SELECT * FROM offer_type_music WHERE id = $1', [id]);
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Offer type tidak ditemukan' });
-    }
-
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error('❌ Error ambil offer type by ID:', err);
-    res.status(500).json({ error: 'Gagal ambil offer type' });
-  }
-});
-
-// ✅ Create new offer type
-app.post('/api/offer-types-music', async (req, res) => {
-  try {
-    const { offer_name } = req.body;
-    const result = await client.query(
-      'INSERT INTO offer_type_music (offer_name) VALUES ($1) RETURNING *',
-      [offer_name]
-    );
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.error('❌ Error tambah offer type:', err);
-    res.status(500).json({ error: 'Gagal tambah offer type' });
-  }
-});
-
-// ✅ Update offer type
-app.put('/api/offer-types-music/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { offer_name } = req.body;
-
-    const result = await client.query(
-      `UPDATE offer_type_music 
-       SET offer_name = $1, update_at = CURRENT_TIMESTAMP
-       WHERE id = $2 RETURNING *`,
-      [offer_name, id]
-    );
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Offer type tidak ditemukan' });
-    }
-
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error('❌ Error update offer type:', err);
-    res.status(500).json({ error: 'Gagal update offer type' });
-  }
-});
-
-// ✅ Delete offer type
-app.delete('/api/offer-types-music/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await client.query(
-      'DELETE FROM offer_type_music WHERE id = $1 RETURNING *',
-      [id]
-    );
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Offer type tidak ditemukan' });
-    }
-
-    res.json({ message: 'Offer type berhasil dihapus' });
-  } catch (err) {
-    console.error('❌ Error hapus offer type:', err);
-    res.status(500).json({ error: 'Gagal hapus offer type' });
-  }
-});
-
-// TYPE TRACK 
-// ✅ Get all track types
-app.get('/api/track-types', async (req, res) => {
-  try {
-    const result = await client.query('SELECT * FROM track_types ORDER BY id ASC');
-    res.json(result.rows);
-  } catch (err) {
-    console.error('❌ Error ambil track types:', err);
-    res.status(500).json({ error: 'Gagal ambil data track types' });
-  }
-});
-
-// ✅ Get track type by ID
-app.get('/api/track-types/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await client.query('SELECT * FROM track_types WHERE id = $1', [id]);
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Track type tidak ditemukan' });
-    }
-
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error('❌ Error ambil track type by ID:', err);
-    res.status(500).json({ error: 'Gagal ambil track type' });
-  }
-});
-
-// ✅ Create new track type
-app.post('/api/track-types', async (req, res) => {
-  try {
-    const { track_name } = req.body;
-    const result = await client.query(
-      'INSERT INTO track_types (track_name) VALUES ($1) RETURNING *',
-      [track_name]
-    );
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.error('❌ Error tambah track type:', err);
-    res.status(500).json({ error: 'Gagal tambah track type' });
-  }
-});
-
-// ✅ Update track type
-app.put('/api/track-types/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { track_name } = req.body;
-
-    const result = await client.query(
-      `UPDATE track_types 
-       SET track_name = $1, update_at = CURRENT_TIMESTAMP
-       WHERE id = $2 RETURNING *`,
-      [track_name, id]
-    );
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Track type tidak ditemukan' });
-    }
-
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error('❌ Error update track type:', err);
-    res.status(500).json({ error: 'Gagal update track type' });
-  }
-});
-
-// ✅ Delete track type
-app.delete('/api/track-types/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await client.query(
-      'DELETE FROM track_types WHERE id = $1 RETURNING *',
-      [id]
-    );
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Track type tidak ditemukan' });
-    }
-
-    res.json({ message: 'Track type berhasil dihapus' });
-  } catch (err) {
-    console.error('❌ Error hapus track type:', err);
-    res.status(500).json({ error: 'Gagal hapus track type' });
-  }
-});
-
-// MUSIC GENRE 
-// ✅ GET semua genre
-app.get("/api/genre-music", async (req, res) => {
-  try {
-    const result = await client.query("SELECT * FROM genre_music ORDER BY id ASC");
-    res.json(result.rows);
-  } catch (err) {
-    console.error("❌ Error ambil genre:", err);
-    res.status(500).json({ error: "Gagal ambil genre" });
-  }
-});
-
-// ✅ GET genre by ID
-app.get("/api/genre-music/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await client.query("SELECT * FROM genre_music WHERE id = $1", [id]);
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Genre tidak ditemukan" });
-    }
-
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Error ambil genre by ID:", err);
-    res.status(500).json({ error: "Gagal ambil genre" });
-  }
-});
-
-// ✅ CREATE genre baru
-app.post("/api/genre-music", async (req, res) => {
-  try {
-    const { genre_name } = req.body;
-    const result = await client.query(
-      "INSERT INTO genre_music (genre_name) VALUES ($1) RETURNING *",
-      [genre_name]
-    );
-
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Error tambah genre:", err);
-    res.status(500).json({ error: "Gagal tambah genre" });
-  }
-});
-
-// ✅ UPDATE genre
-app.put("/api/genre-music/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { genre_name } = req.body;
-
-    const result = await client.query(
-      `UPDATE genre_music 
-       SET genre_name = $1, update_at = CURRENT_TIMESTAMP 
-       WHERE id = $2 RETURNING *`,
-      [genre_name, id]
-    );
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Genre tidak ditemukan" });
-    }
-
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Error update genre:", err);
-    res.status(500).json({ error: "Gagal update genre" });
-  }
-});
-
-// ✅ DELETE genre
-app.delete("/api/genre-music/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await client.query(
-      "DELETE FROM genre_music WHERE id = $1 RETURNING *",
-      [id]
-    );
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Genre tidak ditemukan" });
-    }
-
-    res.json({ message: "Genre berhasil dihapus" });
-  } catch (err) {
-    console.error("❌ Error hapus genre:", err);
-    res.status(500).json({ error: "Gagal hapus genre" });
-  }
-});
-
-// ORDER TYPE MUSIC 
-// ✅ CREATE - Tambah order type baru
-app.post("/api/music-order-types", async (req, res) => {
-  try {
-    const { order_name } = req.body;
-    const result = await client.query(
-      `INSERT INTO music_order_type (order_name) 
-       VALUES ($1) RETURNING *`,
-      [order_name]
-    );
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Error tambah music_order_type:", err);
-    res.status(500).json({ error: "Gagal tambah order type" });
-  }
-});
-
-// ✅ READ - Ambil semua order type
-app.get("/api/music-order-types", async (req, res) => {
-  try {
-    const result = await client.query("SELECT * FROM music_order_type ORDER BY id ASC");
-    res.json(result.rows);
-  } catch (err) {
-    console.error("❌ Error ambil music_order_type:", err);
-    res.status(500).json({ error: "Gagal ambil order type" });
-  }
-});
-
-// ✅ READ by ID - Ambil order type tertentu
-app.get("/api/music-order-types/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await client.query("SELECT * FROM music_order_type WHERE id = $1", [id]);
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Order type tidak ditemukan" });
-    }
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Error ambil order type by ID:", err);
-    res.status(500).json({ error: "Gagal ambil order type" });
-  }
-});
-
-// ✅ UPDATE - Edit order type
-app.put("/api/music-order-types/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { order_name } = req.body;
-    const result = await client.query(
-      `UPDATE music_order_type 
-       SET order_name = $1, update_at = CURRENT_TIMESTAMP 
-       WHERE id = $2 RETURNING *`,
-      [order_name, id]
-    );
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Order type tidak ditemukan" });
-    }
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Error update music_order_type:", err);
-    res.status(500).json({ error: "Gagal update order type" });
-  }
-});
-
-// ✅ DELETE - Hapus order type
-app.delete("/api/music-order-types/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await client.query(
-      "DELETE FROM music_order_type WHERE id = $1 RETURNING *",
-      [id]
-    );
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Order type tidak ditemukan" });
-    }
-    res.json({ message: "Order type berhasil dihapus" });
-  } catch (err) {
-    console.error("❌ Error hapus music_order_type:", err);
-    res.status(500).json({ error: "Gagal hapus order type" });
-  }
-});
-
-
-
-export const getAllMarketingUsers = async () => {
-  try {
-    const response = await axios.get(`${API_URL}/marketing-users`);
-    return response.data;
-  } catch (err) {
-    console.error("❌ Gagal ambil marketing users:", err);
-    return [];
-  }
-};
-
-
-export const getAllAccountsMusic = async () => {
-  try {
-    const response = await axios.get(`${API_URL}/accounts-music`);
-    return response.data;
-  } catch (err) {
-    console.error("❌ Gagal ambil accounts:", err);
-    return [];
-  }
-};
-
-export const getAllProjectTypesMusic = async () => {
-  try {
-    const response = await axios.get(`${API_URL}/project-types-music`);
-    return response.data;
-  } catch (err) {
-    console.error("❌ Gagal ambil project types:", err);
-    return [];
-  }
-};
-
-export const getAllOfferTypesMusic = async () => {
-  try {
-    const response = await axios.get(`${API_URL}/offer-types-music`);
-    return response.data;
-  } catch (err) {
-    console.error("❌ Gagal ambil offer types:", err);
-    return [];
-  }
-};
-
-export const getAllTrackTypes = async () => {
-  try {
-    const response = await axios.get(`${API_URL}/track-types`);
-    return response.data;
-  } catch (err) {
-    console.error("❌ Gagal ambil track types:", err);
-    return [];
-  }
-};
-
-export const getAllGenresMusic = async () => {
-  try {
-    const response = await axios.get(`${API_URL}/genre-music`);
-    return response.data;
-  } catch (err) {
-    console.error("❌ Gagal ambil genre:", err);
-    return [];
-  }
-};
-
-export const getAllOrderTypesMusic = async () => {
-  try {
-    const response = await axios.get(`${API_URL}/music-order-types`);
-    return response.data;
-  } catch (err) {
-    console.error("❌ Gagal ambil order types:", err);
-    return [];
-  }
-};
 

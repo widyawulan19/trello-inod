@@ -358,6 +358,27 @@ export const getDataMarketingDesignNotAccept = () => axios.get(`${API_URL}/marke
 export const getDataMarketingDesignAccept = () => axios.get(`${API_URL}/marketing-design-accepted`);
 export const archiveDataMarektingDesign = (id) => axios.post(`${API_URL}/archive-data-marketing-design/${id}`);
 
+// ✅ Get all marketing_design (joined)
+export const getAllMarketingDesignJoined = () =>
+  axios.get(`${API_URL}/marketing-design/joined`);
+
+// ✅ Get marketing_design by ID (joined)
+export const getMarketingDesignById = (id) =>
+  axios.get(`${API_URL}/marketing-design/joined/${id}`);
+
+// ✅ Update marketing_design by ID (joined result dikembalikan)
+export const updateMarketingDesign = (id, data) =>
+  axios.put(`${API_URL}/marketing-design/joined/${id}`, data);
+
+// ✅ Get laporan hari ini
+export const getMarketingDesignReportToday = () =>
+  axios.get(`${API_URL}/marketing-design/reports/today`);
+
+// ✅ Get laporan per 10 hari
+export const getMarketingDesignReports = () =>
+  axios.get(`${API_URL}/marketing-design/reports`);
+
+
 // ✅ Ambil laporan marketing hari ini
 export const getTodayMarketingDesign = async () => {
   try {
@@ -930,4 +951,145 @@ export const updateAcceptStatus = async (id, data) => {
 export const deleteAcceptStatus = async (id) => {
   const res = await axios.delete(`${API_URL}/accept-status/${id}`);
   return res.data;
+};
+
+// MARKETING DESIGN USER 
+export const getAllMarketingDesainUsers = () =>
+  axios.get(`${API_URL}/marketing-desain-users`);
+
+export const getMarketingDesainUserById = (id) =>
+  axios.get(`${API_URL}/marketing-desain-users/${id}`);
+
+export const createMarketingDesainUser = (data) =>
+  axios.post(`${API_URL}/marketing-desain-users`, data);
+
+export const updateMarketingDesainUser = (id, data) =>
+  axios.put(`${API_URL}/marketing-desain-users/${id}`, data);
+
+export const deleteMarketingDesainUser = (id) =>
+  axios.delete(`${API_URL}/marketing-desain-users/${id}`);
+
+// ACCOUNT DESIGN 
+export const getAllAccountDesign = () =>
+  axios.get(`${API_URL}/account-design`);
+
+export const getAccountDesignById = (id) =>
+  axios.get(`${API_URL}/account-design/${id}`);
+
+export const createAccountDesign = (data) =>
+  axios.post(`${API_URL}/account-design`, data);
+
+export const updateAccountDesign = (id, data) =>
+  axios.put(`${API_URL}/account-design/${id}`, data);
+
+export const deleteAccountDesign = (id) =>
+  axios.delete(`${API_URL}/account-design/${id}`);
+
+
+// OFFER TYPE DESIGN
+export const getAllOfferTypesDesign = () =>
+  axios.get(`${API_URL}/offer-type-design`);
+
+export const getOfferTypeDesignById = (id) =>
+  axios.get(`${API_URL}/offer-type-design/${id}`);
+
+export const addOfferTypeDesign = (offerType) =>
+  axios.post(`${API_URL}/offer-type-design`, { offer_name: offerType });
+
+export const updateOfferTypeDesign = (id, offerType) =>
+  axios.put(`${API_URL}/offer-type-design/${id}`, { offer_name: offerType });
+
+export const deleteOfferTypeDesign = (id) =>
+  axios.delete(`${API_URL}/offer-type-design/${id}`);
+
+
+// PROJECT TYPE DESIGN
+export const getAllProjectTypesDesign = () =>
+  axios.get(`${API_URL}/project-type-design`);
+
+export const getProjectTypeDesignById = (id) =>
+  axios.get(`${API_URL}/project-type-design/${id}`);
+
+export const addProjectTypeDesign = (projectType) =>
+  axios.post(`${API_URL}/project-type-design`, { project_name: projectType });
+
+export const updateProjectTypeDesign = (id, projectType) =>
+  axios.put(`${API_URL}/project-type-design/${id}`, { project_name: projectType });
+
+export const deleteProjectTypeDesign = (id) =>
+  axios.delete(`${API_URL}/project-type-design/${id}`);
+
+
+// STYLE DESIGN
+export const getAllStyleDesign = () =>
+  axios.get(`${API_URL}/style-design`);
+
+export const getStyleDesignById = (id) =>
+  axios.get(`${API_URL}/style-design/${id}`);
+
+export const addStyleDesign = (styleName) =>
+  axios.post(`${API_URL}/style-design`, { style_name: styleName });
+
+export const updateStyleDesign = (id, styleName) =>
+  axios.put(`${API_URL}/style-design/${id}`, { style_name: styleName });
+
+export const deleteStyleDesign = (id) =>
+  axios.delete(`${API_URL}/style-design/${id}`);
+
+
+// STATUS PROJECT DESIGN
+export const getAllStatusProjectDesign = () =>
+  axios.get(`${API_URL}/status-project-design`);
+
+export const getStatusProjectDesignById = (id) =>
+  axios.get(`${API_URL}/status-project-design/${id}`);
+
+export const addStatusProjectDesign = (statusName) =>
+  axios.post(`${API_URL}/status-project-design`, { status_name: statusName });
+
+export const updateStatusProjectDesign = (id, statusName) =>
+  axios.put(`${API_URL}/status-project-design/${id}`, { status_name: statusName });
+
+export const deleteStatusProjectDesign = (id) =>
+  axios.delete(`${API_URL}/status-project-design/${id}`);
+
+
+// Get all
+export const getAllKepalaDivisiDesign = async () => {
+  const res = await fetch(`${API_URL}/kepala-divisi-design`);
+  return res.json();
+};
+
+// Get by ID
+export const getKepalaDivisiDesignById = async (id) => {
+  const res = await fetch(`${API_URL}/kepala-divisi-design/${id}`);
+  return res.json();
+};
+
+// Add
+export const addKepalaDivisiDesign = async (nama, divisi) => {
+  const res = await fetch(`${API_URL}/kepala-divisi-design`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ nama, divisi }),
+  });
+  return res.json();
+};
+
+// Update
+export const updateKepalaDivisiDesign = async (id, nama, divisi) => {
+  const res = await fetch(`${API_URL}/kepala-divisi-design/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ nama, divisi }),
+  });
+  return res.json();
+};
+
+// Delete
+export const deleteKepalaDivisiDesign = async (id) => {
+  const res = await fetch(`${API_URL}/kepala-divisi-design/${id}`, {
+    method: "DELETE",
+  });
+  return res.json();
 };
