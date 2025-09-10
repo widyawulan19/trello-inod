@@ -6703,6 +6703,80 @@ app.delete("/api/style-design/:id", async (req, res) => {
     }
 });
 
+// ==========================================
+// 📌 CRUD STATUS PROJECT DESIGN
+// ==========================================
+
+// ✅ Get all
+app.get("/api/status-project-design", async (req, res) => {
+    try {
+        const result = await client.query("SELECT * FROM status_project_design ORDER BY id ASC");
+        res.json(result.rows);
+    } catch (err) {
+        console.error("❌ Error get status_project_design:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ✅ Get by ID
+app.get("/api/status-project-design/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await client.query("SELECT * FROM status_project_design WHERE id = $1", [id]);
+        if (result.rows.length === 0) return res.status(404).json({ message: "Status not found" });
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error get status_project_design by ID:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ✅ Create
+app.post("/api/status-project-design", async (req, res) => {
+    try {
+        const { status_name } = req.body;
+        const result = await client.query(
+            "INSERT INTO status_project_design (status_name) VALUES ($1) RETURNING *",
+            [status_name]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error create status_project_design:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ✅ Update
+app.put("/api/status-project-design/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status_name } = req.body;
+        const result = await client.query(
+            "UPDATE status_project_design SET status_name = $1, update_at = now() WHERE id = $2 RETURNING *",
+            [status_name, id]
+        );
+        if (result.rows.length === 0) return res.status(404).json({ message: "Status not found" });
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error update status_project_design:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ✅ Delete
+app.delete("/api/status-project-design/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await client.query("DELETE FROM status_project_design WHERE id = $1 RETURNING *", [id]);
+        if (result.rows.length === 0) return res.status(404).json({ message: "Status not found" });
+        res.json({ message: "Status deleted successfully" });
+    } catch (err) {
+        console.error("❌ Error delete status_project_design:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
 
 
 
