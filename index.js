@@ -6556,6 +6556,78 @@ app.delete("/api/offer-type-design/:id", async (req, res) => {
     }
 });
 
+// ==========================================
+// 📌 CRUD PROJECT TYPE DESIGN
+// ==========================================
+
+// ✅ Get all
+app.get("/api/project-type-design", async (req, res) => {
+    try {
+        const result = await client.query("SELECT * FROM project_type_design ORDER BY id ASC");
+        res.json(result.rows);
+    } catch (err) {
+        console.error("❌ Error get project_type_design:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ✅ Get by ID
+app.get("/api/project-type-design/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await client.query("SELECT * FROM project_type_design WHERE id = $1", [id]);
+        if (result.rows.length === 0) return res.status(404).json({ message: "Project type not found" });
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error get project_type_design by ID:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ✅ Create
+app.post("/api/project-type-design", async (req, res) => {
+    try {
+        const { project_name } = req.body;
+        const result = await client.query(
+            "INSERT INTO project_type_design (project_name) VALUES ($1) RETURNING *",
+            [project_name]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error create project_type_design:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ✅ Update
+app.put("/api/project-type-design/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { project_name } = req.body;
+        const result = await client.query(
+            "UPDATE project_type_design SET project_name = $1, update_at = now() WHERE id = $2 RETURNING *",
+            [project_name, id]
+        );
+        if (result.rows.length === 0) return res.status(404).json({ message: "Project type not found" });
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error update project_type_design:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ✅ Delete
+app.delete("/api/project-type-design/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await client.query("DELETE FROM project_type_design WHERE id = $1 RETURNING *", [id]);
+        if (result.rows.length === 0) return res.status(404).json({ message: "Project type not found" });
+        res.json({ message: "Project type deleted successfully" });
+    } catch (err) {
+        console.error("❌ Error delete project_type_design:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
 
 
 
