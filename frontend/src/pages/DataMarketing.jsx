@@ -112,6 +112,8 @@ const handleCloseForm = () =>{
         response = await getAllDataMarketingJoined();
       }
 
+      console.log("📦 Response dari API:", response);
+
       setData(response.data || response);
       setFilteredData(response.data || response);
 
