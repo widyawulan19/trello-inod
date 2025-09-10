@@ -5889,7 +5889,6 @@ app.get("/api/marketing-design/joined", async (req, res) => {
         md.detail_project,
         md.create_at,
         md.update_at,
-        md.card_id
 
         -- Relasi (balikin ID + Nama)
         mdu.id AS input_by,
@@ -5928,6 +5927,7 @@ app.get("/api/marketing-design/joined", async (req, res) => {
     }
 });
 
+
 // ✅ Get marketing_design by ID + join
 app.get("/api/marketing-design/joined/:id", async (req, res) => {
     try {
@@ -5949,7 +5949,6 @@ app.get("/api/marketing-design/joined/:id", async (req, res) => {
         md.detail_project,
         md.create_at,
         md.update_at,
-        md.card_id,
 
         -- Relasi (balikin ID + Nama)
         mdu.id AS input_by,
@@ -5988,6 +5987,7 @@ app.get("/api/marketing-design/joined/:id", async (req, res) => {
         res.status(500).json({ error: "Failed to fetch joined data" });
     }
 });
+
 
 // END MARKERING DESING JOINED 
 
