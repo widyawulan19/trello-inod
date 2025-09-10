@@ -5867,6 +5867,128 @@ app.delete("/api/accept-status/:id", async (req, res) => {
 // END STATUS ACCEPT 
 
 //DATA MARKETING DESIGN
+
+//MARKETING DESIGN JOINED
+// ✅ Get all marketing_design + join
+app.get("/api/marketing-design/joined", async (req, res) => {
+    try {
+        const result = await client.query(`
+      SELECT 
+        md.id,
+        md.buyer_name,
+        md.code_order,
+        md.jumlah_design,
+        md.order_number,
+        md.deadline,
+        md.jumlah_revisi,
+        md.price_normal,
+        md.price_discount,
+        md.discount_percentage,
+        md.required_files,
+        md.file_and_chat,
+        md.detail_project,
+        md.create_at,
+        md.update_at,
+
+        -- Relasi (balikin ID + Nama)
+        mdu.id AS input_by,
+        mdu.nama_marketing AS input_by_name,
+        mdu.divisi AS input_by_divisi,
+
+        ad.id AS account,
+        ad.nama_account AS account_name,
+
+        ot.id AS offer_type,
+        ot.offer_name AS offer_type_name,
+
+        pt.id AS project_type,
+        pt.project_name AS project_type_name,
+
+        sd.id AS style,
+        sd.style_name AS style_name,
+
+        sp.id AS status_project,
+        sp.status_name AS status_project_name
+
+      FROM marketing_design md
+      LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
+      LEFT JOIN account_design ad ON md.account = ad.id
+      LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
+      LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
+      LEFT JOIN style_design sd ON md.style_id = sd.id
+      LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
+      ORDER BY md.id DESC;
+    `);
+
+        res.json(result.rows);
+    } catch (err) {
+        console.error("❌ Error get joined marketing_design:", err);
+        res.status(500).json({ error: "Failed to fetch joined data" });
+    }
+});
+
+// ✅ Get marketing_design by ID + join
+app.get("/api/marketing-design/joined/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await client.query(`
+      SELECT 
+        md.id,
+        md.buyer_name,
+        md.code_order,
+        md.jumlah_design,
+        md.order_number,
+        md.deadline,
+        md.jumlah_revisi,
+        md.price_normal,
+        md.price_discount,
+        md.discount_percentage,
+        md.required_files,
+        md.file_and_chat,
+        md.detail_project,
+        md.create_at,
+        md.update_at,
+
+        -- Relasi (balikin ID + Nama)
+        mdu.id AS input_by,
+        mdu.nama_marketing AS input_by_name,
+        mdu.divisi AS input_by_divisi,
+
+        ad.id AS account,
+        ad.nama_account AS account_name,
+
+        ot.id AS offer_type,
+        ot.offer_name AS offer_type_name,
+
+        pt.id AS project_type,
+        pt.project_name AS project_type_name,
+
+        sd.id AS style,
+        sd.style_name AS style_name,
+
+        sp.id AS status_project,
+        sp.status_name AS status_project_name
+
+      FROM marketing_design md
+      LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
+      LEFT JOIN account_design ad ON md.account = ad.id
+      LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
+      LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
+      LEFT JOIN style_design sd ON md.style_id = sd.id
+      LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
+      WHERE md.id = $1;
+    `, [id]);
+
+        if (result.rows.length === 0) return res.status(404).json({ error: "Marketing design not found" });
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error get marketing_design by ID:", err);
+        res.status(500).json({ error: "Failed to fetch joined data" });
+    }
+});
+
+// END MARKERING DESING JOINED 
+
 //12. get laporan data otomatis per 10 hari berjalan
 // ✅ Endpoint untuk data hari ini
 app.get('/api/marketing-design/reports/today', async (req, res) => {
