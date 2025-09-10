@@ -25,11 +25,11 @@ const app = express();
 app.use(express.json());
 
 app.use(cors({
-  // origin: "*",
-  origin: ["http://localhost:3000", "https://inodstudiomanagement.vercel.app"],
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true
+    // origin: "*",
+    origin: ["http://localhost:3000", "https://inodstudiomanagement.vercel.app"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true
 }));
 
 
@@ -38,8 +38,8 @@ console.log("JWT_SECRET:", process.env.JWT_SECRET);
 
 // Middleware untuk mensimulasikan login
 const simulateLogin = (req, res, next) => {
-  req.user = { id: 3 }; // ID pengguna simulasi, misalnya 1
-  next();
+    req.user = { id: 3 }; // ID pengguna simulasi, misalnya 1
+    next();
 };
 app.use(simulateLogin);
 app.use(express.urlencoded({ extended: true }));
@@ -47,35 +47,35 @@ app.use(express.urlencoded({ extended: true }));
 const PORT = process.env.PORT || 8080;
 
 app.get("/", (req, res) => {
-  res.send("Server is running on port " + PORT);
+    res.send("Server is running on port " + PORT);
 });
 
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
 
 // Middleware verifyToken
 
 const verifyToken = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-  if (!token) return res.status(401).json({ message: 'No token provided' });
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (!token) return res.status(401).json({ message: 'No token provided' });
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) return res.status(403).json({ message: 'Invalid or expired token' });
-    req.user = user; // simpan payload token
-    next();
-  });
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if (err) return res.status(403).json({ message: 'Invalid or expired token' });
+        req.user = user; // simpan payload token
+        next();
+    });
 };
 
 // send token to user mail 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: "your.email@gmail.com",
-    pass: "your_app_password",
-  }
+    service: "gmail",
+    auth: {
+        user: "your.email@gmail.com",
+        pass: "your_app_password",
+    }
 })
 
 
@@ -121,45 +121,45 @@ const transporter = nodemailer.createTransport({
 
 //new register
 app.post("/api/auth/register", async (req, res) => {
-  const { username, email, password, security_question, security_answer } = req.body;
+    const { username, email, password, security_question, security_answer } = req.body;
 
-  try {
-    // Hash password dan security answer
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const hashedSecurityAnswer = await bcrypt.hash(security_answer, 10);
+    try {
+        // Hash password dan security answer
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedSecurityAnswer = await bcrypt.hash(security_answer, 10);
 
-    // Simpan ke DB
-    const userResult = await client.query(
-      `INSERT INTO users (username, email, password, security_question, security_answer_hash)
+        // Simpan ke DB
+        const userResult = await client.query(
+            `INSERT INTO users (username, email, password, security_question, security_answer_hash)
        VALUES ($1, $2, $3, $4, $5)
        RETURNING id, username, email, security_question`,
-      [username, email, hashedPassword, security_question, hashedSecurityAnswer]
-    );
+            [username, email, hashedPassword, security_question, hashedSecurityAnswer]
+        );
 
-    const userId = userResult.rows[0].id;
+        const userId = userResult.rows[0].id;
 
-    // Insert default profil
-    await client.query(
-      `INSERT INTO user_profil (user_id, profil_id)
+        // Insert default profil
+        await client.query(
+            `INSERT INTO user_profil (user_id, profil_id)
        VALUES ($1, $2)`,
-      [userId, 1]
-    );
+            [userId, 1]
+        );
 
-    // Insert default user_data
-    await client.query(
-      `INSERT INTO user_data (user_id, name, nomor, divisi, jabatan)
+        // Insert default user_data
+        await client.query(
+            `INSERT INTO user_data (user_id, name, nomor, divisi, jabatan)
        VALUES ($1, $2, $3, $4, $5)`,
-      [userId, '', '', 'Umum', 'Anggota']
-    );
+            [userId, '', '', 'Umum', 'Anggota']
+        );
 
-    res.status(201).json({
-      message: "User registered successfully",
-      user: userResult.rows[0],
-    });
-  } catch (error) {
-    console.error("Error during registration:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
+        res.status(201).json({
+            message: "User registered successfully",
+            user: userResult.rows[0],
+        });
+    } catch (error) {
+        console.error("Error during registration:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
 });
 
 
@@ -169,75 +169,75 @@ app.post("/api/auth/register", async (req, res) => {
 
 //LOGIN
 app.post("/api/auth/login", async (req, res) => {
-  const { email, password } = req.body;
-  try {
-    console.log("Login attempt:", email, password);
+    const { email, password } = req.body;
+    try {
+        console.log("Login attempt:", email, password);
 
-    const user = await client.query(`SELECT * FROM users WHERE email = $1`, [email]);
-    console.log("User query result:", user.rows);
+        const user = await client.query(`SELECT * FROM users WHERE email = $1`, [email]);
+        console.log("User query result:", user.rows);
 
-    if (user.rows.length === 0) return res.status(401).json({ message: "Invalid email" });
+        if (user.rows.length === 0) return res.status(401).json({ message: "Invalid email" });
 
-    const validPass = await bcrypt.compare(password, user.rows[0].password);
-    console.log("Password valid:", validPass);
+        const validPass = await bcrypt.compare(password, user.rows[0].password);
+        console.log("Password valid:", validPass);
 
-    if (!validPass) return res.status(401).json({ message: "Invalid password" });
+        if (!validPass) return res.status(401).json({ message: "Invalid password" });
 
-    const token = jwt.sign(
-      { id: user.rows[0].id, username: user.rows[0].username, email: user.rows[0].email },
-      process.env.JWT_SECRET,
-      { expiresIn: "1d" }
-    );
+        const token = jwt.sign(
+            { id: user.rows[0].id, username: user.rows[0].username, email: user.rows[0].email },
+            process.env.JWT_SECRET,
+            { expiresIn: "1d" }
+        );
 
-    res.json({
-      token,
-      user: { id: user.rows[0].id, username: user.rows[0].username, email: user.rows[0].email },
-    });
-  } catch (err) {
-    console.error("Login error:", err);
-    res.status(500).json({ message: "Error logging in", error: err.message || err });
-  }
+        res.json({
+            token,
+            user: { id: user.rows[0].id, username: user.rows[0].username, email: user.rows[0].email },
+        });
+    } catch (err) {
+        console.error("Login error:", err);
+        res.status(500).json({ message: "Error logging in", error: err.message || err });
+    }
 });
 
 // RESSET PASS 
 app.post("/api/auth/reset-password", async (req, res) => {
-  const { email, security_question, security_answer, new_password } = req.body;
+    const { email, security_question, security_answer, new_password } = req.body;
 
-  try {
-    // 1. Cari user berdasarkan email dan pertanyaan keamanan
-    const userResult = await client.query(
-      `SELECT id, security_answer_hash FROM users 
+    try {
+        // 1. Cari user berdasarkan email dan pertanyaan keamanan
+        const userResult = await client.query(
+            `SELECT id, security_answer_hash FROM users 
        WHERE email = $1 AND security_question = $2`,
-      [email, security_question]
-    );
+            [email, security_question]
+        );
 
-    if (userResult.rows.length === 0) {
-      return res.status(404).json({ message: "User not found with that question and email" });
+        if (userResult.rows.length === 0) {
+            return res.status(404).json({ message: "User not found with that question and email" });
+        }
+
+        const user = userResult.rows[0];
+
+        // 2. Bandingkan jawaban dengan hash yang tersimpan
+        const isMatch = await bcrypt.compare(security_answer, user.security_answer_hash);
+
+        if (!isMatch) {
+            return res.status(401).json({ message: "Incorrect security answer" });
+        }
+
+        // 3. Hash password baru
+        const hashedNewPassword = await bcrypt.hash(new_password, 10);
+
+        // 4. Update password di DB
+        await client.query(
+            `UPDATE users SET password = $1 WHERE id = $2`,
+            [hashedNewPassword, user.id]
+        );
+
+        res.status(200).json({ message: "Password has been reset successfully" });
+    } catch (error) {
+        console.error("Error during password reset:", error);
+        res.status(500).json({ message: "Internal server error" });
     }
-
-    const user = userResult.rows[0];
-
-    // 2. Bandingkan jawaban dengan hash yang tersimpan
-    const isMatch = await bcrypt.compare(security_answer, user.security_answer_hash);
-
-    if (!isMatch) {
-      return res.status(401).json({ message: "Incorrect security answer" });
-    }
-
-    // 3. Hash password baru
-    const hashedNewPassword = await bcrypt.hash(new_password, 10);
-
-    // 4. Update password di DB
-    await client.query(
-      `UPDATE users SET password = $1 WHERE id = $2`,
-      [hashedNewPassword, user.id]
-    );
-
-    res.status(200).json({ message: "Password has been reset successfully" });
-  } catch (error) {
-    console.error("Error during password reset:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
 });
 
 
@@ -245,26 +245,26 @@ app.post("/api/auth/reset-password", async (req, res) => {
 // HASH PASS MANUAL 
 // TEMPORARY: hash existing user password
 app.put("/api/auth/hash-password", async (req, res) => {
-  const { email } = req.body;
+    const { email } = req.body;
 
-  try {
-    const user = await client.query(`SELECT * FROM users WHERE email = $1`, [email]);
+    try {
+        const user = await client.query(`SELECT * FROM users WHERE email = $1`, [email]);
 
-    if (user.rows.length === 0) return res.status(404).json({ message: "User not found" });
+        if (user.rows.length === 0) return res.status(404).json({ message: "User not found" });
 
-    const plainPass = user.rows[0].password;
+        const plainPass = user.rows[0].password;
 
-    // Hash password now
-    const hashed = await bcrypt.hash(plainPass, 10);
+        // Hash password now
+        const hashed = await bcrypt.hash(plainPass, 10);
 
-    // Update to DB
-    await client.query(`UPDATE users SET password = $1 WHERE email = $2`, [hashed, email]);
+        // Update to DB
+        await client.query(`UPDATE users SET password = $1 WHERE email = $2`, [hashed, email]);
 
-    res.json({ message: "Password hashed successfully" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Error hashing password" });
-  }
+        res.json({ message: "Password hashed successfully" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Error hashing password" });
+    }
 });
 
 
@@ -272,24 +272,24 @@ app.put("/api/auth/hash-password", async (req, res) => {
 //USER
 //1. create a new user
 app.post('/api/users', async (req, res) => {
-  const { username, email, password } = req.body;
-  try {
-    const result = await client.query(
-      `INSERT INTO users (username, email, password) 
+    const { username, email, password } = req.body;
+    try {
+        const result = await client.query(
+            `INSERT INTO users (username, email, password) 
         VALUES ($1, $2, $3) RETURNING id, username, email`,
-      [username, email, password]
-    );
+            [username, email, password]
+        );
 
-    res.status(201).json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+        res.status(201).json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 })
 //2. get all user
 app.get('/api/users', async (req, res) => {
-  try {
-    const result = await client.query(
-      `
+    try {
+        const result = await client.query(
+            `
         SELECT 
           u.id,
           u.username,
@@ -301,92 +301,92 @@ app.get('/api/users', async (req, res) => {
         LEFT JOIN profil p ON up.profil_id = p.id
         ORDER BY u.id
         `
-    );
+        );
 
-    res.json(result.rows);
-  } catch (error) {
-    console.error('Error fetching all users with profile:', error);
-    res.status(500).json({ error: 'Failed to fetch users.' });
-  }
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error fetching all users with profile:', error);
+        res.status(500).json({ error: 'Failed to fetch users.' });
+    }
 });
 
 //3. get user by id
 app.get('/api/users/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const result = await client.query('SELECT id, username, email, create_at FROM users WHERE id = $1', [id]);
+    const { id } = req.params;
+    try {
+        const result = await client.query('SELECT id, username, email, create_at FROM users WHERE id = $1', [id]);
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'User not found' });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.status(200).json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-
-    res.status(200).json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 })
 
 //4. update user
 app.put('/api/users/:id', async (req, res) => {
-  const { id } = req.params;
-  const { username, email, password } = req.body;
+    const { id } = req.params;
+    const { username, email, password } = req.body;
 
-  try {
-    const result = await client.query(
-      `UPDATE users SET username = $1, email = $2, password = $3 WHERE id = $4 RETURNING id, username, email, create_at`,
-      [username, email, password, id]
-    );
+    try {
+        const result = await client.query(
+            `UPDATE users SET username = $1, email = $2, password = $3 WHERE id = $4 RETURNING id, username, email, create_at`,
+            [username, email, password, id]
+        );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'User not found' });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.status(200).json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-
-    res.status(200).json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 })
 //5. delete user
 app.delete('/api/users/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const result = await client.query('DELETE FROM users WHERE id = $1 RETURNING id', [id]);
+    const { id } = req.params;
+    try {
+        const result = await client.query('DELETE FROM users WHERE id = $1 RETURNING id', [id]);
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'User not found' });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.status(200).json({ message: 'User deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-
-    res.status(200).json({ message: 'User deleted successfully' });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 });
 //6. mengatur ulang password
 app.post('/api/users/:id/password-reset', async (req, res) => {
-  const { id } = req.params;
-  const { newPassword } = req.body; // Password baru
-  try {
-    const result = await client.query(
-      `UPDATE users SET password = $1 WHERE id = $2 RETURNING id, username`,
-      [newPassword, id]
-    );
+    const { id } = req.params;
+    const { newPassword } = req.body; // Password baru
+    try {
+        const result = await client.query(
+            `UPDATE users SET password = $1 WHERE id = $2 RETURNING id, username`,
+            [newPassword, id]
+        );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'User not found' });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.status(200).json({ message: 'Password reset successfully' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-
-    res.status(200).json({ message: 'Password reset successfully' });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 });
 
 // 7. GET user profile (nama, email, username, nomor wa, divisi, jabatan, photo_url)
 app.get('/api/user-setting/:userId', async (req, res) => {
-  const { userId } = req.params;
+    const { userId } = req.params;
 
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
       SELECT 
           u.id,
           u.username,
@@ -409,24 +409,24 @@ app.get('/api/user-setting/:userId', async (req, res) => {
           u.id = $1;
     `, [userId]);
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: 'User not found' });
-    }
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'User not found' });
+        }
 
-    const userProfile = result.rows[0];
-    res.json(userProfile);
-  } catch (error) {
-    console.error('Error fetching user profile:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
+        const userProfile = result.rows[0];
+        res.json(userProfile);
+    } catch (error) {
+        console.error('Error fetching user profile:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 });
 
 // 7. NEW GET user profile (nama, email, username, nomor wa, divisi, jabatan, photo_url)
 app.get('/api/users-setting/:userId', async (req, res) => {
-  const { userId } = req.params;
+    const { userId } = req.params;
 
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
       SELECT 
           u.id,
           u.username,
@@ -449,49 +449,49 @@ app.get('/api/users-setting/:userId', async (req, res) => {
           u.id = $1;
     `, [userId]);
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: 'User not found' });
-    }
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'User not found' });
+        }
 
-    const userProfile = result.rows[0];
-    res.json(userProfile);
-  } catch (error) {
-    console.error('Error fetching user profile:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
+        const userProfile = result.rows[0];
+        res.json(userProfile);
+    } catch (error) {
+        console.error('Error fetching user profile:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 });
 
 // PUT user profile setting
 app.put('/api/users-setting/:userId', async (req, res) => {
-  const { userId } = req.params;
-  const {
-    username,
-    email,
-    name,
-    nomor,
-    divisi,
-    jabatan,
-    photo_url
-  } = req.body;
+    const { userId } = req.params;
+    const {
+        username,
+        email,
+        name,
+        nomor,
+        divisi,
+        jabatan,
+        photo_url
+    } = req.body;
 
-  try {
-    await client.query('BEGIN');
+    try {
+        await client.query('BEGIN');
 
-    // Update tabel `users`
-    await client.query(`
+        // Update tabel `users`
+        await client.query(`
       UPDATE public.users
       SET username = $1,
           email = $2
       WHERE id = $3
     `, [username, email, userId]);
 
-    // Cek apakah users_data sudah ada
-    const usersDataResult = await client.query(`
+        // Cek apakah users_data sudah ada
+        const usersDataResult = await client.query(`
       SELECT id FROM public.users_data WHERE user_id = $1
     `, [userId]);
 
-    if (usersDataResult.rows.length > 0) {
-      await client.query(`
+        if (usersDataResult.rows.length > 0) {
+            await client.query(`
         UPDATE public.users_data
         SET name = $1,
             nomor = $2,
@@ -499,48 +499,48 @@ app.put('/api/users-setting/:userId', async (req, res) => {
             jabatan = $4
         WHERE user_id = $5
       `, [name, nomor, divisi, jabatan, userId]);
-    } else {
-      await client.query(`
+        } else {
+            await client.query(`
         INSERT INTO public.users_data (user_id, name, nomor, divisi, jabatan)
         VALUES ($1, $2, $3, $4, $5)
       `, [userId, name, nomor, divisi, jabatan]);
-    }
+        }
 
-    // Cek apakah user_profil sudah ada
-    const userProfilResult = await client.query(`
+        // Cek apakah user_profil sudah ada
+        const userProfilResult = await client.query(`
       SELECT profil_id FROM public.user_profil WHERE user_id = $1
     `, [userId]);
 
-    if (userProfilResult.rows.length > 0) {
-      const profilId = userProfilResult.rows[0].profil_id;
+        if (userProfilResult.rows.length > 0) {
+            const profilId = userProfilResult.rows[0].profil_id;
 
-      await client.query(`
+            await client.query(`
         UPDATE public.profil
         SET photo_url = $1
         WHERE id = $2
       `, [photo_url, profilId]);
-    } else {
-      const insertProfil = await client.query(`
+        } else {
+            const insertProfil = await client.query(`
         INSERT INTO public.profil (photo_url)
         VALUES ($1)
         RETURNING id
       `, [photo_url]);
 
-      const profilId = insertProfil.rows[0].id;
+            const profilId = insertProfil.rows[0].id;
 
-      await client.query(`
+            await client.query(`
         INSERT INTO public.user_profil (user_id, profil_id)
         VALUES ($1, $2)
       `, [userId, profilId]);
-    }
+        }
 
-    await client.query('COMMIT');
-    res.status(200).json({ message: 'User setting updated successfully' });
-  } catch (error) {
-    await client.query('ROLLBACK');
-    console.error('Error updating user profile:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
+        await client.query('COMMIT');
+        res.status(200).json({ message: 'User setting updated successfully' });
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error('Error updating user profile:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 });
 
 
@@ -608,77 +608,77 @@ app.put('/api/users-setting/:userId', async (req, res) => {
 
 // PUT /api/user-setting/:userId
 app.put('/api/user-setting/:userId', async (req, res) => {
-  const { userId } = req.params;
-  const {
-    username,
-    email,
-    name,
-    nomor, // gunakan "nomor", bukan "nomor_wa"
-    divisi,
-    jabatan,
-    photo_url,
-  } = req.body;
+    const { userId } = req.params;
+    const {
+        username,
+        email,
+        name,
+        nomor, // gunakan "nomor", bukan "nomor_wa"
+        divisi,
+        jabatan,
+        photo_url,
+    } = req.body;
 
-  try {
-    await client.query('BEGIN');
+    try {
+        await client.query('BEGIN');
 
-    // Update `users` table (tanpa photo_url!)
-    await client.query(
-      `UPDATE users 
+        // Update `users` table (tanpa photo_url!)
+        await client.query(
+            `UPDATE users 
        SET username = $1, email = $2 
        WHERE id = $3`,
-      [username, email, userId]
-    );
+            [username, email, userId]
+        );
 
-    // Update `user_data` table (pakai field "nomor" bukan "nomor_wa")
-    await client.query(
-      `UPDATE user_data 
+        // Update `user_data` table (pakai field "nomor" bukan "nomor_wa")
+        await client.query(
+            `UPDATE user_data 
        SET name = $1, nomor = $2, divisi = $3, jabatan = $4 
        WHERE user_id = $5`,
-      [name, nomor, divisi, jabatan, userId]
-    );
+            [name, nomor, divisi, jabatan, userId]
+        );
 
-    // Cek apakah user sudah punya profil (melalui relasi user_profil)
-    const profilResult = await client.query(`
+        // Cek apakah user sudah punya profil (melalui relasi user_profil)
+        const profilResult = await client.query(`
       SELECT p.id AS profil_id
       FROM user_profil up
       JOIN profil p ON p.id = up.profil_id
       WHERE up.user_id = $1
     `, [userId]);
 
-    if (profilResult.rows.length > 0) {
-      // Jika profil sudah ada, update photo_url
-      const profilId = profilResult.rows[0].profil_id;
+        if (profilResult.rows.length > 0) {
+            // Jika profil sudah ada, update photo_url
+            const profilId = profilResult.rows[0].profil_id;
 
-      await client.query(`
+            await client.query(`
         UPDATE profil
         SET photo_url = $1
         WHERE id = $2
       `, [photo_url, profilId]);
-    } else {
-      // Jika belum ada, buat profil baru lalu tautkan dengan user_profil
-      const insertProfil = await client.query(`
+        } else {
+            // Jika belum ada, buat profil baru lalu tautkan dengan user_profil
+            const insertProfil = await client.query(`
         INSERT INTO profil (photo_url)
         VALUES ($1)
         RETURNING id
       `, [photo_url]);
 
-      const newProfilId = insertProfil.rows[0].id;
+            const newProfilId = insertProfil.rows[0].id;
 
-      await client.query(`
+            await client.query(`
         INSERT INTO user_profil (user_id, profil_id)
         VALUES ($1, $2)
       `, [userId, newProfilId]);
+        }
+
+        await client.query('COMMIT');
+
+        res.json({ message: 'User profile updated successfully' });
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error('Error updating user profile:', error);
+        res.status(500).json({ message: 'Internal server error' });
     }
-
-    await client.query('COMMIT');
-
-    res.json({ message: 'User profile updated successfully' });
-  } catch (error) {
-    await client.query('ROLLBACK');
-    console.error('Error updating user profile:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
 });
 
 
@@ -688,55 +688,55 @@ app.put('/api/user-setting/:userId', async (req, res) => {
 
 //ENDPOIN UPLOAD
 app.post('/api/upload-attach', upload.single('file'), async (req, res) => {
-  const { card_id } = req.body;
+    const { card_id } = req.body;
 
-  if (!req.file || !card_id) {
-    return res.status(400).json({ error: 'Missing file or card_id' });
-  }
+    if (!req.file || !card_id) {
+        return res.status(400).json({ error: 'Missing file or card_id' });
+    }
 
-  try {
-    // Upload buffer ke Cloudinary
-    const result = await new Promise((resolve, reject) => {
-      cloudinary.uploader.upload_stream(
-        {
-          resource_type: 'auto', // bisa 'auto', 'raw', 'image', 'video'
-          folder: 'trello_uploads',
-          public_id: `${Date.now()}-${req.file.originalname}`,
-        },
-        (error, result) => {
-          if (error) reject(error);
-          else resolve(result);
-        }
-      ).end(req.file.buffer);
-    });
+    try {
+        // Upload buffer ke Cloudinary
+        const result = await new Promise((resolve, reject) => {
+            cloudinary.uploader.upload_stream(
+                {
+                    resource_type: 'auto', // bisa 'auto', 'raw', 'image', 'video'
+                    folder: 'trello_uploads',
+                    public_id: `${Date.now()}-${req.file.originalname}`,
+                },
+                (error, result) => {
+                    if (error) reject(error);
+                    else resolve(result);
+                }
+            ).end(req.file.buffer);
+        });
 
-    const fileUrl = result.secure_url;
-    const fileName = req.file.originalname;
+        const fileUrl = result.secure_url;
+        const fileName = req.file.originalname;
 
-    // Dapatkan ekstensi file
-    const extension = fileName.split('.').pop().toLowerCase();
+        // Dapatkan ekstensi file
+        const extension = fileName.split('.').pop().toLowerCase();
 
-    // Simpan ke DB
-    const dbResult = await client.query(
-      `INSERT INTO uploaded_files (card_id, file_url, file_name, type) VALUES ($1, $2, $3, $4) RETURNING *`,
-      [card_id, fileUrl, fileName, extension]
-    );
+        // Simpan ke DB
+        const dbResult = await client.query(
+            `INSERT INTO uploaded_files (card_id, file_url, file_name, type) VALUES ($1, $2, $3, $4) RETURNING *`,
+            [card_id, fileUrl, fileName, extension]
+        );
 
-    res.status(201).json(dbResult.rows[0]);
-  } catch (error) {
-    console.error('Upload error:', error);
-    res.status(500).json({ error: 'Upload failed', message: error.message });
-  }
+        res.status(201).json(dbResult.rows[0]);
+    } catch (error) {
+        console.error('Upload error:', error);
+        res.status(500).json({ error: 'Upload failed', message: error.message });
+    }
 });
 
 
 //UPLOADED FILES
 app.get('/api/uploaded-files/:cardId', async (req, res) => {
-  const { cardId } = req.params;
+    const { cardId } = req.params;
 
-  try {
-    const result = await client.query(
-      `
+    try {
+        const result = await client.query(
+            `
       SELECT 
         f.id,
         f.card_id,
@@ -754,50 +754,50 @@ app.get('/api/uploaded-files/:cardId', async (req, res) => {
       WHERE f.card_id = $1
       ORDER BY f.uploaded_at DESC
       `,
-      [cardId]
-    );
+            [cardId]
+        );
 
-    res.status(200).json(result.rows);
-  } catch (error) {
-    console.error('Error fetching files:', error);
-    res.status(500).json({ error: 'Failed to fetch uploaded files' });
-  }
+        res.status(200).json(result.rows);
+    } catch (error) {
+        console.error('Error fetching files:', error);
+        res.status(500).json({ error: 'Failed to fetch uploaded files' });
+    }
 });
 
 //get total file by cardid
 app.get('/api/uploaded-files/:cardId/count', async (req, res) => {
-  const { cardId } = req.params;
+    const { cardId } = req.params;
 
-  try {
-    const result = await client.query(
-      `SELECT COUNT(*) AS total_files FROM uploaded_files WHERE card_id = $1`,
-      [cardId]
-    );
+    try {
+        const result = await client.query(
+            `SELECT COUNT(*) AS total_files FROM uploaded_files WHERE card_id = $1`,
+            [cardId]
+        );
 
-    res.status(200).json({
-      card_id: cardId,
-      total_files: parseInt(result.rows[0].total_files, 10)
-    });
-  } catch (error) {
-    console.error('Error counting files:', error);
-    res.status(500).json({ error: 'Failed to count uploaded files' });
-  }
+        res.status(200).json({
+            card_id: cardId,
+            total_files: parseInt(result.rows[0].total_files, 10)
+        });
+    } catch (error) {
+        console.error('Error counting files:', error);
+        res.status(500).json({ error: 'Failed to count uploaded files' });
+    }
 });
 
 //END ENDPOIN UPLOAD
 
 // ENDPOINT SEARCH CARD (DENGAN ID)
 app.get('/api/search', async (req, res) => {
-  const { keyword, workspaceId } = req.query;
+    const { keyword, workspaceId } = req.query;
 
-  if (!keyword || !workspaceId) {
-    return res.status(400).json({ error: 'Keyword and workspaceId are required' });
-  }
+    if (!keyword || !workspaceId) {
+        return res.status(400).json({ error: 'Keyword and workspaceId are required' });
+    }
 
-  const searchKeyword = `%${keyword}%`;
+    const searchKeyword = `%${keyword}%`;
 
-  try {
-    const query = `
+    try {
+        const query = `
       SELECT 
         cards.id AS card_id,
         cards.title,
@@ -824,37 +824,37 @@ app.get('/api/search', async (req, res) => {
       )
     `;
 
-    const result = await client.query(query, [searchKeyword, workspaceId]);
-    res.json(result.rows);
-  } catch (err) {
-    console.error('Search error:', err);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+        const result = await client.query(query, [searchKeyword, workspaceId]);
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Search error:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 //GLOBAL SEARCH CARD (berdasarkan user)
 app.get('/api/search/global', async (req, res) => {
-  const { keyword, userId } = req.query;
+    const { keyword, userId } = req.query;
 
-  // Validasi input
-  if (!keyword || !userId) {
-    return res.status(400).json({ error: 'Keyword and userId are required' });
-  }
+    // Validasi input
+    if (!keyword || !userId) {
+        return res.status(400).json({ error: 'Keyword and userId are required' });
+    }
 
-  const searchKeyword = `%${keyword}%`;
-  const numericUserId = parseInt(userId);
+    const searchKeyword = `%${keyword}%`;
+    const numericUserId = parseInt(userId);
 
-  if (isNaN(numericUserId)) {
-    return res.status(400).json({ error: 'Invalid userId' });
-  }
+    if (isNaN(numericUserId)) {
+        return res.status(400).json({ error: 'Invalid userId' });
+    }
 
-  // Logging input
-  console.log('🔍 keyword:', keyword);
-  console.log('🔍 userId:', numericUserId);
-  console.log('🔍 searchKeyword:', searchKeyword);
+    // Logging input
+    console.log('🔍 keyword:', keyword);
+    console.log('🔍 userId:', numericUserId);
+    console.log('🔍 searchKeyword:', searchKeyword);
 
-  try {
-    const query = `
+    try {
+        const query = `
       SELECT 
         cards.id AS card_id,
         cards.title,
@@ -880,395 +880,395 @@ app.get('/api/search/global', async (req, res) => {
         )
     `;
 
-    const result = await client.query(query, [searchKeyword, numericUserId]);
-    res.json(result.rows);
-  } catch (err) {
-    console.error('❌ Search error message:', err.message);
-    console.error('🧨 Full error:', err);
-    res.status(500).json({
-      error: 'Internal server error',
-      detail: err.message
-    });
-  }
+        const result = await client.query(query, [searchKeyword, numericUserId]);
+        res.json(result.rows);
+    } catch (err) {
+        console.error('❌ Search error message:', err.message);
+        console.error('🧨 Full error:', err);
+        res.status(500).json({
+            error: 'Internal server error',
+            detail: err.message
+        });
+    }
 });
 
 
 //WORKSPACE
 //1.Get all workspace
 app.get('/api/workspace', async (req, res) => {
-  try {
-    const result = await client.query('SELECT * FROM workspaces ORDER BY id ASC');
-    res.json(result.rows);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    try {
+        const result = await client.query('SELECT * FROM workspaces ORDER BY id ASC');
+        res.json(result.rows);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 })
 //2. get workspace by id
 app.get('/api/workspace/:id', async (req, res) => {
-  const { id } = req.params;
-  const userId = req.user.id;
-  try {
-    const result = await client.query('SELECT * FROM workspaces WHERE id  = $1', [id]);
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Workspace not found' });
+    const { id } = req.params;
+    const userId = req.user.id;
+    try {
+        const result = await client.query('SELECT * FROM workspaces WHERE id  = $1', [id]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Workspace not found' });
+        }
+        res.json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-    res.json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 })
 //3. create a new workspace
 app.post("/api/workspace", async (req, res) => {
-  const { name } = req.body;
-  const { description } = req.body;
-  try {
-    const result = await client.query(
-      "INSERT INTO workspaces (name, description) VALUES ($1, $2) RETURNING *",
-      [name, description]
-    );
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+    const { name } = req.body;
+    const { description } = req.body;
+    try {
+        const result = await client.query(
+            "INSERT INTO workspaces (name, description) VALUES ($1, $2) RETURNING *",
+            [name, description]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 //4. update a workspace
 app.put('/api/workspace/:id', async (req, res) => {
-  const { id } = req.params;
-  const { name } = req.body;
-  const { description } = req.body;
-  const userId = req.user.id;
+    const { id } = req.params;
+    const { name } = req.body;
+    const { description } = req.body;
+    const userId = req.user.id;
 
-  try {
-    const result = await client.query(
-      "UPDATE workspaces SET name = $1, description = $2, update_at = CURRENT_TIMESTAMP WHERE id = $3 RETURNING *",
-      [name, description, id]
-    );
+    try {
+        const result = await client.query(
+            "UPDATE workspaces SET name = $1, description = $2, update_at = CURRENT_TIMESTAMP WHERE id = $3 RETURNING *",
+            [name, description, id]
+        );
 
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: "Workspace not found" });
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: "Workspace not found" });
+        }
+
+        // Kirim respon sukses
+        res.status(200).json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-
-    // Kirim respon sukses
-    res.status(200).json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 })
 //5. delete a workspace dan mengarsipkan workspace sebelum mendelete data 
 app.delete('/api/workspace/:id', async (req, res) => {
-  const { id } = req.params;
-  const userId = req.user.id;
-  try {
-    // Salin workspace ke archive sebelum delete
-    await client.query(`
+    const { id } = req.params;
+    const userId = req.user.id;
+    try {
+        // Salin workspace ke archive sebelum delete
+        await client.query(`
             INSERT INTO archive (entity_type, entity_id, name, description, create_at, update_at)
             SELECT 'workspace', id, name, description, create_at, update_at
             FROM workspaces
             WHERE id = $1
         `, [id]);
 
-    // Hapus workspace setelah disalin
-    const result = await client.query("DELETE FROM workspaces WHERE id = $1 RETURNING *", [id]);
+        // Hapus workspace setelah disalin
+        const result = await client.query("DELETE FROM workspaces WHERE id = $1 RETURNING *", [id]);
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Workspace not found" });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Workspace not found" });
+        }
+
+        res.json({ message: "Workspace archived and deleted successfully" });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
-
-    res.json({ message: "Workspace archived and deleted successfully" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
 })
 
 //6. archive workspace
 app.post('/api/workspace/archive/:id', async (req, res) => {
-  const { id } = req.params;
-  const userId = req.user.id;
-  try {
-    const result = await client.query(`
+    const { id } = req.params;
+    const userId = req.user.id;
+    try {
+        const result = await client.query(`
             INSERT INTO archive (entity_type, entity_id, name, description, create_at, update_at)
             SELECT 'workspace', id, name, description , create_at, update_at
             FROM workspaces
             WHERE id = $1
             `, [id]);
-    if (result.rowCount > 0) {
-      await client.query('DELETE FROM workspaces WHERE id = $1', [id])//menambahkan logika hapus ketika workspace berhasil diarsipkan
-      res.status(200).send(`Workspace dengan id ${id} berhasil diarsipkan`);
-    } else {
-      res.status(404).send(`Workspace dengan id ${id} tidak ditemukan.`)
+        if (result.rowCount > 0) {
+            await client.query('DELETE FROM workspaces WHERE id = $1', [id])//menambahkan logika hapus ketika workspace berhasil diarsipkan
+            res.status(200).send(`Workspace dengan id ${id} berhasil diarsipkan`);
+        } else {
+            res.status(404).send(`Workspace dengan id ${id} tidak ditemukan.`)
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 })
 //7. update workspace name
 app.put('/api/workspace/:id/name', async (req, res) => {
-  const { id } = req.params;
-  const { name } = req.body; // Hanya mengambil name
-  const userId = req.user.id;
+    const { id } = req.params;
+    const { name } = req.body; // Hanya mengambil name
+    const userId = req.user.id;
 
-  try {
-    const result = await client.query(
-      "UPDATE workspaces SET name = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *",
-      [name, id]
-    );
+    try {
+        const result = await client.query(
+            "UPDATE workspaces SET name = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *",
+            [name, id]
+        );
 
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: "Workspace not found" });
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: "Workspace not found" });
+        }
+
+        //Log activity untuk update
+        await logActivity(
+            'workspaces',
+            result.rows[0].id,
+            'update',
+            userId,
+            `Workspace name updated to '${name}' in workspace`,
+            null,
+            null
+        )
+
+        res.status(200).json(result.rows[0]);
+    } catch (error) {
+        console.error("Error updating workspace name:", error);
+        res.status(500).json({ error: error.message });
     }
-
-    //Log activity untuk update
-    await logActivity(
-      'workspaces',
-      result.rows[0].id,
-      'update',
-      userId,
-      `Workspace name updated to '${name}' in workspace`,
-      null,
-      null
-    )
-
-    res.status(200).json(result.rows[0]);
-  } catch (error) {
-    console.error("Error updating workspace name:", error);
-    res.status(500).json({ error: error.message });
-  }
 })
 //8. update workspace description
 app.put('/api/workspace/:id/description', async (req, res) => {
-  const { id } = req.params;
-  const { description } = req.body; // Hanya mengambil description
-  const userId = req.user.id;
+    const { id } = req.params;
+    const { description } = req.body; // Hanya mengambil description
+    const userId = req.user.id;
 
-  try {
-    const result = await client.query(
-      "UPDATE workspaces SET description = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *",
-      [description, id]
-    );
+    try {
+        const result = await client.query(
+            "UPDATE workspaces SET description = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *",
+            [description, id]
+        );
 
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: "Workspace not found" });
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: "Workspace not found" });
+        }
+
+        //Log activity untuk update
+        await logActivity(
+            'workspaces',
+            result.rows[0].id,
+            'update',
+            userId,
+            `Workspace description updated to '${description}' `,
+            null,
+            null
+        )
+
+        res.status(200).json(result.rows[0]);
+    } catch (error) {
+        console.error("Error updating workspace description:", error);
+        res.status(500).json({ error: error.message });
     }
-
-    //Log activity untuk update
-    await logActivity(
-      'workspaces',
-      result.rows[0].id,
-      'update',
-      userId,
-      `Workspace description updated to '${description}' `,
-      null,
-      null
-    )
-
-    res.status(200).json(result.rows[0]);
-  } catch (error) {
-    console.error("Error updating workspace description:", error);
-    res.status(500).json({ error: error.message });
-  }
 })
 //END WORKSPACE
 
 //WORKSPACE USER
 //1. create workspace user -> works
 app.post('/api/workspace-user/create', async (req, res) => {
-  const { name, description, userId, role } = req.body;
-  try {
-    //1. insert workspace ke dalam tabel workspace
-    const workspaceResult = await client.query(
-      `INSERT INTO workspaces (name, description)
+    const { name, description, userId, role } = req.body;
+    try {
+        //1. insert workspace ke dalam tabel workspace
+        const workspaceResult = await client.query(
+            `INSERT INTO workspaces (name, description)
             VALUES ($1, $2) RETURNING id`,
-      [name, description]
-    );
+            [name, description]
+        );
 
-    const workspaceId = workspaceResult.rows[0].id;
-    console.log('endpoin ini sudah memilikii workspaceId:', workspaceId);
+        const workspaceId = workspaceResult.rows[0].id;
+        console.log('endpoin ini sudah memilikii workspaceId:', workspaceId);
 
-    //2. insert user ke dalam tabel workspace users sebagai admin
-    const userResult = await client.query(
-      `INSERT INTO workspaces_users (workspace_id, user_id, role) 
+        //2. insert user ke dalam tabel workspace users sebagai admin
+        const userResult = await client.query(
+            `INSERT INTO workspaces_users (workspace_id, user_id, role) 
             VALUES ($1, $2, $3) RETURNING *`,
-      [workspaceId, userId, role]
-    );
+            [workspaceId, userId, role]
+        );
 
-    //3. log untuk create workspace
-    await logActivity(
-      'workspace',
-      workspaceId,
-      'create',
-      userId,
-      `Workspace '${name}' created`,
-      null,
-      null
-    )
+        //3. log untuk create workspace
+        await logActivity(
+            'workspace',
+            workspaceId,
+            'create',
+            userId,
+            `Workspace '${name}' created`,
+            null,
+            null
+        )
 
-    //4. log activity untuk penambahan user ke workspace
-    await logActivity(
-      'workspace_user',
-      workspaceId,
-      //   userResult.rows[0].id,
-      'add',
-      userId,
-      `User '${userResult.rows[0].user_id}' added to workspace`,
-      'workspace',
-      workspaceId
-    );
+        //4. log activity untuk penambahan user ke workspace
+        await logActivity(
+            'workspace_user',
+            workspaceId,
+            //   userResult.rows[0].id,
+            'add',
+            userId,
+            `User '${userResult.rows[0].user_id}' added to workspace`,
+            'workspace',
+            workspaceId
+        );
 
-    res.status(201).json({
-      message: 'Workspace created successfully',
-      workspace: workspaceResult.rows[0],
-      user: userResult.rows[0],
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+        res.status(201).json({
+            message: 'Workspace created successfully',
+            workspace: workspaceResult.rows[0],
+            user: userResult.rows[0],
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 })
 //2. get workspace user -> works (DIEDIT)
 app.get('/api/workspace/:id/users', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const result = await client.query(
-      `SELECT u.id, u.username, wu.role 
+    const { id } = req.params;
+    try {
+        const result = await client.query(
+            `SELECT u.id, u.username, wu.role 
             FROM users u
             JOIN workspaces_users wu ON u.id = wu.user_id
             WHERE wu.workspace_id = $1`, [id]
-    );
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'No users found in this workspace' });
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'No users found in this workspace' });
+        }
+        res.status(200).json(result.rows);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-    res.status(200).json(result.rows);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 })
 //3. update workspace user -> works
 app.put('/api/workspace-user/:workspaceId/user/:userId', async (req, res) => {
-  const { workspaceId, userId } = req.params;
-  const { role } = req.body;
-  try {
-    const result = await client.query(
-      `UPDATE workspaces_users
+    const { workspaceId, userId } = req.params;
+    const { role } = req.body;
+    try {
+        const result = await client.query(
+            `UPDATE workspaces_users
             SET role = $1
             WHERE workspace_id = $2 AND user_id = $3 RETURNING *`,
-      [role, workspaceId, userId]
-    );
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: 'User not found in this workspace' });
+            [role, workspaceId, userId]
+        );
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'User not found in this workspace' });
+        }
+
+        //log activity for update workspace user
+        await logActivity(
+            'workspaces_user',
+            result.rows[0].id,
+            'update',
+            userId,
+            `Workspace user updated in workspace`,
+            null,
+            null,
+        )
+
+
+        res.status(200).json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-
-    //log activity for update workspace user
-    await logActivity(
-      'workspaces_user',
-      result.rows[0].id,
-      'update',
-      userId,
-      `Workspace user updated in workspace`,
-      null,
-      null,
-    )
-
-
-    res.status(200).json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 })
 //4. delete workspace user -> works
 app.delete('/api/workspace-user/:workspaceId/user/:userId', async (req, res) => {
-  const { workspaceId, userId } = req.params;
-  try {
-    const result = await client.query(
-      `DELETE FROM workspaces_users WHERE workspace_id = $1 AND user_id = $2 RETURNING *`,
-      [workspaceId, userId]
-    );
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: 'User not found in this workspace' });
-    }
+    const { workspaceId, userId } = req.params;
+    try {
+        const result = await client.query(
+            `DELETE FROM workspaces_users WHERE workspace_id = $1 AND user_id = $2 RETURNING *`,
+            [workspaceId, userId]
+        );
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'User not found in this workspace' });
+        }
 
-    //Log activity for delete workspace user
-    await logActivity(
-      'workspace user',
-      workspaceId,
-      'delete',
-      userId,
-      `Workspace user deleted`,
-      null,
-      null,
-    )
-    res.status(200).json({ message: 'User removed from workspace' });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+        //Log activity for delete workspace user
+        await logActivity(
+            'workspace user',
+            workspaceId,
+            'delete',
+            userId,
+            `Workspace user deleted`,
+            null,
+            null,
+        )
+        res.status(200).json({ message: 'User removed from workspace' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 })
 
 //5. archive workspace user
 app.post('/api/archive-workspace-user/:workspaceId', async (req, res) => {
-  const { workspaceId } = req.params;
+    const { workspaceId } = req.params;
 
-  try {
-    // Periksa apakah ada pengguna di workspace sebelum mengarsipkan
-    const checkUsers = await client.query(
-      `SELECT wu.user_id, u.username, wu.role 
+    try {
+        // Periksa apakah ada pengguna di workspace sebelum mengarsipkan
+        const checkUsers = await client.query(
+            `SELECT wu.user_id, u.username, wu.role 
              FROM workspaces_users wu 
              JOIN users u ON wu.user_id = u.id 
              WHERE wu.workspace_id = $1`,
-      [workspaceId]
-    );
+            [workspaceId]
+        );
 
-    if (checkUsers.rowCount === 0) {
-      return res.status(404).json({ message: `Tidak ada pengguna ditemukan untuk workspace dengan id ${workspaceId}.` });
-    }
+        if (checkUsers.rowCount === 0) {
+            return res.status(404).json({ message: `Tidak ada pengguna ditemukan untuk workspace dengan id ${workspaceId}.` });
+        }
 
-    // Masukkan data ke dalam tabel archive
-    const archiveUsers = await client.query(
-      `INSERT INTO archive (entity_type, entity_id, name, description, parent_id, parent_type)
+        // Masukkan data ke dalam tabel archive
+        const archiveUsers = await client.query(
+            `INSERT INTO archive (entity_type, entity_id, name, description, parent_id, parent_type)
              SELECT 'workspace_user', wu.user_id, u.username, wu.role, $1, 'workspace'
              FROM workspaces_users wu
              JOIN users u ON wu.user_id = u.id
              WHERE wu.workspace_id = $1
              RETURNING *`,
-      [workspaceId]
-    );
+            [workspaceId]
+        );
 
-    // Hapus data dari workspaces_users setelah diarsipkan
-    await client.query('DELETE FROM workspaces_users WHERE workspace_id = $1', [workspaceId]);
+        // Hapus data dari workspaces_users setelah diarsipkan
+        await client.query('DELETE FROM workspaces_users WHERE workspace_id = $1', [workspaceId]);
 
 
-    res.status(200).json({ message: `Pengguna workspace ${workspaceId} berhasil diarsipkan`, data: archiveUsers.rows });
-  } catch (err) {
-    console.error('Error executing query:', err.stack);
-    res.status(500).json({ error: 'Server Error saat mengarsipkan pengguna workspace!' });
-  }
+        res.status(200).json({ message: `Pengguna workspace ${workspaceId} berhasil diarsipkan`, data: archiveUsers.rows });
+    } catch (err) {
+        console.error('Error executing query:', err.stack);
+        res.status(500).json({ error: 'Server Error saat mengarsipkan pengguna workspace!' });
+    }
 });
 
 
 //6. get workspace milik user
 app.get('/api/user/:userId/workspaces', async (req, res) => {
-  const { userId } = req.params;
-  try {
-    const result = await client.query(
-      `SELECT w.id, w.name, w.description, w.create_at, w.update_at
+    const { userId } = req.params;
+    try {
+        const result = await client.query(
+            `SELECT w.id, w.name, w.description, w.create_at, w.update_at
             FROM workspaces w
             JOIN workspaces_users wu ON w.id = wu.workspace_id
             WHERE wu.user_id = $1`, [userId]
-    );
+        );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'No workspaces found for this user' });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'No workspaces found for this user' });
+        }
+
+        res.status(200).json(result.rows);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-
-    res.status(200).json(result.rows);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 });
 //7. get admin name form workspace
 app.get('/api/:workspaceId/admin', async (req, res) => {
-  const { workspaceId } = req.params;
+    const { workspaceId } = req.params;
 
-  try {
-    const result = await client.query(
-      `
+    try {
+        const result = await client.query(
+            `
         SELECT 
           u.id, 
           u.username, 
@@ -1287,32 +1287,32 @@ app.get('/api/:workspaceId/admin', async (req, res) => {
           wu.workspace_id = $1 
           AND wu.role = 'admin'
         `,
-      [workspaceId]
-    );
+            [workspaceId]
+        );
 
-    res.json({ admins: result.rows });
-  } catch (error) {
-    console.error('Error fetching admins:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
+        res.json({ admins: result.rows });
+    } catch (error) {
+        console.error('Error fetching admins:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 });
 //8.get total user in workspace
 app.get('/api/workspaces/:workspaceId/user-count', async (req, res) => {
-  const { workspaceId } = req.params;
+    const { workspaceId } = req.params;
 
-  const query = `
+    const query = `
       SELECT COUNT(*) AS user_count
       FROM workspaces_users
       WHERE workspace_id = $1
     `;
 
-  try {
-    const result = await client.query(query, [workspaceId]);
-    res.json({ workspace_id: workspaceId, user_count: parseInt(result.rows[0].user_count, 10) });
-  } catch (err) {
-    console.error('Error fetching user count for workspace:', err);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+    try {
+        const result = await client.query(query, [workspaceId]);
+        res.json({ workspace_id: workspaceId, user_count: parseInt(result.rows[0].user_count, 10) });
+    } catch (err) {
+        console.error('Error fetching user count for workspace:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 
@@ -1323,11 +1323,11 @@ app.get('/api/workspaces/:workspaceId/user-count', async (req, res) => {
 //ASSIGN USER
 //1. mendapatkan semua user berdasarkan workspace id
 app.get('/api/workspace/:workspaceId/users-profil', async (req, res) => {
-  const { workspaceId } = req.params;
+    const { workspaceId } = req.params;
 
-  try {
-    const result = await client.query(
-      `
+    try {
+        const result = await client.query(
+            `
         SELECT 
           u.id,
           u.username,
@@ -1341,155 +1341,155 @@ app.get('/api/workspace/:workspaceId/users-profil', async (req, res) => {
         LEFT JOIN profil p ON up.profil_id = p.id
         WHERE wu.workspace_id = $1
         `,
-      [workspaceId]
-    );
+            [workspaceId]
+        );
 
-    res.json(result.rows);
-  } catch (error) {
-    console.error('Error fetching workspace users:', error);
-    res.status(500).json({ error: 'Failed to fetch users for the workspace.' });
-  }
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error fetching workspace users:', error);
+        res.status(500).json({ error: 'Failed to fetch users for the workspace.' });
+    }
 });
 
 
 //2. remove user form workspace
 app.delete('/api/workspace/:workspaceId/user/:userId', async (req, res) => {
-  const { workspaceId, userId } = req.params;
-  try {
-    await client.query(
-      "DELETE FROM workspaces_users WHERE workspace_id = $1 AND user_id = $2",
-      [workspaceId, userId]
-    );
+    const { workspaceId, userId } = req.params;
+    try {
+        await client.query(
+            "DELETE FROM workspaces_users WHERE workspace_id = $1 AND user_id = $2",
+            [workspaceId, userId]
+        );
 
-    //mengambil nama workspace 
-    const workspaceNameQuery = await client.query(
-      `SELECT name FROM workspaces WHERE id = $1`,
-      [workspaceId]
-    )
+        //mengambil nama workspace 
+        const workspaceNameQuery = await client.query(
+            `SELECT name FROM workspaces WHERE id = $1`,
+            [workspaceId]
+        )
 
-    const workspaceName = workspaceNameQuery.rows[0]?.name || 'a workspace'
+        const workspaceName = workspaceNameQuery.rows[0]?.name || 'a workspace'
 
-    //add log notification
-    await SystemNotification({
-      userId,
-      message: `Someone remove you out of this workspace "${workspaceName}"`,
-      type: 'remove'
-    })
+        //add log notification
+        await SystemNotification({
+            userId,
+            message: `Someone remove you out of this workspace "${workspaceName}"`,
+            type: 'remove'
+        })
 
-    res.json({ message: "User removed from workspace" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+        res.json({ message: "User removed from workspace" });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 })
 
 //3. add user to workspace -> works
 app.post('/api/workspace-user/:workspaceId/user/:userId', async (req, res) => {
-  const { workspaceId, userId } = req.params;
-  const { role } = req.body;
-  try {
-    // Cek apakah user sudah ada di workspace
-    const checkUser = await client.query(
-      `SELECT * FROM workspaces_users WHERE workspace_id = $1 AND user_id = $2`,
-      [workspaceId, userId]
-    );
+    const { workspaceId, userId } = req.params;
+    const { role } = req.body;
+    try {
+        // Cek apakah user sudah ada di workspace
+        const checkUser = await client.query(
+            `SELECT * FROM workspaces_users WHERE workspace_id = $1 AND user_id = $2`,
+            [workspaceId, userId]
+        );
 
-    if (checkUser.rows.length > 0) {
-      return res.status(400).json({ message: 'User is already in this workspace' });
-    }
+        if (checkUser.rows.length > 0) {
+            return res.status(400).json({ message: 'User is already in this workspace' });
+        }
 
-    // Jika user belum ada, tambahkan ke workspace
-    const result = await client.query(
-      `INSERT INTO workspaces_users (workspace_id, user_id, role) 
+        // Jika user belum ada, tambahkan ke workspace
+        const result = await client.query(
+            `INSERT INTO workspaces_users (workspace_id, user_id, role) 
             VALUES ($1, $2, $3) RETURNING *`,
-      [workspaceId, userId, role]
-    );
+            [workspaceId, userId, role]
+        );
 
-    //mengambil nama workspace berdasarkan workspace id untuk notifikasi
-    const workspaceNameQuery = await client.query(
-      `SELECT name FROM workspaces WHERE id = $1`,
-      [workspaceId]
-    );
+        //mengambil nama workspace berdasarkan workspace id untuk notifikasi
+        const workspaceNameQuery = await client.query(
+            `SELECT name FROM workspaces WHERE id = $1`,
+            [workspaceId]
+        );
 
-    const workspaceName = workspaceNameQuery.rows[0]?.name || 'a workspace';
+        const workspaceName = workspaceNameQuery.rows[0]?.name || 'a workspace';
 
 
-    //tambahkan notification
-    await SystemNotification({
-      userId,
-      workspaceId,
-      message: `You were added to workspace "${workspaceName}"`,
-      type: 'workspace_assigned'
-    })
+        //tambahkan notification
+        await SystemNotification({
+            userId,
+            workspaceId,
+            message: `You were added to workspace "${workspaceName}"`,
+            type: 'workspace_assigned'
+        })
 
-    res.status(201).json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+        res.status(201).json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 })
 //4. search user in workspace
 app.get('/api/workspace/:workspaceId/user/:userId', async (req, res) => {
-  const { workspaceId } = req.params;
-  const { query } = req.query; // Pencarian berdasarkan username atau email
-  try {
-    const result = await client.query(
-      `SELECT u.id, u.username, u.email, wu.role 
+    const { workspaceId } = req.params;
+    const { query } = req.query; // Pencarian berdasarkan username atau email
+    try {
+        const result = await client.query(
+            `SELECT u.id, u.username, u.email, wu.role 
                  FROM workspaces_users wu 
                  JOIN users u ON wu.user_id = u.id 
                  WHERE wu.workspace_id = $1 
                  AND (u.username ILIKE $2 OR u.email ILIKE $2)`,
-      [workspaceId, `%${query}%`]
-    );
-    res.json(result.rows);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+            [workspaceId, `%${query}%`]
+        );
+        res.json(result.rows);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 })
 // END ASSIGN USER 
 
 //BOARD
 // Endpoint to get all boards
 app.get('/api/boards', async (req, res) => {
-  try {
-    // Simple query to fetch all boards
-    const query = 'SELECT * FROM public.boards';
-    const result = await client.query(query);
+    try {
+        // Simple query to fetch all boards
+        const query = 'SELECT * FROM public.boards';
+        const result = await client.query(query);
 
-    // Check if any boards exist
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: 'No boards found' });
+        // Check if any boards exist
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'No boards found' });
+        }
+
+        // Return the result
+        return res.status(200).json(result.rows);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'Error fetching boards' });
     }
-
-    // Return the result
-    return res.status(200).json(result.rows);
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ message: 'Error fetching boards' });
-  }
 });
 
 //1. get all board by workspace id
 app.get('/api/workspaces/:workspaceId/boards', async (req, res) => {
-  const { workspaceId } = req.params;
-  try {
-    const result = await client.query('SELECT * FROM boards WHERE workspace_id = $1', [workspaceId]);
-    res.json(result.rows);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    const { workspaceId } = req.params;
+    try {
+        const result = await client.query('SELECT * FROM boards WHERE workspace_id = $1', [workspaceId]);
+        res.json(result.rows);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 })
 //2. get board by id
 app.get('/api/boards/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const result = await client.query('SELECT * FROM boards WHERE id = $1', [id]);
-    if (result.rows.length > 0) {
-      res.json(result.rows[0]);
-    } else {
-      res.status(404).json({ message: 'Board not found' });
+    const { id } = req.params;
+    try {
+        const result = await client.query('SELECT * FROM boards WHERE id = $1', [id]);
+        if (result.rows.length > 0) {
+            res.json(result.rows[0]);
+        } else {
+            res.status(404).json({ message: 'Board not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 })
 //3. create board
 // app.post('/api/boards', async (req, res) => {
@@ -1519,349 +1519,349 @@ app.get('/api/boards/:id', async (req, res) => {
 //   }
 // })
 app.post('/api/boards', async (req, res) => {
-  const { user_id, name, description, workspace_id } = req.body;
-  // const userId = req.user.id; // ✅ ambil dari token user yang login
+    const { user_id, name, description, workspace_id } = req.body;
+    // const userId = req.user.id; // ✅ ambil dari token user yang login
 
-  try {
-    const result = await client.query(
-      `INSERT INTO boards (user_id, name, description, workspace_id, create_at) 
+    try {
+        const result = await client.query(
+            `INSERT INTO boards (user_id, name, description, workspace_id, create_at) 
        VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP) 
        RETURNING *`,
-      [user_id, name, description, workspace_id]
-    );
+            [user_id, name, description, workspace_id]
+        );
 
-    const boardId = result.rows[0].id;
-    console.log('📍 endpoin post ini menerima boardId:', boardId);
+        const boardId = result.rows[0].id;
+        console.log('📍 endpoin post ini menerima boardId:', boardId);
 
-    await logActivity(
-      'board',
-      boardId,
-      'create',
-      user_id,
-      `Board '${name}' created `,
-      'workspace',
-      workspace_id
-    );
+        await logActivity(
+            'board',
+            boardId,
+            'create',
+            user_id,
+            `Board '${name}' created `,
+            'workspace',
+            workspace_id
+        );
 
-    res.status(201).json(result.rows[0]);
-  } catch (error) {
-    console.error('❌ Error creating board:', error);
-    res.status(500).json({ error: error.message });
-  }
+        res.status(201).json(result.rows[0]);
+    } catch (error) {
+        console.error('❌ Error creating board:', error);
+        res.status(500).json({ error: error.message });
+    }
 });
 
 
 //4. update board
 app.put('/api/boards/:id', async (req, res) => {
-  const { id } = req.params;
-  const { name, description, background_image_id, assign } = req.body;
+    const { id } = req.params;
+    const { name, description, background_image_id, assign } = req.body;
 
-  try {
-    const result = await client.query(
-      'UPDATE boards SET name = $1, description = $2, background_image_id = $3, assign = $4 , update_at = CURRENT_TIMESTAMP WHERE id = $5 RETURNING *',
-      [name, description, background_image_id, assign, id]
-    );
+    try {
+        const result = await client.query(
+            'UPDATE boards SET name = $1, description = $2, background_image_id = $3, assign = $4 , update_at = CURRENT_TIMESTAMP WHERE id = $5 RETURNING *',
+            [name, description, background_image_id, assign, id]
+        );
 
-    if (result.rows.length > 0) {
-      res.json(result.rows[0]);
-    } else {
-      res.status(404).json({ message: 'Board not found' });
+        if (result.rows.length > 0) {
+            res.json(result.rows[0]);
+        } else {
+            res.status(404).json({ message: 'Board not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 })
 //5. delete a board
 app.delete('/api/boards/:id', async (req, res) => {
-  const { id } = req.params;
-  const userId = req.user.id;
+    const { id } = req.params;
+    const userId = req.user.id;
 
-  try {
-    const result = await client.query('DELETE FROM boards WHERE id = $1 RETURNING *', [id]);
-    if (result.rows.length > 0) {
-      res.json({ message: 'Board deleted successfully' });
+    try {
+        const result = await client.query('DELETE FROM boards WHERE id = $1 RETURNING *', [id]);
+        if (result.rows.length > 0) {
+            res.json({ message: 'Board deleted successfully' });
 
-      //add activity log
-      await logActivity(
-        'board',
-        id,
-        'delete',
-        userId,
-        `Board dengan Id ${id} deleted`,
-        'workspace',
-        id
-      )
-    } else {
-      res.status(404).json({ message: 'Board not found' });
+            //add activity log
+            await logActivity(
+                'board',
+                id,
+                'delete',
+                userId,
+                `Board dengan Id ${id} deleted`,
+                'workspace',
+                id
+            )
+        } else {
+            res.status(404).json({ message: 'Board not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 })
 //6. update board name
 app.put('/api/boards/:id/name', async (req, res) => {
-  const { id } = req.params;
-  const { name } = req.body;
-  const userId = req.user.id;
+    const { id } = req.params;
+    const { name } = req.body;
+    const userId = req.user.id;
 
-  try {
-    const result = await client.query(
-      "UPDATE boards SET name = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *",
-      [name, id]
-    );
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: 'Boards is not found' });
+    try {
+        const result = await client.query(
+            "UPDATE boards SET name = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *",
+            [name, id]
+        );
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'Boards is not found' });
+        }
+
+        //CHECK USER ID
+        console.log('endpoin update board name ini menerima userId:', userId);
+
+        //LOG ACTIVITY 
+        await logActivity(
+            'board',
+            result.rows[0].id,
+            'update',
+            userId,
+            `Board name updated to '${name}' in board`,
+            'board',
+            id
+        )
+
+        res.status(200).json(result.rows[0]);
+    } catch (error) {
+        console.error('Error updating board name:', error);
+        res.status(500).json({ error: error.message });
     }
-
-    //CHECK USER ID
-    console.log('endpoin update board name ini menerima userId:', userId);
-
-    //LOG ACTIVITY 
-    await logActivity(
-      'board',
-      result.rows[0].id,
-      'update',
-      userId,
-      `Board name updated to '${name}' in board`,
-      'board',
-      id
-    )
-
-    res.status(200).json(result.rows[0]);
-  } catch (error) {
-    console.error('Error updating board name:', error);
-    res.status(500).json({ error: error.message });
-  }
 })
 //7. update description boards
 app.put('/api/boards/:id/description', async (req, res) => {
-  const { id } = req.params;
-  const { description } = req.body;
-  const userId = req.user.id;
+    const { id } = req.params;
+    const { description } = req.body;
+    const userId = req.user.id;
 
-  try {
-    const result = await client.query(
-      "UPDATE boards SET description = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *",
-      [description, id]
-    );
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: 'Boards is not found' });
+    try {
+        const result = await client.query(
+            "UPDATE boards SET description = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *",
+            [description, id]
+        );
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'Boards is not found' });
+        }
+
+        //check user id
+        console.log('Endpoin update desctiption ini menerima userId:', userId);
+
+        //log activity
+        await logActivity(
+            'board',
+            result.rows[0].id,
+            'update',
+            userId,
+            `Board description updated to '${description}' in board`,
+            'board',
+            id
+        )
+
+        res.status(200).json(result.rows[0]);
+    } catch (error) {
+        console.error('Error updating board name:', error);
+        res.status(500).json({ error: error.message });
     }
-
-    //check user id
-    console.log('Endpoin update desctiption ini menerima userId:', userId);
-
-    //log activity
-    await logActivity(
-      'board',
-      result.rows[0].id,
-      'update',
-      userId,
-      `Board description updated to '${description}' in board`,
-      'board',
-      id
-    )
-
-    res.status(200).json(result.rows[0]);
-  } catch (error) {
-    console.error('Error updating board name:', error);
-    res.status(500).json({ error: error.message });
-  }
 
 })
 
 //8. Endpoint untuk menduplikasi board ke workspace baru
 app.post('/api/duplicate-board/:boardId/to-workspace/:workspaceId', async (req, res) => {
-  const { boardId, workspaceId } = req.params;
-  const userId = req.user.id;
+    const { boardId, workspaceId } = req.params;
+    const userId = req.user.id;
 
 
-  try {
-    await client.query('BEGIN');
+    try {
+        await client.query('BEGIN');
 
-    // 1. Salin Board ke Workspace Baru
-    const boardResult = await client.query(
-      `INSERT INTO boards (user_id, name, description, workspace_id, background_image_id, assign, create_at)
+        // 1. Salin Board ke Workspace Baru
+        const boardResult = await client.query(
+            `INSERT INTO boards (user_id, name, description, workspace_id, background_image_id, assign, create_at)
             SELECT user_id, name || ' (Copy)', description, $1, background_image_id, assign, CURRENT_TIMESTAMP
             FROM boards WHERE id = $2
             RETURNING id`,
-      [workspaceId, boardId]
-    );
+            [workspaceId, boardId]
+        );
 
-    if (boardResult.rowCount === 0) {
-      throw new Error('Board tidak ditemukan.');
-    }
+        if (boardResult.rowCount === 0) {
+            throw new Error('Board tidak ditemukan.');
+        }
 
-    const newBoardId = boardResult.rows[0].id;
-    // const newBoardName = boardResult.rows[0].name;
+        const newBoardId = boardResult.rows[0].id;
+        // const newBoardName = boardResult.rows[0].name;
 
-    // 2. Salin Lists yang ada di Board Lama ke Board Baru
-    const listResult = await client.query(
-      `INSERT INTO lists (board_id, name, position)
+        // 2. Salin Lists yang ada di Board Lama ke Board Baru
+        const listResult = await client.query(
+            `INSERT INTO lists (board_id, name, position)
       SELECT $1, name, position FROM lists WHERE board_id = $2
       RETURNING id, name, position`,
-      [newBoardId, boardId]
-    );
+            [newBoardId, boardId]
+        );
 
-    const listMap = {};
-    listResult.rows.forEach((list) => {
-      listMap[list.id] = list.name; // Simpan mapping ID list lama ke list baru
-    });
+        const listMap = {};
+        listResult.rows.forEach((list) => {
+            listMap[list.id] = list.name; // Simpan mapping ID list lama ke list baru
+        });
 
-    // 3. Salin Cards yang ada di Lists Lama ke Lists Baru
-    const cardInsertPromises = Object.entries(listMap).map(async ([oldListId, name]) => {
-      return client.query(
-        `INSERT INTO cards (list_id, title, description)
+        // 3. Salin Cards yang ada di Lists Lama ke Lists Baru
+        const cardInsertPromises = Object.entries(listMap).map(async ([oldListId, name]) => {
+            return client.query(
+                `INSERT INTO cards (list_id, title, description)
                  SELECT (SELECT id FROM lists WHERE board_id = $1 AND name = $2), title, description
                  FROM cards WHERE list_id = $3`,
-        [newBoardId, name, oldListId]
-      );
-    });
+                [newBoardId, name, oldListId]
+            );
+        });
 
-    await Promise.all(cardInsertPromises);
+        await Promise.all(cardInsertPromises);
 
-    //add log activity
-    await logActivity(
-      'board',
-      newBoardId,
-      'duplicate',
-      userId,
-      `Board dengan ID ${boardId} diduplikasi ke workspace ${workspaceId}`,
-      'workspace',
-      workspaceId
-    )
+        //add log activity
+        await logActivity(
+            'board',
+            newBoardId,
+            'duplicate',
+            userId,
+            `Board dengan ID ${boardId} diduplikasi ke workspace ${workspaceId}`,
+            'workspace',
+            workspaceId
+        )
 
-    await client.query('COMMIT');
+        await client.query('COMMIT');
 
-    res.status(200).json({
-      message: `Board berhasil diduplikasi ke workspace ${workspaceId}.`,
-      newBoardId: newBoardId
-    });
-  } catch (err) {
-    await client.query('ROLLBACK');
-    console.error('Error duplicating board:', err.stack);
-    res.status(500).json({ error: 'Server error saat menduplikasi board!' });
-  }
+        res.status(200).json({
+            message: `Board berhasil diduplikasi ke workspace ${workspaceId}.`,
+            newBoardId: newBoardId
+        });
+    } catch (err) {
+        await client.query('ROLLBACK');
+        console.error('Error duplicating board:', err.stack);
+        res.status(500).json({ error: 'Server error saat menduplikasi board!' });
+    }
 });
 
 //9. move board to workspace
 app.post('/api/move-board/:boardId/to-workspace/:workspaceId', async (req, res) => {
-  const { boardId, workspaceId } = req.params;
-  const userId = req.user.id;
+    const { boardId, workspaceId } = req.params;
+    const userId = req.user.id;
 
-  try {
-    await client.query('BEGIN');
+    try {
+        await client.query('BEGIN');
 
-    // 1. Salin Board ke Workspace Baru
-    const boardResult = await client.query(
-      `INSERT INTO boards (user_id, name, description, workspace_id, background_image_id, assign,update_at)
+        // 1. Salin Board ke Workspace Baru
+        const boardResult = await client.query(
+            `INSERT INTO boards (user_id, name, description, workspace_id, background_image_id, assign,update_at)
              SELECT user_id, name, description, $1, background_image_id, assign, CURRENT_TIMESTAMP
              FROM boards WHERE id = $2
              RETURNING id`,
-      [workspaceId, boardId]
-    );
+            [workspaceId, boardId]
+        );
 
-    if (boardResult.rowCount === 0) {
-      throw new Error('Board tidak ditemukan.');
-    }
+        if (boardResult.rowCount === 0) {
+            throw new Error('Board tidak ditemukan.');
+        }
 
-    const newBoardId = boardResult.rows[0].id;
-    // const newBoardName = boardResult.rows[0].name;
+        const newBoardId = boardResult.rows[0].id;
+        // const newBoardName = boardResult.rows[0].name;
 
-    // 2. Salin Lists yang ada di Board Lama ke Board Baru
-    const listResult = await client.query(
-      `INSERT INTO lists (board_id, name, position)
+        // 2. Salin Lists yang ada di Board Lama ke Board Baru
+        const listResult = await client.query(
+            `INSERT INTO lists (board_id, name, position)
              SELECT $1, name, position FROM lists WHERE board_id = $2
              RETURNING id, name`,
-      [newBoardId, boardId]
-    );
+            [newBoardId, boardId]
+        );
 
-    const listMap = {};
-    listResult.rows.forEach((list) => {
-      listMap[list.id] = list.name; // Simpan mapping ID list lama ke list baru
-    });
+        const listMap = {};
+        listResult.rows.forEach((list) => {
+            listMap[list.id] = list.name; // Simpan mapping ID list lama ke list baru
+        });
 
-    // 3. Salin Cards yang ada di Lists Lama ke Lists Baru
-    const cardInsertPromises = Object.entries(listMap).map(async ([oldListId, name]) => {
-      return client.query(
-        `INSERT INTO cards (list_id, title, description, position)
+        // 3. Salin Cards yang ada di Lists Lama ke Lists Baru
+        const cardInsertPromises = Object.entries(listMap).map(async ([oldListId, name]) => {
+            return client.query(
+                `INSERT INTO cards (list_id, title, description, position)
                  SELECT (SELECT id FROM lists WHERE board_id = $1 AND name = $2), title, description, position
                  FROM cards WHERE list_id = $3`,
-        [newBoardId, name, oldListId]
-      );
-    });
+                [newBoardId, name, oldListId]
+            );
+        });
 
-    await Promise.all(cardInsertPromises);
+        await Promise.all(cardInsertPromises);
 
-    //add log activity
-    await logActivity(
-      'board',
-      newBoardId,
-      'move',
-      userId,
-      `Board dengan ID ${newBoardId} dipindahan ke workspace ${workspaceId}`,
-      'workspace',
-      workspaceId
-    )
+        //add log activity
+        await logActivity(
+            'board',
+            newBoardId,
+            'move',
+            userId,
+            `Board dengan ID ${newBoardId} dipindahan ke workspace ${workspaceId}`,
+            'workspace',
+            workspaceId
+        )
 
-    // 4. Hapus Board Lama
-    await client.query(`DELETE FROM boards WHERE id = $1`, [boardId]);
+        // 4. Hapus Board Lama
+        await client.query(`DELETE FROM boards WHERE id = $1`, [boardId]);
 
-    await client.query('COMMIT');
+        await client.query('COMMIT');
 
-    res.status(200).json({
-      message: `Board berhasil dipindahkan ke workspace ${workspaceId}.`,
-      newBoardId: newBoardId
-    });
-  } catch (err) {
-    await client.query('ROLLBACK');
-    console.error('Error moving board:', err.stack);
-    res.status(500).json({ error: 'Server error saat memindahkan board!' });
-  }
+        res.status(200).json({
+            message: `Board berhasil dipindahkan ke workspace ${workspaceId}.`,
+            newBoardId: newBoardId
+        });
+    } catch (err) {
+        await client.query('ROLLBACK');
+        console.error('Error moving board:', err.stack);
+        res.status(500).json({ error: 'Server error saat memindahkan board!' });
+    }
 });
 
 //10. archive data boards
 app.post('/api/boards/:boardId/archive', async (req, res) => {
-  const { boardId } = req.params;
-  const userId = req.user.id;
+    const { boardId } = req.params;
+    const userId = req.user.id;
 
-  try {
-    // Ambil data board yang akan diarsipkan
-    const boardQuery = 'SELECT * FROM boards WHERE id = $1';
-    const boardResult = await client.query(boardQuery, [boardId]);
+    try {
+        // Ambil data board yang akan diarsipkan
+        const boardQuery = 'SELECT * FROM boards WHERE id = $1';
+        const boardResult = await client.query(boardQuery, [boardId]);
 
-    if (boardResult.rows.length === 0) {
-      return res.status(404).json({ message: 'Board not found' });
-    }
+        if (boardResult.rows.length === 0) {
+            return res.status(404).json({ message: 'Board not found' });
+        }
 
-    const board = boardResult.rows[0];
+        const board = boardResult.rows[0];
 
-    // Masukkan data board ke dalam tabel archive
-    const archiveQuery = `INSERT INTO archive (entity_type, entity_id, name, description, parent_id, parent_type) 
+        // Masukkan data board ke dalam tabel archive
+        const archiveQuery = `INSERT INTO archive (entity_type, entity_id, name, description, parent_id, parent_type) 
                               VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`;
-    const archiveValues = ['board', board.id, board.name, board.description, board.workspace_id, 'workspace'];
-    const archiveResult = await client.query(archiveQuery, archiveValues);
+        const archiveValues = ['board', board.id, board.name, board.description, board.workspace_id, 'workspace'];
+        const archiveResult = await client.query(archiveQuery, archiveValues);
 
-    // Hapus board dari tabel boards setelah diarsipkan
-    const deleteQuery = 'DELETE FROM boards WHERE id = $1';
-    await client.query(deleteQuery, [boardId]);
+        // Hapus board dari tabel boards setelah diarsipkan
+        const deleteQuery = 'DELETE FROM boards WHERE id = $1';
+        await client.query(deleteQuery, [boardId]);
 
-    //add log archive
-    await logActivity(
-      'board',
-      boardId,
-      'archive',
-      userId,
-      `Board dengan id '${boardId} berhasil di archive'`,
-      'workspace',
-      boardId
-    )
+        //add log archive
+        await logActivity(
+            'board',
+            boardId,
+            'archive',
+            userId,
+            `Board dengan id '${boardId} berhasil di archive'`,
+            'workspace',
+            boardId
+        )
 
-    res.status(200).json({ message: 'Board archived successfully', archivedBoard: archiveResult.rows[0] });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal Server Error' });
-  }
+        res.status(200).json({ message: 'Board archived successfully', archivedBoard: archiveResult.rows[0] });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
 });
 
 
@@ -1871,213 +1871,213 @@ app.post('/api/boards/:boardId/archive', async (req, res) => {
 //BOARD PRIORITY 
 //1. add priority to board -> works
 app.post('/api/board-priority', async (req, res) => {
-  const { board_id, priority_id } = req.body;
-  const userId = req.user.id;
+    const { board_id, priority_id } = req.body;
+    const userId = req.user.id;
 
-  try {
-    if (!board_id || !priority_id) {
-      return res.status(400).json({ error: "board_id dan priority_id wajib diisi" });
+    try {
+        if (!board_id || !priority_id) {
+            return res.status(400).json({ error: "board_id dan priority_id wajib diisi" });
+        }
+
+        await client.query("BEGIN");
+
+        // Hapus semua prioritas lama untuk board ini (hanya jika satu prioritas diperbolehkan)
+        await client.query(
+            "DELETE FROM board_priorities WHERE board_id = $1",
+            [board_id]
+        );
+
+        // Insert prioritas baru
+        const result = await client.query(
+            "INSERT INTO board_priorities (board_id, priority_id, create_at,update_at) VALUES ($1, $2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING *",
+            [board_id, priority_id]
+        );
+
+        await client.query("COMMIT");
+
+        //add log activity
+        await logActivity(
+            'board priority',
+            priority_id,
+            'add',
+            userId,
+            `Board priority added`,
+            'board',
+            board_id
+        )
+
+        res.status(201).json({ message: "Prioritas berhasil ditambahkan", data: result.rows[0] });
+    } catch (error) {
+        await client.query("ROLLBACK");
+        console.error(error);
+        res.status(500).json({ error: "Terjadi kesalahan server" });
     }
-
-    await client.query("BEGIN");
-
-    // Hapus semua prioritas lama untuk board ini (hanya jika satu prioritas diperbolehkan)
-    await client.query(
-      "DELETE FROM board_priorities WHERE board_id = $1",
-      [board_id]
-    );
-
-    // Insert prioritas baru
-    const result = await client.query(
-      "INSERT INTO board_priorities (board_id, priority_id, create_at,update_at) VALUES ($1, $2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING *",
-      [board_id, priority_id]
-    );
-
-    await client.query("COMMIT");
-
-    //add log activity
-    await logActivity(
-      'board priority',
-      priority_id,
-      'add',
-      userId,
-      `Board priority added`,
-      'board',
-      board_id
-    )
-
-    res.status(201).json({ message: "Prioritas berhasil ditambahkan", data: result.rows[0] });
-  } catch (error) {
-    await client.query("ROLLBACK");
-    console.error(error);
-    res.status(500).json({ error: "Terjadi kesalahan server" });
-  }
 })
 //2. get all board priority -> works
 app.get('/api/board-priority/:board_id', async (req, res) => {
-  try {
-    const { board_id } = req.params;
+    try {
+        const { board_id } = req.params;
 
-    const result = await client.query(
-      `SELECT p.id, p.name, p.color 
+        const result = await client.query(
+            `SELECT p.id, p.name, p.color 
              FROM board_priorities bp
              JOIN priorities p ON bp.priority_id = p.id
              WHERE bp.board_id = $1`,
-      [board_id]
-    );
+            [board_id]
+        );
 
-    res.status(200).json(result.rows);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Terjadi kesalahan server" });
-  }
+        res.status(200).json(result.rows);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Terjadi kesalahan server" });
+    }
 })
 //3. get all priority -> works
 app.get('/api/priority', async (req, res) => {
-  try {
-    const result = await client.query("SELECT * FROM priorities");
-    res.status(200).json(result.rows);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Terjadi kesalahan server" });
-  }
+    try {
+        const result = await client.query("SELECT * FROM priorities");
+        res.status(200).json(result.rows);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Terjadi kesalahan server" });
+    }
 })
 //4. delete prioritas from board 
 app.delete('/api/board-priority-remove', async (req, res) => {
-  try {
-    const { board_id, priority_id } = req.body;
+    try {
+        const { board_id, priority_id } = req.body;
 
-    if (!board_id || !priority_id) {
-      return res.status(400).json({ error: "board_id dan priority_id wajib diisi" });
+        if (!board_id || !priority_id) {
+            return res.status(400).json({ error: "board_id dan priority_id wajib diisi" });
+        }
+
+        const result = await client.query(
+            "DELETE FROM board_priorities WHERE board_id = $1 AND priority_id = $2 RETURNING *",
+            [board_id, priority_id]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: "Prioritas tidak ditemukan di board ini" });
+        }
+
+        res.status(200).json({ message: "Prioritas berhasil dihapus", data: result.rows[0] });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Terjadi kesalahan server" });
     }
-
-    const result = await client.query(
-      "DELETE FROM board_priorities WHERE board_id = $1 AND priority_id = $2 RETURNING *",
-      [board_id, priority_id]
-    );
-
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: "Prioritas tidak ditemukan di board ini" });
-    }
-
-    res.status(200).json({ message: "Prioritas berhasil dihapus", data: result.rows[0] });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Terjadi kesalahan server" });
-  }
 })
 //END BOARD PRIORITY
 
 //CARD PRIORITY
 //1. add priority to card
 app.post('/api/card-priorities', async (req, res) => {
-  const userId = req.user.id;
-  const { card_id, priority_id } = req.body;
+    const userId = req.user.id;
+    const { card_id, priority_id } = req.body;
 
-  if (!card_id || !priority_id) {
-    return res.status(400).json({ error: "card_id dan priority_id wajib diisi" });
-  }
+    if (!card_id || !priority_id) {
+        return res.status(400).json({ error: "card_id dan priority_id wajib diisi" });
+    }
 
-  try {
-    await client.query('BEGIN');
+    try {
+        await client.query('BEGIN');
 
-    // Ambil priority lama sebelum dihapus
-    const oldPriorityResult = await client.query(
-      `SELECT cp.priority_id, p.name AS priority_name
+        // Ambil priority lama sebelum dihapus
+        const oldPriorityResult = await client.query(
+            `SELECT cp.priority_id, p.name AS priority_name
        FROM card_priorities cp
        JOIN priorities p ON cp.priority_id = p.id
        WHERE cp.card_id = $1`,
-      [card_id]
-    );
+            [card_id]
+        );
 
-    const oldPriorityId = oldPriorityResult.rows[0]?.priority_id || null;
-    const oldPriorityName = oldPriorityResult.rows[0]?.priority_name || null;
+        const oldPriorityId = oldPriorityResult.rows[0]?.priority_id || null;
+        const oldPriorityName = oldPriorityResult.rows[0]?.priority_name || null;
 
-    // Hapus semua prioritas lama untuk card ini
-    await client.query(
-      "DELETE FROM card_priorities WHERE card_id = $1",
-      [card_id]
-    );
+        // Hapus semua prioritas lama untuk card ini
+        await client.query(
+            "DELETE FROM card_priorities WHERE card_id = $1",
+            [card_id]
+        );
 
-    // Tambahkan prioritas baru
-    const insertResult = await client.query(
-      "INSERT INTO card_priorities (card_id, priority_id) VALUES ($1, $2) RETURNING *",
-      [card_id, priority_id]
-    );
+        // Tambahkan prioritas baru
+        const insertResult = await client.query(
+            "INSERT INTO card_priorities (card_id, priority_id) VALUES ($1, $2) RETURNING *",
+            [card_id, priority_id]
+        );
 
-    // Ambil nama prioritas baru
-    const newPriorityResult = await client.query(
-      "SELECT name FROM priorities WHERE id = $1",
-      [priority_id]
-    );
-    const newPriorityName = newPriorityResult.rows[0]?.name || null;
+        // Ambil nama prioritas baru
+        const newPriorityResult = await client.query(
+            "SELECT name FROM priorities WHERE id = $1",
+            [priority_id]
+        );
+        const newPriorityName = newPriorityResult.rows[0]?.name || null;
 
-    // Log aktivitas
-    await logCardActivity({
-      action: 'updated_prio',
-      card_id: parseInt(card_id),
-      user_id: userId,
-      entity: 'priority',
-      entity_id: priority_id,
-      details: {
-        old_priority_id: oldPriorityId,
-        old_priority_name: oldPriorityName,
-        new_priority_id: priority_id,
-        new_priority_name: newPriorityName
-      }
-    });
+        // Log aktivitas
+        await logCardActivity({
+            action: 'updated_prio',
+            card_id: parseInt(card_id),
+            user_id: userId,
+            entity: 'priority',
+            entity_id: priority_id,
+            details: {
+                old_priority_id: oldPriorityId,
+                old_priority_name: oldPriorityName,
+                new_priority_id: priority_id,
+                new_priority_name: newPriorityName
+            }
+        });
 
-    await client.query('COMMIT');
+        await client.query('COMMIT');
 
-    res.status(201).json({
-      message: "Prioritas berhasil ditambahkan",
-      data: insertResult.rows[0]
-    });
+        res.status(201).json({
+            message: "Prioritas berhasil ditambahkan",
+            data: insertResult.rows[0]
+        });
 
-  } catch (error) {
-    await client.query('ROLLBACK');
-    console.error("Error adding priority to card:", error);
-    res.status(500).json({ error: "Terjadi kesalahan server" });
-  }
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error("Error adding priority to card:", error);
+        res.status(500).json({ error: "Terjadi kesalahan server" });
+    }
 });
 
 //2. get all card priority
 app.get('/api/card-priorities', async (req, res) => {
-  try {
-    const allCardPriorities = await client.query(
-      "SELECT * FROM priorities"
-    );
-    res.json(allCardPriorities.rows);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+    try {
+        const allCardPriorities = await client.query(
+            "SELECT * FROM priorities"
+        );
+        res.json(allCardPriorities.rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 })
 //3. get priority of a spesific card
 app.get('/api/card-priorities/:cardId', async (req, res) => {
-  const { cardId } = req.params;
-  try {
-    const cardPriority = await client.query(
-      "SELECT p.id AS priority_id, p.name, p.color, p.background FROM card_priorities cp JOIN priorities p ON cp.priority_id = p.id WHERE cp.card_id = $1",
-      [cardId]
-    );
-    res.json(cardPriority.rows);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+    const { cardId } = req.params;
+    try {
+        const cardPriority = await client.query(
+            "SELECT p.id AS priority_id, p.name, p.color, p.background FROM card_priorities cp JOIN priorities p ON cp.priority_id = p.id WHERE cp.card_id = $1",
+            [cardId]
+        );
+        res.json(cardPriority.rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 })
 
 //4. delete priority from card
 app.delete('/api/card-priority', async (req, res) => {
-  const { card_id, priority_id } = req.body;
-  try {
-    await client.query(
-      "DELETE FROM card_priorities WHERE card_id = $1 AND priority_id = $2",
-      [card_id, priority_id]
-    );
-    res.json({ message: "Priority removed from card" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+    const { card_id, priority_id } = req.body;
+    try {
+        await client.query(
+            "DELETE FROM card_priorities WHERE card_id = $1 AND priority_id = $2",
+            [card_id, priority_id]
+        );
+        res.json({ message: "Priority removed from card" });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 })
 
 //END CARD PRIORITY
@@ -2085,341 +2085,341 @@ app.delete('/api/card-priority', async (req, res) => {
 //LISTS
 //1. get all lists
 app.get('/api/lists', async (req, res) => {
-  try {
-    const result = await client.query("SELECT * FROM lists ORDER BY position");
-    res.json(result.rows);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    try {
+        const result = await client.query("SELECT * FROM lists ORDER BY position");
+        res.json(result.rows);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 })
 //2. get list by board_id
 app.get('/api/lists/board/:board_id', async (req, res) => {
-  const { board_id } = req.params;
-  try {
-    const result = await client.query("SELECT * FROM lists WHERE board_id = $1 ORDER BY position", [board_id]);
-    res.json(result.rows);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    const { board_id } = req.params;
+    try {
+        const result = await client.query("SELECT * FROM lists WHERE board_id = $1 ORDER BY position", [board_id]);
+        res.json(result.rows);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 })
 
 //get list by id
 app.get('/api/lists/:listId', async (req, res) => {
-  const { listId } = req.params;
-  try {
-    const result = await client.query('SELECT * FROM lists WHERE id = $1', [listId])
-    if (result.rows.length > 0) {
-      res.json(result.rows[0]);
-    } else {
-      res.status(404).json({ message: 'Board not found' });
+    const { listId } = req.params;
+    try {
+        const result = await client.query('SELECT * FROM lists WHERE id = $1', [listId])
+        if (result.rows.length > 0) {
+            res.json(result.rows[0]);
+        } else {
+            res.status(404).json({ message: 'Board not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 })
 
 
 //3. create a new list
 app.post('/api/lists', async (req, res) => {
-  const { board_id, name } = req.body;
-  const userId = req.user.id;
+    const { board_id, name } = req.body;
+    const userId = req.user.id;
 
-  try {
-    const positionResult = await client.query("SELECT COALESCE(MAX(position), 0) + 1 AS next_position FROM lists WHERE board_id = $1", [board_id]);
-    const position = positionResult.rows[0].next_position;
+    try {
+        const positionResult = await client.query("SELECT COALESCE(MAX(position), 0) + 1 AS next_position FROM lists WHERE board_id = $1", [board_id]);
+        const position = positionResult.rows[0].next_position;
 
-    const result = await client.query(
-      "INSERT INTO lists (board_id, name, position, create_at) VALUES ($1, $2, $3, CURRENT_TIMESTAMP) RETURNING *",
-      [board_id, name, position]
-    );
+        const result = await client.query(
+            "INSERT INTO lists (board_id, name, position, create_at) VALUES ($1, $2, $3, CURRENT_TIMESTAMP) RETURNING *",
+            [board_id, name, position]
+        );
 
-    const listId = result.rows[0].id;
+        const listId = result.rows[0].id;
 
-    //added activity log
-    await logActivity(
-      'list',
-      listId,
-      'create',
-      userId,
-      `List '${name}' created`,
-      'board',
-      board_id
-    )
+        //added activity log
+        await logActivity(
+            'list',
+            listId,
+            'create',
+            userId,
+            `List '${name}' created`,
+            'board',
+            board_id
+        )
 
-    res.status(201).json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+        res.status(201).json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 })
 
 //4. update list
 app.put('/api/lists/:id', async (req, res) => {
-  const { id } = req.params;
-  const { name } = req.body;
-  const userId = req.user.id;
+    const { id } = req.params;
+    const { name } = req.body;
+    const userId = req.user.id;
 
-  try {
-    const result = await client.query(
-      "UPDATE lists SET name = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *",
-      [name, id]
-    );
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "List not found" });
+    try {
+        const result = await client.query(
+            "UPDATE lists SET name = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *",
+            [name, id]
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "List not found" });
+        }
+
+        // add log activity 
+        await logActivity(
+            'list',
+            id,
+            'update',
+            userId,
+            `List name updated to '${name}' in list`,
+            'board',
+            id
+        )
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-
-    // add log activity 
-    await logActivity(
-      'list',
-      id,
-      'update',
-      userId,
-      `List name updated to '${name}' in list`,
-      'board',
-      id
-    )
-
-    res.json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 })
 //5. delete lists
 app.delete('/api/lists/:id', async (req, res) => {
-  const { id } = req.params;
-  const userId = req.user.id;
+    const { id } = req.params;
+    const userId = req.user.id;
 
-  try {
-    const result = await client.query("DELETE FROM lists WHERE id = $1 RETURNING *", [id]);
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "List not found" });
+    try {
+        const result = await client.query("DELETE FROM lists WHERE id = $1 RETURNING *", [id]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "List not found" });
+        }
+
+        //add log activity
+        await logActivity(
+            'list',
+            id,
+            'delete',
+            userId,
+            `List with id '${id}' deleted`,
+            'board',
+            id
+        )
+
+        res.json({ message: "List deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-
-    //add log activity
-    await logActivity(
-      'list',
-      id,
-      'delete',
-      userId,
-      `List with id '${id}' deleted`,
-      'board',
-      id
-    )
-
-    res.json({ message: "List deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 })
 //6. move list to another board
 app.put('/api/move-list/:listId', async (req, res) => {
-  const { listId } = req.params;
-  const { newBoardId } = req.body;
-  const userId = req.user.id;
+    const { listId } = req.params;
+    const { newBoardId } = req.body;
+    const userId = req.user.id;
 
-  try {
-    // 1. Cek apakah list ada
-    const listQuery = 'SELECT * FROM public.lists WHERE id = $1';
-    const list = await client.query(listQuery, [listId]);
+    try {
+        // 1. Cek apakah list ada
+        const listQuery = 'SELECT * FROM public.lists WHERE id = $1';
+        const list = await client.query(listQuery, [listId]);
 
-    if (list.rows.length === 0) {
-      return res.status(404).json({ message: 'List not found' });
-    }
+        if (list.rows.length === 0) {
+            return res.status(404).json({ message: 'List not found' });
+        }
 
-    // 2. Update list ke board baru
-    const updateQuery = `
+        // 2. Update list ke board baru
+        const updateQuery = `
             UPDATE public.lists
             SET board_id = $1, update_at = CURRENT_TIMESTAMP
             WHERE id = $2
             RETURNING *`;
-    const updatedList = await client.query(updateQuery, [newBoardId, listId]);
+        const updatedList = await client.query(updateQuery, [newBoardId, listId]);
 
-    // 3. Tambahkan log aktivitas
-    await logActivity(
-      'list',
-      parseInt(listId),
-      'move',
-      userId,
-      `List dengan ID ${listId} dipindahkan ke board ID ${newBoardId}`,
-      'board',
-      parseInt(newBoardId)
-    );
+        // 3. Tambahkan log aktivitas
+        await logActivity(
+            'list',
+            parseInt(listId),
+            'move',
+            userId,
+            `List dengan ID ${listId} dipindahkan ke board ID ${newBoardId}`,
+            'board',
+            parseInt(newBoardId)
+        );
 
-    // 4. Kirim respons dengan list dan board ID tujuan
-    return res.status(200).json({
-      message: 'List berhasil dipindahkan',
-      list: updatedList.rows[0],
-      destinationBoardId: parseInt(newBoardId)
-    });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ message: 'Error moving list' });
-  }
+        // 4. Kirim respons dengan list dan board ID tujuan
+        return res.status(200).json({
+            message: 'List berhasil dipindahkan',
+            list: updatedList.rows[0],
+            destinationBoardId: parseInt(newBoardId)
+        });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'Error moving list' });
+    }
 });
 
 
 //7. Duplicate list and all its cards to a new board
 app.post('/api/duplicate-list/:listId', async (req, res) => {
-  const { listId } = req.params;
-  const { newBoardId } = req.body; // New board ID from request body
-  const userId = req.user.id;
+    const { listId } = req.params;
+    const { newBoardId } = req.body; // New board ID from request body
+    const userId = req.user.id;
 
-  try {
-    // Mulai transaksi untuk memastikan konsistensi data
-    await client.query('BEGIN');
+    try {
+        // Mulai transaksi untuk memastikan konsistensi data
+        await client.query('BEGIN');
 
-    // 1. Ambil data list asli
-    const listQuery = 'SELECT * FROM public.lists WHERE id = $1';
-    const list = await client.query(listQuery, [listId]);
+        // 1. Ambil data list asli
+        const listQuery = 'SELECT * FROM public.lists WHERE id = $1';
+        const list = await client.query(listQuery, [listId]);
 
-    if (list.rows.length === 0) {
-      await client.query('ROLLBACK');
-      return res.status(404).json({ message: 'List not found' });
-    }
+        if (list.rows.length === 0) {
+            await client.query('ROLLBACK');
+            return res.status(404).json({ message: 'List not found' });
+        }
 
-    // 2. Dapatkan posisi terakhir di board baru
-    const maxPositionQuery = 'SELECT COALESCE(MAX(position), 0) + 1 AS new_position FROM public.lists WHERE board_id = $1';
-    const maxPositionResult = await client.query(maxPositionQuery, [newBoardId]);
-    const newPosition = maxPositionResult.rows[0].new_position;
+        // 2. Dapatkan posisi terakhir di board baru
+        const maxPositionQuery = 'SELECT COALESCE(MAX(position), 0) + 1 AS new_position FROM public.lists WHERE board_id = $1';
+        const maxPositionResult = await client.query(maxPositionQuery, [newBoardId]);
+        const newPosition = maxPositionResult.rows[0].new_position;
 
-    // 3. Duplikasi list ke board baru
-    const duplicateListQuery = `
+        // 3. Duplikasi list ke board baru
+        const duplicateListQuery = `
             INSERT INTO public.lists (board_id, name, position, create_at)
             VALUES ($1, $2, $3, CURRENT_TIMESTAMP)
             RETURNING id`;
-    const duplicatedList = await client.query(duplicateListQuery, [
-      newBoardId,
-      list.rows[0].name,
-      newPosition
-    ]);
-    const duplicatedListId = duplicatedList.rows[0].id;
+        const duplicatedList = await client.query(duplicateListQuery, [
+            newBoardId,
+            list.rows[0].name,
+            newPosition
+        ]);
+        const duplicatedListId = duplicatedList.rows[0].id;
 
-    // 4. Ambil semua kartu dalam list asli
-    const cardsQuery = 'SELECT * FROM public.cards WHERE list_id = $1 ORDER BY position';
-    const cards = await client.query(cardsQuery, [listId]);
+        // 4. Ambil semua kartu dalam list asli
+        const cardsQuery = 'SELECT * FROM public.cards WHERE list_id = $1 ORDER BY position';
+        const cards = await client.query(cardsQuery, [listId]);
 
-    for (const card of cards.rows) {
-      // Dapatkan posisi baru berdasarkan urutan kartu asli
-      const maxCardPositionQuery = 'SELECT COALESCE(MAX(position), 0) + 1 AS new_card_position FROM public.cards WHERE list_id = $1';
-      const maxCardPositionResult = await client.query(maxCardPositionQuery, [duplicatedListId]);
-      const newCardPosition = maxCardPositionResult.rows[0].new_card_position;
+        for (const card of cards.rows) {
+            // Dapatkan posisi baru berdasarkan urutan kartu asli
+            const maxCardPositionQuery = 'SELECT COALESCE(MAX(position), 0) + 1 AS new_card_position FROM public.cards WHERE list_id = $1';
+            const maxCardPositionResult = await client.query(maxCardPositionQuery, [duplicatedListId]);
+            const newCardPosition = maxCardPositionResult.rows[0].new_card_position;
 
-      // Salin kartu ke list baru
-      const duplicateCardQuery = `
+            // Salin kartu ke list baru
+            const duplicateCardQuery = `
                 INSERT INTO public.cards (list_id, title, description, position, create_at)
                 VALUES ($1, $2, $3, $4,CURRENT_TIMESTAMP)
                 RETURNING id`;
-      const newCard = await client.query(duplicateCardQuery, [
-        duplicatedListId,
-        card.title,
-        card.description,
-        newCardPosition
-      ]);
-      const newCardId = newCard.rows[0].id;
+            const newCard = await client.query(duplicateCardQuery, [
+                duplicatedListId,
+                card.title,
+                card.description,
+                newCardPosition
+            ]);
+            const newCardId = newCard.rows[0].id;
 
-      // Salin seluruh data terkait kartu (checklists, cover, descriptions, etc.)
-      const relations = [
-        { table: 'card_checklists', columns: 'checklist_id, created_at, updated_at' },
-        { table: 'card_cover', columns: 'cover_id' },
-        { table: 'card_descriptions', columns: 'description, created_at, updated_at' },
-        { table: 'card_due_dates', columns: 'due_date, created_at, updated_at' },
-        { table: 'card_labels', columns: 'label_id' },
-        { table: 'card_members', columns: 'user_id' },
-        { table: 'card_priorities', columns: 'priority_id' },
-        { table: 'card_status', columns: 'status_id, assigned_at' },
-        { table: 'card_users', columns: 'user_id' }
-      ];
+            // Salin seluruh data terkait kartu (checklists, cover, descriptions, etc.)
+            const relations = [
+                { table: 'card_checklists', columns: 'checklist_id, created_at, updated_at' },
+                { table: 'card_cover', columns: 'cover_id' },
+                { table: 'card_descriptions', columns: 'description, created_at, updated_at' },
+                { table: 'card_due_dates', columns: 'due_date, created_at, updated_at' },
+                { table: 'card_labels', columns: 'label_id' },
+                { table: 'card_members', columns: 'user_id' },
+                { table: 'card_priorities', columns: 'priority_id' },
+                { table: 'card_status', columns: 'status_id, assigned_at' },
+                { table: 'card_users', columns: 'user_id' }
+            ];
 
-      for (const { table, columns } of relations) {
-        await client.query(
-          `INSERT INTO public.${table} (card_id, ${columns})
+            for (const { table, columns } of relations) {
+                await client.query(
+                    `INSERT INTO public.${table} (card_id, ${columns})
                      SELECT $1, ${columns} FROM public.${table} WHERE card_id = $2`,
-          [newCardId, card.id]
-        );
-      }
+                    [newCardId, card.id]
+                );
+            }
+        }
+
+        // Commit transaksi
+        await client.query('COMMIT');
+
+        //add log activity
+        await logActivity(
+            'list',
+            listId,
+            'duplicate',
+            userId,
+            `List id dengan id${listId} diduplikasi ke board id ${newBoardId}`,
+            'board',
+            newBoardId
+        )
+
+        return res.status(201).json({ duplicatedListId });
+
+    } catch (err) {
+        // Rollback jika terjadi error
+        await client.query('ROLLBACK');
+        console.error(err);
+        return res.status(500).json({ message: 'Error duplicating list' });
     }
-
-    // Commit transaksi
-    await client.query('COMMIT');
-
-    //add log activity
-    await logActivity(
-      'list',
-      listId,
-      'duplicate',
-      userId,
-      `List id dengan id${listId} diduplikasi ke board id ${newBoardId}`,
-      'board',
-      newBoardId
-    )
-
-    return res.status(201).json({ duplicatedListId });
-
-  } catch (err) {
-    // Rollback jika terjadi error
-    await client.query('ROLLBACK');
-    console.error(err);
-    return res.status(500).json({ message: 'Error duplicating list' });
-  }
 });
 
 //archive data lists
 app.put('/api/archive-lists/:listId', async (req, res) => {
-  const { listId } = req.params;
-  const userId = req.user.id;
+    const { listId } = req.params;
+    const userId = req.user.id;
 
-  try {
-    // Retrieve the list data to be archived
-    const listQuery = 'SELECT * FROM public.lists WHERE id = $1';
-    const listResult = await client.query(listQuery, [listId]);
+    try {
+        // Retrieve the list data to be archived
+        const listQuery = 'SELECT * FROM public.lists WHERE id = $1';
+        const listResult = await client.query(listQuery, [listId]);
 
-    if (listResult.rows.length === 0) {
-      return res.status(404).json({ error: 'List not found' });
-    }
+        if (listResult.rows.length === 0) {
+            return res.status(404).json({ error: 'List not found' });
+        }
 
-    const list = listResult.rows[0];
+        const list = listResult.rows[0];
 
-    // Insert the list into the archive table
-    const archiveQuery = `
+        // Insert the list into the archive table
+        const archiveQuery = `
                 INSERT INTO public.archive (entity_type, entity_id, name, description, parent_id, parent_type)
                 VALUES ($1, $2, $3, $4, $5, $6)
                 RETURNING id, entity_type, entity_id, name, description, parent_id, parent_type, archived_at
             `;
-    const archiveResult = await client.query(archiveQuery, [
-      'list',
-      list.id,
-      list.name,
-      list.description,
-      list.board_id,
-      'board',
-    ]);
+        const archiveResult = await client.query(archiveQuery, [
+            'list',
+            list.id,
+            list.name,
+            list.description,
+            list.board_id,
+            'board',
+        ]);
 
-    const archivedData = archiveResult.rows[0];
+        const archivedData = archiveResult.rows[0];
 
-    // If archive is successful, delete the list from lists table
-    const deleteQuery = 'DELETE FROM public.lists WHERE id = $1';
-    await client.query(deleteQuery, [listId]);
+        // If archive is successful, delete the list from lists table
+        const deleteQuery = 'DELETE FROM public.lists WHERE id = $1';
+        await client.query(deleteQuery, [listId]);
 
-    //add activity log
-    await logActivity(
-      'list',
-      listId,
-      'archive',
-      userId,
-      `List dengan id ${listId} berhasil di archive`,
-      'board',
-      listId
-    )
+        //add activity log
+        await logActivity(
+            'list',
+            listId,
+            'archive',
+            userId,
+            `List dengan id ${listId} berhasil di archive`,
+            'board',
+            listId
+        )
 
-    return res.status(200).json({
-      message: 'List archived successfully',
-      archivedData: archivedData,
-    });
-  } catch (error) {
-    console.error('Error archiving list:', error);
-    return res.status(500).json({
-      error: 'An error occurred while archiving the list',
-    });
-  }
+        return res.status(200).json({
+            message: 'List archived successfully',
+            archivedData: archivedData,
+        });
+    } catch (error) {
+        console.error('Error archiving list:', error);
+        return res.status(500).json({
+            error: 'An error occurred while archiving the list',
+        });
+    }
 })
 
 //END LISTS
@@ -2427,461 +2427,461 @@ app.put('/api/archive-lists/:listId', async (req, res) => {
 //CARD
 //1. get all cards
 app.get('/api/cards', async (req, res) => {
-  try {
-    const result = await client.query('SELECT * FROM cards ORDER BY position');
-    res.json(result.rows);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    try {
+        const result = await client.query('SELECT * FROM cards ORDER BY position');
+        res.json(result.rows);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 })
 //get card by id
 app.get('/api/cards/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const result = await client.query('SELECT * FROM cards WHERE id = $1', [id])
-    if (result.rows.length > 0) {
-      res.json(result.rows[0]);
-    } else {
-      res.status(404).json({ message: 'card not found' })
+    const { id } = req.params;
+    try {
+        const result = await client.query('SELECT * FROM cards WHERE id = $1', [id])
+        if (result.rows.length > 0) {
+            res.json(result.rows[0]);
+        } else {
+            res.status(404).json({ message: 'card not found' })
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 })
 //2. get card by list id
 app.get('/api/cards/list/:listId', async (req, res) => {
-  const { listId } = req.params;
-  try {
-    const result = await client.query("SELECT * FROM cards WHERE list_id = $1 ORDER BY position", [listId]);
-    res.json(result.rows);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    const { listId } = req.params;
+    try {
+        const result = await client.query("SELECT * FROM cards WHERE list_id = $1 ORDER BY position", [listId]);
+        res.json(result.rows);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 })
 //3. create a new card
 app.post('/api/cards', async (req, res) => {
-  const { title, description, list_id } = req.body;
-  const userId = req.user.id;
+    const { title, description, list_id } = req.body;
+    const userId = req.user.id;
 
-  try {
-    if (!title || !description || !list_id) {
-      return res.status(400).json({ error: "Title, description, and list_id are required" });
+    try {
+        if (!title || !description || !list_id) {
+            return res.status(400).json({ error: "Title, description, and list_id are required" });
+        }
+
+        // Cek apakah list_id ada di database
+        const listCheck = await client.query("SELECT id FROM lists WHERE id = $1", [list_id]);
+        if (listCheck.rows.length === 0) {
+            return res.status(404).json({ error: "List not found" });
+        }
+
+        // Dapatkan posisi terakhir dalam list tersebut
+        const positionResult = await client.query(
+            "SELECT COALESCE(MAX(position), 0) + 1 AS new_position FROM cards WHERE list_id = $1",
+            [list_id]
+        );
+        const newPosition = positionResult.rows[0].new_position;
+
+        // Tambahkan kartu ke dalam list yang sesuai
+        const result = await client.query(
+            "INSERT INTO cards (title, description, list_id, position, create_at) VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP) RETURNING *",
+            [title, description, list_id, newPosition]
+        );
+
+        const cardId = result.rows[0].id;
+        console.log('Endpoin post card ini menerima cardId:', cardId)
+
+        //add log activity
+        await logActivity(
+            'card',
+            cardId,
+            'create',
+            userId,
+            `Card ${title} created`,
+            'list',
+            list_id
+        )
+
+        res.status(201).json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-
-    // Cek apakah list_id ada di database
-    const listCheck = await client.query("SELECT id FROM lists WHERE id = $1", [list_id]);
-    if (listCheck.rows.length === 0) {
-      return res.status(404).json({ error: "List not found" });
-    }
-
-    // Dapatkan posisi terakhir dalam list tersebut
-    const positionResult = await client.query(
-      "SELECT COALESCE(MAX(position), 0) + 1 AS new_position FROM cards WHERE list_id = $1",
-      [list_id]
-    );
-    const newPosition = positionResult.rows[0].new_position;
-
-    // Tambahkan kartu ke dalam list yang sesuai
-    const result = await client.query(
-      "INSERT INTO cards (title, description, list_id, position, create_at) VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP) RETURNING *",
-      [title, description, list_id, newPosition]
-    );
-
-    const cardId = result.rows[0].id;
-    console.log('Endpoin post card ini menerima cardId:', cardId)
-
-    //add log activity
-    await logActivity(
-      'card',
-      cardId,
-      'create',
-      userId,
-      `Card ${title} created`,
-      'list',
-      list_id
-    )
-
-    res.status(201).json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 });
 
 
 //4. delete card
 app.delete('/api/cards/:cardId', async (req, res) => {
-  const { cardId } = req.params;
-  const userId = req.user.id;
+    const { cardId } = req.params;
+    const userId = req.user.id;
 
-  try {
-    const result = await client.query("DELETE FROM cards WHERE id = $1 RETURNING *", [cardId]);
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Card not found" });
+    try {
+        const result = await client.query("DELETE FROM cards WHERE id = $1 RETURNING *", [cardId]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Card not found" });
+        }
+
+        //add log activity
+        await logActivity(
+            'card',
+            cardId,
+            'delete',
+            userId,
+            `Card with id ${cardId} deleted`,
+            'list',
+            cardId
+        )
+
+        res.json({ message: "Card deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-
-    //add log activity
-    await logActivity(
-      'card',
-      cardId,
-      'delete',
-      userId,
-      `Card with id ${cardId} deleted`,
-      'list',
-      cardId
-    )
-
-    res.json({ message: "Card deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 })
 
 //5. duplicate card
 // Endpoint untuk duplikasi card ke list tertentu
 app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
-  const { cardId, listId } = req.params;
-  const userId = req.user.id;
+    const { cardId, listId } = req.params;
+    const userId = req.user.id;
 
-  try {
-    // Mulai transaksi untuk memastikan konsistensi data
-    await client.query('BEGIN');
+    try {
+        // Mulai transaksi untuk memastikan konsistensi data
+        await client.query('BEGIN');
 
-    // 1. Salin data card utama dan masukkan ke dalam list yang dituju
-    const result = await client.query(
-      `INSERT INTO public.cards (title, description, list_id, position) 
+        // 1. Salin data card utama dan masukkan ke dalam list yang dituju
+        const result = await client.query(
+            `INSERT INTO public.cards (title, description, list_id, position) 
              SELECT title, description, $1, 
                     (SELECT COALESCE(MAX(position), 0) + 1 FROM public.cards WHERE list_id = $1)
              FROM public.cards 
              WHERE id = $2 
              RETURNING id`,
-      [listId, cardId]
-    );
+            [listId, cardId]
+        );
 
-    //fungsi untuk mendapatkan id
-    const newCardId = result.rows[0].id;
+        //fungsi untuk mendapatkan id
+        const newCardId = result.rows[0].id;
 
-    // 2. Salin relasi terkait (checklists, cover, etc.)
+        // 2. Salin relasi terkait (checklists, cover, etc.)
 
-    // Salin checklists
-    await client.query(
-      `INSERT INTO public.card_checklists (card_id, checklist_id, created_at, updated_at)
+        // Salin checklists
+        await client.query(
+            `INSERT INTO public.card_checklists (card_id, checklist_id, created_at, updated_at)
              SELECT $1, checklist_id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
              FROM public.card_checklists
              WHERE card_id = $2`,
-      [newCardId, cardId]
-    );
+            [newCardId, cardId]
+        );
 
-    // Salin cover
-    await client.query(
-      `INSERT INTO public.card_cover (card_id, cover_id)
+        // Salin cover
+        await client.query(
+            `INSERT INTO public.card_cover (card_id, cover_id)
              SELECT $1, cover_id
              FROM public.card_cover
              WHERE card_id = $2`,
-      [newCardId, cardId]
-    );
+            [newCardId, cardId]
+        );
 
-    // Salin descriptions
-    await client.query(
-      `INSERT INTO public.card_descriptions (card_id, description, created_at, updated_at)
+        // Salin descriptions
+        await client.query(
+            `INSERT INTO public.card_descriptions (card_id, description, created_at, updated_at)
              SELECT $1, description, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
              FROM public.card_descriptions
              WHERE card_id = $2`,
-      [newCardId, cardId]
-    );
+            [newCardId, cardId]
+        );
 
-    // Salin due dates
-    await client.query(
-      `INSERT INTO public.card_due_dates (card_id, due_date, created_at, updated_at)
+        // Salin due dates
+        await client.query(
+            `INSERT INTO public.card_due_dates (card_id, due_date, created_at, updated_at)
              SELECT $1, due_date, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
              FROM public.card_due_dates
              WHERE card_id = $2`,
-      [newCardId, cardId]
-    );
+            [newCardId, cardId]
+        );
 
-    // Salin labels
-    await client.query(
-      `INSERT INTO public.card_labels (card_id, label_id)
+        // Salin labels
+        await client.query(
+            `INSERT INTO public.card_labels (card_id, label_id)
              SELECT $1, label_id
              FROM public.card_labels
              WHERE card_id = $2`,
-      [newCardId, cardId]
-    );
+            [newCardId, cardId]
+        );
 
-    // Salin members
-    await client.query(
-      `INSERT INTO public.card_members (card_id, user_id)
+        // Salin members
+        await client.query(
+            `INSERT INTO public.card_members (card_id, user_id)
              SELECT $1, user_id
              FROM public.card_members
              WHERE card_id = $2`,
-      [newCardId, cardId]
-    );
+            [newCardId, cardId]
+        );
 
-    // Salin priorities
-    await client.query(
-      `INSERT INTO public.card_priorities (card_id, priority_id)
+        // Salin priorities
+        await client.query(
+            `INSERT INTO public.card_priorities (card_id, priority_id)
              SELECT $1, priority_id
              FROM public.card_priorities
              WHERE card_id = $2`,
-      [newCardId, cardId]
-    );
+            [newCardId, cardId]
+        );
 
-    // Salin status
-    await client.query(
-      `INSERT INTO public.card_status (card_id, status_id, assigned_at)
+        // Salin status
+        await client.query(
+            `INSERT INTO public.card_status (card_id, status_id, assigned_at)
              SELECT $1, status_id, CURRENT_TIMESTAMP
              FROM public.card_status
              WHERE card_id = $2`,
-      [newCardId, cardId]
-    );
+            [newCardId, cardId]
+        );
 
-    // Salin users
-    await client.query(
-      `INSERT INTO public.card_users (card_id, user_id)
+        // Salin users
+        await client.query(
+            `INSERT INTO public.card_users (card_id, user_id)
              SELECT $1, user_id
              FROM public.card_users
              WHERE card_id = $2`,
-      [newCardId, cardId]
-    );
+            [newCardId, cardId]
+        );
 
-    // Commit transaksi
-    await client.query('COMMIT');
+        // Commit transaksi
+        await client.query('COMMIT');
 
-    //add log activity
-    await logActivity(
-      'card',
-      newCardId,
-      'duplicate',
-      userId,
-      `Card dengan ID ${cardId} diduplikasi ke list ${listId}`,
-      'list',
-      listId
-    )
+        //add log activity
+        await logActivity(
+            'card',
+            newCardId,
+            'duplicate',
+            userId,
+            `Card dengan ID ${cardId} diduplikasi ke list ${listId}`,
+            'list',
+            listId
+        )
 
-    // Mengembalikan response dengan id card baru yang telah disalin
-    res.status(201).json({ newCardId });
+        // Mengembalikan response dengan id card baru yang telah disalin
+        res.status(201).json({ newCardId });
 
-  } catch (err) {
-    // Rollback transaksi jika ada error
-    await client.query('ROLLBACK');
-    console.error(err);
-    res.status(500).json({ error: 'Terjadi kesalahan saat menyalin card ke list yang baru' });
-  }
+    } catch (err) {
+        // Rollback transaksi jika ada error
+        await client.query('ROLLBACK');
+        console.error(err);
+        res.status(500).json({ error: 'Terjadi kesalahan saat menyalin card ke list yang baru' });
+    }
 });
 
 //6. move card
 app.put('/api/move-card-to-list/:cardId/:listId', async (req, res) => {
-  const { cardId, listId } = req.params;
-  const userId = req.user.id;
+    const { cardId, listId } = req.params;
+    const userId = req.user.id;
 
-  try {
-    // Mulai transaksi untuk memastikan konsistensi data
-    await client.query('BEGIN');
+    try {
+        // Mulai transaksi untuk memastikan konsistensi data
+        await client.query('BEGIN');
 
-    // Ambil informasi kartu yang akan dipindahkan
-    const cardResult = await client.query(
-      `SELECT list_id, position FROM public.cards WHERE id = $1`,
-      [cardId]
-    );
+        // Ambil informasi kartu yang akan dipindahkan
+        const cardResult = await client.query(
+            `SELECT list_id, position FROM public.cards WHERE id = $1`,
+            [cardId]
+        );
 
-    if (cardResult.rows.length === 0) {
-      return res.status(404).json({ error: 'Card tidak ditemukan' });
-    }
+        if (cardResult.rows.length === 0) {
+            return res.status(404).json({ error: 'Card tidak ditemukan' });
+        }
 
-    const { list_id: oldListId, position: oldPosition } = cardResult.rows[0];
+        const { list_id: oldListId, position: oldPosition } = cardResult.rows[0];
 
-    // Update posisi kartu dalam list lama dengan menggeser posisi yang lebih tinggi ke atas
-    await client.query(
-      `UPDATE public.cards 
+        // Update posisi kartu dalam list lama dengan menggeser posisi yang lebih tinggi ke atas
+        await client.query(
+            `UPDATE public.cards 
              SET position = position - 1 
              WHERE list_id = $1 AND position > $2`,
-      [oldListId, oldPosition]
-    );
+            [oldListId, oldPosition]
+        );
 
-    // Tentukan posisi baru dalam list tujuan
-    const newPositionResult = await client.query(
-      `SELECT COALESCE(MAX(position), 0) + 1 AS new_position 
+        // Tentukan posisi baru dalam list tujuan
+        const newPositionResult = await client.query(
+            `SELECT COALESCE(MAX(position), 0) + 1 AS new_position 
              FROM public.cards WHERE list_id = $1`,
-      [listId]
-    );
+            [listId]
+        );
 
-    const newPosition = newPositionResult.rows[0].new_position;
+        const newPosition = newPositionResult.rows[0].new_position;
 
-    // Perbarui list_id dan posisi kartu yang dipindahkan dan update_at
-    await client.query(
-      `UPDATE public.cards 
+        // Perbarui list_id dan posisi kartu yang dipindahkan dan update_at
+        await client.query(
+            `UPDATE public.cards 
              SET list_id = $1, position = $2 , update_at = CURRENT_TIMESTAMP
              WHERE id = $3`,
-      [listId, newPosition, cardId]
-    );
+            [listId, newPosition, cardId]
+        );
 
-    // Update data terkait dengan card ke list baru
+        // Update data terkait dengan card ke list baru
 
-    // Pindahkan checklists
-    await client.query(
-      `UPDATE public.card_checklists 
+        // Pindahkan checklists
+        await client.query(
+            `UPDATE public.card_checklists 
              SET card_id = $1 
              WHERE card_id = $2`,
-      [cardId, cardId]
-    );
+            [cardId, cardId]
+        );
 
-    // Pindahkan cover
-    await client.query(
-      `UPDATE public.card_cover 
+        // Pindahkan cover
+        await client.query(
+            `UPDATE public.card_cover 
              SET card_id = $1 
              WHERE card_id = $2`,
-      [cardId, cardId]
-    );
+            [cardId, cardId]
+        );
 
-    // Pindahkan descriptions
-    await client.query(
-      `UPDATE public.card_descriptions 
+        // Pindahkan descriptions
+        await client.query(
+            `UPDATE public.card_descriptions 
              SET card_id = $1 
              WHERE card_id = $2`,
-      [cardId, cardId]
-    );
+            [cardId, cardId]
+        );
 
-    // Pindahkan due dates
-    await client.query(
-      `UPDATE public.card_due_dates 
+        // Pindahkan due dates
+        await client.query(
+            `UPDATE public.card_due_dates 
              SET card_id = $1 
              WHERE card_id = $2`,
-      [cardId, cardId]
-    );
+            [cardId, cardId]
+        );
 
-    // Pindahkan labels
-    await client.query(
-      `UPDATE public.card_labels 
+        // Pindahkan labels
+        await client.query(
+            `UPDATE public.card_labels 
              SET card_id = $1 
              WHERE card_id = $2`,
-      [cardId, cardId]
-    );
+            [cardId, cardId]
+        );
 
-    // Pindahkan members
-    await client.query(
-      `UPDATE public.card_members 
+        // Pindahkan members
+        await client.query(
+            `UPDATE public.card_members 
              SET card_id = $1 
              WHERE card_id = $2`,
-      [cardId, cardId]
-    );
+            [cardId, cardId]
+        );
 
-    // Pindahkan priorities
-    await client.query(
-      `UPDATE public.card_priorities 
+        // Pindahkan priorities
+        await client.query(
+            `UPDATE public.card_priorities 
              SET card_id = $1 
              WHERE card_id = $2`,
-      [cardId, cardId]
-    );
+            [cardId, cardId]
+        );
 
-    // Pindahkan status
-    await client.query(
-      `UPDATE public.card_status 
+        // Pindahkan status
+        await client.query(
+            `UPDATE public.card_status 
              SET card_id = $1 
              WHERE card_id = $2`,
-      [cardId, cardId]
-    );
+            [cardId, cardId]
+        );
 
-    // Pindahkan users
-    await client.query(
-      `UPDATE public.card_users 
+        // Pindahkan users
+        await client.query(
+            `UPDATE public.card_users 
              SET card_id = $1 
              WHERE card_id = $2`,
-      [cardId, cardId]
-    );
+            [cardId, cardId]
+        );
 
-    // Commit transaksi
-    await client.query('COMMIT');
+        // Commit transaksi
+        await client.query('COMMIT');
 
-    //add activity log
-    await logActivity(
-      'card',
-      cardId,
-      'move',
-      userId,
-      `Card dengan id ${cardId} dipindahkan ke list baru dengan id ${listId}`,
-      'list',
-      listId
-    )
+        //add activity log
+        await logActivity(
+            'card',
+            cardId,
+            'move',
+            userId,
+            `Card dengan id ${cardId} dipindahkan ke list baru dengan id ${listId}`,
+            'list',
+            listId
+        )
 
-    res.status(200).json({ message: 'Card berhasil dipindahkan', cardId, listId, newPosition });
-  } catch (err) {
-    // Rollback transaksi jika terjadi kesalahan
-    await client.query('ROLLBACK');
-    console.error(err);
-    res.status(500).json({ error: 'Terjadi kesalahan saat memindahkan card' });
-  }
+        res.status(200).json({ message: 'Card berhasil dipindahkan', cardId, listId, newPosition });
+    } catch (err) {
+        // Rollback transaksi jika terjadi kesalahan
+        await client.query('ROLLBACK');
+        console.error(err);
+        res.status(500).json({ error: 'Terjadi kesalahan saat memindahkan card' });
+    }
 })
 
 //7. archive card data
 app.put('/api/archive-card/:cardId', async (req, res) => {
-  const { cardId } = req.params;
-  const userId = req.user.id;
+    const { cardId } = req.params;
+    const userId = req.user.id;
 
-  try {
-    // Retrieve the card data to be archived
-    const cardQuery = 'SELECT * FROM public.cards WHERE id = $1';
-    const cardResult = await client.query(cardQuery, [cardId]);
+    try {
+        // Retrieve the card data to be archived
+        const cardQuery = 'SELECT * FROM public.cards WHERE id = $1';
+        const cardResult = await client.query(cardQuery, [cardId]);
 
-    if (cardResult.rows.length === 0) {
-      return res.status(404).json({ error: 'Card not found' });
-    }
+        if (cardResult.rows.length === 0) {
+            return res.status(404).json({ error: 'Card not found' });
+        }
 
-    const card = cardResult.rows[0];
+        const card = cardResult.rows[0];
 
-    // Insert the card into the archive table
-    const archiveQuery = `
+        // Insert the card into the archive table
+        const archiveQuery = `
             INSERT INTO public.archive (entity_type, entity_id, name, description, parent_id, parent_type)
             VALUES ($1, $2, $3, $4, $5, $6)
             RETURNING id, entity_type, entity_id, name, description, parent_id, parent_type, archived_at
         `;
-    const archiveResult = await client.query(archiveQuery, [
-      'card',               // entity_type
-      card.id,              // entity_id
-      card.title,           // name
-      card.description,     // description
-      card.list_id,         // parent_id (list)
-      'list',               // parent_type
-    ]);
+        const archiveResult = await client.query(archiveQuery, [
+            'card',               // entity_type
+            card.id,              // entity_id
+            card.title,           // name
+            card.description,     // description
+            card.list_id,         // parent_id (list)
+            'list',               // parent_type
+        ]);
 
-    const archivedData = archiveResult.rows[0];
+        const archivedData = archiveResult.rows[0];
 
-    // Delete the card from the cards table
-    const deleteQuery = 'DELETE FROM public.cards WHERE id = $1';
-    await client.query(deleteQuery, [cardId]);
-
-
-    //add log activity
-    await logActivity(
-      'card',
-      cardId,
-      'archive',
-      userId,
-      `Card dengan ID ${cardId} berhasil di archive`,
-      'list',
-      cardId
-    )
-
-    return res.status(200).json({
-      message: 'Card archived successfully',
-      archivedData: archivedData,
-    });
+        // Delete the card from the cards table
+        const deleteQuery = 'DELETE FROM public.cards WHERE id = $1';
+        await client.query(deleteQuery, [cardId]);
 
 
-  } catch (error) {
-    console.error('Error archiving card:', error);
-    return res.status(500).json({
-      error: 'An error occurred while archiving the card',
-    });
-  }
+        //add log activity
+        await logActivity(
+            'card',
+            cardId,
+            'archive',
+            userId,
+            `Card dengan ID ${cardId} berhasil di archive`,
+            'list',
+            cardId
+        )
+
+        return res.status(200).json({
+            message: 'Card archived successfully',
+            archivedData: archivedData,
+        });
+
+
+    } catch (error) {
+        console.error('Error archiving card:', error);
+        return res.status(500).json({
+            error: 'An error occurred while archiving the card',
+        });
+    }
 })
 //END CARD
 
 //CARD USER
 //1. get semua user yang disa di assign ke card
 app.get('/api/cards/:cardId/assignable-users', async (req, res) => {
-  const { cardId } = req.params;
+    const { cardId } = req.params;
 
-  try {
-    const query = `
+    try {
+        const query = `
         SELECT 
             u.id AS user_id,
             u.username,
@@ -2897,21 +2897,21 @@ app.get('/api/cards/:cardId/assignable-users', async (req, res) => {
         WHERE c.id = $1;
         `;
 
-    const result = await client.query(query, [cardId]);
+        const result = await client.query(query, [cardId]);
 
-    res.status(200).json(result.rows);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+        res.status(200).json(result.rows);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 })
 
 //2. assign user to card
 app.post('/api/cards/:cardId/users/:userId', async (req, res) => {
-  const { cardId, userId } = req.params;
-  const usersId = req.user.id;
+    const { cardId, userId } = req.params;
+    const usersId = req.user.id;
 
-  try {
-    const validationQuery = `
+    try {
+        const validationQuery = `
         SELECT 1
         FROM workspaces_users wu
         JOIN boards b ON b.workspace_id = wu.workspace_id
@@ -2920,103 +2920,103 @@ app.post('/api/cards/:cardId/users/:userId', async (req, res) => {
         WHERE wu.user_id = $1 AND c.id = $2
         LIMIT 1;
         `;
-    const validation = await client.query(validationQuery, [userId, cardId]);
+        const validation = await client.query(validationQuery, [userId, cardId]);
 
-    if (validation.rowCount === 0) {
-      return res.status(403).json({ error: 'User not in the same workspace as this card' });
-    }
+        if (validation.rowCount === 0) {
+            return res.status(403).json({ error: 'User not in the same workspace as this card' });
+        }
 
-    const insert = await client.query(
-      `INSERT INTO card_users (card_id, user_id, create_at) VALUES ($1, $2, CURRENT_TIMESTAMP)
+        const insert = await client.query(
+            `INSERT INTO card_users (card_id, user_id, create_at) VALUES ($1, $2, CURRENT_TIMESTAMP)
             ON CONFLICT DO NOTHING RETURNING *`,
-      [cardId, userId]
-    );
+            [cardId, userId]
+        );
 
-    //mengambil nama card 
-    const cardNameQuery = await client.query(
-      `SELECT title FROM cards WHERE id = $1`,
-      [cardId]
-    );
+        //mengambil nama card 
+        const cardNameQuery = await client.query(
+            `SELECT title FROM cards WHERE id = $1`,
+            [cardId]
+        );
 
-    const cardName = cardNameQuery.rows[0]?.title || ' a card';
+        const cardName = cardNameQuery.rows[0]?.title || ' a card';
 
-    //add log notification
-    await SystemNotification({
-      userId,
-      cardId,
-      message: `Your were added to card name "${cardName}"`,
-      type: 'card_assigned',
-    })
+        //add log notification
+        await SystemNotification({
+            userId,
+            cardId,
+            message: `Your were added to card name "${cardName}"`,
+            type: 'card_assigned',
+        })
 
-    //add log card activity
-    await logCardActivity({
-      action: 'add_user',
-      card_id: cardId,
-      user_id: usersId,
-      entity: 'users',
-      entity_id: userId,
-      details: ''
-    })
+        //add log card activity
+        await logCardActivity({
+            action: 'add_user',
+            card_id: cardId,
+            user_id: usersId,
+            entity: 'users',
+            entity_id: userId,
+            details: ''
+        })
 
-    res.status(200).json({ message: 'User assigned to card', data: insert.rows[0] });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+        res.status(200).json({ message: 'User assigned to card', data: insert.rows[0] });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 })
 
 //3. remove user from card
 app.delete('/api/cards/:cardId/users/:userId', async (req, res) => {
-  const { cardId, userId } = req.params;
-  const usersId = req.user.id;
+    const { cardId, userId } = req.params;
+    const usersId = req.user.id;
 
-  try {
-    const result = await client.query(
-      `DELETE FROM card_users WHERE card_id = $1 AND user_id = $2 RETURNING *`,
-      [cardId, userId]
-    );
+    try {
+        const result = await client.query(
+            `DELETE FROM card_users WHERE card_id = $1 AND user_id = $2 RETURNING *`,
+            [cardId, userId]
+        );
 
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: 'Assignment not found' });
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'Assignment not found' });
+        }
+
+        //get card name 
+        const cardNameQuery = await client.query(
+            `SELECT title FROM cards WHERE id = $1`,
+            [cardId]
+        );
+
+        const cardName = cardNameQuery.rows[0]?.title || 'a card';
+
+        //add log notification
+        await SystemNotification({
+            userId,
+            message: `You were removed from card name "${cardName}"`,
+            type: 'card_unassigned',
+        })
+
+        //add log card activity
+        await logCardActivity({
+            action: 'remove_user',
+            card_id: cardId,
+            user_id: usersId,
+            entity: 'users',
+            entity_id: userId,
+            details: ''
+        })
+
+        res.status(200).json({ message: 'User unassigned from card' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-
-    //get card name 
-    const cardNameQuery = await client.query(
-      `SELECT title FROM cards WHERE id = $1`,
-      [cardId]
-    );
-
-    const cardName = cardNameQuery.rows[0]?.title || 'a card';
-
-    //add log notification
-    await SystemNotification({
-      userId,
-      message: `You were removed from card name "${cardName}"`,
-      type: 'card_unassigned',
-    })
-
-    //add log card activity
-    await logCardActivity({
-      action: 'remove_user',
-      card_id: cardId,
-      user_id: usersId,
-      entity: 'users',
-      entity_id: userId,
-      details: ''
-    })
-
-    res.status(200).json({ message: 'User unassigned from card' });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 });
 
 //4. get all users assigned to a card
 app.get('/api/cards/:cardId/users', async (req, res) => {
-  const { cardId } = req.params;
+    const { cardId } = req.params;
 
-  try {
-    const result = await client.query(
-      `SELECT 
+    try {
+        const result = await client.query(
+            `SELECT 
                 u.id AS user_id,
                 u.username,
                 u.email,
@@ -3026,13 +3026,13 @@ app.get('/api/cards/:cardId/users', async (req, res) => {
              JOIN user_profil up ON up.user_id = u.id
              JOIN profil p ON up.profil_id = p.id
              WHERE cu.card_id = $1`,
-      [cardId]
-    );
+            [cardId]
+        );
 
-    res.status(200).json(result.rows);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+        res.status(200).json(result.rows);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
 
 //END CARD USER
@@ -3040,126 +3040,126 @@ app.get('/api/cards/:cardId/users', async (req, res) => {
 //UPDATE CARD
 //1. update title card
 app.put('/api/cards/:id/title', async (req, res) => {
-  const { id } = req.params;
-  const { title } = req.body;
-  const userId = req.user.id;
+    const { id } = req.params;
+    const { title } = req.body;
+    const userId = req.user.id;
 
-  console.log('Endpoin update ini menerima data userId:', userId);
-  try {
-    // Ambil data lama dulu buat dicatat di log
-    const oldResult = await client.query("SELECT title FROM cards WHERE id = $1", [id]);
-    if (oldResult.rows.length === 0) return res.status(404).json({ error: "Card not found" });
+    console.log('Endpoin update ini menerima data userId:', userId);
+    try {
+        // Ambil data lama dulu buat dicatat di log
+        const oldResult = await client.query("SELECT title FROM cards WHERE id = $1", [id]);
+        if (oldResult.rows.length === 0) return res.status(404).json({ error: "Card not found" });
 
-    const oldTitle = oldResult.rows[0].title;
+        const oldTitle = oldResult.rows[0].title;
 
-    const result = await client.query(
-      "UPDATE cards SET title = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *",
-      [title, id]
-    );
+        const result = await client.query(
+            "UPDATE cards SET title = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *",
+            [title, id]
+        );
 
-    // ✅ Tambahkan log aktivitas
-    await logCardActivity({
-      action: 'updated_title',
-      card_id: parseInt(id),
-      user_id: userId,
-      entity: 'title',
-      entity_id: null,
-      details: {
-        old_title: oldTitle,
-        new_title: title
-      }
-    });
+        // ✅ Tambahkan log aktivitas
+        await logCardActivity({
+            action: 'updated_title',
+            card_id: parseInt(id),
+            user_id: userId,
+            entity: 'title',
+            entity_id: null,
+            details: {
+                old_title: oldTitle,
+                new_title: title
+            }
+        });
 
-    res.json(result.rows[0]);
-  } catch (error) {
-    console.error("Error updating card title:", error);
-    res.status(500).json({ error: error.message });
-  }
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error("Error updating card title:", error);
+        res.status(500).json({ error: error.message });
+    }
 })
 //2. update title description
 app.put('/api/cards/:id/desc', async (req, res) => {
-  const { id } = req.params;
-  const { description } = req.body;
-  const userId = req.user.id;
+    const { id } = req.params;
+    const { description } = req.body;
+    const userId = req.user.id;
 
-  try {
-    const result = await client.query("UPDATE cards SET description = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *", [description, id]);
-    if (result.rows.length === 0) return res.status(404).json({ error: "Card not found" });
+    try {
+        const result = await client.query("UPDATE cards SET description = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *", [description, id]);
+        if (result.rows.length === 0) return res.status(404).json({ error: "Card not found" });
 
-    //add log card activity
-    await logCardActivity({
-      action: 'updated_desc',
-      card_id: parseInt(id),
-      user_id: userId,
-      entity: 'description',
-      entity_id: null,
-      details: ''
-    })
+        //add log card activity
+        await logCardActivity({
+            action: 'updated_desc',
+            card_id: parseInt(id),
+            user_id: userId,
+            entity: 'description',
+            entity_id: null,
+            details: ''
+        })
 
-    res.json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+        res.json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 })
 //3. update due_date
 app.put('/api/cards/:id/due_date', async (req, res) => {
-  const { id } = req.params;
-  const { due_date } = req.body;
-  try {
-    const result = await client.query("UPDATE cards SET due_date = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *", [due_date, id]);
-    if (result.rows.length === 0) return res.status(404).json({ error: "Card not found" });
-    res.json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    const { id } = req.params;
+    const { due_date } = req.body;
+    try {
+        const result = await client.query("UPDATE cards SET due_date = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *", [due_date, id]);
+        if (result.rows.length === 0) return res.status(404).json({ error: "Card not found" });
+        res.json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 })
 //4. update cover_id
 app.put('/api/cards/:id/cover', async (req, res) => {
-  const { id } = req.params;
-  const { cover_id } = req.body;
-  try {
-    const result = await client.query("UPDATE cards SET cover_id = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *", [cover_id, id]);
-    if (result.rows.length === 0) return res.status(404).json({ error: "Card not found" });
-    res.json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    const { id } = req.params;
+    const { cover_id } = req.body;
+    try {
+        const result = await client.query("UPDATE cards SET cover_id = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *", [cover_id, id]);
+        if (result.rows.length === 0) return res.status(404).json({ error: "Card not found" });
+        res.json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 })
 //5. update label_id
 app.put('/api/cards/:id/label', async (req, res) => {
-  const { id } = req.params;
-  const { label_id } = req.body; // array of label IDs
-  try {
-    const result = await client.query("UPDATE cards SET label_id = $1 WHERE id = $2 RETURNING *", [label_id, id]);
-    if (result.rows.length === 0) return res.status(404).json({ error: "Card not found" });
-    res.json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    const { id } = req.params;
+    const { label_id } = req.body; // array of label IDs
+    try {
+        const result = await client.query("UPDATE cards SET label_id = $1 WHERE id = $2 RETURNING *", [label_id, id]);
+        if (result.rows.length === 0) return res.status(404).json({ error: "Card not found" });
+        res.json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 })
 //6. update image
 app.put('/api/cards/:id/image', async (req, res) => {
-  const { id } = req.params;
-  const { image_id } = req.body;
-  try {
-    const result = await client.query("UPDATE cards SET image_id = $1 WHERE id = $2 RETURNING *", [image_id, id]);
-    if (result.rows.length === 0) return res.status(404).json({ error: "Card not found" });
-    res.json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    const { id } = req.params;
+    const { image_id } = req.body;
+    try {
+        const result = await client.query("UPDATE cards SET image_id = $1 WHERE id = $2 RETURNING *", [image_id, id]);
+        if (result.rows.length === 0) return res.status(404).json({ error: "Card not found" });
+        res.json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 })
 //7. update assign
 app.put('/api/cards/:id/assign', async (req, res) => {
-  const { id } = req.params;
-  const { assign } = req.body; // array of user IDs
-  try {
-    const result = await client.query("UPDATE cards SET assign = $1 WHERE id = $2 RETURNING *", [assign, id]);
-    if (result.rows.length === 0) return res.status(404).json({ error: "Card not found" });
-    res.json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    const { id } = req.params;
+    const { assign } = req.body; // array of user IDs
+    try {
+        const result = await client.query("UPDATE cards SET assign = $1 WHERE id = $2 RETURNING *", [assign, id]);
+        if (result.rows.length === 0) return res.status(404).json({ error: "Card not found" });
+        res.json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 })
 
 // END UPDATE CARD 
@@ -3167,382 +3167,382 @@ app.put('/api/cards/:id/assign', async (req, res) => {
 //CARD COVER
 //1. mendapatkan cover berdasarkan card_id -> works
 app.get('/api/card-cover/:cardId', async (req, res) => {
-  const { cardId } = req.params;
-  try {
-    const result = await client.query(
-      `SELECT c.* FROM cover c 
+    const { cardId } = req.params;
+    try {
+        const result = await client.query(
+            `SELECT c.* FROM cover c 
                  INNER JOIN card_cover cc ON c.id = cc.cover_id 
                  WHERE cc.card_id = $1`,
-      [cardId]
-    );
-    res.json(result.rows);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+            [cardId]
+        );
+        res.json(result.rows);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 })
 //2. menambahkan cover ke card -> works
 app.post('/api/add-cover', async (req, res) => {
-  const { card_id, cover_id } = req.body;
-  const userId = req.user.id;
+    const { card_id, cover_id } = req.body;
+    const userId = req.user.id;
 
-  try {
-    const checkExisting = await client.query(
-      "SELECT * FROM card_cover WHERE card_id = $1",
-      [card_id]
-    );
+    try {
+        const checkExisting = await client.query(
+            "SELECT * FROM card_cover WHERE card_id = $1",
+            [card_id]
+        );
 
-    if (checkExisting.rows.length > 0) {
-      return res.status(400).json({ message: "Card already has a cover. Please update instead." });
+        if (checkExisting.rows.length > 0) {
+            return res.status(400).json({ message: "Card already has a cover. Please update instead." });
+        }
+
+        const result = await client.query(
+            "INSERT INTO card_cover (card_id, cover_id, create_at) VALUES ($1, $2, CURRENT_TIMESTAMP) RETURNING *",
+            [card_id, cover_id]
+        );
+
+        //add log card activity
+        await logCardActivity({
+            action: 'add_cover',
+            card_id: card_id,
+            user_id: userId,
+            entity: 'cover',
+            entity_id: cover_id,
+            details: ''
+        })
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-
-    const result = await client.query(
-      "INSERT INTO card_cover (card_id, cover_id, create_at) VALUES ($1, $2, CURRENT_TIMESTAMP) RETURNING *",
-      [card_id, cover_id]
-    );
-
-    //add log card activity
-    await logCardActivity({
-      action: 'add_cover',
-      card_id: card_id,
-      user_id: userId,
-      entity: 'cover',
-      entity_id: cover_id,
-      details: ''
-    })
-
-    res.json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 })
 //3. mengupdate cover pada card -> works
 app.put('/api/update-cover', async (req, res) => {
-  const { card_id, cover_id } = req.body;
-  try {
-    const result = await client.query(
-      "UPDATE card_cover SET cover_id = $1, update_at = CURRENT_TIMESTAMP WHERE card_id = $2 RETURNING *",
-      [cover_id, card_id]
-    );
+    const { card_id, cover_id } = req.body;
+    try {
+        const result = await client.query(
+            "UPDATE card_cover SET cover_id = $1, update_at = CURRENT_TIMESTAMP WHERE card_id = $2 RETURNING *",
+            [cover_id, card_id]
+        );
 
-    if (result.rowCount === 0) {
-      return res.status(404).json({ message: "No cover found for this card." });
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: "No cover found for this card." });
+        }
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-
-    res.json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 })
 //4. menghapus cover dari card -> works
 app.delete('/api/delete-cover/:cardId', async (req, res) => {
-  const { cardId } = req.params;
-  const userId = req.user.id;
+    const { cardId } = req.params;
+    const userId = req.user.id;
 
-  try {
-    // Ambil dulu data cover sebelum dihapus
-    const coverResult = await client.query(
-      "SELECT * FROM card_cover WHERE card_id = $1",
-      [cardId]
-    );
+    try {
+        // Ambil dulu data cover sebelum dihapus
+        const coverResult = await client.query(
+            "SELECT * FROM card_cover WHERE card_id = $1",
+            [cardId]
+        );
 
-    if (coverResult.rowCount === 0) {
-      return res.status(404).json({ message: "No cover found for this card." });
+        if (coverResult.rowCount === 0) {
+            return res.status(404).json({ message: "No cover found for this card." });
+        }
+
+        const cover = coverResult.rows[0]; // Data cover sebelum dihapus
+
+        // Hapus cover
+        await client.query(
+            "DELETE FROM card_cover WHERE card_id = $1",
+            [cardId]
+        );
+
+        // Log aktivitas penghapusan cover
+        await logCardActivity({
+            card_id: parseInt(cardId),
+            user_id: userId,
+            action: "delete",
+            entity: "cover",
+            entity_id: cover.id, // Ini id cover yang dihapus
+            details: ''
+        });
+
+        res.json({ message: "Cover removed successfully." });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-
-    const cover = coverResult.rows[0]; // Data cover sebelum dihapus
-
-    // Hapus cover
-    await client.query(
-      "DELETE FROM card_cover WHERE card_id = $1",
-      [cardId]
-    );
-
-    // Log aktivitas penghapusan cover
-    await logCardActivity({
-      card_id: parseInt(cardId),
-      user_id: userId,
-      action: "delete",
-      entity: "cover",
-      entity_id: cover.id, // Ini id cover yang dihapus
-      details: ''
-    });
-
-    res.json({ message: "Cover removed successfully." });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 })
 //5. mendapatkan semua cover yang tersedia
 app.get('/api/covers', async (req, res) => {
-  try {
-    const result = await client.query("SELECT * FROM cover");
-    res.json(result.rows);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    try {
+        const result = await client.query("SELECT * FROM cover");
+        res.json(result.rows);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 })
 //END CARD COVER
 
 //DUE DATE
 //1. get all due date
 app.get('/api/card-due-dates', async (req, res) => {
-  try {
-    const result = await client.query("SELECT * FROM card_due_dates ORDER BY due_date ASC");
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error");
-  }
+    try {
+        const result = await client.query("SELECT * FROM card_due_dates ORDER BY due_date ASC");
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server Error");
+    }
 })
 //2. get due date by id
 app.get('/api/card-due-date/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const result = await client.query("SELECT * FROM card_due_dates WHERE id = $1", [id]);
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Due date not found" });
+    const { id } = req.params;
+    try {
+        const result = await client.query("SELECT * FROM card_due_dates WHERE id = $1", [id]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Due date not found" });
+        }
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server Error");
     }
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error");
-  }
 })
 //3. Ambil semua due date berdasarkan card_id (Berguna untuk fitur DatePicker)
 app.get('/api/card-due-date/card/:cardId', async (req, res) => {
-  const { cardId } = req.params;
-  try {
-    const result = await client.query("SELECT * FROM card_due_dates WHERE card_id = $1 ORDER BY due_date ASC", [cardId]);
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error");
-  }
+    const { cardId } = req.params;
+    try {
+        const result = await client.query("SELECT * FROM card_due_dates WHERE card_id = $1 ORDER BY due_date ASC", [cardId]);
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server Error");
+    }
 })
 //4. add new due date
 app.post('/api/card-due-dates', async (req, res) => {
-  const { card_id, due_date } = req.body;
-  try {
-    const result = await client.query(
-      "INSERT INTO card_due_dates (card_id, due_date, created_at) VALUES ($1, $2, CURRENT_TIMESTAMP) RETURNING *",
-      [card_id, due_date]
-    );
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error");
-  }
+    const { card_id, due_date } = req.body;
+    try {
+        const result = await client.query(
+            "INSERT INTO card_due_dates (card_id, due_date, created_at) VALUES ($1, $2, CURRENT_TIMESTAMP) RETURNING *",
+            [card_id, due_date]
+        );
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server Error");
+    }
 })
 //5.update due date by id
 //5. update due date by id
 app.put('/api/card-due-date/:id', async (req, res) => {
-  const { id } = req.params;
-  const { due_date } = req.body;
-  const userId = req.user.id;
+    const { id } = req.params;
+    const { due_date } = req.body;
+    const userId = req.user.id;
 
-  try {
-    // Ambil cardId dan due date lama
-    const existing = await client.query(
-      "SELECT * FROM card_due_dates WHERE id = $1",
-      [id]
-    );
+    try {
+        // Ambil cardId dan due date lama
+        const existing = await client.query(
+            "SELECT * FROM card_due_dates WHERE id = $1",
+            [id]
+        );
 
-    if (existing.rows.length === 0) {
-      return res.status(404).json({ error: "Due date not found" });
+        if (existing.rows.length === 0) {
+            return res.status(404).json({ error: "Due date not found" });
+        }
+
+        const oldDueDate = existing.rows[0].due_date;
+        const cardId = existing.rows[0].card_id;
+
+        // Update due date
+        const result = await client.query(
+            "UPDATE card_due_dates SET due_date = $1, updated_at = NOW() WHERE id = $2 RETURNING *",
+            [due_date, id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Due date not found after update" });
+        }
+
+        const updatedDueDate = result.rows[0].due_date;
+
+        // Format tanggal ke: Wednesday, 11 June 2025
+        const formatDate = (dateStr) => {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            return new Intl.DateTimeFormat('en-GB', options).format(new Date(dateStr));
+        };
+
+        // Log aktivitas update
+        await logCardActivity({
+            action: 'updated_due',
+            card_id: cardId,
+            user_id: userId,
+            entity: 'due date',
+            entity_id: null,
+            details: {
+                old_title: formatDate(oldDueDate),
+                new_title: formatDate(updatedDueDate),
+            }
+        });
+
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server Error");
     }
-
-    const oldDueDate = existing.rows[0].due_date;
-    const cardId = existing.rows[0].card_id;
-
-    // Update due date
-    const result = await client.query(
-      "UPDATE card_due_dates SET due_date = $1, updated_at = NOW() WHERE id = $2 RETURNING *",
-      [due_date, id]
-    );
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Due date not found after update" });
-    }
-
-    const updatedDueDate = result.rows[0].due_date;
-
-    // Format tanggal ke: Wednesday, 11 June 2025
-    const formatDate = (dateStr) => {
-      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      return new Intl.DateTimeFormat('en-GB', options).format(new Date(dateStr));
-    };
-
-    // Log aktivitas update
-    await logCardActivity({
-      action: 'updated_due',
-      card_id: cardId,
-      user_id: userId,
-      entity: 'due date',
-      entity_id: null,
-      details: {
-        old_title: formatDate(oldDueDate),
-        new_title: formatDate(updatedDueDate),
-      }
-    });
-
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error");
-  }
 });
 
 
 //6. delete due date by ID
 app.delete('/api/card-due-date/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const result = await client.query("DELETE FROM card_due_dates WHERE id = $1 RETURNING *", [id]);
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Due date not found" });
+    const { id } = req.params;
+    try {
+        const result = await client.query("DELETE FROM card_due_dates WHERE id = $1 RETURNING *", [id]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Due date not found" });
+        }
+        res.json({ message: "Due date deleted successfully" });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server Error");
     }
-    res.json({ message: "Due date deleted successfully" });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error");
-  }
 })
 //END DUE DATE
 
 //REMINDERS
 // 1. Endpoint untuk menambahkan pengingat baru
 app.post('/api/card-due-date/:cardId/set-reminder', async (req, res) => {
-  const { cardId } = req.params;
-  const { reminder_date } = req.body;
+    const { cardId } = req.params;
+    const { reminder_date } = req.body;
 
-  // Validate reminder_date
-  if (!reminder_date) {
-    return res.status(400).json({ error: 'Reminder date is required' });
-  }
+    // Validate reminder_date
+    if (!reminder_date) {
+        return res.status(400).json({ error: 'Reminder date is required' });
+    }
 
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
             INSERT INTO reminders (card_id, reminder_date)
             VALUES ($1, $2) RETURNING id, card_id, reminder_date, reminder_sent, created_at, updated_at
         `, [cardId, reminder_date]);
 
-    if (result.rows.length === 0) {
-      return res.status(500).json({ error: 'Failed to create reminder' });
-    }
+        if (result.rows.length === 0) {
+            return res.status(500).json({ error: 'Failed to create reminder' });
+        }
 
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.error('Error setting reminder:', err);
-    res.status(500).json({ error: 'Failed to set reminder' });
-  }
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        console.error('Error setting reminder:', err);
+        res.status(500).json({ error: 'Failed to set reminder' });
+    }
 });
 
 
 
 // 2.Endpoint untuk mengambil pengingat berdasarkan cardId
 app.get('/api/card-due-date/:cardId/get-reminder', async (req, res) => {
-  const { cardId } = req.params;
+    const { cardId } = req.params;
 
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
         SELECT * FROM reminders
         WHERE card_id = $1
       `, [cardId]);
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: 'No reminder found for this card' });
-    }
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'No reminder found for this card' });
+        }
 
-    res.status(200).json(result.rows[0]);
-  } catch (err) {
-    console.error('Error fetching reminder:', err);
-    res.status(500).json({ error: 'Failed to fetch reminder' });
-  }
+        res.status(200).json(result.rows[0]);
+    } catch (err) {
+        console.error('Error fetching reminder:', err);
+        res.status(500).json({ error: 'Failed to fetch reminder' });
+    }
 });
 
 
 //3. Endpoint untuk memperbarui pengingat
 app.put('/api/card-due-date/:cardId/update-reminder', async (req, res) => {
-  const { cardId } = req.params;
-  const { reminder_date } = req.body;
+    const { cardId } = req.params;
+    const { reminder_date } = req.body;
 
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
         UPDATE reminders
         SET reminder_date = $1, updated_at = CURRENT_TIMESTAMP
         WHERE card_id = $2 RETURNING *
       `, [reminder_date, cardId]);
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: 'Reminder not found for this card' });
-    }
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'Reminder not found for this card' });
+        }
 
-    res.status(200).json(result.rows[0]);
-  } catch (err) {
-    console.error('Error updating reminder:', err);
-    res.status(500).json({ error: 'Failed to update reminder' });
-  }
+        res.status(200).json(result.rows[0]);
+    } catch (err) {
+        console.error('Error updating reminder:', err);
+        res.status(500).json({ error: 'Failed to update reminder' });
+    }
 });
 
 
 // 4. Endpoint untuk menghapus pengingat berdasarkan cardId
 app.delete('/api/card-due-date/:cardId/delete-reminder', async (req, res) => {
-  const { cardId } = req.params;
+    const { cardId } = req.params;
 
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
         DELETE FROM reminders
         WHERE card_id = $1 RETURNING *
       `, [cardId]);
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: 'Reminder not found for this card' });
-    }
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'Reminder not found for this card' });
+        }
 
-    res.status(200).json({ message: 'Reminder deleted successfully' });
-  } catch (err) {
-    console.error('Error deleting reminder:', err);
-    res.status(500).json({ error: 'Failed to delete reminder' });
-  }
+        res.status(200).json({ message: 'Reminder deleted successfully' });
+    } catch (err) {
+        console.error('Error deleting reminder:', err);
+        res.status(500).json({ error: 'Failed to delete reminder' });
+    }
 });
 
 
 //5. Endpoint untuk mengambil semua pengingat
 app.get('/api/card-due-date', async (req, res) => {
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
         SELECT * FROM reminders
         ORDER BY reminder_date ASC
       `);
 
-    res.status(200).json(result.rows);
-  } catch (err) {
-    console.error('Error fetching all reminders:', err);
-    res.status(500).json({ error: 'Failed to fetch reminders' });
-  }
+        res.status(200).json(result.rows);
+    } catch (err) {
+        console.error('Error fetching all reminders:', err);
+        res.status(500).json({ error: 'Failed to fetch reminders' });
+    }
 });
 
 
 //6. Endpoint untuk menandai reminder yang sudah dikirim
 app.put('/api/card-due-date/:cardId/mark-reminder-sent', async (req, res) => {
-  const { cardId } = req.params;
+    const { cardId } = req.params;
 
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
         UPDATE reminders
         SET reminder_sent = true, updated_at = CURRENT_TIMESTAMP
         WHERE card_id = $1 RETURNING *
       `, [cardId]);
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: 'Reminder not found for this card' });
-    }
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'Reminder not found for this card' });
+        }
 
-    res.status(200).json({ message: 'Reminder marked as sent' });
-  } catch (err) {
-    console.error('Error marking reminder as sent:', err);
-    res.status(500).json({ error: 'Failed to mark reminder as sent' });
-  }
+        res.status(200).json({ message: 'Reminder marked as sent' });
+    } catch (err) {
+        console.error('Error marking reminder as sent:', err);
+        res.status(500).json({ error: 'Failed to mark reminder as sent' });
+    }
 });
 
 //END REMINDERS
@@ -3550,294 +3550,294 @@ app.put('/api/card-due-date/:cardId/mark-reminder-sent', async (req, res) => {
 //CARD DESCRIPTION
 //1. Endpoint untuk membuat dan mengubah card description
 app.post('/api/card-description', async (req, res) => {
-  const { card_id, description } = req.body;
-  try {
-    const existingDesription = await client.query(
-      'SELECT * FROM card_descriptions WHERE card_id = $1',
-      [card_id]
-    );
-    if (existingDesription.rows.length > 0) {
-      //jika desktipsi sudah ada, lakukan update
-      await client.query(
-        'UPDATE card_descriptions SET description = $1, updated_at = NOW() WHERE card_id = $2',
-        [description, card_id]
-      );
-    } else {
-      await client.query(
-        'INSERT INTO card_descriptions (card_id, description) VALUES ($1, $2)',
-        [card_id, description]
-      );
+    const { card_id, description } = req.body;
+    try {
+        const existingDesription = await client.query(
+            'SELECT * FROM card_descriptions WHERE card_id = $1',
+            [card_id]
+        );
+        if (existingDesription.rows.length > 0) {
+            //jika desktipsi sudah ada, lakukan update
+            await client.query(
+                'UPDATE card_descriptions SET description = $1, updated_at = NOW() WHERE card_id = $2',
+                [description, card_id]
+            );
+        } else {
+            await client.query(
+                'INSERT INTO card_descriptions (card_id, description) VALUES ($1, $2)',
+                [card_id, description]
+            );
+        }
+        res.json({ success: true, message: 'Deskripsi berhasil disimpan' });
+    } catch (error) {
+        console.error('Gagal menyimpan deskripsi:', error);
+        res.status(500).json({ success: false, message: 'Terjadi kesalahan server' });
     }
-    res.json({ success: true, message: 'Deskripsi berhasil disimpan' });
-  } catch (error) {
-    console.error('Gagal menyimpan deskripsi:', error);
-    res.status(500).json({ success: false, message: 'Terjadi kesalahan server' });
-  }
 })
 
 //2. get card description by card id
 app.get('/api/card-description/:card_id', async (req, res) => {
-  const { card_id } = req.params;
-  try {
-    const result = await client.query(
-      'SELECT description FROM card_descriptions WHERE card_id = $1',
-      [card_id]
-    );
+    const { card_id } = req.params;
+    try {
+        const result = await client.query(
+            'SELECT description FROM card_descriptions WHERE card_id = $1',
+            [card_id]
+        );
 
-    if (result.rows.length > 0) {
-      res.json({ success: true, description: result.rows[0].description });
-    } else {
-      res.json({ success: true, description: 'masukkan teks...' }); // Jika tidak ada, return string kosong
+        if (result.rows.length > 0) {
+            res.json({ success: true, description: result.rows[0].description });
+        } else {
+            res.json({ success: true, description: 'masukkan teks...' }); // Jika tidak ada, return string kosong
+        }
+    } catch (error) {
+        console.error('Gagal mengambil deskripsi:', error);
+        res.status(500).json({ success: false, message: 'Terjadi kesalahan server' });
     }
-  } catch (error) {
-    console.error('Gagal mengambil deskripsi:', error);
-    res.status(500).json({ success: false, message: 'Terjadi kesalahan server' });
-  }
 })
 
 //3. update card description
 app.put('/api/card-description/:card_id', async (req, res) => {
-  const { card_id } = req.params;
-  const { description } = req.body;
+    const { card_id } = req.params;
+    const { description } = req.body;
 
-  try {
-    await client.query(
-      'UPDATE card_descriptions SET description = $1 WHERE card_id = $2',
-      [description, card_id]
-    );
-    res.json({ success: true, message: 'Deskripsi berhasil diperbarui' });
-  } catch (error) {
-    console.error('Gagal menyimpan deskripsi:', error);
-    res.status(500).json({ success: false, message: 'Terjadi kesalahan server' });
-  }
+    try {
+        await client.query(
+            'UPDATE card_descriptions SET description = $1 WHERE card_id = $2',
+            [description, card_id]
+        );
+        res.json({ success: true, message: 'Deskripsi berhasil diperbarui' });
+    } catch (error) {
+        console.error('Gagal menyimpan deskripsi:', error);
+        res.status(500).json({ success: false, message: 'Terjadi kesalahan server' });
+    }
 })
 
 //CHECKLIST 
 //1. get all checklist 
 app.get('/api/checklists', async (req, res) => {
-  try {
-    const result = await client.query(
-      'SELECT * FROM checklists ORDER BY id DESC')
-    res.json(result.rows)
-  } catch (error) {
-    res.status(500).json({ error: error.message })
-  }
+    try {
+        const result = await client.query(
+            'SELECT * FROM checklists ORDER BY id DESC')
+        res.json(result.rows)
+    } catch (error) {
+        res.status(500).json({ error: error.message })
+    }
 })
 //2. get checklist by id
 app.get('/api/checklist/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const result = await client.query("SELECT * FROM checklists WHERE id = $1", [id]);
-    if (result.rows.length === 0) return res.status(404).json({ error: "Checklist not found" });
-    res.json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    const { id } = req.params;
+    try {
+        const result = await client.query("SELECT * FROM checklists WHERE id = $1", [id]);
+        if (result.rows.length === 0) return res.status(404).json({ error: "Checklist not found" });
+        res.json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 })
 //3. create new Checklist
 app.post('/api/checklist', async (req, res) => {
-  const { name } = req.body;
-  try {
-    const result = await client.query(
-      "INSERT INTO checklists (name) VALUES ($1) RETURNING *",
-      [name]
-    );
-    res.status(201).json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    const { name } = req.body;
+    try {
+        const result = await client.query(
+            "INSERT INTO checklists (name) VALUES ($1) RETURNING *",
+            [name]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 })
 //4. update checklist
 app.put('/api/checklist/:id', async (req, res) => {
-  const { id } = req.params;
-  const { name } = req.body;
-  try {
-    const result = await client.query(
-      "UPDATE checklists SET name = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *",
-      [name, id]
-    );
-    if (result.rows.length === 0) return res.status(404).json({ error: "Checklist not found" });
-    res.json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    const { id } = req.params;
+    const { name } = req.body;
+    try {
+        const result = await client.query(
+            "UPDATE checklists SET name = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *",
+            [name, id]
+        );
+        if (result.rows.length === 0) return res.status(404).json({ error: "Checklist not found" });
+        res.json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 })
 //5. delete checklist
 app.delete('/api/checklist/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const result = await client.query("DELETE FROM checklists WHERE id = $1 RETURNING *", [id]);
-    if (result.rows.length === 0) return res.status(404).json({ error: "Checklist not found" });
-    res.json({ message: "Checklist deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    const { id } = req.params;
+    try {
+        const result = await client.query("DELETE FROM checklists WHERE id = $1 RETURNING *", [id]);
+        if (result.rows.length === 0) return res.status(404).json({ error: "Checklist not found" });
+        res.json({ message: "Checklist deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 })
 //END CHECKLIST
 
 //CARD CHECKLIST
 //create new checklist using two tabel card checklist and checklist
 app.post('/api/cards/:cardId/checklists', async (req, res) => {
-  const { cardId } = req.params;
-  const { name } = req.body; // Nama checklist yang akan ditambahkan
+    const { cardId } = req.params;
+    const { name } = req.body; // Nama checklist yang akan ditambahkan
 
-  if (!name) {
-    return res.status(400).json({ error: "Checklist name is required" });
-  }
+    if (!name) {
+        return res.status(400).json({ error: "Checklist name is required" });
+    }
 
-  try {
-    await client.query("BEGIN"); // Mulai transaksi
+    try {
+        await client.query("BEGIN"); // Mulai transaksi
 
-    // 1. Tambahkan checklist baru ke tabel `checklists`
-    const checklistResult = await client.query(
-      `INSERT INTO checklists (name) VALUES ($1) RETURNING id`,
-      [name]
-    );
-    const checklistId = checklistResult.rows[0].id;
+        // 1. Tambahkan checklist baru ke tabel `checklists`
+        const checklistResult = await client.query(
+            `INSERT INTO checklists (name) VALUES ($1) RETURNING id`,
+            [name]
+        );
+        const checklistId = checklistResult.rows[0].id;
 
-    // 2. Hubungkan checklist dengan card dalam tabel `card_checklists`
-    await client.query(
-      `INSERT INTO card_checklists (card_id, checklist_id) VALUES ($1, $2)`,
-      [cardId, checklistId]
-    );
+        // 2. Hubungkan checklist dengan card dalam tabel `card_checklists`
+        await client.query(
+            `INSERT INTO card_checklists (card_id, checklist_id) VALUES ($1, $2)`,
+            [cardId, checklistId]
+        );
 
-    await client.query("COMMIT"); // Selesaikan transaksi
+        await client.query("COMMIT"); // Selesaikan transaksi
 
-    res.status(201).json({
-      message: "Checklist created and linked to card successfully",
-      checklist_id: checklistId,
-    });
-  } catch (error) {
-    await client.query("ROLLBACK"); // Rollback jika terjadi error
-    console.error("Error creating checklist:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
+        res.status(201).json({
+            message: "Checklist created and linked to card successfully",
+            checklist_id: checklistId,
+        });
+    } catch (error) {
+        await client.query("ROLLBACK"); // Rollback jika terjadi error
+        console.error("Error creating checklist:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
 });
 
 // GET /api/checklists/:id
 app.get('/api/checklists-items/:id', async (req, res) => {
-  const { id } = req.params;
+    const { id } = req.params;
 
-  try {
-    // Fetch checklist berdasarkan ID
-    const checklistResult = await client.query('SELECT * FROM public.checklists WHERE id = $1', [id]);
+    try {
+        // Fetch checklist berdasarkan ID
+        const checklistResult = await client.query('SELECT * FROM public.checklists WHERE id = $1', [id]);
 
-    // Pastikan checklist ditemukan
-    if (checklistResult.rows.length === 0) {
-      return res.status(404).json({ message: 'Checklist not found' });
+        // Pastikan checklist ditemukan
+        if (checklistResult.rows.length === 0) {
+            return res.status(404).json({ message: 'Checklist not found' });
+        }
+
+        // Fetch checklist items yang terkait dengan checklist_id
+        const checklistItemsResult = await client.query('SELECT * FROM public.checklist_items WHERE checklist_id = $1', [id]);
+
+        // Gabungkan hasil checklist dengan checklist items
+        const checklist = checklistResult.rows[0];
+        checklist.items = checklistItemsResult.rows;
+
+        res.json(checklist);
+    } catch (error) {
+        console.error('Error fetching checklist and items:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
     }
-
-    // Fetch checklist items yang terkait dengan checklist_id
-    const checklistItemsResult = await client.query('SELECT * FROM public.checklist_items WHERE checklist_id = $1', [id]);
-
-    // Gabungkan hasil checklist dengan checklist items
-    const checklist = checklistResult.rows[0];
-    checklist.items = checklistItemsResult.rows;
-
-    res.json(checklist);
-  } catch (error) {
-    console.error('Error fetching checklist and items:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
-  }
 });
 
 //1. get all card checklist
 app.get('/api/card-checklists', async (req, res) => {
-  try {
-    const result = await client.query("SELECT * FROM card_checklists ORDER BY id DESC");
-    res.json(result.rows);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    try {
+        const result = await client.query("SELECT * FROM card_checklists ORDER BY id DESC");
+        res.json(result.rows);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 })
 //2.get card checklist by id
 app.get('/api/card-checklist/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const result = await client.query("SELECT * FROM card_checklists WHERE id = $1", [id]);
-    if (result.rows.length === 0) return res.status(404).json({ error: "Card checklist not found" });
-    res.json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    const { id } = req.params;
+    try {
+        const result = await client.query("SELECT * FROM card_checklists WHERE id = $1", [id]);
+        if (result.rows.length === 0) return res.status(404).json({ error: "Card checklist not found" });
+        res.json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 })
 //
 
 //3.get card checklist by card id
 app.get('/api/card-checklist/card/:card_id', async (req, res) => {
-  const card_id = parseInt(req.params.card_id, 10);
+    const card_id = parseInt(req.params.card_id, 10);
 
-  if (isNaN(card_id)) {
-    return res.status(400).json({ error: "Invalid card_id" });
-  }
+    if (isNaN(card_id)) {
+        return res.status(400).json({ error: "Invalid card_id" });
+    }
 
-  try {
-    const result = await client.query(
-      `SELECT 
+    try {
+        const result = await client.query(
+            `SELECT 
                   cc.card_id, 
                   json_agg(json_build_object('id', c.id, 'name', c.name)) AS checklists
                FROM card_checklists cc
                JOIN checklists c ON cc.checklist_id = c.id
                WHERE cc.card_id = $1
                GROUP BY cc.card_id`,
-      [card_id]
-    );
+            [card_id]
+        );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: `No checklists found for card_id ${card_id}` });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: `No checklists found for card_id ${card_id}` });
+        }
+
+        res.json(result.rows[0]); // Mengembalikan satu objek JSON, bukan array
+    } catch (error) {
+        console.error('❌ Database error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
-
-    res.json(result.rows[0]); // Mengembalikan satu objek JSON, bukan array
-  } catch (error) {
-    console.error('❌ Database error:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
 })
 
 //4. create card checklist
 app.post('/api/card-checklist', async (req, res) => {
-  const { card_id, checklist_id } = req.body;
-  try {
-    const result = await client.query(
-      "INSERT INTO card_checklists (card_id, checklist_id,created_at) VALUES ($1, $2, CURRENT_TIMESTAMP) RETURNING *",
-      [card_id, checklist_id]
-    );
-    res.status(201).json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    const { card_id, checklist_id } = req.body;
+    try {
+        const result = await client.query(
+            "INSERT INTO card_checklists (card_id, checklist_id,created_at) VALUES ($1, $2, CURRENT_TIMESTAMP) RETURNING *",
+            [card_id, checklist_id]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 })
 //5. update card checklist
 app.put('/api/card-checklist/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const result = await client.query("DELETE FROM card_checklists WHERE id = $1 RETURNING *", [id]);
-    if (result.rows.length === 0) return res.status(404).json({ error: "Card checklist not found" });
-    res.json({ message: "Card checklist deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    const { id } = req.params;
+    try {
+        const result = await client.query("DELETE FROM card_checklists WHERE id = $1 RETURNING *", [id]);
+        if (result.rows.length === 0) return res.status(404).json({ error: "Card checklist not found" });
+        res.json({ message: "Card checklist deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 })
 //6. delete card checklist
 app.delete('/api/card-checklist/:id', async (req, res) => {
-  const id = parseInt(req.params.id, 10);
+    const id = parseInt(req.params.id, 10);
 
-  if (isNaN(id)) {
-    return res.status(400).json({ error: "Invalid ID format" });
-  }
-
-  try {
-    const result = await client.query("DELETE FROM card_checklists WHERE id = $1 RETURNING *", [id]);
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Card checklist not found or already deleted" });
+    if (isNaN(id)) {
+        return res.status(400).json({ error: "Invalid ID format" });
     }
 
-    res.json({ message: "Card checklist deleted successfully", deletedData: result.rows[0] });
-  } catch (error) {
-    console.error("Delete error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
+    try {
+        const result = await client.query("DELETE FROM card_checklists WHERE id = $1 RETURNING *", [id]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Card checklist not found or already deleted" });
+        }
+
+        res.json({ message: "Card checklist deleted successfully", deletedData: result.rows[0] });
+    } catch (error) {
+        console.error("Delete error:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
 });
 
 //END CARD CHECKLIST
@@ -3845,45 +3845,45 @@ app.delete('/api/card-checklist/:id', async (req, res) => {
 //CHECKLIST ITEM
 //1. get all checklist item for a checklist
 app.get('/api/checklists/:checklist_id/items', async (req, res) => {
-  const { checklist_id } = req.params;
-  try {
-    const result = await client.query(
-      'SELECT * FROM checklist_items WHERE checklist_id = $1 ORDER BY id DESC',
-      [checklist_id]
-    );
-    res.json(result.rows);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    const { checklist_id } = req.params;
+    try {
+        const result = await client.query(
+            'SELECT * FROM checklist_items WHERE checklist_id = $1 ORDER BY id DESC',
+            [checklist_id]
+        );
+        res.json(result.rows);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 })
 //2. get checklist item by id
 app.get('/api/checklists/:checklistId/items/:itemId', async (req, res) => {
-  const { checklistId, itemId } = req.params;
-  try {
-    const result = await client.query(
-      'SELECT * FROM checklist_items WHERE id = $1 AND checklist_id = $2',
-      [itemId, checklistId]
-    );
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Checklist item not found" });
+    const { checklistId, itemId } = req.params;
+    try {
+        const result = await client.query(
+            'SELECT * FROM checklist_items WHERE id = $1 AND checklist_id = $2',
+            [itemId, checklistId]
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Checklist item not found" });
+        }
+        res.json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-    res.json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 })
 
 //get checklist item by checklist id
 app.get('/api/checklist-items/:checklist_id', async (req, res) => {
-  const checklist_id = parseInt(req.params.checklist_id, 10);
+    const checklist_id = parseInt(req.params.checklist_id, 10);
 
-  if (isNaN(checklist_id)) {
-    return res.status(400).json({ error: "Invalid checklist_id" });
-  }
+    if (isNaN(checklist_id)) {
+        return res.status(400).json({ error: "Invalid checklist_id" });
+    }
 
-  try {
-    const result = await client.query(
-      `SELECT 
+    try {
+        const result = await client.query(
+            `SELECT 
                 ci.id,
                 ci.name,
                 ci.is_checked,
@@ -3891,98 +3891,98 @@ app.get('/api/checklist-items/:checklist_id', async (req, res) => {
                 ci.updated_at
             FROM checklist_items ci
             WHERE ci.checklist_id = $1`,
-      [checklist_id]
-    );
+            [checklist_id]
+        );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: `No checklist items found for checklist_id ${checklist_id}` });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: `No checklist items found for checklist_id ${checklist_id}` });
+        }
+
+        res.json(result.rows);
+    } catch (error) {
+        console.error('❌ Database error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
-
-    res.json(result.rows);
-  } catch (error) {
-    console.error('❌ Database error:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
 })
 
 //3. create checklist item
 app.post('/api/checklists/:checklistId/items', async (req, res) => {
-  const { checklistId } = req.params;
-  const { name } = req.body;
+    const { checklistId } = req.params;
+    const { name } = req.body;
 
-  // Pastikan is_checked diset false jika tidak ada dalam request body
-  const is_checked = false;
+    // Pastikan is_checked diset false jika tidak ada dalam request body
+    const is_checked = false;
 
-  try {
-    const result = await client.query(
-      'INSERT INTO checklist_items (checklist_id, name, is_checked) VALUES ($1, $2, $3) RETURNING *',
-      [checklistId, name, is_checked]
-    );
-    res.status(201).json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    try {
+        const result = await client.query(
+            'INSERT INTO checklist_items (checklist_id, name, is_checked) VALUES ($1, $2, $3) RETURNING *',
+            [checklistId, name, is_checked]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
 
 
 //4. update checklist item
 app.put('/api/checklists/:checklistId/items/:itemId/name', async (req, res) => {
-  const { checklistId, itemId } = req.params;
-  const { name } = req.body;
-  try {
-    const result = await client.query(
-      'UPDATE checklist_items SET name = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 AND checklist_id = $3 RETURNING *',
-      [name, itemId, checklistId]
-    );
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Checklist item not found" });
+    const { checklistId, itemId } = req.params;
+    const { name } = req.body;
+    try {
+        const result = await client.query(
+            'UPDATE checklist_items SET name = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 AND checklist_id = $3 RETURNING *',
+            [name, itemId, checklistId]
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Checklist item not found" });
+        }
+        res.json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-    res.json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 });
 //5. update checklist item is_checked
 app.put('/api/checklists/:checklistId/items/:itemId/check', async (req, res) => {
-  const { checklistId, itemId } = req.params;
-  const { is_checked } = req.body;
-  try {
-    const result = await client.query(
-      'UPDATE checklist_items SET is_checked = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 AND checklist_id = $3 RETURNING *',
-      [is_checked, itemId, checklistId]
-    );
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Checklist item not found" });
+    const { checklistId, itemId } = req.params;
+    const { is_checked } = req.body;
+    try {
+        const result = await client.query(
+            'UPDATE checklist_items SET is_checked = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 AND checklist_id = $3 RETURNING *',
+            [is_checked, itemId, checklistId]
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Checklist item not found" });
+        }
+        res.json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-    res.json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 });
 
 
 //5. delete checklist item
 app.delete('/api/checklists/:checklistId/items/:itemId', async (req, res) => {
-  const { checklistId, itemId } = req.params;
-  try {
-    const result = await client.query(
-      'DELETE FROM checklist_items WHERE id = $1 AND checklist_id = $2 RETURNING *',
-      [itemId, checklistId]
-    );
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Checklist item not found" });
+    const { checklistId, itemId } = req.params;
+    try {
+        const result = await client.query(
+            'DELETE FROM checklist_items WHERE id = $1 AND checklist_id = $2 RETURNING *',
+            [itemId, checklistId]
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Checklist item not found" });
+        }
+        res.json({ message: "Checklist item deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-    res.json({ message: "Checklist item deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 });
 
 //6. get checklist total by cardId
 app.get('/api/:cardId/checklist-total', async (req, res) => {
-  const { cardId } = req.params;
-  try {
-    const result = await client.query(`
+    const { cardId } = req.params;
+    try {
+        const result = await client.query(`
           SELECT COUNT(*) AS total
           FROM card_checklists cc
           JOIN checklists c ON cc.checklist_id = c.id
@@ -3990,17 +3990,17 @@ app.get('/api/:cardId/checklist-total', async (req, res) => {
           WHERE cc.card_id = $1;
         `, [cardId]);
 
-    res.json({ cardId: parseInt(cardId), total: parseInt(result.rows[0].total) });
-  } catch (error) {
-    console.error('Error getting total checklist items:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+        res.json({ cardId: parseInt(cardId), total: parseInt(result.rows[0].total) });
+    } catch (error) {
+        console.error('Error getting total checklist items:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 })
 //7. get checklist item "checked"
 app.get('/api/:cardId/checklist-checked', async (req, res) => {
-  const { cardId } = req.params;
-  try {
-    const result = await client.query(`
+    const { cardId } = req.params;
+    try {
+        const result = await client.query(`
         SELECT COUNT(*) AS checked
         FROM card_checklists cc
         JOIN checklists c ON cc.checklist_id = c.id
@@ -4008,18 +4008,18 @@ app.get('/api/:cardId/checklist-checked', async (req, res) => {
         WHERE cc.card_id = $1 AND ci.is_checked = true;
       `, [cardId]);
 
-    res.json({ cardId: parseInt(cardId), checked: parseInt(result.rows[0].checked) });
-  } catch (error) {
-    console.error('Error getting checked checklist items:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+        res.json({ cardId: parseInt(cardId), checked: parseInt(result.rows[0].checked) });
+    } catch (error) {
+        console.error('Error getting checked checklist items:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 })
 
 //8. get checklist item "unchecked"
 app.get('/api/:cardId/checklist-unchecked', async (req, res) => {
-  const { cardId } = req.params;
-  try {
-    const result = await client.query(`
+    const { cardId } = req.params;
+    try {
+        const result = await client.query(`
         SELECT COUNT(*) AS unchecked
         FROM card_checklists cc
         JOIN checklists c ON cc.checklist_id = c.id
@@ -4027,11 +4027,11 @@ app.get('/api/:cardId/checklist-unchecked', async (req, res) => {
         WHERE cc.card_id = $1 AND ci.is_checked = false;
       `, [cardId]);
 
-    res.json({ cardId: parseInt(cardId), unchecked: parseInt(result.rows[0].unchecked) });
-  } catch (error) {
-    console.error('Error getting unchecked checklist items:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+        res.json({ cardId: parseInt(cardId), unchecked: parseInt(result.rows[0].unchecked) });
+    } catch (error) {
+        console.error('Error getting unchecked checklist items:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 
 })
 //END CHECKLIST ITEM
@@ -4040,10 +4040,10 @@ app.get('/api/:cardId/checklist-unchecked', async (req, res) => {
 //GABUNGAN KETIGA TABEL (CARD_CHECKLIST, CHECKLIST, CHECKLIST_ITEM)
 // 1.Endpoint untuk mendapatkan checklist beserta checklist items berdasarkan card_id
 app.get('/api/checklists-with-items/:card_id', async (req, res) => {
-  const { card_id } = req.params;
+    const { card_id } = req.params;
 
-  try {
-    const checklistsWithItems = await client.query(`
+    try {
+        const checklistsWithItems = await client.query(`
             SELECT 
                 c.id AS checklist_id,
                 c.name AS checklist_name,
@@ -4056,152 +4056,152 @@ app.get('/api/checklists-with-items/:card_id', async (req, res) => {
             WHERE cc.card_id = $1
         `, [card_id]);
 
-    if (checklistsWithItems.rows.length === 0) {
-      return res.status(404).json({ message: 'No checklists or items found for this card' });
+        if (checklistsWithItems.rows.length === 0) {
+            return res.status(404).json({ message: 'No checklists or items found for this card' });
+        }
+
+        // Organize data into checklist format
+        const result = checklistsWithItems.rows.reduce((acc, row) => {
+            const { checklist_id, checklist_name, item_id, item_name, is_checked } = row;
+
+            // Find existing checklist in accumulator
+            let checklist = acc.find(c => c.checklist_id === checklist_id);
+
+            if (!checklist) {
+                checklist = {
+                    checklist_id,
+                    checklist_name,
+                    items: []
+                };
+                acc.push(checklist);
+            }
+
+            // Add items to the checklist
+            if (item_id) {
+                checklist.items.push({
+                    item_id,
+                    item_name,
+                    is_checked
+                });
+            }
+
+            return acc;
+        }, []);
+
+        res.json(result);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
     }
-
-    // Organize data into checklist format
-    const result = checklistsWithItems.rows.reduce((acc, row) => {
-      const { checklist_id, checklist_name, item_id, item_name, is_checked } = row;
-
-      // Find existing checklist in accumulator
-      let checklist = acc.find(c => c.checklist_id === checklist_id);
-
-      if (!checklist) {
-        checklist = {
-          checklist_id,
-          checklist_name,
-          items: []
-        };
-        acc.push(checklist);
-      }
-
-      // Add items to the checklist
-      if (item_id) {
-        checklist.items.push({
-          item_id,
-          item_name,
-          is_checked
-        });
-      }
-
-      return acc;
-    }, []);
-
-    res.json(result);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
 });
 
 //2.menambahkan checklist baru dan menghubungkannya dengan card
 app.post('/api/checklists-fix', async (req, res) => {
-  const { card_id, name } = req.body;
-  try {
-    const checklistResult = await client.query(
-      'INSERT INTO public.checklists (name) VALUES ($1) RETURNING id',
-      [name]
-    );
-    const checklist_id = checklistResult.rows[0].id;
+    const { card_id, name } = req.body;
+    try {
+        const checklistResult = await client.query(
+            'INSERT INTO public.checklists (name) VALUES ($1) RETURNING id',
+            [name]
+        );
+        const checklist_id = checklistResult.rows[0].id;
 
-    await client.query(
-      'INSERT INTO public.card_checklists (card_id, checklist_id, created_at) VALUES ($1, $2, CURRENT_TIMESTAMP)',
-      [card_id, checklist_id]
-    );
+        await client.query(
+            'INSERT INTO public.card_checklists (card_id, checklist_id, created_at) VALUES ($1, $2, CURRENT_TIMESTAMP)',
+            [card_id, checklist_id]
+        );
 
-    res.status(201).json({ checklist_id, message: 'Checklist berhasil ditambahkan' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
+        res.status(201).json({ checklist_id, message: 'Checklist berhasil ditambahkan' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
+    }
 })
 //3. mengupdate nama checklist
 app.put('/api/checklists-fix/:id', async (req, res) => {
-  const { id } = req.params;
-  const { name } = req.body;
-  try {
-    await client.query('UPDATE public.checklists SET name = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2', [name, id]);
-    res.json({ message: 'Checklist berhasil diperbarui' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
+    const { id } = req.params;
+    const { name } = req.body;
+    try {
+        await client.query('UPDATE public.checklists SET name = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2', [name, id]);
+        res.json({ message: 'Checklist berhasil diperbarui' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
+    }
 })
 //4. menghapus checklist dari sebuah card
 app.delete('/api/checklists-fix/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    // Hapus dulu dari tabel relasi card_checklists
-    await client.query('DELETE FROM public.card_checklists WHERE checklist_id = $1', [id]);
-    // Baru hapus dari checklists
-    await client.query('DELETE FROM public.checklists WHERE id = $1', [id]);
+    const { id } = req.params;
+    try {
+        // Hapus dulu dari tabel relasi card_checklists
+        await client.query('DELETE FROM public.card_checklists WHERE checklist_id = $1', [id]);
+        // Baru hapus dari checklists
+        await client.query('DELETE FROM public.checklists WHERE id = $1', [id]);
 
-    res.json({ message: 'Checklist berhasil dihapus' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
+        res.json({ message: 'Checklist berhasil dihapus' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
+    }
 });
 
 //CHECKLIST ITEM
 
 //5. menambahkan checklist item baru ke checklist
 app.post('/api/checklists-fix-items', async (req, res) => {
-  const { checklist_id, name } = req.body;
-  try {
-    const result = await client.query(
-      'INSERT INTO public.checklist_items (checklist_id, name) VALUES ($1, $2) RETURNING id',
-      [checklist_id, name]
-    );
-    res.status(201).json({ item_id: result.rows[0].id, message: 'Checklist item berhasil ditambahkan' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
+    const { checklist_id, name } = req.body;
+    try {
+        const result = await client.query(
+            'INSERT INTO public.checklist_items (checklist_id, name) VALUES ($1, $2) RETURNING id',
+            [checklist_id, name]
+        );
+        res.status(201).json({ item_id: result.rows[0].id, message: 'Checklist item berhasil ditambahkan' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
+    }
 })
 //6. mengupdate status is_checked pada checklist items
 app.put('/api/checklists-fix-items/:id/check', async (req, res) => {
-  const { id } = req.params;
-  const { is_checked } = req.body;
-  try {
-    await client.query('UPDATE public.checklist_items SET is_checked = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2', [is_checked, id]);
-    res.json({ message: 'Status checklist item berhasil diperbarui' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
+    const { id } = req.params;
+    const { is_checked } = req.body;
+    try {
+        await client.query('UPDATE public.checklist_items SET is_checked = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2', [is_checked, id]);
+        res.json({ message: 'Status checklist item berhasil diperbarui' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
+    }
 })
 //7. mengupdate name checklist item
 app.put('/api/checklists-fix-items/:id/name', async (req, res) => {
-  const { id } = req.params;
-  const { name } = req.body;
-  try {
-    await client.query('UPDATE public.checklist_items SET name = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2', [name, id]);
-    res.json({ message: 'Checklist item berhasil diperbarui' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
+    const { id } = req.params;
+    const { name } = req.body;
+    try {
+        await client.query('UPDATE public.checklist_items SET name = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2', [name, id]);
+        res.json({ message: 'Checklist item berhasil diperbarui' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
+    }
 })
 //8. menghapus checklist item
 app.delete('/api/checklists-fix-items/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    await client.query('DELETE FROM public.checklist_items WHERE id = $1', [id]);
-    res.json({ message: 'Checklist item berhasil dihapus' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
+    const { id } = req.params;
+    try {
+        await client.query('DELETE FROM public.checklist_items WHERE id = $1', [id]);
+        res.json({ message: 'Checklist item berhasil dihapus' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
+    }
 })
 
 //LABEL
 // 1. get label by card id 
 app.get('/api/cards/:cardId/labels', async (req, res) => {
-  const { cardId } = req.params;
+    const { cardId } = req.params;
 
-  const query = `
+    const query = `
     SELECT 
       l.id AS label_id,
       l.name AS label_name,
@@ -4212,20 +4212,20 @@ app.get('/api/cards/:cardId/labels', async (req, res) => {
     WHERE cl.card_id = $1
   `;
 
-  try {
-    const result = await client.query(query, [cardId]);
+    try {
+        const result = await client.query(query, [cardId]);
 
-    res.json(result.rows);
-  } catch (error) {
-    console.error('Error fetching labels by cardId:', error);
-    res.status(500).json({ error: 'Failed to fetch labels' });
-  }
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error fetching labels by cardId:', error);
+        res.status(500).json({ error: 'Failed to fetch labels' });
+    }
 });
 
 //2. menampilkan semua label 
 app.get('/api/labels', async (req, res) => {
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
             SELECT 
             l.id,
             l.name,
@@ -4234,11 +4234,11 @@ app.get('/api/labels', async (req, res) => {
             LEFT JOIN colors c ON l.bg_color_id = c.id
 
         `);
-    res.json(result.rows);
-  } catch (err) {
-    console.error('Error fetching labels with color:', err);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Error fetching labels with color:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 
@@ -4247,134 +4247,134 @@ app.get('/api/labels', async (req, res) => {
 //CARD_LABELS
 // 3. menghapus label dari card id 
 app.delete('/api/cards/:cardId/labels/:labelId', async (req, res) => {
-  const { cardId, labelId } = req.params;
-  const userId = req.user.id;
+    const { cardId, labelId } = req.params;
+    const userId = req.user.id;
 
-  try {
-    await client.query(
-      `DELETE FROM card_labels WHERE card_id = $1 AND label_id = $2`,
-      [cardId, labelId]
-    );
+    try {
+        await client.query(
+            `DELETE FROM card_labels WHERE card_id = $1 AND label_id = $2`,
+            [cardId, labelId]
+        );
 
-    //add log card activity
-    await logCardActivity({
-      action: 'remove_label',
-      card_id: cardId,
-      user_id: userId,
-      entity: 'label',
-      entity_id: labelId,
-      details: ''
-    })
+        //add log card activity
+        await logCardActivity({
+            action: 'remove_label',
+            card_id: cardId,
+            user_id: userId,
+            entity: 'label',
+            entity_id: labelId,
+            details: ''
+        })
 
-    res.json({ message: "Label removed from card successfully" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Internal server error" });
-  }
+        res.json({ message: "Label removed from card successfully" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Internal server error" });
+    }
 })
 //4. membuat label baru
 app.post('/api/labels', async (req, res) => {
-  const { name } = req.body; // Hanya menerima nama label
+    const { name } = req.body; // Hanya menerima nama label
 
-  try {
-    const result = await client.query(
-      `INSERT INTO labels (name,color,create_at) VALUES ($1, $2,CURRENT_TIMESTAMP) RETURNING *`,
-      [name, '#333']
-    );
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Internal server error" });
-  }
+    try {
+        const result = await client.query(
+            `INSERT INTO labels (name,color,create_at) VALUES ($1, $2,CURRENT_TIMESTAMP) RETURNING *`,
+            [name, '#333']
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Internal server error" });
+    }
 })
 
 //5. add label to card
 app.post('/api/cards/:cardId/labels/:labelId', async (req, res) => {
-  const { cardId, labelId } = req.params;
-  const userId = req.user.id;
+    const { cardId, labelId } = req.params;
+    const userId = req.user.id;
 
-  try {
-    // Check if the card and label exist
-    const cardExists = await client.query('SELECT 1 FROM cards WHERE id = $1', [cardId]);
-    const labelExists = await client.query('SELECT 1 FROM labels WHERE id = $1', [labelId]);
+    try {
+        // Check if the card and label exist
+        const cardExists = await client.query('SELECT 1 FROM cards WHERE id = $1', [cardId]);
+        const labelExists = await client.query('SELECT 1 FROM labels WHERE id = $1', [labelId]);
 
-    if (!cardExists.rows.length || !labelExists.rows.length) {
-      return res.status(400).json({ message: 'Card or Label does not exist.' });
+        if (!cardExists.rows.length || !labelExists.rows.length) {
+            return res.status(400).json({ message: 'Card or Label does not exist.' });
+        }
+
+        // Insert label to card in card_labels table
+        const result = await client.query(
+            'INSERT INTO card_labels (card_id, label_id, create_at) VALUES ($1, $2, CURRENT_TIMESTAMP) RETURNING *',
+            [cardId, labelId]
+        );
+
+        //add log card activity
+        await logCardActivity({
+            action: 'add_label',
+            card_id: cardId,
+            user_id: userId,
+            entity: 'add label',
+            entity_id: labelId,
+            details: ''
+        })
+
+        return res.status(201).json({
+            message: 'Label added to card successfully',
+            data: result.rows[0],
+        });
+    } catch (error) {
+        console.error('Error adding label to card:', error);
+        return res.status(500).json({ message: 'Server error' });
     }
-
-    // Insert label to card in card_labels table
-    const result = await client.query(
-      'INSERT INTO card_labels (card_id, label_id, create_at) VALUES ($1, $2, CURRENT_TIMESTAMP) RETURNING *',
-      [cardId, labelId]
-    );
-
-    //add log card activity
-    await logCardActivity({
-      action: 'add_label',
-      card_id: cardId,
-      user_id: userId,
-      entity: 'add label',
-      entity_id: labelId,
-      details: ''
-    })
-
-    return res.status(201).json({
-      message: 'Label added to card successfully',
-      data: result.rows[0],
-    });
-  } catch (error) {
-    console.error('Error adding label to card:', error);
-    return res.status(500).json({ message: 'Server error' });
-  }
 })
 
 //6. delete label from labels
 app.delete('/api/delete-label/:id', async (req, res) => {
-  const { id } = req.params;
+    const { id } = req.params;
 
-  try {
-    const result = await client.query('DELETE FROM labels WHERE id = $1', [id]);
+    try {
+        const result = await client.query('DELETE FROM labels WHERE id = $1', [id]);
 
-    if (result.rowCount === 0) {
-      return res.status(404).json({ message: 'Label not found' });
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: 'Label not found' });
+        }
+
+        res.json({ message: 'Label deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting label:', error);
+        res.status(500).json({ message: 'Internal server error' });
     }
-
-    res.json({ message: 'Label deleted successfully' });
-  } catch (error) {
-    console.error('Error deleting label:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
 })
 
 //7. update nama label 
 app.put('/api/update-label-name/:id', async (req, res) => {
-  const { id } = req.params;
-  const { name } = req.body;
+    const { id } = req.params;
+    const { name } = req.body;
 
-  try {
-    const result = await client.query(
-      'UPDATE labels SET name = $1, update_at = NOW() WHERE id = $2 RETURNING *',
-      [name, id]
-    );
+    try {
+        const result = await client.query(
+            'UPDATE labels SET name = $1, update_at = NOW() WHERE id = $2 RETURNING *',
+            [name, id]
+        );
 
-    if (result.rowCount === 0) {
-      return res.status(404).json({ message: 'Label not found' });
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: 'Label not found' });
+        }
+
+        res.json({ message: 'Label updated successfully', label: result.rows[0] });
+    } catch (error) {
+        console.error('Error updating label:', error);
+        res.status(500).json({ message: 'Internal server error' });
     }
-
-    res.json({ message: 'Label updated successfully', label: result.rows[0] });
-  } catch (error) {
-    console.error('Error updating label:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
 })
 
 //8.add color id to label for bg 
 app.put('/api/label/:labelId/bg_color', async (req, res) => {
-  const { labelId } = req.params;
-  const { bg_color_id } = req.body;
+    const { labelId } = req.params;
+    const { bg_color_id } = req.body;
 
-  try {
-    const updateQuery = `
+    try {
+        const updateQuery = `
       UPDATE labels
       SET bg_color_id = $1,
           update_at = NOW()
@@ -4382,16 +4382,16 @@ app.put('/api/label/:labelId/bg_color', async (req, res) => {
       RETURNING *;
     `;
 
-    const result = await client.query(updateQuery, [bg_color_id, labelId]);
+        const result = await client.query(updateQuery, [bg_color_id, labelId]);
 
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: 'Label not found' });
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'Label not found' });
+        }
+
+        res.json(result.rows[0]);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
-
-    res.json(result.rows[0]);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
 })
 
 // END LABEL 
@@ -4399,12 +4399,12 @@ app.put('/api/label/:labelId/bg_color', async (req, res) => {
 //COLORS
 //1. get all data colors
 app.get('/api/colors', async (req, res) => {
-  try {
-    const result = await client.query('SELECT * FROM colors');
-    res.json(result.rows);
-  } catch (error) {
-    res.status(500).json({ error: error.message })
-  }
+    try {
+        const result = await client.query('SELECT * FROM colors');
+        res.json(result.rows);
+    } catch (error) {
+        res.status(500).json({ error: error.message })
+    }
 })
 //END COLORS
 
@@ -4412,102 +4412,102 @@ app.get('/api/colors', async (req, res) => {
 //CARD STATUS
 //1. get status card by card id
 app.get('/api/cards/:cardId/status', async (req, res) => {
-  const { cardId } = req.params;
-  // console.log("Received cardId:", cardId);
+    const { cardId } = req.params;
+    // console.log("Received cardId:", cardId);
 
-  try {
-    const result = await client.query(
-      `SELECT s.status_id, s.status_name, s.text_color,s.background_color, cs.assigned_at
+    try {
+        const result = await client.query(
+            `SELECT s.status_id, s.status_name, s.text_color,s.background_color, cs.assigned_at
             FROM card_status cs
             JOIN status s ON cs.status_id = s.status_id
             WHERE cs.card_id = $1`,
-      [cardId]
-    );
+            [cardId]
+        );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Tidak ada status untuk cardId ini' });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Tidak ada status untuk cardId ini' });
+        }
+
+        res.json(result.rows);
+    } catch (error) {
+        console.error("Database Error:", error);
+        res.status(500).json({ error: 'Gagal mengambil status', detail: error.message });
     }
-
-    res.json(result.rows);
-  } catch (error) {
-    console.error("Database Error:", error);
-    res.status(500).json({ error: 'Gagal mengambil status', detail: error.message });
-  }
 });
 
 app.get('/api/card-status/:cardId', async (req, res) => {
-  const { cardId } = req.params;
+    const { cardId } = req.params;
 
-  try {
-    const result = await client.query(
-      `SELECT  s.status_name, s.text_color,s.background_color
+    try {
+        const result = await client.query(
+            `SELECT  s.status_name, s.text_color,s.background_color
                  FROM card_status cs
                  JOIN status s ON cs.status_id = s.status_id
                  WHERE cs.card_id = $1`,
-      [cardId]
-    );
+            [cardId]
+        );
 
-    res.json(result.rows);
-  } catch (error) {
-    console.error('Error mengambil status berdasarkan cardId:', error);
-    res.status(500).json({ message: 'Gagal mengambil status' });
-  }
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error mengambil status berdasarkan cardId:', error);
+        res.status(500).json({ message: 'Gagal mengambil status' });
+    }
 })
 
 //2. get all status
 app.get('/api/status', async (req, res) => {
-  try {
-    const result = await client.query(`SELECT * FROM status`);
-    res.json(result.rows);
-  } catch (error) {
-    res.status(500).json({ error: 'Gagal mengambil daftar status' });
-  }
+    try {
+        const result = await client.query(`SELECT * FROM status`);
+        res.json(result.rows);
+    } catch (error) {
+        res.status(500).json({ error: 'Gagal mengambil daftar status' });
+    }
 })
 
 //3. add/update status card id
 app.post('/api/cards/:cardId/status', async (req, res) => {
-  const { cardId } = req.params;
-  const { statusId } = req.body;
-  const userId = req.user.id;
+    const { cardId } = req.params;
+    const { statusId } = req.body;
+    const userId = req.user.id;
 
-  try {
-    // Cek apakah kartu sudah memiliki status
-    const check = await client.query(`SELECT * FROM card_status WHERE card_id = $1`, [cardId]);
+    try {
+        // Cek apakah kartu sudah memiliki status
+        const check = await client.query(`SELECT * FROM card_status WHERE card_id = $1`, [cardId]);
 
-    if (check.rows.length > 0) {
-      // Jika ada, update status
-      await client.query(`UPDATE card_status SET status_id = $1, update_at = CURRENT_TIMESTAMP WHERE card_id = $2`, [statusId, cardId]);
-      res.json({ message: 'Status kartu berhasil diperbarui' });
-    } else {
-      // Jika belum ada, tambahkan status baru
-      await client.query(`INSERT INTO card_status (card_id, status_id, assigned_at) VALUES ($1, $2, CURRENT_TIMESTAMP)`, [cardId, statusId]);
-      res.json({ message: 'Status kartu berhasil ditambahkan' });
+        if (check.rows.length > 0) {
+            // Jika ada, update status
+            await client.query(`UPDATE card_status SET status_id = $1, update_at = CURRENT_TIMESTAMP WHERE card_id = $2`, [statusId, cardId]);
+            res.json({ message: 'Status kartu berhasil diperbarui' });
+        } else {
+            // Jika belum ada, tambahkan status baru
+            await client.query(`INSERT INTO card_status (card_id, status_id, assigned_at) VALUES ($1, $2, CURRENT_TIMESTAMP)`, [cardId, statusId]);
+            res.json({ message: 'Status kartu berhasil ditambahkan' });
+        }
+
+        //add log card activity
+        await logCardActivity({
+            action: 'updated_status',
+            card_id: cardId,
+            user_id: userId,
+            entity: 'status',
+            entity_id: statusId,
+            details: ''
+        })
+
+    } catch (error) {
+        res.status(500).json({ error: 'Gagal menambahkan/memperbarui status kartu' });
     }
-
-    //add log card activity
-    await logCardActivity({
-      action: 'updated_status',
-      card_id: cardId,
-      user_id: userId,
-      entity: 'status',
-      entity_id: statusId,
-      details: ''
-    })
-
-  } catch (error) {
-    res.status(500).json({ error: 'Gagal menambahkan/memperbarui status kartu' });
-  }
 })
 
 //4. delete status card id
 app.delete('/api/cards/:cardId/status', async (req, res) => {
-  const { cardId } = req.params;
-  try {
-    await client.query(`DELETE FROM card_status WHERE card_id = $1`, [cardId]);
-    res.json({ message: 'Status berhasil dihapus dari kartu' });
-  } catch (error) {
-    res.status(500).json({ error: 'Gagal menghapus status kartu' });
-  }
+    const { cardId } = req.params;
+    try {
+        await client.query(`DELETE FROM card_status WHERE card_id = $1`, [cardId]);
+        res.json({ message: 'Status berhasil dihapus dari kartu' });
+    } catch (error) {
+        res.status(500).json({ error: 'Gagal menghapus status kartu' });
+    }
 })
 
 
@@ -4515,42 +4515,42 @@ app.delete('/api/cards/:cardId/status', async (req, res) => {
 //DATA_EMPLOYEE
 //1. add data employee
 app.post('/api/data-employees', async (req, res) => {
-  const { name, nomor_wa, divisi, jabatan, email_employee, username } = req.body
-  try {
-    const result = await client.query(
-      `INSERT INTO data_employees (name, nomor_wa, divisi, jabatan, email_employee,username, create_at, update_at)
+    const { name, nomor_wa, divisi, jabatan, email_employee, username } = req.body
+    try {
+        const result = await client.query(
+            `INSERT INTO data_employees (name, nomor_wa, divisi, jabatan, email_employee,username, create_at, update_at)
              VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW()) RETURNING *`,
-      [name, nomor_wa, divisi, jabatan, email_employee, username]
-    );
-    res.status(201).json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+            [name, nomor_wa, divisi, jabatan, email_employee, username]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
 
 //2. delete data employee
 app.delete('/api/employees/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const query = `DELETE FROM data_employees WHERE id = $1 RETURNING *;`;
-    const result = await client.query(query, [id]);
+    const { id } = req.params;
+    try {
+        const query = `DELETE FROM data_employees WHERE id = $1 RETURNING *;`;
+        const result = await client.query(query, [id]);
 
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: "Data employee tidak ditemukan" });
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: "Data employee tidak ditemukan" });
+        }
+
+        res.json({ message: "Data employee berhasil dihapus" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Gagal menghapus data employee" });
     }
-
-    res.json({ message: "Data employee berhasil dihapus" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Gagal menghapus data employee" });
-  }
 })
 
 
 //3.Mendapatkan semua data employee
 app.get('/api/employees', async (req, res) => {
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
         SELECT 
             de.id AS employee_id,
             de.name,
@@ -4572,18 +4572,18 @@ app.get('/api/employees', async (req, res) => {
             profil p ON ep.profil_id = p.id
       `);
 
-    res.json(result.rows);
-  } catch (err) {
-    console.error('Error fetching employee with profile', err);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Error fetching employee with profile', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 //4. get data employee by id
 app.get('/api/employees/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const result = await client.query(`
+    const { id } = req.params;
+    try {
+        const result = await client.query(`
       SELECT 
           de.id AS employee_id,
           de.name,
@@ -4606,100 +4606,148 @@ app.get('/api/employees/:id', async (req, res) => {
         WHERE 
             de.id = $1
         `, [id]);
-    if (result.rows.length === 0) return res.status(404).json({ message: 'Not found' });
-    res.json(result.rows[0]);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+        if (result.rows.length === 0) return res.status(404).json({ message: 'Not found' });
+        res.json(result.rows[0]);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 })
 
 //5. update data employee
 app.put('/api/employees/:id', async (req, res) => {
-  const { id } = req.params;
-  const { name, nomor_wa, divisi, jabatan, email_employee, username } = req.body;
+    const { id } = req.params;
+    const { name, nomor_wa, divisi, jabatan, email_employee, username } = req.body;
 
-  try {
-    const result = await client.query(
-      `UPDATE data_employees SET 
+    try {
+        const result = await client.query(
+            `UPDATE data_employees SET 
             name = $1, nomor_wa = $2, divisi = $3, jabatan = $4, email_employee = $5, username = $6, update_at = CURRENT_TIMESTAMP
         WHERE id = $7 RETURNING *`,
-      [name, nomor_wa, divisi, jabatan, email_employee, username, id]
-    );
-    if (result.rows.length === 0) return res.status(404).json({ message: 'Not found' });
-    res.json(result.rows[0]);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+            [name, nomor_wa, divisi, jabatan, email_employee, username, id]
+        );
+        if (result.rows.length === 0) return res.status(404).json({ message: 'Not found' });
+        res.json(result.rows[0]);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 })
 
 
 //DATA MARKERING
 
-//get laporan today berdasarkan create at
+// ✅ Get laporan today berdasarkan create_at (full join)
 app.get('/api/marketing/reports/today', async (req, res) => {
-  try {
-    const result = await client.query(`
-      SELECT * FROM data_marketing
-      WHERE DATE(create_at) = CURRENT_DATE 
+    try {
+        const result = await client.query(`
+      SELECT 
+        dm.*,
+        mu.nama_marketing AS input_by_name,
+        kd.nama AS acc_by_name,
+        am.nama_account AS account_name,
+        ot.order_name AS order_type_name,
+        oft.offer_name AS offer_type_name,
+        tt.track_name AS track_type_name,
+        g.genre_name AS genre_name,
+        pt.nama_project AS project_type_name,
+        k.nama_kupon AS kupon_diskon_name,
+        s.status_name AS accept_status_name
+      FROM data_marketing dm
+      LEFT JOIN marketing_musik_user mu ON mu.id = dm.input_by
+      LEFT JOIN kepala_divisi kd ON kd.id = dm.acc_by
+      LEFT JOIN account_music am ON am.id = dm.account
+      LEFT JOIN music_order_type ot ON ot.id = dm.order_type
+      LEFT JOIN offer_type_music oft ON oft.id = dm.offer_type
+      LEFT JOIN track_types tt ON tt.id = dm.jenis_track
+      LEFT JOIN genre_music g ON g.id = dm.genre
+      LEFT JOIN project_type pt ON pt.id = dm.project_type
+      LEFT JOIN kupon_diskon k ON k.id = dm.kupon_diskon_id
+      LEFT JOIN accept_status s ON s.id = dm.accept_status_id
+      WHERE DATE(dm.create_at) = CURRENT_DATE
+      ORDER BY dm.marketing_id DESC;
     `);
-    res.json(result.rows);
-  } catch (error) {
-    res.status(500).json({ error: err.message });
-  }
-})
+        res.json(result.rows);
+    } catch (error) {
+        console.error("❌ Error get today report:", error.message);
+        res.status(500).json({ error: error.message });
+    }
+});
 
-//get laporan per 10 hari by create at
+
+// ✅ Get laporan per 10 hari berdasarkan create_at (full join)
 app.get("/api/marketing/reports", async (req, res) => {
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
       SELECT
-        DATE_TRUNC('month', create_at) AS month,
-        FLOOR((EXTRACT(DAY FROM create_at) - 1) / 10) + 1 AS period,
+        DATE_TRUNC('month', dm.create_at) AS month,
+        FLOOR((EXTRACT(DAY FROM dm.create_at) - 1) / 10) + 1 AS period,
         COUNT(*) AS total,
-        ARRAY_AGG(marketing_id) AS ids,
+        ARRAY_AGG(dm.marketing_id) AS ids,
         JSON_AGG(
           JSON_BUILD_OBJECT(
-            'marketing_id', marketing_id,
-            'card_id', card_id,
-            'input_by', input_by,
-            'acc_by', acc_by,
-            'buyer_name', buyer_name,
-            'code_order', code_order,
-            'jumlah_track', jumlah_track,
-            'order_number', order_number,
-            'account', account,
-            'deadline', deadline,
-            'jumlah_revisi', jumlah_revisi,
-            'order_type', order_type,
-            'offer_type', offer_type,
-            'jenis_track', jenis_track,
-            'genre', genre,
-            'price_normal', price_normal,
-            'price_discount', price_discount,
-            'discount', discount,
-            'basic_price', basic_price,
-            'gig_link', gig_link,
-            'required_files', required_files,
-            'project_type', project_type,
-            'duration', duration,
-            'reference_link', reference_link,
-            'file_and_chat_link', file_and_chat_link,
-            'detail_project', detail_project,
-            'create_at', create_at,
-            'update_at', update_at,
-            'is_accepted', is_accepted
+            'marketing_id', dm.marketing_id,
+            'buyer_name', dm.buyer_name,
+            'code_order', dm.code_order,
+            'order_number', dm.order_number,
+            'jumlah_track', dm.jumlah_track,
+            'duration', dm.duration,
+            'jumlah_revisi', dm.jumlah_revisi,
+            'deadline', dm.deadline,
+            'price_normal', dm.price_normal,
+            'price_discount', dm.price_discount,
+            'discount', dm.discount,
+            'basic_price', dm.basic_price,
+            'gig_link', dm.gig_link,
+            'reference_link', dm.reference_link,
+            'required_files', dm.required_files,
+            'file_and_chat_link', dm.file_and_chat_link,
+            'detail_project', dm.detail_project,
+            'card_id', dm.card_id,
+            'create_at', dm.create_at,
+            'update_at', dm.update_at,
+
+            -- Relasi (pakai hasil join)
+            'input_by', dm.input_by,
+            'input_by_name', mu.nama_marketing,
+            'acc_by', dm.acc_by,
+            'acc_by_name', kd.nama,
+            'account', dm.account,
+            'account_name', am.nama_account,
+            'order_type', dm.order_type,
+            'order_type_name', ot.order_name,
+            'offer_type', dm.offer_type,
+            'offer_type_name', oft.offer_name,
+            'jenis_track', dm.jenis_track,
+            'track_type_name', tt.track_name,
+            'genre', dm.genre,
+            'genre_name', g.genre_name,
+            'project_type', dm.project_type,
+            'project_type_name', pt.nama_project,
+            'kupon_diskon_id', dm.kupon_diskon_id,
+            'kupon_diskon_name', k.nama_kupon,
+            'accept_status_id', dm.accept_status_id,
+            'accept_status_name', s.status_name
           )
         ) AS details
-      FROM data_marketing
+      FROM data_marketing dm
+      LEFT JOIN marketing_musik_user mu ON mu.id = dm.input_by
+      LEFT JOIN kepala_divisi kd ON kd.id = dm.acc_by
+      LEFT JOIN account_music am ON am.id = dm.account
+      LEFT JOIN music_order_type ot ON ot.id = dm.order_type
+      LEFT JOIN offer_type_music oft ON oft.id = dm.offer_type
+      LEFT JOIN track_types tt ON tt.id = dm.jenis_track
+      LEFT JOIN genre_music g ON g.id = dm.genre
+      LEFT JOIN project_type pt ON pt.id = dm.project_type
+      LEFT JOIN kupon_diskon k ON k.id = dm.kupon_diskon_id
+      LEFT JOIN accept_status s ON s.id = dm.accept_status_id
       GROUP BY month, period
       ORDER BY month DESC, period ASC;
     `);
 
-    res.json(result.rows);
-  } catch (err) {
-    console.error("❌ Query error:", err.message);
-    res.status(500).json({ error: err.message });
-  }
+        res.json(result.rows);
+    } catch (err) {
+        console.error("❌ Query error:", err.message);
+        res.status(500).json({ error: err.message });
+    }
 });
 
 
@@ -4707,8 +4755,8 @@ app.get("/api/marketing/reports", async (req, res) => {
 
 // ✅ Endpoint get all data marketing + join
 app.get("/api/data-marketing/joined", async (req, res) => {
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
       SELECT 
         dm.marketing_id,
         dm.card_id,
@@ -4776,11 +4824,11 @@ app.get("/api/data-marketing/joined", async (req, res) => {
       ORDER BY dm.marketing_id DESC;
     `);
 
-    res.json(result.rows);
-  } catch (err) {
-    console.error("❌ Error get joined data marketing:", err);
-    res.status(500).json({ error: "Failed to fetch joined data" });
-  }
+        res.json(result.rows);
+    } catch (err) {
+        console.error("❌ Error get joined data marketing:", err);
+        res.status(500).json({ error: "Failed to fetch joined data" });
+    }
 });
 
 
@@ -4850,10 +4898,10 @@ app.get("/api/data-marketing/joined", async (req, res) => {
 // });
 // ✅ GET Data Marketing by ID (Joined dengan semua relasi)
 app.get("/api/data-marketing/joined/:id", async (req, res) => {
-  const { id } = req.params;
-  try {
-    const result = await client.query(
-      `
+    const { id } = req.params;
+    try {
+        const result = await client.query(
+            `
       SELECT 
         dm.marketing_id,
         dm.card_id,
@@ -4921,18 +4969,18 @@ app.get("/api/data-marketing/joined/:id", async (req, res) => {
       WHERE dm.marketing_id = $1
       LIMIT 1;
       `,
-      [id]
-    );
+            [id]
+        );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "❌ Data marketing not found" });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "❌ Data marketing not found" });
+        }
+
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error get joined data marketing by ID:", err);
+        res.status(500).json({ error: "Failed to fetch joined data by id" });
     }
-
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Error get joined data marketing by ID:", err);
-    res.status(500).json({ error: "Failed to fetch joined data by id" });
-  }
 });
 
 
@@ -4940,39 +4988,39 @@ app.get("/api/data-marketing/joined/:id", async (req, res) => {
 
 // ✅ UPDATE Data Marketing by ID
 app.put("/api/data-marketing/joined/:id", async (req, res) => {
-  const { id } = req.params;
-  const {
-    buyer_name,
-    code_order,
-    order_number,
-    jumlah_track,
-    duration,
-    jumlah_revisi,
-    deadline,
-    price_normal,
-    price_discount,
-    discount,
-    basic_price,
-    gig_link,
-    reference_link,
-    required_files,
-    file_and_chat_link,
-    detail_project,
-    input_by,
-    acc_by,
-    account,
-    order_type,
-    offer_type,
-    jenis_track,
-    genre,
-    project_type,
-    kupon_diskon_id,
-    accept_status_id
-  } = req.body;
+    const { id } = req.params;
+    const {
+        buyer_name,
+        code_order,
+        order_number,
+        jumlah_track,
+        duration,
+        jumlah_revisi,
+        deadline,
+        price_normal,
+        price_discount,
+        discount,
+        basic_price,
+        gig_link,
+        reference_link,
+        required_files,
+        file_and_chat_link,
+        detail_project,
+        input_by,
+        acc_by,
+        account,
+        order_type,
+        offer_type,
+        jenis_track,
+        genre,
+        project_type,
+        kupon_diskon_id,
+        accept_status_id
+    } = req.body;
 
-  try {
-    const result = await client.query(
-      `
+    try {
+        const result = await client.query(
+            `
       UPDATE data_marketing
       SET 
         buyer_name       = $1,
@@ -5005,49 +5053,49 @@ app.put("/api/data-marketing/joined/:id", async (req, res) => {
       WHERE marketing_id = $27
       RETURNING *;
       `,
-      [
-        buyer_name,
-        code_order,
-        order_number,
-        jumlah_track,
-        duration,
-        jumlah_revisi,
-        deadline,
-        price_normal,
-        price_discount,
-        discount,
-        basic_price,
-        gig_link,
-        reference_link,
-        required_files,
-        file_and_chat_link,
-        detail_project,
-        input_by,
-        acc_by,
-        account,
-        order_type,
-        offer_type,
-        jenis_track,
-        genre,
-        project_type,
-        kupon_diskon_id,
-        accept_status_id,
-        id,
-      ]
-    );
+            [
+                buyer_name,
+                code_order,
+                order_number,
+                jumlah_track,
+                duration,
+                jumlah_revisi,
+                deadline,
+                price_normal,
+                price_discount,
+                discount,
+                basic_price,
+                gig_link,
+                reference_link,
+                required_files,
+                file_and_chat_link,
+                detail_project,
+                input_by,
+                acc_by,
+                account,
+                order_type,
+                offer_type,
+                jenis_track,
+                genre,
+                project_type,
+                kupon_diskon_id,
+                accept_status_id,
+                id,
+            ]
+        );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "❌ Data marketing not found" });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "❌ Data marketing not found" });
+        }
+
+        res.json({
+            message: "✅ Data marketing updated successfully",
+            data: result.rows[0],
+        });
+    } catch (err) {
+        console.error("❌ Error updating data marketing:", err);
+        res.status(500).json({ error: "Failed to update data marketing" });
     }
-
-    res.json({
-      message: "✅ Data marketing updated successfully",
-      data: result.rows[0],
-    });
-  } catch (err) {
-    console.error("❌ Error updating data marketing:", err);
-    res.status(500).json({ error: "Failed to update data marketing" });
-  }
 });
 
 
@@ -5055,67 +5103,67 @@ app.put("/api/data-marketing/joined/:id", async (req, res) => {
 
 //1. get all marketing data
 app.get('/api/marketing', async (req, res) => {
-  try {
-    const result = await client.query("SELECT * FROM data_marketing");
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
-  }
+    try {
+        const result = await client.query("SELECT * FROM data_marketing");
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server error");
+    }
 })
 
 //2. get data marketing by id
 app.get('/api/marketing/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const result = await client.query("SELECT * FROM data_marketing WHERE marketing_id = $1", [id]);
+    const { id } = req.params;
+    try {
+        const result = await client.query("SELECT * FROM data_marketing WHERE marketing_id = $1", [id]);
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: "Data tidak ditemukan" });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: "Data tidak ditemukan" });
+        }
+
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server error");
     }
-
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
-  }
 })
 
 // 3. update data marketing
 app.put('/api/marketing/:id', async (req, res) => {
-  const { id } = req.params;
-  const {
-    card_id,
-    input_by,
-    acc_by,
-    buyer_name,
-    code_order,
-    jumlah_track,
-    order_number,
-    account,
-    deadline,
-    jumlah_revisi,
-    order_type,
-    offer_type,
-    jenis_track,
-    genre,
-    price_normal,
-    price_discount,
-    discount,
-    basic_price,
-    gig_link,
-    required_files,
-    project_type,
-    duration,
-    reference_link,
-    file_and_chat_link,
-    detail_project,
-    is_accepted // <- Tambahan kolom baru
-  } = req.body;
+    const { id } = req.params;
+    const {
+        card_id,
+        input_by,
+        acc_by,
+        buyer_name,
+        code_order,
+        jumlah_track,
+        order_number,
+        account,
+        deadline,
+        jumlah_revisi,
+        order_type,
+        offer_type,
+        jenis_track,
+        genre,
+        price_normal,
+        price_discount,
+        discount,
+        basic_price,
+        gig_link,
+        required_files,
+        project_type,
+        duration,
+        reference_link,
+        file_and_chat_link,
+        detail_project,
+        is_accepted // <- Tambahan kolom baru
+    } = req.body;
 
-  try {
-    const result = await client.query(
-      `UPDATE data_marketing SET 
+    try {
+        const result = await client.query(
+            `UPDATE data_marketing SET 
         card_id = $1, input_by = $2, acc_by = $3, buyer_name = $4, 
         code_order = $5, jumlah_track = $6, order_number = $7, account = $8, 
         deadline = $9, jumlah_revisi = $10, order_type = $11, offer_type = $12, 
@@ -5125,113 +5173,113 @@ app.put('/api/marketing/:id', async (req, res) => {
         file_and_chat_link = $24, detail_project = $25, is_accepted = $26, 
         update_at = CURRENT_TIMESTAMP
       WHERE marketing_id = $27 RETURNING *`,
-      [
-        card_id, input_by, acc_by, buyer_name, code_order, jumlah_track, order_number,
-        account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre,
-        price_normal, price_discount, discount, basic_price, gig_link, required_files,
-        project_type, duration, reference_link, file_and_chat_link, detail_project,
-        is_accepted, // posisi ke-26
-        id           // posisi ke-27
-      ]
-    );
+            [
+                card_id, input_by, acc_by, buyer_name, code_order, jumlah_track, order_number,
+                account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre,
+                price_normal, price_discount, discount, basic_price, gig_link, required_files,
+                project_type, duration, reference_link, file_and_chat_link, detail_project,
+                is_accepted, // posisi ke-26
+                id           // posisi ke-27
+            ]
+        );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: "Data tidak ditemukan" });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: "Data tidak ditemukan" });
+        }
+
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server error");
     }
-
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
-  }
 });
 
 
 //4. menghapus data marketing
 app.delete("/api/marketing/:id", async (req, res) => {
-  const { id } = req.params;
-  try {
-    const result = await client.query("DELETE FROM data_marketing WHERE marketing_id = $1 RETURNING *", [id]);
+    const { id } = req.params;
+    try {
+        const result = await client.query("DELETE FROM data_marketing WHERE marketing_id = $1 RETURNING *", [id]);
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: "Data tidak ditemukan" });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: "Data tidak ditemukan" });
+        }
+
+        res.json({ message: "Data berhasil dihapus" });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server error");
     }
-
-    res.json({ message: "Data berhasil dihapus" });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
-  }
 });
 //5. membuat data baru
 app.post("/api/marketing", async (req, res) => {
-  try {
-    const {
-      // card_id,
-      input_by,
-      acc_by,
-      buyer_name,
-      code_order,
-      jumlah_track,
-      order_number,
-      account,
-      deadline,
-      jumlah_revisi,
-      order_type,
-      offer_type,
-      jenis_track,
-      genre,
-      price_normal,
-      price_discount,
-      discount,
-      basic_price,
-      gig_link,
-      required_files,
-      project_type,
-      duration,
-      reference_link,
-      file_and_chat_link,
-      detail_project,
-    } = req.body;
+    try {
+        const {
+            // card_id,
+            input_by,
+            acc_by,
+            buyer_name,
+            code_order,
+            jumlah_track,
+            order_number,
+            account,
+            deadline,
+            jumlah_revisi,
+            order_type,
+            offer_type,
+            jenis_track,
+            genre,
+            price_normal,
+            price_discount,
+            discount,
+            basic_price,
+            gig_link,
+            required_files,
+            project_type,
+            duration,
+            reference_link,
+            file_and_chat_link,
+            detail_project,
+        } = req.body;
 
-    const result = await client.query(
-      `INSERT INTO data_marketing 
+        const result = await client.query(
+            `INSERT INTO data_marketing 
         (input_by, acc_by, buyer_name, code_order, jumlah_track, order_number, 
         account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre, 
         price_normal, price_discount, discount, basic_price, gig_link, required_files, 
         project_type, duration, reference_link, file_and_chat_link, detail_project, create_at) 
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, 
         $16, $17, $18, $19, $20, $21, $22, $23, $24, CURRENT_TIMESTAMP) RETURNING *`,
-      [
-        input_by, acc_by, buyer_name, code_order, jumlah_track, order_number,
-        account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre,
-        price_normal, price_discount, discount, basic_price, gig_link, required_files,
-        project_type, duration, reference_link, file_and_chat_link, detail_project
-      ]
-    );
+            [
+                input_by, acc_by, buyer_name, code_order, jumlah_track, order_number,
+                account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre,
+                price_normal, price_discount, discount, basic_price, gig_link, required_files,
+                project_type, duration, reference_link, file_and_chat_link, detail_project
+            ]
+        );
 
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
-  }
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server error");
+    }
 });
 
 //6. mengubah data marketing menjadi cards
 app.put('/api/create-card-marketing/:listId/:marketingId', async (req, res) => {
-  const { listId, marketingId } = req.params;
+    const { listId, marketingId } = req.params;
 
-  try {
-    // Ambil data marketing berdasarkan marketingId
-    const marketingData = await client.query('SELECT * FROM data_marketing WHERE marketing_id = $1 AND card_id IS NULL', [marketingId]);
+    try {
+        // Ambil data marketing berdasarkan marketingId
+        const marketingData = await client.query('SELECT * FROM data_marketing WHERE marketing_id = $1 AND card_id IS NULL', [marketingId]);
 
-    if (marketingData.rows.length === 0) {
-      return res.status(404).json({ message: 'Data marketing tidak ditemukan atau sudah memiliki card_id' });
-    }
+        if (marketingData.rows.length === 0) {
+            return res.status(404).json({ message: 'Data marketing tidak ditemukan atau sudah memiliki card_id' });
+        }
 
-    const marketing = marketingData.rows[0];
+        const marketing = marketingData.rows[0];
 
-    const description = `
+        const description = `
         Order Code: ${marketing.code_order}
         Input By: ${marketing.input_by}
         Approved By: ${marketing.acc_by}
@@ -5258,84 +5306,84 @@ app.put('/api/create-card-marketing/:listId/:marketingId', async (req, res) => {
     `.trim();
 
 
-    // Membuat card baru berdasarkan data marketing
-    const newCard = await client.query(
-      `INSERT INTO cards (list_id, title, description, position, due_date) 
+        // Membuat card baru berdasarkan data marketing
+        const newCard = await client.query(
+            `INSERT INTO cards (list_id, title, description, position, due_date) 
          VALUES ($1, $2, $3, $4, $5) 
          RETURNING id`,
-      [
-        listId,
-        `${marketing.genre} - ${marketing.buyer_name} (${marketing.account})`,
-        //   marketing.detail_project,
-        description,
-        0, // position default, sesuaikan dengan kebutuhan
-        marketing.deadline
-      ]
-    );
+            [
+                listId,
+                `${marketing.genre} - ${marketing.buyer_name} (${marketing.account})`,
+                //   marketing.detail_project,
+                description,
+                0, // position default, sesuaikan dengan kebutuhan
+                marketing.deadline
+            ]
+        );
 
-    // Update card_id di data marketing dengan id card yang baru dibuat
-    await client.query('UPDATE data_marketing SET card_id = $1 WHERE marketing_id = $2', [
-      newCard.rows[0].id,
-      marketingId
-    ]);
+        // Update card_id di data marketing dengan id card yang baru dibuat
+        await client.query('UPDATE data_marketing SET card_id = $1 WHERE marketing_id = $2', [
+            newCard.rows[0].id,
+            marketingId
+        ]);
 
-    return res.status(201).json({
-      message: 'Card berhasil dibuat dari data marketing.',
-      cardId: newCard.rows[0].id
-    });
+        return res.status(201).json({
+            message: 'Card berhasil dibuat dari data marketing.',
+            cardId: newCard.rows[0].id
+        });
 
-  } catch (error) {
-    console.error('Error creating card from marketing data:', error);
-    return res.status(500).json({ message: 'Terjadi kesalahan saat membuat card dari data marketing.' });
-  }
+    } catch (error) {
+        console.error('Error creating card from marketing data:', error);
+        return res.status(500).json({ message: 'Terjadi kesalahan saat membuat card dari data marketing.' });
+    }
 })
 
 //7. get card id by marketing id
 app.get('/api/get-card-id/:marketingId', async (req, res) => {
-  const { marketingId } = req.params;
-  try {
-    const query = `
+    const { marketingId } = req.params;
+    try {
+        const query = `
           SELECT card_id
           FROM public.data_marketing
           WHERE marketing_id = $1
         `;
-    const result = await client.query(query, [marketingId]);
+        const result = await client.query(query, [marketingId]);
 
-    if (result.rows.length > 0) {
-      const { card_id } = result.rows[0]; // Mengambil card_id dari hasil query
-      return res.json({ cardId: card_id });
-    } else {
-      return res.status(404).json({ error: 'Card not found for the provided marketing_id' });
+        if (result.rows.length > 0) {
+            const { card_id } = result.rows[0]; // Mengambil card_id dari hasil query
+            return res.json({ cardId: card_id });
+        } else {
+            return res.status(404).json({ error: 'Card not found for the provided marketing_id' });
+        }
+    } catch (error) {
+        console.error('Error executing query', error.stack);
+        return res.status(500).json({ error: 'Internal server error' });
     }
-  } catch (error) {
-    console.error('Error executing query', error.stack);
-    return res.status(500).json({ error: 'Internal server error' });
-  }
 })
 //8. check card id in marketing id (null or not)
 app.get('/api/check-card-id/:marketingId', async (req, res) => {
-  const { marketingId } = req.params;
-  try {
-    const query = 'SELECT card_id FROM public.data_marketing WHERE marketing_id = $1';
-    const result = await client.query(query, [marketingId]);
+    const { marketingId } = req.params;
+    try {
+        const query = 'SELECT card_id FROM public.data_marketing WHERE marketing_id = $1';
+        const result = await client.query(query, [marketingId]);
 
-    if (result.rows.length > 0) {
-      // If card_id exists, return the card_id
-      return res.status(200).json({ card_id: result.rows[0].card_id });
-    } else {
-      // No card_id found for the given marketing_id
-      return res.status(404).json({ message: 'No card_id found for this marketing_id' });
+        if (result.rows.length > 0) {
+            // If card_id exists, return the card_id
+            return res.status(200).json({ card_id: result.rows[0].card_id });
+        } else {
+            // No card_id found for the given marketing_id
+            return res.status(404).json({ message: 'No card_id found for this marketing_id' });
+        }
+    } catch (error) {
+        console.error('Error checking card_id:', error);
+        return res.status(500).json({ message: 'Server error' });
     }
-  } catch (error) {
-    console.error('Error checking card_id:', error);
-    return res.status(500).json({ message: 'Server error' });
-  }
 })
 
 // ✅ Get Data Marketing with cardId IS NOT NULL + JOIN
 app.get('/api/data-marketing-cardId', async (req, res) => {
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
       SELECT 
         dm.marketing_id,
         dm.buyer_name,
@@ -5404,18 +5452,18 @@ app.get('/api/data-marketing-cardId', async (req, res) => {
       ORDER BY dm.marketing_id DESC;
     `);
 
-    res.json(result.rows);
-  } catch (error) {
-    console.error('❌ Error fetching marketing data with cardId:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
+        res.json(result.rows);
+    } catch (error) {
+        console.error('❌ Error fetching marketing data with cardId:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 });
 
 
 // ✅ Get Data Marketing with cardId IS NULL + JOIN
 app.get('/api/data-marketing-cardId-null', async (req, res) => {
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
       SELECT 
         dm.marketing_id,
         dm.buyer_name,
@@ -5484,19 +5532,19 @@ app.get('/api/data-marketing-cardId-null', async (req, res) => {
       ORDER BY dm.marketing_id DESC;
     `);
 
-    res.json(result.rows);
-  } catch (error) {
-    console.error('❌ Error fetching data marketing cardId null:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
+        res.json(result.rows);
+    } catch (error) {
+        console.error('❌ Error fetching data marketing cardId null:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 });
 
 
 // ✅ Get Data Marketing Accepted
 // ✅ Get Data Marketing Accepted + Join Lengkap
 app.get("/api/data-marketing/accepted", async (req, res) => {
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
       SELECT 
         dm.marketing_id,
         dm.buyer_name,
@@ -5563,18 +5611,18 @@ app.get("/api/data-marketing/accepted", async (req, res) => {
       ORDER BY dm.marketing_id DESC;
     `);
 
-    res.json(result.rows);
-  } catch (err) {
-    console.error("❌ Error get accepted data:", err);
-    res.status(500).json({ error: "Failed to fetch accepted data" });
-  }
+        res.json(result.rows);
+    } catch (err) {
+        console.error("❌ Error get accepted data:", err);
+        res.status(500).json({ error: "Failed to fetch accepted data" });
+    }
 });
 
 
 // ✅ Get Data Marketing Not Accepted + Join Lengkap
 app.get("/api/data-marketing/rejected", async (req, res) => {
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
       SELECT 
         dm.marketing_id,
         dm.buyer_name,
@@ -5641,21 +5689,21 @@ app.get("/api/data-marketing/rejected", async (req, res) => {
       ORDER BY dm.marketing_id DESC;
     `);
 
-    res.json(result.rows);
-  } catch (err) {
-    console.error("❌ Error get not accepted data:", err);
-    res.status(500).json({ error: "Failed to fetch not accepted data" });
-  }
+        res.json(result.rows);
+    } catch (err) {
+        console.error("❌ Error get not accepted data:", err);
+        res.status(500).json({ error: "Failed to fetch not accepted data" });
+    }
 });
 
 
 
 //13. archive data marketing
 app.post('/api/archive-data-marketing/:id', async (req, res) => {
-  const { id } = req.params;
+    const { id } = req.params;
 
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
             INSERT INTO archive (
                 entity_type, entity_id, name, description, parent_id, parent_type, create_at, update_at, archived_at
             )
@@ -5673,16 +5721,16 @@ app.post('/api/archive-data-marketing/:id', async (req, res) => {
             WHERE dm.marketing_id = $1
         `, [id]);
 
-    if (result.rowCount > 0) {
-      await client.query(`DELETE FROM data_marketing WHERE marketing_id = $1`, [id]);
-      res.status(200).send(`Data marketing dengan id ${id} berhasil diarsipkan`);
-    } else {
-      res.status(404).send(`Data marketing dengan id ${id} tidak ditemukan`);
+        if (result.rowCount > 0) {
+            await client.query(`DELETE FROM data_marketing WHERE marketing_id = $1`, [id]);
+            res.status(200).send(`Data marketing dengan id ${id} berhasil diarsipkan`);
+        } else {
+            res.status(404).send(`Data marketing dengan id ${id} tidak ditemukan`);
+        }
+    } catch (error) {
+        console.error(`Error archive data marketing with id ${id}`, error);
+        res.status(500).json({ error: error.message });
     }
-  } catch (error) {
-    console.error(`Error archive data marketing with id ${id}`, error);
-    res.status(500).json({ error: error.message });
-  }
 });
 
 
@@ -5690,82 +5738,82 @@ app.post('/api/archive-data-marketing/:id', async (req, res) => {
 
 // ✅ Get semua status accept
 app.get("/api/accept-status", async (req, res) => {
-  try {
-    const result = await client.query("SELECT * FROM accept_status ORDER BY id ASC");
-    res.json(result.rows);
-  } catch (err) {
-    console.error("❌ Error get accept_status:", err);
-    res.status(500).json({ error: "Gagal mengambil data accept status" });
-  }
+    try {
+        const result = await client.query("SELECT * FROM accept_status ORDER BY id ASC");
+        res.json(result.rows);
+    } catch (err) {
+        console.error("❌ Error get accept_status:", err);
+        res.status(500).json({ error: "Gagal mengambil data accept status" });
+    }
 });
 
 // ✅ Get status accept by ID
 app.get("/api/accept-status/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await client.query("SELECT * FROM accept_status WHERE id = $1", [id]);
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Status accept tidak ditemukan" });
+    try {
+        const { id } = req.params;
+        const result = await client.query("SELECT * FROM accept_status WHERE id = $1", [id]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Status accept tidak ditemukan" });
+        }
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error get accept_status by id:", err);
+        res.status(500).json({ error: "Gagal mengambil data accept status" });
     }
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Error get accept_status by id:", err);
-    res.status(500).json({ error: "Gagal mengambil data accept status" });
-  }
 });
 
 // ✅ Create status accept baru
 app.post("/api/accept-status", async (req, res) => {
-  try {
-    const { status_name } = req.body;
-    const result = await client.query(
-      "INSERT INTO accept_status (status_name) VALUES ($1) RETURNING *",
-      [status_name]
-    );
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Error tambah accept_status:", err);
-    res.status(500).json({ error: "Gagal tambah status accept" });
-  }
+    try {
+        const { status_name } = req.body;
+        const result = await client.query(
+            "INSERT INTO accept_status (status_name) VALUES ($1) RETURNING *",
+            [status_name]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error tambah accept_status:", err);
+        res.status(500).json({ error: "Gagal tambah status accept" });
+    }
 });
 
 // ✅ Update status accept
 app.put("/api/accept-status/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { status_name } = req.body;
-    const result = await client.query(
-      `UPDATE accept_status 
+    try {
+        const { id } = req.params;
+        const { status_name } = req.body;
+        const result = await client.query(
+            `UPDATE accept_status 
        SET status_name = $1, update_at = CURRENT_TIMESTAMP
        WHERE id = $2 RETURNING *`,
-      [status_name, id]
-    );
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Status accept tidak ditemukan" });
+            [status_name, id]
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Status accept tidak ditemukan" });
+        }
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error update accept_status:", err);
+        res.status(500).json({ error: "Gagal update status accept" });
     }
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Error update accept_status:", err);
-    res.status(500).json({ error: "Gagal update status accept" });
-  }
 });
 
 // ✅ Delete status accept
 app.delete("/api/accept-status/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await client.query(
-      "DELETE FROM accept_status WHERE id = $1 RETURNING *",
-      [id]
-    );
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Status accept tidak ditemukan" });
+    try {
+        const { id } = req.params;
+        const result = await client.query(
+            "DELETE FROM accept_status WHERE id = $1 RETURNING *",
+            [id]
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Status accept tidak ditemukan" });
+        }
+        res.json({ message: "Status accept berhasil dihapus" });
+    } catch (err) {
+        console.error("❌ Error delete accept_status:", err);
+        res.status(500).json({ error: "Gagal hapus status accept" });
     }
-    res.json({ message: "Status accept berhasil dihapus" });
-  } catch (err) {
-    console.error("❌ Error delete accept_status:", err);
-    res.status(500).json({ error: "Gagal hapus status accept" });
-  }
 });
 
 // END STATUS ACCEPT 
@@ -5774,22 +5822,22 @@ app.delete("/api/accept-status/:id", async (req, res) => {
 //12. get laporan data otomatis per 10 hari berjalan
 // ✅ Endpoint untuk data hari ini
 app.get('/api/marketing-design/reports/today', async (req, res) => {
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
       SELECT * FROM marketing_design
       WHERE DATE(create_at) = CURRENT_DATE
     `);
-    res.json(result.rows);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+        res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 
 // ✅ Endpoint marketing-design per 10 hari dengan detail
 app.get("/api/marketing-design/reports", async (req, res) => {
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
       SELECT
         DATE_TRUNC('month', create_at) AS month,
         FLOOR((EXTRACT(DAY FROM create_at) - 1) / 10) + 1 AS period,
@@ -5830,159 +5878,159 @@ app.get("/api/marketing-design/reports", async (req, res) => {
       ORDER BY month DESC, period ASC;
     `);
 
-    res.json(result.rows);
-  } catch (err) {
-    console.error("❌ Query error:", err.message);
-    res.status(500).json({ error: err.message });
-  }
+        res.json(result.rows);
+    } catch (err) {
+        console.error("❌ Query error:", err.message);
+        res.status(500).json({ error: err.message });
+    }
 });
 
 
 
 //1. menampilkan semua data
 app.get('/api/marketing-design', async (req, res) => {
-  try {
-    const result = await client.query('SELECT * FROM marketing_design');
-    res.json(result.rows);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+    try {
+        const result = await client.query('SELECT * FROM marketing_design');
+        res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 })
 //2. menampilkan data berdasarkan id
 app.get('/api/marketing-design/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const result = await client.query('SELECT * FROM marketing_design WHERE marketing_design_id = $1', [id]);
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: 'Data not found' });
+    const { id } = req.params;
+    try {
+        const result = await client.query('SELECT * FROM marketing_design WHERE marketing_design_id = $1', [id]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'Data not found' });
+        }
+        res.json(result.rows[0]);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
-    res.json(result.rows[0]);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
 })
 
 app.post('/api/marketing-design', async (req, res) => {
-  let {
-    input_by, buyer_name, code_order, jumlah_design, order_number, account, deadline,
-    jumlah_revisi, order_type, offer_type, style, resolution, price_normal, price_discount,
-    discount_percentage, required_files, project_type, reference, file_and_chat, detail_project, acc_by, is_accepted
-  } = req.body;
+    let {
+        input_by, buyer_name, code_order, jumlah_design, order_number, account, deadline,
+        jumlah_revisi, order_type, offer_type, style, resolution, price_normal, price_discount,
+        discount_percentage, required_files, project_type, reference, file_and_chat, detail_project, acc_by, is_accepted
+    } = req.body;
 
-  // ✅ Default value jika is_accepted tidak dikirim
-  if (typeof is_accepted === 'undefined' || is_accepted === null) {
-    is_accepted = false;
-  }
+    // ✅ Default value jika is_accepted tidak dikirim
+    if (typeof is_accepted === 'undefined' || is_accepted === null) {
+        is_accepted = false;
+    }
 
-  console.log("Received data:", req.body); // 🟡 log data yang dikirim dari frontend
+    console.log("Received data:", req.body); // 🟡 log data yang dikirim dari frontend
 
-  try {
-    const result = await client.query(
-      `INSERT INTO marketing_design (
+    try {
+        const result = await client.query(
+            `INSERT INTO marketing_design (
                 input_by, buyer_name, code_order, jumlah_design, order_number, account, deadline,
                 jumlah_revisi, order_type, offer_type, style, resolution, price_normal, price_discount,
                 discount_percentage, required_files, project_type, reference, file_and_chat, detail_project, acc_by, is_accepted, create_at
             ) VALUES (
                 $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, CURRENT_TIMESTAMP
             ) RETURNING *`,
-      [
-        input_by, buyer_name, code_order, jumlah_design, order_number, account, deadline,
-        jumlah_revisi, order_type, offer_type, style, resolution, price_normal, price_discount,
-        discount_percentage, required_files, project_type, reference, file_and_chat, detail_project, acc_by, is_accepted
-      ]
-    );
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Insert Error:", err); // 🔴 tampilkan error detail
-    res.status(500).json({ error: err.message });
-  }
+            [
+                input_by, buyer_name, code_order, jumlah_design, order_number, account, deadline,
+                jumlah_revisi, order_type, offer_type, style, resolution, price_normal, price_discount,
+                discount_percentage, required_files, project_type, reference, file_and_chat, detail_project, acc_by, is_accepted
+            ]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Insert Error:", err); // 🔴 tampilkan error detail
+        res.status(500).json({ error: err.message });
+    }
 });
 
 
 //4. mengupdate data 
 app.put('/api/marketing-design/:id', async (req, res) => {
-  const { id } = req.params;
-  const { input_by, buyer_name, code_order, jumlah_design, order_number, account, deadline, jumlah_revisi, order_type, offer_type, style, resolution, price_normal, price_discount, discount_percentage, required_files, project_type, reference, file_and_chat, detail_project, acc_by, is_accepted } = req.body;
-  try {
-    const result = await client.query(
-      `UPDATE marketing_design SET 
+    const { id } = req.params;
+    const { input_by, buyer_name, code_order, jumlah_design, order_number, account, deadline, jumlah_revisi, order_type, offer_type, style, resolution, price_normal, price_discount, discount_percentage, required_files, project_type, reference, file_and_chat, detail_project, acc_by, is_accepted } = req.body;
+    try {
+        const result = await client.query(
+            `UPDATE marketing_design SET 
                  input_by = $1, buyer_name = $2, code_order = $3, jumlah_design = $4, order_number = $5, account = $6, deadline = $7, jumlah_revisi = $8, order_type = $9, offer_type = $10, style = $11, resolution = $12, price_normal = $13, price_discount = $14, discount_percentage = $15, required_files = $16, project_type = $17, reference = $18, file_and_chat = $19, detail_project = $20, acc_by = $21, is_accepted = $22, update_at = CURRENT_TIMESTAMP
              WHERE marketing_design_id = $23 RETURNING *`,
-      [input_by, buyer_name, code_order, jumlah_design, order_number, account, deadline, jumlah_revisi, order_type, offer_type, style, resolution, price_normal, price_discount, discount_percentage, required_files, project_type, reference, file_and_chat, detail_project, acc_by, is_accepted, id]
-    );
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: 'Data not found' });
+            [input_by, buyer_name, code_order, jumlah_design, order_number, account, deadline, jumlah_revisi, order_type, offer_type, style, resolution, price_normal, price_discount, discount_percentage, required_files, project_type, reference, file_and_chat, detail_project, acc_by, is_accepted, id]
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'Data not found' });
+        }
+        res.json(result.rows[0]);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
-    res.json(result.rows[0]);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
 })
 
 //5. menghapus data
 app.delete('/api/marketing-design/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const result = await client.query('DELETE FROM marketing_design WHERE marketing_design_id = $1 RETURNING *', [id]);
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: 'Data not found' });
+    const { id } = req.params;
+    try {
+        const result = await client.query('DELETE FROM marketing_design WHERE marketing_design_id = $1 RETURNING *', [id]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'Data not found' });
+        }
+        res.json({ message: 'Data deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
-    res.json({ message: 'Data deleted successfully' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
 });
 
 //6. check card id if null or not
 app.get('/api/check-card-id-design/:marketing_design_id', async (req, res) => {
-  const { marketing_design_id } = req.params;
+    const { marketing_design_id } = req.params;
 
-  try {
-    const query = 'SELECT card_id FROM marketing_design WHERE marketing_design_id = $1';
-    const result = await client.query(query, [marketing_design_id]);
+    try {
+        const query = 'SELECT card_id FROM marketing_design WHERE marketing_design_id = $1';
+        const result = await client.query(query, [marketing_design_id]);
 
-    console.log('Query Result:', result.rows[0]); // Debug hasil query di terminal
+        console.log('Query Result:', result.rows[0]); // Debug hasil query di terminal
 
-    if (result.rows.length > 0) {
-      const cardId = result.rows[0].card_id;
-      return res.status(200).json({ message: 'card_id found', card_id: cardId });
-    } else {
-      return res.status(404).json({ message: 'No card_id found for this marketing_design_id' });
+        if (result.rows.length > 0) {
+            const cardId = result.rows[0].card_id;
+            return res.status(200).json({ message: 'card_id found', card_id: cardId });
+        } else {
+            return res.status(404).json({ message: 'No card_id found for this marketing_design_id' });
+        }
+    } catch (error) {
+        console.error('Error checking card_id:', error);
+        return res.status(500).json({ message: 'Server Error' });
     }
-  } catch (error) {
-    console.error('Error checking card_id:', error);
-    return res.status(500).json({ message: 'Server Error' });
-  }
 });
 
 //7. mengubah data marketing design menjadi card design
 app.put('/api/create-card-marketing-design/:listId/:marketingDesignId', async (req, res) => {
-  const { listId, marketingDesignId } = req.params;
+    const { listId, marketingDesignId } = req.params;
 
-  try {
-    // Ambil data marketing_design berdasarkan marketingDesignId
-    const marketingData = await client.query(
-      'SELECT * FROM marketing_design WHERE marketing_design_id = $1 AND card_id IS NULL',
-      [marketingDesignId]
-    );
+    try {
+        // Ambil data marketing_design berdasarkan marketingDesignId
+        const marketingData = await client.query(
+            'SELECT * FROM marketing_design WHERE marketing_design_id = $1 AND card_id IS NULL',
+            [marketingDesignId]
+        );
 
-    if (marketingData.rows.length === 0) {
-      return res.status(404).json({ message: 'Data marketing design tidak ditemukan atau sudah memiliki card_id' });
-    }
+        if (marketingData.rows.length === 0) {
+            return res.status(404).json({ message: 'Data marketing design tidak ditemukan atau sudah memiliki card_id' });
+        }
 
-    const marketing = marketingData.rows[0];
+        const marketing = marketingData.rows[0];
 
-    const deadlineFormatted = marketing.deadline
-      ? new Date(marketing.deadline).toLocaleString('id-ID', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      })
-      : '-';
+        const deadlineFormatted = marketing.deadline
+            ? new Date(marketing.deadline).toLocaleString('id-ID', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            })
+            : '-';
 
-    const description = `
+        const description = `
             Code Order: ${marketing.code_order}
             Input By: ${marketing.input_by}
             Buyer: ${marketing.buyer_name}
@@ -6006,35 +6054,35 @@ app.put('/api/create-card-marketing-design/:listId/:marketingDesignId', async (r
             Approved By: ${marketing.acc_by}
         `.trim();
 
-    // Membuat card baru berdasarkan data marketing design
-    const newCard = await client.query(
-      `INSERT INTO cards (list_id, title, description, position, due_date, create_at) 
+        // Membuat card baru berdasarkan data marketing design
+        const newCard = await client.query(
+            `INSERT INTO cards (list_id, title, description, position, due_date, create_at) 
              VALUES ($1, $2, $3, $4, $5,CURRENT_TIMESTAMP) 
              RETURNING id`,
-      [
-        listId,
-        `${marketing.buyer_name} - ${marketing.order_number} (${marketing.account})`,
-        // marketing.detail_project,
-        description,
-        0, // posisi default, bisa disesuaikan
-        marketing.deadline
-      ]
-    );
+            [
+                listId,
+                `${marketing.buyer_name} - ${marketing.order_number} (${marketing.account})`,
+                // marketing.detail_project,
+                description,
+                0, // posisi default, bisa disesuaikan
+                marketing.deadline
+            ]
+        );
 
-    // Update card_id di tabel marketing_design dengan id card yang baru dibuat
-    await client.query(
-      'UPDATE marketing_design SET card_id = $1, update_at = CURRENT_TIMESTAMP WHERE marketing_design_id = $2',
-      [newCard.rows[0].id, marketingDesignId]
-    );
+        // Update card_id di tabel marketing_design dengan id card yang baru dibuat
+        await client.query(
+            'UPDATE marketing_design SET card_id = $1, update_at = CURRENT_TIMESTAMP WHERE marketing_design_id = $2',
+            [newCard.rows[0].id, marketingDesignId]
+        );
 
-    return res.status(201).json({
-      message: 'Card berhasil dibuat dari data marketing design.',
-      cardId: newCard.rows[0].id
-    });
-  } catch (error) {
-    console.error('Error creating card from marketing design data:', error);
-    return res.status(500).json({ message: 'Terjadi kesalahan saat membuat card dari data marketing design.' });
-  }
+        return res.status(201).json({
+            message: 'Card berhasil dibuat dari data marketing design.',
+            cardId: newCard.rows[0].id
+        });
+    } catch (error) {
+        console.error('Error creating card from marketing design data:', error);
+        return res.status(500).json({ message: 'Terjadi kesalahan saat membuat card dari data marketing design.' });
+    }
 });
 
 
@@ -6129,33 +6177,33 @@ app.put('/api/create-card-marketing-design/:listId/:marketingDesignId', async (r
 
 //8. get card id by marketing design id
 app.get('/api/card-id-design/:marketingDesignId', async (req, res) => {
-  const { marketingDesignId } = req.params;
-  try {
-    const query = `
+    const { marketingDesignId } = req.params;
+    try {
+        const query = `
           SELECT card_id
           FROM public.marketing_design
           WHERE marketing_design_id = $1
         `;
-    const result = await client.query(query, [marketingDesignId]);
+        const result = await client.query(query, [marketingDesignId]);
 
-    if (result.rows.length > 0) {
-      const { card_id } = result.rows[0]; // Mengambil card_id dari hasil query
-      return res.json({ cardId: card_id });
-    } else {
-      return res.status(404).json({ error: 'Card not found for the provided marketing_design_id' });
+        if (result.rows.length > 0) {
+            const { card_id } = result.rows[0]; // Mengambil card_id dari hasil query
+            return res.json({ cardId: card_id });
+        } else {
+            return res.status(404).json({ error: 'Card not found for the provided marketing_design_id' });
+        }
+    } catch (error) {
+        console.error('Error executing query', error.stack);
+        return res.status(500).json({ error: 'Internal server error' });
     }
-  } catch (error) {
-    console.error('Error executing query', error.stack);
-    return res.status(500).json({ error: 'Internal server error' });
-  }
 })
 
 //9. archive data marketing design
 app.post('/api/archive-data-marketing-design/:id', async (req, res) => {
-  const { id } = req.params;
+    const { id } = req.params;
 
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
             INSERT INTO archive (
                 entity_type, entity_id, name, description, parent_id, parent_type, create_at, update_at, archived_at
             )
@@ -6173,46 +6221,46 @@ app.post('/api/archive-data-marketing-design/:id', async (req, res) => {
             WHERE md.marketing_design_id = $1
         `, [id]);
 
-    if (result.rowCount > 0) {
-      await client.query(`DELETE FROM marketing_design WHERE marketing_design_id = $1`, [id]);
-      res.status(200).send(`Marketing design dengan id ${id} berhasil diarsipkan`);
-    } else {
-      res.status(404).send(`Data marketing design dengan id ${id} tidak ditemukan`);
+        if (result.rowCount > 0) {
+            await client.query(`DELETE FROM marketing_design WHERE marketing_design_id = $1`, [id]);
+            res.status(200).send(`Marketing design dengan id ${id} berhasil diarsipkan`);
+        } else {
+            res.status(404).send(`Data marketing design dengan id ${id} tidak ditemukan`);
+        }
+    } catch (error) {
+        console.error(`Error archive data marketing design with id ${id}`, error);
+        res.status(500).json({ error: error.message });
     }
-  } catch (error) {
-    console.error(`Error archive data marketing design with id ${id}`, error);
-    res.status(500).json({ error: error.message });
-  }
 });
 
 //10. get data marketing design by data accepted
 app.get('/api/marketing-design-accepted', async (req, res) => {
-  try {
-    // const accepted = req.query.is_accepted === 'true'; // untuk parameter query
-    const result = await client.query(
-      `SELECT * FROM marketing_design WHERE is_accepted = true`,
-      // [true]
-    );
-    res.json(result.rows);
-  } catch (err) {
-    console.error("❌ Error fetching data:", err);
-    res.status(500).json({ error: err.message });
-  }
+    try {
+        // const accepted = req.query.is_accepted === 'true'; // untuk parameter query
+        const result = await client.query(
+            `SELECT * FROM marketing_design WHERE is_accepted = true`,
+            // [true]
+        );
+        res.json(result.rows);
+    } catch (err) {
+        console.error("❌ Error fetching data:", err);
+        res.status(500).json({ error: err.message });
+    }
 });
 
 //11. get data marketing by data not accepted
 app.get('/api/marketing-design-not-accepted', async (req, res) => {
-  try {
-    // const accepted = req.query.is_accepted === 'true'; // untuk parameter query
-    const result = await client.query(
-      `SELECT * FROM marketing_design WHERE is_accepted = false`,
-      // [true]
-    );
-    res.json(result.rows);
-  } catch (err) {
-    console.error("❌ Error fetching data:", err);
-    res.status(500).json({ error: err.message });
-  }
+    try {
+        // const accepted = req.query.is_accepted === 'true'; // untuk parameter query
+        const result = await client.query(
+            `SELECT * FROM marketing_design WHERE is_accepted = false`,
+            // [true]
+        );
+        res.json(result.rows);
+    } catch (err) {
+        console.error("❌ Error fetching data:", err);
+        res.status(500).json({ error: err.message });
+    }
 });
 
 
@@ -6226,192 +6274,192 @@ app.get('/api/marketing-design-not-accepted', async (req, res) => {
 
 //ENDPOIN UNTUK MENDAPATKAN WORKSPACE ID DAN BOARD ID BERDASARKAN LIST ID DAN CARD ID
 app.post('/api/get-workspaceid-boardid', async (req, res) => {
-  const { listId, cardId } = req.body; // menggunakan req.body
-  try {
-    const query = `
+    const { listId, cardId } = req.body; // menggunakan req.body
+    try {
+        const query = `
         SELECT b.workspace_id, l.board_id
         FROM public.cards c
         JOIN public.lists l ON c.list_id = l.id
         JOIN public.boards b ON l.board_id = b.id
         WHERE c.id = $1
       `;
-    const result = await client.query(query, [cardId]);
+        const result = await client.query(query, [cardId]);
 
-    if (result.rows.length > 0) {
-      const { workspace_id, board_id } = result.rows[0];
-      return res.json({ workspaceId: workspace_id, boardId: board_id });
-    } else {
-      return res.status(404).json({ error: 'Card not found' });
+        if (result.rows.length > 0) {
+            const { workspace_id, board_id } = result.rows[0];
+            return res.json({ workspaceId: workspace_id, boardId: board_id });
+        } else {
+            return res.status(404).json({ error: 'Card not found' });
+        }
+    } catch (error) {
+        console.error('Error executing query', error.stack);
+        return res.status(500).json({ error: 'Internal server error' });
     }
-  } catch (error) {
-    console.error('Error executing query', error.stack);
-    return res.status(500).json({ error: 'Internal server error' });
-  }
 });
 
 //ENDPOIN UNTUK MENAMPILKAN DATA MARKETING UNTUK CARD ID YANG TIDAK NULL
 app.get('/api/marketing-designs', async (req, res) => {
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
           SELECT * FROM public.marketing_design 
           WHERE card_id IS NOT NULL
           ORDER BY marketing_design_id DESC;
         `);
 
-    res.json(result.rows);
-  } catch (error) {
-    console.error('Error fetching marketing designs:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error fetching marketing designs:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 })
 
 //ENDPOIN UNTUK MENAMPILKAN DATA MARKETING UNTUK CARD ID NULL
 app.get('/api/marketing-designs-null', async (req, res) => {
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
             SELECT * FROM public.marketing_design
             WHERE card_id IS NULL
             ORDER BY marketing_design_id DESC
             `);
 
-    res.json(result.rows);
-  } catch (error) {
-    console.error('Error fetching marketing designs:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error fetching marketing designs:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 })
 
 //ARCHIVE UNIVERSAL
 //1. get all data archive
 app.get('/api/archive-data', async (req, res) => {
-  try {
-    const result = await client.query(`SELECT * FROM archive_universal ORDER BY archived_at DESC`);
-    res.status(200).json(result.rows);
-  } catch (error) {
-    console.error('Error fetching archive:', error);
-    res.status(500).json({ error: error.message });
-  }
+    try {
+        const result = await client.query(`SELECT * FROM archive_universal ORDER BY archived_at DESC`);
+        res.status(200).json(result.rows);
+    } catch (error) {
+        console.error('Error fetching archive:', error);
+        res.status(500).json({ error: error.message });
+    }
 });
 //2. archive data berdasarkan entity
 app.post('/api/archive/:entity/:id', async (req, res) => {
-  const { entity, id } = req.params;
-  const userId = req.user.id;
+    const { entity, id } = req.params;
+    const userId = req.user.id;
 
-  const entityMap = {
-    workspaces_user: { table: 'workspaces_users', idField: 'workspace_id' },
-    workspaces: { table: 'workspaces', idField: 'id' },
-    boards: { table: 'boards', idField: 'id' },
-    lists: { table: 'lists', idField: 'id' },
-    cards: { table: 'cards', idField: 'id' },
-    data_marketing: { table: 'data_marketing', idField: 'marketing_id' },
-    marketing_design: { table: 'marketing_design', idField: 'marketing_design_id' }
-    // tambahkan entitas lainnya jika perlu
-  };
+    const entityMap = {
+        workspaces_user: { table: 'workspaces_users', idField: 'workspace_id' },
+        workspaces: { table: 'workspaces', idField: 'id' },
+        boards: { table: 'boards', idField: 'id' },
+        lists: { table: 'lists', idField: 'id' },
+        cards: { table: 'cards', idField: 'id' },
+        data_marketing: { table: 'data_marketing', idField: 'marketing_id' },
+        marketing_design: { table: 'marketing_design', idField: 'marketing_design_id' }
+        // tambahkan entitas lainnya jika perlu
+    };
 
-  const config = entityMap[entity];
-  if (!config) return res.status(400).json({ error: 'Entity tidak dikenali' });
+    const config = entityMap[entity];
+    if (!config) return res.status(400).json({ error: 'Entity tidak dikenali' });
 
-  try {
-    const { table, idField } = config;
+    try {
+        const { table, idField } = config;
 
-    // 1. Ambil data dari tabel asli
-    const result = await client.query(
-      `SELECT * FROM ${table} WHERE ${idField} = $1`, [id]
-    );
+        // 1. Ambil data dari tabel asli
+        const result = await client.query(
+            `SELECT * FROM ${table} WHERE ${idField} = $1`, [id]
+        );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: `Data ${entity} dengan ID ${id} tidak ditemukan` });
-    }
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: `Data ${entity} dengan ID ${id} tidak ditemukan` });
+        }
 
-    const data = result.rows[0];
+        const data = result.rows[0];
 
-    // 2. Masukkan ke archive_universal
-    await client.query(`
+        // 2. Masukkan ke archive_universal
+        await client.query(`
         INSERT INTO archive_universal (entity_type, entity_id, data, user_id)
         VALUES ($1, $2, $3, $4)
         `, [entity, id, data, userId]); // <-- pastikan req.user.id diset
 
 
-    // 3. Hapus dari tabel aslinya
-    await client.query(
-      `DELETE FROM ${table} WHERE ${idField} = $1`, [id]
-    );
+        // 3. Hapus dari tabel aslinya
+        await client.query(
+            `DELETE FROM ${table} WHERE ${idField} = $1`, [id]
+        );
 
-    res.status(200).json({ message: `Data ${entity} ID ${id} berhasil diarsipkan` });
-  } catch (err) {
-    console.error('Archive error:', err);
-    res.status(500).json({ error: err.message });
-  }
+        res.status(200).json({ message: `Data ${entity} ID ${id} berhasil diarsipkan` });
+    } catch (err) {
+        console.error('Archive error:', err);
+        res.status(500).json({ error: err.message });
+    }
 });
 
 //3. delete data archive by id
 app.delete('/api/archive-data/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const result = await client.query(`DELETE FROM archive_universal WHERE id = $1`, [id]);
-    if (result.rowCount > 0) {
-      res.status(200).json({ message: `Archive with id ${id} deleted` });
-    } else {
-      res.status(404).json({ error: `Archive with id ${id} not found` });
+    const { id } = req.params;
+    try {
+        const result = await client.query(`DELETE FROM archive_universal WHERE id = $1`, [id]);
+        if (result.rowCount > 0) {
+            res.status(200).json({ message: `Archive with id ${id} deleted` });
+        } else {
+            res.status(404).json({ error: `Archive with id ${id} not found` });
+        }
+    } catch (error) {
+        console.error('Error deleting archive:', error);
+        res.status(500).json({ error: error.message });
     }
-  } catch (error) {
-    console.error('Error deleting archive:', error);
-    res.status(500).json({ error: error.message });
-  }
 });
 
 //4. restore data archive 
 app.post('/api/restore/:entity/:id', async (req, res) => {
-  const { entity, id } = req.params;
+    const { entity, id } = req.params;
 
-  const entityMap = {
-    workspaces_users: { table: 'workspaces_users' },
-    workspaces: { table: 'workspaces' },
-    boards: { table: 'boards' },
-    lists: { table: 'lists' },
-    cards: { table: 'cards' },
-    data_marketing: { table: 'data_marketing' },
-    marketing_design: { table: 'marketing_design' }
-    // tambah sesuai entity kamu
-  };
+    const entityMap = {
+        workspaces_users: { table: 'workspaces_users' },
+        workspaces: { table: 'workspaces' },
+        boards: { table: 'boards' },
+        lists: { table: 'lists' },
+        cards: { table: 'cards' },
+        data_marketing: { table: 'data_marketing' },
+        marketing_design: { table: 'marketing_design' }
+        // tambah sesuai entity kamu
+    };
 
-  const config = entityMap[entity];
-  if (!config) return res.status(400).json({ error: 'Entity tidak dikenali' });
+    const config = entityMap[entity];
+    if (!config) return res.status(400).json({ error: 'Entity tidak dikenali' });
 
-  try {
-    // 1. Ambil data dari archive_universal
-    const archiveResult = await client.query(
-      `SELECT data FROM archive_universal WHERE entity_type = $1 AND entity_id = $2`,
-      [entity, id]
-    );
+    try {
+        // 1. Ambil data dari archive_universal
+        const archiveResult = await client.query(
+            `SELECT data FROM archive_universal WHERE entity_type = $1 AND entity_id = $2`,
+            [entity, id]
+        );
 
-    if (archiveResult.rows.length === 0) {
-      return res.status(404).json({ error: `Data ${entity} dengan id ${id} tidak ditemukan di archive` });
-    }
+        if (archiveResult.rows.length === 0) {
+            return res.status(404).json({ error: `Data ${entity} dengan id ${id} tidak ditemukan di archive` });
+        }
 
-    const data = archiveResult.rows[0].data;
-    const keys = Object.keys(data);
-    const values = Object.values(data);
-    const placeholders = values.map((_, i) => `$${i + 1}`).join(', ');
+        const data = archiveResult.rows[0].data;
+        const keys = Object.keys(data);
+        const values = Object.values(data);
+        const placeholders = values.map((_, i) => `$${i + 1}`).join(', ');
 
-    // 2. Insert kembali ke tabel aslinya
-    const insertQuery = `
+        // 2. Insert kembali ke tabel aslinya
+        const insertQuery = `
       INSERT INTO ${config.table} (${keys.join(', ')})
       VALUES (${placeholders})
     `;
-    await client.query(insertQuery, values);
+        await client.query(insertQuery, values);
 
-    // 3. Hapus dari archive_universal
-    await client.query(
-      `DELETE FROM archive_universal WHERE entity_type = $1 AND entity_id = $2`,
-      [entity, id]
-    );
+        // 3. Hapus dari archive_universal
+        await client.query(
+            `DELETE FROM archive_universal WHERE entity_type = $1 AND entity_id = $2`,
+            [entity, id]
+        );
 
-    res.status(200).json({ message: `Data ${entity} berhasil direstore.` });
-  } catch (err) {
-    console.error('Restore error:', err);
-    res.status(500).json({ error: err.message });
-  }
+        res.status(200).json({ message: `Data ${entity} berhasil direstore.` });
+    } catch (err) {
+        console.error('Restore error:', err);
+        res.status(500).json({ error: err.message });
+    }
 });
 
 //END ARCHIVE UNIVERSAL
@@ -6421,117 +6469,117 @@ app.post('/api/restore/:entity/:id', async (req, res) => {
 // ARCHIVE DATA 
 //1. get all workspace archive
 app.get('/api/archive-workspace', async (req, res) => {
-  try {
-    const result = await client.query('SELECT * FROM archive WHERE entity_type = $1', ['workspace']);
+    try {
+        const result = await client.query('SELECT * FROM archive WHERE entity_type = $1', ['workspace']);
 
-    if (result.rows.length > 0) {
-      res.status(200).json(result.rows);
-    } else {
-      res.status(404).send('Tidak ada data workspace yang ditemukan');
+        if (result.rows.length > 0) {
+            res.status(200).json(result.rows);
+        } else {
+            res.status(404).send('Tidak ada data workspace yang ditemukan');
+        }
+    } catch (error) {
+        console.error('Error executing query:', error.stack);
+        res.status(500).send('Server error saat mengambil data dari database!')
     }
-  } catch (error) {
-    console.error('Error executing query:', error.stack);
-    res.status(500).send('Server error saat mengambil data dari database!')
-  }
 })
 
 // archive workspace user
 app.get('/api/archive-workspace-user', async (req, res) => {
-  try {
-    const result = await client.query('SELECT * FROM archive WHERE entity_type = $1', ['workspace_user']);
+    try {
+        const result = await client.query('SELECT * FROM archive WHERE entity_type = $1', ['workspace_user']);
 
-    if (result.rows.length > 0) {
-      res.status(200).json(result.rows);
-    } else {
-      res.status(404).send('Tidak ada data workspace user yang ditemukan');
+        if (result.rows.length > 0) {
+            res.status(200).json(result.rows);
+        } else {
+            res.status(404).send('Tidak ada data workspace user yang ditemukan');
+        }
+    } catch (error) {
+        console.error('Error fetching data archive workspace user:', error.stack)
+        res.status(500).send({ message: 'Server error saat mengambil data dari database' });
     }
-  } catch (error) {
-    console.error('Error fetching data archive workspace user:', error.stack)
-    res.status(500).send({ message: 'Server error saat mengambil data dari database' });
-  }
 })
 
 //2. get all boards archive
 app.get('/api/archive-board', async (req, res) => {
-  try {
-    const result = await client.query('SELECT * FROM archive WHERE entity_type = $1', ['board']);
+    try {
+        const result = await client.query('SELECT * FROM archive WHERE entity_type = $1', ['board']);
 
-    if (result.rows.length > 0) {
-      res.status(200).json(result.rows);
-    } else {
-      res.status(404).send('Tidak ada data board yang ditemukan');
+        if (result.rows.length > 0) {
+            res.status(200).json(result.rows);
+        } else {
+            res.status(404).send('Tidak ada data board yang ditemukan');
+        }
+    } catch (error) {
+        console.error('Error executing query:', error.stack);
+        res.status(500).send('Server error saat mengambil data dari database!')
     }
-  } catch (error) {
-    console.error('Error executing query:', error.stack);
-    res.status(500).send('Server error saat mengambil data dari database!')
-  }
 })
 //3. get all list archive
 app.get('/api/archive-list', async (req, res) => {
-  try {
-    const result = await client.query('SELECT * FROM archive WHERE entity_type = $1', ['list']);
+    try {
+        const result = await client.query('SELECT * FROM archive WHERE entity_type = $1', ['list']);
 
-    if (result.rows.length > 0) {
-      res.status(200).json(result.rows);
-    } else {
-      res.status(404).send('Tidak ada data list yang ditemukan');
+        if (result.rows.length > 0) {
+            res.status(200).json(result.rows);
+        } else {
+            res.status(404).send('Tidak ada data list yang ditemukan');
+        }
+    } catch (error) {
+        console.error('Error executing query:', error.stack);
+        res.status(500).send('Server error saat mengambil data dari database!')
     }
-  } catch (error) {
-    console.error('Error executing query:', error.stack);
-    res.status(500).send('Server error saat mengambil data dari database!')
-  }
 })
 //4. get all card archive
 app.get('/api/archive-card', async (req, res) => {
-  try {
-    const result = await client.query('SELECT * FROM archive WHERE entity_type = $1', ['card']);
+    try {
+        const result = await client.query('SELECT * FROM archive WHERE entity_type = $1', ['card']);
 
-    if (result.rows.length > 0) {
-      res.status(200).json(result.rows);
-    } else {
-      res.status(404).send('Tidak ada data card yang ditemukan');
+        if (result.rows.length > 0) {
+            res.status(200).json(result.rows);
+        } else {
+            res.status(404).send('Tidak ada data card yang ditemukan');
+        }
+    } catch (error) {
+        console.error('Error executing query:', error.stack);
+        res.status(500).send('Server error saat mengambil data dari database!')
     }
-  } catch (error) {
-    console.error('Error executing query:', error.stack);
-    res.status(500).send('Server error saat mengambil data dari database!')
-  }
 })
 //5. get all marketing data archive
 app.get('/api/archive-marketing', async (req, res) => {
-  try {
-    const result = await client.query('SELECT * FROM archive WHERE entity_type = $1', ['marketing']);
+    try {
+        const result = await client.query('SELECT * FROM archive WHERE entity_type = $1', ['marketing']);
 
-    if (result.rows.length > 0) {
-      res.status(200).json(result.rows);
-    } else {
-      res.status(404).send('Tidak ada data marketing yang ditemukan');
+        if (result.rows.length > 0) {
+            res.status(200).json(result.rows);
+        } else {
+            res.status(404).send('Tidak ada data marketing yang ditemukan');
+        }
+    } catch (error) {
+        console.error('Error executing query:', error.stack);
+        res.status(500).send('Server error saat mengambil data dari database!')
     }
-  } catch (error) {
-    console.error('Error executing query:', error.stack);
-    res.status(500).send('Server error saat mengambil data dari database!')
-  }
 })
 //6. get all marketing design data archive
 app.get('/api/archive-marketing-design', async (req, res) => {
-  try {
-    const result = await client.query('SELECT * FROM archive WHERE entity_type = $1', ['marketing_design']);
+    try {
+        const result = await client.query('SELECT * FROM archive WHERE entity_type = $1', ['marketing_design']);
 
-    if (result.rows.length > 0) {
-      res.status(200).json(result.rows);
-    } else {
-      res.status(404).send('Tidak ada data marketing design yang ditemukan');
+        if (result.rows.length > 0) {
+            res.status(200).json(result.rows);
+        } else {
+            res.status(404).send('Tidak ada data marketing design yang ditemukan');
+        }
+    } catch (error) {
+        console.error('Error executing query:', error.stack);
+        res.status(500).send('Server error saat mengambil data dari database!')
     }
-  } catch (error) {
-    console.error('Error executing query:', error.stack);
-    res.status(500).send('Server error saat mengambil data dari database!')
-  }
 })
 
 //TABEL WORKSPACE SUMMARY
 app.get('/api/workspaces/:userId/summary', async (req, res) => {
-  const { userId } = req.params;
+    const { userId } = req.params;
 
-  const query = `
+    const query = `
       SELECT 
         w.id AS workspace_id,
         w.name AS workspace_name,
@@ -6548,23 +6596,23 @@ app.get('/api/workspaces/:userId/summary', async (req, res) => {
       ORDER BY w.name
     `;
 
-  try {
-    const result = await client.query(query, [userId]);
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: 'No workspace summary found for this user' });
+    try {
+        const result = await client.query(query, [userId]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'No workspace summary found for this user' });
+        }
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Error fetching workspace summary:', err);
+        res.status(500).json({ error: 'Internal server error' });
     }
-    res.json(result.rows);
-  } catch (err) {
-    console.error('Error fetching workspace summary:', err);
-    res.status(500).json({ error: 'Internal server error' });
-  }
 });
 
 //get summary form a workspace 
 app.get('/api/workspaces/:userId/summary/:workspaceId', async (req, res) => {
-  const { userId, workspaceId } = req.params;
+    const { userId, workspaceId } = req.params;
 
-  const query = `
+    const query = `
     SELECT 
       w.id AS workspace_id,
       w.name AS workspace_name,
@@ -6581,203 +6629,203 @@ app.get('/api/workspaces/:userId/summary/:workspaceId', async (req, res) => {
     ORDER BY w.name
   `;
 
-  try {
-    const result = await client.query(query, [userId, workspaceId]);
+    try {
+        const result = await client.query(query, [userId, workspaceId]);
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: 'Workspace summary not found for this user' });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'Workspace summary not found for this user' });
+        }
+
+        res.json(result.rows[0]); // hanya satu workspace
+    } catch (err) {
+        console.error('Error fetching workspace summary by ID:', err);
+        res.status(500).json({ error: 'Internal server error' });
     }
-
-    res.json(result.rows[0]); // hanya satu workspace
-  } catch (err) {
-    console.error('Error fetching workspace summary by ID:', err);
-    res.status(500).json({ error: 'Internal server error' });
-  }
 });
 
 //PERSONAL NOTE
 //1. get all note
 app.get('/api/all-note', async (req, res) => {
-  try {
-    const result = await client.query('SELECT * FROM personal_notes ORDER BY id DESC');
-    res.json(result.rows)
-  } catch (error) {
-    res.status(500).json({ error: 'Gagal mengambil data semua personal note' });
-  }
+    try {
+        const result = await client.query('SELECT * FROM personal_notes ORDER BY id DESC');
+        res.json(result.rows)
+    } catch (error) {
+        res.status(500).json({ error: 'Gagal mengambil data semua personal note' });
+    }
 })
 
 // 2.  Get all notes for a specific user
 app.get('/api/personal-note/user/:userId', async (req, res) => {
-  const { userId } = req.params;
-  try {
-    const result = await client.query(
-      'SELECT * FROM personal_notes WHERE user_id = $1 ORDER BY created_at DESC',
-      [userId]
-    );
-    res.json(result.rows);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+    const { userId } = req.params;
+    try {
+        const result = await client.query(
+            'SELECT * FROM personal_notes WHERE user_id = $1 ORDER BY created_at DESC',
+            [userId]
+        );
+        res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 // 3. Get a single note by ID (only if owned by user)
 app.get('/api/personal-note/:id/user/:userId', async (req, res) => {
-  const { id, userId } = req.params;
-  try {
-    const result = await client.query(
-      'SELECT * FROM personal_notes WHERE id = $1 AND user_id = $2',
-      [id, userId]
-    );
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: 'Note not found' });
+    const { id, userId } = req.params;
+    try {
+        const result = await client.query(
+            'SELECT * FROM personal_notes WHERE id = $1 AND user_id = $2',
+            [id, userId]
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'Note not found' });
+        }
+        res.json(result.rows[0]);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
-    res.json(result.rows[0]);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
 });
 
 // 4. Create a new note
 app.post('/api/personal-note', async (req, res) => {
-  const { name, isi_note, user_id, agenda_id } = req.body;
-  try {
-    const result = await client.query(
-      `INSERT INTO personal_notes (name, isi_note, user_id, agenda_id) 
+    const { name, isi_note, user_id, agenda_id } = req.body;
+    try {
+        const result = await client.query(
+            `INSERT INTO personal_notes (name, isi_note, user_id, agenda_id) 
        VALUES ($1, $2, $3, $4) RETURNING *`,
-      [name, isi_note, user_id, agenda_id]
-    );
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+            [name, isi_note, user_id, agenda_id]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 // 5. Update a note (only if owned by user)
 app.put('/api/personal-note/:id/user/:userId', async (req, res) => {
-  const { id, userId } = req.params;
-  const { name, isi_note, agenda_id } = req.body;
-  try {
-    const result = await client.query(
-      `UPDATE personal_notes SET name = $1, isi_note = $2, agenda_id = $3, updated_at = NOW() 
+    const { id, userId } = req.params;
+    const { name, isi_note, agenda_id } = req.body;
+    try {
+        const result = await client.query(
+            `UPDATE personal_notes SET name = $1, isi_note = $2, agenda_id = $3, updated_at = NOW() 
        WHERE id = $4 AND user_id = $5 RETURNING *`,
-      [name, isi_note, agenda_id, id, userId]
-    );
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: 'Note not found or not owned by user' });
+            [name, isi_note, agenda_id, id, userId]
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'Note not found or not owned by user' });
+        }
+        res.json(result.rows[0]);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
-    res.json(result.rows[0]);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
 });
 
 //5.1 Update title note
 app.put('/api/personal-note/:id/name/:userId', async (req, res) => {
-  const { id, userId } = req.params;
-  const { name } = req.body;
+    const { id, userId } = req.params;
+    const { name } = req.body;
 
-  try {
-    const result = await client.query(
-      `UPDATE personal_notes 
+    try {
+        const result = await client.query(
+            `UPDATE personal_notes 
        SET name = $1, updated_at = CURRENT_TIMESTAMP 
        WHERE id = $2 AND user_id = $3 
        RETURNING *`,
-      [name, id, userId]
-    );
+            [name, id, userId]
+        );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Note not found or not owned by user" });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Note not found or not owned by user" });
+        }
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-
-    res.json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 });
 
 
 //5.2 update description note
 app.put('/api/personal-note/:id/desc/:userId', async (req, res) => {
-  const { id, userId } = req.params;
-  const { isi_note } = req.body;
+    const { id, userId } = req.params;
+    const { isi_note } = req.body;
 
-  try {
-    const result = await client.query(
-      `UPDATE personal_notes 
+    try {
+        const result = await client.query(
+            `UPDATE personal_notes 
        SET isi_note = $1, updated_at = CURRENT_TIMESTAMP 
        WHERE id = $2 AND user_id = $3 
        RETURNING *`,
-      [isi_note, id, userId]
-    );
+            [isi_note, id, userId]
+        );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Note not found or not owned by user" });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Note not found or not owned by user" });
+        }
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-
-    res.json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 });
 
 
 // 6. Delete a note (only if owned by user)
 app.delete('/api/personal-note/:id/user/:userId', async (req, res) => {
-  const { id, userId } = req.params;
-  try {
-    const result = await client.query(
-      'DELETE FROM personal_notes WHERE id = $1 AND user_id = $2 RETURNING *',
-      [id, userId]
-    );
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: 'Note not found or not owned by user' });
+    const { id, userId } = req.params;
+    try {
+        const result = await client.query(
+            'DELETE FROM personal_notes WHERE id = $1 AND user_id = $2 RETURNING *',
+            [id, userId]
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'Note not found or not owned by user' });
+        }
+        res.json({ message: 'Note deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
-    res.json({ message: 'Note deleted successfully' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
 });
 
 //7. put personal note color
 app.put('/api/persona-note/:id/bg-color', async (req, res) => {
-  const { id } = req.params;
-  const { bg_color } = req.body;
+    const { id } = req.params;
+    const { bg_color } = req.body;
 
-  try {
-    await client.query(
-      'UPDATE personal_notes SET bg_color = $1 WHERE id = $2',
-      [bg_color, id]
-    )
-    res.json({ message: 'Color update successfully' });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to update color' });
-  }
+    try {
+        await client.query(
+            'UPDATE personal_notes SET bg_color = $1 WHERE id = $2',
+            [bg_color, id]
+        )
+        res.json({ message: 'Color update successfully' });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to update color' });
+    }
 })
 
 //COLOR NOTE
 //1. get all data note color
 app.get('/api/note-colors', async (req, res) => {
-  try {
-    const result = await client.query('SELECT * FROM notes_color ORDER BY id DESC');
-    res.json(result.rows)
-  } catch (error) {
-    res.status(500).json({ error: 'Gagal mengambil semua data color note' })
-  }
+    try {
+        const result = await client.query('SELECT * FROM notes_color ORDER BY id DESC');
+        res.json(result.rows)
+    } catch (error) {
+        res.status(500).json({ error: 'Gagal mengambil semua data color note' })
+    }
 })
 
 //2. add a new data note color 
 app.post('/api/note-colors', async (req, res) => {
-  const { color, color_name } = req.body;
-  try {
-    const result = await client.query(
-      `INSERT INTO notes_color (color, color_name)
+    const { color, color_name } = req.body;
+    try {
+        const result = await client.query(
+            `INSERT INTO notes_color (color, color_name)
       VALUES ($1, $2) RETURNING *`,
-      [color, color_name]
-    );
-    res.status(201).json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+            [color, color_name]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 })
 
 //
@@ -6786,64 +6834,64 @@ app.post('/api/note-colors', async (req, res) => {
 //PERSONAL AGENDA
 //1. create new agenda
 app.post('/api/agenda', async (req, res) => {
-  const { user_id, title, description, agenda_date, reminder_time, status_id } = req.body;
-  try {
-    const result = await client.query(
-      `INSERT INTO agenda_personal (user_id, title, description, agenda_date, reminder_time, status_id)
+    const { user_id, title, description, agenda_date, reminder_time, status_id } = req.body;
+    try {
+        const result = await client.query(
+            `INSERT INTO agenda_personal (user_id, title, description, agenda_date, reminder_time, status_id)
        VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-      [user_id, title, description, agenda_date, reminder_time, status_id]
-    );
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+            [user_id, title, description, agenda_date, reminder_time, status_id]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 //2. read all agendas for users
 app.get('/api/agenda-user/user/:user_id', async (req, res) => {
-  const { user_id } = req.params;
-  try {
-    const result = await client.query(
-      `SELECT a.*, s.name as status_name, s.color 
+    const { user_id } = req.params;
+    try {
+        const result = await client.query(
+            `SELECT a.*, s.name as status_name, s.color 
        FROM agenda_personal a
        LEFT JOIN agenda_status s ON a.status_id = s.id
        WHERE a.user_id = $1
        ORDER BY a.agenda_date ASC`,
-      [user_id]
-    );
-    res.json(result.rows);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+            [user_id]
+        );
+        res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 
 //3. read satu agenda by id (and user)
 app.get('/api/agenda-user/:id/user/:user_id', async (req, res) => {
-  const { id, user_id } = req.params;
-  try {
-    const result = await client.query(
-      `SELECT a.*, s.name as status_name, s.color 
+    const { id, user_id } = req.params;
+    try {
+        const result = await client.query(
+            `SELECT a.*, s.name as status_name, s.color 
        FROM agenda_personal a
        LEFT JOIN agenda_status s ON a.status_id = s.id
        WHERE a.id = $1 AND a.user_id = $2`,
-      [id, user_id]
-    );
-    if (result.rows.length === 0) return res.status(404).json({ message: 'Agenda not found' });
-    res.json(result.rows[0]);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+            [id, user_id]
+        );
+        if (result.rows.length === 0) return res.status(404).json({ message: 'Agenda not found' });
+        res.json(result.rows[0]);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 //4. update agenda
 app.put('/api/agenda/:id/user/:user_id', async (req, res) => {
-  const { id, user_id } = req.params;
-  const { title, description, agenda_date, reminder_time, status_id, is_notified, is_done } = req.body;
+    const { id, user_id } = req.params;
+    const { title, description, agenda_date, reminder_time, status_id, is_notified, is_done } = req.body;
 
-  try {
-    const result = await client.query(
-      `UPDATE agenda_personal
+    try {
+        const result = await client.query(
+            `UPDATE agenda_personal
        SET title = $1,
            description = $2,
            agenda_date = $3,
@@ -6854,87 +6902,87 @@ app.put('/api/agenda/:id/user/:user_id', async (req, res) => {
            updated_at = NOW()
        WHERE id = $8 AND user_id = $9
        RETURNING *`,
-      [title, description, agenda_date, reminder_time, status_id, is_notified, is_done, id, user_id]
-    );
-    if (result.rows.length === 0) return res.status(404).json({ message: 'Agenda not found or unauthorized' });
-    res.json(result.rows[0]);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+            [title, description, agenda_date, reminder_time, status_id, is_notified, is_done, id, user_id]
+        );
+        if (result.rows.length === 0) return res.status(404).json({ message: 'Agenda not found or unauthorized' });
+        res.json(result.rows[0]);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 //4. 1 Update description
 app.put('/api/agenda/:id/user/:user_id/description', async (req, res) => {
-  const { id, user_id } = req.params;
-  const { description } = req.body;
+    const { id, user_id } = req.params;
+    const { description } = req.body;
 
-  try {
-    const result = await client.query(
-      `UPDATE agenda_personal
+    try {
+        const result = await client.query(
+            `UPDATE agenda_personal
        SET description = $1,
            updated_at = NOW()
        WHERE id = $2 AND user_id = $3
        RETURNING *`,
-      [description, id, user_id]
-    );
+            [description, id, user_id]
+        );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: 'Agenda not found or unauthorized' });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'Agenda not found or unauthorized' });
+        }
+
+        res.json(result.rows[0]);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
-
-    res.json(result.rows[0]);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
 });
 
 //4.2 update name agenda
 app.put('/api/agenda/:id/user/:user_id/title', async (req, res) => {
-  const { id, user_id } = req.params;
-  const { title } = req.body;
+    const { id, user_id } = req.params;
+    const { title } = req.body;
 
-  try {
-    const result = await client.query(
-      `UPDATE agenda_personal
+    try {
+        const result = await client.query(
+            `UPDATE agenda_personal
        SET title = $1,
            updated_at = NOW()
        WHERE id = $2 AND user_id = $3
        RETURNING *`,
-      [title, id, user_id]
-    );
+            [title, id, user_id]
+        );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: 'Agenda not found or unauthorized' });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'Agenda not found or unauthorized' });
+        }
+
+        res.json(result.rows[0]);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
-
-    res.json(result.rows[0]);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
 });
 
 
 
 //5. delete agenda
 app.delete('/api/agenda-user/:id/user/:user_id', async (req, res) => {
-  const { id, user_id } = req.params;
-  try {
-    const result = await client.query(
-      `DELETE FROM agenda_personal WHERE id = $1 AND user_id = $2 RETURNING *`,
-      [id, user_id]
-    );
-    if (result.rows.length === 0) return res.status(404).json({ message: 'Agenda not found or unauthorized' });
-    res.json({ message: 'Agenda deleted successfully' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+    const { id, user_id } = req.params;
+    try {
+        const result = await client.query(
+            `DELETE FROM agenda_personal WHERE id = $1 AND user_id = $2 RETURNING *`,
+            [id, user_id]
+        );
+        if (result.rows.length === 0) return res.status(404).json({ message: 'Agenda not found or unauthorized' });
+        res.json({ message: 'Agenda deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 // 6. mark check agenda (get unfinished agendas)
 app.get('/api/unfinished-agendas/:userId', async (req, res) => {
-  const { userId } = req.params;
-  try {
-    const result = await client.query(`
+    const { userId } = req.params;
+    try {
+        const result = await client.query(`
       SELECT a.*, s.name as status_name, s.color 
       FROM agenda_personal a
       LEFT JOIN agenda_status s ON a.status_id = s.id
@@ -6943,15 +6991,15 @@ app.get('/api/unfinished-agendas/:userId', async (req, res) => {
       ORDER BY a.agenda_date ASC
     `, [userId]);
 
-    res.json({
-      count: result.rowCount,
-      data: result.rows,
-      message: result.rowCount > 0 ? 'Unfinished agendas fetched successfully' : 'No unfinished agendas found'
-    });
-  } catch (err) {
-    console.error('Error fetching unfinished agendas with status:', err);
-    res.status(500).send('Failed to fetch unfinished agendas');
-  }
+        res.json({
+            count: result.rowCount,
+            data: result.rows,
+            message: result.rowCount > 0 ? 'Unfinished agendas fetched successfully' : 'No unfinished agendas found'
+        });
+    } catch (err) {
+        console.error('Error fetching unfinished agendas with status:', err);
+        res.status(500).send('Failed to fetch unfinished agendas');
+    }
 });
 
 
@@ -6959,9 +7007,9 @@ app.get('/api/unfinished-agendas/:userId', async (req, res) => {
 
 //6.1 mark check agenda (get finish agendas)
 app.get('/api/finish-agendas/:userId', async (req, res) => {
-  const { userId } = req.params;
-  try {
-    const result = await client.query(`
+    const { userId } = req.params;
+    try {
+        const result = await client.query(`
       SELECT a.*, s.name as status_name, s.color 
       FROM agenda_personal a
       LEFT JOIN agenda_status s ON a.status_id = s.id
@@ -6970,75 +7018,75 @@ app.get('/api/finish-agendas/:userId', async (req, res) => {
       ORDER BY a.agenda_date ASC
     `, [userId]);
 
-    res.json({
-      count: result.rowCount,
-      data: result.rows,
-      message: result.rowCount > 0 ? 'Finished agendas fetched successfully' : 'No finished agendas found'
-    });
-  } catch (err) {
-    console.error('Error fetching finished agendas:', err);
-    res.status(500).send('Failed to fetch finished agendas');
-  }
+        res.json({
+            count: result.rowCount,
+            data: result.rows,
+            message: result.rowCount > 0 ? 'Finished agendas fetched successfully' : 'No finished agendas found'
+        });
+    } catch (err) {
+        console.error('Error fetching finished agendas:', err);
+        res.status(500).send('Failed to fetch finished agendas');
+    }
 });
 
 
 
 // 7. Update is_done value (true or false) universal
 app.put('/api/update-agenda-status/:agendaId', async (req, res) => {
-  const { agendaId } = req.params;
-  const { is_done } = req.body; // frontend kirim nilai true atau false
+    const { agendaId } = req.params;
+    const { is_done } = req.body; // frontend kirim nilai true atau false
 
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
       UPDATE agenda_personal 
       SET is_done = $1 
       WHERE id = $2
       RETURNING *
     `, [is_done, agendaId]);
 
-    if (result.rowCount === 0) {
-      return res.status(404).json({ message: 'Agenda not found' });
-    }
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: 'Agenda not found' });
+        }
 
-    res.json({
-      message: `Agenda status updated to ${is_done}`,
-      updatedAgenda: result.rows[0]
-    });
-  } catch (err) {
-    console.error('Error updating agenda status:', err);
-    res.status(500).send('Failed to update agenda status');
-  }
+        res.json({
+            message: `Agenda status updated to ${is_done}`,
+            updatedAgenda: result.rows[0]
+        });
+    } catch (err) {
+        console.error('Error updating agenda status:', err);
+        res.status(500).send('Failed to update agenda status');
+    }
 });
 
 // 8. Update is_done with user check
 app.put('/api/update-agenda-status/:agendaId/user/:userId', async (req, res) => {
-  const { agendaId, userId } = req.params;
-  const { is_done } = req.body;
+    const { agendaId, userId } = req.params;
+    const { is_done } = req.body;
 
-  try {
-    // Pastikan agenda ini milik user yang benar
-    const check = await client.query(
-      'SELECT * FROM agenda_personal WHERE id = $1 AND user_id = $2',
-      [agendaId, userId]
-    );
+    try {
+        // Pastikan agenda ini milik user yang benar
+        const check = await client.query(
+            'SELECT * FROM agenda_personal WHERE id = $1 AND user_id = $2',
+            [agendaId, userId]
+        );
 
-    if (check.rowCount === 0) {
-      return res.status(403).json({ message: 'Agenda not found or access denied' });
+        if (check.rowCount === 0) {
+            return res.status(403).json({ message: 'Agenda not found or access denied' });
+        }
+
+        const result = await client.query(
+            'UPDATE agenda_personal SET is_done = $1 WHERE id = $2 RETURNING *',
+            [is_done, agendaId]
+        );
+
+        res.json({
+            message: `Agenda status updated to ${is_done}`,
+            updatedAgenda: result.rows[0]
+        });
+    } catch (err) {
+        console.error('Error updating agenda status:', err);
+        res.status(500).send('Failed to update agenda status');
     }
-
-    const result = await client.query(
-      'UPDATE agenda_personal SET is_done = $1 WHERE id = $2 RETURNING *',
-      [is_done, agendaId]
-    );
-
-    res.json({
-      message: `Agenda status updated to ${is_done}`,
-      updatedAgenda: result.rows[0]
-    });
-  } catch (err) {
-    console.error('Error updating agenda status:', err);
-    res.status(500).send('Failed to update agenda status');
-  }
 });
 
 
@@ -7048,83 +7096,83 @@ app.put('/api/update-agenda-status/:agendaId/user/:userId', async (req, res) => 
 //STATUS AGENDA
 //1. get all agenda status
 app.get('/api/agenda-status', async (req, res) => {
-  try {
-    const result = await client.query('SELECT * FROM agenda_status ORDER BY id ASC');
-    res.json(result.rows);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+    try {
+        const result = await client.query('SELECT * FROM agenda_status ORDER BY id ASC');
+        res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 //2. Get single status by ID
 app.get('/api/agenda-status/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const result = await client.query('SELECT * FROM agenda_status WHERE id = $1', [id]);
-    if (result.rows.length === 0) return res.status(404).json({ message: 'Status not found' });
-    res.json(result.rows[0]);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+    const { id } = req.params;
+    try {
+        const result = await client.query('SELECT * FROM agenda_status WHERE id = $1', [id]);
+        if (result.rows.length === 0) return res.status(404).json({ message: 'Status not found' });
+        res.json(result.rows[0]);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 //3. create new status
 app.post('/api/agenda-status', async (req, res) => {
-  const { name, description, color } = req.body;
-  try {
-    const result = await client.query(
-      `INSERT INTO agenda_status (name, description, color)
+    const { name, description, color } = req.body;
+    try {
+        const result = await client.query(
+            `INSERT INTO agenda_status (name, description, color)
        VALUES ($1, $2, $3) RETURNING *`,
-      [name, description, color]
-    );
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+            [name, description, color]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 //4. Update status
 app.put('/api/agenda-status/:id', async (req, res) => {
-  const { id } = req.params;
-  const { name, description, color } = req.body;
-  try {
-    const result = await client.query(
-      `UPDATE agenda_status SET name = $1, description = $2, color = $3 WHERE id = $4 RETURNING *`,
-      [name, description, color, id]
-    );
-    if (result.rows.length === 0) return res.status(404).json({ message: 'Status not found' });
-    res.json(result.rows[0]);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+    const { id } = req.params;
+    const { name, description, color } = req.body;
+    try {
+        const result = await client.query(
+            `UPDATE agenda_status SET name = $1, description = $2, color = $3 WHERE id = $4 RETURNING *`,
+            [name, description, color, id]
+        );
+        if (result.rows.length === 0) return res.status(404).json({ message: 'Status not found' });
+        res.json(result.rows[0]);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 //5. Delete status (with safety: only if not used in agenda_personal)
 app.delete('/api/agenda-status/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    // Cek apakah ada agenda menggunakan status ini
-    const check = await client.query('SELECT 1 FROM agenda_personal WHERE status_id = $1 LIMIT 1', [id]);
-    if (check.rows.length > 0) {
-      return res.status(400).json({ message: 'Cannot delete status: already used in agenda_personal' });
+    const { id } = req.params;
+    try {
+        // Cek apakah ada agenda menggunakan status ini
+        const check = await client.query('SELECT 1 FROM agenda_personal WHERE status_id = $1 LIMIT 1', [id]);
+        if (check.rows.length > 0) {
+            return res.status(400).json({ message: 'Cannot delete status: already used in agenda_personal' });
+        }
+
+        const result = await client.query('DELETE FROM agenda_status WHERE id = $1 RETURNING *', [id]);
+        if (result.rows.length === 0) return res.status(404).json({ message: 'Status not found' });
+
+        res.json({ message: 'Status deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
-
-    const result = await client.query('DELETE FROM agenda_status WHERE id = $1 RETURNING *', [id]);
-    if (result.rows.length === 0) return res.status(404).json({ message: 'Status not found' });
-
-    res.json({ message: 'Status deleted successfully' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
 });
 
 //6. Get single agenda + status by agenda_id and user_id
 app.get('/api/:id/user/:user_id', async (req, res) => {
-  const { id, user_id } = req.params;
+    const { id, user_id } = req.params;
 
-  try {
-    const result = await client.query(
-      `SELECT 
+    try {
+        const result = await client.query(
+            `SELECT 
           a.*, 
           s.name AS status_name, 
           s.description AS status_description,
@@ -7132,783 +7180,783 @@ app.get('/api/:id/user/:user_id', async (req, res) => {
        FROM agenda_personal a
        LEFT JOIN agenda_status s ON a.status_id = s.id
        WHERE a.id = $1 AND a.user_id = $2`,
-      [id, user_id]
-    );
+            [id, user_id]
+        );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: 'Agenda not found' });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'Agenda not found' });
+        }
+
+        res.json(result.rows[0]);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
-
-    res.json(result.rows[0]);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
 });
 
 
 // PROFILE 
 //1. get all profile
 app.get('/api/profile', async (req, res) => {
-  try {
-    const result = await client.query('SELECT * FROM profil ORDER BY id DESC');
-    res.json(result.rows);
-  } catch (error) {
-    res.status(500).json({ error: 'Gagal mengambil profil' });
-  }
+    try {
+        const result = await client.query('SELECT * FROM profil ORDER BY id DESC');
+        res.json(result.rows);
+    } catch (error) {
+        res.status(500).json({ error: 'Gagal mengambil profil' });
+    }
 })
 
 //2. get profile by id
 app.get('/api/profile/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const result = await client.query('SELECT * FROM profil WHERE id = $1', [id]);
-    if (result.rows.length === 0) return res.status(404).json({ error: 'Profil tidak ditemukan' });
-    res.json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: 'Gagal mengambil profil' });
-  }
+    const { id } = req.params;
+    try {
+        const result = await client.query('SELECT * FROM profil WHERE id = $1', [id]);
+        if (result.rows.length === 0) return res.status(404).json({ error: 'Profil tidak ditemukan' });
+        res.json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: 'Gagal mengambil profil' });
+    }
 })
 
 //USER PROFIL 
 //1. get profile by user 
 app.get('/api/profile-user/:userId', async (req, res) => {
-  const { userId } = req.params;
-  try {
-    const result = await client.query(`
+    const { userId } = req.params;
+    try {
+        const result = await client.query(`
         SELECT up.*, p.photo_url 
         FROM user_profil up 
         JOIN profil p ON up.profil_id = p.id 
         WHERE up.user_id = $1
       `, [userId]);
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Profil untuk user tidak ditemukan' });
-    }
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Profil untuk user tidak ditemukan' });
+        }
 
-    res.json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: 'Gagal mengambil profil user' });
-  }
+        res.json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: 'Gagal mengambil profil user' });
+    }
 })
 
 //2. add profile to user 
 app.post('/api/profile-user', async (req, res) => {
-  const { user_id, profil_id } = req.body;
+    const { user_id, profil_id } = req.body;
 
-  try {
-    const existing = await client.query(
-      'SELECT * FROM user_profil WHERE user_id = $1',
-      [user_id]
-    );
+    try {
+        const existing = await client.query(
+            'SELECT * FROM user_profil WHERE user_id = $1',
+            [user_id]
+        );
 
-    if (existing.rows.length > 0) {
-      return res.status(400).json({ error: 'User sudah memiliki profil' });
+        if (existing.rows.length > 0) {
+            return res.status(400).json({ error: 'User sudah memiliki profil' });
+        }
+
+        const created = await client.query(
+            'INSERT INTO user_profil (user_id, profil_id, created_at) VALUES ($1, $2, CURRENT_TIMESTAMP) RETURNING *',
+            [user_id, profil_id]
+        );
+
+        res.status(201).json({ message: 'Profil berhasil ditambahkan ke user', data: created.rows[0] });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Gagal menambahkan profil ke user' });
     }
-
-    const created = await client.query(
-      'INSERT INTO user_profil (user_id, profil_id, created_at) VALUES ($1, $2, CURRENT_TIMESTAMP) RETURNING *',
-      [user_id, profil_id]
-    );
-
-    res.status(201).json({ message: 'Profil berhasil ditambahkan ke user', data: created.rows[0] });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Gagal menambahkan profil ke user' });
-  }
 })
 
 //3. delete user profil
 app.delete('/api/profile-user/:userId', async (req, res) => {
-  const { userId } = req.params;
-  try {
-    const deleted = await client.query(
-      'DELETE FROM user_profil WHERE user_id = $1 RETURNING *',
-      [userId]
-    );
+    const { userId } = req.params;
+    try {
+        const deleted = await client.query(
+            'DELETE FROM user_profil WHERE user_id = $1 RETURNING *',
+            [userId]
+        );
 
-    if (deleted.rows.length === 0) {
-      return res.status(404).json({ error: 'Mapping profil user tidak ditemukan' });
+        if (deleted.rows.length === 0) {
+            return res.status(404).json({ error: 'Mapping profil user tidak ditemukan' });
+        }
+
+        res.json({ message: 'Mapping profil user berhasil dihapus', data: deleted.rows[0] });
+    } catch (error) {
+        res.status(500).json({ error: 'Gagal menghapus mapping profil user' });
     }
-
-    res.json({ message: 'Mapping profil user berhasil dihapus', data: deleted.rows[0] });
-  } catch (error) {
-    res.status(500).json({ error: 'Gagal menghapus mapping profil user' });
-  }
 })
 
 //4. update profile user
 app.put('/api/profile-user/:userId', async (req, res) => {
-  const userId = req.params.userId;
-  const { profil_id } = req.body;
+    const userId = req.params.userId;
+    const { profil_id } = req.body;
 
-  try {
-    const existing = await client.query(
-      'SELECT * FROM user_profil WHERE user_id = $1',
-      [userId]
-    );
+    try {
+        const existing = await client.query(
+            'SELECT * FROM user_profil WHERE user_id = $1',
+            [userId]
+        );
 
-    if (existing.rows.length === 0) {
-      return res.status(404).json({ error: 'Profil untuk user ini belum ada' });
+        if (existing.rows.length === 0) {
+            return res.status(404).json({ error: 'Profil untuk user ini belum ada' });
+        }
+
+        const updated = await client.query(
+            'UPDATE user_profil SET profil_id = $1, update_at = CURRENT_TIMESTAMP WHERE user_id = $2 RETURNING *',
+            [profil_id, userId]
+        );
+
+        res.json({ message: 'Profil user berhasil diperbarui', data: updated.rows[0] });
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        res.status(500).json({ error: 'Gagal memperbarui profil user' });
     }
-
-    const updated = await client.query(
-      'UPDATE user_profil SET profil_id = $1, update_at = CURRENT_TIMESTAMP WHERE user_id = $2 RETURNING *',
-      [profil_id, userId]
-    );
-
-    res.json({ message: 'Profil user berhasil diperbarui', data: updated.rows[0] });
-  } catch (error) {
-    console.error('Error updating profile:', error);
-    res.status(500).json({ error: 'Gagal memperbarui profil user' });
-  }
 })
 
 // MARKETING USER 
 // 1. Get semua marketing_user
 app.get("/api/marketing-users", async (req, res) => {
-  try {
-    const result = await client.query("SELECT * FROM marketing_musik_user ORDER BY id ASC");
-    res.json(result.rows);
-  } catch (err) {
-    console.error("❌ Error get marketing_musik_user:", err);
-    res.status(500).json({ error: "Gagal ambil data" });
-  }
+    try {
+        const result = await client.query("SELECT * FROM marketing_musik_user ORDER BY id ASC");
+        res.json(result.rows);
+    } catch (err) {
+        console.error("❌ Error get marketing_musik_user:", err);
+        res.status(500).json({ error: "Gagal ambil data" });
+    }
 });
 // 2.Get 1 user by ID
 app.get("/api/marketing-users/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await client.query("SELECT * FROM marketing_musik_user WHERE id = $1", [id]);
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "User tidak ditemukan" });
+    try {
+        const { id } = req.params;
+        const result = await client.query("SELECT * FROM marketing_musik_user WHERE id = $1", [id]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "User tidak ditemukan" });
+        }
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error get user:", err);
+        res.status(500).json({ error: "Gagal ambil user" });
     }
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Error get user:", err);
-    res.status(500).json({ error: "Gagal ambil user" });
-  }
 });
 
 // 3. Create user baru
 app.post("/api/marketing-users", async (req, res) => {
-  try {
-    const { nama_marketing, divisi } = req.body;
-    const result = await client.query(
-      `INSERT INTO marketing_musik_user (nama_marketing, divisi) 
+    try {
+        const { nama_marketing, divisi } = req.body;
+        const result = await client.query(
+            `INSERT INTO marketing_musik_user (nama_marketing, divisi) 
        VALUES ($1, $2) RETURNING *`,
-      [nama_marketing, divisi]
-    );
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Error create user:", err);
-    res.status(500).json({ error: "Gagal buat user baru" });
-  }
+            [nama_marketing, divisi]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error create user:", err);
+        res.status(500).json({ error: "Gagal buat user baru" });
+    }
 });
 
 // 4. Update user
 app.put("/api/marketing-users/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { nama_marketing, divisi } = req.body;
-    const result = await client.query(
-      `UPDATE marketing_musik_user 
+    try {
+        const { id } = req.params;
+        const { nama_marketing, divisi } = req.body;
+        const result = await client.query(
+            `UPDATE marketing_musik_user 
        SET nama_marketing=$1, divisi=$2, update_at=NOW() 
        WHERE id=$5 RETURNING *`,
-      [nama_marketing, divisi, id]
-    );
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "User tidak ditemukan" });
+            [nama_marketing, divisi, id]
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "User tidak ditemukan" });
+        }
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error update user:", err);
+        res.status(500).json({ error: "Gagal update user" });
     }
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Error update user:", err);
-    res.status(500).json({ error: "Gagal update user" });
-  }
 });
 
 // 5. Delete user
 app.delete("/api/marketing-users/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await client.query("DELETE FROM marketing_musik_user WHERE id=$1 RETURNING *", [id]);
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "User tidak ditemukan" });
+    try {
+        const { id } = req.params;
+        const result = await client.query("DELETE FROM marketing_musik_user WHERE id=$1 RETURNING *", [id]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "User tidak ditemukan" });
+        }
+        res.json({ message: "User berhasil dihapus" });
+    } catch (err) {
+        console.error("❌ Error delete user:", err);
+        res.status(500).json({ error: "Gagal hapus user" });
     }
-    res.json({ message: "User berhasil dihapus" });
-  } catch (err) {
-    console.error("❌ Error delete user:", err);
-    res.status(500).json({ error: "Gagal hapus user" });
-  }
 });
 
 // ACCOUNT MUSIC 
 // ✅ Ambil semua account
 app.get("/api/accounts-music", async (req, res) => {
-  try {
-    const result = await client.query("SELECT * FROM account_music ORDER BY id ASC");
-    res.json(result.rows);
-  } catch (err) {
-    console.error("❌ Error get accounts:", err);
-    res.status(500).json({ error: "Gagal ambil data accounts" });
-  }
+    try {
+        const result = await client.query("SELECT * FROM account_music ORDER BY id ASC");
+        res.json(result.rows);
+    } catch (err) {
+        console.error("❌ Error get accounts:", err);
+        res.status(500).json({ error: "Gagal ambil data accounts" });
+    }
 });
 
 // ✅ Ambil 1 account by ID
 app.get("/api/accounts-music/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await client.query("SELECT * FROM account_music WHERE id = $1", [id]);
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Account tidak ditemukan" });
+    try {
+        const { id } = req.params;
+        const result = await client.query("SELECT * FROM account_music WHERE id = $1", [id]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Account tidak ditemukan" });
+        }
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error get account:", err);
+        res.status(500).json({ error: "Gagal ambil account" });
     }
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Error get account:", err);
-    res.status(500).json({ error: "Gagal ambil account" });
-  }
 });
 
 // ✅ Tambah account baru
 app.post("/api/accounts-music", async (req, res) => {
-  try {
-    const { nama_account } = req.body;
-    const result = await client.query(
-      `INSERT INTO account_music (nama_account) 
+    try {
+        const { nama_account } = req.body;
+        const result = await client.query(
+            `INSERT INTO account_music (nama_account) 
        VALUES ($1) RETURNING *`,
-      [nama_account]
-    );
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Error create account:", err);
-    res.status(500).json({ error: "Gagal buat account baru" });
-  }
+            [nama_account]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error create account:", err);
+        res.status(500).json({ error: "Gagal buat account baru" });
+    }
 });
 
 // ✅ Update account
 app.put("/api/accounts-music/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { nama_account } = req.body;
-    const result = await client.query(
-      `UPDATE account_music 
+    try {
+        const { id } = req.params;
+        const { nama_account } = req.body;
+        const result = await client.query(
+            `UPDATE account_music 
        SET nama_account=$1, update_at=NOW() 
        WHERE id=$2 RETURNING *`,
-      [nama_account, id]
-    );
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Account tidak ditemukan" });
+            [nama_account, id]
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Account tidak ditemukan" });
+        }
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error update account:", err);
+        res.status(500).json({ error: "Gagal update account" });
     }
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Error update account:", err);
-    res.status(500).json({ error: "Gagal update account" });
-  }
 });
 
 // ✅ Hapus account
 app.delete("/api/accounts-music/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await client.query("DELETE FROM account_music WHERE id=$1 RETURNING *", [id]);
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Account tidak ditemukan" });
+    try {
+        const { id } = req.params;
+        const result = await client.query("DELETE FROM account_music WHERE id=$1 RETURNING *", [id]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Account tidak ditemukan" });
+        }
+        res.json({ message: "Account berhasil dihapus" });
+    } catch (err) {
+        console.error("❌ Error delete account:", err);
+        res.status(500).json({ error: "Gagal hapus account" });
     }
-    res.json({ message: "Account berhasil dihapus" });
-  } catch (err) {
-    console.error("❌ Error delete account:", err);
-    res.status(500).json({ error: "Gagal hapus account" });
-  }
 });
 
 // PROJECT TYPE MUSIC 
 // ✅ Get all project types
 app.get('/api/project-types-music', async (req, res) => {
-  try {
-    const result = await client.query('SELECT * FROM project_type ORDER BY id ASC');
-    res.json(result.rows);
-  } catch (err) {
-    console.error('❌ Error ambil project types:', err);
-    res.status(500).json({ error: 'Gagal ambil data project type' });
-  }
+    try {
+        const result = await client.query('SELECT * FROM project_type ORDER BY id ASC');
+        res.json(result.rows);
+    } catch (err) {
+        console.error('❌ Error ambil project types:', err);
+        res.status(500).json({ error: 'Gagal ambil data project type' });
+    }
 });
 
 // ✅ Get project type by ID
 app.get('/api/project-types-music/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await client.query('SELECT * FROM project_type WHERE id = $1', [id]);
+    try {
+        const { id } = req.params;
+        const result = await client.query('SELECT * FROM project_type WHERE id = $1', [id]);
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Project type tidak ditemukan' });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Project type tidak ditemukan' });
+        }
+
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error('❌ Error ambil project type by ID:', err);
+        res.status(500).json({ error: 'Gagal ambil project type' });
     }
-
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error('❌ Error ambil project type by ID:', err);
-    res.status(500).json({ error: 'Gagal ambil project type' });
-  }
 });
 
 // ✅ Create new project type
 app.post('/api/project-types-music', async (req, res) => {
-  try {
-    const { nama_project } = req.body;
-    const result = await client.query(
-      'INSERT INTO project_type (nama_project) VALUES ($1) RETURNING *',
-      [nama_project]
-    );
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.error('❌ Error tambah project type:', err);
-    res.status(500).json({ error: 'Gagal tambah project type' });
-  }
+    try {
+        const { nama_project } = req.body;
+        const result = await client.query(
+            'INSERT INTO project_type (nama_project) VALUES ($1) RETURNING *',
+            [nama_project]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        console.error('❌ Error tambah project type:', err);
+        res.status(500).json({ error: 'Gagal tambah project type' });
+    }
 });
 
 // ✅ Update project type
 app.put('/api/project-types-music/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { nama_project } = req.body;
+    try {
+        const { id } = req.params;
+        const { nama_project } = req.body;
 
-    const result = await client.query(
-      `UPDATE project_type 
+        const result = await client.query(
+            `UPDATE project_type 
        SET nama_project = $1, update_at = CURRENT_TIMESTAMP
        WHERE id = $2 RETURNING *`,
-      [nama_project, id]
-    );
+            [nama_project, id]
+        );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Project type tidak ditemukan' });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Project type tidak ditemukan' });
+        }
+
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error('❌ Error update project type:', err);
+        res.status(500).json({ error: 'Gagal update project type' });
     }
-
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error('❌ Error update project type:', err);
-    res.status(500).json({ error: 'Gagal update project type' });
-  }
 });
 
 // ✅ Delete project type
 app.delete('/api/project-types-music/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await client.query(
-      'DELETE FROM project_type WHERE id = $1 RETURNING *',
-      [id]
-    );
+    try {
+        const { id } = req.params;
+        const result = await client.query(
+            'DELETE FROM project_type WHERE id = $1 RETURNING *',
+            [id]
+        );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Project type tidak ditemukan' });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Project type tidak ditemukan' });
+        }
+
+        res.json({ message: 'Project type berhasil dihapus' });
+    } catch (err) {
+        console.error('❌ Error hapus project type:', err);
+        res.status(500).json({ error: 'Gagal hapus project type' });
     }
-
-    res.json({ message: 'Project type berhasil dihapus' });
-  } catch (err) {
-    console.error('❌ Error hapus project type:', err);
-    res.status(500).json({ error: 'Gagal hapus project type' });
-  }
 });
 
 // OFFER TYPE MUSIC 
 // ✅ Get all offer types
 app.get('/api/offer-types-music', async (req, res) => {
-  try {
-    const result = await client.query('SELECT * FROM offer_type_music ORDER BY id ASC');
-    res.json(result.rows);
-  } catch (err) {
-    console.error('❌ Error ambil offer types:', err);
-    res.status(500).json({ error: 'Gagal ambil data offer types' });
-  }
+    try {
+        const result = await client.query('SELECT * FROM offer_type_music ORDER BY id ASC');
+        res.json(result.rows);
+    } catch (err) {
+        console.error('❌ Error ambil offer types:', err);
+        res.status(500).json({ error: 'Gagal ambil data offer types' });
+    }
 });
 
 // ✅ Get offer type by ID
 app.get('/api/offer-types-music/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await client.query('SELECT * FROM offer_type_music WHERE id = $1', [id]);
+    try {
+        const { id } = req.params;
+        const result = await client.query('SELECT * FROM offer_type_music WHERE id = $1', [id]);
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Offer type tidak ditemukan' });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Offer type tidak ditemukan' });
+        }
+
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error('❌ Error ambil offer type by ID:', err);
+        res.status(500).json({ error: 'Gagal ambil offer type' });
     }
-
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error('❌ Error ambil offer type by ID:', err);
-    res.status(500).json({ error: 'Gagal ambil offer type' });
-  }
 });
 
 // ✅ Create new offer type
 app.post('/api/offer-types-music', async (req, res) => {
-  try {
-    const { offer_name } = req.body;
-    const result = await client.query(
-      'INSERT INTO offer_type_music (offer_name) VALUES ($1) RETURNING *',
-      [offer_name]
-    );
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.error('❌ Error tambah offer type:', err);
-    res.status(500).json({ error: 'Gagal tambah offer type' });
-  }
+    try {
+        const { offer_name } = req.body;
+        const result = await client.query(
+            'INSERT INTO offer_type_music (offer_name) VALUES ($1) RETURNING *',
+            [offer_name]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        console.error('❌ Error tambah offer type:', err);
+        res.status(500).json({ error: 'Gagal tambah offer type' });
+    }
 });
 
 // ✅ Update offer type
 app.put('/api/offer-types-music/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { offer_name } = req.body;
+    try {
+        const { id } = req.params;
+        const { offer_name } = req.body;
 
-    const result = await client.query(
-      `UPDATE offer_type_music 
+        const result = await client.query(
+            `UPDATE offer_type_music 
        SET offer_name = $1, update_at = CURRENT_TIMESTAMP
        WHERE id = $2 RETURNING *`,
-      [offer_name, id]
-    );
+            [offer_name, id]
+        );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Offer type tidak ditemukan' });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Offer type tidak ditemukan' });
+        }
+
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error('❌ Error update offer type:', err);
+        res.status(500).json({ error: 'Gagal update offer type' });
     }
-
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error('❌ Error update offer type:', err);
-    res.status(500).json({ error: 'Gagal update offer type' });
-  }
 });
 
 // ✅ Delete offer type
 app.delete('/api/offer-types-music/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await client.query(
-      'DELETE FROM offer_type_music WHERE id = $1 RETURNING *',
-      [id]
-    );
+    try {
+        const { id } = req.params;
+        const result = await client.query(
+            'DELETE FROM offer_type_music WHERE id = $1 RETURNING *',
+            [id]
+        );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Offer type tidak ditemukan' });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Offer type tidak ditemukan' });
+        }
+
+        res.json({ message: 'Offer type berhasil dihapus' });
+    } catch (err) {
+        console.error('❌ Error hapus offer type:', err);
+        res.status(500).json({ error: 'Gagal hapus offer type' });
     }
-
-    res.json({ message: 'Offer type berhasil dihapus' });
-  } catch (err) {
-    console.error('❌ Error hapus offer type:', err);
-    res.status(500).json({ error: 'Gagal hapus offer type' });
-  }
 });
 
 // TYPE TRACK 
 // ✅ Get all track types
 app.get('/api/track-types', async (req, res) => {
-  try {
-    const result = await client.query('SELECT * FROM track_types ORDER BY id ASC');
-    res.json(result.rows);
-  } catch (err) {
-    console.error('❌ Error ambil track types:', err);
-    res.status(500).json({ error: 'Gagal ambil data track types' });
-  }
+    try {
+        const result = await client.query('SELECT * FROM track_types ORDER BY id ASC');
+        res.json(result.rows);
+    } catch (err) {
+        console.error('❌ Error ambil track types:', err);
+        res.status(500).json({ error: 'Gagal ambil data track types' });
+    }
 });
 
 // ✅ Get track type by ID
 app.get('/api/track-types/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await client.query('SELECT * FROM track_types WHERE id = $1', [id]);
+    try {
+        const { id } = req.params;
+        const result = await client.query('SELECT * FROM track_types WHERE id = $1', [id]);
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Track type tidak ditemukan' });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Track type tidak ditemukan' });
+        }
+
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error('❌ Error ambil track type by ID:', err);
+        res.status(500).json({ error: 'Gagal ambil track type' });
     }
-
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error('❌ Error ambil track type by ID:', err);
-    res.status(500).json({ error: 'Gagal ambil track type' });
-  }
 });
 
 // ✅ Create new track type
 app.post('/api/track-types', async (req, res) => {
-  try {
-    const { track_name } = req.body;
-    const result = await client.query(
-      'INSERT INTO track_types (track_name) VALUES ($1) RETURNING *',
-      [track_name]
-    );
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.error('❌ Error tambah track type:', err);
-    res.status(500).json({ error: 'Gagal tambah track type' });
-  }
+    try {
+        const { track_name } = req.body;
+        const result = await client.query(
+            'INSERT INTO track_types (track_name) VALUES ($1) RETURNING *',
+            [track_name]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        console.error('❌ Error tambah track type:', err);
+        res.status(500).json({ error: 'Gagal tambah track type' });
+    }
 });
 
 // ✅ Update track type
 app.put('/api/track-types/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { track_name } = req.body;
+    try {
+        const { id } = req.params;
+        const { track_name } = req.body;
 
-    const result = await client.query(
-      `UPDATE track_types 
+        const result = await client.query(
+            `UPDATE track_types 
        SET track_name = $1, update_at = CURRENT_TIMESTAMP
        WHERE id = $2 RETURNING *`,
-      [track_name, id]
-    );
+            [track_name, id]
+        );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Track type tidak ditemukan' });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Track type tidak ditemukan' });
+        }
+
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error('❌ Error update track type:', err);
+        res.status(500).json({ error: 'Gagal update track type' });
     }
-
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error('❌ Error update track type:', err);
-    res.status(500).json({ error: 'Gagal update track type' });
-  }
 });
 
 // ✅ Delete track type
 app.delete('/api/track-types/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await client.query(
-      'DELETE FROM track_types WHERE id = $1 RETURNING *',
-      [id]
-    );
+    try {
+        const { id } = req.params;
+        const result = await client.query(
+            'DELETE FROM track_types WHERE id = $1 RETURNING *',
+            [id]
+        );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Track type tidak ditemukan' });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Track type tidak ditemukan' });
+        }
+
+        res.json({ message: 'Track type berhasil dihapus' });
+    } catch (err) {
+        console.error('❌ Error hapus track type:', err);
+        res.status(500).json({ error: 'Gagal hapus track type' });
     }
-
-    res.json({ message: 'Track type berhasil dihapus' });
-  } catch (err) {
-    console.error('❌ Error hapus track type:', err);
-    res.status(500).json({ error: 'Gagal hapus track type' });
-  }
 });
 
 // MUSIC GENRE 
 // ✅ GET semua genre
 app.get("/api/genre-music", async (req, res) => {
-  try {
-    const result = await client.query("SELECT * FROM genre_music ORDER BY id ASC");
-    res.json(result.rows);
-  } catch (err) {
-    console.error("❌ Error ambil genre:", err);
-    res.status(500).json({ error: "Gagal ambil genre" });
-  }
+    try {
+        const result = await client.query("SELECT * FROM genre_music ORDER BY id ASC");
+        res.json(result.rows);
+    } catch (err) {
+        console.error("❌ Error ambil genre:", err);
+        res.status(500).json({ error: "Gagal ambil genre" });
+    }
 });
 
 // ✅ GET genre by ID
 app.get("/api/genre-music/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await client.query("SELECT * FROM genre_music WHERE id = $1", [id]);
+    try {
+        const { id } = req.params;
+        const result = await client.query("SELECT * FROM genre_music WHERE id = $1", [id]);
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Genre tidak ditemukan" });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Genre tidak ditemukan" });
+        }
+
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error ambil genre by ID:", err);
+        res.status(500).json({ error: "Gagal ambil genre" });
     }
-
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Error ambil genre by ID:", err);
-    res.status(500).json({ error: "Gagal ambil genre" });
-  }
 });
 
 // ✅ CREATE genre baru
 app.post("/api/genre-music", async (req, res) => {
-  try {
-    const { genre_name } = req.body;
-    const result = await client.query(
-      "INSERT INTO genre_music (genre_name) VALUES ($1) RETURNING *",
-      [genre_name]
-    );
+    try {
+        const { genre_name } = req.body;
+        const result = await client.query(
+            "INSERT INTO genre_music (genre_name) VALUES ($1) RETURNING *",
+            [genre_name]
+        );
 
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Error tambah genre:", err);
-    res.status(500).json({ error: "Gagal tambah genre" });
-  }
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error tambah genre:", err);
+        res.status(500).json({ error: "Gagal tambah genre" });
+    }
 });
 
 // ✅ UPDATE genre
 app.put("/api/genre-music/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { genre_name } = req.body;
+    try {
+        const { id } = req.params;
+        const { genre_name } = req.body;
 
-    const result = await client.query(
-      `UPDATE genre_music 
+        const result = await client.query(
+            `UPDATE genre_music 
        SET genre_name = $1, update_at = CURRENT_TIMESTAMP 
        WHERE id = $2 RETURNING *`,
-      [genre_name, id]
-    );
+            [genre_name, id]
+        );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Genre tidak ditemukan" });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Genre tidak ditemukan" });
+        }
+
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error update genre:", err);
+        res.status(500).json({ error: "Gagal update genre" });
     }
-
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Error update genre:", err);
-    res.status(500).json({ error: "Gagal update genre" });
-  }
 });
 
 // ✅ DELETE genre
 app.delete("/api/genre-music/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await client.query(
-      "DELETE FROM genre_music WHERE id = $1 RETURNING *",
-      [id]
-    );
+    try {
+        const { id } = req.params;
+        const result = await client.query(
+            "DELETE FROM genre_music WHERE id = $1 RETURNING *",
+            [id]
+        );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Genre tidak ditemukan" });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Genre tidak ditemukan" });
+        }
+
+        res.json({ message: "Genre berhasil dihapus" });
+    } catch (err) {
+        console.error("❌ Error hapus genre:", err);
+        res.status(500).json({ error: "Gagal hapus genre" });
     }
-
-    res.json({ message: "Genre berhasil dihapus" });
-  } catch (err) {
-    console.error("❌ Error hapus genre:", err);
-    res.status(500).json({ error: "Gagal hapus genre" });
-  }
 });
 
 // ORDER TYPE MUSIC 
 // ✅ CREATE - Tambah order type baru
 app.post("/api/music-order-types", async (req, res) => {
-  try {
-    const { order_name } = req.body;
-    const result = await client.query(
-      `INSERT INTO music_order_type (order_name) 
+    try {
+        const { order_name } = req.body;
+        const result = await client.query(
+            `INSERT INTO music_order_type (order_name) 
        VALUES ($1) RETURNING *`,
-      [order_name]
-    );
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Error tambah music_order_type:", err);
-    res.status(500).json({ error: "Gagal tambah order type" });
-  }
+            [order_name]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error tambah music_order_type:", err);
+        res.status(500).json({ error: "Gagal tambah order type" });
+    }
 });
 
 // ✅ READ - Ambil semua order type
 app.get("/api/music-order-types", async (req, res) => {
-  try {
-    const result = await client.query("SELECT * FROM music_order_type ORDER BY id ASC");
-    res.json(result.rows);
-  } catch (err) {
-    console.error("❌ Error ambil music_order_type:", err);
-    res.status(500).json({ error: "Gagal ambil order type" });
-  }
+    try {
+        const result = await client.query("SELECT * FROM music_order_type ORDER BY id ASC");
+        res.json(result.rows);
+    } catch (err) {
+        console.error("❌ Error ambil music_order_type:", err);
+        res.status(500).json({ error: "Gagal ambil order type" });
+    }
 });
 
 // ✅ READ by ID - Ambil order type tertentu
 app.get("/api/music-order-types/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await client.query("SELECT * FROM music_order_type WHERE id = $1", [id]);
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Order type tidak ditemukan" });
+    try {
+        const { id } = req.params;
+        const result = await client.query("SELECT * FROM music_order_type WHERE id = $1", [id]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Order type tidak ditemukan" });
+        }
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error ambil order type by ID:", err);
+        res.status(500).json({ error: "Gagal ambil order type" });
     }
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Error ambil order type by ID:", err);
-    res.status(500).json({ error: "Gagal ambil order type" });
-  }
 });
 
 // ✅ UPDATE - Edit order type
 app.put("/api/music-order-types/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { order_name } = req.body;
-    const result = await client.query(
-      `UPDATE music_order_type 
+    try {
+        const { id } = req.params;
+        const { order_name } = req.body;
+        const result = await client.query(
+            `UPDATE music_order_type 
        SET order_name = $1, update_at = CURRENT_TIMESTAMP 
        WHERE id = $2 RETURNING *`,
-      [order_name, id]
-    );
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Order type tidak ditemukan" });
+            [order_name, id]
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Order type tidak ditemukan" });
+        }
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error update music_order_type:", err);
+        res.status(500).json({ error: "Gagal update order type" });
     }
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Error update music_order_type:", err);
-    res.status(500).json({ error: "Gagal update order type" });
-  }
 });
 
 // ✅ DELETE - Hapus order type
 app.delete("/api/music-order-types/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await client.query(
-      "DELETE FROM music_order_type WHERE id = $1 RETURNING *",
-      [id]
-    );
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Order type tidak ditemukan" });
+    try {
+        const { id } = req.params;
+        const result = await client.query(
+            "DELETE FROM music_order_type WHERE id = $1 RETURNING *",
+            [id]
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Order type tidak ditemukan" });
+        }
+        res.json({ message: "Order type berhasil dihapus" });
+    } catch (err) {
+        console.error("❌ Error hapus music_order_type:", err);
+        res.status(500).json({ error: "Gagal hapus order type" });
     }
-    res.json({ message: "Order type berhasil dihapus" });
-  } catch (err) {
-    console.error("❌ Error hapus music_order_type:", err);
-    res.status(500).json({ error: "Gagal hapus order type" });
-  }
 });
 // END ORDER TYPE MUSIC 
 
 //KEPALA DIVISI
 // ✅ GET semua kepala divisi
 app.get("/api/kepala-divisi", async (req, res) => {
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
       SELECT * FROM kepala_divisi
       ORDER BY id ASC
     `);
-    res.json(result.rows);
-  } catch (err) {
-    console.error("❌ Gagal ambil kepala divisi:", err.message);
-    res.status(500).json({ error: "Gagal ambil data kepala divisi" });
-  }
+        res.json(result.rows);
+    } catch (err) {
+        console.error("❌ Gagal ambil kepala divisi:", err.message);
+        res.status(500).json({ error: "Gagal ambil data kepala divisi" });
+    }
 });
 
 // ✅ POST tambah kepala divisi baru
 app.post("/api/kepala-divisi", async (req, res) => {
-  try {
-    const { nama, divisi } = req.body;
+    try {
+        const { nama, divisi } = req.body;
 
-    const result = await client.query(`
+        const result = await client.query(`
       INSERT INTO kepala_divisi (nama, divisi, create_at, update_at)
       VALUES ($1, $2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       RETURNING *
     `, [nama, divisi]);
 
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Gagal tambah kepala divisi:", err.message);
-    res.status(500).json({ error: "Gagal tambah kepala divisi" });
-  }
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Gagal tambah kepala divisi:", err.message);
+        res.status(500).json({ error: "Gagal tambah kepala divisi" });
+    }
 });
 
 // ✅ Optional: GET kepala divisi by id
 app.get("/api/kepala-divisi/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await client.query(`SELECT * FROM kepala_divisi WHERE id = $1`, [id]);
-    if (result.rows.length === 0) return res.status(404).json({ error: "Kepala divisi tidak ditemukan" });
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Error ambil kepala divisi:", err.message);
-    res.status(500).json({ error: "Gagal ambil kepala divisi" });
-  }
+    try {
+        const { id } = req.params;
+        const result = await client.query(`SELECT * FROM kepala_divisi WHERE id = $1`, [id]);
+        if (result.rows.length === 0) return res.status(404).json({ error: "Kepala divisi tidak ditemukan" });
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error ambil kepala divisi:", err.message);
+        res.status(500).json({ error: "Gagal ambil kepala divisi" });
+    }
 });
 
 // ✅ UPDATE Kepala Divisi
 app.put("/api/kepala-divisi/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { nama, divisi } = req.body;
+    try {
+        const { id } = req.params;
+        const { nama, divisi } = req.body;
 
-    const result = await client.query(`
+        const result = await client.query(`
       UPDATE kepala_divisi
       SET nama = $1,
           divisi = $2,
@@ -7917,33 +7965,33 @@ app.put("/api/kepala-divisi/:id", async (req, res) => {
       RETURNING *
     `, [nama, divisi, id]);
 
-    if (result.rows.length === 0) return res.status(404).json({ error: "Kepala divisi tidak ditemukan" });
+        if (result.rows.length === 0) return res.status(404).json({ error: "Kepala divisi tidak ditemukan" });
 
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Gagal update kepala divisi:", err.message);
-    res.status(500).json({ error: "Gagal update kepala divisi" });
-  }
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Gagal update kepala divisi:", err.message);
+        res.status(500).json({ error: "Gagal update kepala divisi" });
+    }
 });
 
 // ✅ DELETE Kepala Divisi
 app.delete("/api/kepala-divisi/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
+    try {
+        const { id } = req.params;
 
-    const result = await client.query(`
+        const result = await client.query(`
       DELETE FROM kepala_divisi
       WHERE id = $1
       RETURNING *
     `, [id]);
 
-    if (result.rows.length === 0) return res.status(404).json({ error: "Kepala divisi tidak ditemukan" });
+        if (result.rows.length === 0) return res.status(404).json({ error: "Kepala divisi tidak ditemukan" });
 
-    res.json({ message: "✅ Kepala divisi berhasil dihapus", deleted: result.rows[0] });
-  } catch (err) {
-    console.error("❌ Gagal hapus kepala divisi:", err.message);
-    res.status(500).json({ error: "Gagal hapus kepala divisi" });
-  }
+        res.json({ message: "✅ Kepala divisi berhasil dihapus", deleted: result.rows[0] });
+    } catch (err) {
+        console.error("❌ Gagal hapus kepala divisi:", err.message);
+        res.status(500).json({ error: "Gagal hapus kepala divisi" });
+    }
 });
 //END KEPALA DIVISI
 
@@ -7954,79 +8002,79 @@ app.delete("/api/kepala-divisi/:id", async (req, res) => {
 
 // ✅ Get semua kupon diskon
 app.get("/api/kupon-diskon", async (req, res) => {
-  try {
-    const result = await client.query("SELECT * FROM kupon_diskon ORDER BY id ASC");
-    res.json(result.rows);
-  } catch (err) {
-    console.error("❌ Error get kupon_diskon:", err);
-    res.status(500).json({ error: "Gagal mengambil data kupon diskon" });
-  }
+    try {
+        const result = await client.query("SELECT * FROM kupon_diskon ORDER BY id ASC");
+        res.json(result.rows);
+    } catch (err) {
+        console.error("❌ Error get kupon_diskon:", err);
+        res.status(500).json({ error: "Gagal mengambil data kupon diskon" });
+    }
 });
 
 // ✅ Get kupon diskon by ID
 app.get("/api/kupon-diskon/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await client.query("SELECT * FROM kupon_diskon WHERE id = $1", [id]);
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Kupon diskon tidak ditemukan" });
+    try {
+        const { id } = req.params;
+        const result = await client.query("SELECT * FROM kupon_diskon WHERE id = $1", [id]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Kupon diskon tidak ditemukan" });
+        }
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error get kupon_diskon by id:", err);
+        res.status(500).json({ error: "Gagal mengambil data kupon diskon" });
     }
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Error get kupon_diskon by id:", err);
-    res.status(500).json({ error: "Gagal mengambil data kupon diskon" });
-  }
 });
 
 // ✅ Create kupon diskon baru
 app.post("/api/kupon-diskon", async (req, res) => {
-  try {
-    const { nama_kupon } = req.body;
-    const result = await client.query(
-      "INSERT INTO kupon_diskon (nama_kupon) VALUES ($1) RETURNING *",
-      [nama_kupon]
-    );
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Error tambah kupon_diskon:", err);
-    res.status(500).json({ error: "Gagal tambah kupon diskon" });
-  }
+    try {
+        const { nama_kupon } = req.body;
+        const result = await client.query(
+            "INSERT INTO kupon_diskon (nama_kupon) VALUES ($1) RETURNING *",
+            [nama_kupon]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error tambah kupon_diskon:", err);
+        res.status(500).json({ error: "Gagal tambah kupon diskon" });
+    }
 });
 
 // ✅ Update kupon diskon
 app.put("/api/kupon-diskon/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { nama_kupon } = req.body;
-    const result = await client.query(
-      `UPDATE kupon_diskon 
+    try {
+        const { id } = req.params;
+        const { nama_kupon } = req.body;
+        const result = await client.query(
+            `UPDATE kupon_diskon 
        SET nama_kupon = $1, update_at = CURRENT_TIMESTAMP
        WHERE id = $2 RETURNING *`,
-      [nama_kupon, id]
-    );
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Kupon diskon tidak ditemukan" });
+            [nama_kupon, id]
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Kupon diskon tidak ditemukan" });
+        }
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error update kupon_diskon:", err);
+        res.status(500).json({ error: "Gagal update kupon diskon" });
     }
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Error update kupon_diskon:", err);
-    res.status(500).json({ error: "Gagal update kupon diskon" });
-  }
 });
 
 // ✅ Delete kupon diskon
 app.delete("/api/kupon-diskon/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await client.query("DELETE FROM kupon_diskon WHERE id = $1 RETURNING *", [id]);
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Kupon diskon tidak ditemukan" });
+    try {
+        const { id } = req.params;
+        const result = await client.query("DELETE FROM kupon_diskon WHERE id = $1 RETURNING *", [id]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Kupon diskon tidak ditemukan" });
+        }
+        res.json({ message: "Kupon diskon berhasil dihapus" });
+    } catch (err) {
+        console.error("❌ Error delete kupon_diskon:", err);
+        res.status(500).json({ error: "Gagal hapus kupon diskon" });
     }
-    res.json({ message: "Kupon diskon berhasil dihapus" });
-  } catch (err) {
-    console.error("❌ Error delete kupon_diskon:", err);
-    res.status(500).json({ error: "Gagal hapus kupon diskon" });
-  }
 });
 
 // END KUPON DISKON 
@@ -8034,35 +8082,35 @@ app.delete("/api/kupon-diskon/:id", async (req, res) => {
 //LOG ACTIVITY USER
 //1. menampilkan semua activity berdasarkan userId
 app.get('/api/user-log/:userId', async (req, res) => {
-  const { userId } = req.params;
+    const { userId } = req.params;
 
-  try {
-    const result = await client.query(
-      `SELECT * FROM activity_logs WHERE user_id = $1 ORDER BY "timestamp" DESC`,
-      [userId]
-    );
+    try {
+        const result = await client.query(
+            `SELECT * FROM activity_logs WHERE user_id = $1 ORDER BY "timestamp" DESC`,
+            [userId]
+        );
 
-    if (result.rowCount === 0) {
-      return res.status(200).json({ message: `User belum memiliki activity sekarang`, activities: [] });
+        if (result.rowCount === 0) {
+            return res.status(200).json({ message: `User belum memiliki activity sekarang`, activities: [] });
+        }
+
+        res.status(200).json({
+            message: `Activities for user ID ${userId}`,
+            activities: result.rows,
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-
-    res.status(200).json({
-      message: `Activities for user ID ${userId}`,
-      activities: result.rows,
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 });
 
 
 
 //LOG ACTIVITY CARD
 app.get('/api/activity-card/card/:cardId', async (req, res) => {
-  const { cardId } = req.params;
+    const { cardId } = req.params;
 
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
       SELECT ca.*, u.username
       FROM card_activities ca
       JOIN users u ON ca.user_id = u.id
@@ -8070,41 +8118,41 @@ app.get('/api/activity-card/card/:cardId', async (req, res) => {
       ORDER BY ca.created_at DESC
     `, [cardId]);
 
-    res.json({
-      message: `Activities for card ID ${cardId}`,
-      activities: result.rows,
-    });
-  } catch (err) {
-    console.error('Error fetching activities:', err);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
+        res.json({
+            message: `Activities for card ID ${cardId}`,
+            activities: result.rows,
+        });
+    } catch (err) {
+        console.error('Error fetching activities:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 })
 
 app.post('/api/activity-log', async (req, res) => {
-  const { entityType, entityId, action, userId, details, parentEntity, parentEntityId } = req.body;
+    const { entityType, entityId, action, userId, details, parentEntity, parentEntityId } = req.body;
 
-  try {
-    // Validasi input
-    if (!entityType || !entityId || !action || !userId) {
-      return res.status(400).json({ error: 'Missing required fields: entityType, entityId, action, userId' });
-    }
+    try {
+        // Validasi input
+        if (!entityType || !entityId || !action || !userId) {
+            return res.status(400).json({ error: 'Missing required fields: entityType, entityId, action, userId' });
+        }
 
-    // Menambahkan log aktivitas ke dalam tabel activity_logs
-    const result = await client.query(
-      `INSERT INTO activity_logs (entity_type, entity_id, action, user_id, details, parent_entity, parent_entity_id, "timestamp")
+        // Menambahkan log aktivitas ke dalam tabel activity_logs
+        const result = await client.query(
+            `INSERT INTO activity_logs (entity_type, entity_id, action, user_id, details, parent_entity, parent_entity_id, "timestamp")
          VALUES ($1, $2, $3, $4, $5, $6, $7, NOW()) RETURNING id`,
-      [entityType, entityId, action, userId, details, parentEntity, parentEntityId]
-    );
+            [entityType, entityId, action, userId, details, parentEntity, parentEntityId]
+        );
 
-    // Menanggapi jika log berhasil ditambahkan
-    res.status(201).json({
-      message: 'Activity log added successfully',
-      logId: result.rows[0].id
-    });
-  } catch (error) {
-    console.error('Error adding activity log:', error);
-    res.status(500).json({ error: error.message });
-  }
+        // Menanggapi jika log berhasil ditambahkan
+        res.status(201).json({
+            message: 'Activity log added successfully',
+            logId: result.rows[0].id
+        });
+    } catch (error) {
+        console.error('Error adding activity log:', error);
+        res.status(500).json({ error: error.message });
+    }
 });
 
 
@@ -8113,11 +8161,11 @@ app.post('/api/activity-log', async (req, res) => {
 //CHAT ROOM
 //1. mengambil semua data chat room
 app.get('/api/cards/:cardId/chats', async (req, res) => {
-  const { cardId } = req.params;
+    const { cardId } = req.params;
 
-  try {
-    const result = await client.query(
-      `SELECT 
+    try {
+        const result = await client.query(
+            `SELECT 
            cc.*, 
            u.username,
            p.profile_name,
@@ -8128,216 +8176,216 @@ app.get('/api/cards/:cardId/chats', async (req, res) => {
          LEFT JOIN profil p ON up.profil_id = p.id
          WHERE cc.card_id = $1 AND cc.deleted_at IS NULL
          ORDER BY cc.send_time ASC`,
-      [cardId]
-    );
+            [cardId]
+        );
 
-    const allChats = result.rows;
+        const allChats = result.rows;
 
-    // Buat map ID ke chat
-    const chatMap = {};
-    allChats.forEach(chat => {
-      chat.replies = [];
-      chatMap[chat.id] = chat;
-    });
+        // Buat map ID ke chat
+        const chatMap = {};
+        allChats.forEach(chat => {
+            chat.replies = [];
+            chatMap[chat.id] = chat;
+        });
 
-    // Susun struktur nested
-    const chatTree = [];
-    allChats.forEach(chat => {
-      if (chat.parent_message_id) {
-        const parent = chatMap[chat.parent_message_id];
-        if (parent) {
-          parent.replies.push(chat);
-        }
-      } else {
-        chatTree.push(chat);
-      }
-    });
+        // Susun struktur nested
+        const chatTree = [];
+        allChats.forEach(chat => {
+            if (chat.parent_message_id) {
+                const parent = chatMap[chat.parent_message_id];
+                if (parent) {
+                    parent.replies.push(chat);
+                }
+            } else {
+                chatTree.push(chat);
+            }
+        });
 
-    res.status(200).json(chatTree);
-  } catch (err) {
-    console.error('Error fetching chats:', err);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+        res.status(200).json(chatTree);
+    } catch (err) {
+        console.error('Error fetching chats:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 //2. post mention, create new chat 
 app.post('/api/cards/:cardId/chats', async (req, res) => {
-  try {
-    const { cardId } = req.params;
-    const { user_id, message, parent_message_id } = req.body;
+    try {
+        const { cardId } = req.params;
+        const { user_id, message, parent_message_id } = req.body;
 
-    // Step 1: Simpan chat dulu
-    const result = await client.query(
-      `INSERT INTO card_chats (card_id, user_id, message, parent_message_id)
+        // Step 1: Simpan chat dulu
+        const result = await client.query(
+            `INSERT INTO card_chats (card_id, user_id, message, parent_message_id)
        VALUES ($1, $2, $3, $4)
        RETURNING *`,
-      [cardId, user_id, message, parent_message_id]
-    );
-
-    const newChat = result.rows[0];
-
-    // Step 2: Notifikasi balasan
-    if (parent_message_id) {
-      const parent = await client.query(
-        `SELECT user_id FROM card_chats WHERE id = $1`,
-        [parent_message_id]
-      );
-
-      const parentUserId = parent.rows[0]?.user_id;
-
-      if (parentUserId && parentUserId !== user_id) {
-        // Ambil username dari pengirim pesan (bukan parent)
-        const senderResult = await client.query(
-          `SELECT username FROM users WHERE id = $1`,
-          [user_id]
+            [cardId, user_id, message, parent_message_id]
         );
 
-        const senderUsername = senderResult.rows[0]?.username || 'Someone';
+        const newChat = result.rows[0];
 
-        await client.query(
-          `INSERT INTO notifications (user_id, chat_id, message, type)
+        // Step 2: Notifikasi balasan
+        if (parent_message_id) {
+            const parent = await client.query(
+                `SELECT user_id FROM card_chats WHERE id = $1`,
+                [parent_message_id]
+            );
+
+            const parentUserId = parent.rows[0]?.user_id;
+
+            if (parentUserId && parentUserId !== user_id) {
+                // Ambil username dari pengirim pesan (bukan parent)
+                const senderResult = await client.query(
+                    `SELECT username FROM users WHERE id = $1`,
+                    [user_id]
+                );
+
+                const senderUsername = senderResult.rows[0]?.username || 'Someone';
+
+                await client.query(
+                    `INSERT INTO notifications (user_id, chat_id, message, type)
         VALUES ($1, $2, $3, 'reply')`,
-          [parentUserId, newChat.id, `${senderUsername} replied to your message`]
-        );
-      }
-    }
-
-
-    // Step 3: Mention detection
-    const mentionMatches = message.match(/@(\w+)/g);
-    let mentionedUserIds = [];
-
-    if (mentionMatches) {
-      for (const mention of mentionMatches) {
-        const username = mention.slice(1); // Hapus "@"
-
-        const userResult = await client.query(
-          `SELECT id FROM users WHERE username = $1`,
-          [username]
-        );
-
-        if (userResult.rows.length > 0) {
-          const mentionedUserId = userResult.rows[0].id;
-          mentionedUserIds.push(mentionedUserId);
-
-          // Simpan notifikasi mention
-          await client.query(
-            `INSERT INTO notifications (user_id, chat_id, message, type)
-             VALUES ($1, $2, $3, 'mention')`,
-            [mentionedUserId, newChat.id, message]
-          );
+                    [parentUserId, newChat.id, `${senderUsername} replied to your message`]
+                );
+            }
         }
-      }
 
-      // Step 4: Simpan list user_id ke kolom mentions (jsonb)
-      await client.query(
-        `UPDATE card_chats SET mentions = $1 WHERE id = $2`,
-        [JSON.stringify(mentionedUserIds), newChat.id]
-      );
+
+        // Step 3: Mention detection
+        const mentionMatches = message.match(/@(\w+)/g);
+        let mentionedUserIds = [];
+
+        if (mentionMatches) {
+            for (const mention of mentionMatches) {
+                const username = mention.slice(1); // Hapus "@"
+
+                const userResult = await client.query(
+                    `SELECT id FROM users WHERE username = $1`,
+                    [username]
+                );
+
+                if (userResult.rows.length > 0) {
+                    const mentionedUserId = userResult.rows[0].id;
+                    mentionedUserIds.push(mentionedUserId);
+
+                    // Simpan notifikasi mention
+                    await client.query(
+                        `INSERT INTO notifications (user_id, chat_id, message, type)
+             VALUES ($1, $2, $3, 'mention')`,
+                        [mentionedUserId, newChat.id, message]
+                    );
+                }
+            }
+
+            // Step 4: Simpan list user_id ke kolom mentions (jsonb)
+            await client.query(
+                `UPDATE card_chats SET mentions = $1 WHERE id = $2`,
+                [JSON.stringify(mentionedUserIds), newChat.id]
+            );
+        }
+
+        // Step 5: Ambil data chat setelah mentions di-update
+        const updatedChat = await client.query(
+            `SELECT * FROM card_chats WHERE id = $1`,
+            [newChat.id]
+        );
+
+        res.status(201).json(updatedChat.rows[0]);
+
+    } catch (err) {
+        console.error('Error post chat:', err);
+        res.status(500).json({ error: 'Internal server error' });
     }
-
-    // Step 5: Ambil data chat setelah mentions di-update
-    const updatedChat = await client.query(
-      `SELECT * FROM card_chats WHERE id = $1`,
-      [newChat.id]
-    );
-
-    res.status(201).json(updatedChat.rows[0]);
-
-  } catch (err) {
-    console.error('Error post chat:', err);
-    res.status(500).json({ error: 'Internal server error' });
-  }
 });
 
 //3. soft delete message
 app.delete('/api/chats/:chatId', async (req, res) => {
-  const { chatId } = req.params;
+    const { chatId } = req.params;
 
-  try {
-    // Tandai pesan sebagai dihapus
-    await client.query(
-      `UPDATE card_chats 
+    try {
+        // Tandai pesan sebagai dihapus
+        await client.query(
+            `UPDATE card_chats 
          SET deleted_at = NOW(), message = '[pesan dihapus]' 
          WHERE id = $1`,
-      [chatId]
-    );
+            [chatId]
+        );
 
-    res.status(200).json({ message: 'Pesan berhasil dihapus (soft delete)' });
-  } catch (err) {
-    console.error('Error deleting chat:', err);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+        res.status(200).json({ message: 'Pesan berhasil dihapus (soft delete)' });
+    } catch (err) {
+        console.error('Error deleting chat:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 })
 
 //4. get total message card
 app.get('/api/chats-total/cards/:cardId', async (req, res) => {
-  const { cardId } = req.params;
+    const { cardId } = req.params;
 
-  try {
-    const result = await client.query(
-      `SELECT COUNT(*) AS message_count FROM card_chats WHERE card_id = $1 AND deleted_at IS NULL`,
-      [cardId]
-    );
+    try {
+        const result = await client.query(
+            `SELECT COUNT(*) AS message_count FROM card_chats WHERE card_id = $1 AND deleted_at IS NULL`,
+            [cardId]
+        );
 
-    res.json({ cardId, messageCount: parseInt(result.rows[0].message_count) });
-  } catch (err) {
-    console.error('Error getting message count:', err);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+        res.json({ cardId, messageCount: parseInt(result.rows[0].message_count) });
+    } catch (err) {
+        console.error('Error getting message count:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 })
 
 //5. menampilkan mention 
 app.get('/api/notification-mention/:userId', async (req, res) => {
-  const { userId } = req.params;
+    const { userId } = req.params;
 
-  try {
-    const result = await client.query(
-      `SELECT * FROM notifications
+    try {
+        const result = await client.query(
+            `SELECT * FROM notifications
        WHERE user_id = $1
        ORDER BY created_at DESC`,
-      [userId]
-    );
+            [userId]
+        );
 
-    res.json(result.rows);
-  } catch (err) {
-    console.error('Error fetching notifications:', err);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Error fetching notifications:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 })
 
 //6. endpoin untuk menampilkan endpoin yang sudah dibaca
 app.patch('/api/notification-read/:id', async (req, res) => {
-  const { id } = req.params;
+    const { id } = req.params;
 
-  try {
-    await client.query(
-      `UPDATE notifications SET is_read = true WHERE id = $1`,
-      [id]
-    );
+    try {
+        await client.query(
+            `UPDATE notifications SET is_read = true WHERE id = $1`,
+            [id]
+        );
 
-    res.json({ success: true });
-  } catch (error) {
-    console.error('Error markeing notification is read:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error markeing notification is read:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 })
 
 //7. endpoin delete notification by user
 app.delete('/api/notifications/:id', async (req, res) => {
-  const { id } = req.params;
+    const { id } = req.params;
 
-  try {
-    const result = await client.query(
-      `DELETE FROM notifications WHERE id = $1`,
-      [id]
-    );
+    try {
+        const result = await client.query(
+            `DELETE FROM notifications WHERE id = $1`,
+            [id]
+        );
 
-    res.json({ success: true, message: `Delete notifications with id ${id}` });
-  } catch (error) {
-    console.error('Error deleting notifications:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+        res.json({ success: true, message: `Delete notifications with id ${id}` });
+    } catch (error) {
+        console.error('Error deleting notifications:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 })
 
 
@@ -8345,78 +8393,78 @@ app.delete('/api/notifications/:id', async (req, res) => {
 //SCHEDULE
 //1. create new schedule, but just 1 day
 app.post('/api/schedule', async (req, res) => {
-  const { user_id, day_id, shift_id } = req.body;
-  try {
-    const result = await client.query(
-      `INSERT INTO user_weekly_schedule (user_id, day_id, shift_id)
+    const { user_id, day_id, shift_id } = req.body;
+    try {
+        const result = await client.query(
+            `INSERT INTO user_weekly_schedule (user_id, day_id, shift_id)
            VALUES ($1, $2, $3)
            ON CONFLICT (user_id, day_id) DO UPDATE SET shift_id = EXCLUDED.shift_id
            RETURNING *`,
-      [user_id, day_id, shift_id]
-    );
-    res.status(201).json(result.rows[0]);
-  } catch (error) {
-    console.error('Insert error:', error);
-    res.status(500).json({ message: 'Failed to add schedule' });
-  }
+            [user_id, day_id, shift_id]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (error) {
+        console.error('Insert error:', error);
+        res.status(500).json({ message: 'Failed to add schedule' });
+    }
 })
 
 //2. update shedule 
 app.put('/api/update-schedule/:scheduleId', async (req, res) => {
-  const { scheduleId } = req.params;
-  const { shift_id } = req.body;
+    const { scheduleId } = req.params;
+    const { shift_id } = req.body;
 
-  try {
-    const result = await client.query(
-      `UPDATE user_weekly_schedule
+    try {
+        const result = await client.query(
+            `UPDATE user_weekly_schedule
          SET shift_id = $1, updated_at = NOW()
          WHERE schedule_id = $2
          RETURNING *`,
-      [shift_id, scheduleId]
-    );
-    res.status(200).json({
-      message: 'Jadwal berhasil diperbarui',
-      data: result.rows[0]
-    });
-  } catch (error) {
-    console.error('Update error:', error);
-    res.status(500).json({ message: 'Failed to update schedule' });
-  }
+            [shift_id, scheduleId]
+        );
+        res.status(200).json({
+            message: 'Jadwal berhasil diperbarui',
+            data: result.rows[0]
+        });
+    } catch (error) {
+        console.error('Update error:', error);
+        res.status(500).json({ message: 'Failed to update schedule' });
+    }
 })
 
 //3. delete schedule per hari
 app.delete('/api/delete-schedule/:scheduleId', async (req, res) => {
-  const { scheduleId } = req.params;
-  try {
-    await client.query(
-      `DELETE FROM user_weekly_schedule WHERE schedule_id = $1`,
-      [scheduleId]
-    );
-    res.json({ message: 'Schedule deleted' });
-  } catch (error) {
-    console.error('Delete error:', error);
-    res.status(500).json({ message: 'Failed to delete schedule' });
-  }
+    const { scheduleId } = req.params;
+    try {
+        await client.query(
+            `DELETE FROM user_weekly_schedule WHERE schedule_id = $1`,
+            [scheduleId]
+        );
+        res.json({ message: 'Schedule deleted' });
+    } catch (error) {
+        console.error('Delete error:', error);
+        res.status(500).json({ message: 'Failed to delete schedule' });
+    }
 })
 
 //4. get schedule by user 
 app.get('/api/user-schedule/:userId', async (req, res) => {
-  const { userId } = req.params;
-  try {
-    const result = await client.query(
-      `SELECT s.schedule_id, d.days_name, sh.status_shift, sh.keterangan
+    const { userId } = req.params;
+    try {
+        const result = await client.query(
+            `SELECT s.schedule_id, d.days_name, sh.status_shift, sh.keterangan
             FROM user_weekly_schedule s
             JOIN days_of_week d ON s.day_id = d.days_id
             JOIN shift_schedule sh ON s.shift_id = sh.shift_id
             WHERE s.user_id = $1
             ORDER BY d.days_id ASC`,
-      [userId]
-    );
-    res.json(result.rows);
-  } catch (error) {
-    console.error('Fetch error:', error);
-    res.status(500).json({ message: 'Failed to fetch schedule' });
-  }
+            [userId]
+        );
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Fetch error:', error);
+        res.status(500).json({ message: 'Failed to fetch schedule' });
+    }
 })
 
 //5. get all shift
@@ -8433,52 +8481,52 @@ app.get('/api/user-schedule/:userId', async (req, res) => {
 
 //update employee shift
 app.put('/api/schedule-weekly', async (req, res) => {
-  const { employee_id, day_id, shift_id } = req.body;
+    const { employee_id, day_id, shift_id } = req.body;
 
-  if (!employee_id || !day_id) {
-    return res.status(400).json({ message: 'employee_id dan day_id wajib diisi' });
-  }
+    if (!employee_id || !day_id) {
+        return res.status(400).json({ message: 'employee_id dan day_id wajib diisi' });
+    }
 
-  const today = new Date().toISOString().slice(0, 10); // format: YYYY-MM-DD
+    const today = new Date().toISOString().slice(0, 10); // format: YYYY-MM-DD
 
-  try {
-    // Cek apakah data sudah ada berdasarkan employee_id dan schedule_date
-    const checkQuery = `
+    try {
+        // Cek apakah data sudah ada berdasarkan employee_id dan schedule_date
+        const checkQuery = `
       SELECT id FROM employee_schedule 
       WHERE employee_id = $1 AND schedule_date = $2 AND day_id = $3
     `;
-    const checkResult = await client.query(checkQuery, [employee_id, today, day_id]);
+        const checkResult = await client.query(checkQuery, [employee_id, today, day_id]);
 
-    if (checkResult.rows.length > 0) {
-      // Sudah ada, update
-      const updateQuery = `
+        if (checkResult.rows.length > 0) {
+            // Sudah ada, update
+            const updateQuery = `
         UPDATE employee_schedule
         SET shift_id = $1
         WHERE employee_id = $2 AND schedule_date = $3 AND day_id = $4
       `;
-      await client.query(updateQuery, [shift_id || null, employee_id, today, day_id]);
-    } else {
-      // Belum ada, insert
-      const insertQuery = `
+            await client.query(updateQuery, [shift_id || null, employee_id, today, day_id]);
+        } else {
+            // Belum ada, insert
+            const insertQuery = `
         INSERT INTO employee_schedule (employee_id, day_id, shift_id, schedule_date)
         VALUES ($1, $2, $3, $4)
       `;
-      await client.query(insertQuery, [employee_id, day_id, shift_id || null, today]);
-    }
+            await client.query(insertQuery, [employee_id, day_id, shift_id || null, today]);
+        }
 
-    res.json({ message: 'Shift berhasil diperbarui' });
-  } catch (error) {
-    console.error('Error updating shift:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
+        res.json({ message: 'Shift berhasil diperbarui' });
+    } catch (error) {
+        console.error('Error updating shift:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 });
 
 
 // NEW EMPLOYEE SCHEDULE
 //1. get all schedule
 app.get('/api/schedules', async (req, res) => {
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
           SELECT es.id, es.schedule_date, sd.day_name, ss.status_shift, de.name AS employee_name
           FROM employee_schedule es
           JOIN data_employees de ON es.employee_id = de.id
@@ -8486,16 +8534,16 @@ app.get('/api/schedules', async (req, res) => {
           LEFT JOIN schedule_day sd ON es.day_id = sd.day_id
           ORDER BY de.name, es.schedule_date
         `);
-    res.json(result.rows);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+        res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 })
 //2. get schedule by employee
 app.get('/api/schedule-employee/:employeeId', async (req, res) => {
-  const { employeeId } = req.params;
-  try {
-    const result = await client.query(`
+    const { employeeId } = req.params;
+    try {
+        const result = await client.query(`
         SELECT es.id, es.schedule_date, sd.day_name, ss.status_shift
         FROM employee_schedule es
         LEFT JOIN shift_schedule ss ON es.shift_id = ss.shift_id
@@ -8503,16 +8551,16 @@ app.get('/api/schedule-employee/:employeeId', async (req, res) => {
         WHERE es.employee_id = $1
         ORDER BY es.schedule_date
       `, [employeeId]);
-    res.json(result.rows);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+        res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 })
 
 // 3. get all employee shedule dalam seminggu
 app.get('/api/schedule-weekly', async (req, res) => {
-  try {
-    const query = `
+    try {
+        const query = `
           SELECT 
             e.id AS employee_id,
             e.name AS employee_name,
@@ -8529,33 +8577,33 @@ app.get('/api/schedule-weekly', async (req, res) => {
           ORDER BY e.id, d.day_id;
         `;
 
-    const { rows } = await client.query(query);
+        const { rows } = await client.query(query);
 
-    // Transform data menjadi format tabel:
-    const result = {};
-    rows.forEach(row => {
-      const { employee_id, employee_divisi, employee_name, day_name, shift } = row;
-      if (!result[employee_id]) {
-        result[employee_id] = { employee_id, employee_divisi, Nama: employee_name };
-      }
-      result[employee_id][day_name] = shift;
-    });
+        // Transform data menjadi format tabel:
+        const result = {};
+        rows.forEach(row => {
+            const { employee_id, employee_divisi, employee_name, day_name, shift } = row;
+            if (!result[employee_id]) {
+                result[employee_id] = { employee_id, employee_divisi, Nama: employee_name };
+            }
+            result[employee_id][day_name] = shift;
+        });
 
-    // Convert object to array
-    const formatted = Object.values(result);
+        // Convert object to array
+        const formatted = Object.values(result);
 
-    res.json(formatted);
-  } catch (error) {
-    console.error('Error getting employee schedules:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
+        res.json(formatted);
+    } catch (error) {
+        console.error('Error getting employee schedules:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 })
 
 // NEW SCHEDULE EMPLOYEE
 //1. view data schedule employee 
 app.get('/api/employee-schedule/view', async (req, res) => {
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
       SELECT 
         e.id AS employee_id,
         e.name,
@@ -8574,21 +8622,21 @@ app.get('/api/employee-schedule/view', async (req, res) => {
       GROUP BY e.id, e.name, e.divisi
       ORDER BY e.name
     `);
-    res.json(result.rows);
-  } catch (error) {
-    console.error('Error fetching schedule:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error fetching schedule:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 
 
 //1.2 view data shcedule employee by employee id
 app.get('/api/employee-schedule/view/:employeeId', async (req, res) => {
-  const { employeeId } = req.params;
+    const { employeeId } = req.params;
 
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
       SELECT 
         e.id,
         e.name,
@@ -8608,189 +8656,189 @@ app.get('/api/employee-schedule/view/:employeeId', async (req, res) => {
       GROUP BY e.id, e.name, e.divisi
     `, [employeeId]);
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: 'Employee schedule not found.' });
-    }
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'Employee schedule not found.' });
+        }
 
-    res.json(result.rows[0]);
-  } catch (error) {
-    console.error('Error fetching employee schedule:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error('Error fetching employee schedule:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 
 //2. post endpoin 
 app.post("/api/employee-schedule", async (req, res) => {
-  const { name, divisi, schedules } = req.body;
+    const { name, divisi, schedules } = req.body;
 
-  try {
-    // 1. Cek apakah employee sudah ada
-    const employeeCheck = await client.query(
-      "SELECT id FROM employees WHERE name = $1 AND divisi = $2",
-      [name, divisi]
-    );
+    try {
+        // 1. Cek apakah employee sudah ada
+        const employeeCheck = await client.query(
+            "SELECT id FROM employees WHERE name = $1 AND divisi = $2",
+            [name, divisi]
+        );
 
-    let employeeId;
+        let employeeId;
 
-    if (employeeCheck.rows.length > 0) {
-      // Sudah ada
-      employeeId = employeeCheck.rows[0].id;
-    } else {
-      // Belum ada, tambahkan employee
-      const insertEmployee = await client.query(
-        "INSERT INTO employees (name, divisi) VALUES ($1, $2) RETURNING id",
-        [name, divisi]
-      );
-      employeeId = insertEmployee.rows[0].id;
-    }
+        if (employeeCheck.rows.length > 0) {
+            // Sudah ada
+            employeeId = employeeCheck.rows[0].id;
+        } else {
+            // Belum ada, tambahkan employee
+            const insertEmployee = await client.query(
+                "INSERT INTO employees (name, divisi) VALUES ($1, $2) RETURNING id",
+                [name, divisi]
+            );
+            employeeId = insertEmployee.rows[0].id;
+        }
 
-    // 2. Simpan shift untuk setiap hari ke tabel employee_schedules
-    for (const s of schedules) {
-      await client.query(
-        `INSERT INTO employee_schedules (employee_id, day_id, shift_id)
+        // 2. Simpan shift untuk setiap hari ke tabel employee_schedules
+        for (const s of schedules) {
+            await client.query(
+                `INSERT INTO employee_schedules (employee_id, day_id, shift_id)
          VALUES ($1, $2, $3)`,
-        [employeeId, s.day_id, s.shift_id]
-      );
-    }
+                [employeeId, s.day_id, s.shift_id]
+            );
+        }
 
-    res.status(201).json({ message: "Jadwal shift berhasil disimpan!" });
-  } catch (err) {
-    console.error("Error saving employee schedule:", err);
-    res.status(500).json({ error: "Terjadi kesalahan saat menyimpan shift." });
-  }
+        res.status(201).json({ message: "Jadwal shift berhasil disimpan!" });
+    } catch (err) {
+        console.error("Error saving employee schedule:", err);
+        res.status(500).json({ error: "Terjadi kesalahan saat menyimpan shift." });
+    }
 });
 
 //3. Update seluruh data karyawan dan jadwal shift
 app.put("/api/employee-schedule/:employeeId", async (req, res) => {
-  const { employeeId } = req.params;
-  const { name, divisi, schedules } = req.body;
+    const { employeeId } = req.params;
+    const { name, divisi, schedules } = req.body;
 
-  try {
-    // Update nama dan divisi employee
-    await client.query(
-      "UPDATE employees SET name = $1, divisi = $2 WHERE id = $3",
-      [name, divisi, employeeId]
-    );
+    try {
+        // Update nama dan divisi employee
+        await client.query(
+            "UPDATE employees SET name = $1, divisi = $2 WHERE id = $3",
+            [name, divisi, employeeId]
+        );
 
-    // Hapus semua jadwal lama
-    await client.query("DELETE FROM employee_schedules WHERE employee_id = $1", [employeeId]);
+        // Hapus semua jadwal lama
+        await client.query("DELETE FROM employee_schedules WHERE employee_id = $1", [employeeId]);
 
-    // Masukkan jadwal baru
-    for (const s of schedules) {
-      await client.query(
-        "INSERT INTO employee_schedules (employee_id, day_id, shift_id) VALUES ($1, $2, $3)",
-        [employeeId, s.day_id, s.shift_id]
-      );
+        // Masukkan jadwal baru
+        for (const s of schedules) {
+            await client.query(
+                "INSERT INTO employee_schedules (employee_id, day_id, shift_id) VALUES ($1, $2, $3)",
+                [employeeId, s.day_id, s.shift_id]
+            );
+        }
+
+        res.status(200).json({ message: "Data karyawan dan jadwal berhasil diupdate." });
+    } catch (err) {
+        console.error("Error updating employee schedule:", err);
+        res.status(500).json({ error: "Terjadi kesalahan saat mengupdate data." });
     }
-
-    res.status(200).json({ message: "Data karyawan dan jadwal berhasil diupdate." });
-  } catch (err) {
-    console.error("Error updating employee schedule:", err);
-    res.status(500).json({ error: "Terjadi kesalahan saat mengupdate data." });
-  }
 });
 
 //4. Update hanya jadwal shift tanpa mengubah nama dan divisi
 app.put("/api/employee-schedule/:employeeId/schedules", async (req, res) => {
-  const { employeeId } = req.params;
-  const { schedules } = req.body;
+    const { employeeId } = req.params;
+    const { schedules } = req.body;
 
-  try {
-    // Hapus semua jadwal lama
-    await client.query("DELETE FROM employee_schedules WHERE employee_id = $1", [employeeId]);
+    try {
+        // Hapus semua jadwal lama
+        await client.query("DELETE FROM employee_schedules WHERE employee_id = $1", [employeeId]);
 
-    // Masukkan jadwal baru
-    for (const s of schedules) {
-      await client.query(
-        "INSERT INTO employee_schedules (employee_id, day_id, shift_id) VALUES ($1, $2, $3)",
-        [employeeId, s.day_id, s.shift_id]
-      );
+        // Masukkan jadwal baru
+        for (const s of schedules) {
+            await client.query(
+                "INSERT INTO employee_schedules (employee_id, day_id, shift_id) VALUES ($1, $2, $3)",
+                [employeeId, s.day_id, s.shift_id]
+            );
+        }
+
+        res.status(200).json({ message: "Jadwal shift berhasil diupdate." });
+    } catch (err) {
+        console.error("Error updating schedules:", err);
+        res.status(500).json({ error: "Terjadi kesalahan saat mengupdate jadwal." });
     }
-
-    res.status(200).json({ message: "Jadwal shift berhasil diupdate." });
-  } catch (err) {
-    console.error("Error updating schedules:", err);
-    res.status(500).json({ error: "Terjadi kesalahan saat mengupdate jadwal." });
-  }
 });
 
 //5. delete schedule employee by employee id
 app.delete("/api/employee-schedule/:employeeId", async (req, res) => {
-  const { employeeId } = req.params;
+    const { employeeId } = req.params;
 
-  try {
-    const result = await client.query(
-      "DELETE FROM employee_schedules WHERE employee_id = $1",
-      [employeeId]
-    );
+    try {
+        const result = await client.query(
+            "DELETE FROM employee_schedules WHERE employee_id = $1",
+            [employeeId]
+        );
 
-    if (result.rowCount === 0) {
-      return res.status(404).json({ message: "Jadwal tidak ditemukan untuk employee ini." });
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: "Jadwal tidak ditemukan untuk employee ini." });
+        }
+
+        res.status(200).json({ message: "Jadwal shift berhasil dihapus." });
+    } catch (err) {
+        console.error("Error deleting schedules:", err);
+        res.status(500).json({ error: "Terjadi kesalahan saat menghapus jadwal." });
     }
-
-    res.status(200).json({ message: "Jadwal shift berhasil dihapus." });
-  } catch (err) {
-    console.error("Error deleting schedules:", err);
-    res.status(500).json({ error: "Terjadi kesalahan saat menghapus jadwal." });
-  }
 });
 
 //6. updae shift by employe and day
 app.put('/api/employee-schedule/:employeeId/day/:dayId', async (req, res) => {
-  const { employeeId, dayId } = req.params;
-  const { shift_id } = req.body;
+    const { employeeId, dayId } = req.params;
+    const { shift_id } = req.body;
 
-  try {
-    // 1. Cek apakah jadwal untuk employee dan hari sudah ada
-    const existing = await client.query(
-      `SELECT * FROM employee_schedules WHERE employee_id = $1 AND day_id = $2`,
-      [employeeId, dayId]
-    );
+    try {
+        // 1. Cek apakah jadwal untuk employee dan hari sudah ada
+        const existing = await client.query(
+            `SELECT * FROM employee_schedules WHERE employee_id = $1 AND day_id = $2`,
+            [employeeId, dayId]
+        );
 
-    if (existing.rows.length > 0) {
-      // 2. Update jika ada
-      await client.query(
-        `UPDATE employee_schedules SET shift_id = $1 WHERE employee_id = $2 AND day_id = $3`,
-        [shift_id, employeeId, dayId]
-      );
-    } else {
-      // 3. Jika belum ada, insert baru
-      await client.query(
-        `INSERT INTO employee_schedules (employee_id, day_id, shift_id) VALUES ($1, $2, $3)`,
-        [employeeId, dayId, shift_id]
-      );
+        if (existing.rows.length > 0) {
+            // 2. Update jika ada
+            await client.query(
+                `UPDATE employee_schedules SET shift_id = $1 WHERE employee_id = $2 AND day_id = $3`,
+                [shift_id, employeeId, dayId]
+            );
+        } else {
+            // 3. Jika belum ada, insert baru
+            await client.query(
+                `INSERT INTO employee_schedules (employee_id, day_id, shift_id) VALUES ($1, $2, $3)`,
+                [employeeId, dayId, shift_id]
+            );
+        }
+
+        res.status(200).json({ message: "Shift updated successfully" });
+    } catch (error) {
+        console.error("Error updating shift:", error);
+        res.status(500).json({ error: "Internal server error" });
     }
-
-    res.status(200).json({ message: "Shift updated successfully" });
-  } catch (error) {
-    console.error("Error updating shift:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
 });
 
 
 
 //GET ALL DAY
 app.get('/api/all-days', async (req, res) => {
-  try {
-    const result = await client.query("SELECT * FROM day ORDER BY id ASC");
-    res.status(200).json(result.rows);
-  } catch (err) {
-    console.error("Error getting days:", err);
-    res.status(500).json({ error: "Terjadi kesalahan saat mengambil data" });
-  }
+    try {
+        const result = await client.query("SELECT * FROM day ORDER BY id ASC");
+        res.status(200).json(result.rows);
+    } catch (err) {
+        console.error("Error getting days:", err);
+        res.status(500).json({ error: "Terjadi kesalahan saat mengambil data" });
+    }
 })
 
 //GET ALL SHIFT
 app.get('/api/all-shift', async (req, res) => {
-  try {
-    const result = await client.query("SELECT * FROM shift_employee ORDER BY id ASC");
-    res.status(200).json(result.rows);
-  } catch (err) {
-    console.error("Error getting shifts:", err);
-    res.status(500).json({ error: "Terjadi kesalahan saat mengambil data" })
-  }
+    try {
+        const result = await client.query("SELECT * FROM shift_employee ORDER BY id ASC");
+        res.status(200).json(result.rows);
+    } catch (err) {
+        console.error("Error getting shifts:", err);
+        res.status(500).json({ error: "Terjadi kesalahan saat mengambil data" })
+    }
 })
 
 
@@ -8803,21 +8851,21 @@ app.get('/api/all-shift', async (req, res) => {
 //SCHEDULE DAY
 //1. get all days
 app.get('/api/schedule-days', async (req, res) => {
-  try {
-    const result = await client.query('SELECT * FROM schedule_day')
-    res.json(result.rows);
-  } catch (error) {
-    res.status(500).json({ error: error.message })
-  }
+    try {
+        const result = await client.query('SELECT * FROM schedule_day')
+        res.json(result.rows);
+    } catch (error) {
+        res.status(500).json({ error: error.message })
+    }
 })
 
 //2. get schedule per hari berdasarkan employee id
 app.get('/api/day-schedule-employee/:employeeId', async (req, res) => {
-  const { employeeId } = req.params;
+    const { employeeId } = req.params;
 
-  try {
-    const result = await client.query(
-      `
+    try {
+        const result = await client.query(
+            `
       SELECT 
         sd.day_id, 
         sd.day_name, 
@@ -8827,14 +8875,14 @@ app.get('/api/day-schedule-employee/:employeeId', async (req, res) => {
       LEFT JOIN shift_schedule ss ON ss.shift_id = es.shift_id
       ORDER BY sd.day_id;
       `,
-      [employeeId]
-    );
+            [employeeId]
+        );
 
-    res.json(result.rows);
-  } catch (err) {
-    console.error('Error fetching employee schedule:', err);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Error fetching employee schedule:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 
@@ -8846,152 +8894,152 @@ app.get('/api/day-schedule-employee/:employeeId', async (req, res) => {
 
 //1. get notification by user id
 app.get('/api/system-notification/user-notif/:userId', async (req, res) => {
-  const { userId } = req.params;
+    const { userId } = req.params;
 
-  try {
-    const result = await client.query('SELECT * FROM system_notifications WHERE user_id = $1', [userId])
-    res.json(result.rows);
+    try {
+        const result = await client.query('SELECT * FROM system_notifications WHERE user_id = $1', [userId])
+        res.json(result.rows);
 
-  } catch (error) {
-    res.status(500).json({ error: error.message })
-  }
+    } catch (error) {
+        res.status(500).json({ error: error.message })
+    }
 })
 
 //2. mark notification as read
 app.patch('/api/system-notification/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    await client.query(
-      `UPDATE system_notifications SET is_read = true WHERE id = $1`,
-      [id]
-    );
+    const { id } = req.params;
+    try {
+        await client.query(
+            `UPDATE system_notifications SET is_read = true WHERE id = $1`,
+            [id]
+        );
 
-    res.json({ success: true })
-  } catch (error) {
-    console.error('Error marking notification as read:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+        res.json({ success: true })
+    } catch (error) {
+        console.error('Error marking notification as read:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 })
 
 //3. delete notification by user
 app.delete('/api/system-notification/:id', async (req, res) => {
-  const { id } = req.params;
+    const { id } = req.params;
 
-  try {
-    const result = await client.query(
-      `DELETE FROM system_notifications WHERE id = $1`, [id]
-    );
+    try {
+        const result = await client.query(
+            `DELETE FROM system_notifications WHERE id = $1`, [id]
+        );
 
-    res.json({ success: true, message: `Delete notifications with id ${id}` })
-  } catch (error) {
-    res.status(500).json({ error: 'Internal server error' });
-  }
+        res.json({ success: true, message: `Delete notifications with id ${id}` })
+    } catch (error) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
 })
 
 
 // Misalnya di file server.js / routes.js kamu
 // 5. Get chat message detail by chat_id and user_id (for mention or reply notification)
 app.get('/api/chat/:chatId/user/:userId', async (req, res) => {
-  const { chatId, userId } = req.params;
+    const { chatId, userId } = req.params;
 
-  try {
-    const result = await client.query(
-      `SELECT 
+    try {
+        const result = await client.query(
+            `SELECT 
          cc.id, cc.card_id, cc.user_id, cc.message, cc.parent_message_id,
          cc.mentions, cc.send_time, cc.created_at, u.username
        FROM card_chats cc
        JOIN users u ON cc.user_id = u.id
        WHERE cc.id = $1`,
-      [chatId]
-    );
+            [chatId]
+        );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Chat message not found' });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Chat message not found' });
+        }
+
+        const chat = result.rows[0];
+
+        // Cek apakah user_id termasuk dalam mentions
+        const isMentioned = chat.mentions && Array.isArray(chat.mentions)
+            ? chat.mentions.includes(parseInt(userId))
+            : false;
+
+        res.json({
+            chat,
+            isMentioned
+        });
+    } catch (error) {
+        console.error('Error fetching chat message:', error);
+        res.status(500).json({ error: error.message });
     }
-
-    const chat = result.rows[0];
-
-    // Cek apakah user_id termasuk dalam mentions
-    const isMentioned = chat.mentions && Array.isArray(chat.mentions)
-      ? chat.mentions.includes(parseInt(userId))
-      : false;
-
-    res.json({
-      chat,
-      isMentioned
-    });
-  } catch (error) {
-    console.error('Error fetching chat message:', error);
-    res.status(500).json({ error: error.message });
-  }
 });
 
 //6. endpoin untuk mengetahui total notifikasi yang belum dibaca dari dua tabel (system_notifikasi dan notifikasi pesan)
 app.get('/api/notifications/unread-count/:userId', async (req, res) => {
-  const { userId } = req.params;
+    const { userId } = req.params;
 
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
         SELECT 
             (SELECT COUNT(*) FROM system_notifications WHERE user_id = $1 AND is_read = false) AS unread_system,
             (SELECT COUNT(*) FROM notifications WHERE user_id = $1 AND is_read = false) AS unread_chat;
         `, [userId]);
 
-    const unreadSystem = parseInt(result.rows[0].unread_system, 10);
-    const unreadChat = parseInt(result.rows[0].unread_chat, 10);
+        const unreadSystem = parseInt(result.rows[0].unread_system, 10);
+        const unreadChat = parseInt(result.rows[0].unread_chat, 10);
 
-    res.status(200).json({
-      unread_system: unreadSystem,
-      unread_chat: unreadChat,
-      total_unread: unreadSystem + unreadChat
-    });
+        res.status(200).json({
+            unread_system: unreadSystem,
+            unread_chat: unreadChat,
+            total_unread: unreadSystem + unreadChat
+        });
 
-  } catch (error) {
-    console.error('Error fetching unread counts:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+    } catch (error) {
+        console.error('Error fetching unread counts:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 })
 
 //7. gabungan kedua notifikasi (chat + system) menampilkan semua notifikasi
 app.get('/api/all-notif/:userId', async (req, res) => {
-  const { userId } = req.params;
+    const { userId } = req.params;
 
-  try {
-    // Query chat notifications
-    const chatResult = await client.query(`
+    try {
+        // Query chat notifications
+        const chatResult = await client.query(`
             SELECT id, chat_id, message, is_read, created_at, type, 'chat' AS source 
             FROM notifications
             WHERE user_id = $1
         `, [userId]);
 
-    // Query system notifications
-    const systemResult = await client.query(`
+        // Query system notifications
+        const systemResult = await client.query(`
             SELECT id, card_id, message, is_read, created_at, type, 'system' AS source
             FROM system_notifications
             WHERE user_id = $1
         `, [userId]);
 
-    // Gabungkan & urutkan berdasarkan waktu terbaru
-    const allNotifications = [...chatResult.rows, ...systemResult.rows].sort(
-      (a, b) => new Date(b.created_at) - new Date(a.created_at)
-    );
+        // Gabungkan & urutkan berdasarkan waktu terbaru
+        const allNotifications = [...chatResult.rows, ...systemResult.rows].sort(
+            (a, b) => new Date(b.created_at) - new Date(a.created_at)
+        );
 
-    res.json({ success: true, data: allNotifications });
-  } catch (error) {
-    console.error('Error fetching notifications:', error);
-    res.status(500).json({ success: false, message: 'Failed to fetch notifications.' });
-  }
+        res.json({ success: true, data: allNotifications });
+    } catch (error) {
+        console.error('Error fetching notifications:', error);
+        res.status(500).json({ success: false, message: 'Failed to fetch notifications.' });
+    }
 });
 
 
 //mendapatkan data workspace, board, list berdasarkan data (cardId dan listId)
 // Endpoint untuk ambil lokasi lengkap dari card
 app.get('/api/card/:cardId/user/:userId/location', async (req, res) => {
-  const { cardId, userId } = req.params;
+    const { cardId, userId } = req.params;
 
-  try {
-    const result = await client.query(
-      `SELECT 
+    try {
+        const result = await client.query(
+            `SELECT 
                 cards.id AS card_id,
                 cards.list_id,
                 lists.board_id,
@@ -9000,25 +9048,25 @@ app.get('/api/card/:cardId/user/:userId/location', async (req, res) => {
              JOIN lists ON cards.list_id = lists.id
              JOIN boards ON lists.board_id = boards.id
              WHERE cards.id = $1`,
-      [cardId]
-    );
+            [cardId]
+        );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Card not found" });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Card not found" });
+        }
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-
-    res.json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 });
 
 // GET path info from chatId and userId
 app.get('/api/chat/:chatId/path', async (req, res) => {
-  const { chatId } = req.params;
+    const { chatId } = req.params;
 
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
             SELECT 
                 cc.card_id, 
                 c.list_id, 
@@ -9031,37 +9079,37 @@ app.get('/api/chat/:chatId/path', async (req, res) => {
             WHERE cc.id = $1
         `, [chatId]);
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Chat not found" });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Chat not found" });
+        }
+
+        const { card_id, list_id, board_id, workspace_id } = result.rows[0];
+
+        res.json({
+            workspaceId: workspace_id,
+            boardId: board_id,
+            listId: list_id,
+            cardId: card_id
+        });
+
+    } catch (error) {
+        console.error('Error fetching path:', error);
+        res.status(500).json({ error: error.message });
     }
-
-    const { card_id, list_id, board_id, workspace_id } = result.rows[0];
-
-    res.json({
-      workspaceId: workspace_id,
-      boardId: board_id,
-      listId: list_id,
-      cardId: card_id
-    });
-
-  } catch (error) {
-    console.error('Error fetching path:', error);
-    res.status(500).json({ error: error.message });
-  }
 });
 
 //GET PATH info from workspaceId and cardId
 app.get('/api/card/:cardId/card-location', async (req, res) => {
-  const { cardId } = req.params;
+    const { cardId } = req.params;
 
-  if (!cardId) {
-    return res.status(400).json({ error: 'cardId wajib diisi' });
-  }
+    if (!cardId) {
+        return res.status(400).json({ error: 'cardId wajib diisi' });
+    }
 
-  try {
-    console.log("Fetching location for cardId:", cardId);
+    try {
+        console.log("Fetching location for cardId:", cardId);
 
-    const result = await client.query(`
+        const result = await client.query(`
       SELECT 
         w.id AS workspace_id,
         b.id AS board_id,
@@ -9075,15 +9123,15 @@ app.get('/api/card/:cardId/card-location', async (req, res) => {
       LIMIT 1
     `, [cardId]);
 
-    if (result.rows.length === 0) {
-      console.log("Card not found or broken relation");
-      return res.status(404).json({ error: 'Data tidak ditemukan' });
-    }
+        if (result.rows.length === 0) {
+            console.log("Card not found or broken relation");
+            return res.status(404).json({ error: 'Data tidak ditemukan' });
+        }
 
-    res.json(result.rows[0]);
-  } catch (error) {
-    console.error('Gagal mengambil lokasi card:', error);
-    res.status(500).json({ error: 'Terjadi kesalahan saat mengambil data', detail: error.message });
-  }
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error('Gagal mengambil lokasi card:', error);
+        res.status(500).json({ error: 'Terjadi kesalahan saat mengambil data', detail: error.message });
+    }
 });
 
