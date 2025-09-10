@@ -4711,6 +4711,7 @@ app.get("/api/data-marketing/joined", async (req, res) => {
     const result = await client.query(`
       SELECT 
         dm.marketing_id,
+        dm.card_id,
         dm.buyer_name,
         dm.code_order,
         dm.order_number,
@@ -4855,6 +4856,7 @@ app.get("/api/data-marketing/joined/:id", async (req, res) => {
       `
       SELECT 
         dm.marketing_id,
+        dm.card_id,
         dm.buyer_name,
         dm.code_order,
         dm.order_number,
