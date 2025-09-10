@@ -193,9 +193,10 @@ const cancleDeleteDataMarketing = () =>{
 }
 
 //fungsi untuk mengetahui data memiliki card Id
-const hasCardId = (item) =>{
-  return item.card_id !== null && item.card_id !== undefined
-}
+const hasCardId = (item) => {
+  return item.card_id !== null && item.card_id !== undefined && item.card_id !== "";
+};
+
 
 //fetch marketing design
 const fetchDataMarketing = async()=>{
@@ -467,25 +468,28 @@ const handleToReportPage = () =>{
                 {filteredData.map((item, index) => (
                   <tr key={item.marketing_id}>
                     <td>{index + 1}</td>
-                    <td className="input-container">{item.input_by_name}
+                    <td className="input-container">
+                      {item.input_by_name || "-"}
                       {hasCardId(item) && (
-                        <span style={{
-                          backgroundColor: '#e0f7fa',
-                          color: '#00796b',
-                          padding: '4px 6px',
-                          fontSize: '10px',
-                          fontWeight:'bold',
-                          borderRadius: '4px',
-                          marginLeft: '5px',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '4px'
-                        }}>
-                          {'CARD'}
-                          {/* <HiHandThumbUp /> */}
+                        <span
+                          style={{
+                            backgroundColor: '#e0f7fa',
+                            color: '#00796b',
+                            padding: '4px 6px',
+                            fontSize: '10px',
+                            fontWeight: 'bold',
+                            borderRadius: '4px',
+                            marginLeft: '5px',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px'
+                          }}
+                        >
+                          CARD
                         </span>
                       )}
                     </td>
+
                     <td className="acc-container">{item.acc_by_name}</td>
                     <td className="status-container">
                         <span style={{
