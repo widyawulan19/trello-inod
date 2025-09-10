@@ -6630,6 +6630,78 @@ app.delete("/api/project-type-design/:id", async (req, res) => {
 });
 
 
+// ==========================================
+// 📌 CRUD STYLE DESIGN
+// ==========================================
+
+// ✅ Get all
+app.get("/api/style-design", async (req, res) => {
+    try {
+        const result = await client.query("SELECT * FROM style_design ORDER BY id ASC");
+        res.json(result.rows);
+    } catch (err) {
+        console.error("❌ Error get style_design:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ✅ Get by ID
+app.get("/api/style-design/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await client.query("SELECT * FROM style_design WHERE id = $1", [id]);
+        if (result.rows.length === 0) return res.status(404).json({ message: "Style not found" });
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error get style_design by ID:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ✅ Create
+app.post("/api/style-design", async (req, res) => {
+    try {
+        const { style_name } = req.body;
+        const result = await client.query(
+            "INSERT INTO style_design (style_name) VALUES ($1) RETURNING *",
+            [style_name]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error create style_design:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ✅ Update
+app.put("/api/style-design/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { style_name } = req.body;
+        const result = await client.query(
+            "UPDATE style_design SET style_name = $1, update_at = now() WHERE id = $2 RETURNING *",
+            [style_name, id]
+        );
+        if (result.rows.length === 0) return res.status(404).json({ message: "Style not found" });
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error update style_design:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ✅ Delete
+app.delete("/api/style-design/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await client.query("DELETE FROM style_design WHERE id = $1 RETURNING *", [id]);
+        if (result.rows.length === 0) return res.status(404).json({ message: "Style not found" });
+        res.json({ message: "Style deleted successfully" });
+    } catch (err) {
+        console.error("❌ Error delete style_design:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
 
 
 
