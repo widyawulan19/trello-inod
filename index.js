@@ -6406,6 +6406,76 @@ app.delete("/api/marketing-desain-users/:id", async (req, res) => {
 });
 
 
+// ACCOUNT DESIGN 
+// ✅ Get all accounts
+app.get("/api/account-design", async (req, res) => {
+  try {
+    const result = await client.query("SELECT * FROM account_design ORDER BY id ASC");
+    res.json(result.rows);
+  } catch (err) {
+    console.error("❌ Error get account_design:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ✅ Get account by ID
+app.get("/api/account-design/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await client.query("SELECT * FROM account_design WHERE id = $1", [id]);
+    if (result.rows.length === 0) return res.status(404).json({ error: "Account not found" });
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error get account_design by id:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ✅ Create new account
+app.post("/api/account-design", async (req, res) => {
+  const { nama_account } = req.body;
+  try {
+    const result = await client.query(
+      "INSERT INTO account_design (nama_account) VALUES ($1) RETURNING *",
+      [nama_account]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error create account_design:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ✅ Update account
+app.put("/api/account-design/:id", async (req, res) => {
+  const { id } = req.params;
+  const { nama_account } = req.body;
+  try {
+    const result = await client.query(
+      "UPDATE account_design SET nama_account=$1, update_at=now() WHERE id=$2 RETURNING *",
+      [nama_account, id]
+    );
+    if (result.rows.length === 0) return res.status(404).json({ error: "Account not found" });
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error update account_design:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ✅ Delete account
+app.delete("/api/account-design/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await client.query("DELETE FROM account_design WHERE id=$1 RETURNING *", [id]);
+    if (result.rows.length === 0) return res.status(404).json({ error: "Account not found" });
+    res.json({ message: "Account deleted successfully" });
+  } catch (err) {
+    console.error("❌ Error delete account_design:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 
 
