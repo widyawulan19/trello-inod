@@ -222,7 +222,7 @@ useEffect(() => {
         </div>
 
         <BootstrapTooltip title='close' placement='top'>
-              <HiXMark className="fdm-icon" />
+              <HiXMark className="fdm-icon" onClick={onClose} />
           </BootstrapTooltip>
       </div>
 
