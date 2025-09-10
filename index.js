@@ -5826,28 +5826,39 @@ app.get("/api/marketing-design/joined", async (req, res) => {
         md.create_at,
         md.update_at,
 
-        -- Relasi (balikin ID + Nama)
+        -- Relasi Input By
         mdu.id AS input_by,
         mdu.nama_marketing AS input_by_name,
         mdu.divisi AS input_by_divisi,
 
+        -- Relasi Acc By (kepala divisi design)
+        kdd.id AS acc_by,
+        kdd.nama AS acc_by_name,
+        kdd.divisi AS acc_by_divisi,
+
+        -- Relasi Account
         ad.id AS account,
         ad.nama_account AS account_name,
 
+        -- Relasi Offer Type
         ot.id AS offer_type,
         ot.offer_name AS offer_type_name,
 
+        -- Relasi Project Type
         pt.id AS project_type,
         pt.project_name AS project_type_name,
 
+        -- Relasi Style
         sd.id AS style,
         sd.style_name AS style_name,
 
+        -- Relasi Status Project
         sp.id AS status_project,
         sp.status_name AS status_project_name
 
       FROM marketing_design md
       LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
+      LEFT JOIN kepala_divisi_design kdd ON md.acc_by = kdd.id
       LEFT JOIN account_design ad ON md.account = ad.id
       LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
       LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
@@ -5864,11 +5875,13 @@ app.get("/api/marketing-design/joined", async (req, res) => {
 });
 
 
+
 // ✅ Get marketing_design by ID + join
 app.get("/api/marketing-design/joined/:id", async (req, res) => {
-    try {
-        const { id } = req.params;
-        const result = await client.query(`
+  try {
+    const { id } = req.params;
+    const result = await client.query(
+      `
       SELECT 
         md.marketing_design_id,
         md.buyer_name,
@@ -5886,48 +5899,112 @@ app.get("/api/marketing-design/joined/:id", async (req, res) => {
         md.create_at,
         md.update_at,
 
-        -- Relasi (balikin ID + Nama)
+        -- Relasi Input By
         mdu.id AS input_by,
         mdu.nama_marketing AS input_by_name,
         mdu.divisi AS input_by_divisi,
 
+        -- Relasi Acc By (kepala divisi design)
+        kdd.id AS acc_by,
+        kdd.nama AS acc_by_name,
+        kdd.divisi AS acc_by_divisi,
+
+        -- Relasi Account
         ad.id AS account,
         ad.nama_account AS account_name,
 
+        -- Relasi Offer Type
         ot.id AS offer_type,
         ot.offer_name AS offer_type_name,
 
+        -- Relasi Project Type
         pt.id AS project_type,
         pt.project_name AS project_type_name,
 
+        -- Relasi Style
         sd.id AS style,
         sd.style_name AS style_name,
 
+        -- Relasi Status Project
         sp.id AS status_project,
         sp.status_name AS status_project_name
 
       FROM marketing_design md
       LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
+      LEFT JOIN kepala_divisi_design kdd ON md.acc_by = kdd.id
       LEFT JOIN account_design ad ON md.account = ad.id
       LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
       LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
       LEFT JOIN style_design sd ON md.style_id = sd.id
       LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
       WHERE md.marketing_design_id = $1;
-    `, [id]);
+    `,
+      [id]
+    );
 
-        if (result.rows.length === 0) return res.status(404).json({ error: "Marketing design not found" });
-        res.json(result.rows[0]);
-    } catch (err) {
-        console.error("❌ Error get marketing_design by ID:", err);
-        res.status(500).json({ error: "Failed to fetch joined data" });
-    }
+    if (result.rows.length === 0)
+      return res.status(404).json({ error: "Marketing design not found" });
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error get marketing_design by ID:", err);
+    res.status(500).json({ error: "Failed to fetch joined data" });
+  }
 });
 
 // ✅ UPDATE Data Marketing Design by ID
 app.put("/api/marketing-design/joined/:id", async (req, res) => {
-    const { id } = req.params;
-    const {
+  const { id } = req.params;
+  const {
+    buyer_name,
+    code_order,
+    order_number,
+    jumlah_design,
+    deadline,
+    jumlah_revisi,
+    price_normal,
+    price_discount,
+    discount_percentage,
+    required_files,
+    file_and_chat,
+    detail_project,
+    input_by,
+    acc_by,
+    account,
+    offer_type,
+    project_type_id,
+    style_id,
+    status_project_id,
+  } = req.body;
+
+  try {
+    const result = await client.query(
+      `
+      UPDATE marketing_design
+      SET 
+        buyer_name          = $1,
+        code_order          = $2,
+        order_number        = $3,
+        jumlah_design       = $4,
+        deadline            = $5,
+        jumlah_revisi       = $6,
+        price_normal        = $7,
+        price_discount      = $8,
+        discount_percentage = $9,
+        required_files      = $10,
+        file_and_chat       = $11,
+        detail_project      = $12,
+        input_by            = $13,
+        acc_by              = $14,
+        account             = $15,
+        offer_type          = $16,
+        project_type_id     = $17,
+        style_id            = $18,
+        status_project_id   = $19,
+        update_at           = NOW()
+      WHERE marketing_design_id = $20
+      RETURNING *;
+      `,
+      [
         buyer_name,
         code_order,
         order_number,
@@ -5941,70 +6018,23 @@ app.put("/api/marketing-design/joined/:id", async (req, res) => {
         file_and_chat,
         detail_project,
         input_by,
+        acc_by,
         account,
         offer_type,
         project_type_id,
         style_id,
-        status_project_id
-    } = req.body;
+        status_project_id,
+        id,
+      ]
+    );
 
-    try {
-        const result = await client.query(
-            `
-      UPDATE marketing_design
-      SET 
-        buyer_name        = $1,
-        code_order        = $2,
-        order_number      = $3,
-        jumlah_design     = $4,
-        deadline          = $5,
-        jumlah_revisi     = $6,
-        price_normal      = $7,
-        price_discount    = $8,
-        discount_percentage = $9,
-        required_files    = $10,
-        file_and_chat     = $11,
-        detail_project    = $12,
-        input_by          = $13,
-        account           = $14,
-        offer_type        = $15,
-        project_type_id   = $16,
-        style_id          = $17,
-        status_project_id = $18,
-        update_at         = NOW()
-      WHERE marketing_design_id = $19
-      RETURNING *;
-      `,
-            [
-                buyer_name,
-                code_order,
-                order_number,
-                jumlah_design,
-                deadline,
-                jumlah_revisi,
-                price_normal,
-                price_discount,
-                discount_percentage,
-                required_files,
-                file_and_chat,
-                detail_project,
-                input_by,
-                account,
-                offer_type,
-                project_type_id,
-                style_id,
-                status_project_id,
-                id,
-            ]
-        );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "❌ Marketing design not found" });
+    }
 
-        if (result.rows.length === 0) {
-            return res.status(404).json({ error: "❌ Marketing design not found" });
-        }
-
-        // Ambil data dengan join supaya konsisten
-        const joined = await client.query(
-            `
+    // Ambil data dengan join supaya konsisten
+    const joined = await client.query(
+      `
       SELECT 
         md.marketing_design_id,
         md.buyer_name,
@@ -6026,6 +6056,10 @@ app.put("/api/marketing-design/joined/:id", async (req, res) => {
         mdu.nama_marketing AS input_by_name,
         mdu.divisi AS input_by_divisi,
 
+        kdd.id AS acc_by,
+        kdd.nama AS acc_by_name,
+        kdd.divisi AS acc_by_divisi,
+
         ad.id AS account,
         ad.nama_account AS account_name,
 
@@ -6043,6 +6077,7 @@ app.put("/api/marketing-design/joined/:id", async (req, res) => {
 
       FROM marketing_design md
       LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
+      LEFT JOIN kepala_divisi_design kdd ON md.acc_by = kdd.id
       LEFT JOIN account_design ad ON md.account = ad.id
       LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
       LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
@@ -6050,17 +6085,17 @@ app.put("/api/marketing-design/joined/:id", async (req, res) => {
       LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
       WHERE md.marketing_design_id = $1
       `,
-            [id]
-        );
+      [id]
+    );
 
-        res.json({
-            message: "✅ Marketing design updated successfully",
-            data: joined.rows[0],
-        });
-    } catch (err) {
-        console.error("❌ Error updating marketing_design:", err);
-        res.status(500).json({ error: "Failed to update marketing_design" });
-    }
+    res.json({
+      message: "✅ Marketing design updated successfully",
+      data: joined.rows[0],
+    });
+  } catch (err) {
+    console.error("❌ Error updating marketing_design:", err);
+    res.status(500).json({ error: "Failed to update marketing_design" });
+  }
 });
 
 
@@ -6090,19 +6125,29 @@ app.get('/api/marketing-design/reports/today', async (req, res) => {
 
         mdu.id AS input_by,
         mdu.nama_marketing AS input_by_name,
+
+        kdd.id AS acc_by,
+        kdd.nama AS acc_by_name,
+        kdd.divisi AS acc_by_divisi,
+
         ad.id AS account,
         ad.nama_account AS account_name,
+
         ot.id AS offer_type,
         ot.offer_name AS offer_type_name,
+
         pt.id AS project_type,
         pt.project_name AS project_type_name,
+
         sd.id AS style,
         sd.style_name AS style_name,
+
         sp.id AS status_project,
         sp.status_name AS status_project_name
 
       FROM marketing_design md
       LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
+      LEFT JOIN kepala_divisi_design kdd ON md.acc_by = kdd.id
       LEFT JOIN account_design ad ON md.account = ad.id
       LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
       LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
@@ -6118,8 +6163,6 @@ app.get('/api/marketing-design/reports/today', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
-
-
 
 // ✅ Endpoint marketing-design per 10 hari dengan detail + join
 app.get("/api/marketing-design/reports", async (req, res) => {
@@ -6152,20 +6195,30 @@ app.get("/api/marketing-design/reports", async (req, res) => {
             -- Relasi (balikin ID + Nama)
             'input_by', mdu.id,
             'input_by_name', mdu.nama_marketing,
+
+            'acc_by', kdd.id,
+            'acc_by_name', kdd.nama,
+            'acc_by_divisi', kdd.divisi,
+
             'account', ad.id,
             'account_name', ad.nama_account,
+
             'offer_type', ot.id,
             'offer_type_name', ot.offer_name,
+
             'project_type', pt.id,
             'project_type_name', pt.project_name,
+
             'style', sd.id,
             'style_name', sd.style_name,
+
             'status_project', sp.id,
             'status_project_name', sp.status_name
           )
         ) AS details
       FROM marketing_design md
       LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
+      LEFT JOIN kepala_divisi_design kdd ON md.acc_by = kdd.id
       LEFT JOIN account_design ad ON md.account = ad.id
       LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
       LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
@@ -6181,6 +6234,7 @@ app.get("/api/marketing-design/reports", async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
 
 
 
@@ -6300,16 +6354,35 @@ app.get('/api/check-card-id-design/:marketing_design_id', async (req, res) => {
     }
 });
 
-//7. mengubah data marketing design menjadi card design
+// 7. Mengubah data marketing design menjadi card design (pakai data join)
 app.put('/api/create-card-marketing-design/:listId/:marketingDesignId', async (req, res) => {
     const { listId, marketingDesignId } = req.params;
 
     try {
-        // Ambil data marketing_design berdasarkan marketingDesignId
-        const marketingData = await client.query(
-            'SELECT * FROM marketing_design WHERE marketing_design_id = $1 AND card_id IS NULL',
-            [marketingDesignId]
-        );
+        // Ambil data marketing_design dengan JOIN supaya relasi kebawa
+        const query = `
+          SELECT 
+            md.*,
+            mdu.nama_marketing AS input_by_name,
+            mdu.divisi AS input_by_divisi,
+            kdd.nama AS acc_by_name,
+            kdd.divisi AS acc_by_divisi,
+            ad.nama_account AS account_name,
+            ot.offer_name AS offer_type_name,
+            pt.project_name AS project_type_name,
+            sd.style_name,
+            sp.status_name AS status_project_name
+          FROM marketing_design md
+          LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
+          LEFT JOIN kepala_divisi_design kdd ON md.acc_by = kdd.id
+          LEFT JOIN account_design ad ON md.account = ad.id
+          LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
+          LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
+          LEFT JOIN style_design sd ON md.style_id = sd.id
+          LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
+          WHERE md.marketing_design_id = $1 AND md.card_id IS NULL
+        `;
+        const marketingData = await client.query(query, [marketingDesignId]);
 
         if (marketingData.rows.length === 0) {
             return res.status(404).json({ message: 'Data marketing design tidak ditemukan atau sudah memiliki card_id' });
@@ -6319,156 +6392,67 @@ app.put('/api/create-card-marketing-design/:listId/:marketingDesignId', async (r
 
         const deadlineFormatted = marketing.deadline
             ? new Date(marketing.deadline).toLocaleString('id-ID', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            })
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit'
+              })
             : '-';
 
+        // Pakai field hasil join
         const description = `
             Code Order: ${marketing.code_order}
-            Input By: ${marketing.input_by}
+            Input By: ${marketing.input_by_name} (${marketing.input_by_divisi || '-'})
             Buyer: ${marketing.buyer_name}
             Order Number: ${marketing.order_number}
-            Account: ${marketing.account}
+            Account: ${marketing.account_name}
             Design Count: ${marketing.jumlah_design}
             Deadline: ${deadlineFormatted}
             Revisi: ${marketing.jumlah_revisi}
-            Order Type: ${marketing.order_type}
-            Offer Type: ${marketing.offer_type}
-            Style: ${marketing.style}
-            Resolution: ${marketing.resolution}
+            Offer Type: ${marketing.offer_type_name}
+            Project Type: ${marketing.project_type_name}
+            Style: ${marketing.style_name}
             Normal Price: ${marketing.price_normal}
             Discount Price: ${marketing.price_discount}
             Discount: ${marketing.discount_percentage}%
             Required Files: ${marketing.required_files}
-            Project Type: ${marketing.project_type}
-            Reference: ${marketing.reference}
             File/Chat: ${marketing.file_and_chat}
             Detail: ${marketing.detail_project}
-            Approved By: ${marketing.acc_by}
+            Approved By: ${marketing.acc_by_name} (${marketing.acc_by_divisi || '-'})
+            Status Project: ${marketing.status_project_name}
         `.trim();
 
-        // Membuat card baru berdasarkan data marketing design
+        // Membuat card baru
         const newCard = await client.query(
             `INSERT INTO cards (list_id, title, description, position, due_date, create_at) 
-             VALUES ($1, $2, $3, $4, $5,CURRENT_TIMESTAMP) 
+             VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP) 
              RETURNING id`,
             [
                 listId,
-                `${marketing.buyer_name} - ${marketing.order_number} (${marketing.account})`,
-                // marketing.detail_project,
+                `${marketing.buyer_name} - ${marketing.order_number} (${marketing.account_name})`,
                 description,
-                0, // posisi default, bisa disesuaikan
+                0, // posisi default
                 marketing.deadline
             ]
         );
 
-        // Update card_id di tabel marketing_design dengan id card yang baru dibuat
+        // Update card_id di tabel marketing_design
         await client.query(
             'UPDATE marketing_design SET card_id = $1, update_at = CURRENT_TIMESTAMP WHERE marketing_design_id = $2',
             [newCard.rows[0].id, marketingDesignId]
         );
 
         return res.status(201).json({
-            message: 'Card berhasil dibuat dari data marketing design.',
+            message: '✅ Card berhasil dibuat dari data marketing design.',
             cardId: newCard.rows[0].id
         });
     } catch (error) {
-        console.error('Error creating card from marketing design data:', error);
+        console.error('❌ Error creating card from marketing design data:', error);
         return res.status(500).json({ message: 'Terjadi kesalahan saat membuat card dari data marketing design.' });
     }
 });
 
-
-
-
-// //9. mengambil semua data marketing yang memiliki cardId yang sama
-// app.get('/api/cards/:cardId/marketing-detail', async (req, res) => {
-//   const { cardId } = req.params;
-
-//   try {
-//     const result = await client.query(`
-//       SELECT 
-//         'design' AS type,
-//         md.card_id,
-//         md.input_by,
-//         md.buyer_name,
-//         md.code_order,
-//         md.order_number,
-//         md.account,
-//         md.deadline,
-//         md.jumlah_revisi,
-//         md.order_type,
-//         md.offer_type,
-//         NULL AS jenis_track,
-//         NULL AS genre,
-//         md.price_normal,
-//         md.price_discount,
-//         CAST(md.discount_percentage AS varchar) AS discount,
-//         NULL AS basic_price,
-//         NULL AS gig_link,
-//         md.required_files,
-//         md.project_type,
-//         NULL AS duration,
-//         NULL AS reference_link,
-//         NULL AS file_and_chat_link,
-//         md.detail_project,
-//         md.marketing_design_id AS marketing_id,
-//         md.create_at,
-//         md.update_at,
-//         md.is_accepted
-//       FROM marketing_design md
-//       WHERE md.card_id = $1
-
-//       UNION ALL
-
-//       SELECT 
-//         'musik' AS type,
-//         dm.card_id,
-//         dm.input_by,
-//         dm.buyer_name,
-//         dm.code_order,
-//         dm.order_number,
-//         dm.account,
-//         dm.deadline,
-//         dm.jumlah_revisi,
-//         dm.order_type,
-//         dm.offer_type,
-//         dm.jenis_track,
-//         dm.genre,
-//         dm.price_normal,
-//         dm.price_discount,
-//         dm.discount,
-//         dm.basic_price,
-//         dm.gig_link,
-//         dm.required_files,
-//         dm.project_type,
-//         dm.duration,
-//         dm.reference_link,
-//         dm.file_and_chat_link,
-//         dm.detail_project,
-//         dm.marketing_id,
-//         dm.create_at,
-//         dm.update_at,
-//         dm.is_accepted
-//       FROM data_marketing dm
-//       WHERE dm.card_id = $1
-//     `, [cardId]);
-
-//     if (result.rows.length === 0) {
-//     //   return res.status(404).json({ message: 'Tidak ada data marketing untuk card ini.' });
-//       return console.log('Tidak ada data cardId untuk card ini ')
-//     }
-
-//     res.status(200).json(result.rows);
-//   } catch (error) {
-//     console.error('Error fetching marketing data:', error);
-//     res.status(500).json({ message: 'Terjadi kesalahan saat mengambil data.' });
-//   }
-// });
 
 
 
@@ -6531,34 +6515,162 @@ app.post('/api/archive-data-marketing-design/:id', async (req, res) => {
 });
 
 //10. get data marketing design by data accepted
+// ✅ 10. Get data marketing design by accepted (with join)
 app.get('/api/marketing-design-accepted', async (req, res) => {
-    try {
-        // const accepted = req.query.is_accepted === 'true'; // untuk parameter query
-        const result = await client.query(
-            `SELECT * FROM marketing_design WHERE is_accepted = true`,
-            // [true]
-        );
-        res.json(result.rows);
-    } catch (err) {
-        console.error("❌ Error fetching data:", err);
-        res.status(500).json({ error: err.message });
-    }
+  try {
+    const result = await client.query(`
+      SELECT 
+        dmd.marketing_design_id,
+        dmd.buyer_name,
+        dmd.code_order,
+        dmd.order_number,
+        dmd.jumlah_track,
+        dmd.duration,
+        dmd.jumlah_revisi,
+        dmd.deadline,
+        dmd.price_normal,
+        dmd.price_discount,
+        dmd.discount,
+        dmd.basic_price,
+        dmd.gig_link,
+        dmd.reference_link,
+        dmd.required_files,
+        dmd.file_and_chat_link,
+        dmd.detail_project,
+        dmd.create_at,
+        dmd.update_at,
+
+        mu.id AS input_by,
+        mu.nama_marketing AS input_by_name,
+
+        kd.id AS acc_by,
+        kd.nama AS acc_by_name,
+
+        ad.id AS account,
+        ad.nama_account AS account_name,
+
+        ot.id AS order_type,
+        ot.order_name AS order_type_name,
+
+        oft.id AS offer_type,
+        oft.offer_name AS offer_type_name,
+
+        tt.id AS jenis_track,
+        tt.track_name AS track_type_name,
+
+        g.id AS genre,
+        g.genre_name AS genre_name,
+
+        pt.id AS project_type,
+        pt.nama_project AS project_type_name,
+
+        k.id AS kupon_diskon_id,
+        k.nama_kupon AS kupon_diskon_name,
+
+        s.id AS accept_status_id,
+        s.status_name AS accept_status_name
+
+      FROM marketing_design dmd
+      LEFT JOIN marketing_design_user mu ON mu.id = dmd.input_by
+      LEFT JOIN kepala_divisi_design kd ON kd.id = dmd.acc_by
+      LEFT JOIN account_design ad ON ad.id = dmd.account
+      LEFT JOIN design_order_type ot ON ot.id = dmd.order_type
+      LEFT JOIN offer_type_design oft ON oft.id = dmd.offer_type
+      LEFT JOIN track_types_design tt ON tt.id = dmd.jenis_track
+      LEFT JOIN genre_design g ON g.id = dmd.genre
+      LEFT JOIN project_type_design pt ON pt.id = dmd.project_type
+      LEFT JOIN kupon_diskon k ON k.id = dmd.kupon_diskon_id
+      LEFT JOIN accept_status s ON s.id = dmd.accept_status_id
+      WHERE dmd.is_accepted = true
+      ORDER BY dmd.marketing_design_id DESC;
+    `);
+
+    res.json(result.rows);
+  } catch (err) {
+    console.error("❌ Error fetching accepted design data:", err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
+
 //11. get data marketing by data not accepted
+// ✅ 11. Get data marketing design by not accepted (with join)
 app.get('/api/marketing-design-not-accepted', async (req, res) => {
-    try {
-        // const accepted = req.query.is_accepted === 'true'; // untuk parameter query
-        const result = await client.query(
-            `SELECT * FROM marketing_design WHERE is_accepted = false`,
-            // [true]
-        );
-        res.json(result.rows);
-    } catch (err) {
-        console.error("❌ Error fetching data:", err);
-        res.status(500).json({ error: err.message });
-    }
+  try {
+    const result = await client.query(`
+      SELECT 
+        dmd.marketing_design_id,
+        dmd.buyer_name,
+        dmd.code_order,
+        dmd.order_number,
+        dmd.jumlah_track,
+        dmd.duration,
+        dmd.jumlah_revisi,
+        dmd.deadline,
+        dmd.price_normal,
+        dmd.price_discount,
+        dmd.discount,
+        dmd.basic_price,
+        dmd.gig_link,
+        dmd.reference_link,
+        dmd.required_files,
+        dmd.file_and_chat_link,
+        dmd.detail_project,
+        dmd.create_at,
+        dmd.update_at,
+
+        mu.id AS input_by,
+        mu.nama_marketing AS input_by_name,
+
+        kd.id AS acc_by,
+        kd.nama AS acc_by_name,
+
+        ad.id AS account,
+        ad.nama_account AS account_name,
+
+        ot.id AS order_type,
+        ot.order_name AS order_type_name,
+
+        oft.id AS offer_type,
+        oft.offer_name AS offer_type_name,
+
+        tt.id AS jenis_track,
+        tt.track_name AS track_type_name,
+
+        g.id AS genre,
+        g.genre_name AS genre_name,
+
+        pt.id AS project_type,
+        pt.nama_project AS project_type_name,
+
+        k.id AS kupon_diskon_id,
+        k.nama_kupon AS kupon_diskon_name,
+
+        s.id AS accept_status_id,
+        s.status_name AS accept_status_name
+
+      FROM marketing_design dmd
+      LEFT JOIN marketing_design_user mu ON mu.id = dmd.input_by
+      LEFT JOIN kepala_divisi_design kd ON kd.id = dmd.acc_by
+      LEFT JOIN account_design ad ON ad.id = dmd.account
+      LEFT JOIN design_order_type ot ON ot.id = dmd.order_type
+      LEFT JOIN offer_type_design oft ON oft.id = dmd.offer_type
+      LEFT JOIN track_types_design tt ON tt.id = dmd.jenis_track
+      LEFT JOIN genre_design g ON g.id = dmd.genre
+      LEFT JOIN project_type_design pt ON pt.id = dmd.project_type
+      LEFT JOIN kupon_diskon k ON k.id = dmd.kupon_diskon_id
+      LEFT JOIN accept_status s ON s.id = dmd.accept_status_id
+      WHERE dmd.is_accepted = false
+      ORDER BY dmd.marketing_design_id DESC;
+    `);
+
+    res.json(result.rows);
+  } catch (err) {
+    console.error("❌ Error fetching not accepted design data:", err);
+    res.status(500).json({ error: err.message });
+  }
 });
+
 
 
 
