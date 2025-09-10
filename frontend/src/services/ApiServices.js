@@ -976,8 +976,11 @@ export const getAllAccountDesign = () =>
 export const getAccountDesignById = (id) =>
   axios.get(`${API_URL}/account-design/${id}`);
 
-export const createAccountDesign = (data) =>
-  axios.post(`${API_URL}/account-design`, data);
+export const createAccountDesign = async (data) => {
+  const res = await axios.post(`${API_URL}/account-design`, data);
+  return res.data; // ✅ langsung isi account baru
+};
+
 
 export const updateAccountDesign = (id, data) =>
   axios.put(`${API_URL}/account-design/${id}`, data);
@@ -1064,12 +1067,12 @@ export const getKepalaDivisiDesignById = (id) =>
   axios.get(`${API_URL}/kepala-divisi-design/${id}`);
 
 // Add
-export const addKepalaDivisiDesign = (nama, divisi) =>
-  axios.post(`${API_URL}/kepala-divisi-design`, { nama, divisi });
+export const addKepalaDivisiDesign = (data) =>
+  axios.post(`${API_URL}/kepala-divisi-design`, data);
 
 // Update
-export const updateKepalaDivisiDesign = (id, nama, divisi) =>
-  axios.put(`${API_URL}/kepala-divisi-design/${id}`, { nama, divisi });
+export const updateKepalaDivisiDesign = (id, data) =>
+  axios.put(`${API_URL}/kepala-divisi-design/${id}`, data);
 
 // Delete
 export const deleteKepalaDivisiDesign = (id) =>
