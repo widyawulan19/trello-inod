@@ -5330,46 +5330,237 @@ app.get('/api/check-card-id/:marketingId', async (req, res) => {
   }
 })
 
-//9. menampilkan data marketing yang card idnya tidak null
+// ✅ Get Data Marketing with cardId IS NOT NULL + JOIN
 app.get('/api/data-marketing-cardId', async (req, res) => {
   try {
     const result = await client.query(`
-            SELECT * FROM public.data_marketing
-            WHERE card_id IS NOT NULL
-            ORDER BY marketing_id DESC
-        `);
+      SELECT 
+        dm.marketing_id,
+        dm.buyer_name,
+        dm.code_order,
+        dm.order_number,
+        dm.jumlah_track,
+        dm.duration,
+        dm.jumlah_revisi,
+        dm.deadline,
+        dm.price_normal,
+        dm.price_discount,
+        dm.discount,
+        dm.basic_price,
+        dm.gig_link,
+        dm.reference_link,
+        dm.required_files,
+        dm.file_and_chat_link,
+        dm.detail_project,
+        dm.card_id,
+        dm.create_at,
+        dm.update_at,
+
+        -- Relasi (balikin ID + Nama)
+        mu.id AS input_by,
+        mu.nama_marketing AS input_by_name,
+
+        kd.id AS acc_by,
+        kd.nama AS acc_by_name,
+
+        am.id AS account,
+        am.nama_account AS account_name,
+
+        ot.id AS order_type,
+        ot.order_name AS order_type_name,
+
+        oft.id AS offer_type,
+        oft.offer_name AS offer_type_name,
+
+        tt.id AS jenis_track,
+        tt.track_name AS track_type_name,
+
+        g.id AS genre,
+        g.genre_name AS genre_name,
+
+        pt.id AS project_type,
+        pt.nama_project AS project_type_name,
+
+        k.id AS kupon_diskon_id,
+        k.nama_kupon AS kupon_diskon_name,
+
+        s.id AS accept_status_id,
+        s.status_name AS accept_status_name
+
+      FROM data_marketing dm
+      LEFT JOIN marketing_musik_user mu ON mu.id = dm.input_by
+      LEFT JOIN kepala_divisi kd ON kd.id = dm.acc_by
+      LEFT JOIN account_music am ON am.id = dm.account
+      LEFT JOIN music_order_type ot ON ot.id = dm.order_type
+      LEFT JOIN offer_type_music oft ON oft.id = dm.offer_type
+      LEFT JOIN track_types tt ON tt.id = dm.jenis_track
+      LEFT JOIN genre_music g ON g.id = dm.genre
+      LEFT JOIN project_type pt ON pt.id = dm.project_type
+      LEFT JOIN kupon_diskon k ON k.id = dm.kupon_diskon_id
+      LEFT JOIN accept_status s ON s.id = dm.accept_status_id
+      WHERE dm.card_id IS NOT NULL
+      ORDER BY dm.marketing_id DESC;
+    `);
+
     res.json(result.rows);
   } catch (error) {
-    console.error('Error fetching marketing data:', error);
+    console.error('❌ Error fetching marketing data with cardId:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
-})
+});
 
-//10. menampilkan data marketing while cardId null
+
+// ✅ Get Data Marketing with cardId IS NULL + JOIN
 app.get('/api/data-marketing-cardId-null', async (req, res) => {
   try {
     const result = await client.query(`
-            SELECT * FROM public.data_marketing
-            WHERE card_id IS NULL
-            ORDER BY marketing_id DESC    
-        `)
-    res.json(result.rows)
+      SELECT 
+        dm.marketing_id,
+        dm.buyer_name,
+        dm.code_order,
+        dm.order_number,
+        dm.jumlah_track,
+        dm.duration,
+        dm.jumlah_revisi,
+        dm.deadline,
+        dm.price_normal,
+        dm.price_discount,
+        dm.discount,
+        dm.basic_price,
+        dm.gig_link,
+        dm.reference_link,
+        dm.required_files,
+        dm.file_and_chat_link,
+        dm.detail_project,
+        dm.card_id,
+        dm.create_at,
+        dm.update_at,
+
+        -- Relasi (balikin ID + Nama)
+        mu.id AS input_by,
+        mu.nama_marketing AS input_by_name,
+
+        kd.id AS acc_by,
+        kd.nama AS acc_by_name,
+
+        am.id AS account,
+        am.nama_account AS account_name,
+
+        ot.id AS order_type,
+        ot.order_name AS order_type_name,
+
+        oft.id AS offer_type,
+        oft.offer_name AS offer_type_name,
+
+        tt.id AS jenis_track,
+        tt.track_name AS track_type_name,
+
+        g.id AS genre,
+        g.genre_name AS genre_name,
+
+        pt.id AS project_type,
+        pt.nama_project AS project_type_name,
+
+        k.id AS kupon_diskon_id,
+        k.nama_kupon AS kupon_diskon_name,
+
+        s.id AS accept_status_id,
+        s.status_name AS accept_status_name
+
+      FROM data_marketing dm
+      LEFT JOIN marketing_musik_user mu ON mu.id = dm.input_by
+      LEFT JOIN kepala_divisi kd ON kd.id = dm.acc_by
+      LEFT JOIN account_music am ON am.id = dm.account
+      LEFT JOIN music_order_type ot ON ot.id = dm.order_type
+      LEFT JOIN offer_type_music oft ON oft.id = dm.offer_type
+      LEFT JOIN track_types tt ON tt.id = dm.jenis_track
+      LEFT JOIN genre_music g ON g.id = dm.genre
+      LEFT JOIN project_type pt ON pt.id = dm.project_type
+      LEFT JOIN kupon_diskon k ON k.id = dm.kupon_diskon_id
+      LEFT JOIN accept_status s ON s.id = dm.accept_status_id
+      WHERE dm.card_id IS NULL
+      ORDER BY dm.marketing_id DESC;
+    `);
+
+    res.json(result.rows);
   } catch (error) {
-    console.error('Error fetching data marketing cardId null:', error);
-    res.json(500).json({ message: 'Internal server error' })
+    console.error('❌ Error fetching data marketing cardId null:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
-})
+});
+
 
 // ✅ Get Data Marketing Accepted
+// ✅ Get Data Marketing Accepted + Join Lengkap
 app.get("/api/data-marketing/accepted", async (req, res) => {
   try {
     const result = await client.query(`
-      SELECT dm.*, s.status_name AS accept_status_name
+      SELECT 
+        dm.marketing_id,
+        dm.buyer_name,
+        dm.code_order,
+        dm.order_number,
+        dm.jumlah_track,
+        dm.duration,
+        dm.jumlah_revisi,
+        dm.deadline,
+        dm.price_normal,
+        dm.price_discount,
+        dm.discount,
+        dm.basic_price,
+        dm.gig_link,
+        dm.reference_link,
+        dm.required_files,
+        dm.file_and_chat_link,
+        dm.detail_project,
+        dm.create_at,
+        dm.update_at,
+
+        mu.id AS input_by,
+        mu.nama_marketing AS input_by_name,
+
+        kd.id AS acc_by,
+        kd.nama AS acc_by_name,
+
+        am.id AS account,
+        am.nama_account AS account_name,
+
+        ot.id AS order_type,
+        ot.order_name AS order_type_name,
+
+        oft.id AS offer_type,
+        oft.offer_name AS offer_type_name,
+
+        tt.id AS jenis_track,
+        tt.track_name AS track_type_name,
+
+        g.id AS genre,
+        g.genre_name AS genre_name,
+
+        pt.id AS project_type,
+        pt.nama_project AS project_type_name,
+
+        k.id AS kupon_diskon_id,
+        k.nama_kupon AS kupon_diskon_name,
+
+        s.id AS accept_status_id,
+        s.status_name AS accept_status_name
+
       FROM data_marketing dm
+      LEFT JOIN marketing_musik_user mu ON mu.id = dm.input_by
+      LEFT JOIN kepala_divisi kd ON kd.id = dm.acc_by
+      LEFT JOIN account_music am ON am.id = dm.account
+      LEFT JOIN music_order_type ot ON ot.id = dm.order_type
+      LEFT JOIN offer_type_music oft ON oft.id = dm.offer_type
+      LEFT JOIN track_types tt ON tt.id = dm.jenis_track
+      LEFT JOIN genre_music g ON g.id = dm.genre
+      LEFT JOIN project_type pt ON pt.id = dm.project_type
+      LEFT JOIN kupon_diskon k ON k.id = dm.kupon_diskon_id
       LEFT JOIN accept_status s ON s.id = dm.accept_status_id
       WHERE s.status_name = 'Accepted'
-      ORDER BY dm.marketing_id DESC
+      ORDER BY dm.marketing_id DESC;
     `);
+
     res.json(result.rows);
   } catch (err) {
     console.error("❌ Error get accepted data:", err);
@@ -5377,22 +5568,84 @@ app.get("/api/data-marketing/accepted", async (req, res) => {
   }
 });
 
-// ✅ Get Data Marketing Not Accepted
+
+// ✅ Get Data Marketing Not Accepted + Join Lengkap
 app.get("/api/data-marketing/rejected", async (req, res) => {
   try {
     const result = await client.query(`
-      SELECT dm.*, s.status_name AS accept_status_name
+      SELECT 
+        dm.marketing_id,
+        dm.buyer_name,
+        dm.code_order,
+        dm.order_number,
+        dm.jumlah_track,
+        dm.duration,
+        dm.jumlah_revisi,
+        dm.deadline,
+        dm.price_normal,
+        dm.price_discount,
+        dm.discount,
+        dm.basic_price,
+        dm.gig_link,
+        dm.reference_link,
+        dm.required_files,
+        dm.file_and_chat_link,
+        dm.detail_project,
+        dm.create_at,
+        dm.update_at,
+
+        mu.id AS input_by,
+        mu.nama_marketing AS input_by_name,
+
+        kd.id AS acc_by,
+        kd.nama AS acc_by_name,
+
+        am.id AS account,
+        am.nama_account AS account_name,
+
+        ot.id AS order_type,
+        ot.order_name AS order_type_name,
+
+        oft.id AS offer_type,
+        oft.offer_name AS offer_type_name,
+
+        tt.id AS jenis_track,
+        tt.track_name AS track_type_name,
+
+        g.id AS genre,
+        g.genre_name AS genre_name,
+
+        pt.id AS project_type,
+        pt.nama_project AS project_type_name,
+
+        k.id AS kupon_diskon_id,
+        k.nama_kupon AS kupon_diskon_name,
+
+        s.id AS accept_status_id,
+        s.status_name AS accept_status_name
+
       FROM data_marketing dm
+      LEFT JOIN marketing_musik_user mu ON mu.id = dm.input_by
+      LEFT JOIN kepala_divisi kd ON kd.id = dm.acc_by
+      LEFT JOIN account_music am ON am.id = dm.account
+      LEFT JOIN music_order_type ot ON ot.id = dm.order_type
+      LEFT JOIN offer_type_music oft ON oft.id = dm.offer_type
+      LEFT JOIN track_types tt ON tt.id = dm.jenis_track
+      LEFT JOIN genre_music g ON g.id = dm.genre
+      LEFT JOIN project_type pt ON pt.id = dm.project_type
+      LEFT JOIN kupon_diskon k ON k.id = dm.kupon_diskon_id
       LEFT JOIN accept_status s ON s.id = dm.accept_status_id
       WHERE s.status_name = 'Not Accepted'
-      ORDER BY dm.marketing_id DESC
+      ORDER BY dm.marketing_id DESC;
     `);
+
     res.json(result.rows);
   } catch (err) {
     console.error("❌ Error get not accepted data:", err);
     res.status(500).json({ error: "Failed to fetch not accepted data" });
   }
 });
+
 
 
 //13. archive data marketing
