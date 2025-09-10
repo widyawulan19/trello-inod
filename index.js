@@ -6313,6 +6313,99 @@ app.get('/api/marketing-design-not-accepted', async (req, res) => {
 
 
 
+// MARKETING DESIGN JOIN TABLE 
+// 1. USER MAREKTING DESIGN 
+
+// ✅ GET all users
+app.get("/api/marketing-desain-users", async (req, res) => {
+    try {
+        const result = await client.query(
+            "SELECT * FROM marketing_desain_user ORDER BY id ASC"
+        );
+        res.json(result.rows);
+    } catch (err) {
+        console.error("❌ Error get marketing_desain_user:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ✅ GET user by id
+app.get("/api/marketing-desain-users/:id", async (req, res) => {
+    const { id } = req.params;
+    try {
+        const result = await client.query(
+            "SELECT * FROM marketing_desain_user WHERE id = $1",
+            [id]
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "User not found" });
+        }
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error get marketing_desain_user by id:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ✅ CREATE new user
+app.post("/api/marketing-desain-users", async (req, res) => {
+    const { nama_marketing, divisi } = req.body;
+    try {
+        const result = await client.query(
+            `INSERT INTO marketing_desain_user (nama_marketing, divisi) 
+       VALUES ($1, $2) RETURNING *`,
+            [nama_marketing, divisi]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error create marketing_desain_user:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ✅ UPDATE user
+app.put("/api/marketing-desain-users/:id", async (req, res) => {
+    const { id } = req.params;
+    const { nama_marketing, divisi } = req.body;
+    try {
+        const result = await client.query(
+            `UPDATE marketing_desain_user
+       SET nama_marketing = $1,
+           divisi = $2,
+           update_at = now()
+       WHERE id = $3
+       RETURNING *`,
+            [nama_marketing, divisi, id]
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "User not found" });
+        }
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error update marketing_desain_user:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ✅ DELETE user
+app.delete("/api/marketing-desain-users/:id", async (req, res) => {
+    const { id } = req.params;
+    try {
+        const result = await client.query(
+            "DELETE FROM marketing_desain_user WHERE id = $1 RETURNING *",
+            [id]
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "User not found" });
+        }
+        res.json({ message: "User deleted successfully" });
+    } catch (err) {
+        console.error("❌ Error delete marketing_desain_user:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
 
 
 
