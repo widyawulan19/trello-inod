@@ -313,8 +313,11 @@ export const createCardFromMarketing = (listId, marketingId) => axios.put(`${API
 export const checkCardIdNullOrNot = (id) => axios.get(`${API_URL}/check-card-id/${id}`)
 export const getDataMarketingWithCardId = () => axios.get(`${API_URL}/data-marketing-cardId`)
 export const getDataMarketingWithCardIdNull = () => axios.get(`${API_URL}/data-marketing-cardId-null`)
-export const getDataMarketingAccepted = () => axios.get(`${API_URL}/data-marketing-accepted`)
-export const getDataMarketingRejected = () => axios.get(`${API_URL}/data-marketing-rejected`)
+export const getDataMarketingAccepted = () => axios.get(`${API_URL}//data-marketing/accepted`)
+export const getDataMarketingRejected = () => axios.get(`${API_URL}//data-marketing/rejected`)
+// export const getDataMarketingAccepted = () => API.get("/data-marketing/accepted");
+// export const getDataMarketingRejected = () => API.get("/data-marketing/rejected");
+
 export const archiveDataMarketing = (id) => axios.post(`${API_URL}/archive-data-marketing/${id}`);
 export const getTodayReportMarketing = async () => {
   try {

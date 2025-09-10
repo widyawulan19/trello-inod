@@ -103,7 +103,7 @@ const handleCloseForm = () =>{
         response = await getDataMarketingWithCardId();
       }else if(filterType === 'DATA MARKETING TANPA CARD'){
         response = await getDataMarketingWithCardIdNull();
-      }else if(filterType === 'DATA MAREKTING ACCEPTED'){
+      }else if(filterType === 'DATA MARKETING ACCEPTED'){
         response = await getDataMarketingAccepted();
       }else if(filterType === 'DATA MARKETING NOT ACCEPTED'){
         response = await getDataMarketingRejected();
