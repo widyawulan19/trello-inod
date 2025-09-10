@@ -86,7 +86,7 @@ useEffect(() => {
   // Tambah Input By
   const handleAddInputBy = async () => {
     if (!inputByNew.trim()) return;
-    const created = await addMarketingUser({ nama_marketing: inputByNew, divisi: "Marketing" });
+    const created = await addMarketingUser({ nama_marketing: inputByNew, divisi: "Marketing Musik" });
     const newOption = { id: created.id, name: `${created.nama_marketing} (${created.divisi})` };
     setDropdownData({ ...dropdownData, users: [...dropdownData.users, newOption] });
     setForm({ ...form, input_by: created.id });

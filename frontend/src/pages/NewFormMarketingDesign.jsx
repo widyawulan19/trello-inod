@@ -18,7 +18,7 @@ const NewFormMarketingDesign = ({ onClose, fetchMarketingDesign }) => {
     jumlah_design: "",
     order_number: "",
     account: "",
-    deadline: "",
+    deadline: "", 
     jumlah_revisi: "",
     order_type: "",
     offer_type: "",

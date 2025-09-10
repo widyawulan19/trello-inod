@@ -343,7 +343,7 @@ export const getAllDataMarketingJoined = () => axios.get(`${API_URL}/data-market
 export const getAllDataMarketingJoinedById = (id) => axios.get(`${API_URL}/data-marketing/joined/${id}`)
 export const updateDataMarketingJoined = (id, data) => axios.put(`${API_URL}/data-marketing/joined/${id}`, data)
 
-//DATA MARKERING DESIGN
+//DATA MARKETING DESIGN
 export const getAllDataMarketingDesign = () => axios.get(`${API_URL}/marketing-design`)
 export const getCardIdMarketingDesignByMarketingId = (id) => axios.get(`${API_URL}/card-id-design/${id}`)
 export const getDataMarketingDesignById = (id) => axios.get(`${API_URL}/marketing-design/${id}`)
@@ -1054,42 +1054,23 @@ export const deleteStatusProjectDesign = (id) =>
   axios.delete(`${API_URL}/status-project-design/${id}`);
 
 
+
 // Get all
-export const getAllKepalaDivisiDesign = async () => {
-  const res = await fetch(`${API_URL}/kepala-divisi-design`);
-  return res.json();
-};
+export const getAllKepalaDivisiDesign = () =>
+  axios.get(`${API_URL}/kepala-divisi-design`);
 
 // Get by ID
-export const getKepalaDivisiDesignById = async (id) => {
-  const res = await fetch(`${API_URL}/kepala-divisi-design/${id}`);
-  return res.json();
-};
+export const getKepalaDivisiDesignById = (id) =>
+  axios.get(`${API_URL}/kepala-divisi-design/${id}`);
 
 // Add
-export const addKepalaDivisiDesign = async (nama, divisi) => {
-  const res = await fetch(`${API_URL}/kepala-divisi-design`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ nama, divisi }),
-  });
-  return res.json();
-};
+export const addKepalaDivisiDesign = (nama, divisi) =>
+  axios.post(`${API_URL}/kepala-divisi-design`, { nama, divisi });
 
 // Update
-export const updateKepalaDivisiDesign = async (id, nama, divisi) => {
-  const res = await fetch(`${API_URL}/kepala-divisi-design/${id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ nama, divisi }),
-  });
-  return res.json();
-};
+export const updateKepalaDivisiDesign = (id, nama, divisi) =>
+  axios.put(`${API_URL}/kepala-divisi-design/${id}`, { nama, divisi });
 
 // Delete
-export const deleteKepalaDivisiDesign = async (id) => {
-  const res = await fetch(`${API_URL}/kepala-divisi-design/${id}`, {
-    method: "DELETE",
-  });
-  return res.json();
-};
+export const deleteKepalaDivisiDesign = (id) =>
+  axios.delete(`${API_URL}/kepala-divisi-design/${id}`);
