@@ -5874,7 +5874,7 @@ app.get("/api/marketing-design/joined", async (req, res) => {
     try {
         const result = await client.query(`
       SELECT 
-        md.id,
+        md.marketing_design_id,
         md.buyer_name,
         md.code_order,
         md.jumlah_design,
@@ -5889,6 +5889,7 @@ app.get("/api/marketing-design/joined", async (req, res) => {
         md.detail_project,
         md.create_at,
         md.update_at,
+        md.card_id
 
         -- Relasi (balikin ID + Nama)
         mdu.id AS input_by,
@@ -5917,7 +5918,7 @@ app.get("/api/marketing-design/joined", async (req, res) => {
       LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
       LEFT JOIN style_design sd ON md.style_id = sd.id
       LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
-      ORDER BY md.id DESC;
+      ORDER BY md.marketing_design_id DESC;
     `);
 
         res.json(result.rows);
@@ -5933,7 +5934,7 @@ app.get("/api/marketing-design/joined/:id", async (req, res) => {
         const { id } = req.params;
         const result = await client.query(`
       SELECT 
-        md.id,
+        md.marketing_design_id,
         md.buyer_name,
         md.code_order,
         md.jumlah_design,
@@ -5948,6 +5949,7 @@ app.get("/api/marketing-design/joined/:id", async (req, res) => {
         md.detail_project,
         md.create_at,
         md.update_at,
+        md.card_id,
 
         -- Relasi (balikin ID + Nama)
         mdu.id AS input_by,
@@ -5976,7 +5978,7 @@ app.get("/api/marketing-design/joined/:id", async (req, res) => {
       LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
       LEFT JOIN style_design sd ON md.style_id = sd.id
       LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
-      WHERE md.id = $1;
+      WHERE md.marketing_design_id = $1;
     `, [id]);
 
         if (result.rows.length === 0) return res.status(404).json({ error: "Marketing design not found" });
