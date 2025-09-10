@@ -5878,10 +5878,10 @@ app.get("/api/marketing-design/joined", async (req, res) => {
 
 // ✅ Get marketing_design by ID + join
 app.get("/api/marketing-design/joined/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await client.query(
-      `
+    try {
+        const { id } = req.params;
+        const result = await client.query(
+            `
       SELECT 
         md.marketing_design_id,
         md.buyer_name,
@@ -5939,46 +5939,46 @@ app.get("/api/marketing-design/joined/:id", async (req, res) => {
       LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
       WHERE md.marketing_design_id = $1;
     `,
-      [id]
-    );
+            [id]
+        );
 
-    if (result.rows.length === 0)
-      return res.status(404).json({ error: "Marketing design not found" });
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error("❌ Error get marketing_design by ID:", err);
-    res.status(500).json({ error: "Failed to fetch joined data" });
-  }
+        if (result.rows.length === 0)
+            return res.status(404).json({ error: "Marketing design not found" });
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error get marketing_design by ID:", err);
+        res.status(500).json({ error: "Failed to fetch joined data" });
+    }
 });
 
 // ✅ UPDATE Data Marketing Design by ID
 app.put("/api/marketing-design/joined/:id", async (req, res) => {
-  const { id } = req.params;
-  const {
-    buyer_name,
-    code_order,
-    order_number,
-    jumlah_design,
-    deadline,
-    jumlah_revisi,
-    price_normal,
-    price_discount,
-    discount_percentage,
-    required_files,
-    file_and_chat,
-    detail_project,
-    input_by,
-    acc_by,
-    account,
-    offer_type,
-    project_type_id,
-    style_id,
-    status_project_id,
-  } = req.body;
+    const { id } = req.params;
+    const {
+        buyer_name,
+        code_order,
+        order_number,
+        jumlah_design,
+        deadline,
+        jumlah_revisi,
+        price_normal,
+        price_discount,
+        discount_percentage,
+        required_files,
+        file_and_chat,
+        detail_project,
+        input_by,
+        acc_by,
+        account,
+        offer_type,
+        project_type_id,
+        style_id,
+        status_project_id,
+    } = req.body;
 
-  try {
-    const result = await client.query(
-      `
+    try {
+        const result = await client.query(
+            `
       UPDATE marketing_design
       SET 
         buyer_name          = $1,
@@ -6004,37 +6004,37 @@ app.put("/api/marketing-design/joined/:id", async (req, res) => {
       WHERE marketing_design_id = $20
       RETURNING *;
       `,
-      [
-        buyer_name,
-        code_order,
-        order_number,
-        jumlah_design,
-        deadline,
-        jumlah_revisi,
-        price_normal,
-        price_discount,
-        discount_percentage,
-        required_files,
-        file_and_chat,
-        detail_project,
-        input_by,
-        acc_by,
-        account,
-        offer_type,
-        project_type_id,
-        style_id,
-        status_project_id,
-        id,
-      ]
-    );
+            [
+                buyer_name,
+                code_order,
+                order_number,
+                jumlah_design,
+                deadline,
+                jumlah_revisi,
+                price_normal,
+                price_discount,
+                discount_percentage,
+                required_files,
+                file_and_chat,
+                detail_project,
+                input_by,
+                acc_by,
+                account,
+                offer_type,
+                project_type_id,
+                style_id,
+                status_project_id,
+                id,
+            ]
+        );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "❌ Marketing design not found" });
-    }
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "❌ Marketing design not found" });
+        }
 
-    // Ambil data dengan join supaya konsisten
-    const joined = await client.query(
-      `
+        // Ambil data dengan join supaya konsisten
+        const joined = await client.query(
+            `
       SELECT 
         md.marketing_design_id,
         md.buyer_name,
@@ -6085,17 +6085,17 @@ app.put("/api/marketing-design/joined/:id", async (req, res) => {
       LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
       WHERE md.marketing_design_id = $1
       `,
-      [id]
-    );
+            [id]
+        );
 
-    res.json({
-      message: "✅ Marketing design updated successfully",
-      data: joined.rows[0],
-    });
-  } catch (err) {
-    console.error("❌ Error updating marketing_design:", err);
-    res.status(500).json({ error: "Failed to update marketing_design" });
-  }
+        res.json({
+            message: "✅ Marketing design updated successfully",
+            data: joined.rows[0],
+        });
+    } catch (err) {
+        console.error("❌ Error updating marketing_design:", err);
+        res.status(500).json({ error: "Failed to update marketing_design" });
+    }
 });
 
 
@@ -6392,12 +6392,12 @@ app.put('/api/create-card-marketing-design/:listId/:marketingDesignId', async (r
 
         const deadlineFormatted = marketing.deadline
             ? new Date(marketing.deadline).toLocaleString('id-ID', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit'
-              })
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            })
             : '-';
 
         // Pakai field hasil join
@@ -6517,8 +6517,8 @@ app.post('/api/archive-data-marketing-design/:id', async (req, res) => {
 //10. get data marketing design by data accepted
 // ✅ 10. Get data marketing design by accepted (with join)
 app.get('/api/marketing-design-accepted', async (req, res) => {
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
       SELECT 
         dmd.marketing_design_id,
         dmd.buyer_name,
@@ -6585,19 +6585,19 @@ app.get('/api/marketing-design-accepted', async (req, res) => {
       ORDER BY dmd.marketing_design_id DESC;
     `);
 
-    res.json(result.rows);
-  } catch (err) {
-    console.error("❌ Error fetching accepted design data:", err);
-    res.status(500).json({ error: err.message });
-  }
+        res.json(result.rows);
+    } catch (err) {
+        console.error("❌ Error fetching accepted design data:", err);
+        res.status(500).json({ error: err.message });
+    }
 });
 
 
 //11. get data marketing by data not accepted
 // ✅ 11. Get data marketing design by not accepted (with join)
 app.get('/api/marketing-design-not-accepted', async (req, res) => {
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
       SELECT 
         dmd.marketing_design_id,
         dmd.buyer_name,
@@ -6664,11 +6664,11 @@ app.get('/api/marketing-design-not-accepted', async (req, res) => {
       ORDER BY dmd.marketing_design_id DESC;
     `);
 
-    res.json(result.rows);
-  } catch (err) {
-    console.error("❌ Error fetching not accepted design data:", err);
-    res.status(500).json({ error: err.message });
-  }
+        res.json(result.rows);
+    } catch (err) {
+        console.error("❌ Error fetching not accepted design data:", err);
+        res.status(500).json({ error: err.message });
+    }
 });
 
 
@@ -7136,6 +7136,88 @@ app.delete("/api/status-project-design/:id", async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
+// ===============================
+// ✅ CRUD Kepala Divisi Design
+// ===============================
+
+// Get all kepala_divisi_design
+app.get("/api/kepala-divisi-design", async (req, res) => {
+    try {
+        const result = await client.query("SELECT * FROM kepala_divisi_design ORDER BY id ASC");
+        res.json(result.rows);
+    } catch (err) {
+        console.error("❌ Error get kepala_divisi_design:", err.message);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Get kepala_divisi_design by ID
+app.get("/api/kepala-divisi-design/:id", async (req, res) => {
+    const { id } = req.params;
+    try {
+        const result = await client.query("SELECT * FROM kepala_divisi_design WHERE id = $1", [id]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Kepala divisi design not found" });
+        }
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error get kepala_divisi_design by ID:", err.message);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Add kepala_divisi_design
+app.post("/api/kepala-divisi-design", async (req, res) => {
+    const { nama, divisi } = req.body;
+    try {
+        const result = await client.query(
+            "INSERT INTO kepala_divisi_design (nama, divisi) VALUES ($1, $2) RETURNING *",
+            [nama, divisi]
+        );
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error add kepala_divisi_design:", err.message);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Update kepala_divisi_design
+app.put("/api/kepala-divisi-design/:id", async (req, res) => {
+    const { id } = req.params;
+    const { nama, divisi } = req.body;
+    try {
+        const result = await client.query(
+            `UPDATE kepala_divisi_design 
+       SET nama = $1, divisi = $2, update_at = NOW() 
+       WHERE id = $3 RETURNING *`,
+            [nama, divisi, id]
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Kepala divisi design not found" });
+        }
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error update kepala_divisi_design:", err.message);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Delete kepala_divisi_design
+app.delete("/api/kepala-divisi-design/:id", async (req, res) => {
+    const { id } = req.params;
+    try {
+        const result = await client.query("DELETE FROM kepala_divisi_design WHERE id = $1 RETURNING *", [id]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Kepala divisi design not found" });
+        }
+        res.json({ message: "✅ Deleted successfully" });
+    } catch (err) {
+        console.error("❌ Error delete kepala_divisi_design:", err.message);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 
 
 
