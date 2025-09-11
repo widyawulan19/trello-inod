@@ -5913,7 +5913,8 @@ app.get("/api/marketing-design/joined", async (req, res) => {
         //     }
         // }));
 
-        res.json(result.data);
+        // res.json(data);
+        res.json(result.rows)
     } catch (err) {
         console.error("❌ Error get joined marketing_design:", err);
         res.status(500).json({ error: "Failed to fetch joined data" });
