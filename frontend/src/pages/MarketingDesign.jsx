@@ -457,7 +457,8 @@ const MarketingDesign=()=> {
                   {filteredData.map((item, index)=>(
                     <tr key={item.marketing_design_id}>
                       <td>{index + 1}</td>
-                      <td className='input-container'  onClick={()=> handleShowDetail(item.marketing_design_id)}>{item.input_by_name}
+                      <td className='input-container'  onClick={()=> handleShowDetail(item.marketing_design_id)}>
+                        {item.input_by?.name|| "-"}
                         {hasCardId(item) && (
                           <span style={{
                             backgroundColor: '#e0f7fa',
