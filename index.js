@@ -6337,33 +6337,32 @@ app.post("/api/marketing-design/joined", async (req, res) => {
         const result = await client.query(
             `
             INSERT INTO marketing_design (
-                buyer_name,
-                code_order,
-                order_number,
-                jumlah_design,
-                deadline,
-                jumlah_revisi,
-                price_normal,
-                price_discount,
-                discount_percentage,
-                required_files,
-                file_and_chat,
-                detail_project,
-                input_by,
-                acc_by,
-                account,
-                offer_type,
-                order_type,        -- ✅ Tambahan
-                resolution,
-                reference,
-                project_type_id,
-                style_id,
-                status_project_id,
-                create_at,
-                update_at
-            )
-            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,NOW(),NOW())
-            RETURNING *;
+            buyer_name,
+            code_order,
+            order_number,
+            jumlah_design,
+            deadline,
+            jumlah_revisi,
+            price_normal,
+            price_discount,
+            discount_percentage,
+            required_files,
+            file_and_chat,
+            detail_project,
+            input_by,
+            acc_by,
+            account,
+            offer_type,
+            order_type,
+            resolution,
+            reference,
+            project_type_id,
+            style_id,
+            status_project_id
+        )
+        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22)
+        RETURNING *;
+
             `,
             [
                 buyer_name,
@@ -6411,8 +6410,6 @@ app.post("/api/marketing-design/joined", async (req, res) => {
                 md.order_type,           -- ✅ Tambahan
                 md.resoluiton,
                 md.reference,
-                md.create_at,
-                md.update_at,
 
                 mdu.id AS input_by,
                 mdu.nama_marketing AS input_by_name,
