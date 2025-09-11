@@ -5867,53 +5867,53 @@ app.get("/api/marketing-design/joined", async (req, res) => {
     `);
 
         // Map ke format yang lebih ringkas jika perlu
-        const data = result.rows.map(row => ({
-            id: row.marketing_design_id,
-            buyer_name: row.buyer_name,
-            code_order: row.code_order,
-            jumlah_design: row.jumlah_design,
-            order_number: row.order_number,
-            deadline: row.deadline,
-            jumlah_revisi: row.jumlah_revisi,
-            price_normal: row.price_normal,
-            price_discount: row.price_discount,
-            discount_percentage: row.discount_percentage,
-            required_files: row.required_files,
-            file_and_chat: row.file_and_chat,
-            detail_project: row.detail_project,
-            order_type: row.order_type,
+        // const data = result.rows.map(row => ({
+        //     id: row.marketing_design_id,
+        //     buyer_name: row.buyer_name,
+        //     code_order: row.code_order,
+        //     jumlah_design: row.jumlah_design,
+        //     order_number: row.order_number,
+        //     deadline: row.deadline,
+        //     jumlah_revisi: row.jumlah_revisi,
+        //     price_normal: row.price_normal,
+        //     price_discount: row.price_discount,
+        //     discount_percentage: row.discount_percentage,
+        //     required_files: row.required_files,
+        //     file_and_chat: row.file_and_chat,
+        //     detail_project: row.detail_project,
+        //     order_type: row.order_type,
 
-            input_by: {
-                id: row.input_by_id,
-                name: row.input_by_name
-            },
-            acc_by: {
-                id: row.acc_by_id,
-                name: row.acc_by_name
-            },
-            account: {
-                id: row.account_id,
-                name: row.account_name
-            },
-            offer_type: {
-                id: row.offer_type_id,
-                name: row.offer_type_name
-            },
-            project_type: {
-                id: row.project_type_id,
-                name: row.project_type_name
-            },
-            style: {
-                id: row.style_id,
-                name: row.style_name
-            },
-            status_project: {
-                id: row.status_project_id,
-                name: row.status_project_name
-            }
-        }));
+        //     input_by: {
+        //         id: row.input_by_id,
+        //         name: row.input_by_name
+        //     },
+        //     acc_by: {
+        //         id: row.acc_by_id,
+        //         name: row.acc_by_name
+        //     },
+        //     account: {
+        //         id: row.account_id,
+        //         name: row.account_name
+        //     },
+        //     offer_type: {
+        //         id: row.offer_type_id,
+        //         name: row.offer_type_name
+        //     },
+        //     project_type: {
+        //         id: row.project_type_id,
+        //         name: row.project_type_name
+        //     },
+        //     style: {
+        //         id: row.style_id,
+        //         name: row.style_name
+        //     },
+        //     status_project: {
+        //         id: row.status_project_id,
+        //         name: row.status_project_name
+        //     }
+        // }));
 
-        res.json(data);
+        res.json(result.data);
     } catch (err) {
         console.error("❌ Error get joined marketing_design:", err);
         res.status(500).json({ error: "Failed to fetch joined data" });
@@ -5923,10 +5923,10 @@ app.get("/api/marketing-design/joined", async (req, res) => {
 
 // ✅ Get marketing_design by ID + join (id + name saja)
 app.get("/api/marketing-design/joined/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await client.query(
-      `
+    try {
+        const { id } = req.params;
+        const result = await client.query(
+            `
       SELECT 
         md.marketing_design_id,
         md.buyer_name,
@@ -5983,65 +5983,65 @@ app.get("/api/marketing-design/joined/:id", async (req, res) => {
       LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
       WHERE md.marketing_design_id = $1;
     `,
-      [id]
-    );
+            [id]
+        );
 
-    if (result.rows.length === 0)
-      return res.status(404).json({ error: "Marketing design not found" });
+        if (result.rows.length === 0)
+            return res.status(404).json({ error: "Marketing design not found" });
 
-    const row = result.rows[0];
+        const row = result.rows[0];
 
-    const data = {
-      id: row.marketing_design_id,
-      buyer_name: row.buyer_name,
-      code_order: row.code_order,
-      jumlah_design: row.jumlah_design,
-      order_number: row.order_number,
-      deadline: row.deadline,
-      jumlah_revisi: row.jumlah_revisi,
-      price_normal: row.price_normal,
-      price_discount: row.price_discount,
-      discount_percentage: row.discount_percentage,
-      required_files: row.required_files,
-      file_and_chat: row.file_and_chat,
-      detail_project: row.detail_project,
-      order_type: row.order_type,
+        const data = {
+            id: row.marketing_design_id,
+            buyer_name: row.buyer_name,
+            code_order: row.code_order,
+            jumlah_design: row.jumlah_design,
+            order_number: row.order_number,
+            deadline: row.deadline,
+            jumlah_revisi: row.jumlah_revisi,
+            price_normal: row.price_normal,
+            price_discount: row.price_discount,
+            discount_percentage: row.discount_percentage,
+            required_files: row.required_files,
+            file_and_chat: row.file_and_chat,
+            detail_project: row.detail_project,
+            order_type: row.order_type,
 
-      input_by: {
-        id: row.input_by_id,
-        name: row.input_by_name
-      },
-      acc_by: {
-        id: row.acc_by_id,
-        name: row.acc_by_name
-      },
-      account: {
-        id: row.account_id,
-        name: row.account_name
-      },
-      offer_type: {
-        id: row.offer_type_id,
-        name: row.offer_type_name
-      },
-      project_type: {
-        id: row.project_type_id,
-        name: row.project_type_name
-      },
-      style: {
-        id: row.style_id,
-        name: row.style_name
-      },
-      status_project: {
-        id: row.status_project_id,
-        name: row.status_project_name
-      }
-    };
+            input_by: {
+                id: row.input_by_id,
+                name: row.input_by_name
+            },
+            acc_by: {
+                id: row.acc_by_id,
+                name: row.acc_by_name
+            },
+            account: {
+                id: row.account_id,
+                name: row.account_name
+            },
+            offer_type: {
+                id: row.offer_type_id,
+                name: row.offer_type_name
+            },
+            project_type: {
+                id: row.project_type_id,
+                name: row.project_type_name
+            },
+            style: {
+                id: row.style_id,
+                name: row.style_name
+            },
+            status_project: {
+                id: row.status_project_id,
+                name: row.status_project_name
+            }
+        };
 
-    res.json(data);
-  } catch (err) {
-    console.error("❌ Error get marketing_design by ID:", err);
-    res.status(500).json({ error: "Failed to fetch joined data" });
-  }
+        res.json(data);
+    } catch (err) {
+        console.error("❌ Error get marketing_design by ID:", err);
+        res.status(500).json({ error: "Failed to fetch joined data" });
+    }
 });
 
 
@@ -6201,8 +6201,8 @@ app.put("/api/marketing-design/joined/:id", async (req, res) => {
 
 //12. get laporan data otomatis per 10 hari berjalan
 app.get('/api/marketing-design/reports/today', async (req, res) => {
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
       SELECT 
         md.marketing_design_id,
         md.buyer_name,
@@ -6261,45 +6261,45 @@ app.get('/api/marketing-design/reports/today', async (req, res) => {
       ORDER BY md.marketing_design_id DESC
     `);
 
-    const data = result.rows.map(row => ({
-      id: row.marketing_design_id,
-      buyer_name: row.buyer_name,
-      code_order: row.code_order,
-      order_number: row.order_number,
-      jumlah_design: row.jumlah_design,
-      deadline: row.deadline,
-      jumlah_revisi: row.jumlah_revisi,
-      price_normal: row.price_normal,
-      price_discount: row.price_discount,
-      discount_percentage: row.discount_percentage,
-      required_files: row.required_files,
-      file_and_chat: row.file_and_chat,
-      detail_project: row.detail_project,
-      order_type: row.order_type,
-      create_at: row.create_at,
-      update_at: row.update_at,
+        const data = result.rows.map(row => ({
+            id: row.marketing_design_id,
+            buyer_name: row.buyer_name,
+            code_order: row.code_order,
+            order_number: row.order_number,
+            jumlah_design: row.jumlah_design,
+            deadline: row.deadline,
+            jumlah_revisi: row.jumlah_revisi,
+            price_normal: row.price_normal,
+            price_discount: row.price_discount,
+            discount_percentage: row.discount_percentage,
+            required_files: row.required_files,
+            file_and_chat: row.file_and_chat,
+            detail_project: row.detail_project,
+            order_type: row.order_type,
+            create_at: row.create_at,
+            update_at: row.update_at,
 
-      input_by: { id: row.input_by_id, name: row.input_by_name },
-      acc_by: { id: row.acc_by_id, name: row.acc_by_name },
-      account: { id: row.account_id, name: row.account_name },
-      offer_type: { id: row.offer_type_id, name: row.offer_type_name },
-      project_type: { id: row.project_type_id, name: row.project_type_name },
-      style: { id: row.style_id, name: row.style_name },
-      status_project: { id: row.status_project_id, name: row.status_project_name }
-    }));
+            input_by: { id: row.input_by_id, name: row.input_by_name },
+            acc_by: { id: row.acc_by_id, name: row.acc_by_name },
+            account: { id: row.account_id, name: row.account_name },
+            offer_type: { id: row.offer_type_id, name: row.offer_type_name },
+            project_type: { id: row.project_type_id, name: row.project_type_name },
+            style: { id: row.style_id, name: row.style_name },
+            status_project: { id: row.status_project_id, name: row.status_project_name }
+        }));
 
-    res.json(data);
-  } catch (err) {
-    console.error("❌ Error report today:", err);
-    res.status(500).json({ error: err.message });
-  }
+        res.json(data);
+    } catch (err) {
+        console.error("❌ Error report today:", err);
+        res.status(500).json({ error: err.message });
+    }
 });
 
 
 // ✅ Endpoint marketing-design per 10 hari dengan detail + join
 app.get("/api/marketing-design/reports", async (req, res) => {
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
       SELECT
         DATE_TRUNC('month', md.create_at) AS month,
         FLOOR((EXTRACT(DAY FROM md.create_at) - 1) / 10) + 1 AS period,
@@ -6346,11 +6346,11 @@ app.get("/api/marketing-design/reports", async (req, res) => {
       ORDER BY month DESC, period ASC;
     `);
 
-    res.json(result.rows);
-  } catch (err) {
-    console.error("❌ Query error:", err.message);
-    res.status(500).json({ error: err.message });
-  }
+        res.json(result.rows);
+    } catch (err) {
+        console.error("❌ Query error:", err.message);
+        res.status(500).json({ error: err.message });
+    }
 });
 
 
