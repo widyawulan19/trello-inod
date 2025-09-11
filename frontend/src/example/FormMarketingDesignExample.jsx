@@ -31,6 +31,7 @@ const FormMarketingDesignExample=()=> {
         project_type_id: "",
         style_id: "",
         status_project_id: "",
+        order_type:"",
         reference: "",
         resolution: ""
       });
@@ -153,7 +154,8 @@ const FormMarketingDesignExample=()=> {
             style_id: "",
             status_project_id: "",
             reference: "",
-            resolution: ""
+            resolution: "",
+            order_type:"",
           });
         } catch (err) {
           console.error("❌ Error submit data marketing:", err);
@@ -315,10 +317,10 @@ const FormMarketingDesignExample=()=> {
                             <label >Order Type</label>
                             <input
                                 type="text"
-                                name="jumlah_revisi"
+                                name="order_type"
                                 value={form.order_type}
                                 onChange={handleChange}
-                                placeholder="order"
+                                placeholder="order type"
                             />
                         </div>
 
@@ -328,7 +330,7 @@ const FormMarketingDesignExample=()=> {
                             <CustomDropdownDesign
                                 options={dropdownData.projectType}
                                 value={form.project_type_id}
-                                onChange={(val) => setForm({ ...form, project_type_ide: val })}
+                                onChange={(val) => setForm({ ...form, project_type_id: val })}
                                 newItem={newProject}
                                 setNewItem={setNewProject}
                                 addNew={handleAddProjectType}
@@ -394,17 +396,118 @@ const FormMarketingDesignExample=()=> {
                         <div className="box-content">
                             <label>Resolution</label>
                             <input
-                                type="Date"
-                                name="deadline"
-                                value={form.deadline}
+                                type="text"
+                                name="resolution"
+                                value={form.resolution}
                                 onChange={handleChange}
-                                placeholder="Deadline"
+                                placeholder="Resolution"
+                            />
+                        </div>
+
+                        {/* Resolution */}
+                        <div className="box-content">
+                            <label>Required File</label>
+                            <input
+                                type="text"
+                                name="required_files"
+                                value={form.required_files}
+                                onChange={handleChange}
+                                placeholder="Required Files"
                             />
                         </div>
                     </div>
                 </div>
 
-                
+                {/* DETAIL PRICE  */}
+                <div className="form-content">
+                    <h4>DETAIL PRICE</h4>
+                    <div className="sec-content">
+                        <div className="box-content">
+                        <label>Price Normal</label>
+                        <input 
+                            type="text" 
+                            name='price_normal'
+                            value={form.price_normal}
+                            onChange={handleChange}
+                            required
+                        />
+                        </div>
+                        <div className="box-content">
+                        <label>Price Discount</label>
+                        <input 
+                            type="text" 
+                            name='price_discount'
+                            value={form.price_discount}
+                            onChange={handleChange}
+                            required
+                        />
+                        </div>
+                        <div className="box-content">
+                        <label>Discount Precentage</label>
+                        <input 
+                            type="text" 
+                            name='discount_percentage'
+                            value={form.discount_percentage}
+                            onChange={handleChange}
+                            required
+                        />
+                        </div>
+                    </div>
+                </div>
+
+                {/* REFERENCE AND FILES  */}
+                <div className="form-content">
+                    <h4>REFERENCE AND FILES</h4>
+                    <div className="sec-content">
+
+                        {/* REFERENCE  */}
+                        <div className="box-content">
+                            <label>Reference</label>
+                            <input 
+                                type="textarea" 
+                                name='reference'
+                                value={form.reference}
+                                onChange={handleChange}
+                                // required
+                            />
+                        </div>
+
+                        {/* FILE AND CHAT  */}
+                        <div className="box-content">
+                            <label>File and Chat</label>
+                            <input 
+                                type="text" 
+                                name='file_and_chat'
+                                value={form.file_and_chat}
+                                onChange={handleChange}
+                                // required
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                {/* DETAIL PROJECT  */}
+                <div className="form-content">
+                    <h4>DETAIL PROJECT</h4>
+                    <div className="sec-content">
+
+                        {/* REFERENCE  */}
+                        <div className="box-content">
+                            <label>Detail Project</label>
+                            <textarea 
+                                type="text" 
+                                name='detail_project'
+                                value={form.detail_project}
+                                onChange={handleChange}
+                                // required
+                            />
+                        </div>
+                    </div>
+                </div>    
+            </div>
+
+             <div className="btn-form">
+                <button type='submit'>SUBMIT NEW DATA</button>
             </div>
         </form>
     </div>

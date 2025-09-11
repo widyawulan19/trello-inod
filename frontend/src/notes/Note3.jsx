@@ -648,7 +648,7 @@ app.post("/api/marketing-design/joined", async (req, res) => {
             `,
             [
 
-                buyer_name,
+              buyer_name,
                 code_order,
                 order_number,
                 jumlah_design,
@@ -665,11 +665,11 @@ app.post("/api/marketing-design/joined", async (req, res) => {
                 account,
                 offer_type,
                 order_type,         // ✅ Tambahan
+                resolution,
+                reference,
                 project_type_id,
                 style_id,
-                status_project_id,
-                resolution,
-                reference
+                status_project_id
             ]
         );
 
