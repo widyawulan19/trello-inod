@@ -6408,7 +6408,7 @@ app.post("/api/marketing-design/joined", async (req, res) => {
                 md.file_and_chat,
                 md.detail_project,
                 md.order_type,           -- ✅ Tambahan
-                md.resoluiton,
+                md.resolution,
                 md.reference,
 
                 mdu.id AS input_by,
