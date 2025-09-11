@@ -6328,13 +6328,31 @@ app.get("/api/marketing-design/reports", async (req, res) => {
             'update_at', md.update_at,
 
             -- Relasi (ID + Name)
-            'input_by', JSON_BUILD_OBJECT('id', mdu.id, 'name', mdu.nama_marketing),
-            'acc_by', JSON_BUILD_OBJECT('id', kdd.id, 'name', kdd.nama),
-            'account', JSON_BUILD_OBJECT('id', ad.id, 'name', ad.nama_account),
-            'offer_type', JSON_BUILD_OBJECT('id', ot.id, 'name', ot.offer_name),
-            'project_type', JSON_BUILD_OBJECT('id', pt.id, 'name', pt.project_name),
-            'style', JSON_BUILD_OBJECT('id', sd.id, 'name', sd.style_name),
-            'status_project', JSON_BUILD_OBJECT('id', sp.id, 'name', sp.status_name)
+            'input_by', mdu.id,
+            'input_by_name', mdu.nama_marketing,
+
+            'acc_by', kdd.id,
+            'acc_by_name', kdd.nama,
+
+            'account', ad.id,
+            'account_name', ad.nama_account,
+
+            'offer_type', ot.id,
+            'offer_type_name', ot.offer_name,
+
+            'project_type', pt.id,
+            'project_type_name', pt.project_name,
+
+            'style', sd.id,
+            'style_name', sd.style_name,
+
+            'status_project', sp.id,
+            'status_project_name', sp.status_name
+
+
+            'input_by', dm.input_by,
+            'input_by_name', mdu.nama_marketing,
+            'acc_by', 
           )
         ) AS details
       FROM marketing_design md
