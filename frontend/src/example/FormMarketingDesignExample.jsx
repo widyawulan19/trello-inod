@@ -12,7 +12,28 @@ const FormMarketingDesignExample=()=> {
     // STATE 
     const {showSnackbar} = useSnackbar();
     const [dropdownData, setDropdownData] = useState({ users: [], accs: [],statusAccept:[], accounts:[],offers:[], style:[] });
-    const [form, setForm] = useState({ buyer_name: "", code_order: "", input_by: "", acc_by: "",  kupon_diskon_id: "", accept_status_id: "", style_id:"" });
+    // ✅ Form sesuai endpoint backend
+    const [form, setForm] = useState({
+      buyer_name: "",
+      code_order: "",
+      order_number: "",
+      jumlah_design: "",
+      deadline: "",
+      jumlah_revisi: "",
+      price_normal: "",
+      price_discount: "",
+      discount_percentage: "",
+      required_files: "",
+      file_and_chat: "",
+      detail_project: "",
+      input_by: "",
+      acc_by: "",
+      account: "",
+      offer_type: "",
+      project_type_id: "",
+      style_id: "",
+      status_project_id: "",
+    });
     const [inputByNew, setInputByNew] = useState("");
     const [accByNew, setAccByNew] = useState("");
     const [accountNew, setAccountNew] = useState("");
@@ -124,16 +145,29 @@ const handleAddStyle = async () => {
             showSnackbar('Data Marketing berhasil ditambahkan!', 'success');
             // alert("✅ Data marketing berhasil ditambahkan!");
     
-            // Reset form
-            setForm({
-              buyer_name: "",
-              code_order: "",
-              input_by: "",
-              acc_by: "",
-              kupon_diskon_id: "",
-              accept_status_id: "",
-              style_id:"",
-            });
+              const resetForm = () => {
+                setForm({
+                    buyer_name: "",
+                    code_order: "",
+                    order_number: "",
+                    jumlah_design: "",
+                    deadline: "",
+                    jumlah_revisi: "",
+                    price_normal: "",
+                    price_discount: "",
+                    discount_percentage: "",
+                    required_files: "",
+                    file_and_chat: "",
+                    detail_project: "",
+                    input_by: "",
+                    acc_by: "",
+                    account: "",
+                    offer_type: "",
+                    project_type_id: "",
+                    style_id: "",
+                    status_project_id: "",
+                });
+            };
     
             // 🔥 Trigger fetch data parent
             // if (fetchData) {
@@ -208,15 +242,11 @@ const handleAddStyle = async () => {
                     <div className="box-content">
                     <label>Status</label>
                     <CustomDropdownDesign
-                        options={dropdownData.statusAccept}  // <- benar-benar dari kepala_divisi
-                        value={form.accept_status_id}
-                        onChange={(val) => setForm({ ...form, accept_status_id: val })}
-                        // newItem={accByNew}
-                        // setNewItem={setAccByNew}
-                        // addNew={handleAddAccBy}
-                        placeholder="Status Accept"
+                        options={dropdownData.statusAccept}
+                        value={form.status_project_id}
+                        onChange={(val) => setForm({ ...form, status_project_id: val })}
+                        placeholder="Pilih status project"
                         searchPlaceholder="Search status..."
-                        // addPlaceholder="Add new accepted user..."
                     />
                     </div>
 
@@ -278,15 +308,16 @@ const handleAddStyle = async () => {
                         <h4>DETAIL PESANAN</h4>
                         {/* jumlah pesanan  */}
                         <div className="sec-content">
+                            {/* Jumlah Design */}
                             <div className="box-content">
-                                <label>Jumlah Pesanan</label>
-                                <input
-                                    type="text"
-                                    name="jumlah_pesanan"
-                                    value={form.jumlah_pesanan}
-                                    onChange={handleChange}
-                                    placeholder="Jumlah Pesanan"
-                                />
+                            <label>Jumlah Design</label>
+                            <input
+                                type="text"
+                                name="jumlah_design"
+                                value={form.jumlah_design}
+                                onChange={handleChange}
+                                placeholder="Jumlah Design"
+                            />
                             </div>
 
                         {/* jumlah revisi  */}
@@ -310,7 +341,7 @@ const handleAddStyle = async () => {
                                 <input
                                     type="text"
                                     name="order_type"
-                                    value={form.order_type}
+                                    value={form.order_type_id}
                                     onChange={handleChange}
                                     placeholder="Order Type"
                                 />
@@ -321,7 +352,7 @@ const handleAddStyle = async () => {
                         <div className="box-content">
                             <label>Offer Type</label>
                             <CustomDropdownDesign
-                                options={dropdownData.offers}        // data dari API
+                                options={dropdownData.offers}
                                 value={form.offer_type}
                                 onChange={(val) => setForm({ ...form, offer_type: val })}
                                 newItem={newOffer}
@@ -387,15 +418,15 @@ const handleAddStyle = async () => {
 
                             {/* File Required */}
                             <div className="box-content">
-                                <label >Required File</label>
+                                <label>Required Files</label>
                                 <input
                                     type="text"
-                                    name="required_file"
-                                    value={form.required_file}
+                                    name="required_files"
+                                    value={form.required_files}
                                     onChange={handleChange}
-                                    placeholder="required_file"
+                                    placeholder="required files"
                                 />
-                            </div>
+                                </div>
                         </div>
                     </div>
                     {/* END DETAIL DESIGN  */}
@@ -433,12 +464,13 @@ const handleAddStyle = async () => {
                                     <label>Discount %</label>
                                     <input
                                         type="text"
-                                        name="discount_precentage"
-                                        value={form.discount_precentage}
+                                        name="discount_percentage"
+                                        value={form.discount_percentage}
                                         onChange={handleChange}
                                         placeholder="discount"
                                     />
-                                </div>
+                                    </div>
+
                         </div>
                     </div>
 
