@@ -996,8 +996,8 @@ export const getAllOfferTypesDesign = () =>
 export const getOfferTypeDesignById = (id) =>
   axios.get(`${API_URL}/offer-type-design/${id}`);
 
-export const addOfferTypeDesign = (offerType) =>
-  axios.post(`${API_URL}/offer-type-design`, { offer_name: offerType });
+export const addOfferTypeDesign = (data) =>
+  axios.post(`${API_URL}/offer-type-design`, data);
 
 export const updateOfferTypeDesign = (id, offerType) =>
   axios.put(`${API_URL}/offer-type-design/${id}`, { offer_name: offerType });
@@ -1013,8 +1013,8 @@ export const getAllProjectTypesDesign = () =>
 export const getProjectTypeDesignById = (id) =>
   axios.get(`${API_URL}/project-type-design/${id}`);
 
-export const addProjectTypeDesign = (projectType) =>
-  axios.post(`${API_URL}/project-type-design`, { project_name: projectType });
+export const addProjectTypeDesign = (data) =>
+  axios.post(`${API_URL}/project-type-design`, data);
 
 export const updateProjectTypeDesign = (id, projectType) =>
   axios.put(`${API_URL}/project-type-design/${id}`, { project_name: projectType });
@@ -1030,11 +1030,11 @@ export const getAllStyleDesign = () =>
 export const getStyleDesignById = (id) =>
   axios.get(`${API_URL}/style-design/${id}`);
 
-export const addStyleDesign = (styleName) =>
-  axios.post(`${API_URL}/style-design`, { style_name: styleName });
+export const addStyleDesign = (data) =>
+  axios.post(`${API_URL}/style-design`, data);
 
-export const updateStyleDesign = (id, styleName) =>
-  axios.put(`${API_URL}/style-design/${id}`, { style_name: styleName });
+export const updateStyleDesign = (id, data) =>
+  axios.put(`${API_URL}/style-design/${id}`, data);
 
 export const deleteStyleDesign = (id) =>
   axios.delete(`${API_URL}/style-design/${id}`);
@@ -1047,8 +1047,8 @@ export const getAllStatusProjectDesign = () =>
 export const getStatusProjectDesignById = (id) =>
   axios.get(`${API_URL}/status-project-design/${id}`);
 
-export const addStatusProjectDesign = (statusName) =>
-  axios.post(`${API_URL}/status-project-design`, { status_name: statusName });
+export const addStatusProjectDesign = (data) =>
+  axios.post(`${API_URL}/status-project-design`, data);
 
 export const updateStatusProjectDesign = (id, statusName) =>
   axios.put(`${API_URL}/status-project-design/${id}`, { status_name: statusName });

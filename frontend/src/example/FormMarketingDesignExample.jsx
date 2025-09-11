@@ -4,20 +4,21 @@ import { IoCreate } from 'react-icons/io5';
 import BootstrapTooltip from '../components/Tooltip';
 import { HiXMark } from 'react-icons/hi2';
 import '../style/pages/FormDataMarketing.css'
-import { addKepalaDivisiDesign, addOfferTypeDesign, createAccountDesign, createDataMarketingDesign, createMarketingDesainUser, getAllAccountDesign, getAllKepalaDivisiDesign, getAllMarketingDesainUsers,getAllOfferTypesDesign,getAllStatusProjectDesign } from '../services/ApiServices';
+import { addKepalaDivisiDesign, addOfferTypeDesign, addStyleDesign, createAccountDesign, createDataMarketingDesign, createMarketingDesainUser, getAllAccountDesign, getAllKepalaDivisiDesign, getAllMarketingDesainUsers,getAllOfferTypesDesign,getAllStatusProjectDesign, getAllStyleDesign } from '../services/ApiServices';
 import { create } from '@mui/material/styles/createTransitions';
 import CustomDropdownDesign from '../marketing/CustomDropdownDesign';
 
 const FormMarketingDesignExample=()=> {
     // STATE 
     const {showSnackbar} = useSnackbar();
-    const [dropdownData, setDropdownData] = useState({ users: [], accs: [], accounts:[] });
-    const [form, setForm] = useState({ buyer_name: "", code_order: "", input_by: "", acc_by: "",  kupon_diskon_id: "", accept_status_id: "" });
+    const [dropdownData, setDropdownData] = useState({ users: [], accs: [],statusAccept:[], accounts:[],offers:[], style:[] });
+    const [form, setForm] = useState({ buyer_name: "", code_order: "", input_by: "", acc_by: "",  kupon_diskon_id: "", accept_status_id: "", style:"" });
     const [inputByNew, setInputByNew] = useState("");
     const [accByNew, setAccByNew] = useState("");
     const [accountNew, setAccountNew] = useState("");
     // const [newOrder, setNewOrder] = useState("");
     const [newOffer, setNewOffer] = useState("");
+    const [newStyle, setNewStyle] = useState("");
 
     useEffect(()=>{
         const fetchData = async() =>{
@@ -27,17 +28,16 @@ const FormMarketingDesignExample=()=> {
                 const statusAccept = await getAllStatusProjectDesign();
                 const accounts = await getAllAccountDesign();
                 const offers = await getAllOfferTypesDesign();
-                console.log('bentuk data tabel marketing offers :', offers);
+                const style = await getAllStyleDesign();
+                console.log('bentuk data tabel style :', style);
 
                setDropdownData({ 
                     users: users.data.map(u => ({id: u.id, name: u.nama_marketing})),
                     accs: accArray.data.map(a => ({id: a.id, name: a.nama})),
                     statusAccept: statusAccept.data.map(s => ({id: s.id, name: s.status_name})),
                     accounts: accounts.data.map(ac => ({ id: ac.id, name: ac.nama_account })),
-                    // offers: offers.data.map(of => ({ id: of.id, name: of.offer_name })),
-                    offers: offers.data.map(of => ({ id: of.id, name: of.offer_type })),
-
-
+                    offers: offers.data.map(of => ({ id: of.id, name: of.offer_name })),
+                    style: style.data.map(s => ({ id: s.id, name: s.style_name })),
 
                 });
             }catch(error){
@@ -79,15 +79,41 @@ const FormMarketingDesignExample=()=> {
         setAccountNew("");
     };
 
-     // tambah account
+    // tambah offer 
     const handleAddOffer = async () => {
         if (!newOffer.trim()) return;
-        const created = await addOfferTypeDesign({ offer_type: newOffer }); // ✅ pakai offer_type
-        const newOption = { id: created.id, name: created.offer_type };     // ✅ samain dengan mapping awal
+        const created = await addOfferTypeDesign({ offer_name: newOffer }); // langsung dapat object
+        const newOption = { id: created.id, name: created.offer_name };
         setDropdownData(prev => ({ ...prev, offers: [...(prev.offers || []), newOption] }));
-        setForm({ ...form, offer_type: created.id }); // ✅ samain juga dengan key form
+        setForm({ ...form, offers: created.id });
         setNewOffer("");
     };
+
+
+    // tambah style
+const handleAddStyle = async () => {
+  if (!newStyle.trim()) return;
+  try {
+    const res = await addStyleDesign({ style_name: newStyle });
+    const created = res.data; // hasil insert RETURNING *
+    const newOption = { id: created.id, name: created.style_name };
+
+    setDropdownData(prev => ({
+      ...prev,
+      styles: [...(prev.styles || []), newOption],
+    }));
+
+    // update form pakai id baru
+    setForm({ ...form, style: created.id });
+    setNewStyle("");
+  } catch (err) {
+    console.error("❌ Error add style:", err);
+  }
+};
+
+
+
+     
 
 
     const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
@@ -140,11 +166,11 @@ const FormMarketingDesignExample=()=> {
           </BootstrapTooltip>
     </div>
 
-    <form>
+    <form onSubmit={handleSubmit}>
         <div className="form-new">
             <div className="form-content">
                 <h4>INFORMASI PESANAN</h4>
-                <div className="sc-content">
+                <div className="sec-content">
                     {/* input by  */}
                     <div className="box-content">
                         <label htmlFor="">Input By</label>
@@ -244,6 +270,7 @@ const FormMarketingDesignExample=()=> {
                         addPlaceholder="Add new account..."
                       />
                     </div>
+                </div>
 
                     {/* DETAIL PESANAN  */}
                     <div className="form-content">
@@ -260,10 +287,9 @@ const FormMarketingDesignExample=()=> {
                                     placeholder="Jumlah Pesanan"
                                 />
                             </div>
-                        </div>
 
                         {/* jumlah revisi  */}
-                        <div className="sec-content">
+                        {/* <div className="sec-content"> */}
                             <div className="box-content">
                                 <label>Jumlah Revisi</label>
                                 <input
@@ -274,10 +300,10 @@ const FormMarketingDesignExample=()=> {
                                     placeholder="Jumlah Revisi"
                                 />
                             </div>
-                        </div>
+                        {/* </div> */}
 
                         {/* order type harus dirubah jadi dropdown  */}
-                        <div className="sec-content">
+                        {/* <div className="sec-content"> */}
                             <div className="box-content">
                                 <label>Order Type</label>
                                 <input
@@ -288,14 +314,14 @@ const FormMarketingDesignExample=()=> {
                                     placeholder="Order Type"
                                 />
                             </div>
-                        </div>
+                        {/* </div> */}
 
                         {/* offer type */}
                         <div className="box-content">
                             <label>Offer Type</label>
                             <CustomDropdownDesign
-                                options={dropdownData.offers}        
-                                value={form.offer_type} // ✅ konsisten sama setForm di atas
+                                options={dropdownData.offers}        // data dari API
+                                value={form.offer_type}
                                 onChange={(val) => setForm({ ...form, offer_type: val })}
                                 newItem={newOffer}
                                 setNewItem={setNewOffer}
@@ -306,23 +332,168 @@ const FormMarketingDesignExample=()=> {
                             />
                         </div>
 
+
                         {/* deadline  */}
-                        <div className="sec-content">
                             <div className="box-content">
                                 <label>Deadline</label>
                                 <input
-                                    type="text"
+                                    type="date"
                                     name="deadline"
                                     value={form.Deadline}
                                     onChange={handleChange}
                                     placeholder="deadline"
                                 />
                             </div>
+                        
                         </div>
                     </div>
 
+                    {/* /DETAIL DESIGN  */}
+                    <div className="form-content">
+                        <h4>DETAIL DESIGN</h4>
+                        <div className="sec-content">
+                            {/* style  */}
+                            <div className="box-content">
+                                <label>Style</label>
+                                <div className="box-content">
+                                    <label>Style</label>
+                                    <CustomDropdownDesign
+                                        options={dropdownData.style} // data dari API
+                                        value={form.style}
+                                        onChange={(val) => setForm({ ...form, style: val })}
+                                        newItem={newStyle}
+                                        setNewItem={setNewStyle}
+                                        addNew={handleAddStyle}
+                                        placeholder="Pilih Style"
+                                        searchPlaceholder="Search style..."
+                                        addPlaceholder="Add new style..."
+                                    />
+                                    </div>
+
+                            </div>
+
+                            {/* Resolution */}
+                            <div className="box-content">
+                                <label>Resolution</label>
+                                <input
+                                    type="text"
+                                    name="resolution"
+                                    value={form.resolution}
+                                    onChange={handleChange}
+                                    placeholder="resolution"
+                                />
+                            </div>
+
+                            {/* File Required */}
+                            <div className="box-content">
+                                <label >Required File</label>
+                                <input
+                                    type="text"
+                                    name="required_file"
+                                    value={form.required_file}
+                                    onChange={handleChange}
+                                    placeholder="required_file"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    {/* END DETAIL DESIGN  */}
+
+                    {/* INFORMASI HARGA DAN DISKON  */}
+                    <div className="form-content">
+                        <h4>INFORMASI HARGA DAN DISKON</h4>
+                        <div className="sec-content">
+                             {/* Price Normal */}
+                            <div className="box-content">
+                                <label >Price Normal</label>
+                                <input
+                                    type="text"
+                                    name="price_normal"
+                                    value={form.price_normal}
+                                    onChange={handleChange}
+                                    placeholder="Price normal"
+                                />
+                            </div>
+                            
+                            {/* Price Discount */}
+                                <div className="box-content">
+                                    <label >Price Discount</label>
+                                    <input
+                                        type="text"
+                                        name="price_discount"
+                                        value={form.price_discount}
+                                        onChange={handleChange}
+                                        placeholder="Price discount"
+                                    />
+                                </div>
+
+                                {/*  Discount */}
+                                <div className="box-content">
+                                    <label>Discount %</label>
+                                    <input
+                                        type="text"
+                                        name="discount_precentage"
+                                        value={form.discount_precentage}
+                                        onChange={handleChange}
+                                        placeholder="discount"
+                                    />
+                                </div>
+                        </div>
+                    </div>
+
+                    <div className="form-content">
+                        <h4>REDERENCE AND FILES</h4>
+                        <div className="sec-content">
+                            {/*  Reference */}
+                                <div className="box-content">
+                                    <label>Reference</label>
+                                    <input
+                                        type="text"
+                                        name="reference"
+                                        value={form.reference}
+                                        onChange={handleChange}
+                                        pattern="(https?://.*)?"
+                                        placeholder="https://example.com"
+                                    />
+                                </div>
+
+                                {/*  Reference */}
+                                <div className="box-content">
+                                    <label>File and Chat</label>
+                                    <input
+                                        type="text"
+                                        name="file_and_chat"
+                                        value={form.file_and_chat}
+                                        onChange={handleChange}
+                                        placeholder='file and chat'
+                                    />
+                                </div>
+                        </div>
+                    </div>
+
+                    <div className="form-content">
+                        <h4>Detail Project</h4>
+                        <div className="sec-content">
+                            {/*  Reference */}
+                                <div className="box-content">
+                                    <label>Detail</label>
+                                    <textarea
+                                        type="text"
+                                        name="detail_project"
+                                        value={form.detail_project}
+                                        onChange={handleChange}
+                                        pattern="(https?://.*)?"
+                                        placeholder="https://example.com"
+                                    />
+                                </div>
+                            </div>
+                    </div>
+
+
                 </div>
-            </div>
+        </div>
+         <div className="btn-form">
+          <button type='submit'>SUBMIT NEW DATA</button>
         </div>
     </form>
    </div>
