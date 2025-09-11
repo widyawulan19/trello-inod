@@ -5805,7 +5805,7 @@ app.delete("/api/accept-status/:id", async (req, res) => {
 //DATA MARKETING DESIGN
 
 //MARKETING DESIGN JOINED
-// ✅ Get all marketing_design + join
+// ✅ Get all marketing_design + join (id + name saja)
 app.get("/api/marketing-design/joined", async (req, res) => {
     try {
         const result = await client.query(`
@@ -5828,33 +5828,31 @@ app.get("/api/marketing-design/joined", async (req, res) => {
         md.update_at,
 
         -- Relasi Input By
-        mdu.id AS input_by,
+        mdu.id AS input_by_id,
         mdu.nama_marketing AS input_by_name,
-        mdu.divisi AS input_by_divisi,
 
         -- Relasi Acc By (kepala divisi design)
-        kdd.id AS acc_by,
+        kdd.id AS acc_by_id,
         kdd.nama AS acc_by_name,
-        kdd.divisi AS acc_by_divisi,
 
         -- Relasi Account
-        ad.id AS account,
+        ad.id AS account_id,
         ad.nama_account AS account_name,
 
         -- Relasi Offer Type
-        ot.id AS offer_type,
+        ot.id AS offer_type_id,
         ot.offer_name AS offer_type_name,
 
         -- Relasi Project Type
-        pt.id AS project_type,
+        pt.id AS project_type_id,
         pt.project_name AS project_type_name,
 
         -- Relasi Style
-        sd.id AS style,
+        sd.id AS style_id,
         sd.style_name AS style_name,
 
         -- Relasi Status Project
-        sp.id AS status_project,
+        sp.id AS status_project_id,
         sp.status_name AS status_project_name
 
       FROM marketing_design md
@@ -5868,12 +5866,60 @@ app.get("/api/marketing-design/joined", async (req, res) => {
       ORDER BY md.marketing_design_id DESC;
     `);
 
-        res.json(result.rows);
+        // Map ke format yang lebih ringkas jika perlu
+        const data = result.rows.map(row => ({
+            id: row.marketing_design_id,
+            buyer_name: row.buyer_name,
+            code_order: row.code_order,
+            jumlah_design: row.jumlah_design,
+            order_number: row.order_number,
+            deadline: row.deadline,
+            jumlah_revisi: row.jumlah_revisi,
+            price_normal: row.price_normal,
+            price_discount: row.price_discount,
+            discount_percentage: row.discount_percentage,
+            required_files: row.required_files,
+            file_and_chat: row.file_and_chat,
+            detail_project: row.detail_project,
+            order_type: row.order_type,
+
+            input_by: {
+                id: row.input_by_id,
+                name: row.input_by_name
+            },
+            acc_by: {
+                id: row.acc_by_id,
+                name: row.acc_by_name
+            },
+            account: {
+                id: row.account_id,
+                name: row.account_name
+            },
+            offer_type: {
+                id: row.offer_type_id,
+                name: row.offer_type_name
+            },
+            project_type: {
+                id: row.project_type_id,
+                name: row.project_type_name
+            },
+            style: {
+                id: row.style_id,
+                name: row.style_name
+            },
+            status_project: {
+                id: row.status_project_id,
+                name: row.status_project_name
+            }
+        }));
+
+        res.json(data);
     } catch (err) {
         console.error("❌ Error get joined marketing_design:", err);
         res.status(500).json({ error: "Failed to fetch joined data" });
     }
 });
+
 
 
 
