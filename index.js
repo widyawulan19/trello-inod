@@ -6298,47 +6298,8 @@ app.post('/api/marketing-design', async (req, res) => {
 });
 
 // ✅ Create Marketing Design + pakai status_project_id
-app.post('/api/marketing-design', async (req, res) => {
-  let {
-    input_by,
-    buyer_name,
-    code_order,
-    jumlah_design,
-    order_number,
-    account,
-    deadline,
-    jumlah_revisi,
-    order_type,
-    offer_type,
-    style,
-    resolution, // kalau udah ga dipakai bisa dihapus
-    price_normal,
-    price_discount,
-    discount_percentage,
-    required_files,
-    project_type_id,
-    reference,
-    file_and_chat,
-    detail_project,
-    acc_by,
-    status_project_id // ✅ pengganti is_accepted
-  } = req.body;
-
-  try {
-    const result = await client.query(
-      `
-      INSERT INTO marketing_design (
-        input_by, buyer_name, code_order, jumlah_design, order_number, account, deadline,
-        jumlah_revisi, order_type, offer_type, style, price_normal, price_discount,
-        discount_percentage, required_files, project_type_id, reference, file_and_chat, detail_project,
-        acc_by, status_project_id, create_at
-      ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15,
-        $16, $17, $18, $19, $20, $21, $22, CURRENT_TIMESTAMP
-      )
-      RETURNING marketing_design_id
-      `,
-      [
+app.post('/api/marketing-design/joined', async (req, res) => {
+    let {
         input_by,
         buyer_name,
         code_order,
@@ -6350,6 +6311,7 @@ app.post('/api/marketing-design', async (req, res) => {
         order_type,
         offer_type,
         style,
+        resolution, // kalau udah ga dipakai bisa dihapus
         price_normal,
         price_discount,
         discount_percentage,
@@ -6359,15 +6321,53 @@ app.post('/api/marketing-design', async (req, res) => {
         file_and_chat,
         detail_project,
         acc_by,
-        status_project_id
-      ]
-    );
+        status_project_id // ✅ pengganti is_accepted
+    } = req.body;
 
-    const newId = result.rows[0].marketing_design_id;
+    try {
+        const result = await client.query(
+            `
+      INSERT INTO marketing_design (
+        input_by, buyer_name, code_order, jumlah_design, order_number, account, deadline,
+        jumlah_revisi, order_type, offer_type, style, price_normal, price_discount,
+        discount_percentage, required_files, project_type_id, reference, file_and_chat, detail_project,
+        acc_by, status_project_id, create_at
+      ) VALUES (
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15,
+        $16, $17, $18, $19, $20, $21, $22, CURRENT_TIMESTAMP
+      )
+      RETURNING marketing_design_id
+      `,
+            [
+                input_by,
+                buyer_name,
+                code_order,
+                jumlah_design,
+                order_number,
+                account,
+                deadline,
+                jumlah_revisi,
+                order_type,
+                offer_type,
+                style,
+                price_normal,
+                price_discount,
+                discount_percentage,
+                required_files,
+                project_type_id,
+                reference,
+                file_and_chat,
+                detail_project,
+                acc_by,
+                status_project_id
+            ]
+        );
 
-    // 🔥 langsung return versi join biar konsisten
-    const joined = await client.query(
-      `
+        const newId = result.rows[0].marketing_design_id;
+
+        // 🔥 langsung return versi join biar konsisten
+        const joined = await client.query(
+            `
       SELECT 
         md.*,
         mdu.nama_marketing AS input_by_name,
@@ -6387,14 +6387,14 @@ app.post('/api/marketing-design', async (req, res) => {
       LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
       WHERE md.marketing_design_id = $1
       `,
-      [newId]
-    );
+            [newId]
+        );
 
-    res.status(201).json(joined.rows[0]);
-  } catch (err) {
-    console.error("❌ Insert Error:", err);
-    res.status(500).json({ error: err.message });
-  }
+        res.status(201).json(joined.rows[0]);
+    } catch (err) {
+        console.error("❌ Insert Error:", err);
+        res.status(500).json({ error: err.message });
+    }
 });
 
 
