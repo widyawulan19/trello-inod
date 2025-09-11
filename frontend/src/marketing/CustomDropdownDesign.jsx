@@ -33,9 +33,14 @@ const CustomDropdownDesign = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const filteredOptions = options.filter((o) =>
-    o.name.toLowerCase().includes(search.toLowerCase())
-  );
+//   const filteredOptions = options.filter((o) =>
+//     o.name.toLowerCase().includes(search.toLowerCase())
+//   );
+
+  const filteredOptions = (options || []).filter((o) =>
+  (o?.name || "").toLowerCase().includes(search.toLowerCase())
+);
+
 
   return (
     <div className="dropdown-custom-container" ref={ref}>

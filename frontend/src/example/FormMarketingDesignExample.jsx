@@ -4,7 +4,7 @@ import { IoCreate } from 'react-icons/io5';
 import BootstrapTooltip from '../components/Tooltip';
 import { HiXMark } from 'react-icons/hi2';
 import '../style/pages/FormDataMarketing.css'
-import { addKepalaDivisiDesign, createAccountDesign, createDataMarketingDesign, createMarketingDesainUser, getAllAccountDesign, getAllKepalaDivisiDesign, getAllMarketingDesainUsers,getAllStatusProjectDesign } from '../services/ApiServices';
+import { addKepalaDivisiDesign, addOfferTypeDesign, createAccountDesign, createDataMarketingDesign, createMarketingDesainUser, getAllAccountDesign, getAllKepalaDivisiDesign, getAllMarketingDesainUsers,getAllOfferTypesDesign,getAllStatusProjectDesign } from '../services/ApiServices';
 import { create } from '@mui/material/styles/createTransitions';
 import CustomDropdownDesign from '../marketing/CustomDropdownDesign';
 
@@ -16,6 +16,8 @@ const FormMarketingDesignExample=()=> {
     const [inputByNew, setInputByNew] = useState("");
     const [accByNew, setAccByNew] = useState("");
     const [accountNew, setAccountNew] = useState("");
+    // const [newOrder, setNewOrder] = useState("");
+    const [newOffer, setNewOffer] = useState("");
 
     useEffect(()=>{
         const fetchData = async() =>{
@@ -24,14 +26,19 @@ const FormMarketingDesignExample=()=> {
                 const accArray = await getAllKepalaDivisiDesign();
                 const statusAccept = await getAllStatusProjectDesign();
                 const accounts = await getAllAccountDesign();
-                console.log('bentuk data tabel marketing account:', accounts);
+                const offers = await getAllOfferTypesDesign();
+                console.log('bentuk data tabel marketing offers :', offers);
 
                setDropdownData({ 
                     users: users.data.map(u => ({id: u.id, name: u.nama_marketing})),
                     accs: accArray.data.map(a => ({id: a.id, name: a.nama})),
                     statusAccept: statusAccept.data.map(s => ({id: s.id, name: s.status_name})),
                     accounts: accounts.data.map(ac => ({ id: ac.id, name: ac.nama_account })),
-                    
+                    // offers: offers.data.map(of => ({ id: of.id, name: of.offer_name })),
+                    offers: offers.data.map(of => ({ id: of.id, name: of.offer_type })),
+
+
+
                 });
             }catch(error){
                 console.error('Error fetching dropdown data:', error);
@@ -71,6 +78,17 @@ const FormMarketingDesignExample=()=> {
         setForm({ ...form, account: created.id });
         setAccountNew("");
     };
+
+     // tambah account
+    const handleAddOffer = async () => {
+        if (!newOffer.trim()) return;
+        const created = await addOfferTypeDesign({ offer_type: newOffer }); // ✅ pakai offer_type
+        const newOption = { id: created.id, name: created.offer_type };     // ✅ samain dengan mapping awal
+        setDropdownData(prev => ({ ...prev, offers: [...(prev.offers || []), newOption] }));
+        setForm({ ...form, offer_type: created.id }); // ✅ samain juga dengan key form
+        setNewOffer("");
+    };
+
 
     const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
       const handleSubmit = async (e) => {
@@ -225,6 +243,82 @@ const FormMarketingDesignExample=()=> {
                         searchPlaceholder="Search account..."
                         addPlaceholder="Add new account..."
                       />
+                    </div>
+
+                    {/* DETAIL PESANAN  */}
+                    <div className="form-content">
+                        <h4>DETAIL PESANAN</h4>
+                        {/* jumlah pesanan  */}
+                        <div className="sec-content">
+                            <div className="box-content">
+                                <label>Jumlah Pesanan</label>
+                                <input
+                                    type="text"
+                                    name="jumlah_pesanan"
+                                    value={form.jumlah_pesanan}
+                                    onChange={handleChange}
+                                    placeholder="Jumlah Pesanan"
+                                />
+                            </div>
+                        </div>
+
+                        {/* jumlah revisi  */}
+                        <div className="sec-content">
+                            <div className="box-content">
+                                <label>Jumlah Revisi</label>
+                                <input
+                                    type="text"
+                                    name="jumlah_revisi"
+                                    value={form.jumlah_revisi}
+                                    onChange={handleChange}
+                                    placeholder="Jumlah Revisi"
+                                />
+                            </div>
+                        </div>
+
+                        {/* order type harus dirubah jadi dropdown  */}
+                        <div className="sec-content">
+                            <div className="box-content">
+                                <label>Order Type</label>
+                                <input
+                                    type="text"
+                                    name="order_type"
+                                    value={form.order_type}
+                                    onChange={handleChange}
+                                    placeholder="Order Type"
+                                />
+                            </div>
+                        </div>
+
+                        {/* offer type */}
+                        <div className="box-content">
+                            <label>Offer Type</label>
+                            <CustomDropdownDesign
+                                options={dropdownData.offers}        
+                                value={form.offer_type} // ✅ konsisten sama setForm di atas
+                                onChange={(val) => setForm({ ...form, offer_type: val })}
+                                newItem={newOffer}
+                                setNewItem={setNewOffer}
+                                addNew={handleAddOffer}
+                                placeholder="Pilih Offer"
+                                searchPlaceholder="Search offer..."
+                                addPlaceholder="Add new offer..."
+                            />
+                        </div>
+
+                        {/* deadline  */}
+                        <div className="sec-content">
+                            <div className="box-content">
+                                <label>Deadline</label>
+                                <input
+                                    type="text"
+                                    name="deadline"
+                                    value={form.Deadline}
+                                    onChange={handleChange}
+                                    placeholder="deadline"
+                                />
+                            </div>
+                        </div>
                     </div>
 
                 </div>
