@@ -6297,34 +6297,33 @@ app.post('/api/marketing-design', async (req, res) => {
     }
 });
 
-// ✅ CREATE Data Marketing Design (return dengan JOIN)
+// Tambah data marketing_design baru
 app.post("/api/marketing-design/joined", async (req, res) => {
-  const {
-    buyer_name,
-    code_order,
-    order_number,
-    jumlah_design,
-    deadline,
-    jumlah_revisi,
-    price_normal,
-    price_discount,
-    discount_percentage,
-    required_files,
-    file_and_chat,
-    detail_project,
-    input_by,
-    acc_by,
-    account,
-    offer_type,
-    project_type_id,
-    style_id,
-    status_project_id
-  } = req.body;
+    const {
+        buyer_name,
+        code_order,
+        order_number,
+        jumlah_design,
+        deadline,
+        jumlah_revisi,
+        price_normal,
+        price_discount,
+        discount_percentage,
+        required_files,
+        file_and_chat,
+        detail_project,
+        input_by,          // ID dari marketing_desain_user
+        acc_by,            // ID dari kepala_divisi_design
+        account,           // ID dari account_design
+        offer_type,        // ID dari offer_type_design
+        project_type_id,   // ID dari project_type_design
+        style_id,          // ID dari style_design
+        status_project_id  // ID dari status_project_design
+    } = req.body;
 
-  try {
-    // Insert data
-    const result = await client.query(
-      `
+    try {
+        const result = await client.query(
+            `
       INSERT INTO marketing_design (
         buyer_name,
         code_order,
@@ -6345,41 +6344,38 @@ app.post("/api/marketing-design/joined", async (req, res) => {
         project_type_id,
         style_id,
         status_project_id,
-        create_at
-      ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
-        $11, $12, $13, $14, $15, $16, $17, $18, $19, NOW()
+        create_at,
+        update_at
       )
-      RETURNING marketing_design_id;
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,NOW(),NOW())
+      RETURNING *;
       `,
-      [
-        buyer_name,
-        code_order,
-        order_number,
-        jumlah_design,
-        deadline,
-        jumlah_revisi,
-        price_normal,
-        price_discount,
-        discount_percentage,
-        required_files,
-        file_and_chat,
-        detail_project,
-        input_by,
-        acc_by,
-        account,
-        offer_type,
-        project_type_id,
-        style_id,
-        status_project_id
-      ]
-    );
+            [
+                buyer_name,
+                code_order,
+                order_number,
+                jumlah_design,
+                deadline,
+                jumlah_revisi,
+                price_normal,
+                price_discount,
+                discount_percentage,
+                required_files,
+                file_and_chat,
+                detail_project,
+                input_by,
+                acc_by,
+                account,
+                offer_type,
+                project_type_id,
+                style_id,
+                status_project_id
+            ]
+        );
 
-    const newId = result.rows[0].marketing_design_id;
-
-    // Ambil data lengkap dengan join
-    const joined = await client.query(
-      `
+        // Ambil data baru dengan join supaya konsisten
+        const joined = await client.query(
+            `
       SELECT 
         md.marketing_design_id,
         md.buyer_name,
@@ -6403,7 +6399,6 @@ app.post("/api/marketing-design/joined", async (req, res) => {
 
         kdd.id AS acc_by,
         kdd.nama AS acc_by_name,
-        kdd.divisi AS acc_by_divisi,
 
         ad.id AS account,
         ad.nama_account AS account_name,
@@ -6428,17 +6423,21 @@ app.post("/api/marketing-design/joined", async (req, res) => {
       LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
       LEFT JOIN style_design sd ON md.style_id = sd.id
       LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
-      WHERE md.marketing_design_id = $1;
+      WHERE md.marketing_design_id = $1
       `,
-      [newId]
-    );
+            [result.rows[0].marketing_design_id]
+        );
 
-    res.status(201).json(joined.rows[0]);
-  } catch (err) {
-    console.error("❌ Insert Error:", err);
-    res.status(500).json({ error: "Failed to create marketing_design" });
-  }
+        res.status(201).json({
+            message: "✅ Marketing design created successfully",
+            data: joined.rows[0],
+        });
+    } catch (err) {
+        console.error("❌ Error creating marketing_design:", err);
+        res.status(500).json({ error: "Failed to create marketing_design" });
+    }
 });
+
 
 
 
