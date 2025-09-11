@@ -358,7 +358,10 @@ export const getDataMarketingDesignNotAccept = () => axios.get(`${API_URL}/marke
 export const getDataMarketingDesignAccept = () => axios.get(`${API_URL}/marketing-design-accepted`);
 export const archiveDataMarektingDesign = (id) => axios.post(`${API_URL}/archive-data-marketing-design/${id}`);
 
-export const addMarketingDesignJoined = () => axios.post(`${API_URL}/marketing-design/joined`)
+// export const addMarketingDesignJoined = () => axios.post(`${API_URL}/marketing-design/joined`)
+export const addMarketingDesignJoined = (data) =>
+  axios.post(`${API_URL}/marketing-design/joined`, data);
+
 
 // ✅ Get all marketing_design (joined)
 export const getAllMarketingDesignJoined = () =>

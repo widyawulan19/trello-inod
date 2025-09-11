@@ -19,6 +19,7 @@ import OutsideClick from '../hook/OutsideClick';
 import { handleArchive } from '../utils/handleArchive';
 import ExportMarketingDesign from '../exports/ExportMarketingDesign';
 import { FaXmark } from 'react-icons/fa6';
+import FormMarketingDesignExample from '../example/FormMarketingDesignExample';
 
 const MarketingDesign=()=> {
     //STATE
@@ -300,7 +301,8 @@ const MarketingDesign=()=> {
                 <div className="md-form">
                     <div className="md-content">
                         {/* <Setting onClose={handleCloseForm}/> */}
-                        <NewFormMarketingDesign onClose={handleCloseForm} fetchMarketingDesign={fetchMarketingDesign}/>
+                        {/* <NewFormMarketingDesign onClose={handleCloseForm} fetchMarketingDesign={fetchMarketingDesign}/> */}
+                        <FormMarketingDesignExample onClose={handleCloseForm} fetchMarketingDesign={fetchMarketingDesign}/>
                     </div>
                 </div>
             )}
