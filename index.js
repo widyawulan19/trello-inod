@@ -6324,7 +6324,9 @@ app.post("/api/marketing-design/joined", async (req, res) => {
         acc_by,            // ID dari kepala_divisi_design
         account,           // ID dari account_design
         offer_type,        // ID dari offer_type_design
-        order_type,        // ✅ Tambahan
+        order_type,
+        resolution, // ✅ Tambahan
+        reference, // ✅ Tambahan
         project_type_id,   // ID dari project_type_design
         style_id,          // ID dari style_design
         status_project_id  // ID dari status_project_design
@@ -6352,13 +6354,15 @@ app.post("/api/marketing-design/joined", async (req, res) => {
                 account,
                 offer_type,
                 order_type,        -- ✅ Tambahan
+                resolution,
+                reference,
                 project_type_id,
                 style_id,
                 status_project_id,
                 create_at,
                 update_at
             )
-            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,NOW(),NOW())
+            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,NOW(),NOW())
             RETURNING *;
             `,
             [
@@ -6379,6 +6383,8 @@ app.post("/api/marketing-design/joined", async (req, res) => {
                 account,
                 offer_type,
                 order_type,         // ✅ Tambahan
+                resolution,
+                reference,
                 project_type_id,
                 style_id,
                 status_project_id
@@ -6403,6 +6409,8 @@ app.post("/api/marketing-design/joined", async (req, res) => {
                 md.file_and_chat,
                 md.detail_project,
                 md.order_type,           -- ✅ Tambahan
+                md.resoluiton,
+                md.reference,
                 md.create_at,
                 md.update_at,
 
