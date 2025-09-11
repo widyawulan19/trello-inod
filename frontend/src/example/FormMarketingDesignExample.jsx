@@ -12,7 +12,7 @@ const FormMarketingDesignExample=()=> {
     // STATE 
     const {showSnackbar} = useSnackbar();
     const [dropdownData, setDropdownData] = useState({ users: [], accs: [],statusAccept:[], accounts:[],offers:[], style:[] });
-    const [form, setForm] = useState({ buyer_name: "", code_order: "", input_by: "", acc_by: "",  kupon_diskon_id: "", accept_status_id: "", style:"" });
+    const [form, setForm] = useState({ buyer_name: "", code_order: "", input_by: "", acc_by: "",  kupon_diskon_id: "", accept_status_id: "", style_id:"" });
     const [inputByNew, setInputByNew] = useState("");
     const [accByNew, setAccByNew] = useState("");
     const [accountNew, setAccountNew] = useState("");
@@ -132,6 +132,7 @@ const handleAddStyle = async () => {
               acc_by: "",
               kupon_diskon_id: "",
               accept_status_id: "",
+              style_id:"",
             });
     
             // 🔥 Trigger fetch data parent
@@ -359,8 +360,8 @@ const handleAddStyle = async () => {
                                     <label>Style</label>
                                     <CustomDropdownDesign
                                         options={dropdownData.style} // data dari API
-                                        value={form.style}
-                                        onChange={(val) => setForm({ ...form, style: val })}
+                                        value={form.style_id}
+                                        onChange={(val) => setForm({ ...form, style_id: val })}
                                         newItem={newStyle}
                                         setNewItem={setNewStyle}
                                         addNew={handleAddStyle}
