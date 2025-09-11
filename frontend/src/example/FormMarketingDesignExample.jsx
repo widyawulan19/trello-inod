@@ -183,6 +183,148 @@ const FormMarketingDesignExample=()=> {
                                 addPlaceholder="Add new marketing user..."
                             />
                         </div>
+
+                        {/* Acc By */}
+                        <div className="box-content">
+                          <label >Accept By</label>
+                          <CustomDropdownDesign
+                            options={dropdownData.accs}  // <- benar-benar dari kepala_divisi
+                            value={form.acc_by}
+                            onChange={(val) => setForm({ ...form, acc_by: val })}
+                            newItem={accByNew}
+                            setNewItem={setAccByNew}
+                            addNew={handleAccBy}
+                            placeholder="Accepted by"
+                            searchPlaceholder="Search kadiv..."
+                            addPlaceholder="Add new accepted user..."
+                          />
+                        </div>
+
+                         {/* STATUS ACCEPT */}
+                        <div className="box-content">
+                            <label>Status</label>
+                            <CustomDropdownDesign
+                                options={dropdownData.statusAccept}  // <- benar-benar dari kepala_divisi
+                                value={form.status_project_id}
+                                onChange={(val) => setForm({ ...form, status_project_id: val })}
+                                // newItem={accByNew}
+                                // setNewItem={setAccByNew}
+                                // addNew={handleAddAccBy}
+                                placeholder="Status Accept"
+                                searchPlaceholder="Search status..."
+                                // addPlaceholder="Add new accepted user..."
+                            />
+                        </div>
+
+                        {/* Buyer Name */}
+                        <div className="box-content">
+                            <label >Buyer Name</label>
+                            <input
+                                type="text"
+                                name="buyer_name"
+                                value={form.buyer_name}
+                                onChange={handleChange}
+                                placeholder="Buyer Name"
+                                className="w-full p-2 border rounded"
+                            />
+                        </div>
+
+                        {/* Code Order */}
+                        <div className="box-content">
+                            <label >Code Order</label>
+                            <input
+                                type="text"
+                                name="code_order"
+                                value={form.code_order}
+                                onChange={handleChange}
+                                placeholder="Code Order"
+                            />
+                        </div>
+
+                        {/* Order Number */}
+                        <div className="box-content">
+                            <label >Order Number</label>
+                            <input
+                                type="text"
+                                name="order_number"
+                                value={form.order_number}
+                                onChange={handleChange}
+                                placeholder="Order Number"
+                            />
+                        </div>
+
+                        {/* Account */}
+                        <div className="box-content">
+                            <label>Account</label>
+                            <CustomDropdownDesign
+                                options={dropdownData.accounts}// data dari API
+                                value={form.account}
+                                onChange={(val) => setForm({ ...form, account: val })}
+                                newItem={accountNew}
+                                setNewItem={setAccountNew}
+                                addNew={handleAddAccount}
+                                placeholder="Pilih Account"
+                                searchPlaceholder="Search account..."
+                                addPlaceholder="Add new account..."
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="form-content">
+                    <h4>DETAIL PESANAN</h4>
+                    <div className="sec-content">
+                        {/* Jumlah Design */}
+                        <div className="box-content">
+                            <label >Jumlah Design</label>
+                            <input
+                                type="text"
+                                name="jumlah_design"
+                                value={form.jumlah_design}
+                                onChange={handleChange}
+                                placeholder="Jumlah Pesanan"
+                            />
+                        </div>
+
+                        {/* Jumlah Revisi */}
+                        <div className="box-content">
+                            <label >Jumlah Revisi</label>
+                            <input
+                                type="text"
+                                name="jumlah_revisi"
+                                value={form.jumlah_revisi}
+                                onChange={handleChange}
+                                placeholder="Jumlah Revisi"
+                            />
+                        </div>
+
+                        {/* Order Number */}
+                        {/* <div className="box-content">
+                            <label >Order Type</label>
+                            <input
+                                type="text"
+                                name="jumlah_revisi"
+                                value={form.order_type}
+                                onChange={handleChange}
+                                placeholder="order"
+                            />
+                        </div> */}
+
+                        {/* Offers type */}
+                        {/* <div className="box-content">
+                            <label >Offer Type</label>
+                            <CustomDropdown
+                                options={dropdownData.offers}        // data dari API
+                                value={form.offer_type}
+                                onChange={(val) => setForm({ ...form, offer_type: val })}
+                                newItem={offerNew}
+                                setNewItem={setOfferNew}
+                                addNew={handleAddOfferMusic}
+                                placeholder="Pilih Offer type"
+                                searchPlaceholder="Search offer..."
+                                addPlaceholder="Add new offer..."
+                            />
+                        </div> */}
                     </div>
                 </div>
 

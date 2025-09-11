@@ -363,3 +363,228 @@ const FormMarketingDesignExample = () => {
 };
 
 export default FormMarketingDesignExample;
+
+
+
+
+// POST create new marketing_design_joined
+app.post('/api/marketing-design-joined', async (req, res) => {
+  try {
+    const {
+      buyer_name,
+      code_order,
+      order_number,
+      jumlah_design,
+      deadline,
+      jumlah_revisi,
+      price_normal,
+      price_discount,
+      discount_percentage,
+      required_files,
+      file_and_chat,
+      detail_project,
+      input_by,
+      acc_by,
+      account,
+      offer_type,
+      project_type_id,
+      style_id,
+      status_project_id,
+      reference,
+      resolution
+    } = req.body;
+
+    // Insert ke tabel marketing_design
+    const insertQuery = `
+      INSERT INTO marketing_design
+      (buyer_name, code_order, order_number, jumlah_design, deadline, jumlah_revisi, 
+      price_normal, price_discount, discount_percentage, required_files, file_and_chat, 
+      detail_project, input_by, acc_by, account, offer_type, project_type_id, style_id, 
+      status_project_id, reference, resolution)
+      VALUES
+      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21)
+      RETURNING *;
+    `;
+
+    const values = [
+      buyer_name, code_order, order_number, jumlah_design, deadline, jumlah_revisi,
+      price_normal, price_discount, discount_percentage, required_files, file_and_chat,
+      detail_project, input_by, acc_by, account, offer_type, project_type_id, style_id,
+      status_project_id, reference, resolution
+    ];
+
+    const result = await client.query(insertQuery, values);
+    const newMarketingDesign = result.rows[0];
+
+    // Ambil data join untuk response
+    const joinedQuery = `
+      SELECT md.*, mu.nama_marketing AS input_by_name, kd.nama AS acc_by_name,
+             ac.nama_account AS account_name, ot.offer_name AS offer_type_name,
+             st.style_name, sp.status_name
+      FROM marketing_design md
+      LEFT JOIN marketing_desain_user mu ON md.input_by = mu.id
+      LEFT JOIN kepala_divisi_design kd ON md.acc_by = kd.id
+      LEFT JOIN account_design ac ON md.account = ac.id
+      LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
+      LEFT JOIN style_design st ON md.style_id = st.id
+      LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
+      WHERE md.id = $1;
+    `;
+
+    const joinedResult = await client.query(joinedQuery, [newMarketingDesign.id]);
+
+    res.json(joinedResult.rows[0]);
+  } catch (err) {
+    console.error("❌ Failed to create marketing_design:", err);
+    res.status(500).json({ error: "Failed to create marketing_design" });
+  }
+});
+
+
+
+// ✅ UPDATE Data Marketing Design by ID
+app.put("/api/marketing-design/joined/:id", async (req, res) => {
+    const { id } = req.params;
+    const {
+        buyer_name,
+        code_order,
+        order_number,
+        jumlah_design,
+        deadline,
+        jumlah_revisi,
+        price_normal,
+        price_discount,
+        discount_percentage,
+        required_files,
+        file_and_chat,
+        detail_project,
+        input_by,
+        acc_by,
+        account,
+        offer_type,
+        project_type_id,
+        style_id,
+        status_project_id,
+    } = req.body;
+
+    try {
+        const result = await client.query(
+            `
+      UPDATE marketing_design
+      SET 
+        buyer_name          = $1,
+        code_order          = $2,
+        order_number        = $3,
+        jumlah_design       = $4,
+        deadline            = $5,
+        jumlah_revisi       = $6,
+        price_normal        = $7,
+        price_discount      = $8,
+        discount_percentage = $9,
+        required_files      = $10,
+        file_and_chat       = $11,
+        detail_project      = $12,
+        input_by            = $13,
+        acc_by              = $14,
+        account             = $15,
+        offer_type          = $16,
+        project_type_id     = $17,
+        style_id            = $18,
+        status_project_id   = $19,
+        update_at           = NOW()
+      WHERE marketing_design_id = $20
+      RETURNING *;
+      `,
+            [
+                // buyer_name,
+                // code_order,
+                // order_number,
+                // jumlah_design,
+                deadline,
+                // jumlah_revisi,
+                price_normal,
+                price_discount,
+                discount_percentage,
+                required_files,
+                file_and_chat,
+                detail_project,
+                // input_by,
+                // acc_by,
+                // account,
+                // offer_type,
+                project_type_id,
+                style_id,
+                status_project_id,
+                id,
+            ]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "❌ Marketing design not found" });
+        }
+
+        // Ambil data dengan join supaya konsisten
+        const joined = await client.query(
+            `
+      SELECT 
+        md.marketing_design_id,
+        md.buyer_name,
+        md.code_order,
+        md.order_number,
+        md.jumlah_design,
+        md.deadline,
+        md.jumlah_revisi,
+        md.price_normal,
+        md.price_discount,
+        md.discount_percentage,
+        md.required_files,
+        md.file_and_chat,
+        md.detail_project,
+        md.create_at,
+        md.update_at,
+
+        mdu.id AS input_by,
+        mdu.nama_marketing AS input_by_name,
+        mdu.divisi AS input_by_divisi,
+
+        kdd.id AS acc_by,
+        kdd.nama AS acc_by_name,
+        kdd.divisi AS acc_by_divisi,
+
+        ad.id AS account,
+        ad.nama_account AS account_name,
+
+        ot.id AS offer_type,
+        ot.offer_name AS offer_type_name,
+
+        pt.id AS project_type,
+        pt.project_name AS project_type_name,
+
+        sd.id AS style,
+        sd.style_name AS style_name,
+
+        sp.id AS status_project,
+        sp.status_name AS status_project_name
+
+      FROM marketing_design md
+      LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
+      LEFT JOIN kepala_divisi_design kdd ON md.acc_by = kdd.id
+      LEFT JOIN account_design ad ON md.account = ad.id
+      LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
+      LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
+      LEFT JOIN style_design sd ON md.style_id = sd.id
+      LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
+      WHERE md.marketing_design_id = $1
+      `,
+            [id]
+        );
+
+        res.json({
+            message: "✅ Marketing design updated successfully",
+            data: joined.rows[0],
+        });
+    } catch (err) {
+        console.error("❌ Error updating marketing_design:", err);
+        res.status(500).json({ error: "Failed to update marketing_design" });
+    }
+});
