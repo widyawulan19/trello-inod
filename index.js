@@ -5823,6 +5823,7 @@ app.get("/api/marketing-design/joined", async (req, res) => {
         md.required_files,
         md.file_and_chat,
         md.detail_project,
+        md.order_type,
         md.create_at,
         md.update_at,
 
@@ -5896,6 +5897,7 @@ app.get("/api/marketing-design/joined/:id", async (req, res) => {
         md.required_files,
         md.file_and_chat,
         md.detail_project,
+        md.order_type,
         md.create_at,
         md.update_at,
 
@@ -5971,6 +5973,7 @@ app.put("/api/marketing-design/joined/:id", async (req, res) => {
         acc_by,
         account,
         offer_type,
+        order_type,
         project_type_id,
         style_id,
         status_project_id,
@@ -5997,11 +6000,12 @@ app.put("/api/marketing-design/joined/:id", async (req, res) => {
         acc_by              = $14,
         account             = $15,
         offer_type          = $16,
-        project_type_id     = $17,
-        style_id            = $18,
-        status_project_id   = $19,
+        order_type.         = $17,
+        project_type_id     = $18,
+        style_id            = $19,
+        status_project_id   = $20,
         update_at           = NOW()
-      WHERE marketing_design_id = $20
+      WHERE marketing_design_id = $21
       RETURNING *;
       `,
             [
@@ -6021,6 +6025,7 @@ app.put("/api/marketing-design/joined/:id", async (req, res) => {
                 acc_by,
                 account,
                 offer_type,
+                order_type,
                 project_type_id,
                 style_id,
                 status_project_id,
@@ -6049,6 +6054,7 @@ app.put("/api/marketing-design/joined/:id", async (req, res) => {
         md.required_files,
         md.file_and_chat,
         md.detail_project,
+        md.order_type,
         md.create_at,
         md.update_at,
 
@@ -6120,6 +6126,7 @@ app.get('/api/marketing-design/reports/today', async (req, res) => {
         md.required_files,
         md.file_and_chat,
         md.detail_project,
+        md.order_type,
         md.create_at,
         md.update_at,
 
@@ -6189,6 +6196,7 @@ app.get("/api/marketing-design/reports", async (req, res) => {
             'required_files', md.required_files,
             'file_and_chat', md.file_and_chat,
             'detail_project', md.detail_project,
+            'order_type', md.order_type,
             'create_at', md.create_at,
             'update_at', md.update_at,
 
