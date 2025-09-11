@@ -4,7 +4,7 @@ import { IoCreate } from 'react-icons/io5';
 import BootstrapTooltip from '../components/Tooltip';
 import { HiXMark } from 'react-icons/hi2';
 import '../style/pages/FormDataMarketing.css'
-import { addKepalaDivisiDesign, addOfferTypeDesign, addStyleDesign, createAccountDesign, createDataMarketingDesign, createMarketingDesainUser, getAllAccountDesign, getAllKepalaDivisiDesign, getAllMarketingDesainUsers,getAllOfferTypesDesign,getAllStatusProjectDesign, getAllStyleDesign } from '../services/ApiServices';
+import { addMarketingDesignJoined, addKepalaDivisiDesign, addOfferTypeDesign, addStyleDesign, createAccountDesign, createDataMarketingDesign, createMarketingDesainUser, getAllAccountDesign, getAllKepalaDivisiDesign, getAllMarketingDesainUsers,getAllOfferTypesDesign,getAllStatusProjectDesign, getAllStyleDesign } from '../services/ApiServices';
 import { create } from '@mui/material/styles/createTransitions';
 import CustomDropdownDesign from '../marketing/CustomDropdownDesign';
 
@@ -120,7 +120,7 @@ const handleAddStyle = async () => {
       const handleSubmit = async (e) => {
           e.preventDefault();
           try {
-            await createDataMarketingDesign(form);
+            await addMarketingDesignJoined(form);
             showSnackbar('Data Marketing berhasil ditambahkan!', 'success');
             // alert("✅ Data marketing berhasil ditambahkan!");
     
