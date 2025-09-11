@@ -6200,10 +6200,9 @@ app.put("/api/marketing-design/joined/:id", async (req, res) => {
 // END MARKERING DESING JOINED 
 
 //12. get laporan data otomatis per 10 hari berjalan
-// ✅ Endpoint untuk data marketing_design hari ini + join
 app.get('/api/marketing-design/reports/today', async (req, res) => {
-    try {
-        const result = await client.query(`
+  try {
+    const result = await client.query(`
       SELECT 
         md.marketing_design_id,
         md.buyer_name,
@@ -6222,26 +6221,32 @@ app.get('/api/marketing-design/reports/today', async (req, res) => {
         md.create_at,
         md.update_at,
 
-        mdu.id AS input_by,
+        -- Relasi Input By
+        mdu.id AS input_by_id,
         mdu.nama_marketing AS input_by_name,
 
-        kdd.id AS acc_by,
+        -- Relasi Acc By
+        kdd.id AS acc_by_id,
         kdd.nama AS acc_by_name,
-        kdd.divisi AS acc_by_divisi,
 
-        ad.id AS account,
+        -- Relasi Account
+        ad.id AS account_id,
         ad.nama_account AS account_name,
 
-        ot.id AS offer_type,
+        -- Relasi Offer Type
+        ot.id AS offer_type_id,
         ot.offer_name AS offer_type_name,
 
-        pt.id AS project_type,
+        -- Relasi Project Type
+        pt.id AS project_type_id,
         pt.project_name AS project_type_name,
 
-        sd.id AS style,
+        -- Relasi Style
+        sd.id AS style_id,
         sd.style_name AS style_name,
 
-        sp.id AS status_project,
+        -- Relasi Status Project
+        sp.id AS status_project_id,
         sp.status_name AS status_project_name
 
       FROM marketing_design md
@@ -6256,17 +6261,45 @@ app.get('/api/marketing-design/reports/today', async (req, res) => {
       ORDER BY md.marketing_design_id DESC
     `);
 
-        res.json(result.rows);
-    } catch (err) {
-        console.error("❌ Error report today:", err);
-        res.status(500).json({ error: err.message });
-    }
+    const data = result.rows.map(row => ({
+      id: row.marketing_design_id,
+      buyer_name: row.buyer_name,
+      code_order: row.code_order,
+      order_number: row.order_number,
+      jumlah_design: row.jumlah_design,
+      deadline: row.deadline,
+      jumlah_revisi: row.jumlah_revisi,
+      price_normal: row.price_normal,
+      price_discount: row.price_discount,
+      discount_percentage: row.discount_percentage,
+      required_files: row.required_files,
+      file_and_chat: row.file_and_chat,
+      detail_project: row.detail_project,
+      order_type: row.order_type,
+      create_at: row.create_at,
+      update_at: row.update_at,
+
+      input_by: { id: row.input_by_id, name: row.input_by_name },
+      acc_by: { id: row.acc_by_id, name: row.acc_by_name },
+      account: { id: row.account_id, name: row.account_name },
+      offer_type: { id: row.offer_type_id, name: row.offer_type_name },
+      project_type: { id: row.project_type_id, name: row.project_type_name },
+      style: { id: row.style_id, name: row.style_name },
+      status_project: { id: row.status_project_id, name: row.status_project_name }
+    }));
+
+    res.json(data);
+  } catch (err) {
+    console.error("❌ Error report today:", err);
+    res.status(500).json({ error: err.message });
+  }
 });
+
 
 // ✅ Endpoint marketing-design per 10 hari dengan detail + join
 app.get("/api/marketing-design/reports", async (req, res) => {
-    try {
-        const result = await client.query(`
+  try {
+    const result = await client.query(`
       SELECT
         DATE_TRUNC('month', md.create_at) AS month,
         FLOOR((EXTRACT(DAY FROM md.create_at) - 1) / 10) + 1 AS period,
@@ -6275,7 +6308,6 @@ app.get("/api/marketing-design/reports", async (req, res) => {
         JSON_AGG(
           JSON_BUILD_OBJECT(
             'marketing_design_id', md.marketing_design_id,
-            'card_id', md.card_id,
             'buyer_name', md.buyer_name,
             'code_order', md.code_order,
             'order_number', md.order_number,
@@ -6292,28 +6324,14 @@ app.get("/api/marketing-design/reports", async (req, res) => {
             'create_at', md.create_at,
             'update_at', md.update_at,
 
-            -- Relasi (balikin ID + Nama)
-            'input_by', mdu.id,
-            'input_by_name', mdu.nama_marketing,
-
-            'acc_by', kdd.id,
-            'acc_by_name', kdd.nama,
-            'acc_by_divisi', kdd.divisi,
-
-            'account', ad.id,
-            'account_name', ad.nama_account,
-
-            'offer_type', ot.id,
-            'offer_type_name', ot.offer_name,
-
-            'project_type', pt.id,
-            'project_type_name', pt.project_name,
-
-            'style', sd.id,
-            'style_name', sd.style_name,
-
-            'status_project', sp.id,
-            'status_project_name', sp.status_name
+            -- Relasi (ID + Name)
+            'input_by', JSON_BUILD_OBJECT('id', mdu.id, 'name', mdu.nama_marketing),
+            'acc_by', JSON_BUILD_OBJECT('id', kdd.id, 'name', kdd.nama),
+            'account', JSON_BUILD_OBJECT('id', ad.id, 'name', ad.nama_account),
+            'offer_type', JSON_BUILD_OBJECT('id', ot.id, 'name', ot.offer_name),
+            'project_type', JSON_BUILD_OBJECT('id', pt.id, 'name', pt.project_name),
+            'style', JSON_BUILD_OBJECT('id', sd.id, 'name', sd.style_name),
+            'status_project', JSON_BUILD_OBJECT('id', sp.id, 'name', sp.status_name)
           )
         ) AS details
       FROM marketing_design md
@@ -6328,12 +6346,13 @@ app.get("/api/marketing-design/reports", async (req, res) => {
       ORDER BY month DESC, period ASC;
     `);
 
-        res.json(result.rows);
-    } catch (err) {
-        console.error("❌ Query error:", err.message);
-        res.status(500).json({ error: err.message });
-    }
+    res.json(result.rows);
+  } catch (err) {
+    console.error("❌ Query error:", err.message);
+    res.status(500).json({ error: err.message });
+  }
 });
+
 
 
 
