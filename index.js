@@ -7021,8 +7021,8 @@ app.get("/api/style-design/:id", async (req, res) => {
 
 // ✅ Create
 app.post("/api/style-design", async (req, res) => {
+    const { style_name } = req.body;
     try {
-        const { style_name } = req.body;
         const result = await client.query(
             "INSERT INTO style_design (style_name) VALUES ($1) RETURNING *",
             [style_name]
@@ -7094,8 +7094,8 @@ app.get("/api/status-project-design/:id", async (req, res) => {
 
 // ✅ Create
 app.post("/api/status-project-design", async (req, res) => {
+    const { status_name } = req.body;
     try {
-        const { status_name } = req.body;
         const result = await client.query(
             "INSERT INTO status_project_design (status_name) VALUES ($1) RETURNING *",
             [status_name]
