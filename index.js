@@ -6263,34 +6263,35 @@ app.get('/api/marketing-design/reports/today', async (req, res) => {
       ORDER BY md.marketing_design_id DESC
     `);
 
-        const data = result.rows.map(row => ({
-            id: row.marketing_design_id,
-            buyer_name: row.buyer_name,
-            code_order: row.code_order,
-            order_number: row.order_number,
-            jumlah_design: row.jumlah_design,
-            deadline: row.deadline,
-            jumlah_revisi: row.jumlah_revisi,
-            price_normal: row.price_normal,
-            price_discount: row.price_discount,
-            discount_percentage: row.discount_percentage,
-            required_files: row.required_files,
-            file_and_chat: row.file_and_chat,
-            detail_project: row.detail_project,
-            order_type: row.order_type,
-            create_at: row.create_at,
-            update_at: row.update_at,
+        // const data = result.rows.map(row => ({
+        //     id: row.marketing_design_id,
+        //     buyer_name: row.buyer_name,
+        //     code_order: row.code_order,
+        //     order_number: row.order_number,
+        //     jumlah_design: row.jumlah_design,
+        //     deadline: row.deadline,
+        //     jumlah_revisi: row.jumlah_revisi,
+        //     price_normal: row.price_normal,
+        //     price_discount: row.price_discount,
+        //     discount_percentage: row.discount_percentage,
+        //     required_files: row.required_files,
+        //     file_and_chat: row.file_and_chat,
+        //     detail_project: row.detail_project,
+        //     order_type: row.order_type,
+        //     create_at: row.create_at,
+        //     update_at: row.update_at,
 
-            input_by: { id: row.input_by_id, name: row.input_by_name },
-            acc_by: { id: row.acc_by_id, name: row.acc_by_name },
-            account: { id: row.account_id, name: row.account_name },
-            offer_type: { id: row.offer_type_id, name: row.offer_type_name },
-            project_type: { id: row.project_type_id, name: row.project_type_name },
-            style: { id: row.style_id, name: row.style_name },
-            status_project: { id: row.status_project_id, name: row.status_project_name }
-        }));
+        //     input_by: { id: row.input_by_id, name: row.input_by_name },
+        //     acc_by: { id: row.acc_by_id, name: row.acc_by_name },
+        //     account: { id: row.account_id, name: row.account_name },
+        //     offer_type: { id: row.offer_type_id, name: row.offer_type_name },
+        //     project_type: { id: row.project_type_id, name: row.project_type_name },
+        //     style: { id: row.style_id, name: row.style_name },
+        //     status_project: { id: row.status_project_id, name: row.status_project_name }
+        // }));
 
-        res.json(data);
+        // res.json(data);
+        res.json(result.rows);
     } catch (err) {
         console.error("❌ Error report today:", err);
         res.status(500).json({ error: err.message });
