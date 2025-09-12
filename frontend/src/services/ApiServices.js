@@ -352,8 +352,8 @@ export const updateDataMarketingDesign = (id, data) => axios.put(`${API_URL}/mar
 export const deleteDataMarketingDesign = (id) => axios.delete(`${API_URL}/marketing-design/${id}`)
 export const checkCardIdNullOrNotForDesign = (id) => axios.get(`${API_URL}/check-card-id-design/${id}`)
 export const createCardFromMarketingDesign = (listId, marketingDesignId) => axios.put(`${API_URL}/create-card-marketing-design/${listId}/${marketingDesignId}`)
-export const getDataWhereCardIdNotNull = () => axios.get(`${API_URL}/marketing-designs`);
-export const getDataWhereCardIdIsNull = () => axios.get(`${API_URL}/marketing-designs-null`);
+export const getDataWhereCardIdNotNull = () => axios.get(`${API_URL}/marketing-designs/not-null`);
+export const getDataWhereCardIdIsNull = () => axios.get(`${API_URL}/marketing-designs/null`);
 export const getDataMarketingDesignNotAccept = () => axios.get(`${API_URL}/marketing-design-not-accepted`)
 export const getDataMarketingDesignAccept = () => axios.get(`${API_URL}/marketing-design-accepted`);
 export const archiveDataMarektingDesign = (id) => axios.post(`${API_URL}/archive-data-marketing-design/${id}`);

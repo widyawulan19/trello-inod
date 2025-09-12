@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { checkCardIdNullOrNotForDesign, getAllMarketingDesignJoined, getDataMarketingDesignById, getMarketingDesignById } from '../services/ApiServices'
+import { checkCardIdNullOrNotForDesign, getMarketingDesignById } from '../services/ApiServices'
 import {HiPlus } from 'react-icons/hi2'
 import { FaXmark } from "react-icons/fa6";
 import BootstrapTooltip from '../components/Tooltip'

@@ -60,13 +60,8 @@ const MarketingDesign=()=> {
                 response = await getDataWhereCardIdNotNull();
               } else if (filterType === 'DATA TANPA CARD') {
                 response = await getDataWhereCardIdIsNull();
-              } else if (filterType === 'DATA ACCEPT') {
-                response = await getDataMarketingDesignAccept();
               } else if(filterType === 'DATA MARKETING DESIGN'){
-                response = await getAllDataMarketingDesign();
-              }else if (filterType === 'DATA BELUM ACCEPT'){
                 response = await getAllMarketingDesignJoined();
-                // response = await getDataMarketingDesignNotAccept();
               }
           
               setData(response.data);
@@ -228,8 +223,11 @@ const MarketingDesign=()=> {
         setShowFilter(!showFilter)
     }
 
+    // const hasCardId = (item) => {
+    //   return item.card_id !== null && item.card_id !== undefined;
+    // };
     const hasCardId = (item) => {
-      return item.card_id !== null && item.card_id !== undefined;
+      return item.card_id !== null && item.card_id !== undefined && item.card_id !== "";
     };
 
   // SHOW DATA CONTENT 
@@ -325,12 +323,6 @@ const MarketingDesign=()=> {
                   </button>
                   <button onClick={() => {setFilterType('DATA TANPA CARD');; {setShowData(!showData)}}}>
                     Data Tanpa Card
-                  </button>
-                  <button onClick={() => {setFilterType('DATA ACCEPT');; {setShowData(!showData)}}}>
-                    Accept Data Marketing
-                  </button>
-                  <button onClick={() => {setFilterType('DATA BELUM ACCEPT');; {setShowData(!showData)}}}>
-                    Data Belum Accept
                   </button>
                 </div>
               </div>
@@ -473,7 +465,7 @@ const MarketingDesign=()=> {
                             gap: '4px'
                           }}>
                             {'CARD'}
-                            {/* <HiHandThumbUp /> */}
+                            <HiHandThumbUp />
                           </span>
                         )}
                       </td>
