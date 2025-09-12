@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { checkCardIdNullOrNotForDesign, getDataMarketingDesignById } from '../services/ApiServices'
+import { checkCardIdNullOrNotForDesign, getAllMarketingDesignJoined, getDataMarketingDesignById, getMarketingDesignById } from '../services/ApiServices'
 import {HiPlus } from 'react-icons/hi2'
 import { FaXmark } from "react-icons/fa6";
 import BootstrapTooltip from '../components/Tooltip'
@@ -22,7 +22,7 @@ const ViewDataMarketingDesign=({marketingDesignId, onClose})=> {
     //1. fetch data marketing design by id
     const fetchDataDesign = async()=>{
       try{
-        const response = await getDataMarketingDesignById(marketingDesignId)
+        const response = await getMarketingDesignById(marketingDesignId)
         setDataMarketingDesign(response.data)
       }catch(error){
         console.log('Error fetching data marketing:', error)
@@ -154,13 +154,13 @@ const renderTextWithLinks = (text) => {
             <div className="box-content" >
               <p>Input By</p>
               <div className="box-box">
-                <p>{dataMarketingDesign.input_by}</p>
+                <p>{dataMarketingDesign.input_by_name}</p>
               </div>
             </div>
             <div className="box-content">
               <p>Accept By</p>
               <div className="box-box">
-                <p>{dataMarketingDesign.acc_by}</p>
+                <p>{dataMarketingDesign.acc_by_name}</p>
               </div>
             </div>
             <div className="box-content">
@@ -176,7 +176,7 @@ const renderTextWithLinks = (text) => {
                     textAlign:'center'
                   }}
                 >
-                  {dataMarketingDesign.is_accepted ?  'Accepted':'Not Accepted'}
+                  {dataMarketingDesign.status_project_name}
                 </p>
               </div>
             </div>
@@ -201,7 +201,7 @@ const renderTextWithLinks = (text) => {
             <div className="box-content">
               <p>Account</p>
               <div className="box-box">
-                <p>{dataMarketingDesign.account}</p>
+                <p>{dataMarketingDesign.account_name}</p>
               </div>
             </div>
             
@@ -225,19 +225,19 @@ const renderTextWithLinks = (text) => {
             <div className="box-content">
               <p>Order Type</p>
               <div className="box-box">
-                <p>{dataMarketingDesign.order_type}</p>
+                <p>{dataMarketingDesign.order_type_name}</p>
               </div>
             </div>
             <div className="box-content">
               <p>Project Type</p>
               <div className="box-box">
-                <p>{dataMarketingDesign.project_type}</p>
+                <p>{dataMarketingDesign.project_type_name}</p>
               </div>
             </div>
             <div className="box-content">
               <p>Offer Type</p>
               <div className="box-box">
-                <p>{dataMarketingDesign.offer_type}</p>
+                <p>{dataMarketingDesign.offer_type_name}</p>
               </div>
             </div>
             <div className="box-content">
@@ -254,7 +254,7 @@ const renderTextWithLinks = (text) => {
             <div className="box-content">
               <p>Style</p>
               <div className="box-box">
-                <p>{dataMarketingDesign.style}</p>
+                <p>{dataMarketingDesign.style_name}</p>
               </div>
             </div>
             <div className="box-content">

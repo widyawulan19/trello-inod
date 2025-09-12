@@ -95,9 +95,9 @@ const MarketingDesign=()=> {
         }
         if (filters.account) {
           temp = temp.filter((item) =>
-            item.account.toLowerCase().includes(filters.account.toLowerCase())
-          );
-        }
+            item.account_name?.toLowerCase().includes(filters.account.toLowerCase())
+        );
+}
         setFilteredData(temp);
       }, [filters, data]);
     
@@ -159,7 +159,7 @@ const MarketingDesign=()=> {
     //1. fetch marketing design 
     const fetchMarketingDesign = async()=>{
         try{
-            const response = await getAllDataMarketingDesign()
+            const response = await getAllMarketingDesignJoined();
             setDataMarketingDesign(response.data)
             setFilteredData(response.data)
         }catch(error){
@@ -177,7 +177,7 @@ const MarketingDesign=()=> {
                 (item) =>
                     item.buyer_name.toLowerCase().includes(selectedTerm.toLowerCase()) ||
                     item.order_number.toLowerCase().includes(selectedTerm.toLowerCase()) ||
-                    item.account.toLowerCase().includes(selectedTerm.toLowerCase()) 
+                    item.account_name?.toLowerCase().includes(selectedTerm.toLowerCase())
             );
             setFilteredData(filtered);
         }
@@ -458,7 +458,7 @@ const MarketingDesign=()=> {
                     <tr key={item.marketing_design_id}>
                       <td>{index + 1}</td>
                       <td className='input-container'  onClick={()=> handleShowDetail(item.marketing_design_id)}>
-                        {item.input_by?.name|| "-"}
+                        {item.input_by_name || "-"}
                         {hasCardId(item) && (
                           <span style={{
                             backgroundColor: '#e0f7fa',
@@ -477,7 +477,7 @@ const MarketingDesign=()=> {
                           </span>
                         )}
                       </td>
-                      <td className='acc-container'>{item.acc_by}</td>
+                      <td className='acc-container'>{item.acc_by_name}</td>
                       <td className='status-container' style={{textAlign:'left' }}>
                          <span style={{
                            padding: '2px 8px',
@@ -486,7 +486,7 @@ const MarketingDesign=()=> {
                            color: item.status_project_name ? '#2E7D32' : '#C62828',
                            fontWeight: 'bold'
                          }}>
-                           {item.status_project_name ? 'Accepted' : 'Not Accepted'}
+                           {item.status_project_name}
                          </span>
                        </td>
                       <td className='buyer-name-container'>{item.buyer_name}</td>
@@ -496,14 +496,14 @@ const MarketingDesign=()=> {
                       <td className='account-container'>{item.account_name}</td>
                       <td className='deadline-container' style={{ textAlign:'center' }}>{new Date(item.deadline).toLocaleDateString()}</td>
                       <td className='jumlah-revisi-container' style={{textAlign:'center' }}>{item.jumlah_revisi}</td>
-                      <td className='order-type-container'>{item.order_type}</td>
+                      <td className='order-type-container'>{item.order_type_name}</td>
                       <td className='offer-type-container'>{item.offer_type_name}</td>
                       <td className='style-container'>{item.style_name}</td>
                       <td className='resolution-container'>{item.resolution}</td>
                       <td className='price-normal-container' style={{textAlign:'center', color:'#1E1E1E'}}>${item.price_normal}</td>
                       <td className='price-discount-container' style={{textAlign:'center', color:'#E53935'}}>${item.price_discount}</td>
-                      <td className='discount_percentage-container' style={{textAlign:'center', color:'#388E3C'}}>${item.discount_percentage}</td>
-                      <td className='project-type-container' >{item.project_type_name}</td>
+                      <td className='discount_percentage-container' style={{textAlign:'center', color:'#388E3C'}}>{item.discount_percentage}%</td>
+                      <td className='project-type-container'>{item.project_type_name}</td>
                       <td className='action-container'>
                         <div className="action-table">
                           <BootstrapTooltip title='View Data' placement='top'>
