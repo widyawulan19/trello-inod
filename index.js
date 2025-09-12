@@ -5867,7 +5867,7 @@ app.get("/api/marketing-design/joined", async (req, res) => {
       LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
       LEFT JOIN style_design sd ON md.style_id = sd.id
       LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
-      LEFT JOIN design_order_type dot ON md.order_type = dot.id
+      LEFT JOIN design_order_type dot ON md.order_type_id = dot.id
       ORDER BY md.marketing_design_id DESC;
     `);
 
