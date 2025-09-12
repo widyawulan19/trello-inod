@@ -7590,6 +7590,95 @@ app.delete("/api/kepala-divisi-design/:id", async (req, res) => {
     }
 });
 
+// =======================
+// DESIGN ORDER TYPE
+// =======================
+
+// ✅ Get all
+app.get("/api/design-order-type", async (req, res) => {
+    try {
+        const result = await client.query("SELECT * FROM design_order_type ORDER BY id ASC");
+        res.json(result.rows);
+    } catch (err) {
+        console.error("❌ Error fetching design_order_type:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ✅ Get by ID
+app.get("/api/design-order-type/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await client.query("SELECT * FROM design_order_type WHERE id = $1", [id]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Design order type not found" });
+        }
+
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error fetching design_order_type by ID:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ✅ Create new
+app.post("/api/design-order-type", async (req, res) => {
+    try {
+        const { order_name } = req.body;
+
+        const result = await client.query(
+            "INSERT INTO design_order_type (order_name) VALUES ($1) RETURNING *",
+            [order_name]
+        );
+
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error creating design_order_type:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ✅ Update
+app.put("/api/design-order-type/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { order_name } = req.body;
+
+        const result = await client.query(
+            "UPDATE design_order_type SET order_name = $1, created_at = now() WHERE id = $2 RETURNING *",
+            [order_name, id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Design order type not found" });
+        }
+
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error("❌ Error updating design_order_type:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ✅ Delete
+app.delete("/api/design-order-type/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await client.query("DELETE FROM design_order_type WHERE id = $1 RETURNING *", [id]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Design order type not found" });
+        }
+
+        res.json({ message: "Design order type deleted successfully" });
+    } catch (err) {
+        console.error("❌ Error deleting design_order_type:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
 
 
 
