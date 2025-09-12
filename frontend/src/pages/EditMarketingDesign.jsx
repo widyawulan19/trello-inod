@@ -12,7 +12,7 @@ import { FaXmark } from 'react-icons/fa6';
     const {showSnackbar} = useSnackbar();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isAccepted, setIsAccepted] = useState(false);
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState({ 
         input_by: '',
         buyer_name: '',
         code_order: '',
