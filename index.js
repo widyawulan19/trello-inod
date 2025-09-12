@@ -7543,9 +7543,10 @@ app.post('/api/get-workspaceid-boardid', async (req, res) => {
 
 //ENDPOIN UNTUK MENAMPILKAN DATA MARKETING UNTUK CARD ID YANG TIDAK NULL
 // ✅ Get marketing_design (card_id NOT NULL) + join relasi
-app.get('/api/marketing-design/not-null', async (req, res) => {
-    try {
-        const result = await client.query(`
+// ✅ Get marketing_design (card_id NOT NULL) + join relasi (safe null handling)
+app.get('/api/marketing-designs/not-null', async (req, res) => {
+  try {
+    const result = await client.query(`
       SELECT 
         md.marketing_design_id,
         md.buyer_name,
@@ -7565,27 +7566,27 @@ app.get('/api/marketing-design/not-null', async (req, res) => {
         md.create_at,
         md.update_at,
 
-        -- Relasi (ID + Name)
-        mdu.id   AS input_by,
-        mdu.nama_marketing AS input_by_name,
+        -- Relasi (ID + Name) | NULLIF biar ga keluar string "null"
+        NULLIF(mdu.id::text, '')::int      AS input_by,
+        mdu.nama_marketing                 AS input_by_name,
 
-        kdd.id   AS acc_by,
-        kdd.nama AS acc_by_name,
+        NULLIF(kdd.id::text, '')::int      AS acc_by,
+        kdd.nama                           AS acc_by_name,
 
-        ad.id    AS account,
-        ad.nama_account AS account_name,
+        NULLIF(ad.id::text, '')::int       AS account,
+        ad.nama_account                    AS account_name,
 
-        ot.id    AS offer_type,
-        ot.offer_name AS offer_type_name,
+        NULLIF(ot.id::text, '')::int       AS offer_type,
+        ot.offer_name                      AS offer_type_name,
 
-        pt.id    AS project_type,
-        pt.project_name AS project_type_name,
+        NULLIF(pt.id::text, '')::int       AS project_type,
+        pt.project_name                    AS project_type_name,
 
-        sd.id    AS style,
-        sd.style_name AS style_name,
+        NULLIF(sd.id::text, '')::int       AS style,
+        sd.style_name                      AS style_name,
 
-        sp.id    AS status_project,
-        sp.status_name AS status_project_name
+        NULLIF(sp.id::text, '')::int       AS status_project,
+        sp.status_name                     AS status_project_name
 
       FROM marketing_design md
       LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
@@ -7599,19 +7600,21 @@ app.get('/api/marketing-design/not-null', async (req, res) => {
       ORDER BY md.marketing_design_id DESC;
     `);
 
-        res.json(result.rows);
-    } catch (error) {
-        console.error('Error fetching marketing designs:', error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error fetching marketing designs:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 });
+
 
 
 //ENDPOIN UNTUK MENAMPILKAN DATA MARKETING UNTUK CARD ID NULL
 // ✅ Get marketing_design (card_id IS NULL) + join relasi
+// ✅ Get marketing_design (card_id IS NULL) + join relasi (safe null handling)
 app.get('/api/marketing-designs/null', async (req, res) => {
-    try {
-        const result = await client.query(`
+  try {
+    const result = await client.query(`
       SELECT 
         md.marketing_design_id,
         md.buyer_name,
@@ -7631,27 +7634,27 @@ app.get('/api/marketing-designs/null', async (req, res) => {
         md.create_at,
         md.update_at,
 
-        -- Relasi (ID + Name)
-        mdu.id   AS input_by,
-        mdu.nama_marketing AS input_by_name,
+        -- Relasi (ID + Name) | NULLIF biar ga keluar string "null"
+        NULLIF(mdu.id::text, '')::int      AS input_by,
+        mdu.nama_marketing                 AS input_by_name,
 
-        kdd.id   AS acc_by,
-        kdd.nama AS acc_by_name,
+        NULLIF(kdd.id::text, '')::int      AS acc_by,
+        kdd.nama                           AS acc_by_name,
 
-        ad.id    AS account,
-        ad.nama_account AS account_name,
+        NULLIF(ad.id::text, '')::int       AS account,
+        ad.nama_account                    AS account_name,
 
-        ot.id    AS offer_type,
-        ot.offer_name AS offer_type_name,
+        NULLIF(ot.id::text, '')::int       AS offer_type,
+        ot.offer_name                      AS offer_type_name,
 
-        pt.id    AS project_type,
-        pt.project_name AS project_type_name,
+        NULLIF(pt.id::text, '')::int       AS project_type,
+        pt.project_name                    AS project_type_name,
 
-        sd.id    AS style,
-        sd.style_name AS style_name,
+        NULLIF(sd.id::text, '')::int       AS style,
+        sd.style_name                      AS style_name,
 
-        sp.id    AS status_project,
-        sp.status_name AS status_project_name
+        NULLIF(sp.id::text, '')::int       AS status_project,
+        sp.status_name                     AS status_project_name
 
       FROM marketing_design md
       LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
@@ -7665,12 +7668,13 @@ app.get('/api/marketing-designs/null', async (req, res) => {
       ORDER BY md.marketing_design_id DESC;
     `);
 
-        res.json(result.rows);
-    } catch (error) {
-        console.error('Error fetching marketing designs (card_id NULL):', error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error fetching marketing designs (card_id NULL):', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 });
+
 
 
 //ARCHIVE UNIVERSAL
