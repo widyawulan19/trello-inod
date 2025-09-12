@@ -89,32 +89,51 @@ console.log('data marketing design:', marketingDesignId);
           orderType: orderType.data.map(odt => ({ id: String(odt.id), name: odt.order_name})),
         });
 
-        if (marketingData?.data){
-          const m = marketingData.data[0];
+        if (marketingData?.data) {
+          const m = marketingData.data[0]; // karena hasilnya array berisi 1 object
           setForm({
-              buyer_name: m.buyer_name || "",
-              code_order: m.code_order || "",
-              order_number: m.order_number || "",
-              jumlah_design: m.jumlah_design || "",
-              deadline:  m.deadline ? m.deadline.split("T")[0] : "",
-              jumlah_revisi: m.jumlah_revisi || "",
-              price_normal: m.price_normal || "",
-              price_discount: m.price_discount || "",
-              discount_percentage: m.discount_percentage || "",
-              required_files: m.required_files || "",
-              file_and_chat: m.file_and_chat || "",
-              detail_project:  m.detail_project || "",
-              input_by:  m.input_by ? String(m.input_by) : "",
-              acc_by: m.acc_by ? String(m.acc_by) : "",
-              account: m.account ? String(m.account) : "",
-              offer_type: m.offer_type ? String(m.offer_type) : "",
-              order_type_id: m.order_type_id ? String(m.order_type_id) : "",
-              project_type_id: m.project_type_id ? String(m.project_type_id) : "",
-              style_id:  m.style_id ? String(m.style_id) : "",
-              status_project_id: m.status_project_id ? String(m.status_project_id) : "",
-              resolution: m.resolution || "",
-          })
+            buyer_name: m.buyer_name || "",
+            code_order: m.code_order || "",
+            order_number: m.order_number || "",
+            jumlah_design: m.jumlah_design || "",
+            deadline: m.deadline ? m.deadline.split("T")[0] : "",
+            jumlah_revisi: m.jumlah_revisi || "",
+            price_normal: m.price_normal || "",
+            price_discount: m.price_discount || "",
+            discount_percentage: m.discount_percentage || "",
+            required_files: m.required_files || "",
+            file_and_chat: m.file_and_chat || "",
+            detail_project: m.detail_project || "",
+            resolution: m.resolution || "",
+
+            // ✅ Relasi dropdown pakai {value, label}
+            input_by: m.input_by_id
+              ? { id: String(m.input_by_id), name: m.input_by_name }
+              : null,
+            acc_by: m.acc_by_id
+              ? { id: String(m.acc_by_id), name: m.acc_by_name }
+              : null,
+            account: m.account_id
+              ? { id: String(m.account_id), name: m.account_name }
+              : null,
+            offer_type: m.offer_type_id
+              ? { id: String(m.offer_type_id), name: m.offer_type_name }
+              : null,
+            order_type_id: m.order_type_id
+              ? { id: String(m.order_type_id), name: m.order_type_name }
+              : null,
+            project_type_id: m.project_type_id
+              ? { id: String(m.project_type_id), name: m.project_type_name }
+              : null,
+            style_id: m.style_id
+              ? { id: String(m.style_id), name: m.style_name }
+              : null,
+            status_project_id: m.status_project_id
+              ? { id: String(m.status_project_id), name: m.status_project_name }
+              : null,
+          });
         }
+
 
       }catch(error){
         console.error("Error fetching data:", error);
@@ -125,6 +144,9 @@ console.log('data marketing design:', marketingDesignId);
       fetchData();
     }
   }, [marketingDesignId]);
+
+  {console.log("DEBUG value account:", form.account)}
+{console.log("DEBUG options accounts:", dropdownData.accounts)}
 
 
   // ENDPOIN ADD 
@@ -246,7 +268,7 @@ console.log('data marketing design:', marketingDesignId);
                 <label>Input By</label>
                 <CustomDropdownDesign
                   options={dropdownData.users}
-                  value={form.input_by} // harus sama dengan nama column di db
+                  value={form.input_by?.id || ""} // harus sama dengan nama column di db
                   onChange={(val) => setForm({ ...form, input_by: val })}
                   newItem={inputByNew}
                   setNewItem={setInputByNew}
@@ -262,7 +284,7 @@ console.log('data marketing design:', marketingDesignId);
                 <label >Accept By</label>
                 <CustomDropdownDesign
                   options={dropdownData.accs}  // <- benar-benar dari kepala_divisi
-                  value={form.acc_by}
+                  value={form.acc_by?.id || ""}
                   onChange={(val) => setForm({ ...form, acc_by: val })}
                   newItem={accByNew}
                   setNewItem={setAccByNew}
@@ -278,14 +300,10 @@ console.log('data marketing design:', marketingDesignId);
                   <label>Status</label>
                   <CustomDropdownDesign
                       options={dropdownData.statusAccept}  // <- benar-benar dari kepala_divisi
-                      value={form.status_project_id}
+                      value={form.status_project_id?.id || ""}
                       onChange={(val) => setForm({ ...form, status_project_id: val })}
-                      // newItem={accByNew}
-                      // setNewItem={setAccByNew}
-                      // addNew={handleAddAccBy}
                       placeholder="Status Accept"
                       searchPlaceholder="Search status..."
-                      // addPlaceholder="Add new accepted user..."
                   />
               </div>
 
@@ -331,7 +349,7 @@ console.log('data marketing design:', marketingDesignId);
                   <label>Account</label>
                   <CustomDropdownDesign
                       options={dropdownData.accounts}// data dari API
-                      value={form.account}
+                      value={form.account?.id || ""}
                       onChange={(val) => setForm({ ...form, account: val })}
                       newItem={accountNew}
                       setNewItem={setAccountNew}
@@ -376,7 +394,7 @@ console.log('data marketing design:', marketingDesignId);
                     <label >Order Type</label>
                     <CustomDropdownDesign
                         options={dropdownData.orderType}
-                        value={form.order_type_id}
+                        value={form.order_type_id?.id || ""}
                         onChange={(val) => setForm({ ...form, order_type_id: val })}
                         newItem={newOrder}
                         setNewItem={setNewOrder}
@@ -392,7 +410,7 @@ console.log('data marketing design:', marketingDesignId);
                     <label>Project Type</label>
                     <CustomDropdownDesign
                         options={dropdownData.projectType}
-                        value={form.project_type_id}
+                        value={form.project_type_id?.id || ""}
                         onChange={(val) => setForm({ ...form, project_type_id: val })}
                         newItem={newProject}
                         setNewItem={setNewProject}
@@ -409,7 +427,7 @@ console.log('data marketing design:', marketingDesignId);
                     <label >Offer Type</label>
                     <CustomDropdownDesign
                         options={dropdownData.offers}        // data dari API
-                        value={form.offer_type}
+                        value={form.offer_type?.id || ""}
                         onChange={(val) => setForm({ ...form, offer_type: val })}
                         newItem={offerNew}
                         setNewItem={setOfferNew}
@@ -444,7 +462,7 @@ console.log('data marketing design:', marketingDesignId);
                         <label >Style</label>
                         <CustomDropdownDesign
                           options={dropdownData.style}
-                          value={form.style_id}
+                          value={form.style_id?.id || ""}
                           onChange={(val) => setForm({ ...form, style_id: val })}
                           newItem={newStyle}
                           setNewItem={setNewStyle}
