@@ -6807,7 +6807,6 @@ app.post('/api/archive-data-marketing-design/:id', async (req, res) => {
     }
 });
 
-//10. get data marketing design by data accepted
 // ✅ 10. Get data marketing design by accepted (with join)
 app.get('/api/marketing-design-accepted', async (req, res) => {
     try {
@@ -6964,6 +6963,84 @@ app.get('/api/marketing-design-not-accepted', async (req, res) => {
     }
 });
 
+// ✅ Get marketing_design by status_name (dinamis)
+app.get('/api/marketing-designs/status/:statusName', async (req, res) => {
+    try {
+        const { statusName } = req.params;
+
+        const result = await client.query(`
+      SELECT 
+        dmd.marketing_design_id,
+        dmd.buyer_name,
+        dmd.code_order,
+        dmd.order_number,
+        dmd.jumlah_track,
+        dmd.duration,
+        dmd.jumlah_revisi,
+        dmd.deadline,
+        dmd.price_normal,
+        dmd.price_discount,
+        dmd.discount,
+        dmd.basic_price,
+        dmd.gig_link,
+        dmd.reference_link,
+        dmd.required_files,
+        dmd.file_and_chat_link,
+        dmd.detail_project,
+        dmd.create_at,
+        dmd.update_at,
+
+        mu.id AS input_by,
+        mu.nama_marketing AS input_by_name,
+
+        kd.id AS acc_by,
+        kd.nama AS acc_by_name,
+
+        ad.id AS account,
+        ad.nama_account AS account_name,
+
+        ot.id AS order_type,
+        ot.order_name AS order_type_name,
+
+        oft.id AS offer_type,
+        oft.offer_name AS offer_type_name,
+
+        tt.id AS jenis_track,
+        tt.track_name AS track_type_name,
+
+        g.id AS genre,
+        g.genre_name AS genre_name,
+
+        pt.id AS project_type,
+        pt.nama_project AS project_type_name,
+
+        k.id AS kupon_diskon_id,
+        k.nama_kupon AS kupon_diskon_name,
+
+        s.id AS accept_status_id,
+        s.status_name AS accept_status_name
+
+      FROM marketing_design dmd
+      LEFT JOIN marketing_design_user mu ON mu.id = dmd.input_by
+      LEFT JOIN kepala_divisi_design kd ON kd.id = dmd.acc_by
+      LEFT JOIN account_design ad ON ad.id = dmd.account
+      LEFT JOIN design_order_type ot ON ot.id = dmd.order_type
+      LEFT JOIN offer_type_design oft ON oft.id = dmd.offer_type
+      LEFT JOIN track_types_design tt ON tt.id = dmd.jenis_track
+      LEFT JOIN genre_design g ON g.id = dmd.genre
+      LEFT JOIN project_type_design pt ON pt.id = dmd.project_type
+      LEFT JOIN kupon_diskon k ON k.id = dmd.kupon_diskon_id
+      LEFT JOIN accept_status s ON s.id = dmd.accept_status_id
+      WHERE s.status_name = $1
+      ORDER BY dmd.marketing_design_id DESC;
+    `, [statusName]);
+
+        res.json(result.rows);
+    } catch (err) {
+        console.error("❌ Error fetching marketing design by status:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
 
 
 
@@ -7545,8 +7622,8 @@ app.post('/api/get-workspaceid-boardid', async (req, res) => {
 // ✅ Get marketing_design (card_id NOT NULL) + join relasi
 // ✅ Get marketing_design (card_id NOT NULL) + join relasi (safe null handling)
 app.get('/api/marketing-designs/not-null', async (req, res) => {
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
       SELECT 
         md.marketing_design_id,
         md.buyer_name,
@@ -7600,11 +7677,11 @@ app.get('/api/marketing-designs/not-null', async (req, res) => {
       ORDER BY md.marketing_design_id DESC;
     `);
 
-    res.json(result.rows);
-  } catch (error) {
-    console.error('Error fetching marketing designs:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error fetching marketing designs:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 });
 
 
@@ -7613,8 +7690,8 @@ app.get('/api/marketing-designs/not-null', async (req, res) => {
 // ✅ Get marketing_design (card_id IS NULL) + join relasi
 // ✅ Get marketing_design (card_id IS NULL) + join relasi (safe null handling)
 app.get('/api/marketing-designs/null', async (req, res) => {
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
       SELECT 
         md.marketing_design_id,
         md.buyer_name,
@@ -7668,11 +7745,11 @@ app.get('/api/marketing-designs/null', async (req, res) => {
       ORDER BY md.marketing_design_id DESC;
     `);
 
-    res.json(result.rows);
-  } catch (error) {
-    console.error('Error fetching marketing designs (card_id NULL):', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error fetching marketing designs (card_id NULL):', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 });
 
 
