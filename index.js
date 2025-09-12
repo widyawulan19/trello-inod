@@ -6195,7 +6195,7 @@ app.get('/api/marketing-design/reports/today', async (req, res) => {
 });
 
 
-// ✅ Endpoint marketing-design per 10 hari dengan detail + join
+/// ✅ Endpoint marketing-design per 10 hari dengan detail + join
 app.get("/api/marketing-design/reports", async (req, res) => {
     try {
         const result = await client.query(`
@@ -6219,36 +6219,40 @@ app.get("/api/marketing-design/reports", async (req, res) => {
             'required_files', md.required_files,
             'file_and_chat', md.file_and_chat,
             'detail_project', md.detail_project,
-            'order_type', md.order_type,
             'create_at', md.create_at,
             'update_at', md.update_at,
 
-            -- Relasi (ID + Name)
+            -- Relasi Input By
             'input_by', mdu.id,
             'input_by_name', mdu.nama_marketing,
 
+            -- Relasi Acc By
             'acc_by', kdd.id,
             'acc_by_name', kdd.nama,
 
+            -- Relasi Account
             'account', ad.id,
             'account_name', ad.nama_account,
 
+            -- Relasi Offer Type
             'offer_type', ot.id,
             'offer_type_name', ot.offer_name,
 
+            -- Relasi Project Type
             'project_type', pt.id,
             'project_type_name', pt.project_name,
 
+            -- Relasi Style
             'style', sd.id,
             'style_name', sd.style_name,
 
+            -- Relasi Status Project
             'status_project', sp.id,
-            'status_project_name', sp.status_name
+            'status_project_name', sp.status_name,
 
-
-            'input_by', dm.input_by,
-            'input_by_name', mdu.nama_marketing,
-            'acc_by', 
+            -- Relasi Design Order Type (baru ditambah)
+            'order_type', dot.id,
+            'order_type_name', dot.order_name
           )
         ) AS details
       FROM marketing_design md
@@ -6259,6 +6263,7 @@ app.get("/api/marketing-design/reports", async (req, res) => {
       LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
       LEFT JOIN style_design sd ON md.style_id = sd.id
       LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
+      LEFT JOIN design_order_type dot ON md.order_type = dot.id
       GROUP BY month, period
       ORDER BY month DESC, period ASC;
     `);
