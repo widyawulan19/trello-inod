@@ -6263,7 +6263,7 @@ app.get("/api/marketing-design/reports", async (req, res) => {
       LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
       LEFT JOIN style_design sd ON md.style_id = sd.id
       LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
-      LEFT JOIN design_order_type dot ON md.order_type = dot.id
+      LEFT JOIN design_order_type dot ON md.order_type_id = dot.id
       GROUP BY month, period
       ORDER BY month DESC, period ASC;
     `);
@@ -6357,7 +6357,7 @@ app.post("/api/marketing-design/joined", async (req, res) => {
         acc_by,            // ID dari kepala_divisi_design
         account,           // ID dari account_design
         offer_type,        // ID dari offer_type_design
-        order_type,
+        order_type_id,
         resolution, // ✅ Tambahan
         reference, // ✅ Tambahan
         project_type_id,   // ID dari project_type_design
@@ -6386,7 +6386,7 @@ app.post("/api/marketing-design/joined", async (req, res) => {
             acc_by,
             account,
             offer_type,
-            order_type,
+            order_type_id,
             resolution,
             reference,
             project_type_id,
@@ -6414,7 +6414,7 @@ app.post("/api/marketing-design/joined", async (req, res) => {
                 acc_by,
                 account,
                 offer_type,
-                order_type,         // ✅ Tambahan
+                order_type_id,         // ✅ Tambahan
                 resolution,
                 reference,
                 project_type_id,
@@ -6440,7 +6440,6 @@ app.post("/api/marketing-design/joined", async (req, res) => {
                 md.required_files,
                 md.file_and_chat,
                 md.detail_project,
-                md.order_type,           -- ✅ Tambahan
                 md.resolution,
                 md.reference,
 
@@ -6464,7 +6463,13 @@ app.post("/api/marketing-design/joined", async (req, res) => {
                 sd.style_name AS style_name,
 
                 sp.id AS status_project,
-                sp.status_name AS status_project_name
+                sp.status_name AS status_project_name,
+
+                -- Relasi Design Order Type (baru ditambahkan)
+                dot.id AS order_type_id,
+                dot.order_name AS order_type_name
+
+
 
             FROM marketing_design md
             LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
@@ -6474,6 +6479,7 @@ app.post("/api/marketing-design/joined", async (req, res) => {
             LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
             LEFT JOIN style_design sd ON md.style_id = sd.id
             LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
+            LEFT JOIN design_order_type dot ON md.order_type_id = dot.id
             WHERE md.marketing_design_id = $1
             `,
             [result.rows[0].marketing_design_id]
