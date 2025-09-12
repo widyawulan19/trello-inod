@@ -6017,7 +6017,7 @@ app.put("/api/marketing-design/joined/:id", async (req, res) => {
         project_type_id     = $18,
         style_id            = $19,
         status_project_id   = $20,
-        resolution          = $21
+        resolution          = $21,
         update_at           = NOW()
       WHERE marketing_design_id = $22
       RETURNING *;
