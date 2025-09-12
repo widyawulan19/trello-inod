@@ -7729,7 +7729,7 @@ app.get('/api/marketing-designs/null', async (req, res) => {
         sd.style_name                      AS style_name,
 
         NULLIF(sp.id::text, '')::int       AS status_project,
-        sp.status_name                     AS status_project_name
+        sp.status_name                     AS status_project_name,
 
         -- ✅ Relasi ke Design Order Type
         NULLIF(dot.id::text, '')::int      AS order_type_id,
