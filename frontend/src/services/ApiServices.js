@@ -1082,3 +1082,24 @@ export const updateKepalaDivisiDesign = (id, data) =>
 // Delete
 export const deleteKepalaDivisiDesign = (id) =>
   axios.delete(`${API_URL}/kepala-divisi-design/${id}`);
+
+
+// ✅ Get all
+export const getAllDesignOrderType = () =>
+  axios.get(`${API_URL}/design-order-type`);
+
+// ✅ Get by ID
+export const getDesignOrderTypeById = (id) =>
+  axios.get(`${API_URL}/design-order-type/${id}`);
+
+// ✅ Create new
+export const addDesignOrderType = (data) =>
+  axios.post(`${API_URL}/design-order-type`, data);
+
+// ✅ Update
+export const updateDesignOrderType = (id, data) =>
+  axios.put(`${API_URL}/design-order-type/${id}`, data);
+
+// ✅ Delete
+export const deleteDesignOrderType = (id) =>
+  axios.delete(`${API_URL}/design-order-type/${id}`);

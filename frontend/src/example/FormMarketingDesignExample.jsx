@@ -4,7 +4,7 @@ import {
   addMarketingDesignJoined, addKepalaDivisiDesign, addOfferTypeDesign, addStyleDesign, 
   createAccountDesign, createMarketingDesainUser, getAllAccountDesign, getAllKepalaDivisiDesign, 
   getAllMarketingDesainUsers, getAllOfferTypesDesign, getAllStatusProjectDesign, 
-  getAllStyleDesign, getAllProjectTypesDesign, addProjectTypeDesign 
+  getAllStyleDesign, getAllProjectTypesDesign, addProjectTypeDesign , getAllDesignOrderType, addDesignOrderType
 } from '../services/ApiServices';
 import { IoCreate } from 'react-icons/io5';
 import BootstrapTooltip from '../components/Tooltip';
@@ -16,7 +16,7 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
     const {showSnackbar} = useSnackbar();
 
     const [dropdownData, setDropdownData] = useState({ 
-        users: [], accs: [], statusAccept: [], accounts: [], offers: [], style: [], projectType: [] 
+        users: [], accs: [], statusAccept: [], accounts: [], offers: [], style: [], projectType: [], orderType: []
     });
 
     const [form, setForm] = useState({
@@ -39,7 +39,7 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
         project_type_id: "",
         style_id: "",
         status_project_id: "",
-        order_type:"",
+        order_type_id:"",
         reference: "",
         resolution: ""
     });
@@ -50,6 +50,7 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
     const [newOffer, setNewOffer] = useState("");
     const [newStyle, setNewStyle] = useState("");
     const [newProject, setNewProject] = useState("");
+    const [newOrder, setNewOrder] = useState("");
 
     useEffect(()=>{
         const fetchData = async () =>{
@@ -61,6 +62,8 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
                 const offers = await getAllOfferTypesDesign();
                 const style = await getAllStyleDesign();
                 const projectType = await getAllProjectTypesDesign();
+                const orderType = await getAllDesignOrderType();
+                console.log("data order type:", orderType);
                 
                 setDropdownData({
                   users: users.data.map(u => ({ id: u.id, name: u.nama_marketing })),
@@ -70,6 +73,7 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
                   offers: offers.data.map(of => ({ id: of.id, name: of.offer_name })),
                   style: style.data.map(s => ({ id: s.id, name: s.style_name })),
                   projectType: projectType.data.map(pt => ({ id: pt.id, name: pt.project_name })),
+                  orderType: orderType.data.map(odt => ({ id: odt.id, name: odt.order_name})),
                 });
             } catch (error) {
                 console.error('Error fetching dropdown data:', error);
@@ -129,6 +133,14 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
         setForm({ ...form, project_type_id: created.id });
         setNewProject("");
     };
+
+     const handleAddNewOrderType = async () => {
+        if (!newOrder.trim()) return;
+        const created = await addDesignOrderType({ order_name: newOrder });
+        setDropdownData(prev => ({ ...prev, orderType: [...prev.orderType, { id: created.id, name: created.order_name }] }));
+        setForm({ ...form, order_type_id: created.id });
+        setNewOrder("");
+    };
     // END ADD FUNCTIONS
 
     const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
@@ -156,7 +168,7 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
                 project_type_id: Number(form.project_type_id),
                 style_id: Number(form.style_id),
                 status_project_id: Number(form.status_project_id),
-                order_type: Number(form.order_type),
+                order_type_id: Number(form.order_type_id),
                 reference: form.reference,
                 resolution: form.resolution
             };
@@ -184,7 +196,7 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
                 project_type_id: "",
                 style_id: "",
                 status_project_id: "",
-                order_type:"",
+                order_type_id:"",
                 reference: "",
                 resolution: ""
             });
@@ -351,12 +363,16 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
                         {/* Order Number */}
                         <div className="box-content">
                             <label >Order Type</label>
-                            <input
-                                type="number" // nanti diedit ya jadi drpodown
-                                name="order_type"
-                                value={form.order_type}
-                                onChange={handleChange}
-                                placeholder="order type"
+                            <CustomDropdownDesign
+                                options={dropdownData.orderType}
+                                value={form.order_type_id}
+                                onChange={(val) => setForm({ ...form, order_type_id: val })}
+                                newItem={newOrder}
+                                setNewItem={setNewOrder}
+                                addNew={handleAddNewOrderType}
+                                placeholder="Pilih order type"
+                                searchPlaceholder="Search order type..."
+                                addPlaceholder="Add new order type..."
                             />
                         </div>
 
