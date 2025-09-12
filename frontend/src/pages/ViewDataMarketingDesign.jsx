@@ -10,7 +10,7 @@ import FormCreateCardDesign from '../fitur/FormCreateCardDesign'
 const ViewDataMarketingDesign=({marketingDesignId, onClose})=> {
     //STATE
     console.log('marketing design id diterima:', marketingDesignId)
-    const [dataMarketingDesign, setDataMarketingDesign] = useState([])
+    const [dataMarketingDesign, setDataMarketingDesign] = useState({})
     const [isLoading, setIsLoading] = useState(false)
     const [cardId, setCardId] = useState(null)
     const [loadingCardId, setLoadingCardId] = useState(true)
@@ -23,7 +23,7 @@ const ViewDataMarketingDesign=({marketingDesignId, onClose})=> {
     const fetchDataDesign = async()=>{
       try{
         const response = await getMarketingDesignById(marketingDesignId)
-        setDataMarketingDesign(response.data)
+        setDataMarketingDesign(response.data[0])
       }catch(error){
         console.log('Error fetching data marketing:', error)
       }
@@ -119,7 +119,7 @@ const renderTextWithLinks = (text) => {
       <div className="vmd-header">
         <div className="vmd-left">
           <h4>DETAIL DATA MARKETING DESIGN</h4>
-          {dataMarketingDesign.style} | {dataMarketingDesign.buyer_name} | {dataMarketingDesign.account} | {getLastFiveCodeOrder(dataMarketingDesign.code_order)}
+          {dataMarketingDesign.style_name} | {dataMarketingDesign.buyer_name} | {dataMarketingDesign.account_name} | {getLastFiveCodeOrder(dataMarketingDesign.code_order)}
         </div>
         <div className="vmd-right">
             <div className="card-status">
