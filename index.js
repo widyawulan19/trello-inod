@@ -5906,6 +5906,7 @@ app.get("/api/marketing-design/joined/:id", async (req, res) => {
         md.update_at,
         md.card_id,
         md.resolution,
+        md.reference,
 
         -- Relasi Input By
         mdu.id AS input_by_id,
@@ -5991,6 +5992,7 @@ app.put("/api/marketing-design/joined/:id", async (req, res) => {
         style_id,
         status_project_id,
         resolution,
+        reference,
     } = req.body;
 
     try {
@@ -6019,8 +6021,9 @@ app.put("/api/marketing-design/joined/:id", async (req, res) => {
         style_id            = $19,
         status_project_id   = $20,
         resolution          = $21,
+        reference           = $22,
         update_at           = NOW()
-      WHERE marketing_design_id = $22
+      WHERE marketing_design_id = $23
       RETURNING *;
       `,
             [
@@ -6045,6 +6048,7 @@ app.put("/api/marketing-design/joined/:id", async (req, res) => {
                 style_id,
                 status_project_id,
                 resolution,
+                reference,
                 id,
             ]
         );
@@ -6073,6 +6077,7 @@ app.put("/api/marketing-design/joined/:id", async (req, res) => {
         md.create_at,
         md.update_at,
         md.resolution,
+        md.reference,
 
         mdu.id AS input_by,
         mdu.nama_marketing AS input_by_name,
@@ -6148,7 +6153,8 @@ app.get('/api/marketing-design/reports/today', async (req, res) => {
         md.detail_project,
         md.create_at,
         md.update_at,
-        md.resolution
+        md.resolution,
+        md.reference,
 
         -- Relasi Input By
         mdu.id AS input_by_id,
@@ -6230,6 +6236,7 @@ app.get("/api/marketing-design/reports", async (req, res) => {
             'create_at', md.create_at,
             'update_at', md.update_at,
             'resolution', md.resolution,
+            'reference', md.reference,
 
             -- Relasi Input By
             'input_by', mdu.id,
