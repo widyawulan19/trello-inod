@@ -7615,7 +7615,6 @@ app.post('/api/get-workspaceid-boardid', async (req, res) => {
 });
 
 //ENDPOIN UNTUK MENAMPILKAN DATA MARKETING UNTUK CARD ID YANG TIDAK NULL
-// ✅ Get marketing_design (card_id NOT NULL) + join relasi
 // ✅ Get marketing_design (card_id NOT NULL) + join relasi (safe null handling)
 app.get('/api/marketing-designs/not-null', async (req, res) => {
     try {
@@ -7634,7 +7633,6 @@ app.get('/api/marketing-designs/not-null', async (req, res) => {
         md.required_files,
         md.file_and_chat,
         md.detail_project,
-        md.order_type,
         md.card_id,
         md.create_at,
         md.update_at,
@@ -7659,7 +7657,11 @@ app.get('/api/marketing-designs/not-null', async (req, res) => {
         sd.style_name                      AS style_name,
 
         NULLIF(sp.id::text, '')::int       AS status_project,
-        sp.status_name                     AS status_project_name
+        sp.status_name                     AS status_project_name,
+
+        -- ✅ Relasi ke Design Order Type
+        NULLIF(dot.id::text, '')::int      AS order_type_id,
+        dot.order_name                     AS order_type_name
 
       FROM marketing_design md
       LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
@@ -7669,6 +7671,7 @@ app.get('/api/marketing-designs/not-null', async (req, res) => {
       LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
       LEFT JOIN style_design sd ON md.style_id = sd.id
       LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
+      LEFT JOIN design_order_type dot ON md.order_type_id = dot.id
       WHERE md.card_id IS NOT NULL
       ORDER BY md.marketing_design_id DESC;
     `);
@@ -7682,8 +7685,8 @@ app.get('/api/marketing-designs/not-null', async (req, res) => {
 
 
 
+
 //ENDPOIN UNTUK MENAMPILKAN DATA MARKETING UNTUK CARD ID NULL
-// ✅ Get marketing_design (card_id IS NULL) + join relasi
 // ✅ Get marketing_design (card_id IS NULL) + join relasi (safe null handling)
 app.get('/api/marketing-designs/null', async (req, res) => {
     try {
@@ -7702,7 +7705,6 @@ app.get('/api/marketing-designs/null', async (req, res) => {
         md.required_files,
         md.file_and_chat,
         md.detail_project,
-        md.order_type,
         md.card_id,
         md.create_at,
         md.update_at,
@@ -7729,6 +7731,10 @@ app.get('/api/marketing-designs/null', async (req, res) => {
         NULLIF(sp.id::text, '')::int       AS status_project,
         sp.status_name                     AS status_project_name
 
+        -- ✅ Relasi ke Design Order Type
+        NULLIF(dot.id::text, '')::int      AS order_type_id,
+        dot.order_name                     AS order_type_name
+
       FROM marketing_design md
       LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
       LEFT JOIN kepala_divisi_design kdd ON md.acc_by = kdd.id
@@ -7737,6 +7743,7 @@ app.get('/api/marketing-designs/null', async (req, res) => {
       LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
       LEFT JOIN style_design sd ON md.style_id = sd.id
       LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
+      LEFT JOIN design_order_type dot ON md.order_type_id = dot.id
       WHERE md.card_id IS NULL
       ORDER BY md.marketing_design_id DESC;
     `);
