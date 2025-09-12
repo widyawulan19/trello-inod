@@ -17,6 +17,7 @@ const initialFormState = {
     price_discount: "",
     discount_percentage: "",
     required_files: "",
+    reference: "",
     file_and_chat: "",
     detail_project: "",
     input_by: "",
@@ -89,50 +90,53 @@ console.log('data marketing design:', marketingDesignId);
           orderType: orderType.data.map(odt => ({ id: String(odt.id), name: odt.order_name})),
         });
 
-        if (marketingData?.data) {
-          const m = marketingData.data[0]; // karena hasilnya array berisi 1 object
-          setForm({
-            buyer_name: m.buyer_name || "",
-            code_order: m.code_order || "",
-            order_number: m.order_number || "",
-            jumlah_design: m.jumlah_design || "",
-            deadline: m.deadline ? m.deadline.split("T")[0] : "",
-            jumlah_revisi: m.jumlah_revisi || "",
-            price_normal: m.price_normal || "",
-            price_discount: m.price_discount || "",
-            discount_percentage: m.discount_percentage || "",
-            required_files: m.required_files || "",
-            file_and_chat: m.file_and_chat || "",
-            detail_project: m.detail_project || "",
-            resolution: m.resolution || "",
+       if (marketingData?.data) {
+        const m = marketingData.data[0]; // karena hasilnya array berisi 1 object
+        setForm({
+          buyer_name: m.buyer_name || "",
+          code_order: m.code_order || "",
+          order_number: m.order_number || "",
+          jumlah_design: m.jumlah_design || "",
+          deadline: m.deadline ? m.deadline.split("T")[0] : "",
+          jumlah_revisi: m.jumlah_revisi || "",
+          price_normal: m.price_normal || "",
+          price_discount: m.price_discount || "",
+          discount_percentage: m.discount_percentage || "",
+          required_files: m.required_files || "",
+          reference: m.reference || "",
+          file_and_chat: m.file_and_chat || "",
+          detail_project: m.detail_project || "",
+          resolution: m.resolution || "",
 
-            // ✅ Relasi dropdown pakai {value, label}
-            input_by: m.input_by_id
-              ? { id: String(m.input_by_id), name: m.input_by_name }
-              : null,
-            acc_by: m.acc_by_id
-              ? { id: String(m.acc_by_id), name: m.acc_by_name }
-              : null,
-            account: m.account_id
-              ? { id: String(m.account_id), name: m.account_name }
-              : null,
-            offer_type: m.offer_type_id
-              ? { id: String(m.offer_type_id), name: m.offer_type_name }
-              : null,
-            order_type_id: m.order_type_id
-              ? { id: String(m.order_type_id), name: m.order_type_name }
-              : null,
-            project_type_id: m.project_type_id
-              ? { id: String(m.project_type_id), name: m.project_type_name }
-              : null,
-            style_id: m.style_id
-              ? { id: String(m.style_id), name: m.style_name }
-              : null,
-            status_project_id: m.status_project_id
-              ? { id: String(m.status_project_id), name: m.status_project_name }
-              : null,
-          });
-        }
+          // ✅ Relasi dropdown pakai { id, name }
+          // input_by: m.input_by_id
+          //   ? { id: String(m.input_by_id), name: m.input_by_name }
+          //   : null,
+          input_by: m.input_by ? String(m.input_by):"",
+          acc_by: m.acc_by_id
+            ? { id: String(m.acc_by_id), name: m.acc_by_name }
+            : null,
+          account: m.account_id
+            ? { id: String(m.account_id), name: m.account_name }
+            : null,
+          offer_type: m.offer_type_id
+            ? { id: String(m.offer_type_id), name: m.offer_type_name }
+            : null,
+          order_type_id: m.order_type_id
+            ? { id: String(m.order_type_id), name: m.order_type_name }
+            : null,
+          project_type_id: m.project_type_id
+            ? { id: String(m.project_type_id), name: m.project_type_name }
+            : null,
+          style_id: m.style_id
+            ? { id: String(m.style_id), name: m.style_name }
+            : null,
+          status_project_id: m.status_project_id
+            ? { id: String(m.status_project_id), name: m.status_project_name }
+            : null,
+        });
+      }
+
 
 
       }catch(error){

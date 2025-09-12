@@ -19,11 +19,18 @@ const CustomDropdownDesign = ({
   const [search, setSearch] = useState("");
   const ref = useRef();
 
-  const handleSelect = (id) => {
-    onChange(id);
-    setIsOpen(false);
-    setSearch("");
-  };
+  // const handleSelect = (id) => {
+  //   onChange(id);
+  //   setIsOpen(false);
+  //   setSearch("");
+  // };
+
+const handleSelect = (id) => {
+  const selected = options.find(o => o.id === id);
+  onChange(selected); // kirim object {id, name}
+  setIsOpen(false);
+  setSearch("");
+};
 
   useEffect(() => {
     const handleClickOutside = (e) => {
