@@ -5904,6 +5904,7 @@ app.get("/api/marketing-design/joined/:id", async (req, res) => {
         md.create_at,
         md.update_at,
         md.card_id,
+        md.resolution,
 
         -- Relasi Input By
         mdu.id AS input_by_id,
@@ -5988,6 +5989,7 @@ app.put("/api/marketing-design/joined/:id", async (req, res) => {
         project_type_id,
         style_id,
         status_project_id,
+        resolution,
     } = req.body;
 
     try {
@@ -6015,8 +6017,9 @@ app.put("/api/marketing-design/joined/:id", async (req, res) => {
         project_type_id     = $18,
         style_id            = $19,
         status_project_id   = $20,
+        resolution          = $21
         update_at           = NOW()
-      WHERE marketing_design_id = $21
+      WHERE marketing_design_id = $22
       RETURNING *;
       `,
             [
@@ -6040,6 +6043,7 @@ app.put("/api/marketing-design/joined/:id", async (req, res) => {
                 project_type_id,
                 style_id,
                 status_project_id,
+                resolution,
                 id,
             ]
         );
@@ -6067,6 +6071,7 @@ app.put("/api/marketing-design/joined/:id", async (req, res) => {
         md.detail_project,
         md.create_at,
         md.update_at,
+        md.resolution,
 
         mdu.id AS input_by,
         mdu.nama_marketing AS input_by_name,
@@ -6142,6 +6147,7 @@ app.get('/api/marketing-design/reports/today', async (req, res) => {
         md.detail_project,
         md.create_at,
         md.update_at,
+        md.resolution
 
         -- Relasi Input By
         mdu.id AS input_by_id,
@@ -6222,6 +6228,7 @@ app.get("/api/marketing-design/reports", async (req, res) => {
             'detail_project', md.detail_project,
             'create_at', md.create_at,
             'update_at', md.update_at,
+            'resolution', md.resolution,
 
             -- Relasi Input By
             'input_by', mdu.id,
@@ -7637,6 +7644,7 @@ app.get('/api/marketing-designs/not-null', async (req, res) => {
         md.card_id,
         md.create_at,
         md.update_at,
+        md.resolution,
 
         -- Relasi (ID + Name) | NULLIF biar ga keluar string "null"
         NULLIF(mdu.id::text, '')::int      AS input_by,
@@ -7709,6 +7717,7 @@ app.get('/api/marketing-designs/null', async (req, res) => {
         md.card_id,
         md.create_at,
         md.update_at,
+        md.resolution,
 
         -- Relasi (ID + Name) | NULLIF biar ga keluar string "null"
         NULLIF(mdu.id::text, '')::int      AS input_by,
