@@ -6139,7 +6139,6 @@ app.get('/api/marketing-design/reports/today', async (req, res) => {
         md.required_files,
         md.file_and_chat,
         md.detail_project,
-        md.order_type,
         md.create_at,
         md.update_at,
 
