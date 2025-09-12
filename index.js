@@ -5826,6 +5826,7 @@ app.get("/api/marketing-design/joined", async (req, res) => {
         md.order_type,
         md.create_at,
         md.update_at,
+        md.card_id,
 
         -- Relasi Input By
         mdu.id AS input_by_id,
@@ -5945,6 +5946,7 @@ app.get("/api/marketing-design/joined/:id", async (req, res) => {
         md.order_type,
         md.create_at,
         md.update_at,
+        md.card_id,
 
         -- Relasi Input By
         mdu.id AS input_by_id,
