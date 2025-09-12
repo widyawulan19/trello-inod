@@ -5884,8 +5884,8 @@ app.get("/api/marketing-design/joined", async (req, res) => {
 
 // ✅ Get marketing_design by ID + join (id + name saja)
 app.get("/api/marketing-design/joined/:id", async (req, res) => {
+    const { id } = req.params;
     try {
-        const { id } = req.params;
         const result = await client.query(
             `
       SELECT 
@@ -5954,12 +5954,16 @@ app.get("/api/marketing-design/joined/:id", async (req, res) => {
             [id]
         );
 
-        if (result.rows.length === 0)
-            return res.status(404).json({ error: "Marketing design not found" });
+        // if (result.rows.length === 0)
+        //     return res.status(404).json({ error: "Marketing design not found" });
 
-        const row = result.rows[0];
+        // const row = result.rows[0];
+        
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "❌ Data marketing Design not found" });
+        }
 
-        res.json(result.rows);
+        res.json(result.rows[0]);
     } catch (err) {
         console.error("❌ Error get marketing_design by ID:", err);
         res.status(500).json({ error: "Failed to fetch joined data" });
