@@ -7542,36 +7542,136 @@ app.post('/api/get-workspaceid-boardid', async (req, res) => {
 });
 
 //ENDPOIN UNTUK MENAMPILKAN DATA MARKETING UNTUK CARD ID YANG TIDAK NULL
-app.get('/api/marketing-designs', async (req, res) => {
+// ✅ Get marketing_design (card_id NOT NULL) + join relasi
+app.get('/api/marketing-design/not-null', async (req, res) => {
     try {
         const result = await client.query(`
-          SELECT * FROM public.marketing_design 
-          WHERE card_id IS NOT NULL
-          ORDER BY marketing_design_id DESC;
-        `);
+      SELECT 
+        md.marketing_design_id,
+        md.buyer_name,
+        md.code_order,
+        md.jumlah_design,
+        md.order_number,
+        md.deadline,
+        md.jumlah_revisi,
+        md.price_normal,
+        md.price_discount,
+        md.discount_percentage,
+        md.required_files,
+        md.file_and_chat,
+        md.detail_project,
+        md.order_type,
+        md.card_id,
+        md.create_at,
+        md.update_at,
+
+        -- Relasi (ID + Name)
+        mdu.id   AS input_by,
+        mdu.nama_marketing AS input_by_name,
+
+        kdd.id   AS acc_by,
+        kdd.nama AS acc_by_name,
+
+        ad.id    AS account,
+        ad.nama_account AS account_name,
+
+        ot.id    AS offer_type,
+        ot.offer_name AS offer_type_name,
+
+        pt.id    AS project_type,
+        pt.project_name AS project_type_name,
+
+        sd.id    AS style,
+        sd.style_name AS style_name,
+
+        sp.id    AS status_project,
+        sp.status_name AS status_project_name
+
+      FROM marketing_design md
+      LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
+      LEFT JOIN kepala_divisi_design kdd ON md.acc_by = kdd.id
+      LEFT JOIN account_design ad ON md.account = ad.id
+      LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
+      LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
+      LEFT JOIN style_design sd ON md.style_id = sd.id
+      LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
+      WHERE md.card_id IS NOT NULL
+      ORDER BY md.marketing_design_id DESC;
+    `);
 
         res.json(result.rows);
     } catch (error) {
         console.error('Error fetching marketing designs:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
-})
+});
+
 
 //ENDPOIN UNTUK MENAMPILKAN DATA MARKETING UNTUK CARD ID NULL
-app.get('/api/marketing-designs-null', async (req, res) => {
+// ✅ Get marketing_design (card_id IS NULL) + join relasi
+app.get('/api/marketing-designs/null', async (req, res) => {
     try {
         const result = await client.query(`
-            SELECT * FROM public.marketing_design
-            WHERE card_id IS NULL
-            ORDER BY marketing_design_id DESC
-            `);
+      SELECT 
+        md.marketing_design_id,
+        md.buyer_name,
+        md.code_order,
+        md.jumlah_design,
+        md.order_number,
+        md.deadline,
+        md.jumlah_revisi,
+        md.price_normal,
+        md.price_discount,
+        md.discount_percentage,
+        md.required_files,
+        md.file_and_chat,
+        md.detail_project,
+        md.order_type,
+        md.card_id,
+        md.create_at,
+        md.update_at,
+
+        -- Relasi (ID + Name)
+        mdu.id   AS input_by,
+        mdu.nama_marketing AS input_by_name,
+
+        kdd.id   AS acc_by,
+        kdd.nama AS acc_by_name,
+
+        ad.id    AS account,
+        ad.nama_account AS account_name,
+
+        ot.id    AS offer_type,
+        ot.offer_name AS offer_type_name,
+
+        pt.id    AS project_type,
+        pt.project_name AS project_type_name,
+
+        sd.id    AS style,
+        sd.style_name AS style_name,
+
+        sp.id    AS status_project,
+        sp.status_name AS status_project_name
+
+      FROM marketing_design md
+      LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
+      LEFT JOIN kepala_divisi_design kdd ON md.acc_by = kdd.id
+      LEFT JOIN account_design ad ON md.account = ad.id
+      LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
+      LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
+      LEFT JOIN style_design sd ON md.style_id = sd.id
+      LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
+      WHERE md.card_id IS NULL
+      ORDER BY md.marketing_design_id DESC;
+    `);
 
         res.json(result.rows);
     } catch (error) {
-        console.error('Error fetching marketing designs:', error);
+        console.error('Error fetching marketing designs (card_id NULL):', error);
         res.status(500).json({ message: 'Internal server error' });
     }
-})
+});
+
 
 //ARCHIVE UNIVERSAL
 //1. get all data archive
