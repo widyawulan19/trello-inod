@@ -141,19 +141,6 @@ useEffect(() => {
         file_and_chat_link: m.file_and_chat_link || "",
         gig_link: m.gig_link || "",
         detail_project: m.detail_project || "",
-
-        // dropdown pakai ID
-        // input_by: m.input_by || "",
-        // acc_by: m.acc_by || "",
-        // account: m.account  || "",
-        // order_type: m.order_type || "",
-        // offer_type: m.offer_type || "",
-        // jenis_track: m.jenis_track || "",
-        // genre: m.genre || "",
-        // project_type: m.project_type || "",
-        // kupon_diskon_id: m.kupon_diskon_id || ""
-
-
        
         input_by: m.input_by ? String(m.input_by) : "",
         acc_by: m.acc_by ? String(m.acc_by) : "",

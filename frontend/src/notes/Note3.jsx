@@ -36,3 +36,96 @@
         "order_type_name": null
     }
 ]
+
+
+import React, { useState, useEffect } from "react";
+import { updateMarketingDesign } from "../services/ApiServices";
+import { useParams, useNavigate } from "react-router-dom";
+
+const EditMarketingDesign = () => {
+  const { id } = useParams(); // Ambil id dari URL
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    buyer_name: "",
+    code_order: "",
+    order_number: "",
+    jumlah_design: "",
+    deadline: "",
+    jumlah_revisi: "",
+    price_normal: "",
+    price_discount: "",
+    discount_percentage: "",
+    required_files: "",
+    file_and_chat: "",
+    detail_project: "",
+    input_by: "",
+    acc_by: "",
+    account: "",
+    offer_type: "",
+    order_type_id: "",
+    project_type_id: "",
+    style_id: "",
+    status_project_id: "",
+    resolution: "",
+  });
+
+  // Handler untuk ubah isi input
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Submit update
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await updateMarketingDesign(id, formData);
+      console.log("✅ Update berhasil:", res.data);
+      alert("✅ Data berhasil diupdate!");
+      navigate(`/marketing-design/${id}`); // Redirect ke detail
+    } catch (err) {
+      console.error("❌ Error update:", err);
+      alert("❌ Gagal update data!");
+    }
+  };
+
+  return (
+    <div style={{ maxWidth: "600px", margin: "0 auto" }}>
+      <h2>Edit Marketing Design</h2>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>Buyer Name:</label>
+          <input
+            type="text"
+            name="buyer_name"
+            value={formData.buyer_name}
+            onChange={handleChange}
+          />
+        </div>
+        <div>
+          <label>Code Order:</label>
+          <input
+            type="text"
+            name="code_order"
+            value={formData.code_order}
+            onChange={handleChange}
+          />
+        </div>
+        <div>
+          <label>Order Number:</label>
+          <input
+            type="text"
+            name="order_number"
+            value={formData.order_number}
+            onChange={handleChange}
+          />
+        </div>
+        {/* Tambahkan semua input sesuai formData */}
+        <button type="submit">Update</button>
+      </form>
+    </div>
+  );
+};
+
+export default EditMarketingDesign;

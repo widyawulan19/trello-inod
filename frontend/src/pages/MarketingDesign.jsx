@@ -20,6 +20,7 @@ import { handleArchive } from '../utils/handleArchive';
 import ExportMarketingDesign from '../exports/ExportMarketingDesign';
 import { FaXmark } from 'react-icons/fa6';
 import FormMarketingDesignExample from '../example/FormMarketingDesignExample';
+import NewEditMarketingDesign from './NewEditMarketingDesign';
 
 const MarketingDesign=()=> {
     //STATE
@@ -537,7 +538,8 @@ const MarketingDesign=()=> {
                 {showEdit && selectedMarketingDesign && (
                     <div className="edit-data-design">
                         <div className="edit-cont">
-                            <EditMarketingDesign marketingDesignId={selectedMarketingDesign} onClose={handleCloseEdit} fetchMarketingDesign={fetchMarketingDesign} />
+                            {/* <EditMarketingDesign marketingDesignId={selectedMarketingDesign} onClose={handleCloseEdit} fetchMarketingDesign={fetchMarketingDesign} /> */}
+                            <NewEditMarketingDesign marketingDesignId={selectedMarketingDesign} onClose={handleCloseEdit} fetchMarketingDesign={fetchMarketingDesign} />
                         </div>
                     </div>
                 )}

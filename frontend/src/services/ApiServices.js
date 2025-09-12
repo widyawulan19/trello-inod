@@ -1062,6 +1062,7 @@ export const deleteStatusProjectDesign = (id) =>
   axios.delete(`${API_URL}/status-project-design/${id}`);
 
 
+// KEPALA DIVISI DESIGN 
 
 // Get all
 export const getAllKepalaDivisiDesign = () =>
@@ -1083,6 +1084,8 @@ export const updateKepalaDivisiDesign = (id, data) =>
 export const deleteKepalaDivisiDesign = (id) =>
   axios.delete(`${API_URL}/kepala-divisi-design/${id}`);
 
+
+// ORDER DESIGN 
 
 // ✅ Get all
 export const getAllDesignOrderType = () =>
