@@ -6169,7 +6169,11 @@ app.get('/api/marketing-design/reports/today', async (req, res) => {
 
         -- Relasi Status Project
         sp.id AS status_project_id,
-        sp.status_name AS status_project_name
+        sp.status_name AS status_project_name,
+
+         -- Relasi Design Order Type (baru ditambahkan)
+        dot.id AS order_type_id,
+        dot.order_name AS order_type_name
 
       FROM marketing_design md
       LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
@@ -6179,38 +6183,11 @@ app.get('/api/marketing-design/reports/today', async (req, res) => {
       LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
       LEFT JOIN style_design sd ON md.style_id = sd.id
       LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
+      LEFT JOIN design_order_type dot ON md.order_type_id = dot.id
       WHERE DATE(md.create_at) = CURRENT_DATE
       ORDER BY md.marketing_design_id DESC
     `);
 
-        // const data = result.rows.map(row => ({
-        //     id: row.marketing_design_id,
-        //     buyer_name: row.buyer_name,
-        //     code_order: row.code_order,
-        //     order_number: row.order_number,
-        //     jumlah_design: row.jumlah_design,
-        //     deadline: row.deadline,
-        //     jumlah_revisi: row.jumlah_revisi,
-        //     price_normal: row.price_normal,
-        //     price_discount: row.price_discount,
-        //     discount_percentage: row.discount_percentage,
-        //     required_files: row.required_files,
-        //     file_and_chat: row.file_and_chat,
-        //     detail_project: row.detail_project,
-        //     order_type: row.order_type,
-        //     create_at: row.create_at,
-        //     update_at: row.update_at,
-
-        //     input_by: { id: row.input_by_id, name: row.input_by_name },
-        //     acc_by: { id: row.acc_by_id, name: row.acc_by_name },
-        //     account: { id: row.account_id, name: row.account_name },
-        //     offer_type: { id: row.offer_type_id, name: row.offer_type_name },
-        //     project_type: { id: row.project_type_id, name: row.project_type_name },
-        //     style: { id: row.style_id, name: row.style_name },
-        //     status_project: { id: row.status_project_id, name: row.status_project_name }
-        // }));
-
-        // res.json(data);
         res.json(result.rows);
     } catch (err) {
         console.error("❌ Error report today:", err);
