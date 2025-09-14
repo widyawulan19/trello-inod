@@ -5958,7 +5958,7 @@ app.get("/api/marketing-design/joined/:id", async (req, res) => {
         //     return res.status(404).json({ error: "Marketing design not found" });
 
         // const row = result.rows[0];
-        
+
         if (result.rows.length === 0) {
             return res.status(404).json({ error: "❌ Data marketing Design not found" });
         }
@@ -6137,80 +6137,41 @@ app.put("/api/marketing-design/joined/:id", async (req, res) => {
 
 // END MARKERING DESING JOINED 
 
-//12. get laporan data otomatis per 10 hari berjalan
+// ✅ Get laporan today untuk data marketing design (full join)
 app.get('/api/marketing-design/reports/today', async (req, res) => {
     try {
         const result = await client.query(`
       SELECT 
-        md.marketing_design_id,
-        md.buyer_name,
-        md.code_order,
-        md.order_number,
-        md.jumlah_design,
-        md.deadline,
-        md.jumlah_revisi,
-        md.price_normal,
-        md.price_discount,
-        md.discount_percentage,
-        md.required_files,
-        md.file_and_chat,
-        md.detail_project,
-        md.create_at,
-        md.update_at,
-        md.resolution,
-        md.reference,
-
-        -- Relasi Input By
-        mdu.id AS input_by_id,
+        md.*,
         mdu.nama_marketing AS input_by_name,
-
-        -- Relasi Acc By
-        kdd.id AS acc_by_id,
         kdd.nama AS acc_by_name,
-
-        -- Relasi Account
-        ad.id AS account_id,
         ad.nama_account AS account_name,
-
-        -- Relasi Offer Type
-        ot.id AS offer_type_id,
+        dot.order_name AS order_type_name,
         ot.offer_name AS offer_type_name,
-
-        -- Relasi Project Type
-        pt.id AS project_type_id,
-        pt.project_name AS project_type_name,
-
-        -- Relasi Style
-        sd.id AS style_id,
         sd.style_name AS style_name,
-
-        -- Relasi Status Project
-        sp.id AS status_project_id,
-        sp.status_name AS status_project_name,
-
-         -- Relasi Design Order Type (baru ditambahkan)
-        dot.id AS order_type_id,
-        dot.order_name AS order_type_name
-
+        md.resolution,
+        pt.project_name AS project_type_name,
+        sp.status_name AS status_project_name
       FROM marketing_design md
-      LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
-      LEFT JOIN kepala_divisi_design kdd ON md.acc_by = kdd.id
-      LEFT JOIN account_design ad ON md.account = ad.id
-      LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
-      LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
-      LEFT JOIN style_design sd ON md.style_id = sd.id
-      LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
-      LEFT JOIN design_order_type dot ON md.order_type_id = dot.id
+      LEFT JOIN marketing_desain_user mdu ON mdu.id = md.input_by
+      LEFT JOIN kepala_divisi_design kdd ON kdd.id = md.acc_by
+      LEFT JOIN account_design ad ON ad.id = md.account
+      LEFT JOIN design_order_type dot ON dot.id = md.order_type_id
+      LEFT JOIN offer_type_design ot ON ot.id = md.offer_type
+      LEFT JOIN style_design sd ON sd.id = md.style_id
+      LEFT JOIN project_type_design pt ON pt.id = md.project_type_id
+      LEFT JOIN status_project_design sp ON sp.id = md.status_project_id
       WHERE DATE(md.create_at) = CURRENT_DATE
-      ORDER BY md.marketing_design_id DESC
+      ORDER BY md.marketing_design_id DESC;
     `);
 
         res.json(result.rows);
-    } catch (err) {
-        console.error("❌ Error report today:", err);
-        res.status(500).json({ error: err.message });
+    } catch (error) {
+        console.error("❌ Error get today marketing-design report:", error.message);
+        res.status(500).json({ error: error.message });
     }
 });
+
 
 
 /// ✅ Endpoint marketing-design per 10 hari dengan detail + join
