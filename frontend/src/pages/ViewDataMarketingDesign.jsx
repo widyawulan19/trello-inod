@@ -10,7 +10,7 @@ import FormCreateCardDesign from '../fitur/FormCreateCardDesign'
 const ViewDataMarketingDesign=({marketingDesignId, onClose})=> {
     //STATE
     console.log('marketing design id diterima:', marketingDesignId)
-    const [dataMarketingDesign, setDataMarketingDesign] = useState({})
+    const [dataMarketingDesign, setDataMarketingDesign] = useState([])
     const [isLoading, setIsLoading] = useState(false)
     const [cardId, setCardId] = useState(null)
     const [loadingCardId, setLoadingCardId] = useState(true)
@@ -23,7 +23,7 @@ const ViewDataMarketingDesign=({marketingDesignId, onClose})=> {
     const fetchDataDesign = async()=>{
       try{
         const response = await getMarketingDesignById(marketingDesignId)
-        setDataMarketingDesign(response.data[0])
+        setDataMarketingDesign(response.data)
       }catch(error){
         console.log('Error fetching data marketing:', error)
       }
@@ -119,7 +119,7 @@ const renderTextWithLinks = (text) => {
       <div className="vmd-header">
         <div className="vmd-left">
           <h4>DETAIL DATA MARKETING DESIGN</h4>
-          {dataMarketingDesign.style_name} | {dataMarketingDesign.buyer_name} | {dataMarketingDesign.account_name} | {getLastFiveCodeOrder(dataMarketingDesign.code_order)}
+          {/* {dataMarketingDesign.style_name} | {dataMarketingDesign.buyer_name} | {dataMarketingDesign.account_name} | {getLastFiveCodeOrder(dataMarketingDesign.code_order)} */}
         </div>
         <div className="vmd-right">
             <div className="card-status">
@@ -160,7 +160,7 @@ const renderTextWithLinks = (text) => {
             <div className="box-content">
               <p>Accept By</p>
               <div className="box-box">
-                <p>{dataMarketingDesign.acc_by_name}</p>
+                <p>{dataMarketingDesign?.acc_by_name || "-"}</p>
               </div>
             </div>
             <div className="box-content">
@@ -170,38 +170,38 @@ const renderTextWithLinks = (text) => {
                   style={{
                     padding: '5px 8px',
                     borderRadius: '3px',
-                    backgroundColor: dataMarketingDesign.is_accepted ? '#C8E6C9' : '#FFCDD2',
-                    color: dataMarketingDesign.is_accepted ? '#2E7D32' : '#C62828',
+                    backgroundColor:'#FFCDD2',
+                    color: '#C62828',
                     fontWeight: 'bold',
                     textAlign:'center'
                   }}
                 >
-                  {dataMarketingDesign.status_project_name}
+                  {dataMarketingDesign?.status_project_name || "-"}
                 </p>
               </div>
             </div>
             <div className="box-content">
               <p>Buyer Namer</p>
               <div className="box-box">
-                <p>{dataMarketingDesign.buyer_name}</p>
+                <p>{dataMarketingDesign?.buyer_name || "-"}</p>
               </div>
             </div>
             <div className="box-content">
               <p>Code Order</p>
               <div className="box-box">
-                <p>{dataMarketingDesign.code_order}</p>
+                <p>{dataMarketingDesign?.code_order || "-"}</p>
               </div>
             </div>
             <div className="box-content">
               <p>Order Number</p>
               <div className="box-box">
-                <p>{dataMarketingDesign.order_number}</p>
+                <p>{dataMarketingDesign?.order_number || "-"}</p>
               </div>
             </div>
             <div className="box-content">
               <p>Account</p>
               <div className="box-box">
-                <p>{dataMarketingDesign.account_name}</p>
+                <p>{dataMarketingDesign?.account_name || "-"}</p>
               </div>
             </div>
             
@@ -213,37 +213,37 @@ const renderTextWithLinks = (text) => {
             <div className="box-content">
               <p>Jumlah Design</p>
               <div className="box-box">
-                <p>{dataMarketingDesign.jumlah_design}</p>
+                <p>{dataMarketingDesign?.jumlah_design || "-"}</p>
               </div>
             </div>
             <div className="box-content">
               <p>Jumlah Revisi</p>
               <div className="box-box">
-                <p>{dataMarketingDesign.jumlah_revisi}</p>
+                <p>{dataMarketingDesign?.jumlah_revisi || "-"}</p>
               </div>
             </div>
             <div className="box-content">
               <p>Order Type</p>
               <div className="box-box">
-                <p>{dataMarketingDesign.order_type_name}</p>
+                <p>{dataMarketingDesign?.order_type_name || "-"}</p>
               </div>
             </div>
             <div className="box-content">
               <p>Project Type</p>
               <div className="box-box">
-                <p>{dataMarketingDesign.project_type_name}</p>
+                <p>{dataMarketingDesign?.project_type_name || "-"}</p>
               </div>
             </div>
             <div className="box-content">
               <p>Offer Type</p>
               <div className="box-box">
-                <p>{dataMarketingDesign.offer_type_name}</p>
+                <p>{dataMarketingDesign?.offer_type_name || "-"}</p>
               </div>
             </div>
             <div className="box-content">
               <p>Deadline</p>
               <div className="box-box">
-                <p>{dataMarketingDesign.deadline}</p>
+                <p>{dataMarketingDesign?.deadline || "-"}</p>
               </div>
             </div>
           </div>
@@ -254,19 +254,19 @@ const renderTextWithLinks = (text) => {
             <div className="box-content">
               <p>Style</p>
               <div className="box-box">
-                <p>{dataMarketingDesign.style_name}</p>
+                <p>{dataMarketingDesign?.style_name || "-"}</p>
               </div>
             </div>
             <div className="box-content">
               <p>Resolution</p>
               <div className="box-box">
-                <p>{dataMarketingDesign.resolution}</p>
+                <p>{dataMarketingDesign?.resolution || "-"}</p>
               </div>
             </div>
             <div className="box-content">
               <p>Required Files</p>
               <div className="box-box">
-                <p>{dataMarketingDesign.required_files}</p>
+                <p>{dataMarketingDesign?.required_files || "-"}</p>
               </div>
             </div>
           </div>
@@ -277,19 +277,19 @@ const renderTextWithLinks = (text) => {
             <div className="box-content">
               <p>Price Normal</p>
               <div className="box-box">
-                <p>{dataMarketingDesign.price_normal}</p>
+                <p>{dataMarketingDesign?.price_normal || "-"}</p>
               </div>
             </div>
             <div className="box-content">
               <p>Price Discount</p>
               <div className="box-box">
-                <p>{dataMarketingDesign.price_discount}</p>
+                <p>{dataMarketingDesign?.price_discount || "-"}</p>
               </div>
             </div>
             <div className="box-content">
               <p>Discount Precentage</p>
               <div className="box-box">
-                <p>{dataMarketingDesign.discount_percentage}</p>
+                <p>{dataMarketingDesign?.discount_percentage || "-"}</p>
               </div>
             </div>
           </div>
@@ -301,16 +301,16 @@ const renderTextWithLinks = (text) => {
             <div className="box-content">
               <p>Reference</p>
               <div className="box-ref">
-                <p>{renderTextWithLinks(dataMarketingDesign.reference)}</p>
+                <p>{renderTextWithLinks(dataMarketingDesign?.reference || "-")}</p>
               </div>
             </div>
 
             <div className="box-content">
               <p>File & Chat</p>
               <div className="box-ref">
-                {isValidUrl(dataMarketingDesign.file_and_chat) ? (
+                {isValidUrl(dataMarketingDesign?.file_and_chat || "-") ? (
                   <a
-                    href={dataMarketingDesign.file_and_chat}
+                    href={dataMarketingDesign?.file_and_chat || "-"}
                     target="_blank"
                     rel="noopener noreferrer"
                     style={{
@@ -326,10 +326,10 @@ const renderTextWithLinks = (text) => {
                     onMouseOver={(e) => e.currentTarget.style.textDecoration = 'underline'}
                     onMouseOut={(e) => e.currentTarget.style.textDecoration = 'none'}
                   >
-                    {dataMarketingDesign.file_and_chat}
+                    {dataMarketingDesign?.file_and_chat || "-"}
                   </a>
                 ) : (
-                  <p>{dataMarketingDesign.file_and_chat}</p>
+                  <p>{dataMarketingDesign?.file_and_chat || "-"}</p>
                 )}
               </div>
             </div>
@@ -342,7 +342,7 @@ const renderTextWithLinks = (text) => {
             <div className="box-content" style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
               {/* <p>Detail Project</p> */}
               <div className="box-ref" style={{height:'30vh',overflowY:'auto'}}>
-                <p>{renderTextWithLinks(dataMarketingDesign.detail_project)}</p>
+                <p>{renderTextWithLinks(dataMarketingDesign?.detail_project || "-")}</p>
               </div>
             </div>
           </div>

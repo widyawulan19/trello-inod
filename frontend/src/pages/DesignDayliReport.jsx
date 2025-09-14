@@ -1,6 +1,6 @@
 // src/components/TodayMarketing.js
 import React, { useEffect, useState } from "react";
-import { getTodayMarketingDesign } from "../services/ApiServices"; // pastikan path sesuai
+import { getMarketingDesignReportToday, getTodayMarketingDesign } from "../services/ApiServices"; // pastikan path sesuai
 import { IoEyeSharp } from "react-icons/io5";
 import { HiOutlineArchiveBox, HiOutlinePencil, HiOutlineTrash } from "react-icons/hi2";
 import BootstrapTooltip from "../components/Tooltip";
