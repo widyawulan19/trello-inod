@@ -5297,7 +5297,7 @@ app.put('/api/create-card-marketing/:listId/:marketingId', async (req, res) => {
              RETURNING id`,
             [
                 listId,
-                `${marketing.genre_name || 'Unknown'} - ${marketing.buyer_name} (${marketing.account_name || '-'})`,
+                `'New Project' ${marketing.genre_name || 'Unknown'} - ${marketing.buyer_name} (${marketing.account_name || '-'})`,
                 description,
                 0, // posisi default
                 marketing.deadline
