@@ -107,7 +107,7 @@ const totalBasicPrice = data.reduce((sum, item) => {
                 </thead>
                 <tbody>
                 {data.map((item,index) => (
-                    <tr key={item.marketing_design_id}>
+                    <tr key={item.marketing_id}>
                     {/* <td>{item.marketing_design_id}</td> */}
                         <td>{index + 1}</td>
                         <td className='resolution-container' style={{color:'#5D12EB', textDecoration:'underline', cursor:'pointer'}}>{item.buyer_name} | {item.account} | {getLastFiveCodeOrder(item.code_order)}</td>

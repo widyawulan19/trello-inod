@@ -30,6 +30,33 @@ const getLastFiveCodeOrder = (codeOrder) =>{
   if (loading) return <p>Loading data marketing hari ini...</p>;
   if (data.length === 0) return <p>Tidak ada data marketing untuk hari ini.</p>;
 
+// PERHITUNGAN PRICE 
+const getPriceDiscount = (price_normal, discount) => {
+  if (!price_normal || !discount) return 0; // kalau ga ada diskon, potongan = 0
+
+  if (typeof discount === "string" && discount.includes("%")) {
+    let persen = parseFloat(discount.replace("%", ""));
+    return price_normal * (persen / 100);
+  } else {
+    return parseFloat(discount) || 0; // langsung nominal
+  }
+};
+
+const getBasicPrice = (price_normal, discount) => {
+  if (!price_normal) return null;
+
+  const potongan = getPriceDiscount(price_normal, discount);
+  return price_normal - potongan;
+};
+
+
+  // Hitung total basic price semua data hari ini
+const totalBasicPrice = data.reduce((sum, item) => {
+  return sum + (getBasicPrice(item.price_normal, item.discount) || 0);
+}, 0);
+
+
+
   return (
     <div className="daily-container">
         <div className="dayli-title">
@@ -44,6 +71,9 @@ const getLastFiveCodeOrder = (codeOrder) =>{
 
             <p style={{ marginTop: "4px",padding:'0px'}}>
                 Total Data Hari Ini: {data.length} Project
+            </p>
+            <p>
+                <p>Total Price from {data.length} data : <span className='text-green-600'> ${totalBasicPrice.toLocaleString()}</span></p>
             </p>
         </div>
         <div className="dayli-table">
@@ -69,6 +99,7 @@ const getLastFiveCodeOrder = (codeOrder) =>{
                     <th>Price Normal</th>
                     <th>Price Discount</th>
                     <th>Discount Presentage</th>
+                    <th>Price Total</th>
                     <th>Project Type</th>
                     <th>Action</th>
                 </tr>
@@ -79,34 +110,43 @@ const getLastFiveCodeOrder = (codeOrder) =>{
                     {/* <td>{item.marketing_design_id}</td> */}
                         <td>{index + 1}</td>
                         <td className='resolution-container' style={{color:'#5D12EB', textDecoration:'underline', cursor:'pointer'}}>{item.buyer_name} | {item.account} | {getLastFiveCodeOrder(item.code_order)}</td>
-                        <td className='input-container'>{item.input_by}</td>
-                        <td className='acc-container'>{item.acc_by}</td>
+                        <td className='input-container'>{item.input_by_name}</td>
+                        <td className='acc-container'>{item.acc_by_name}</td>
                         <td className='status-container' style={{textAlign:'left' }}>
                         <span style={{
                             padding: '2px 8px',
                             borderRadius: '12px',
-                            backgroundColor: item.is_accepted ? '#C8E6C9' : '#FFCDD2',
-                            color: item.is_accepted ? '#2E7D32' : '#C62828',
-                            fontWeight: 'bold'
+                            backgroundColor:'#FFCDD2',
+                            color:'#C62828',
+                            fontWeight: 'bold',
                         }}>
-                            {item.is_accepted ? 'Accepted' : 'Not Accepted'}
+                            {item.status_project_name}
                         </span>
                         </td>
                         <td className='buyer-name-container'>{item.buyer_name}</td>
                         <td className='code-order-container'>{item.code_order}</td>
                         <td className='jumlah-container' style={{textAlign:'center' }}>{item.jumlah_design}</td>
                         <td className='order-number-container'>{item.order_number}</td>
-                        <td className='account-container'>{item.account}</td>
+                        <td className='account-container'>{item.account_name}</td>
                         <td className='deadline-container' style={{ textAlign:'center' }}>{new Date(item.deadline).toLocaleDateString()}</td>
                         <td className='jumlah-revisi-container' style={{textAlign:'center' }}>{item.jumlah_revisi}</td>
-                        <td className='order-type-container'>{item.order_type}</td>
-                        <td className='offer-type-container'>{item.offer_type}</td>
-                        <td className='style-container'>{item.style}</td>
+                        <td className='order-type-container'>{item.order_type_name}</td>
+                        <td className='offer-type-container'>{item.offer_type_name}</td>
+                        <td className='style-container'>{item.style_name}</td>
                         <td className='resolution-container'>{item.resolution}</td>
                         <td className='price-normal-container' style={{textAlign:'center', color:'#1E1E1E'}}>${item.price_normal}</td>
-                        <td className='price-discount-container' style={{textAlign:'center', color:'#E53935'}}>${item.price_discount}</td>
-                        <td className='discount_percentage-container' style={{textAlign:'center', color:'#388E3C'}}>${item.discount_percentage}</td>
-                        <td className='project-type-container' >{item.project_type}</td>
+                        <td className="price-discount-container" style={{textAlign:'center', color:'#E53935'}}>
+                            {getPriceDiscount(item.price_normal, item.discount)
+                            ? `$ ${getPriceDiscount(item.price_normal, item.discount)}`
+                            : "-"}
+                        </td>
+                        <td className='discount_percentage-container' style={{textAlign:'center', color:'#388E3C'}}>{item.discount_percentage}%</td>
+                        <td className="discount-container" style={{textAlign:'center', color:'#388E3C'}}>
+                            {getBasicPrice(item.price_normal, item.discount)
+                            ? `$ ${getBasicPrice(item.price_normal, item.discount)}`
+                            : "-"}
+                        </td>
+                        <td className='project-type-container' >{item.project_type_name}</td>
                         <td className='action-container'>
                         <div className="action-table">
                             <BootstrapTooltip title='View Data' placement='top'>
