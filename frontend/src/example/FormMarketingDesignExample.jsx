@@ -214,7 +214,7 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
     return (
         <div className="fdm-container">
             <div className="fdm-header">
-                <div className="dmfh-left">
+                <div className="dmfh-left" style={{ display:'flex', alignItem:'center', justifyContent:'center'}}>
                     <div className="header-icon">
                         <IoCreate size={15}/>
                     </div>
@@ -248,7 +248,7 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
 
                         {/* Acc By */}
                         <div className="box-content">
-                          <label >Accept By</label>
+                          <label >Accept By <span style={{color:'red', fontSize:'6px'}}> ** diisi oleh kadiv</span></label>
                           <CustomDropdownDesign
                             options={dropdownData.accs}  // <- benar-benar dari kepala_divisi
                             value={form.acc_by}
@@ -264,7 +264,7 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
 
                          {/* STATUS ACCEPT */}
                         <div className="box-content">
-                            <label>Status</label>
+                            <label>Status <span style={{color:'red', fontSize:'6px'}}> ** diisi oleh kadiv</span></label>
                             <CustomDropdownDesign
                                 options={dropdownData.statusAccept}  // <- benar-benar dari kepala_divisi
                                 value={form.status_project_id}
@@ -431,7 +431,7 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
 
                         {/* Jumlah Design */}
                         <div className="box-content">
-                            <label >Style</label>
+                            <label >Style <span style={{color:'red', fontSize:'6px'}}> ** diisi oleh kadiv</span></label>
                             <CustomDropdownDesign
                               options={dropdownData.style}
                               value={form.style_id}
