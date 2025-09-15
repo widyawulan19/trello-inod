@@ -495,8 +495,8 @@ const MarketingDesign=()=> {
                       <td className='style-container'>{item.style_name}</td>
                       <td className='resolution-container'>{item.resolution}</td>
                       <td className='resolution-container'>{item.reference}</td>
-                      <td className='price-normal-container' style={{textAlign:'center', color:'#1E1E1E'}}>${item.price_normal}</td>
-                      <td className='price-discount-container' style={{textAlign:'center', color:'#E53935'}}>${item.price_discount}</td>
+                      <td className='price-normal-container' style={{textAlign:'center', color:'#1E1E1E'}}>{item.price_normal}</td>
+                      <td className='price-discount-container' style={{textAlign:'center', color:'#E53935'}}>{item.price_discount}</td>
                       <td className='discount_percentage-container' style={{textAlign:'center', color:'#388E3C'}}>{item.discount_percentage}%</td>
                       <td className='project-type-container'>{item.project_type_name}</td>
                       <td className='action-container'>

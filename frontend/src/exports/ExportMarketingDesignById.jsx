@@ -1,24 +1,39 @@
-import React from "react";
-import ExcelJS from "exceljs";
-import { saveAs } from "file-saver";
-import { getAllDataMarketingJoined } from "../services/ApiServices";
-import "../style/pages/DataMarketing.css";
+import React from 'react'
+import ExcelJs from "exceljs"
+import { saveAs } from 'file-saver'
+import { getAllDataMarketingJoinedById,getMarketingDesignById } from '../services/ApiServices'
+import { useSnackbar } from '../context/Snackbar'
+import '../style/pages/DataMarketing.css'
 
-const ExportDataMarketing = () => {
+const ExportMarketingDesignById = ({ marketingId }) => {
+  const { showSnackbar } = useSnackbar();
+
+  //DEBUG
+  console.log('data marketingId diterima di halaman export data marketing:', marketingId)
+
   const handleExport = async () => {
     try {
-      const response = await getAllDataMarketingJoined();
-      const data = response.data;
+        const response = await getMarketingDesignById(marketingId);
+        console.log("Full response axios:", response); // 👈 cek struktur lengkap
 
-      if (!data || data.length === 0) {
-        alert("❌ Tidak ada data untuk diexport");
+        let rawData = response.data;
+        console.log("Raw export data by id (awal):", rawData);
+
+
+      // 🔹 Pastikan selalu dalam bentuk array
+      if (!Array.isArray(rawData)) {
+        rawData = rawData ? [rawData] : [];
+      }
+
+      if (rawData.length === 0) {
+        showSnackbar('Tidak ada data yang ditemukan untuk diexport!', 'error');
         return;
       }
 
-      const workbook = new ExcelJS.Workbook();
+      const workbook = new ExcelJs.Workbook();
       const worksheet = workbook.addWorksheet("Data Marketing");
 
-      // 🔹 Kolom sesuai hasil join
+      // 🔹 Definisikan kolom sesuai struktur database
       worksheet.columns = [
         { header: "No", key: "no", width: 5 },
         { header: "Input By", key: "input_by_name", width: 20 },
@@ -28,30 +43,28 @@ const ExportDataMarketing = () => {
         { header: "Order Number", key: "order_number", width: 15 },
         { header: "Account", key: "account_name", width: 20 },
         { header: "Deadline", key: "deadline", width: 15 },
+        { header: "Jumlah Design", key: "jumlah_design", width: 15 },
         { header: "Jumlah Revisi", key: "jumlah_revisi", width: 15 },
         { header: "Order Type", key: "order_type_name", width: 15 },
         { header: "Offer Type", key: "offer_type_name", width: 15 },
-        { header: "Jenis Track", key: "track_type_name", width: 15 },
-        { header: "Genre", key: "genre_name", width: 15 },
+        { header: "Style", key: "style_name", width: 20 },
+        { header: "Resolution", key: "resolution", width: 20 },
         { header: "Price Normal", key: "price_normal", width: 15 },
         { header: "Price Discount", key: "price_discount", width: 15 },
-        { header: "Discount", key: "discount", width: 15 },
-        { header: "Basic Price", key: "basic_price", width: 15 },
-        { header: "Kupon Diskon", key: "kupon_diskon_name", width: 20 },
-        { header: "Gig Link", key: "gig_link", width: 30 },
+        { header: "Discount %", key: "discount_percentage", width: 15 },
         { header: "Required Files", key: "required_files", width: 30 },
-        { header: "Project Type", key: "project_type_name", width: 20 },
-        { header: "Duration", key: "duration", width: 15 },
-        { header: "Reference Link", key: "reference_link", width: 30 },
-        { header: "File & Chat Link", key: "file_and_chat_link", width: 30 },
-        { header: "Detail Project", key: "detail_project", width: 40 },
-        { header: "Accept Status", key: "accept_status_name", width: 20 },
-        { header: "Create At", key: "create_at", width: 20 },
-        { header: "Update At", key: "update_at", width: 20 }
+        { header: "Project Type", key: "project_type_name", width: 25 },
+        // { header: "Duration", key: "duration", width: 15 },
+        { header: "Reference", key: "reference", width: 25 },
+        { header: "File & Chat", key: "file_and_chat", width: 35 },
+        { header: "Detail Project", key: "detail_project", width: 50 },
+        { header: "Created At", key: "create_at", width: 20 },
+        { header: "Updated At", key: "update_at", width: 20 },
+        { header: "Is Accepted", key: "is_accepted", width: 15 }
       ];
 
       // 🔹 Isi data ke baris
-      data.forEach((item, index) => {
+      rawData.forEach((item, index) => {
         worksheet.addRow({
           no: index + 1,
           input_by_name: item.input_by_name,
@@ -61,35 +74,33 @@ const ExportDataMarketing = () => {
           order_number: item.order_number,
           account_name: item.account_name,
           deadline: item.deadline ? new Date(item.deadline).toLocaleDateString() : "-",
+          jumlah_design: item.jumlah_design,
           jumlah_revisi: item.jumlah_revisi,
-          order_type: item.order_type_name,
-          offer_type: item.offer_type_name,
-          jenis_track: item.jenis_track,
-          genre: item.genre_name,
+          order_type_name: item.order_type_name,
+          offer_type_name: item.offer_type_name,
+          style_name: item.style_name,
+          resolution: item.resolution,
           price_normal: item.price_normal,
           price_discount: item.price_discount,
-          discount: item.discount,
-          basic_price: item.basic_price,
-          kupon_diskon_name: item.kupon_diskon_name || "-",
-          gig_link: item.gig_link,
+          discount_percentage: item.discount_percentage,
           required_files: item.required_files,
-          project_type: item.project_type_name,
-          duration: item.duration,
-          reference_link: item.reference_link,
-          file_and_chat_link: item.file_and_chat_link,
+          project_type_name: item.project_type_name,
+          // duration: item.duration,
+          reference: item.reference,
+          file_and_chat: item.file_and_chat,
           detail_project: item.detail_project,
-          accept_status_name: item.accept_status_name || "Pending",
           create_at: item.create_at ? new Date(item.create_at).toLocaleString() : "-",
-          update_at: item.update_at ? new Date(item.update_at).toLocaleString() : "-"
-        });
+          update_at: item.update_at ? new Date(item.update_at).toLocaleString() : "-",
+          is_accepted: item.is_accepted ? "Yes" : "No"
       });
+    });
 
       // 🔹 Styling header
       worksheet.getRow(1).eachCell((cell) => {
         cell.fill = {
           type: "pattern",
           pattern: "solid",
-          fgColor: { argb: "FF4CAF50" } // hijau
+          fgColor: { argb: "FF4CAF50" }
         };
         cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
         cell.alignment = { vertical: "middle", horizontal: "center" };
@@ -118,10 +129,10 @@ const ExportDataMarketing = () => {
 
       // 🔹 Save file
       const buffer = await workbook.xlsx.writeBuffer();
-      saveAs(new Blob([buffer]), "data_marketing_joined.xlsx");
-
+      saveAs(new Blob([buffer]), "data_marketing_design.xlsx");
     } catch (error) {
-      console.error("❌ Gagal export data:", error);
+      console.error('Gagal export data:', error);
+      showSnackbar('Export data gagal, cek console untuk detailnya.', 'error');
     }
   };
 
@@ -129,7 +140,7 @@ const ExportDataMarketing = () => {
     <button onClick={handleExport} className="btn-export">
       Export Excel
     </button>
-  );
-};
+  )
+}
 
-export default ExportDataMarketing;
+export default ExportMarketingDesignById

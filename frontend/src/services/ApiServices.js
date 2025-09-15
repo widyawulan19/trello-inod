@@ -380,8 +380,18 @@ export const getMarketingDesignReportToday = () =>
   axios.get(`${API_URL}/marketing-design/reports/today`);
 
 // ✅ Get laporan per 10 hari
-export const getMarketingDesignReports = () =>
-  axios.get(`${API_URL}/marketing-design/reports`);
+// export const getMarketingDesignReports = () =>
+//   axios.get(`${API_URL}/marketing-design/reports`);
+
+export const getMarketingDesignReports = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/marketing-design/reports`);
+    return response.data;
+  } catch (error) {
+    console.error('gagal mengambil data report', error);
+    return [];
+  }
+}
 
 
 // ✅ Ambil laporan marketing hari ini

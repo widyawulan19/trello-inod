@@ -475,11 +475,11 @@ const getBasicPrice = (price_normal, discount) => {
                   <th>Offer Type</th>
                   <th>Jenis Track</th>
                   <th>Genre</th>
-                  <th>Price Normal</th>
-                  <th>Price Discount</th>
+                  <th>Price Normal $</th>
+                  <th>Price Discount $</th>
                   <th>Discount</th>
                   <th>Kupon Diskon</th>
-                  <th>Total Price</th>
+                  <th>Total Price $</th>
                   <th>Project Type</th>
                   <th>Duration</th>
                   <th style={{ borderTopRightRadius: '8px', textAlign:'center' }}>Action</th>
@@ -534,17 +534,17 @@ const getBasicPrice = (price_normal, discount) => {
                     <td className="offer-type-container">{item.offer_type_name}</td>
                     <td className="jenis-track-container" >{item.track_type_name}</td>
                     <td className="genre-container">{item.genre_name}</td>
-                    <td className="price-normal-container" style={{textAlign:'center', color:'#1E1E1E'}}>${item.price_normal}</td>
+                    <td className="price-normal-container" style={{textAlign:'center', color:'#1E1E1E'}}>{item.price_normal}</td>
                     <td className="price-discount-container" style={{textAlign:'center', color:'#E53935'}}>
                       {getPriceDiscount(item.price_normal, item.discount)
-                            ? `$ ${getPriceDiscount(item.price_normal, item.discount)}`
+                            ? ` ${getPriceDiscount(item.price_normal, item.discount)}`
                             : "-"}
                     </td>
                     <td className="discount-container" style={{textAlign:'center', color:'#388E3C'}}>{item.discount}</td>
                     <td className="discount-container" style={{textAlign:'center', color:'#388E3C'}}>{item.kupon_diskon_name}</td>
                     <td className="basic-price-container" style={{color:'#388E3C',textAlign:'center'}}> 
                       {getBasicPrice(item.price_normal, item.discount)
-                            ? `$ ${getBasicPrice(item.price_normal, item.discount)}`
+                            ? ` ${getBasicPrice(item.price_normal, item.discount)}`
                             : "-"}
                     </td>
                     <td className="project-type-container" >{item.project_type_name}</td>

@@ -6,6 +6,7 @@ import BootstrapTooltip from '../components/Tooltip'
 import '../style/pages/ViewDataMarketingDesign.css'
 import OutsideClick from '../hook/OutsideClick';
 import FormCreateCardDesign from '../fitur/FormCreateCardDesign'
+import ExportMarketingDesignById from '../exports/ExportMarketingDesignById';
 
 const ViewDataMarketingDesign=({marketingDesignId, onClose})=> {
     //STATE
@@ -122,6 +123,9 @@ const renderTextWithLinks = (text) => {
           {/* {dataMarketingDesign.style_name} | {dataMarketingDesign.buyer_name} | {dataMarketingDesign.account_name} | {getLastFiveCodeOrder(dataMarketingDesign.code_order)} */}
         </div>
         <div className="vmd-right">
+          <div className="export">
+            <ExportMarketingDesignById marketingId={marketingDesignId}/>
+          </div>
             <div className="card-status">
               {loadingCardId ? (
                 <p>Memeriksa...</p>
@@ -139,6 +143,7 @@ const renderTextWithLinks = (text) => {
             <BootstrapTooltip title='Close' placement='top'>
               <FaXmark onClick={onClose} className='vmd-icon'/>
             </BootstrapTooltip>
+
         </div>
       </div>
       {showCardForm[marketingDesignId]&& (

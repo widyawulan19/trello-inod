@@ -8,6 +8,7 @@ import OutsideClick from '../hook/OutsideClick';
 import FormCreateCardMarketing from '../fitur/FormCreateCardMarketing';
 import { useRouterContext } from '../context/RouteContext';
 import { FaXmark } from 'react-icons/fa6';
+import ExportDataMarketingId from '../exports/ExportDataMarketingId';
 
 
 const ViewDataMarketing=({marketingId, onClose})=> {
@@ -124,6 +125,9 @@ const ViewDataMarketing=({marketingId, onClose})=> {
           {dataMarketings.genre} | {dataMarketings.buyer_name} | {dataMarketings.account} | {getLastFiveCodeOrder(dataMarketings.code_order)}
         </div>
         <div className="vdm-right">
+          <div className="export" style={{marginRight:'5px'}}>
+            <ExportDataMarketingId marketingId={marketingId}/>
+          </div>
           {/* CHECK CARD ID  */}
           <div className="card-status">
             {loadingCardId ? (

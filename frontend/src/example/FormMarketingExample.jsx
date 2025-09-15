@@ -251,7 +251,7 @@ useEffect(() => {
 
                 {/* Acc By */}
                 <div className="box-content">
-                  <label >Accept By</label>
+                  <label >Accept By <span style={{color:'red', fontSize:'6px'}}> ** diisi oleh kadiv</span></label>
                   <CustomDropdown
                     options={dropdownData.accs}  // <- benar-benar dari kepala_divisi
                     value={form.acc_by}
@@ -267,7 +267,7 @@ useEffect(() => {
 
                 {/* STATUS ACCEPT */}
                 <div className="box-content">
-                  <label>Status</label>
+                  <label>Status <span style={{color:'red', fontSize:'6px'}}> ** diisi oleh kadiv</span></label>
                   <CustomDropdown
                     options={dropdownData.statusAccept}  // <- benar-benar dari kepala_divisi
                     value={form.accept_status_id}
@@ -404,7 +404,7 @@ useEffect(() => {
 
                 {/* Genre */}
                 <div className="box-content">
-                  <label >Genre</label>
+                  <label >Genre <span style={{color:'red', fontSize:'6px'}}> ** diisi oleh kadiv</span></label>
                   <CustomDropdown
                     options={dropdownData.genres}        // data dari API
                     value={form.genre}

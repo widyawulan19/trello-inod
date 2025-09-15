@@ -356,7 +356,7 @@ console.log('data selcted acc:', selectedAccById);
 
               {/* Acc By */}
               <div className="box-content">
-                <label>Accept By</label>
+                <label>Accept By <span style={{color:'red', fontSize:'6px'}}> ** diisi oleh kadiv</span></label>
                 {/* {dropdownData.accs?.length > 0 && ( */}
                   <CustomDropdown
                     options={dropdownData.accs}
@@ -374,7 +374,7 @@ console.log('data selcted acc:', selectedAccById);
 
                {/* ACCEPT STATUS */}
               <div className="box-content">
-                <label>Status Accept</label>
+                <label>Status Accept <span style={{color:'red', fontSize:'6px'}}> ** diisi oleh kadiv</span></label>
                   <CustomDropdown
                     options={dropdownData.statusAccept}
                     value={form.accept_status_id}  // pakai ID string, misal "2"
@@ -509,7 +509,7 @@ console.log('data selcted acc:', selectedAccById);
 
               {/* Genre */}
               <div className="box-content">
-                <label>Genre</label>
+                <label>Genre <span style={{color:'red', fontSize:'6px'}}> ** diisi oleh kadiv</span></label>
                 <CustomDropdown
                   options={dropdownData.genres}        // data dari API
                   value={form.genre}

@@ -137,11 +137,11 @@ const getBasicPrice = (price_normal, discount) => {
                     <th className="offer-type-container">Offer Type</th>
                     <th className="jenis-track-container">Jenis Track</th>
                     <th className="genre-container">Genre</th>
-                    <th className="price-normal-container">Price Normal</th>
-                    <th className="price-discount-container">Price Discount</th>
+                    <th className="price-normal-container">Price Normal $</th>
+                    <th className="price-discount-container">Price Discount $</th>
                     <th className="discount-container">Discount</th>
                     <th className="price-discount-container">Kupon Discount</th>
-                    <th className="basic-price-container">Total Price</th>
+                    <th className="basic-price-container">Total Price %</th>
                     <th className="project-type-container">Project Type</th>
                     <th className="duration-container">Duration</th>
                     <th className="action-container">Action</th>
@@ -179,18 +179,18 @@ const getBasicPrice = (price_normal, discount) => {
                         <td className="px-2 py-1 border">{detail["genre_name"] || "-"}</td>
                         {/* PRICE  */}
                         <td className="px-2 py-1 border">
-                          {detail["price_normal"] ? `$ ${detail["price_normal"]}` : "-"}
+                          {detail["price_normal"] ? ` ${detail["price_normal"]}` : "-"}
                         </td>
                         <td className="px-2 py-1 text-green-500 border">
                           {getPriceDiscount(detail.price_normal, detail.discount)
-                            ? `$ ${getPriceDiscount(detail.price_normal, detail.discount)}`
+                            ? ` ${getPriceDiscount(detail.price_normal, detail.discount)}`
                             : "-"}
                         </td>
                         <td className="px-2 py-1 border">{detail["discount"] || "-"}</td>
                         <td className="px-2 py-1 border">{detail["kupon_diskon_name"] || "-"}</td>
-                        <td className="px-2 py-1 border">
+                        <td className="px-2 py-1 text-green-600 border">
                           {getBasicPrice(detail.price_normal, detail.discount)
-                            ? `$ ${getBasicPrice(detail.price_normal, detail.discount)}`
+                            ? ` ${getBasicPrice(detail.price_normal, detail.discount)}`
                             : "-"}
                         </td>
                         {/* END PRICE  */}
