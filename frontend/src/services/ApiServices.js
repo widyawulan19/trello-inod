@@ -398,6 +398,7 @@ export const addMarketingExport = async (marketingId, exportedBy = null) => {
   }
 };
 
+
 // Ambil semua data export
 export const getAllMarketingExports = async () => {
   try {

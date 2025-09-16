@@ -120,55 +120,45 @@ const ViewDataMarketing=({marketingId, onClose})=> {
   }, [marketingId]);
 
   //7. kirim satu data ke google sheets
-  const handleExportToSheets = async (marketingId) =>{
-    try{
-      setIsLoading(true);
-      await exportDataMarketingToSheets(marketingId);
-      showSnackbar(`Data "${marketingId.buyer_name}" berhasil dikirim ke Google Sheets`, 'success');
-    }catch(error){
-      console.log('Gagal kirim data ke sheets:', error)
-      showSnackbar(`Gagal kirim data ke sheets "${marketingId.buyer_name}"`, 'error');
-    }finally{
-      setIsLoading(false);
-    }
+  // const handleExportToSheets = async (marketingId) =>{
+  //   try{
+  //     setIsLoading(true);
+  //     await exportDataMarketingToSheets(marketingId);
+  //     showSnackbar(`Data "${marketingId.buyer_name}" berhasil dikirim ke Google Sheets`, 'success');
+  //   }catch(error){
+  //     console.log('Gagal kirim data ke sheets:', error)
+  //     showSnackbar(`Gagal kirim data ke sheets "${marketingId.buyer_name}"`, 'error');
+  //   }finally{
+  //     setIsLoading(false);
+  //   }
+  // }
+
+// Fungsi untuk export & insert ke marketing_exports
+// Fungsi untuk export ke Google Sheets
+
+// Fungsi handle utama
+const handleExportToSheets = async (marketingId) => {
+  try {
+    setIsLoading(true);
+
+    // 1. Export ke Google Sheets
+    await exportDataMarketingToSheets(marketingId);
+
+    // 2. Tambahkan marketingId ke tabel marketing_exports
+    await addMarketingExport(marketingId, "admin"); // user login bisa diganti
+
+    console.log("berhasil kirim data ke sheets:");
+    showSnackbar(`berhasil kirim data ke sheets ID: ${marketingId}`, "success");
+  } catch (error) {
+    console.error("❌ Gagal kirim data ke sheets:", error);
+    showSnackbar(`❌ Gagal kirim data ke sheets ID: ${marketingId}`, "error");
+  } finally {
+    setIsLoading(false);
   }
+};
 
-// const handleExportToSheets = async (marketingId) => {
-//   try {
-//     setIsLoading(true);
 
-//     // 1. Kirim ke Google Sheets
-//     await exportDataMarketingToSheets(marketingId);
 
-//     // 2. Insert ke tabel marketing_exports
-//     await addMarketingExport(marketingId.marketing_id, "system"); // exportedBy bisa ganti sesuai user login
-
-//     // 3. Cek status export untuk marketing ini
-//     const status = await checkMarketingExport(marketingId.marketing_id);
-
-//     // 4. Update state lokal
-//     setDataMarketings((prev) =>
-//       prev.map((m) =>
-//         m.marketing_id === marketingId.marketing_id
-//           ? { ...m, export_status: status.exported ? "Sudah Transfile" : "Belum Transfile" }
-//           : m
-//       )
-//     );
-
-//     showSnackbar(
-//       `Data "${marketingId.buyer_name}" berhasil dikirim ke Google Sheets`,
-//       "success"
-//     );
-//   } catch (error) {
-//     console.log("❌ Gagal kirim data ke sheets:", error);
-//     showSnackbar(
-//       `Gagal kirim data ke sheets "${marketingId.buyer_name}"`,
-//       "error"
-//     );
-//   } finally {
-//     setIsLoading(false);
-//   }
-// };
 
 
 
