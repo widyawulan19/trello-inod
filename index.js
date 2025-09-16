@@ -2435,19 +2435,56 @@ app.get('/api/cards', async (req, res) => {
     }
 })
 //get card by id
+// app.get('/api/cards/:id', async (req, res) => {
+//     const { id } = req.params;
+//     try {
+//         const result = await client.query('SELECT * FROM cards WHERE id = $1', [id])
+//         if (result.rows.length > 0) {
+//             res.json(result.rows[0]);
+//         } else {
+//             res.status(404).json({ message: 'card not found' })
+//         }
+//     } catch (error) {
+//         res.status(500).json({ error: error.message });
+//     }
+// })
 app.get('/api/cards/:id', async (req, res) => {
     const { id } = req.params;
+
     try {
-        const result = await client.query('SELECT * FROM cards WHERE id = $1', [id])
+        const result = await client.query(`
+      SELECT 
+        c.id AS card_id,
+        c.list_id,
+        c.title,
+        c.description,
+        c.position,
+        c.due_date,
+        json_agg(
+          json_build_object(
+            'id', l.id,
+            'name', l.name,
+            'color', l.color
+          )
+        ) FILTER (WHERE l.id IS NOT NULL) AS labels
+      FROM cards c
+      LEFT JOIN card_labels cl ON cl.card_id = c.id
+      LEFT JOIN labels l ON l.id = cl.label_id
+      WHERE c.id = $1
+      GROUP BY c.id
+    `, [id]);
+
         if (result.rows.length > 0) {
             res.json(result.rows[0]);
         } else {
-            res.status(404).json({ message: 'card not found' })
+            res.status(404).json({ message: 'Card not found' });
         }
     } catch (error) {
+        console.error('Error fetching card:', error);
         res.status(500).json({ error: error.message });
     }
-})
+});
+
 //2. get card by list id
 app.get('/api/cards/list/:listId', async (req, res) => {
     const { listId } = req.params;
@@ -5202,6 +5239,126 @@ app.post("/api/marketing", async (req, res) => {
 });
 
 //6. mengubah data marketing menjadi cards
+// app.put('/api/create-card-marketing/:listId/:marketingId', async (req, res) => {
+//     const { listId, marketingId } = req.params;
+
+//     try {
+//         // ✅ Ambil data marketing dengan JOIN lengkap
+//         const marketingData = await client.query(`
+//             SELECT 
+//                 dm.marketing_id,
+//                 dm.card_id,
+//                 dm.buyer_name,
+//                 dm.code_order,
+//                 dm.order_number,
+//                 dm.jumlah_track,
+//                 dm.duration,
+//                 dm.jumlah_revisi,
+//                 dm.deadline,
+//                 dm.price_normal,
+//                 dm.price_discount,
+//                 dm.discount,
+//                 dm.basic_price,
+//                 dm.gig_link,
+//                 dm.reference_link,
+//                 dm.required_files,
+//                 dm.file_and_chat_link,
+//                 dm.detail_project,
+//                 dm.create_at,
+//                 dm.update_at,
+
+//                 mu.nama_marketing AS input_by_name,
+//                 kd.nama AS acc_by_name,
+//                 am.nama_account AS account_name,
+//                 ot.order_name AS order_type_name,
+//                 oft.offer_name AS offer_type_name,
+//                 tt.track_name AS track_type_name,
+//                 g.genre_name AS genre_name,
+//                 pt.nama_project AS project_type_name,
+//                 k.nama_kupon AS kupon_diskon_name,
+//                 s.status_name AS accept_status_name
+
+//             FROM data_marketing dm
+//             LEFT JOIN marketing_musik_user mu ON mu.id = dm.input_by
+//             LEFT JOIN kepala_divisi kd ON kd.id = dm.acc_by
+//             LEFT JOIN account_music am ON am.id = dm.account
+//             LEFT JOIN music_order_type ot ON ot.id = dm.order_type
+//             LEFT JOIN offer_type_music oft ON oft.id = dm.offer_type
+//             LEFT JOIN track_types tt ON tt.id = dm.jenis_track
+//             LEFT JOIN genre_music g ON g.id = dm.genre
+//             LEFT JOIN project_type pt ON pt.id = dm.project_type
+//             LEFT JOIN kupon_diskon k ON k.id = dm.kupon_diskon_id
+//             LEFT JOIN accept_status s ON s.id = dm.accept_status_id
+//             WHERE dm.marketing_id = $1 AND dm.card_id IS NULL
+//         `, [marketingId]);
+
+//         if (marketingData.rows.length === 0) {
+//             return res.status(404).json({ message: 'Data marketing tidak ditemukan atau sudah memiliki card_id' });
+//         }
+
+//         const marketing = marketingData.rows[0];
+
+//         // ✅ Description pakai nama hasil join
+//         const description = `
+//         Order Code: ${marketing.code_order}
+//         Input By: ${marketing.input_by_name || 'N/A'}
+//         Approved By: ${marketing.acc_by_name || 'N/A'}
+//         Buyer: ${marketing.buyer_name}
+//         Order Number: ${marketing.order_number}
+//         Account: ${marketing.account_name || 'N/A'}
+//         Deadline: ${marketing.deadline ? new Date(marketing.deadline).toISOString().split('T')[0] : 'N/A'}
+//         Jumlah Revisi: ${marketing.jumlah_revisi}
+//         Order Type: ${marketing.order_type_name || 'N/A'}
+//         Offer Type: ${marketing.offer_type_name || 'N/A'}
+//         Jenis Track: ${marketing.track_type_name || 'N/A'}
+//         Genre: ${marketing.genre_name || 'N/A'}
+//         Jumlah Track: ${marketing.jumlah_track}
+//         Normal Price: $${marketing.price_normal}
+//         Discount: ${marketing.discount ?? 'N/A'}
+//         Basic Price: $${marketing.basic_price ?? 'N/A'}
+//         Required Files: ${marketing.required_files}
+//         Project Type: ${marketing.project_type_name || 'N/A'}
+//         Duration: ${marketing.duration}
+//         Gig Link: ${marketing.gig_link}
+//         Reference: ${marketing.reference_link}
+//         File & Chat: ${marketing.file_and_chat_link}
+//         Kupon Diskon: ${marketing.kupon_diskon_name || 'N/A'}
+//         Status: ${marketing.accept_status_name || 'N/A'}
+//         Detail: ${marketing.detail_project}
+//         `.trim();
+
+//         // ✅ Card title juga pakai nama genre + buyer
+//         const newCard = await client.query(
+//             `INSERT INTO cards (list_id, title, description, position, due_date) 
+//              VALUES ($1, $2, $3, $4, $5) 
+//              RETURNING id`,
+//             [
+//                 listId,
+//                 `'New Project' ${marketing.genre_name || 'Unknown'} - ${marketing.buyer_name} (${marketing.account_name || '-'})`,
+//                 description,
+//                 0, // posisi default
+//                 marketing.deadline
+//             ]
+//         );
+
+//         // ✅ Update card_id di data_marketing
+//         await client.query(
+//             'UPDATE data_marketing SET card_id = $1 WHERE marketing_id = $2',
+//             [newCard.rows[0].id, marketingId]
+//         );
+
+//         return res.status(201).json({
+//             message: 'Card berhasil dibuat dari data marketing.',
+//             cardId: newCard.rows[0].id
+//         });
+
+//     } catch (error) {
+//         console.error('Error creating card from marketing data:', error);
+//         return res.status(500).json({ message: 'Terjadi kesalahan saat membuat card dari data marketing.' });
+//     }
+// });
+
+//6. mengubah data marketing menjadi cards
 app.put('/api/create-card-marketing/:listId/:marketingId', async (req, res) => {
     const { listId, marketingId } = req.params;
 
@@ -5304,15 +5461,32 @@ app.put('/api/create-card-marketing/:listId/:marketingId', async (req, res) => {
             ]
         );
 
+        const cardId = newCard.rows[0].id;
+
         // ✅ Update card_id di data_marketing
         await client.query(
             'UPDATE data_marketing SET card_id = $1 WHERE marketing_id = $2',
-            [newCard.rows[0].id, marketingId]
+            [cardId, marketingId]
         );
+
+        // ✅ Tambahin auto-label kalau project_type = ORIGINAL
+        if (marketing.project_type_name === "ORIGINAL") {
+            const labelResult = await client.query(
+                "SELECT id FROM labels WHERE name = $1 LIMIT 1",
+                ["Mixing & Mastering"]
+            );
+
+            if (labelResult.rows.length > 0) {
+                await client.query(
+                    "INSERT INTO card_labels (card_id, label_id) VALUES ($1, $2)",
+                    [cardId, labelResult.rows[0].id]
+                );
+            }
+        }
 
         return res.status(201).json({
             message: 'Card berhasil dibuat dari data marketing.',
-            cardId: newCard.rows[0].id
+            cardId
         });
 
     } catch (error) {
@@ -5320,123 +5494,6 @@ app.put('/api/create-card-marketing/:listId/:marketingId', async (req, res) => {
         return res.status(500).json({ message: 'Terjadi kesalahan saat membuat card dari data marketing.' });
     }
 });
-// 6. mengubah data marketing menjadi cards (dengan join label)
-// app.put('/api/create-card-marketing/:listId/:marketingId', async (req, res) => {
-//     const { listId, marketingId } = req.params;
-
-//     try {
-//         // ✅ Ambil data marketing + project_type + label
-//         const marketingData = await client.query(`
-//             SELECT 
-//                 dm.marketing_id,
-//                 dm.card_id,
-//                 dm.buyer_name,
-//                 dm.code_order,
-//                 dm.order_number,
-//                 dm.jumlah_track,
-//                 dm.duration,
-//                 dm.jumlah_revisi,
-//                 dm.deadline,
-//                 dm.price_normal,
-//                 dm.price_discount,
-//                 dm.discount,
-//                 dm.basic_price,
-//                 dm.gig_link,
-//                 dm.reference_link,
-//                 dm.required_files,
-//                 dm.file_and_chat_link,
-//                 dm.detail_project,
-//                 dm.create_at,
-//                 dm.update_at,
-
-//                 mu.nama_marketing AS input_by_name,
-//                 kd.nama AS acc_by_name,
-//                 am.nama_account AS account_name,
-//                 ot.order_name AS order_type_name,
-//                 oft.offer_name AS offer_type_name,
-//                 tt.track_name AS track_type_name,
-//                 g.genre_name AS genre_name,
-//                 pt.nama_project AS project_type_name,
-//                 k.nama_kupon AS kupon_diskon_name,
-//                 s.status_name AS accept_status_name,
-
-//                 -- 🔥 ambil label yang sesuai project_type
-//                 l.id AS label_id,
-//                 l.name AS label_name,
-//                 l.color AS label_color
-
-//             FROM data_marketing dm
-//             LEFT JOIN marketing_musik_user mu ON mu.id = dm.input_by
-//             LEFT JOIN kepala_divisi kd ON kd.id = dm.acc_by
-//             LEFT JOIN account_music am ON am.id = dm.account
-//             LEFT JOIN music_order_type ot ON ot.id = dm.order_type
-//             LEFT JOIN offer_type_music oft ON oft.id = dm.offer_type
-//             LEFT JOIN track_types tt ON tt.id = dm.jenis_track
-//             LEFT JOIN genre_music g ON g.id = dm.genre
-//             LEFT JOIN project_type pt ON pt.id = dm.project_type
-//             LEFT JOIN kupon_diskon k ON k.id = dm.kupon_diskon_id
-//             LEFT JOIN accept_status s ON s.id = dm.accept_status_id
-//             LEFT JOIN labels l ON l.bg_color_id = pt.id -- asumsi hubungan label → project_type via bg_color_id
-
-//             WHERE dm.marketing_id = $1 AND dm.card_id IS NULL
-//         `, [marketingId]);
-
-//         if (marketingData.rows.length === 0) {
-//             return res.status(404).json({ message: 'Data marketing tidak ditemukan atau sudah memiliki card_id' });
-//         }
-
-//         // ✅ Ambil data marketing (1 row utama) + kumpulin labels
-//         const marketing = marketingData.rows[0];
-//         const labels = marketingData.rows
-//             .filter(row => row.label_id)
-//             .map(row => ({
-//                 id: row.label_id,
-//                 name: row.label_name,
-//                 color: row.label_color
-//             }));
-
-//         // ✅ Description pakai nama hasil join
-//         const description = `
-//         Order Code: ${marketing.code_order}
-//         Buyer: ${marketing.buyer_name}
-//         Project Type: ${marketing.project_type_name || 'N/A'}
-//         Labels: ${labels.length > 0 ? labels.map(l => l.name).join(', ') : 'N/A'}
-//         Deadline: ${marketing.deadline ? new Date(marketing.deadline).toISOString().split('T')[0] : 'N/A'}
-//         Detail: ${marketing.detail_project}
-//         `.trim();
-
-//         // ✅ Buat card baru
-//         const newCard = await client.query(
-//             `INSERT INTO cards (list_id, title, description, position, due_date) 
-//              VALUES ($1, $2, $3, $4, $5) 
-//              RETURNING id`,
-//             [
-//                 listId,
-//                 `${marketing.genre_name || 'Unknown'} - ${marketing.buyer_name} (${marketing.account_name || '-'})`,
-//                 description,
-//                 0,
-//                 marketing.deadline
-//             ]
-//         );
-
-//         // ✅ Update card_id di data_marketing
-//         await client.query(
-//             'UPDATE data_marketing SET card_id = $1 WHERE marketing_id = $2',
-//             [newCard.rows[0].id, marketingId]
-//         );
-
-//         return res.status(201).json({
-//             message: 'Card berhasil dibuat dari data marketing.',
-//             cardId: newCard.rows[0].id,
-//             projectType: marketing.project_type_name,
-//             labels
-//         });
-
-//     } catch (error) {
-//         console.error('Error creating card with labels:', error);
-//         return res.status(500).json({ message: 'Terjadi kesalahan saat membuat card dari data marketing.' });
-//     }
-// });
 
 
 
