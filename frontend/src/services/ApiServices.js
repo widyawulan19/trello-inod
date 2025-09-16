@@ -380,6 +380,58 @@ export const getAllDataMarketingJoined = () => axios.get(`${API_URL}/data-market
 export const getAllDataMarketingJoinedById = (id) => axios.get(`${API_URL}/data-marketing/joined/${id}`)
 export const updateDataMarketingJoined = (id, data) => axios.put(`${API_URL}/data-marketing/joined/${id}`, data)
 
+
+/* =======================
+   MARKETING EXPORT SERVICES
+   ======================= */
+
+// Tambah data export (setelah berhasil transfile)
+export const addMarketingExport = async (marketingId, exportedBy = null) => {
+  try {
+    const res = await axios.post(`${API_URL}/marketing-exports/${marketingId}`, {
+      exported_by: exportedBy,
+    });
+    return res.data;
+  } catch (err) {
+    console.error("❌ Gagal tambah marketing_export:", err);
+    throw err;
+  }
+};
+
+// Ambil semua data export
+export const getAllMarketingExports = async () => {
+  try {
+    const res = await axios.get(`${API_URL}/marketing-exports`);
+    return res.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil marketing_exports:", err);
+    throw err;
+  }
+};
+
+// Cek apakah marketingId sudah diexport
+export const checkMarketingExport = async (marketingId) => {
+  try {
+    const res = await axios.get(`${API_URL}/marketing-exports/${marketingId}`);
+    return res.data; // { exported: true/false, data: {...} }
+  } catch (err) {
+    console.error("❌ Gagal cek marketing_export:", err);
+    throw err;
+  }
+};
+
+// Ambil semua data marketing + status export
+export const getMarketingWithExportStatus = async () => {
+  try {
+    const res = await axios.get(`${API_URL}/marketing-exports/join`);
+    return res.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil data join marketing_exports:", err);
+    throw err;
+  }
+};
+
+
 //DATA MARKETING DESIGN
 export const getAllDataMarketingDesign = () => axios.get(`${API_URL}/marketing-design`)
 export const getCardIdMarketingDesignByMarketingId = (id) => axios.get(`${API_URL}/card-id-design/${id}`)
