@@ -3,7 +3,7 @@ import '../style/pages/EditMarketingForm.css'
 import { HiPlus } from "react-icons/hi2";
 import { FaPlus } from "react-icons/fa6";
 
-const CustomDropdown = ({
+const CustomDropdownEdit = ({
   options = [],          // data list
   value,
   onChange,
@@ -85,7 +85,7 @@ const CustomDropdown = ({
           </div>
 
           {/* Add new */}
-          {/* {!loading && (
+          {!loading && (
             <li className='new-li'>
               <input
                 type="text"
@@ -100,11 +100,11 @@ const CustomDropdown = ({
                 <FaPlus/>
               </button>
             </li>
-          )} */}
+          )}
         </ul>
       )}
     </div>
   );
 };
 
-export default CustomDropdown;
+export default CustomDropdownEdit;
