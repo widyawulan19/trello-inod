@@ -203,6 +203,84 @@ app.post("/api/export-to-sheet", async (req, res) => {
 
 
 
+// MARKETING EXPORT 
+// 1. Tambah data ke tabel marketing_exports
+app.post("/api/marketing-exports/:marketingId", async (req, res) => {
+    try {
+        const { marketingId } = req.params;
+        const { exported_by } = req.body; // optional, bisa dikirim user login
+
+        const result = await client.query(
+            `INSERT INTO marketing_exports (marketing_id, exported_by)
+       VALUES ($1, $2)
+       RETURNING *`,
+            [marketingId, exported_by || null]
+        );
+
+        res.json({ success: true, data: result.rows[0] });
+    } catch (error) {
+        console.error("❌ Error insert marketing_export:", error);
+        res.status(500).json({ success: false, message: "Gagal simpan export" });
+    }
+});
+
+// 2. Ambil semua data export
+app.get("/api/marketing-exports", async (req, res) => {
+    try {
+        const result = await client.query("SELECT * FROM marketing_exports ORDER BY exported_at DESC");
+        res.json(result.rows);
+    } catch (error) {
+        console.error("❌ Error get marketing_exports:", error);
+        res.status(500).json({ success: false, message: "Gagal ambil data" });
+    }
+});
+
+// 3. Cek export untuk 1 marketingId
+app.get("/api/marketing-exports/:marketingId", async (req, res) => {
+    try {
+        const { marketingId } = req.params;
+        const result = await client.query(
+            "SELECT * FROM marketing_exports WHERE marketing_id = $1 ORDER BY exported_at DESC LIMIT 1",
+            [marketingId]
+        );
+
+        if (result.rows.length > 0) {
+            res.json({ exported: true, data: result.rows[0] });
+        } else {
+            res.json({ exported: false });
+        }
+    } catch (error) {
+        console.error("❌ Error cek export:", error);
+        res.status(500).json({ success: false, message: "Gagal cek data" });
+    }
+});
+
+// 4. Ambil semua marketing + status export
+app.get("/api/marketing-exports/join", async (req, res) => {
+    try {
+        const result = await client.query(`
+      SELECT dm.*, 
+             CASE WHEN me.id IS NOT NULL THEN 'Sudah Transfile'
+                  ELSE 'Belum Transfile'
+             END AS export_status,
+             me.exported_at,
+             me.exported_by
+      FROM data_marketing dm
+      LEFT JOIN marketing_exports me 
+        ON dm.marketing_id = me.marketing_id
+      ORDER BY dm.marketing_id DESC
+    `);
+
+        res.json(result.rows);
+    } catch (error) {
+        console.error("❌ Error join marketing_exports:", error);
+        res.status(500).json({ success: false, message: "Gagal ambil data join" });
+    }
+});
+
+
+
+// END MARKETING EXPORT 
 
 
 
