@@ -41,6 +41,27 @@ const MarketingTenDaysReport=()=> {
       }
     };
 
+
+// PERHITUNGAN PRICE 
+const getPriceDiscount = (price_normal, discount) => {
+  if (!price_normal || !discount) return 0; // kalau ga ada diskon, potongan = 0
+
+  if (typeof discount === "string" && discount.includes("%")) {
+    let persen = parseFloat(discount.replace("%", ""));
+    return price_normal * (persen / 100);
+  } else {
+    return parseFloat(discount) || 0; // langsung nominal
+  }
+};
+
+const getBasicPrice = (price_normal, discount) => {
+  if (!price_normal) return null;
+
+  const potongan = getPriceDiscount(price_normal, discount);
+  return price_normal - potongan;
+};
+
+
   return (
     <div className='design-period-container'>
         <div className="dp-title">
@@ -84,11 +105,22 @@ const MarketingTenDaysReport=()=> {
       <div className="data-report">
         {selectedMonthData
           .filter(item => !selectedPeriod || item.period === selectedPeriod)
-          .map((item, idx) => (
-            <div key={idx} className='table-report-content'>
-              <h2 className="font-bold mb-2">
-                Periode {getPeriodLabel(item.period)} - Total: {item.total} Data
-              </h2>
+          .map((item, idx) => {
+            // Hitung total basic price di periode ini
+            const totalBasicPrice = item.details.reduce((sum, detail) => {
+              return sum + (getBasicPrice(detail.price_normal, detail.discount) || 0);
+            }, 0);
+
+            return(
+              <div key={idx} className='table-report-content'>
+                <div className="report-summary">
+                  <h2 className="mb-2 font-bold">
+                    Periode {getPeriodLabel(item.period)} 
+                  </h2>
+                  <h2> Total: {item.total} Data</h2>
+                  <h2>Total Price from {item.total}: <span className='text-green-600'> $ {totalBasicPrice.toLocaleString()} </span></h2>
+                </div>
+              
               <table className="min-w-full border border-gray-300">
                 <thead>
                     <tr className="bg-gray-100">
@@ -105,10 +137,11 @@ const MarketingTenDaysReport=()=> {
                     <th className="offer-type-container">Offer Type</th>
                     <th className="jenis-track-container">Jenis Track</th>
                     <th className="genre-container">Genre</th>
-                    <th className="price-normal-container">Price Normal</th>
-                    <th className="price-discount-container">Price Discount</th>
+                    <th className="price-normal-container">Price Normal $</th>
+                    <th className="price-discount-container">Price Discount $</th>
                     <th className="discount-container">Discount</th>
-                    <th className="basic-price-container">Basic Price</th>
+                    <th className="price-discount-container">Kupon Discount</th>
+                    <th className="basic-price-container">Total Price %</th>
                     <th className="project-type-container">Project Type</th>
                     <th className="duration-container">Duration</th>
                     <th className="action-container">Action</th>
@@ -117,46 +150,53 @@ const MarketingTenDaysReport=()=> {
                 <tbody>
                     {item.details.map((detail, dIdx) => (
                     <tr key={dIdx} className="text-center hover:bg-gray-50">
-                        <td className="border px-2 py-1">{detail["input_by"] || "-"}</td>
-                        <td className="border px-2 py-1">{detail["acc_by"] || "-"}</td>
-                        <td className="border px-2 py-1">
-                        <span
+                        <td className="px-2 py-1 border">{detail["input_by_name"] || "-"}</td>
+                        <td className="px-2 py-1 border">{detail["acc_by_name"] || "-"}</td>
+                        <td className="px-2 py-1 border">
+                          <span
                             className={`px-2 py-1 rounded-full font-bold ${
-                            detail.is_accepted
+                              detail.accept_status_id === 1
                                 ? "bg-green-100 text-green-700"
                                 : "bg-red-100 text-red-700"
                             }`}
-                        >
-                            {detail.is_accepted ? "Accepted" : "Not Accepted"}
-                        </span>
+                          >
+                            {detail.accept_status_id === 1 ? "Accepted" : "Not Accepted"}
+                          </span>
                         </td>
-                        <td className="border px-2 py-1">{detail["buyer_name"] || "-"}</td>
-                        <td className="border px-2 py-1">{detail["order_number"] || "-"}</td>
-                        <td className="border px-2 py-1">{detail["account"] || "-"}</td>
-                        <td className="border px-2 py-1">
+                        <td className="px-2 py-1 border">{detail["buyer_name"] || "-"}</td>
+                        <td className="px-2 py-1 border">{detail["order_number"] || "-"}</td>
+                        <td className="px-2 py-1 border">{detail["account_name"] || "-"}</td>
+                        <td className="px-2 py-1 border">
                         {detail["deadline"]
                             ? new Date(detail["deadline"]).toLocaleDateString("id-ID")
                             : "-"}
                         </td>
-                        <td className="border px-2 py-1">{detail["code_order"] || "-"}</td>
-                        <td className="border px-2 py-1">{detail["jumlah_track"] || "-"}</td>
-                        <td className="border px-2 py-1">{detail["order_type"] || "-"}</td>
-                        <td className="border px-2 py-1">{detail["offer_type"] || "-"}</td>
-                        <td className="border px-2 py-1">{detail["jenis_track"] || "-"}</td>
-                        <td className="border px-2 py-1">{detail["genre"] || "-"}</td>
-                        <td className="border px-2 py-1">
-                        {detail["price_normal"] ? `Rp ${detail["price_normal"]}` : "-"}
+                        <td className="px-2 py-1 border">{detail["code_order"] || "-"}</td>
+                        <td className="px-2 py-1 border">{detail["jumlah_track"] || "-"}</td>
+                        <td className="px-2 py-1 border">{detail["order_type_name"] || "-"}</td>
+                        <td className="px-2 py-1 border">{detail["offer_type_name"] || "-"}</td>
+                        <td className="px-2 py-1 border">{detail["track_type_name"] || "-"}</td>
+                        <td className="px-2 py-1 border">{detail["genre_name"] || "-"}</td>
+                        {/* PRICE  */}
+                        <td className="px-2 py-1 border">
+                          {detail["price_normal"] ? ` ${detail["price_normal"]}` : "-"}
                         </td>
-                        <td className="border px-2 py-1">
-                        {detail["price_discount"] ? `Rp ${detail["price_discount"]}` : "-"}
+                        <td className="px-2 py-1 text-green-500 border">
+                          {getPriceDiscount(detail.price_normal, detail.discount)
+                            ? ` ${getPriceDiscount(detail.price_normal, detail.discount)}`
+                            : "-"}
                         </td>
-                        <td className="border px-2 py-1">{detail["discount"] || "-"}</td>
-                        <td className="border px-2 py-1">
-                        {detail["basic_price"] ? `Rp ${detail["basic_price"]}` : "-"}
+                        <td className="px-2 py-1 border">{detail["discount"] || "-"}</td>
+                        <td className="px-2 py-1 border">{detail["kupon_diskon_name"] || "-"}</td>
+                        <td className="px-2 py-1 text-green-600 border">
+                          {getBasicPrice(detail.price_normal, detail.discount)
+                            ? ` ${getBasicPrice(detail.price_normal, detail.discount)}`
+                            : "-"}
                         </td>
-                        <td className="border px-2 py-1">{detail["project_type"] || "-"}</td>
-                        <td className="border px-2 py-1">{detail["duration"] || "-"}</td>
-                        <td className="border px-2 py-1">
+                        {/* END PRICE  */}
+                        <td className="px-2 py-1 border">{detail["project_type_name"] || "-"}</td>
+                        <td className="px-2 py-1 border">{detail["duration"] || "-"}</td>
+                        <td className="px-2 py-1 border">
                         <div className="flex justify-center gap-2">
                             <BootstrapTooltip title="View Data" placement="top">
                             <button>
@@ -186,7 +226,8 @@ const MarketingTenDaysReport=()=> {
             </table>
 
             </div>
-          ))}
+            )
+          })}
       </div>
     </div>
   );

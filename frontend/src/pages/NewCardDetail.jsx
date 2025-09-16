@@ -577,6 +577,15 @@ const NewCardDetail=()=> {
     }
 
 
+    // 🔗 fungsi untuk deteksi dan convert URL ke <a>
+    const linkify = (text) => {
+    if (!text) return "";
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    return text.replace(urlRegex, (url) => {
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer" style="color:#5557e7; text-decoration:underline;">${url}</a>`;
+    });
+    };
+
 
 
     
@@ -642,14 +651,44 @@ const NewCardDetail=()=> {
                             )}
 
                             {/* HEADER LABEL  */}
-                            <div className="ncd-label">
+                            {/* <div className="ncd-label">
                                 <SelectedLabels
                                     cardId={cardId}
                                     fetchCardDetail={fetchCardById}
                                     labels={labels}
                                     fetchLabels={fetchLabels}
                                 />
+                            </div> */}
+                            {/* HEADER LABEL  */}
+                            <div className="ncd-label">
+                            {cards?.project_type_name === "ORIGINAL" ? (
+                                // ✅ Kalau project_type ORIGINAL, paksa render label Mixing & Mastering
+                                <div className="labels">
+                                <span
+                                    className="label"
+                                    style={{
+                                    backgroundColor: "#ff5733", // sesuaikan warna label di DB
+                                    padding: "2px 6px",
+                                    borderRadius: "4px",
+                                    marginRight: "4px",
+                                    fontSize: "12px",
+                                    color: "#fff",
+                                    }}
+                                >
+                                    Mixing & Mastering
+                                </span>
+                                </div>
+                            ) : (
+                                // ✅ Kalau bukan ORIGINAL, render normal pakai SelectedLabels
+                                <SelectedLabels
+                                cardId={cardId}
+                                fetchCardDetail={fetchCardById}
+                                labels={labels}
+                                fetchLabels={fetchLabels}
+                                />
+                            )}
                             </div>
+
                         </div>
 
                         {/* HEADER BUTTON  */}
@@ -768,7 +807,7 @@ const NewCardDetail=()=> {
                             </div>
 
                             <div className="des-content">
-                            {cards && cardId && (
+                                {cards && cardId && (
                                 <div className="des-content" style={{ height: "fit-content" }}>
                                 {editingDescription === cardId ? (
                                     <div className="ta-cont">
@@ -798,12 +837,17 @@ const NewCardDetail=()=> {
                                         {/* ✅ Render HTML langsung */}
                                         <div
                                             dangerouslySetInnerHTML={{
-                                            __html: showMore
-                                                ? cards.description
-                                                : cards.description.substring(0, maxChars),
+                                                __html: showMore
+                                                ? linkify(cards.description)
+                                                : linkify(cards.description.substring(0, maxChars)),
                                             }}
-                                            style={{cursor:'text'}}
-                                        />
+                                            style={{ cursor: "text" }}
+                                            onClick={(e) => {
+                                                if (e.target.tagName === "A") {
+                                                e.stopPropagation();
+                                                }
+                                            }}
+                                            />
 
                                         {/* ✅ Show More / Less */}
                                         {cards.description.length > maxChars && (

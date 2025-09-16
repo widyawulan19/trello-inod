@@ -18,7 +18,7 @@ const NewFormMarketingDesign = ({ onClose, fetchMarketingDesign }) => {
     jumlah_design: "",
     order_number: "",
     account: "",
-    deadline: "",
+    deadline: "", 
     jumlah_revisi: "",
     order_type: "",
     offer_type: "",
@@ -106,7 +106,7 @@ const NewFormMarketingDesign = ({ onClose, fetchMarketingDesign }) => {
               />
             </div>
             <div className="main-box">
-              <label>Acc By</label>
+              <label>Acc By <span style={{color:'red', fontSize:'6px'}}> ** diisi oleh kadiv</span></label>
               <input 
                 type="text" 
                 name='acc_by'
@@ -230,7 +230,7 @@ const NewFormMarketingDesign = ({ onClose, fetchMarketingDesign }) => {
           <h4>Detail Design</h4>
           <div className="sc-main-box">
             <div className="main-box">
-              <label>Style</label>
+              <label>Style <span style={{color:'red', fontSize:'6px'}}> ** diisi oleh kadiv</span></label>
               <input 
                 type="text" 
                 name='style'

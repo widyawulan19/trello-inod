@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { getAllDataMarketing, deleteDataMarketing, getDataMarketingAccepted, getDataMarketingWithCardId, getDataMarketingWithCardIdNull, getDataMarketingRejected, archiveDataMarketing } from "../services/ApiServices";
+import { getAllDataMarketing,getAllDataMarketingJoined, deleteDataMarketing, getDataMarketingAccepted, getDataMarketingWithCardId, getDataMarketingWithCardIdNull, getDataMarketingRejected, archiveDataMarketing } from "../services/ApiServices";
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import "../style/pages/DataMarketing.css";
 import { HiArrowsUpDown, HiChevronUpDown, HiMiniTableCells, HiOutlineArchiveBox, HiOutlineCircleStack, HiOutlinePencil, HiOutlinePlus, HiOutlineTrash, HiOutlineXCircle } from "react-icons/hi2";
@@ -7,6 +7,7 @@ import { HiOutlineFilter, HiOutlineSearch } from "react-icons/hi";
 import BootstrapTooltip from "../components/Tooltip";
 import ViewDataMarketing from "./ViewDataMarketing";
 import EditMarketingForm from "./EditMarketingForm";
+import NewEditDataMarketing from "./NewEditDataMarketing";
 import FormDataMarketing from "./FormDataMarketing";
 import { useSnackbar } from "../context/Snackbar";
 import DataMarketingDeleteConfirm from "../modals/DataMarketingDeleteConfirm";
@@ -15,6 +16,7 @@ import { IoEyeSharp } from "react-icons/io5";
 import { handleArchive } from "../utils/handleArchive";
 import ExportDataMarketing from "../exports/ExportDataMarketing";
 import { FaXmark } from "react-icons/fa6";
+import FormMarketingExample from "../example/FormMarketingExample";
 
 const DataMarketing = () => {
   const location = useLocation();
@@ -101,18 +103,22 @@ const handleCloseForm = () =>{
         response = await getDataMarketingWithCardId();
       }else if(filterType === 'DATA MARKETING TANPA CARD'){
         response = await getDataMarketingWithCardIdNull();
-      }else if(filterType === 'DATA MAREKTING ACCEPTED'){
+      }else if(filterType === 'DATA MARKETING ACCEPTED'){
         response = await getDataMarketingAccepted();
       }else if(filterType === 'DATA MARKETING NOT ACCEPTED'){
         response = await getDataMarketingRejected();
       }else if(filterType === 'SEMUA DATA MARKETING'){
-        response = await getAllDataMarketing();
+        // response = await getAllDataMarketing();
+        response = await getAllDataMarketingJoined();
       }
 
-      setData(response.data);
-      setFilteredData(response.data);
+      console.log("📦 Response dari API:", response);
+
+      setData(response.data || response);
+      setFilteredData(response.data || response);
+
     }catch(error){
-      console.error('Error fetching data marekting:', error)
+      console.error('Error fetching data marekting woi:', error)
     }finally{
       setLoading(false)
     }
@@ -187,16 +193,19 @@ const cancleDeleteDataMarketing = () =>{
 }
 
 //fungsi untuk mengetahui data memiliki card Id
-const hasCardId = (item) =>{
-  return item.card_id !== null && item.card_id !== undefined
-}
+const hasCardId = (item) => {
+  return item.card_id !== null && item.card_id !== undefined && item.card_id !== "";
+};
+
 
 //fetch marketing design
 const fetchDataMarketing = async()=>{
   try{
-    const response = await getAllDataMarketing()
+    // const response = await getAllDataMarketing()
+    const response = await getAllDataMarketingJoined();
     setDataMarketing(response.data)
     setFilteredData(response.data)
+    console.log("✅ Data marketing fetched:", fetchDataMarketing);
   }catch(error){
     console.error('Error fetching data marekting:', error)
   }
@@ -256,6 +265,26 @@ const handleToReportPage = () =>{
   navigate('/layout/marketing-report')
 }
 
+// PERHITUNGAN PRICE 
+const getPriceDiscount = (price_normal, discount) => {
+  if (!price_normal || !discount) return 0; // kalau ga ada diskon, potongan = 0
+
+  if (typeof discount === "string" && discount.includes("%")) {
+    let persen = parseFloat(discount.replace("%", ""));
+    return price_normal * (persen / 100);
+  } else {
+    return parseFloat(discount) || 0; // langsung nominal
+  }
+};
+
+const getBasicPrice = (price_normal, discount) => {
+  if (!price_normal) return null;
+
+  const potongan = getPriceDiscount(price_normal, discount);
+  return price_normal - potongan;
+};
+
+
   return (
     <div className="dmc-container">
       <div className="dm-panel">
@@ -311,38 +340,41 @@ const handleToReportPage = () =>{
         {showFormCreate && (
             <div className="dmf-cont">
                 <div className="dmf-content">
-                    <FormDataMarketing onClose={handleCloseForm} fetchData={fetchData}/>
+                    {/* <FormDataMarketing onClose={handleCloseForm} fetchData={fetchData}/> */}
+                    <FormMarketingExample onClose={handleCloseForm} fetchData={fetchDataMarketing}/>
                 </div>
             </div>
         )}
       </div>
 
-      {/* SHOW DATA  */}
+      {/* SHOW DATA */}
       {showData && (
         <div className="show-data-container">
           <div className="sdc-header">
-            <h5> <HiMiniTableCells className="h5-icons"/>Show Data By:</h5>
+            <h5><HiMiniTableCells className="h5-icons"/> Show Data By:</h5>
             <FaXmark onClick={handleCloseShowData} style={{cursor:'pointer'}}/>
           </div>
           <div className="sdc-container">
-             <button onClick={()=> {setFilterType('SEMUA DATA MARKETING'); {setShowData(!showData)}}}>
+            <button onClick={() => { setFilterType("SEMUA DATA MARKETING"); setShowData(false); }}>
               All Data
             </button>
-            <button onClick={()=> {setFilterType('DATA MARKETING DENGAN CARD'); {setShowData(!showData)}}}>
+            <button onClick={() => { setFilterType("DATA MARKETING DENGAN CARD"); setShowData(false); }}>
               Data Marketing Dengan Card
             </button>
-            <button onClick={()=> {setFilterType('DATA MARKETING TANPA CARD'); {setShowData(!showData)}}}>
+            <button onClick={() => { setFilterType("DATA MARKETING TANPA CARD"); setShowData(false); }}>
               Data Marketing Tanpa Card
             </button>
-            <button onClick={()=> {setFilterType('DATA MAREKTING ACCEPTED'); {setShowData(!showData)}}}>
+            <button onClick={() => { setFilterType("DATA MARKETING ACCEPTED"); setShowData(false); }}>
               Data Marketing Accepted
             </button>
-            <button onClick={()=> {setFilterType('DATA MARKETING NOT ACCEPTED'); {setShowData(!showData)}}}>
+            <button onClick={() => { setFilterType("DATA MARKETING NOT ACCEPTED"); setShowData(false); }}>
               Data Marketing Not Accepted
             </button>
           </div>
         </div>
       )}
+
+
 
       {/* SHOW DATA FILTER  */}
       {showFilter && (
@@ -443,10 +475,11 @@ const handleToReportPage = () =>{
                   <th>Offer Type</th>
                   <th>Jenis Track</th>
                   <th>Genre</th>
-                  <th>Price Normal</th>
-                  <th>Price Discount</th>
+                  <th>Price Normal $</th>
+                  <th>Price Discount $</th>
                   <th>Discount</th>
-                  <th>Basic Price</th>
+                  <th>Kupon Diskon</th>
+                  <th>Total Price $</th>
                   <th>Project Type</th>
                   <th>Duration</th>
                   <th style={{ borderTopRightRadius: '8px', textAlign:'center' }}>Action</th>
@@ -456,52 +489,65 @@ const handleToReportPage = () =>{
                 {filteredData.map((item, index) => (
                   <tr key={item.marketing_id}>
                     <td>{index + 1}</td>
-                    <td className="input-container">{item.input_by}
+                    <td className="input-container">
+                      {item.input_by_name || "-"}
                       {hasCardId(item) && (
-                        <span style={{
-                          backgroundColor: '#e0f7fa',
-                          color: '#00796b',
-                          padding: '4px 6px',
-                          fontSize: '10px',
-                          fontWeight:'bold',
-                          borderRadius: '4px',
-                          marginLeft: '5px',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '4px'
-                        }}>
-                          {'CARD'}
-                          {/* <HiHandThumbUp /> */}
+                        <span
+                          style={{
+                            backgroundColor: '#e0f7fa',
+                            color: '#00796b',
+                            padding: '4px 6px',
+                            fontSize: '10px',
+                            fontWeight: 'bold',
+                            borderRadius: '4px',
+                            marginLeft: '5px',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px'
+                          }}
+                        >
+                          CARD
                         </span>
                       )}
                     </td>
-                    <td className="acc-container">{item.acc_by}</td>
+
+                    <td className="acc-container">{item.acc_by_name}</td>
                     <td className="status-container">
                         <span style={{
-                          padding: '2px 8px',
-                          borderRadius: '12px',
-                          backgroundColor: item.is_accepted ? '#C8E6C9' : '#FFCDD2',
-                          color: item.is_accepted ? '#2E7D32' : '#C62828',
-                          fontWeight: 'bold'
+                          padding: "2px 8px",
+                          borderRadius: "12px",
+                          backgroundColor:
+                            item.accept_status_name === "Accepted" ? "#C8E6C9" : "#FFCDD2",
+                          color: item.accept_status_name === "Accepted" ? "#2E7D32" : "#C62828",
+                          fontWeight: "bold",
                         }}>
-                          {item.is_accepted ? 'Accepted' : 'Not Accepted'}
+                          {item.accept_status_name}
                         </span>
                       </td>
                     <td className="buyer-name-container">{item.buyer_name}</td>
                     <td className="order-number-container" >{item.order_number}</td>
-                    <td className="account-container">{item.account}</td>
+                    <td className="account-container">{item.account_name}</td>
                     <td className="deadline-container" style={{textAlign:'center' }}>{new Date(item.deadline).toLocaleDateString()}</td>
                     <td className="code-order-container">{item.code_order}</td>
                     <td style={{textAlign:'center'}}>{item.jumlah_track}</td>
-                    <td className="order-type-container">{item.order_type}</td>
-                    <td className="offer-type-container">{item.offer_type}</td>
-                    <td className="jenis-track-container" >{item.jenis_track}</td>
-                    <td className="genre-container">{item.genre}</td>
-                    <td className="price-normal-container" style={{textAlign:'center', color:'#1E1E1E'}}>${item.price_normal}</td>
-                    <td className="price-discount-container" style={{textAlign:'center', color:'#E53935'}}>{item.price_discount ? `$${item.price_discount}` : "N/A"}</td>
+                    <td className="order-type-container">{item.order_type_name}</td>
+                    <td className="offer-type-container">{item.offer_type_name}</td>
+                    <td className="jenis-track-container" >{item.track_type_name}</td>
+                    <td className="genre-container">{item.genre_name}</td>
+                    <td className="price-normal-container" style={{textAlign:'center', color:'#1E1E1E'}}>{item.price_normal}</td>
+                    <td className="price-discount-container" style={{textAlign:'center', color:'#E53935'}}>
+                      {getPriceDiscount(item.price_normal, item.discount)
+                            ? ` ${getPriceDiscount(item.price_normal, item.discount)}`
+                            : "-"}
+                    </td>
                     <td className="discount-container" style={{textAlign:'center', color:'#388E3C'}}>{item.discount}</td>
-                    <td className="basic-price-container" style={{color:'#388E3C',textAlign:'center'}}>{item.basic_price}</td>
-                    <td className="project-type-container" >{item.project_type}</td>
+                    <td className="discount-container" style={{textAlign:'center', color:'#388E3C'}}>{item.kupon_diskon_name}</td>
+                    <td className="basic-price-container" style={{color:'#388E3C',textAlign:'center'}}> 
+                      {getBasicPrice(item.price_normal, item.discount)
+                            ? ` ${getBasicPrice(item.price_normal, item.discount)}`
+                            : "-"}
+                    </td>
+                    <td className="project-type-container" >{item.project_type_name}</td>
                     <td className="duration-container">{item.duration}</td>
                     <td className="action-container">
                       <div className="action-data-marketing">
@@ -540,7 +586,8 @@ const handleToReportPage = () =>{
                 {showEditForm && selectedMarketingId && (
                     <div className="edit-data-marketing">
                         <div className="edit-data-box">
-                            <EditMarketingForm marketingId={selectedMarketingId} onClose={handleCloseEditForm} fetchDataMarketing={fetchDataMarketing}/>
+                          <NewEditDataMarketing marketingId={selectedMarketingId} onClose={handleCloseEditForm} fetchDataMarketing={fetchDataMarketing}/>
+                            {/* <EditMarketingForm marketingId={selectedMarketingId} onClose={handleCloseEditForm} fetchDataMarketing={fetchDataMarketing}/> */}
                         </div>
                     </div>
                 )}

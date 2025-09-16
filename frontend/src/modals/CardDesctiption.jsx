@@ -4,6 +4,16 @@ import "react-quill-new/dist/quill.snow.css";
 import { updateDescCard } from "../services/ApiServices";
 import "../style/modals/CardDescription.css";
 
+// 🔗 Helper: convert URL mentah ke link <a>
+const linkify = (text) => {
+  if (!text) return "";
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  return text.replace(urlRegex, (url) => {
+    return `<a href="${url}" target="_blank" rel="noopener noreferrer" style="color:#5557e7; text-decoration:underline;">${url}</a>`;
+  });
+};
+
+
 const CardDescription = ({ card, onUpdate }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [desc, setDesc] = useState(card.description || "");
@@ -61,6 +71,8 @@ const handleSave = async () => {
     },
   };
 
+
+
   return (
     <div className="card-desc">
       {isEditing ? (
@@ -97,8 +109,14 @@ const handleSave = async () => {
           onClick={() => setIsEditing(true)}
           dangerouslySetInnerHTML={{
             __html:
-              desc ||
-              "<span class='text-gray-400'>Click to add description...</span>",
+              desc && desc.trim() !== ""
+                ? linkify(desc)
+                : "<span class='text-gray-400'>Click to add description...</span>",
+          }}
+          onClickCapture={(e) => {
+            if (e.target.tagName === "A") {
+              e.stopPropagation(); // ✅ biar link tetap bisa diklik
+            }
           }}
         />
       )}

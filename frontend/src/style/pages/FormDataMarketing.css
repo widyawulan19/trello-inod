@@ -58,7 +58,150 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
+    background-color: white;
 }
+
+
+.form-new {
+    /* border: 1px solid blue; */
+    width: 100%;
+    padding: 5px;
+}
+
+.form-new .form-content {
+    /* border: 1px solid red; */
+    width: 100%;
+    margin: 20px 0px;
+}
+
+.form-content h4 {
+    font-size: 15px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.form-content .sec-content {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+
+.sec-content .box-content {
+    /* border: 1px solid red; */
+    border-radius: 4px;
+    padding: 2px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 95%;
+}
+
+.box-content label {
+    font-size: 12px;
+    margin-bottom: 3px;
+    font-weight: bold;
+}
+
+.box-content input {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 5px;
+    width: 100%;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.box-content input:hover {
+    box-shadow: 0px 4px 8px #6f30dc54;
+    background: linear-gradient(to bottom, #6f30dc44, #1248eb50);
+}
+
+.box-content input:focus {
+    outline: none;
+    border: 1px solid #6f30dc47;
+    box-shadow: 0px 4px 8px #6f30dc54;
+}
+
+.box-content textarea {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 5px;
+    width: 51vw;
+    min-height: 20vh;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.box-content textarea:hover {
+    box-shadow: 0px 4px 8px #6f30dc54;
+}
+
+.box-content textarea:focus {
+    outline: none;
+    border: 1px solid #6f30dc47;
+    box-shadow: 0px 4px 8px #6f30dc54;
+}
+
+
+/* BUTTON SUBMIT  */
+.form-submit {
+    background: linear-gradient(90deg, #7246eb, #532189);
+    padding: 7px 30px;
+    border-radius: 8px;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* END BUTTON SUBMIT  */
+
+.sec-link-content {
+    /* border: 1px solid green; */
+    border-radius: 4px;
+    padding: 5px;
+    display: grid;
+    gap: 10;
+}
+
+.sec-link-content .box {
+    /* border: 1px solid red; */
+    border-radius: 4px;
+    padding: 5px;
+    gap: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 100%;
+    /* position: relative; */
+}
+
+.box textarea {
+    width: 98%;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    padding: 5px;
+    font-size: 12px;
+}
+
+.box textarea:hover {
+    border: 1px solid #5D12EB;
+    background-color: white;
+}
+
+.box textarea:focus {
+    outline: none;
+    border: 1px solid #6f30dc47;
+    box-shadow: 0px 4px 8px #6f30dc54;
+}
+
 
 .fdm-container .section-main {
     /* border: 1px solid red; */

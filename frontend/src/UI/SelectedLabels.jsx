@@ -45,37 +45,3 @@ const SelectedLabels = ({ cardId, fetchCardDetail,labels }) => {
 };
 
 export default SelectedLabels;
-
-
-// <div className='selected-labels-container'>
-//             {/* <h5>Selected Labels</h5> */}
-//             {selectedLabels.length > 0 ? (
-//                 selectedLabels.map(label => (
-//                     <div 
-//                         key={label.id} 
-//                         style={{ 
-//                             backgroundColor: label.bg_color?.replace("rgb", "rgba")?.replace(")", ", 0.3)"),
-//                             color: label.color,
-//                             padding: "4px",
-//                             margin: "2px",
-//                             borderRadius: "8px",
-//                             display: "inline-flex",
-//                             alignItems: 'center',
-//                             fontSize: '10px',
-//                             fontWeight: 'bold',
-//                         }}
-//                     >
-//                         {label.name}
-//                         <button
-//                             onClick={() => handleRemoveLabel(label.id)}
-//                             className='delete-label'
-//                             style={{ marginLeft: '5px', cursor: 'pointer', background: 'transparent', border: 'none' }}
-//                         >
-//                             <HiXMark size={10} />
-//                         </button>
-//                     </div>
-//                 ))
-//             ) : (
-//                 <p>No labels selected</p>
-//             )}
-//         </div>

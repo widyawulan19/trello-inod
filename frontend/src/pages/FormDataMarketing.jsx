@@ -113,7 +113,7 @@ const FormDataMarketing = ({ onClose, fetchData }) => {
               />
             </div>
             <div className="box">
-              <label>Accepted By</label>
+              <label>Accepted By <span style={{color:'red', fontSize:'6px'}}> ** diisi oleh kadiv</span></label>
               <input
                 type="text"
                 name="acc_by"
@@ -206,7 +206,7 @@ const FormDataMarketing = ({ onClose, fetchData }) => {
                 />
             </div>
             <div className="box">
-                <label>Genre </label>
+                <label>Genre <span style={{color:'red', fontSize:'6px'}}> ** diisi oleh kadiv</span></label>
                 <input
                     type="text"
                     name="genre"

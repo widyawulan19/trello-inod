@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { getDataMarketingDesignById, updateDataMarketingDesign } from '../services/ApiServices';
+import { getDataMarketingDesignById, updateDataMarketingDesign,updateMarketingDesign,getMarketingDesignById } from '../services/ApiServices';
 import '../style/pages/EditMarketingDesign.css'
 import { HiOutlinePlus, HiOutlineXMark } from 'react-icons/hi2';
 import BootstrapTooltip from '../components/Tooltip';
@@ -12,7 +12,7 @@ import { FaXmark } from 'react-icons/fa6';
     const {showSnackbar} = useSnackbar();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isAccepted, setIsAccepted] = useState(false);
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState({ 
         input_by: '',
         buyer_name: '',
         code_order: '',
@@ -51,9 +51,9 @@ import { FaXmark } from 'react-icons/fa6';
     // Fungsi untuk fetch data
     const fetchData = async () => {
         try {
-            const response = await getDataMarketingDesignById(marketingDesignId);
+            const response = await getMarketingDesignById(marketingDesignId);
             console.log("Fetched data:", response.data);
-            setFormData(response.data);
+            setFormData(response.data[0]);
         } catch (error) {
             setError(error);
             console.error('Error fetching data:', error);
@@ -83,7 +83,7 @@ import { FaXmark } from 'react-icons/fa6';
    const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const updateData = await updateDataMarketingDesign(marketingDesignId, formData);
+            const updateData = await updateMarketingDesign(marketingDesignId, formData);
             showSnackbar('Data Updated Successfully!', 'success');
             if (fetchMarketingDesign) {
                 fetchMarketingDesign();

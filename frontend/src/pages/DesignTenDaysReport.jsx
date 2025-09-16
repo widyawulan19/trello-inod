@@ -1,6 +1,6 @@
 // src/pages/MarketingReport.jsx
 import React, { useEffect, useState } from "react";
-import { getTenDaysMarketingDesign } from "../services/ApiServices"; // sesuaikan path
+import { getMarketingDesignReports, getTenDaysMarketingDesign } from "../services/ApiServices"; // sesuaikan path
 import BootstrapTooltip from "../components/Tooltip";
 import { IoEyeSharp } from "react-icons/io5";
 import { HiOutlineArchiveBox, HiOutlinePencil, HiOutlineTrash } from "react-icons/hi2";
@@ -13,19 +13,25 @@ const DesignTenDaysReport = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await getTenDaysMarketingDesign();
+      const result = await getMarketingDesignReports();
+      console.log("API result:", result);
       setData(result);
-      if (result.length > 0) setSelectedMonth(result[0].month);
+      if(result.length > 0) setSelectedMonth(result[0].month);
     };
     fetchData();
   }, []);
+
 
   const handleMonthChange = (e) => {
     setSelectedMonth(e.target.value);
     setSelectedPeriod(null); // reset period ketika bulan berubah
   };
 
-  const selectedMonthData = data.filter(d => d.month === selectedMonth);
+  // const selectedMonthData = data.filter(d => d.month === selectedMonth);
+  const selectedMonthData = data.filter(
+    d => new Date(d.month).getMonth() === new Date(selectedMonth).getMonth()
+  );
+
 
   // Ambil daftar periode unik untuk bulan yang dipilih
   const uniquePeriods = [...new Set(selectedMonthData.map(d => d.period))];
@@ -39,6 +45,26 @@ const DesignTenDaysReport = () => {
       default: return "-";
     }
   };
+
+
+// PERHITUNGAN PRICE 
+const getPriceDiscount = (price_normal, discount) => {
+  if (!price_normal || !discount) return 0; // kalau ga ada diskon, potongan = 0
+
+  if (typeof discount === "string" && discount.includes("%")) {
+    let persen = parseFloat(discount.replace("%", ""));
+    return price_normal * (persen / 100);
+  } else {
+    return parseFloat(discount) || 0; // langsung nominal
+  }
+};
+
+const getBasicPrice = (price_normal, discount) => {
+  if (!price_normal) return null;
+
+  const potongan = getPriceDiscount(price_normal, discount);
+  return price_normal - potongan;
+};
 
   return (
     <div className='design-period-container'>
@@ -83,11 +109,23 @@ const DesignTenDaysReport = () => {
       <div className="data-report">
         {selectedMonthData
           .filter(item => !selectedPeriod || item.period === selectedPeriod)
-          .map((item, idx) => (
+          .map((item, idx) => {
+
+            // hitung total basic price di periode ini 
+            const totalBasicPrice = item.details.reduce((sum, detail) => {
+              return sum + (getBasicPrice(detail.price_normal, detail.discount) || 0);
+            }, 0);
+
+            return(
             <div key={idx} className='table-report-content'>
-              <h2 className="font-bold mb-2">
-                Periode {getPeriodLabel(item.period)} - Total: {item.total} Data
-              </h2>
+              <div className="report-summary">
+                <h2 className="mb-2 font-bold">
+                  Periode {getPeriodLabel(item.period)} - Total: {item.total} Data
+                </h2>
+                <h2> Total: {item.total} Data</h2>
+                <h2>Total Price from {item.total}: <span className='text-green-600'> $ {totalBasicPrice.toLocaleString()} </span></h2>
+              </div>
+              
               <table className="min-w-full border border-gray-300">
                 <thead>
                   <tr className="bg-gray-100">
@@ -106,36 +144,50 @@ const DesignTenDaysReport = () => {
                     <th className="style-container">Style</th>
                     <th className="resolution-container">Resolution</th>
                     <th className="price-normal-container">Price Normal</th>
-                    <th className='discount_percentage-container'>Discount Presentage</th>
+                    <th className="price-normal-container">Price Discount</th>
+                    <th className='discount_percentage-container'>Discount</th>
+                    <th className='discount_percentage-container'>Total Price</th>
                     <th className='project-type-container'>Project Type</th>
                     <th className='action-container'>Action</th>
                   </tr>
                 </thead>
                 <tbody>
                     {item.details.map((detail, dIdx) => (
-                        <tr key={dIdx} className="text-center hover:bg-gray-50">
-                        <td className="border px-2 py-1">{detail["input by"] || "-"}</td>
-                        <td className="border px-2 py-1">{detail["acc by"] || "-"}</td>
-                        <td className="border px-2 py-1">
+                      <tr key={dIdx} className="text-center hover:bg-gray-50">
+                        <td className="px-2 py-1 border">{detail["input_by_name"] || "-"}</td>
+                        <td className="px-2 py-1 border">{detail["acc_by_name"] || "-"}</td>
+                        <td className="px-2 py-1 border">
                             <span className={`px-2 py-1 rounded-full font-bold ${detail.is_accepted ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                             {detail.is_accepted ? 'Accepted' : 'Not Accepted'}
                             </span>
                         </td>
-                        <td className="border px-2 py-1">{detail["buyer name"] || "-"}</td>
-                        <td className="border px-2 py-1">{detail["code order"] || "-"}</td>
-                        <td className="border px-2 py-1">{detail["jumlah design"] || "-"}</td>
-                        <td className="border px-2 py-1">{detail["order number"] || "-"}</td>
-                        <td className="border px-2 py-1">{detail["account"] || "-"}</td>
-                        <td className="border px-2 py-1">{detail["deadline"] ? new Date(detail["deadline"]).toLocaleDateString("id-ID") : "-"}</td>
-                        <td className="border px-2 py-1">{detail["jumlah revisi"] || "-"}</td>
-                        <td className="border px-2 py-1">{detail["order type"] || "-"}</td>
-                        <td className="border px-2 py-1">{detail["offer type"] || "-"}</td>
-                        <td className="border px-2 py-1">{detail["style"] || "-"}</td>
-                        <td className="border px-2 py-1">{detail["resolution"] || "-"}</td>
-                        <td className="border px-2 py-1">${detail["price normal"] || 0}</td>
-                        <td className="border px-2 py-1">{detail["discount percentage"] || 0}%</td>
-                        <td className="border px-2 py-1">{detail["project type"] || "-"}</td>
-                        <td className="border px-2 py-1">
+                        <td className="px-2 py-1 border">{detail["buyer_name"] || "-"}</td>
+                        <td className="px-2 py-1 border">{detail["code_order"] || "-"}</td>
+                        <td className="px-2 py-1 border">{detail["jumlah_design"] || "-"}</td>
+                        <td className="px-2 py-1 border">{detail["order_number"] || "-"}</td>
+                        <td className="px-2 py-1 border">{detail["account_name"] || "-"}</td>
+                        <td className="px-2 py-1 border">{detail["deadline"] ? new Date(detail["deadline"]).toLocaleDateString("id-ID") : "-"}</td>
+                        <td className="px-2 py-1 border">{detail["jumlah_revisi"] || "-"}</td>
+                        <td className="px-2 py-1 border">{detail["order_type_name"] || "-"}</td>
+                        <td className="px-2 py-1 border">{detail["offer_type_name"] || "-"}</td>
+                        <td className="px-2 py-1 border">{detail["style_name"] || "-"}</td>
+                        <td className="px-2 py-1 border">{detail["resolution"] || "-"}</td>
+                        <td className="px-2 py-1 border">
+                          {detail["price_normal"] ? `$ ${detail["price_normal"]}` : "-"}
+                        </td>
+                        <td className="px-2 py-1 text-green-500 border">
+                          {getPriceDiscount(detail.price_normal, detail.discount)
+                            ? `$ ${getPriceDiscount(detail.price_normal, detail.discount)}`
+                            : "-"}
+                        </td>
+                        <td className="px-2 py-1 border">{detail["discount_percentage"] || 0}%</td>
+                        <td className="px-2 py-1 border">
+                          {getBasicPrice(detail.price_normal, detail.discount)
+                            ? `$ ${getBasicPrice(detail.price_normal, detail.discount)}`
+                            : "-"}
+                        </td>
+                        <td className="px-2 py-1 border">{detail["project_type_name"] || "-"}</td>
+                        <td className="px-2 py-1 border">
                             <div className="flex justify-center gap-2">
                             <BootstrapTooltip title="View Data" placement="top">
                                 <button ><IoEyeSharp /></button>
@@ -154,10 +206,10 @@ const DesignTenDaysReport = () => {
                         </tr>
                     ))}
                 </tbody>
-
               </table>
             </div>
-          ))}
+            )
+          })}
       </div>
     </div>
   );

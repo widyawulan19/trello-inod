@@ -1,21 +1,34 @@
-import React from "react";
-import ExcelJS from "exceljs";
-import { saveAs } from "file-saver";
-import { getAllDataMarketingJoined } from "../services/ApiServices";
-import "../style/pages/DataMarketing.css";
+import React from 'react'
+import ExcelJs from "exceljs"
+import { saveAs } from 'file-saver'
+import { getAllDataMarketingJoinedById } from '../services/ApiServices'
+import { useSnackbar } from '../context/Snackbar'
+import '../style/pages/DataMarketing.css'
 
-const ExportDataMarketing = () => {
+const ExportDataMarketingId = ({ marketingId }) => {
+  const { showSnackbar } = useSnackbar();
+
+  //DEBUG
+  console.log('data marketingId diterima di halaman export data marketing:', marketingId)
+
   const handleExport = async () => {
     try {
-      const response = await getAllDataMarketingJoined();
-      const data = response.data;
+      const response = await getAllDataMarketingJoinedById(marketingId);
+      let rawData = response.data;
 
-      if (!data || data.length === 0) {
-        alert("❌ Tidak ada data untuk diexport");
+      console.log("Raw export data:", rawData);
+
+      // 🔹 Pastikan selalu dalam bentuk array
+      if (!Array.isArray(rawData)) {
+        rawData = rawData ? [rawData] : [];
+      }
+
+      if (rawData.length === 0) {
+        showSnackbar('Tidak ada data yang ditemukan untuk diexport!', 'error');
         return;
       }
 
-      const workbook = new ExcelJS.Workbook();
+      const workbook = new ExcelJs.Workbook();
       const worksheet = workbook.addWorksheet("Data Marketing");
 
       // 🔹 Kolom sesuai hasil join
@@ -51,7 +64,7 @@ const ExportDataMarketing = () => {
       ];
 
       // 🔹 Isi data ke baris
-      data.forEach((item, index) => {
+      rawData.forEach((item, index) => {
         worksheet.addRow({
           no: index + 1,
           input_by_name: item.input_by_name,
@@ -62,10 +75,10 @@ const ExportDataMarketing = () => {
           account_name: item.account_name,
           deadline: item.deadline ? new Date(item.deadline).toLocaleDateString() : "-",
           jumlah_revisi: item.jumlah_revisi,
-          order_type: item.order_type_name,
-          offer_type: item.offer_type_name,
-          jenis_track: item.jenis_track,
-          genre: item.genre_name,
+          order_type_name: item.order_type_name,
+          offer_type_name: item.offer_type_name,
+          track_type_name: item.track_type_name || "-", // ✅ pakai field dari hasil join
+          genre_name: item.genre_name,
           price_normal: item.price_normal,
           price_discount: item.price_discount,
           discount: item.discount,
@@ -73,7 +86,7 @@ const ExportDataMarketing = () => {
           kupon_diskon_name: item.kupon_diskon_name || "-",
           gig_link: item.gig_link,
           required_files: item.required_files,
-          project_type: item.project_type_name,
+          project_type_name: item.project_type_name,
           duration: item.duration,
           reference_link: item.reference_link,
           file_and_chat_link: item.file_and_chat_link,
@@ -89,7 +102,7 @@ const ExportDataMarketing = () => {
         cell.fill = {
           type: "pattern",
           pattern: "solid",
-          fgColor: { argb: "FF4CAF50" } // hijau
+          fgColor: { argb: "FF4CAF50" }
         };
         cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
         cell.alignment = { vertical: "middle", horizontal: "center" };
@@ -118,10 +131,10 @@ const ExportDataMarketing = () => {
 
       // 🔹 Save file
       const buffer = await workbook.xlsx.writeBuffer();
-      saveAs(new Blob([buffer]), "data_marketing_joined.xlsx");
-
+      saveAs(new Blob([buffer]), "data_marketing.xlsx");
     } catch (error) {
-      console.error("❌ Gagal export data:", error);
+      console.error('Gagal export data:', error);
+      showSnackbar('Export data gagal, cek console untuk detailnya.', 'error');
     }
   };
 
@@ -129,7 +142,7 @@ const ExportDataMarketing = () => {
     <button onClick={handleExport} className="btn-export">
       Export Excel
     </button>
-  );
-};
+  )
+}
 
-export default ExportDataMarketing;
+export default ExportDataMarketingId

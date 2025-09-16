@@ -306,7 +306,6 @@ export const updateScheduleUser = (scheduleId, data) => axios.put(`${API_URL}/up
 export const deleteSchedule = (scheduleId) => axios.delete(`${API_URL}/delete-schedule/${scheduleId}`);
 export const getScheduleUser = (userId) => axios.get(`${API_URL}/user-schedule/${userId}`)
 
-
 // DATA MARKETING 
 export const getAllDataMarketing = () => axios.get(`${API_URL}/marketing`)
 export const getCardIdMarketingByMarketingId = (id) => axios.get(`${API_URL}/get-card-id/${id}`)
@@ -318,8 +317,11 @@ export const createCardFromMarketing = (listId, marketingId) => axios.put(`${API
 export const checkCardIdNullOrNot = (id) => axios.get(`${API_URL}/check-card-id/${id}`)
 export const getDataMarketingWithCardId = () => axios.get(`${API_URL}/data-marketing-cardId`)
 export const getDataMarketingWithCardIdNull = () => axios.get(`${API_URL}/data-marketing-cardId-null`)
-export const getDataMarketingAccepted = () => axios.get(`${API_URL}/data-marketing-accepted`)
-export const getDataMarketingRejected = () => axios.get(`${API_URL}/data-marketing-rejected`)
+export const getDataMarketingAccepted = () => axios.get(`${API_URL}/data-marketing/accepted`)
+export const getDataMarketingRejected = () => axios.get(`${API_URL}/data-marketing/rejected`)
+// export const getDataMarketingAccepted = () => API.get("/data-marketing/accepted");
+// export const getDataMarketingRejected = () => API.get("/data-marketing/rejected");
+
 export const archiveDataMarketing = (id) => axios.post(`${API_URL}/archive-data-marketing/${id}`);
 export const getTodayReportMarketing = async () => {
   try {
@@ -341,7 +343,11 @@ export const getTenDaysMarketing = async () => {
   }
 }
 
-//DATA MARKERING DESIGN
+export const getAllDataMarketingJoined = () => axios.get(`${API_URL}/data-marketing/joined`)
+export const getAllDataMarketingJoinedById = (id) => axios.get(`${API_URL}/data-marketing/joined/${id}`)
+export const updateDataMarketingJoined = (id, data) => axios.put(`${API_URL}/data-marketing/joined/${id}`, data)
+
+//DATA MARKETING DESIGN
 export const getAllDataMarketingDesign = () => axios.get(`${API_URL}/marketing-design`)
 export const getCardIdMarketingDesignByMarketingId = (id) => axios.get(`${API_URL}/card-id-design/${id}`)
 export const getDataMarketingDesignById = (id) => axios.get(`${API_URL}/marketing-design/${id}`)
@@ -350,11 +356,47 @@ export const updateDataMarketingDesign = (id, data) => axios.put(`${API_URL}/mar
 export const deleteDataMarketingDesign = (id) => axios.delete(`${API_URL}/marketing-design/${id}`)
 export const checkCardIdNullOrNotForDesign = (id) => axios.get(`${API_URL}/check-card-id-design/${id}`)
 export const createCardFromMarketingDesign = (listId, marketingDesignId) => axios.put(`${API_URL}/create-card-marketing-design/${listId}/${marketingDesignId}`)
-export const getDataWhereCardIdNotNull = () => axios.get(`${API_URL}/marketing-designs`);
-export const getDataWhereCardIdIsNull = () => axios.get(`${API_URL}/marketing-designs-null`);
+export const getDataWhereCardIdNotNull = () => axios.get(`${API_URL}/marketing-designs/not-null`);
+export const getDataWhereCardIdIsNull = () => axios.get(`${API_URL}/marketing-designs/null`);
 export const getDataMarketingDesignNotAccept = () => axios.get(`${API_URL}/marketing-design-not-accepted`)
 export const getDataMarketingDesignAccept = () => axios.get(`${API_URL}/marketing-design-accepted`);
 export const archiveDataMarektingDesign = (id) => axios.post(`${API_URL}/archive-data-marketing-design/${id}`);
+
+// export const addMarketingDesignJoined = () => axios.post(`${API_URL}/marketing-design/joined`)
+export const addMarketingDesignJoined = (data) =>
+  axios.post(`${API_URL}/marketing-design/joined`, data);
+
+
+// ✅ Get all marketing_design (joined)
+export const getAllMarketingDesignJoined = () =>
+  axios.get(`${API_URL}/marketing-design/joined`);
+
+// ✅ Get marketing_design by ID (joined)
+export const getMarketingDesignById = (id) =>
+  axios.get(`${API_URL}/marketing-design/joined/${id}`);
+
+// ✅ Update marketing_design by ID (joined result dikembalikan)
+export const updateMarketingDesign = (id, data) =>
+  axios.put(`${API_URL}/marketing-design/joined/${id}`, data);
+
+// ✅ Get laporan hari ini
+export const getMarketingDesignReportToday = () =>
+  axios.get(`${API_URL}/marketing-design/reports/today`);
+
+// ✅ Get laporan per 10 hari
+// export const getMarketingDesignReports = () =>
+//   axios.get(`${API_URL}/marketing-design/reports`);
+
+export const getMarketingDesignReports = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/marketing-design/reports`);
+    return response.data;
+  } catch (error) {
+    console.error('gagal mengambil data report', error);
+    return [];
+  }
+}
+
 
 // ✅ Ambil laporan marketing hari ini
 export const getTodayMarketingDesign = async () => {
@@ -452,3 +494,629 @@ export const marksNotificationSystem = (id) => axios.patch(`${API_URL}/system-no
 export const deleteSystemNotification = (id) => axios.delete(`${API_URL}/system-notification/${id}`);
 export const getPathToCard = (cardId) => axios.get(`${API_URL}/card/${cardId}/card-location`);
 
+
+// =============================
+// MARKETING USER
+// =============================
+
+// ✅ Ambil semua marketing users
+export const getAllMarketingUsers = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/marketing-users`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil marketing users:", err);
+    return [];
+  }
+};
+
+// ✅ Ambil 1 user by ID
+export const getMarketingUserById = async (id) => {
+  try {
+    const response = await axios.get(`${API_URL}/marketing-users/${id}`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil marketing user:", err);
+    throw err;
+  }
+};
+
+// ✅ Tambah user baru
+export const addMarketingUser = async (userData) => {
+  try {
+    const response = await axios.post(`${API_URL}/marketing-users`, userData, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal tambah marketing user:", err);
+    throw err;
+  }
+};
+
+// ✅ Update user
+export const updateMarketingUser = async (id, userData) => {
+  try {
+    const response = await axios.put(`${API_URL}/marketing-users/${id}`, userData, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal update marketing user:", err);
+    throw err;
+  }
+};
+
+// ✅ Hapus user
+export const deleteMarketingUser = async (id) => {
+  try {
+    const response = await axios.delete(`${API_URL}/marketing-users/${id}`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal hapus marketing user:", err);
+    throw err;
+  }
+};
+
+// =============================
+// ACCOUNT MUSIC
+// =============================
+
+export const getAllAccountsMusic = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/accounts-music`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil accounts:", err);
+    return [];
+  }
+};
+
+export const getAccountMusicById = async (id) => {
+  try {
+    const response = await axios.get(`${API_URL}/accounts-music/${id}`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil account:", err);
+    throw err;
+  }
+};
+
+export const addAccountMusic = async (data) => {
+  try {
+    const response = await axios.post(`${API_URL}/accounts-music`, data, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal tambah account:", err);
+    throw err;
+  }
+};
+
+export const updateAccountMusic = async (id, data) => {
+  try {
+    const response = await axios.put(`${API_URL}/accounts-music/${id}`, data, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal update account:", err);
+    throw err;
+  }
+};
+
+export const deleteAccountMusic = async (id) => {
+  try {
+    const response = await axios.delete(`${API_URL}/accounts-music/${id}`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal hapus account:", err);
+    throw err;
+  }
+};
+
+// =============================
+// PROJECT TYPE MUSIC
+// =============================
+
+export const getAllProjectTypesMusic = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/project-types-music`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil project types:", err);
+    return [];
+  }
+};
+
+export const getProjectTypeMusicById = async (id) => {
+  try {
+    const response = await axios.get(`${API_URL}/project-types-music/${id}`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil project type:", err);
+    throw err;
+  }
+};
+
+export const addProjectTypeMusic = async (data) => {
+  try {
+    const response = await axios.post(`${API_URL}/project-types-music`, data, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal tambah project type:", err);
+    throw err;
+  }
+};
+
+export const updateProjectTypeMusic = async (id, data) => {
+  try {
+    const response = await axios.put(`${API_URL}/project-types-music/${id}`, data, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal update project type:", err);
+    throw err;
+  }
+};
+
+export const deleteProjectTypeMusic = async (id) => {
+  try {
+    const response = await axios.delete(`${API_URL}/project-types-music/${id}`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal hapus project type:", err);
+    throw err;
+  }
+};
+
+// =============================
+// OFFER TYPE MUSIC
+// =============================
+
+export const getAllOfferTypesMusic = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/offer-types-music`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil offer types:", err);
+    return [];
+  }
+};
+
+export const getOfferTypeMusicById = async (id) => {
+  try {
+    const response = await axios.get(`${API_URL}/offer-types-music/${id}`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil offer type:", err);
+    throw err;
+  }
+};
+
+export const addOfferTypeMusic = async (data) => {
+  try {
+    const response = await axios.post(`${API_URL}/offer-types-music`, data, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal tambah offer type:", err);
+    throw err;
+  }
+};
+
+export const updateOfferTypeMusic = async (id, data) => {
+  try {
+    const response = await axios.put(`${API_URL}/offer-types-music/${id}`, data, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal update offer type:", err);
+    throw err;
+  }
+};
+
+export const deleteOfferTypeMusic = async (id) => {
+  try {
+    const response = await axios.delete(`${API_URL}/offer-types-music/${id}`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal hapus offer type:", err);
+    throw err;
+  }
+};
+
+// =============================
+// TRACK TYPE MUSIC
+// =============================
+
+export const getAllTrackTypes = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/track-types`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil track types:", err);
+    return [];
+  }
+};
+
+export const getTrackTypeById = async (id) => {
+  try {
+    const response = await axios.get(`${API_URL}/track-types/${id}`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil track type:", err);
+    throw err;
+  }
+};
+
+export const addTrackType = async (data) => {
+  try {
+    const response = await axios.post(`${API_URL}/track-types`, data, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal tambah track type:", err);
+    throw err;
+  }
+};
+
+export const updateTrackType = async (id, data) => {
+  try {
+    const response = await axios.put(`${API_URL}/track-types/${id}`, data, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal update track type:", err);
+    throw err;
+  }
+};
+
+export const deleteTrackType = async (id) => {
+  try {
+    const response = await axios.delete(`${API_URL}/track-types/${id}`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal hapus track type:", err);
+    throw err;
+  }
+};
+
+// =============================
+// GENRE MUSIC
+// =============================
+
+export const getAllGenresMusic = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/genre-music`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil genre:", err);
+    return [];
+  }
+};
+
+export const getGenreMusicById = async (id) => {
+  try {
+    const response = await axios.get(`${API_URL}/genre-music/${id}`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil genre:", err);
+    throw err;
+  }
+};
+
+export const addGenreMusic = async (data) => {
+  try {
+    const response = await axios.post(`${API_URL}/genre-music`, data, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal tambah genre:", err);
+    throw err;
+  }
+};
+
+export const updateGenreMusic = async (id, data) => {
+  try {
+    const response = await axios.put(`${API_URL}/genre-music/${id}`, data, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal update genre:", err);
+    throw err;
+  }
+};
+
+export const deleteGenreMusic = async (id) => {
+  try {
+    const response = await axios.delete(`${API_URL}/genre-music/${id}`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal hapus genre:", err);
+    throw err;
+  }
+};
+
+// =============================
+// ORDER TYPE MUSIC
+// =============================
+
+export const getAllOrderTypesMusic = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/music-order-types`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil order types:", err);
+    return [];
+  }
+};
+
+export const getOrderTypeMusicById = async (id) => {
+  try {
+    const response = await axios.get(`${API_URL}/music-order-types/${id}`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil order type:", err);
+    throw err;
+  }
+};
+
+export const addOrderTypeMusic = async (data) => {
+  try {
+    const response = await axios.post(`${API_URL}/music-order-types`, data, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal tambah order type:", err);
+    throw err;
+  }
+};
+
+export const updateOrderTypeMusic = async (id, data) => {
+  try {
+    const response = await axios.put(`${API_URL}/music-order-types/${id}`, data, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal update order type:", err);
+    throw err;
+  }
+};
+
+export const deleteOrderTypeMusic = async (id) => {
+  try {
+    const response = await axios.delete(`${API_URL}/music-order-types/${id}`);
+    return response.data;
+  } catch (err) {
+    console.error("❌ Gagal hapus order type:", err);
+    throw err;
+  }
+};
+
+
+// KEPALA DIVISI 
+export const getAllKepalaDivisi = () => axios.get(`${API_URL}/kepala-divisi`);
+export const addKepalaDivisi = (data) => axios.post(`${API_URL}/kepala-divisi`, data);
+export const getKepalaDivisiById = (id) => axios.get(`${API_URL}/kepala-divisi/${id}`);
+export const updateKepalaDivisi = (id, data) => axios.put(`${API_URL}/kepala-divisi/${id}`, data);
+export const deleteKepalaDivisi = (id) => axios.delete(`${API_URL}/kepala-divisi/${id}`);
+
+
+// =======================
+// Kupon Diskon
+// =======================
+export const getAllKuponDiskon = async () => {
+  const res = await axios.get(`${API_URL}/kupon-diskon`);
+  return res.data;
+};
+
+export const getKuponDiskonById = async (id) => {
+  const res = await axios.get(`${API_URL}/kupon-diskon/${id}`);
+  return res.data;
+};
+
+export const addKuponDiskon = async (data) => {
+  const res = await axios.post(`${API_URL}/kupon-diskon`, data);
+  return res.data;
+};
+
+export const updateKuponDiskon = async (id, data) => {
+  const res = await axios.put(`${API_URL}/kupon-diskon/${id}`, data);
+  return res.data;
+};
+
+export const deleteKuponDiskon = async (id) => {
+  const res = await axios.delete(`${API_URL}/kupon-diskon/${id}`);
+  return res.data;
+};
+
+
+// =======================
+// Accept Status
+// =======================
+export const getAllAcceptStatus = async () => {
+  const res = await axios.get(`${API_URL}/accept-status`);
+  return res.data;
+};
+
+export const getAcceptStatusById = async (id) => {
+  const res = await axios.get(`${API_URL}/accept-status/${id}`);
+  return res.data;
+};
+
+export const addAcceptStatus = async (data) => {
+  const res = await axios.post(`${API_URL}/accept-status`, data);
+  return res.data;
+};
+
+export const updateAcceptStatus = async (id, data) => {
+  const res = await axios.put(`${API_URL}/accept-status/${id}`, data);
+  return res.data;
+};
+
+export const deleteAcceptStatus = async (id) => {
+  const res = await axios.delete(`${API_URL}/accept-status/${id}`);
+  return res.data;
+};
+
+// MARKETING DESIGN USER 
+export const getAllMarketingDesainUsers = () =>
+  axios.get(`${API_URL}/marketing-desain-users`);
+
+export const getMarketingDesainUserById = (id) =>
+  axios.get(`${API_URL}/marketing-desain-users/${id}`);
+
+export const createMarketingDesainUser = (data) =>
+  axios.post(`${API_URL}/marketing-desain-users`, data);
+
+export const updateMarketingDesainUser = (id, data) =>
+  axios.put(`${API_URL}/marketing-desain-users/${id}`, data);
+
+export const deleteMarketingDesainUser = (id) =>
+  axios.delete(`${API_URL}/marketing-desain-users/${id}`);
+
+// ACCOUNT DESIGN 
+export const getAllAccountDesign = () =>
+  axios.get(`${API_URL}/account-design`);
+
+export const getAccountDesignById = (id) =>
+  axios.get(`${API_URL}/account-design/${id}`);
+
+export const createAccountDesign = async (data) => {
+  const res = await axios.post(`${API_URL}/account-design`, data);
+  return res.data; // ✅ langsung isi account baru
+};
+
+
+export const updateAccountDesign = (id, data) =>
+  axios.put(`${API_URL}/account-design/${id}`, data);
+
+export const deleteAccountDesign = (id) =>
+  axios.delete(`${API_URL}/account-design/${id}`);
+
+
+// OFFER TYPE DESIGN
+export const getAllOfferTypesDesign = () =>
+  axios.get(`${API_URL}/offer-type-design`);
+
+export const getOfferTypeDesignById = (id) =>
+  axios.get(`${API_URL}/offer-type-design/${id}`);
+
+export const addOfferTypeDesign = (data) =>
+  axios.post(`${API_URL}/offer-type-design`, data);
+
+export const updateOfferTypeDesign = (id, offerType) =>
+  axios.put(`${API_URL}/offer-type-design/${id}`, { offer_name: offerType });
+
+export const deleteOfferTypeDesign = (id) =>
+  axios.delete(`${API_URL}/offer-type-design/${id}`);
+
+
+// PROJECT TYPE DESIGN
+export const getAllProjectTypesDesign = () =>
+  axios.get(`${API_URL}/project-type-design`);
+
+export const getProjectTypeDesignById = (id) =>
+  axios.get(`${API_URL}/project-type-design/${id}`);
+
+export const addProjectTypeDesign = (data) =>
+  axios.post(`${API_URL}/project-type-design`, data);
+
+export const updateProjectTypeDesign = (id, projectType) =>
+  axios.put(`${API_URL}/project-type-design/${id}`, { project_name: projectType });
+
+export const deleteProjectTypeDesign = (id) =>
+  axios.delete(`${API_URL}/project-type-design/${id}`);
+
+
+// STYLE DESIGN
+export const getAllStyleDesign = () =>
+  axios.get(`${API_URL}/style-design`);
+
+export const getStyleDesignById = (id) =>
+  axios.get(`${API_URL}/style-design/${id}`);
+
+export const addStyleDesign = (data) =>
+  axios.post(`${API_URL}/style-design`, data);
+
+export const updateStyleDesign = (id, data) =>
+  axios.put(`${API_URL}/style-design/${id}`, data);
+
+export const deleteStyleDesign = (id) =>
+  axios.delete(`${API_URL}/style-design/${id}`);
+
+
+// STATUS PROJECT DESIGN
+export const getAllStatusProjectDesign = () =>
+  axios.get(`${API_URL}/status-project-design`);
+
+export const getStatusProjectDesignById = (id) =>
+  axios.get(`${API_URL}/status-project-design/${id}`);
+
+export const addStatusProjectDesign = (data) =>
+  axios.post(`${API_URL}/status-project-design`, data);
+
+export const updateStatusProjectDesign = (id, statusName) =>
+  axios.put(`${API_URL}/status-project-design/${id}`, { status_name: statusName });
+
+export const deleteStatusProjectDesign = (id) =>
+  axios.delete(`${API_URL}/status-project-design/${id}`);
+
+
+// KEPALA DIVISI DESIGN 
+
+// Get all
+export const getAllKepalaDivisiDesign = () =>
+  axios.get(`${API_URL}/kepala-divisi-design`);
+
+// Get by ID
+export const getKepalaDivisiDesignById = (id) =>
+  axios.get(`${API_URL}/kepala-divisi-design/${id}`);
+
+// Add
+export const addKepalaDivisiDesign = (data) =>
+  axios.post(`${API_URL}/kepala-divisi-design`, data);
+
+// Update
+export const updateKepalaDivisiDesign = (id, data) =>
+  axios.put(`${API_URL}/kepala-divisi-design/${id}`, data);
+
+// Delete
+export const deleteKepalaDivisiDesign = (id) =>
+  axios.delete(`${API_URL}/kepala-divisi-design/${id}`);
+
+
+// ORDER DESIGN 
+
+// ✅ Get all
+export const getAllDesignOrderType = () =>
+  axios.get(`${API_URL}/design-order-type`);
+
+// ✅ Get by ID
+export const getDesignOrderTypeById = (id) =>
+  axios.get(`${API_URL}/design-order-type/${id}`);
+
+// ✅ Create new
+export const addDesignOrderType = (data) =>
+  axios.post(`${API_URL}/design-order-type`, data);
+
+// ✅ Update
+export const updateDesignOrderType = (id, data) =>
+  axios.put(`${API_URL}/design-order-type/${id}`, data);
+
+// ✅ Delete
+export const deleteDesignOrderType = (id) =>
+  axios.delete(`${API_URL}/design-order-type/${id}`);

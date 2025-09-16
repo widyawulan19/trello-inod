@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { archiveDataMarektingDesign, deleteDataMarketingDesign, getAllDataMarketingDesign, getDataMarketingDesignAccept, getDataMarketingDesignNotAccept, getDataWhereCardIdIsNull, getDataWhereCardIdNotNull } from '../services/ApiServices';
+import { archiveDataMarektingDesign, deleteDataMarketingDesign, getAllDataMarketingDesign, getAllMarketingDesignJoined, getDataMarketingDesignAccept, getDataMarketingDesignNotAccept, getDataWhereCardIdIsNull, getDataWhereCardIdNotNull } from '../services/ApiServices';
 import '../style/pages/MarketingDesign.css'
 // import '../style/pages/AcceptDataDesign.css'
 import BootstrapTooltip from '../components/Tooltip';
@@ -19,6 +19,8 @@ import OutsideClick from '../hook/OutsideClick';
 import { handleArchive } from '../utils/handleArchive';
 import ExportMarketingDesign from '../exports/ExportMarketingDesign';
 import { FaXmark } from 'react-icons/fa6';
+import FormMarketingDesignExample from '../example/FormMarketingDesignExample';
+import NewEditMarketingDesign from './NewEditMarketingDesign';
 
 const MarketingDesign=()=> {
     //STATE
@@ -59,12 +61,8 @@ const MarketingDesign=()=> {
                 response = await getDataWhereCardIdNotNull();
               } else if (filterType === 'DATA TANPA CARD') {
                 response = await getDataWhereCardIdIsNull();
-              } else if (filterType === 'DATA ACCEPT') {
-                response = await getDataMarketingDesignAccept();
               } else if(filterType === 'DATA MARKETING DESIGN'){
-                response = await getAllDataMarketingDesign();
-              }else if (filterType === 'DATA BELUM ACCEPT'){
-                response = await getDataMarketingDesignNotAccept();
+                response = await getAllMarketingDesignJoined();
               }
           
               setData(response.data);
@@ -93,9 +91,9 @@ const MarketingDesign=()=> {
         }
         if (filters.account) {
           temp = temp.filter((item) =>
-            item.account.toLowerCase().includes(filters.account.toLowerCase())
-          );
-        }
+            item.account_name?.toLowerCase().includes(filters.account.toLowerCase())
+        );
+}
         setFilteredData(temp);
       }, [filters, data]);
     
@@ -157,7 +155,7 @@ const MarketingDesign=()=> {
     //1. fetch marketing design 
     const fetchMarketingDesign = async()=>{
         try{
-            const response = await getAllDataMarketingDesign()
+            const response = await getAllMarketingDesignJoined();
             setDataMarketingDesign(response.data)
             setFilteredData(response.data)
         }catch(error){
@@ -175,7 +173,7 @@ const MarketingDesign=()=> {
                 (item) =>
                     item.buyer_name.toLowerCase().includes(selectedTerm.toLowerCase()) ||
                     item.order_number.toLowerCase().includes(selectedTerm.toLowerCase()) ||
-                    item.account.toLowerCase().includes(selectedTerm.toLowerCase()) 
+                    item.account_name?.toLowerCase().includes(selectedTerm.toLowerCase())
             );
             setFilteredData(filtered);
         }
@@ -226,8 +224,11 @@ const MarketingDesign=()=> {
         setShowFilter(!showFilter)
     }
 
+    // const hasCardId = (item) => {
+    //   return item.card_id !== null && item.card_id !== undefined;
+    // };
     const hasCardId = (item) => {
-      return item.card_id !== null && item.card_id !== undefined;
+      return item.card_id !== null && item.card_id !== undefined && item.card_id !== "";
     };
 
   // SHOW DATA CONTENT 
@@ -299,7 +300,8 @@ const MarketingDesign=()=> {
                 <div className="md-form">
                     <div className="md-content">
                         {/* <Setting onClose={handleCloseForm}/> */}
-                        <NewFormMarketingDesign onClose={handleCloseForm} fetchMarketingDesign={fetchMarketingDesign}/>
+                        {/* <NewFormMarketingDesign onClose={handleCloseForm} fetchMarketingDesign={fetchMarketingDesign}/> */}
+                        <FormMarketingDesignExample onClose={handleCloseForm} fetchMarketingDesign={fetchMarketingDesign}/>
                     </div>
                 </div>
             )}
@@ -322,12 +324,6 @@ const MarketingDesign=()=> {
                   </button>
                   <button onClick={() => {setFilterType('DATA TANPA CARD');; {setShowData(!showData)}}}>
                     Data Tanpa Card
-                  </button>
-                  <button onClick={() => {setFilterType('DATA ACCEPT');; {setShowData(!showData)}}}>
-                    Accept Data Marketing
-                  </button>
-                  <button onClick={() => {setFilterType('DATA BELUM ACCEPT');; {setShowData(!showData)}}}>
-                    Data Belum Accept
                   </button>
                 </div>
               </div>
@@ -433,6 +429,7 @@ const MarketingDesign=()=> {
                     <th>OFFER TYPE</th>
                     <th>STYLE</th>
                     <th>RESOLUTION</th>
+                    <th>REFERENCE</th>
                     <th>
                       <div className="th">
                         PRICE NORMAL <CgDollar/>
@@ -454,7 +451,8 @@ const MarketingDesign=()=> {
                   {filteredData.map((item, index)=>(
                     <tr key={item.marketing_design_id}>
                       <td>{index + 1}</td>
-                      <td className='input-container'  onClick={()=> handleShowDetail(item.marketing_design_id)}>{item.input_by}
+                      <td className='input-container'  onClick={()=> handleShowDetail(item.marketing_design_id)}>
+                        {item.input_by_name || "-"}
                         {hasCardId(item) && (
                           <span style={{
                             backgroundColor: '#e0f7fa',
@@ -469,37 +467,38 @@ const MarketingDesign=()=> {
                             gap: '4px'
                           }}>
                             {'CARD'}
-                            {/* <HiHandThumbUp /> */}
+                            <HiHandThumbUp />
                           </span>
                         )}
                       </td>
-                      <td className='acc-container'>{item.acc_by}</td>
+                      <td className='acc-container'>{item.acc_by_name}</td>
                       <td className='status-container' style={{textAlign:'left' }}>
                          <span style={{
                            padding: '2px 8px',
                            borderRadius: '12px',
-                           backgroundColor: item.is_accepted ? '#C8E6C9' : '#FFCDD2',
-                           color: item.is_accepted ? '#2E7D32' : '#C62828',
+                           backgroundColor: item.status_project_name ? '#C8E6C9' : '#FFCDD2',
+                           color: item.status_project_name ? '#2E7D32' : '#C62828',
                            fontWeight: 'bold'
                          }}>
-                           {item.is_accepted ? 'Accepted' : 'Not Accepted'}
+                           {item.status_project_name}
                          </span>
                        </td>
                       <td className='buyer-name-container'>{item.buyer_name}</td>
                       <td className='code-order-container'>{item.code_order}</td>
                       <td className='jumlah-container' style={{textAlign:'center' }}>{item.jumlah_design}</td>
                       <td className='order-number-container'>{item.order_number}</td>
-                      <td className='account-container'>{item.account}</td>
+                      <td className='account-container'>{item.account_name}</td>
                       <td className='deadline-container' style={{ textAlign:'center' }}>{new Date(item.deadline).toLocaleDateString()}</td>
                       <td className='jumlah-revisi-container' style={{textAlign:'center' }}>{item.jumlah_revisi}</td>
-                      <td className='order-type-container'>{item.order_type}</td>
-                      <td className='offer-type-container'>{item.offer_type}</td>
-                      <td className='style-container'>{item.style}</td>
+                      <td className='order-type-container'>{item.order_type_name}</td>
+                      <td className='offer-type-container'>{item.offer_type_name}</td>
+                      <td className='style-container'>{item.style_name}</td>
                       <td className='resolution-container'>{item.resolution}</td>
-                      <td className='price-normal-container' style={{textAlign:'center', color:'#1E1E1E'}}>${item.price_normal}</td>
-                      <td className='price-discount-container' style={{textAlign:'center', color:'#E53935'}}>${item.price_discount}</td>
-                      <td className='discount_percentage-container' style={{textAlign:'center', color:'#388E3C'}}>${item.discount_percentage}</td>
-                      <td className='project-type-container' >{item.project_type}</td>
+                      <td className='resolution-container'>{item.reference}</td>
+                      <td className='price-normal-container' style={{textAlign:'center', color:'#1E1E1E'}}>{item.price_normal}</td>
+                      <td className='price-discount-container' style={{textAlign:'center', color:'#E53935'}}>{item.price_discount}</td>
+                      <td className='discount_percentage-container' style={{textAlign:'center', color:'#388E3C'}}>{item.discount_percentage}%</td>
+                      <td className='project-type-container'>{item.project_type_name}</td>
                       <td className='action-container'>
                         <div className="action-table">
                           <BootstrapTooltip title='View Data' placement='top'>
@@ -541,7 +540,8 @@ const MarketingDesign=()=> {
                 {showEdit && selectedMarketingDesign && (
                     <div className="edit-data-design">
                         <div className="edit-cont">
-                            <EditMarketingDesign marketingDesignId={selectedMarketingDesign} onClose={handleCloseEdit} fetchMarketingDesign={fetchMarketingDesign} />
+                            {/* <EditMarketingDesign marketingDesignId={selectedMarketingDesign} onClose={handleCloseEdit} fetchMarketingDesign={fetchMarketingDesign} /> */}
+                            <NewEditMarketingDesign marketingDesignId={selectedMarketingDesign} onClose={handleCloseEdit} fetchMarketingDesign={fetchMarketingDesign} />
                         </div>
                     </div>
                 )}

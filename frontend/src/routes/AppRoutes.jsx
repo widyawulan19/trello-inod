@@ -48,6 +48,8 @@ import Faq from '../pages/Faq';
 import WelcomePage from '../auth/WelcomePage';
 import MarketingDesignReport from '../pages/MarketingDesignReport';
 import DataMarketingReport from '../pages/DataMarketingReport';
+import FormMarketingExample from '../example/FormMarketingExample';
+import FormMarketingDesignExample from '../example/FormMarketingDesignExample';
 
 const AppRoutes=()=> {
   return (
@@ -105,6 +107,8 @@ const AppRoutes=()=> {
         <Route path='faq' element={<Faq/>}/>
         <Route path='marketing-design-report' element={<MarketingDesignReport/>}/>
         <Route path='marketing-report' element={<DataMarketingReport/>}/>
+        <Route path='example-form-marketing' element={<FormMarketingExample/>}/>
+        <Route path='example-marketing-design' element={<FormMarketingDesignExample/>}/>
         </Route>
     </Routes>
   )
