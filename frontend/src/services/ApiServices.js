@@ -339,6 +339,19 @@ export const getTenDaysMarketing = async () => {
   }
 }
 
+// excel 
+// export const exportDataMarketingToSheets = async () => axios.post(`${API_URL}/export-to-sheet`)
+export const exportDataMarketingToSheets = async (marketingData) => {
+  try {
+    const response = await axios.post(`${API_URL}/export-to-sheet`, { marketingData });
+    return response.data;
+  } catch (error) {
+    console.error("❌ Gagal kirim ke Sheets:", error);
+    throw error; // supaya bisa ditangani di UI
+  }
+};
+
+
 export const getAllDataMarketingJoined = () => axios.get(`${API_URL}/data-marketing/joined`)
 export const getAllDataMarketingJoinedById = (id) => axios.get(`${API_URL}/data-marketing/joined/${id}`)
 export const updateDataMarketingJoined = (id, data) => axios.put(`${API_URL}/data-marketing/joined/${id}`, data)
