@@ -23,7 +23,7 @@ const ExportDataMarketingExample = () => {
   const handleExportToSheet = async (marketingData) => {
     try {
       setLoading(true);
-      await exportDataMarketingToSheets({ marketingData }); // pastikan service kirim body { marketingData }
+      await exportDataMarketingToSheets( marketingData ); // pastikan service kirim body { marketingData }
       alert(`✅ Data "${marketingData.buyer_name}" berhasil dikirim ke Google Sheets`);
     } catch (err) {
       console.error("❌ Gagal kirim ke Sheets:", err);
