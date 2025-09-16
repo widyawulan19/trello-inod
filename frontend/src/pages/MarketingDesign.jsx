@@ -248,6 +248,8 @@ const MarketingDesign=()=> {
     navigate('/layout/marketing-design-report')
   }
 
+  console.log('Data marketing design:', dataMarketingDesign);
+
   return (
     <div className='md-container'>
         <div className="md-header">
