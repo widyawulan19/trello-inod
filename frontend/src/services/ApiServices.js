@@ -362,6 +362,18 @@ export const exportDataMarketingToSheetsById = async (marketingId) => {
   }
 };
 
+// export all data in one page 
+export const exportAllDataMarketingToSheets = async (marketingDataList) => {
+  try {
+    const response = await axios.post(`${API_URL}/export-to-sheet`, { marketingDataList });
+    return response.data;
+  } catch (error) {
+    console.error("❌ Gagal kirim ke Sheets:", error);
+    throw error;
+  }
+};
+
+
 
 
 export const getAllDataMarketingJoined = () => axios.get(`${API_URL}/data-marketing/joined`)

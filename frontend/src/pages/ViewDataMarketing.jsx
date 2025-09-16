@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { getAllLists, getDataMarketingById,getAllDataMarketingJoinedById, createCardFromMarketing, checkCardIdNullOrNot } from '../services/ApiServices';
+import { getAllLists, getDataMarketingById,getAllDataMarketingJoinedById, createCardFromMarketing, checkCardIdNullOrNot, exportDataMarketingToSheets } from '../services/ApiServices';
 import { data, useParams } from 'react-router-dom';
 import '../style/pages/ViewDataMarketing.css'
 import { HiCube, HiCubeTransparent, HiOutlinePlus, HiOutlineXMark } from 'react-icons/hi2';
@@ -9,6 +9,7 @@ import FormCreateCardMarketing from '../fitur/FormCreateCardMarketing';
 import { useRouterContext } from '../context/RouteContext';
 import { FaXmark } from 'react-icons/fa6';
 import ExportDataMarketingId from '../exports/ExportDataMarketingId';
+import { useSnackbar } from '../context/Snackbar';
 
 
 const ViewDataMarketing=({marketingId, onClose})=> {
@@ -24,6 +25,7 @@ const ViewDataMarketing=({marketingId, onClose})=> {
     const showListRef = OutsideClick(()=> setShowList(false))
     const [cardId, setCardId] = useState(null)
     const [loadingCardId, setLoadingCardId] = useState(true)
+    const {showSnackbar} = useSnackbar();
 
 
     const handleShowLists = (marketingId) => {
@@ -116,6 +118,20 @@ const ViewDataMarketing=({marketingId, onClose})=> {
     fetchCardId();
   }, [marketingId]);
 
+  //7. kirim satu data ke google sheets
+  const handleExportToSheets = async (marketingId) =>{
+    try{
+      setIsLoading(true);
+      await exportDataMarketingToSheets(marketingId);
+      showSnackbar(`Data "${marketingId.buyer_name}" berhasil dikirim ke Google Sheets`, 'success');
+    }catch(error){
+      console.log('Gagal kirim data ke sheets:', error)
+      showSnackbar(`Gagal kirim data ke sheets "${marketingId.buyer_name}"`, 'error');
+    }finally{
+      setIsLoading(false);
+    }
+  }
+
 
   return (
     <div className='view-dm-container'>
@@ -126,7 +142,16 @@ const ViewDataMarketing=({marketingId, onClose})=> {
         </div>
         <div className="vdm-right">
           <div className="export" style={{marginRight:'5px'}}>
-            <ExportDataMarketingId marketingId={marketingId}/>
+            {/* <ExportDataMarketingId marketingId={marketingId}/> */}
+            <button 
+              style={{
+                color:'white',
+                backgroundColor:'#12904F',
+                border:'1px solid #12904F'
+              }}
+              onClick={()=> handleExportToSheets(dataMarketings)}>
+                Transfile to SpreedSheets
+              </button>
           </div>
           {/* CHECK CARD ID  */}
           <div className="card-status">
