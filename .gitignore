@@ -1,2 +1,7 @@
 .env
 .service-account.json
+node_modules/
+*.DS_Store
+service-account.json
+frontend/node_modules/
+frontend/.DS_Store
