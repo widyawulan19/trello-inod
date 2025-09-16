@@ -15,6 +15,10 @@ const jwt = require("jsonwebtoken");
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const dotenv = require("dotenv");
+const { google } = require("googleapis")
+
+
+
 
 
 //TOP
@@ -34,6 +38,13 @@ app.use(cors({
 
 
 console.log("JWT_SECRET:", process.env.JWT_SECRET);
+
+
+// 🔑 Google Sheets setup
+const auth = new google.auth.GoogleAuth({
+    keyFile: "service-account.json", // file credentials dari Google Cloud
+    scopes: ["https://www.googleapis.com/auth/spreadsheets"],
+});
 
 
 // Middleware untuk mensimulasikan login
@@ -78,6 +89,35 @@ const transporter = nodemailer.createTransport({
     }
 })
 
+
+// Endpoint untuk export data ke Google Sheets
+app.post("/api/export-to-sheet", async (req, res) => {
+    try {
+        const { marketingData } = req.body; // data dari frontend
+        const client = await auth.getClient();
+        const sheets = google.sheets({ version: "v4", auth: client });
+
+        await sheets.spreadsheets.values.append({
+            spreadsheetId,
+            range: "Sheet1!A:Z", // range sheet yang mau diisi
+            valueInputOption: "RAW",
+            requestBody: {
+                values: [[
+                    marketingData.buyer_name,
+                    marketingData.code_order,
+                    marketingData.order_number,
+                    marketingData.deadline,
+                    marketingData.project_type_name,
+                ]],
+            },
+        });
+
+        res.json({ success: true, message: "✅ Data berhasil masuk ke Google Sheet" });
+    } catch (error) {
+        console.error("❌ Error:", error);
+        res.status(500).json({ success: false, message: "Gagal update Google Sheet" });
+    }
+});
 
 
 
