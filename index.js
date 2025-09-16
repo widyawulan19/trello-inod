@@ -145,96 +145,62 @@ app.post("/api/export-to-sheet", async (req, res) => {
     }
 });
 
-// endpoin export data untuk data marketing id 
-// Export data marketing by ID ke Google Sheets
-app.post("/api/export-to-sheet/:id", async (req, res) => {
+// Export data marketing untuk banyak data ke Google Sheets 
+app.post("/api/export-to-sheet", async (req, res) => {
     try {
-        const { id } = req.params;
+        const { marketingDataList } = req.body; // kirim array dari frontend
 
-        // Ambil data marketing dari database berdasarkan ID
-        const query = `
-      SELECT 
-        md.input_by_name,
-        md.acc_by_name,
-        md.buyer_name,
-        md.code_order,
-        md.order_number,
-        md.account_name,
-        md.deadline,
-        md.jumlah_revisi,
-        md.order_type_name,
-        md.offer_type_name,
-        md.jenis_track,
-        md.genre_name,
-        md.price_normal,
-        md.price_discount,
-        md.discount,
-        md.basic_price,
-        md.kupon_diskon_name,
-        md.gig_link,
-        md.required_files,
-        md.project_type_name,
-        md.duration,
-        md.reference_link,
-        md.file_and_chat_link,
-        md.detail_project,
-        md.accept_status_name
-      FROM marketing_design md
-      WHERE md.marketing_design_id = $1
-    `;
-
-        const result = await pool.query(query, [id]);
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({ success: false, message: "Data tidak ditemukan" });
+        if (!Array.isArray(marketingDataList)) {
+            return res.status(400).json({ success: false, message: "marketingDataList harus berupa array" });
         }
-
-        const marketingData = result.rows[0];
 
         const client = await auth.getClient();
         const sheets = google.sheets({ version: "v4", auth: client });
 
+        // mapping semua object → array of array untuk Google Sheets
+        const values = marketingDataList.map((data) => [
+            data.input_by_name,
+            data.acc_by_name,
+            data.buyer_name,
+            data.code_order,
+            data.order_number,
+            data.account_name,
+            data.Deadline,
+            data.jumlah_revisi,
+            data.order_type_name,
+            data.offer_type_name,
+            data.jenis_track,
+            data.genre_name,
+            data.price_normal,
+            data.price_discount,
+            data.discount,
+            data.basic_price,
+            data.kupon_diskon_name,
+            data.gig_link,
+            data.required_files,
+            data.project_type_name,
+            data.duration,
+            data.reference_link,
+            data.file_and_chat_link,
+            data.detail_project,
+            data.accept_status_name,
+        ]);
+
+        // append semua baris ke Sheet
         await sheets.spreadsheets.values.append({
             spreadsheetId,
-            range: "Sheet1!A:Z", // pastikan cukup untuk semua kolom
+            range: "Sheet1!A:Z", // cukup lebar biar semua kolom masuk
             valueInputOption: "RAW",
-            requestBody: {
-                values: [[
-                    marketingData.input_by_name,
-                    marketingData.acc_by_name,
-                    marketingData.buyer_name,
-                    marketingData.code_order,
-                    marketingData.order_number,
-                    marketingData.account_name,
-                    marketingData.deadline,
-                    marketingData.jumlah_revisi,
-                    marketingData.order_type_name,
-                    marketingData.offer_type_name,
-                    marketingData.jenis_track,
-                    marketingData.genre_name,
-                    marketingData.price_normal,
-                    marketingData.price_discount,
-                    marketingData.discount,
-                    marketingData.basic_price,
-                    marketingData.kupon_diskon_name,
-                    marketingData.gig_link,
-                    marketingData.required_files,
-                    marketingData.project_type_name,
-                    marketingData.duration,
-                    marketingData.reference_link,
-                    marketingData.file_and_chat_link,
-                    marketingData.detail_project,
-                    marketingData.accept_status_name,
-                ]],
-            },
+            requestBody: { values },
         });
 
-        res.json({ success: true, message: "✅ Data berhasil masuk ke Google Sheet" });
+        res.json({ success: true, message: `✅ ${values.length} data berhasil masuk ke Google Sheet` });
     } catch (error) {
         console.error("❌ Error:", error);
         res.status(500).json({ success: false, message: "Gagal update Google Sheet" });
     }
 });
+
 
 
 
