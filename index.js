@@ -109,12 +109,6 @@ app.post("/api/export-to-sheet", async (req, res) => {
             valueInputOption: "RAW",
             requestBody: {
                 values: [[
-                    // marketingData.buyer_name,
-                    // marketingData.code_order,
-                    // marketingData.order_number,
-                    // marketingData.deadline,
-                    // marketingData.project_type_name,
-                    // marketingData.
                     marketingData.input_by_name,
                     marketingData.acc_by_name,
                     marketingData.buyer_name,
@@ -136,7 +130,7 @@ app.post("/api/export-to-sheet", async (req, res) => {
                     marketingData.required_files,
                     marketingData.project_type_name,
                     marketingData.duration,
-                    marektingData.reference_link,
+                    marketingData.reference_link,
                     marketingData.file_and_chat_link,
                     marketingData.detail_project,
                     marketingData.accept_status_name
