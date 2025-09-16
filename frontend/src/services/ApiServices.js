@@ -351,6 +351,18 @@ export const exportDataMarketingToSheets = async (marketingData) => {
   }
 };
 
+// services/ApiServices.js
+export const exportDataMarketingToSheetsById = async (marketingId) => {
+  try {
+    const response = await axios.post(`${API_URL}/export-to-sheet/${marketingId}`);
+    return response.data;
+  } catch (error) {
+    console.error("❌ Gagal kirim ke Sheets:", error);
+    throw error;
+  }
+};
+
+
 
 export const getAllDataMarketingJoined = () => axios.get(`${API_URL}/data-marketing/joined`)
 export const getAllDataMarketingJoinedById = (id) => axios.get(`${API_URL}/data-marketing/joined/${id}`)
