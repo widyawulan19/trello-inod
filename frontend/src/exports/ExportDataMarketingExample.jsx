@@ -46,11 +46,11 @@ const ExportDataMarketingExample = () => {
       <table className="min-w-full border">
         <thead>
           <tr>
-            <th className="border px-4 py-2">Buyer</th>
-            <th className="border px-4 py-2">Code Order</th>
-            <th className="border px-4 py-2">Order Number</th>
-            <th className="border px-4 py-2">Deadline</th>
-            <th className="border px-4 py-2">Project Type</th>
+            <th className="border px-4 py-2">Input by</th>
+            <th className="border px-4 py-2">Acc by</th>
+            <th className="border px-4 py-2">Buyer name</th>
+            <th className="border px-4 py-2">Code order</th>
+            <th className="border px-4 py-2">order nu</th>
             <th className="border px-4 py-2">Action</th>
           </tr>
         </thead>
