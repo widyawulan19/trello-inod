@@ -279,7 +279,7 @@ app.get("/api/marketing-exports/join", async (req, res) => {
 });
 
 // Tambah data export untuk 1 marketing_id
-app.post("/api/marketing-exports/:marketingId", async (req, res) => {
+app.post("/api/marketing-exports", async (req, res) => {
     try {
         const { marketingId } = req.params;
         const { exported_by } = req.body; // opsional: siapa yang melakukan export
