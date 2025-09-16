@@ -278,6 +278,57 @@ app.get("/api/marketing-exports/join", async (req, res) => {
     }
 });
 
+// Tambah data export untuk 1 marketing_id
+app.post("/api/marketing-exports/:marketingId", async (req, res) => {
+    try {
+        const { marketingId } = req.params;
+        const { exported_by } = req.body; // opsional: siapa yang melakukan export
+
+        const result = await client.query(
+            `INSERT INTO marketing_exports (marketing_id, exported_by, exported_at)
+       VALUES ($1, $2, NOW())
+       RETURNING *`,
+            [marketingId, exported_by || null]
+        );
+
+        res.json({
+            success: true,
+            message: "✅ Marketing berhasil ditandai sudah di-export",
+            data: result.rows[0],
+        });
+    } catch (error) {
+        console.error("❌ Error insert marketing_export:", error);
+        res.status(500).json({
+            success: false,
+            message: "Gagal insert marketing_export",
+        });
+    }
+});
+
+// Cek apakah marketing_id sudah diexport
+app.get("/api/marketing-exports/:marketingId", async (req, res) => {
+    try {
+        const { marketingId } = req.params;
+
+        const result = await client.query(
+            `SELECT * FROM marketing_exports WHERE marketing_id = $1`,
+            [marketingId]
+        );
+
+        if (result.rows.length > 0) {
+            res.json({ exported: true, data: result.rows[0] });
+        } else {
+            res.json({ exported: false });
+        }
+    } catch (error) {
+        console.error("❌ Error cek marketing_export:", error);
+        res.status(500).json({
+            success: false,
+            message: "Gagal cek marketing_export",
+        });
+    }
+});
+
 
 
 // END MARKETING EXPORT 
