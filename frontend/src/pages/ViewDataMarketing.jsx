@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { getAllLists, getDataMarketingById,getAllDataMarketingJoinedById, createCardFromMarketing, checkCardIdNullOrNot, exportDataMarketingToSheets, getMarketingWithExportStatus } from '../services/ApiServices';
+import { getAllLists, getDataMarketingById,getAllDataMarketingJoinedById, createCardFromMarketing, checkCardIdNullOrNot, exportDataMarketingToSheets, getMarketingWithExportStatus,checkMarketingExport ,addMarketingExport} from '../services/ApiServices';
 import { data, useParams } from 'react-router-dom';
 import '../style/pages/ViewDataMarketing.css'
 import { HiCube, HiCubeTransparent, HiOutlinePlus, HiOutlineXMark } from 'react-icons/hi2';
@@ -120,51 +120,56 @@ const ViewDataMarketing=({marketingId, onClose})=> {
   }, [marketingId]);
 
   //7. kirim satu data ke google sheets
-  // const handleExportToSheets = async (marketingId) =>{
-  //   try{
-  //     setIsLoading(true);
-  //     await exportDataMarketingToSheets(marketingId);
-  //     showSnackbar(`Data "${marketingId.buyer_name}" berhasil dikirim ke Google Sheets`, 'success');
-  //   }catch(error){
-  //     console.log('Gagal kirim data ke sheets:', error)
-  //     showSnackbar(`Gagal kirim data ke sheets "${marketingId.buyer_name}"`, 'error');
-  //   }finally{
-  //     setIsLoading(false);
-  //   }
-  // }
-
-  const handleExportToSheets = async (marketingId) => {
-    try {
+  const handleExportToSheets = async (marketingId) =>{
+    try{
       setIsLoading(true);
-
-      // 1. Kirim ke Google Sheets + insert ke tabel marketing_exports
       await exportDataMarketingToSheets(marketingId);
-
-      showSnackbar(
-        `Data "${marketingId.buyer_name}" berhasil dikirim ke Google Sheets`,
-        "success"
-      );
-
-      // 2. Refresh status export dari backend
-      const res = await getMarketingWithExportStatus();
-      // ambil marketing yang baru diupdate
-      const updated = res.find((item) => item.id === marketingId.id);
-      
-      // kalau datamu list array → update satu elemen di state array
-      setDataMarketings((prev) =>
-        prev.map((m) => (m.id === updated.id ? updated : m))
-      );
-
-    } catch (error) {
-      console.log("❌ Gagal kirim data ke sheets:", error);
-      showSnackbar(
-        `Gagal kirim data ke sheets "${marketingId.buyer_name}"`,
-        "error"
-      );
-    } finally {
+      showSnackbar(`Data "${marketingId.buyer_name}" berhasil dikirim ke Google Sheets`, 'success');
+    }catch(error){
+      console.log('Gagal kirim data ke sheets:', error)
+      showSnackbar(`Gagal kirim data ke sheets "${marketingId.buyer_name}"`, 'error');
+    }finally{
       setIsLoading(false);
     }
-  };
+  }
+
+// const handleExportToSheets = async (marketingId) => {
+//   try {
+//     setIsLoading(true);
+
+//     // 1. Kirim ke Google Sheets
+//     await exportDataMarketingToSheets(marketingId);
+
+//     // 2. Insert ke tabel marketing_exports
+//     await addMarketingExport(marketingId.marketing_id, "system"); // exportedBy bisa ganti sesuai user login
+
+//     // 3. Cek status export untuk marketing ini
+//     const status = await checkMarketingExport(marketingId.marketing_id);
+
+//     // 4. Update state lokal
+//     setDataMarketings((prev) =>
+//       prev.map((m) =>
+//         m.marketing_id === marketingId.marketing_id
+//           ? { ...m, export_status: status.exported ? "Sudah Transfile" : "Belum Transfile" }
+//           : m
+//       )
+//     );
+
+//     showSnackbar(
+//       `Data "${marketingId.buyer_name}" berhasil dikirim ke Google Sheets`,
+//       "success"
+//     );
+//   } catch (error) {
+//     console.log("❌ Gagal kirim data ke sheets:", error);
+//     showSnackbar(
+//       `Gagal kirim data ke sheets "${marketingId.buyer_name}"`,
+//       "error"
+//     );
+//   } finally {
+//     setIsLoading(false);
+//   }
+// };
+
 
 
 
@@ -178,46 +183,12 @@ const ViewDataMarketing=({marketingId, onClose})=> {
         </div>
         <div className="vdm-right">
           <div className="export" style={{ marginRight: "5px" }}>
-    <button
-      style={{
-        color: "white",
-        backgroundColor:
-          dataMarketings.export_status === "Sudah Transfile" ? "gray" : "#12904F",
-        border: "1px solid #12904F",
-        cursor:
-          dataMarketings.export_status === "Sudah Transfile" ? "not-allowed" : "pointer",
-      }}
-      disabled={dataMarketings.export_status === "Sudah Transfile"}
-      onClick={() => handleExportToSheets(dataMarketings)}
-    >
-      {dataMarketings.export_status === "Sudah Transfile"
-        ? "Sudah Transfile"
-        : "Transfile to Spreadsheets"}
-    </button>
-
-    {/* Indikasi status export */}
-    {dataMarketings.export_status === "Sudah Transfile" ? (
-      <span
-        style={{
-          marginLeft: "8px",
-          color: "green",
-          fontWeight: "bold",
-        }}
-      >
-        ✅ Sudah Transfile
-      </span>
-    ) : (
-      <span
-        style={{
-          marginLeft: "8px",
-          color: "red",
-          fontWeight: "bold",
-        }}
-      >
-        ❌ Belum Transfile
-      </span>
-    )}
-  </div>
+            <button
+              onClick={() => handleExportToSheets(marketingId)}
+            >
+              Transfile to SpreedSheets
+            </button>
+          </div>
 
 
           {/* CHECK CARD ID  */}
