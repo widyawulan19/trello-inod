@@ -651,14 +651,44 @@ const NewCardDetail=()=> {
                             )}
 
                             {/* HEADER LABEL  */}
-                            <div className="ncd-label">
+                            {/* <div className="ncd-label">
                                 <SelectedLabels
                                     cardId={cardId}
                                     fetchCardDetail={fetchCardById}
                                     labels={labels}
                                     fetchLabels={fetchLabels}
                                 />
+                            </div> */}
+                            {/* HEADER LABEL  */}
+                            <div className="ncd-label">
+                            {cards?.project_type_name === "ORIGINAL" ? (
+                                // ✅ Kalau project_type ORIGINAL, paksa render label Mixing & Mastering
+                                <div className="labels">
+                                <span
+                                    className="label"
+                                    style={{
+                                    backgroundColor: "#ff5733", // sesuaikan warna label di DB
+                                    padding: "2px 6px",
+                                    borderRadius: "4px",
+                                    marginRight: "4px",
+                                    fontSize: "12px",
+                                    color: "#fff",
+                                    }}
+                                >
+                                    Mixing & Mastering
+                                </span>
+                                </div>
+                            ) : (
+                                // ✅ Kalau bukan ORIGINAL, render normal pakai SelectedLabels
+                                <SelectedLabels
+                                cardId={cardId}
+                                fetchCardDetail={fetchCardById}
+                                labels={labels}
+                                fetchLabels={fetchLabels}
+                                />
+                            )}
                             </div>
+
                         </div>
 
                         {/* HEADER BUTTON  */}
