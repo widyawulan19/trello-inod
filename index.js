@@ -22,7 +22,6 @@ const { google } = require("googleapis")
 
 
 //TOP
-
 dotenv.config();
 
 const app = express();
@@ -39,6 +38,8 @@ app.use(cors({
 
 console.log("JWT_SECRET:", process.env.JWT_SECRET);
 
+// Ambil spreadsheetId dari environment variable
+const spreadsheetId = process.env.SPREADSHEET_ID;
 
 // 🔑 Ambil credential dari ENV (Railway)
 const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT);
@@ -89,6 +90,7 @@ const transporter = nodemailer.createTransport({
         pass: "your_app_password",
     }
 })
+
 
 
 // Endpoint untuk export data ke Google Sheets
