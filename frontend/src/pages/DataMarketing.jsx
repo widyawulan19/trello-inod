@@ -139,9 +139,14 @@ const handleCloseForm = () =>{
          item.order_number.toLowerCase().includes(filters.order_number.toLowerCase())
        );
      }
-     if (filters.account) {
+     if (filters.account_name) {
        temp = temp.filter((item) =>
-         item.account.toLowerCase().includes(filters.account.toLowerCase())
+         item.account_name.toLowerCase().includes(filters.account_name.toLowerCase())
+       );
+     }
+     if (filters.input_by_name) {
+       temp = temp.filter((item) =>
+         item.input_by_name.toLowerCase().includes(filters.input_by_name.toLowerCase())
        );
      }
      setFilteredData(temp);
@@ -232,7 +237,8 @@ const handleFilterData = (selectedTerm) => {
         (item) =>
           item.buyer_name.toLowerCase().includes(selectedTerm.toLowerCase()) ||
           item.order_number.toLowerCase().includes(selectedTerm.toLowerCase()) ||
-          item.account.toLowerCase().includes(selectedTerm.toLowerCase()) 
+          item.account_name.toLowerCase().includes(selectedTerm.toLowerCase()) ||
+          item.input_by_name.toLowerCase().includes(selectedTerm.toLowerCase())
       );
       setFilteredData(filtered);
     }
@@ -318,7 +324,7 @@ const getBasicPrice = (price_normal, discount) => {
             </button>
             <button onClick={handleFilterButton}>
               {/* <HiChevronUpDown className="dm-icon"/> */}
-              SHORT DATA
+              FILTER DATA
             </button>
           </div>
           <div className="mdc-search-container">
@@ -412,11 +418,20 @@ const getBasicPrice = (price_normal, discount) => {
                     <li
                       className="li-filter"
                       onClick={() => {
-                        setShortType('account');
+                        setShortType('account_name');
                         setDropdownOpen(false);
                       }}
                     >
                       Account
+                    </li>
+                    <li
+                      className="li-filter"
+                      onClick={() => {
+                        setShortType('input_by_name');
+                        setDropdownOpen(false);
+                      }}
+                    >
+                      Marketing Name
                     </li>
                   </ul>
                 )}
