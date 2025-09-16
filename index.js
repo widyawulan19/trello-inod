@@ -96,13 +96,16 @@ const transporter = nodemailer.createTransport({
 // Endpoint untuk export data ke Google Sheets
 app.post("/api/export-to-sheet", async (req, res) => {
     try {
-        const { marketingData } = req.body; // data dari frontend
+        const { marketingData } = req.body;
+
         const client = await auth.getClient();
         const sheets = google.sheets({ version: "v4", auth: client });
 
+        console.log("📤 Data yang dikirim:", marketingData); // cek di logs
+
         await sheets.spreadsheets.values.append({
             spreadsheetId,
-            range: "Sheet1!A:Z", // range sheet yang mau diisi
+            range: "Sheet1!A:E", // sesuai kolom data
             valueInputOption: "RAW",
             requestBody: {
                 values: [[
