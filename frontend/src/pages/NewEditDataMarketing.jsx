@@ -28,6 +28,7 @@ import BootstrapTooltip from "../components/Tooltip";
 import { FaXmark } from "react-icons/fa6";
 import '../style/pages/EditMarketingForm.css'
 import { useSnackbar } from "../context/Snackbar";
+import CustomDropdownEdit from "../marketing/CustomDropdownEdit";
 
 const initialFormState = {
   marketing_id: "",
@@ -340,7 +341,7 @@ console.log('data selcted acc:', selectedAccById);
               <div className="box-content">
                 <label>Input By</label>
                 {/* {dropdownData.users?.length > 0 && ( */}
-                <CustomDropdown
+                <CustomDropdownEdit
                   options={dropdownData.users}
                   value={form.input_by} // harus sama dengan nama column di db
                   onChange={(val) => setForm({ ...form, input_by: val })}
@@ -358,7 +359,7 @@ console.log('data selcted acc:', selectedAccById);
               <div className="box-content">
                 <label>Accept By <span style={{color:'red', fontSize:'6px'}}> ** diisi oleh kadiv</span></label>
                 {/* {dropdownData.accs?.length > 0 && ( */}
-                  <CustomDropdown
+                  <CustomDropdownEdit
                     options={dropdownData.accs}
                     value={form.acc_by}  // pakai ID string, misal "2"
                     onChange={(val) => setForm({ ...form, acc_by: val })}
@@ -375,7 +376,7 @@ console.log('data selcted acc:', selectedAccById);
                {/* ACCEPT STATUS */}
               <div className="box-content">
                 <label>Status Accept <span style={{color:'red', fontSize:'6px'}}> ** diisi oleh kadiv</span></label>
-                  <CustomDropdown
+                  <CustomDropdownEdit
                     options={dropdownData.statusAccept}
                     value={form.accept_status_id}  // pakai ID string, misal "2"
                     onChange={(val) => setForm({ ...form, accept_status_id: val })}
@@ -403,7 +404,7 @@ console.log('data selcted acc:', selectedAccById);
               {/* Account */}
               <div className="box-content">
                 <label>Account</label>
-                <CustomDropdown
+                <CustomDropdownEdit
                   options={dropdownData.accounts}        // data dari API
                   value={form.account}
                   onChange={(val) => setForm({ ...form, account: val })}
@@ -450,7 +451,7 @@ console.log('data selcted acc:', selectedAccById);
               {/* Order type */}
               <div className="box-content">
                 <label>Order Type</label>
-                <CustomDropdown
+                <CustomDropdownEdit
                   options={dropdownData.orderType}        // data dari API
                   value={form.order_type}
                   onChange={(val) => setForm({ ...form, order_type: val })}
@@ -466,7 +467,7 @@ console.log('data selcted acc:', selectedAccById);
               {/* Offers type */}
               <div className="box-content">
                 <label>Offer Type</label>
-                <CustomDropdown
+                <CustomDropdownEdit
                   options={dropdownData.offers}        // data dari API
                   value={form.offer_type}
                   onChange={(val) => setForm({ ...form, offer_type: val })}
@@ -494,7 +495,7 @@ console.log('data selcted acc:', selectedAccById);
               {/* Jenis Track */}
               <div className="box-content">
                 <label>Jenis Track</label>
-                <CustomDropdown
+                <CustomDropdownEdit
                   options={dropdownData.trackTypes}        // data dari API
                   value={form.jenis_track}
                   onChange={(val) => setForm({ ...form, jenis_track: val })}
@@ -510,7 +511,7 @@ console.log('data selcted acc:', selectedAccById);
               {/* Genre */}
               <div className="box-content">
                 <label>Genre <span style={{color:'red', fontSize:'6px'}}> ** diisi oleh kadiv</span></label>
-                <CustomDropdown
+                <CustomDropdownEdit
                   options={dropdownData.genres}        // data dari API
                   value={form.genre}
                   onChange={(val) => setForm({ ...form, genre: val })}
@@ -526,7 +527,7 @@ console.log('data selcted acc:', selectedAccById);
               {/* Project Type */}
               <div className="box-content">
                 <label>Project Type</label>
-                <CustomDropdown
+                <CustomDropdownEdit
                   options={dropdownData.projectType}        // data dari API
                   value={form.project_type}
                   onChange={(val) => setForm({ ...form, project_type: val })}
@@ -622,7 +623,7 @@ console.log('data selcted acc:', selectedAccById);
               {/* KUPON DISKON  */}
               <div className="box-content">
                 <label>Kupon Diskon</label>
-                <CustomDropdown
+                <CustomDropdownEdit
                   options={dropdownData.kuponDiskon}
                   value={form.kupon_diskon_id}
                   onChange={(val) => setForm({ ...form, kupon_diskon_id: val })}  // ambil id saja
