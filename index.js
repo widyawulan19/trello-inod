@@ -40,12 +40,13 @@ app.use(cors({
 console.log("JWT_SECRET:", process.env.JWT_SECRET);
 
 
-// 🔑 Google Sheets setup
+// 🔑 Ambil credential dari ENV (Railway)
+const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT);
+
 const auth = new google.auth.GoogleAuth({
-    keyFile: "service-account.json", // file credentials dari Google Cloud
+    credentials,
     scopes: ["https://www.googleapis.com/auth/spreadsheets"],
 });
-
 
 // Middleware untuk mensimulasikan login
 const simulateLogin = (req, res, next) => {
