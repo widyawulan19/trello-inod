@@ -307,31 +307,33 @@ app.get("/api/marketing-exports/join", async (req, res) => {
 
 // POST /api/marketing-export
 app.post("/api/marketing-export", async (req, res) => {
-    const { marketingId } = req.body;
+  const { marketingId } = req.body;
+  const exportedBy = "admin"; // default user
 
-    try {
-        // Cek apakah sudah ada di marketing_export
-        const checkQuery = `SELECT * FROM marketing_export WHERE marketing_id = $1`;
-        const { rows: existing } = await client.query(checkQuery, [marketingId]);
+  try {
+    // Cek apakah sudah ada di marketing_export
+    const checkQuery = `SELECT * FROM marketing_export WHERE marketing_id = $1`;
+    const { rows: existing } = await client.query(checkQuery, [marketingId]);
 
-        if (existing.length > 0) {
-            return res.status(200).json({ message: "Marketing data already exported" });
-        }
+    if (existing.length > 0) {
+      return res.status(200).json({ message: "Marketing data already exported" });
+    }
 
-        // Insert baru
-        const insertQuery = `
+    // Insert baru
+    const insertQuery = `
       INSERT INTO marketing_export (marketing_id, exported_by, exported_at)
       VALUES ($1, $2, NOW())
       RETURNING *
     `;
-        const { rows: inserted } = await client.query(insertQuery, [marketingId]);
+    const { rows: inserted } = await client.query(insertQuery, [marketingId, exportedBy]);
 
-        res.status(201).json({ message: "Marketing exported successfully", data: inserted[0] });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Server error" });
-    }
+    res.status(201).json({ message: "Marketing exported successfully", data: inserted[0] });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
 });
+
 
 
 // Cek apakah marketing_id sudah diexport
