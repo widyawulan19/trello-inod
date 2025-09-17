@@ -279,31 +279,60 @@ app.get("/api/marketing-exports/join", async (req, res) => {
 });
 
 // Tambah data export untuk 1 marketing_id
-app.post("/api/marketing-exports", async (req, res) => {
+// app.post("/api/marketing-exports", async (req, res) => {
+//     try {
+//         const { marketingId } = req.params;
+//         const { exported_by } = req.body; // opsional: siapa yang melakukan export
+
+//         const result = await client.query(
+//             `INSERT INTO marketing_exports (marketing_id, exported_by, exported_at)
+//        VALUES ($1, $2, NOW())
+//        RETURNING *`,
+//             [marketingId, exported_by || null]
+//         );
+
+//         res.json({
+//             success: true,
+//             message: "✅ Marketing berhasil ditandai sudah di-export",
+//             data: result.rows[0],
+//         });
+//     } catch (error) {
+//         console.error("❌ Error insert marketing_export:", error);
+//         res.status(500).json({
+//             success: false,
+//             message: "Gagal insert marketing_export",
+//         });
+//     }
+// });
+
+// POST /api/marketing-export
+app.post("/api/marketing-export", async (req, res) => {
+    const { marketingId } = req.body;
+
     try {
-        const { marketingId } = req.params;
-        const { exported_by } = req.body; // opsional: siapa yang melakukan export
+        // Cek apakah sudah ada di marketing_export
+        const checkQuery = `SELECT * FROM marketing_export WHERE marketing_id = $1`;
+        const { rows: existing } = await client.query(checkQuery, [marketingId]);
 
-        const result = await client.query(
-            `INSERT INTO marketing_exports (marketing_id, exported_by, exported_at)
-       VALUES ($1, $2, NOW())
-       RETURNING *`,
-            [marketingId, exported_by || null]
-        );
+        if (existing.length > 0) {
+            return res.status(200).json({ message: "Marketing data already exported" });
+        }
 
-        res.json({
-            success: true,
-            message: "✅ Marketing berhasil ditandai sudah di-export",
-            data: result.rows[0],
-        });
-    } catch (error) {
-        console.error("❌ Error insert marketing_export:", error);
-        res.status(500).json({
-            success: false,
-            message: "Gagal insert marketing_export",
-        });
+        // Insert baru
+        const insertQuery = `
+      INSERT INTO marketing_export (marketing_id, exported_by, exported_at)
+      VALUES ($1, $2, NOW())
+      RETURNING *
+    `;
+        const { rows: inserted } = await client.query(insertQuery, [marketingId]);
+
+        res.status(201).json({ message: "Marketing exported successfully", data: inserted[0] });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
     }
 });
+
 
 // Cek apakah marketing_id sudah diexport
 app.get("/api/marketing-exports/:marketingId", async (req, res) => {
