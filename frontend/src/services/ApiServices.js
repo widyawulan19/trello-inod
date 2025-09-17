@@ -398,6 +398,15 @@ export const addMarketingExport = async (marketingId, exportedBy = null) => {
   }
 };
 
+export const addExportMarketing = async (marketingId) => {
+  try {
+    const response = await axios.post(`${API_URL}/marketing-export`, { marketingId });
+    return response.data;
+  } catch (error) {
+    console.error("Gagal export marketing:", error);
+    throw error;
+  }
+};
 
 // Ambil semua data export
 export const getAllMarketingExports = async () => {

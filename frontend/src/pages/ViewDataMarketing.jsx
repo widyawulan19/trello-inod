@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { getAllLists, getDataMarketingById,getAllDataMarketingJoinedById, createCardFromMarketing, checkCardIdNullOrNot, exportDataMarketingToSheets, getMarketingWithExportStatus,checkMarketingExport ,addMarketingExport} from '../services/ApiServices';
+import { getAllLists, getDataMarketingById,getAllDataMarketingJoinedById, createCardFromMarketing, checkCardIdNullOrNot, exportDataMarketingToSheets, getMarketingWithExportStatus,checkMarketingExport ,addMarketingExport,addExportMarketing} from '../services/ApiServices';
 import { data, useParams } from 'react-router-dom';
 import '../style/pages/ViewDataMarketing.css'
 import { HiCube, HiCubeTransparent, HiOutlinePlus, HiOutlineXMark } from 'react-icons/hi2';
@@ -144,8 +144,9 @@ const handleExportToSheets = async (marketingId) => {
     // 1. Export ke Google Sheets
     await exportDataMarketingToSheets(marketingId);
 
-    // 2. Tambahkan marketingId ke tabel marketing_exports
-    await addMarketingExport(marketingId, "admin"); // user login bisa diganti
+   // 2️⃣ Tambahkan marketingId ke marketing_exports
+    const res = await addExportMarketing(marketingId);
+    console.log(res);
 
     console.log("berhasil kirim data ke sheets:");
     showSnackbar(`berhasil kirim data ke sheets ID: ${marketingId}`, "success");
