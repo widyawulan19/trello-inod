@@ -236,24 +236,35 @@ app.get("/api/marketing-exports", async (req, res) => {
 });
 
 // 3. Cek export untuk 1 marketingId
-// app.get("/api/marketing-exports/:marketingId", async (req, res) => {
-//     try {
-//         const { marketingId } = req.params;
-//         const result = await client.query(
-//             "SELECT * FROM marketing_exports WHERE marketing_id = $1 ORDER BY exported_at DESC LIMIT 1",
-//             [marketingId]
-//         );
+app.get("/api/marketing/with-export-status", async (req, res) => {
+  try {
+    const query = `
+      SELECT 
+        m.id,
+        m.buyer_name,
+        m.code_order,
+        CASE 
+          WHEN me.marketing_id IS NOT NULL THEN true
+          ELSE false
+        END AS is_exported
+      FROM marketing m
+      LEFT JOIN marketing_exports me
+      ON m.id = me.marketing_id
+      ORDER BY m.id ASC
+    `;
 
-//         if (result.rows.length > 0) {
-//             res.json({ exported: true, data: result.rows[0] });
-//         } else {
-//             res.json({ exported: false });
-//         }
-//     } catch (error) {
-//         console.error("❌ Error cek export:", error);
-//         res.status(500).json({ success: false, message: "Gagal cek data" });
-//     }
-// });
+    const { rows } = await client.query(query);
+
+    res.status(200).json({
+      message: "Marketing data with export status",
+      data: rows,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 
 // 4. Ambil semua marketing + status export
 app.get("/api/marketing-exports/join", async (req, res) => {
@@ -279,32 +290,6 @@ app.get("/api/marketing-exports/join", async (req, res) => {
 });
 
 // Tambah data export untuk 1 marketing_id
-// app.post("/api/marketing-exports", async (req, res) => {
-//     try {
-//         const { marketingId } = req.params;
-//         const { exported_by } = req.body; // opsional: siapa yang melakukan export
-
-//         const result = await client.query(
-//             `INSERT INTO marketing_exports (marketing_id, exported_by, exported_at)
-//        VALUES ($1, $2, NOW())
-//        RETURNING *`,
-//             [marketingId, exported_by || null]
-//         );
-
-//         res.json({
-//             success: true,
-//             message: "✅ Marketing berhasil ditandai sudah di-export",
-//             data: result.rows[0],
-//         });
-//     } catch (error) {
-//         console.error("❌ Error insert marketing_export:", error);
-//         res.status(500).json({
-//             success: false,
-//             message: "Gagal insert marketing_export",
-//         });
-//     }
-// });
-
 // POST /api/marketing-export
 app.post("/api/marketing-export", async (req, res) => {
   const { marketingId } = req.body;
