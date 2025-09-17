@@ -159,11 +159,6 @@ const handleExportToSheets = async (marketingId) => {
 
 
 
-
-
-
-
-
   return (
     <div className='view-dm-container'>
       <div className="vdm-header">

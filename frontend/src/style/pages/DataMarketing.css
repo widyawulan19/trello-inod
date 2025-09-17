@@ -314,6 +314,15 @@
 } */
 
 /* ============== TABEL HEAD STYLE ========== */
+.input-container {
+  cursor: pointer;
+}
+
+.input-container:hover {
+  text-decoration: underline;
+  color: #5320be;
+}
+
 .input-container,
 .buyer-name-container,
 .code-order-container,

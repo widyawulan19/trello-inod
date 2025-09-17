@@ -504,7 +504,7 @@ const getBasicPrice = (price_normal, discount) => {
                 {filteredData.map((item, index) => (
                   <tr key={item.marketing_id}>
                     <td>{index + 1}</td>
-                    <td className="input-container">
+                    <td className="input-container" onClick={()=> handleShowDetail(item.marketing_id)}>
                       {item.input_by_name || "-"}
                       {hasCardId(item) && (
                         <span
