@@ -312,7 +312,7 @@ app.post("/api/marketing-export", async (req, res) => {
 
   try {
     // Cek apakah sudah ada di marketing_export
-    const checkQuery = `SELECT * FROM marketing_export WHERE marketing_id = $1`;
+    const checkQuery = `SELECT * FROM marketing_exports WHERE marketing_id = $1`;
     const { rows: existing } = await client.query(checkQuery, [marketingId]);
 
     if (existing.length > 0) {
@@ -321,7 +321,7 @@ app.post("/api/marketing-export", async (req, res) => {
 
     // Insert baru
     const insertQuery = `
-      INSERT INTO marketing_export (marketing_id, exported_by, exported_at)
+      INSERT INTO marketing_exports (marketing_id, exported_by, exported_at)
       VALUES ($1, $2, NOW())
       RETURNING *
     `;
