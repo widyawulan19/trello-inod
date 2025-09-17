@@ -237,8 +237,8 @@ app.get("/api/marketing-exports", async (req, res) => {
 
 // 3. Cek export untuk 1 marketingId
 app.get("/api/marketing/with-export-status", async (req, res) => {
-  try {
-    const query = `
+    try {
+        const query = `
       SELECT 
         m.id,
         m.buyer_name,
@@ -253,16 +253,16 @@ app.get("/api/marketing/with-export-status", async (req, res) => {
       ORDER BY m.id ASC
     `;
 
-    const { rows } = await client.query(query);
+        const { rows } = await client.query(query);
 
-    res.status(200).json({
-      message: "Marketing data with export status",
-      data: rows,
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
-  }
+        res.status(200).json({
+            message: "Marketing data with export status",
+            data: rows,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
 });
 
 
@@ -292,31 +292,31 @@ app.get("/api/marketing-exports/join", async (req, res) => {
 // Tambah data export untuk 1 marketing_id
 // POST /api/marketing-export
 app.post("/api/marketing-export", async (req, res) => {
-  const { marketingId } = req.body;
-  const exportedBy = "admin"; // default user
+    const { marketingId } = req.body;
+    const exportedBy = "admin"; // default user
 
-  try {
-    // Cek apakah sudah ada di marketing_export
-    const checkQuery = `SELECT * FROM marketing_exports WHERE marketing_id = $1`;
-    const { rows: existing } = await client.query(checkQuery, [marketingId]);
+    try {
+        // Cek apakah sudah ada di marketing_export
+        const checkQuery = `SELECT * FROM marketing_exports WHERE marketing_id = $1`;
+        const { rows: existing } = await client.query(checkQuery, [marketingId]);
 
-    if (existing.length > 0) {
-      return res.status(200).json({ message: "Marketing data already exported" });
-    }
+        if (existing.length > 0) {
+            return res.status(200).json({ message: "Marketing data already exported" });
+        }
 
-    // Insert baru
-    const insertQuery = `
+        // Insert baru
+        const insertQuery = `
       INSERT INTO marketing_exports (marketing_id, exported_by, exported_at)
       VALUES ($1, $2, NOW())
       RETURNING *
     `;
-    const { rows: inserted } = await client.query(insertQuery, [marketingId, exportedBy]);
+        const { rows: inserted } = await client.query(insertQuery, [marketingId, exportedBy]);
 
-    res.status(201).json({ message: "Marketing exported successfully", data: inserted[0] });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
-  }
+        res.status(201).json({ message: "Marketing exported successfully", data: inserted[0] });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
 });
 
 
