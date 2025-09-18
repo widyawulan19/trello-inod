@@ -237,8 +237,8 @@ app.get("/api/marketing-exports", async (req, res) => {
 
 // 3. Cek export untuk 1 marketingId
 app.get("/api/marketing/with-export-status", async (req, res) => {
-  try {
-    const query = `
+    try {
+        const query = `
       SELECT 
         m.id,
         m.buyer_name,
@@ -253,16 +253,16 @@ app.get("/api/marketing/with-export-status", async (req, res) => {
       ORDER BY m.id ASC
     `;
 
-    const { rows } = await client.query(query);
+        const { rows } = await client.query(query);
 
-    res.status(200).json({
-      message: "Marketing data with export status",
-      data: rows,
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
-  }
+        res.status(200).json({
+            message: "Marketing data with export status",
+            data: rows,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
 });
 
 
@@ -3384,30 +3384,53 @@ app.put('/api/cards/:id/title', async (req, res) => {
     }
 })
 //2. update title description
-app.put('/api/cards/:id/desc', async (req, res) => {
-    const { id } = req.params;
+// app.put('/api/cards/:id/desc', async (req, res) => {
+//     const { id } = req.params;
+//     const { description } = req.body;
+//     const userId = req.user.id;
+
+//     try {
+//         const result = await client.query("UPDATE cards SET description = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *", [description, id]);
+//         if (result.rows.length === 0) return res.status(404).json({ error: "Card not found" });
+
+//         //add log card activity
+//         await logCardActivity({
+//             action: 'updated_desc',
+//             card_id: parseInt(id),
+//             user_id: userId,
+//             entity: 'description',
+//             entity_id: null,
+//             details: ''
+//         })
+
+//         res.json(result.rows[0]);
+//     } catch (error) {
+//         res.status(500).json({ error: error.message });
+//     }
+// })
+
+app.put("/api/cards/:cardId/description", async (req, res) => {
+    const { cardId } = req.params;
     const { description } = req.body;
-    const userId = req.user.id;
+
+    console.log("👉 Request diterima untuk update description");
+    console.log("📦 cardId:", cardId);
+    console.log("📝 description (asli):", description);
 
     try {
-        const result = await client.query("UPDATE cards SET description = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *", [description, id]);
-        if (result.rows.length === 0) return res.status(404).json({ error: "Card not found" });
+        await pool.query(
+            "UPDATE cards SET description = $1 WHERE id = $2",
+            [description, cardId]
+        );
 
-        //add log card activity
-        await logCardActivity({
-            action: 'updated_desc',
-            card_id: parseInt(id),
-            user_id: userId,
-            entity: 'description',
-            entity_id: null,
-            details: ''
-        })
-
-        res.json(result.rows[0]);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.json({ message: "Description updated", description });
+    } catch (err) {
+        console.error("❌ Error update description:", err);
+        res.status(500).json({ error: "Internal server error" });
     }
-})
+});
+
+
 //3. update due_date
 app.put('/api/cards/:id/due_date', async (req, res) => {
     const { id } = req.params;
