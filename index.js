@@ -5742,35 +5742,39 @@ app.put('/api/create-card-marketing/:listId/:marketingId', async (req, res) => {
 
         const description = `
             <div>
-            <p><strong style="display:inline-block; width:150px;">Order Code:</strong> ${marketing.code_order}</p>
-            <p><strong style="display:inline-block; width:150px;">Input By:</strong> ${marketing.input_by_name || 'N/A'}</p>
-            <p><strong style="display:inline-block; width:150px;">Approved By:</strong> ${marketing.acc_by_name || 'N/A'}</p>
-            <p><strong style="display:inline-block; width:150px;">Buyer:</strong> ${marketing.buyer_name}</p>
-            <p><strong style="display:inline-block; width:150px;">Order Number:</strong> ${marketing.order_number}</p>
-            <p><strong style="display:inline-block; width:150px;">Account:</strong> ${marketing.account_name || 'N/A'}</p>
-            <p><strong style="display:inline-block; width:150px;">Deadline:</strong> ${marketing.deadline ? new Date(marketing.deadline).toISOString().split('T')[0] : 'N/A'}</p>
-            <p><strong style="display:inline-block; width:150px;">Jumlah Revisi:</strong> ${marketing.jumlah_revisi}</p>
-            <p><strong style="display:inline-block; width:150px;">Order Type:</strong> ${marketing.order_type_name || 'N/A'}</p>
-            <p><strong style="display:inline-block; width:150px;">Offer Type:</strong> ${marketing.offer_type_name || 'N/A'}</p>
-            <p><strong style="display:inline-block; width:150px;">Jenis Track:</strong> ${marketing.track_type_name || 'N/A'}</p>
-            <p><strong style="display:inline-block; width:150px;">Genre:</strong> ${marketing.genre_name || 'N/A'}</p>
-            <p><strong style="display:inline-block; width:150px;">Jumlah Track:</strong> ${marketing.jumlah_track}</p>
-            <p><strong style="display:inline-block; width:150px;">Normal Price:</strong> $${marketing.price_normal}</p>
-            <p><strong style="display:inline-block; width:150px;">Discount:</strong> ${marketing.discount ?? 'N/A'}</p>
-            <p><strong style="display:inline-block; width:150px;">Basic Price:</strong> $${marketing.basic_price ?? 'N/A'}</p>
-            <p><strong style="display:inline-block; width:150px;">Required Files:</strong> ${marketing.required_files}</p>
-            <p><strong style="display:inline-block; width:150px;">Project Type:</strong> ${marketing.project_type_name || 'N/A'}</p>
-            <p><strong style="display:inline-block; width:150px;">Duration:</strong> ${marketing.duration}</p>
-            <p><strong style="display:inline-block; width:150px;">Gig Link:</strong> ${marketing.gig_link}</p>
-            <p><strong style="display:inline-block; width:150px;">Reference:</strong> ${marketing.reference_link}</p>
-            <p><strong style="display:inline-block; width:150px;">File & Chat:</strong> ${marketing.file_and_chat_link}</p>
-            <p><strong style="display:inline-block; width:150px;">Kupon Diskon:</strong> ${marketing.kupon_diskon_name || 'N/A'}</p>
-            <p><strong style="display:inline-block; width:150px;">Status:</strong> ${marketing.accept_status_name || 'N/A'}</p>
-            <p><strong style="display:inline-block; width:150px;">Detail:</strong> ${marketing.detail_project}</p>
+            <p><strong> Order Code:</strong> ${marketing.code_order}</p>
+            <p><strong> Input By:</strong> ${marketing.input_by_name || 'N/A'}</p>
+            <p><strong> Approved By:</strong> ${marketing.acc_by_name || 'N/A'}</p>
+            <p><strong> Buyer:</strong> ${marketing.buyer_name}</p>
+            <p><strong> Order Number:</strong> ${marketing.order_number}</p>
+            <p><strong> Account:</strong> ${marketing.account_name || 'N/A'}</p>
+            <p><strong> Deadline:</strong> ${marketing.deadline ? new Date(marketing.deadline).toISOString().split('T')[0] : 'N/A'}</p>
+            <p><strong> Jumlah Revisi:</strong> ${marketing.jumlah_revisi}</p>
+            <p><strong> Order Type:</strong> ${marketing.order_type_name || 'N/A'}</p>
+            <p><strong> Offer Type:</strong> ${marketing.offer_type_name || 'N/A'}</p>
+            <p><strong> Jenis Track:</strong> ${marketing.track_type_name || 'N/A'}</p>
+            <p><strong> Genre:</strong> ${marketing.genre_name || 'N/A'}</p>
+            <p><strong> Jumlah Track:</strong> ${marketing.jumlah_track}</p>
+            <p><strong> Normal Price:</strong> $${marketing.price_normal}</p>
+            <p><strong> Discount:</strong> ${marketing.discount ?? 'N/A'}</p>
+            <p><strong> Basic Price:</strong> $${marketing.basic_price ?? 'N/A'}</p>
+            <p><strong> Required Files:</strong> ${marketing.required_files}</p>
+            <p><strong> Project Type:</strong> ${marketing.project_type_name || 'N/A'}</p>
+            <p><strong> Duration:</strong> ${marketing.duration}</p>
+            <p><strong> Gig Link:</strong> ${marketing.gig_link}</p>
+            <p><strong> Reference:</strong> ${marketing.reference_link}</p>
+            <p><strong> File & Chat:</strong> ${marketing.file_and_chat_link}</p>
+            <p><strong> Kupon Diskon:</strong> ${marketing.kupon_diskon_name || 'N/A'}</p>
+            <p><strong> Status:</strong> ${marketing.accept_status_name || 'N/A'}</p>
+            <p><strong> Detail:</strong> ${marketing.detail_project}</p>
             </div>
             `.trim();
 
 
+        // Ambil 5 digit terakhir code_order
+        const lastFiveDigits = marketing.code_order
+            ? marketing.code_order.slice(-5)
+            : 'XXXXX'; // default kalau code_order kosong
 
         // ✅ Card title juga pakai nama genre + buyer
         const newCard = await client.query(
@@ -5779,7 +5783,7 @@ app.put('/api/create-card-marketing/:listId/:marketingId', async (req, res) => {
              RETURNING id`,
             [
                 listId,
-                `'New Project' ${marketing.genre_name || 'Unknown'} - ${marketing.buyer_name} (${marketing.account_name || '-'})`,
+                `'New Project' - ${marketing.buyer_name || 'Unknown'} - (${marketing.account_name || '-'}) - ${marketing.order_type_name || 'N/A'} - ${lastFiveDigits}`,
                 description,
                 0, // posisi default
                 marketing.deadline
