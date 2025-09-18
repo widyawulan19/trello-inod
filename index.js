@@ -5741,34 +5741,35 @@ app.put('/api/create-card-marketing/:listId/:marketingId', async (req, res) => {
         // `.trim();
 
         const description = `
-            
-            <strong>Order Code:</strong>        ${marketing.code_order}
-            <strong>Input By:</strong>          ${marketing.input_by_name || 'N/A'}
-            <strong>Approved By:</strong>       ${marketing.acc_by_name || 'N/A'}
-            <strong>Buyer:</strong>             ${marketing.buyer_name}
-            <strong>Order Number:</strong>      ${marketing.order_number}
-            <strong>Account:</strong>           ${marketing.account_name || 'N/A'}
-            <strong>Deadline:</strong>          ${marketing.deadline ? new Date(marketing.deadline).toISOString().split('T')[0] : 'N/A'}
-            <strong>Jumlah Revisi:</strong>     ${marketing.jumlah_revisi}
-            <strong>Order Type:</strong>        ${marketing.order_type_name || 'N/A'}
-            <strong>Offer Type:</strong>        ${marketing.offer_type_name || 'N/A'}
-            <strong>Jenis Track:</strong>       ${marketing.track_type_name || 'N/A'}
-            <strong>Genre:</strong>             ${marketing.genre_name || 'N/A'}
-            <strong>Jumlah Track:</strong>      ${marketing.jumlah_track}
-            <strong>Normal Price:</strong>      $${marketing.price_normal}
-            <strong>Discount:</strong>          ${marketing.discount ?? 'N/A'}
-            <strong>Basic Price:</strong>       $${marketing.basic_price ?? 'N/A'}
-            <strong>Required Files:</strong>    ${marketing.required_files}
-            <strong>Project Type:</strong>      ${marketing.project_type_name || 'N/A'}
-            <strong>Duration:</strong>          ${marketing.duration}
-            <strong>Gig Link:</strong>          ${marketing.gig_link}
-            <strong>Reference:</strong>         ${marketing.reference_link}
-            <strong>File & Chat:</strong>       ${marketing.file_and_chat_link}
-            <strong>Kupon Diskon:</strong>      ${marketing.kupon_diskon_name || 'N/A'}
-            <strong>Status:</strong>            ${marketing.accept_status_name || 'N/A'}
-            <strong>Detail:</strong>            ${marketing.detail_project}
-        
-        `.trim();
+            <div>
+            <p><strong style="display:inline-block; width:150px;">Order Code:</strong> ${marketing.code_order}</p>
+            <p><strong style="display:inline-block; width:150px;">Input By:</strong> ${marketing.input_by_name || 'N/A'}</p>
+            <p><strong style="display:inline-block; width:150px;">Approved By:</strong> ${marketing.acc_by_name || 'N/A'}</p>
+            <p><strong style="display:inline-block; width:150px;">Buyer:</strong> ${marketing.buyer_name}</p>
+            <p><strong style="display:inline-block; width:150px;">Order Number:</strong> ${marketing.order_number}</p>
+            <p><strong style="display:inline-block; width:150px;">Account:</strong> ${marketing.account_name || 'N/A'}</p>
+            <p><strong style="display:inline-block; width:150px;">Deadline:</strong> ${marketing.deadline ? new Date(marketing.deadline).toISOString().split('T')[0] : 'N/A'}</p>
+            <p><strong style="display:inline-block; width:150px;">Jumlah Revisi:</strong> ${marketing.jumlah_revisi}</p>
+            <p><strong style="display:inline-block; width:150px;">Order Type:</strong> ${marketing.order_type_name || 'N/A'}</p>
+            <p><strong style="display:inline-block; width:150px;">Offer Type:</strong> ${marketing.offer_type_name || 'N/A'}</p>
+            <p><strong style="display:inline-block; width:150px;">Jenis Track:</strong> ${marketing.track_type_name || 'N/A'}</p>
+            <p><strong style="display:inline-block; width:150px;">Genre:</strong> ${marketing.genre_name || 'N/A'}</p>
+            <p><strong style="display:inline-block; width:150px;">Jumlah Track:</strong> ${marketing.jumlah_track}</p>
+            <p><strong style="display:inline-block; width:150px;">Normal Price:</strong> $${marketing.price_normal}</p>
+            <p><strong style="display:inline-block; width:150px;">Discount:</strong> ${marketing.discount ?? 'N/A'}</p>
+            <p><strong style="display:inline-block; width:150px;">Basic Price:</strong> $${marketing.basic_price ?? 'N/A'}</p>
+            <p><strong style="display:inline-block; width:150px;">Required Files:</strong> ${marketing.required_files}</p>
+            <p><strong style="display:inline-block; width:150px;">Project Type:</strong> ${marketing.project_type_name || 'N/A'}</p>
+            <p><strong style="display:inline-block; width:150px;">Duration:</strong> ${marketing.duration}</p>
+            <p><strong style="display:inline-block; width:150px;">Gig Link:</strong> ${marketing.gig_link}</p>
+            <p><strong style="display:inline-block; width:150px;">Reference:</strong> ${marketing.reference_link}</p>
+            <p><strong style="display:inline-block; width:150px;">File & Chat:</strong> ${marketing.file_and_chat_link}</p>
+            <p><strong style="display:inline-block; width:150px;">Kupon Diskon:</strong> ${marketing.kupon_diskon_name || 'N/A'}</p>
+            <p><strong style="display:inline-block; width:150px;">Status:</strong> ${marketing.accept_status_name || 'N/A'}</p>
+            <p><strong style="display:inline-block; width:150px;">Detail:</strong> ${marketing.detail_project}</p>
+            </div>
+            `.trim();
+
 
 
         // ✅ Card title juga pakai nama genre + buyer
