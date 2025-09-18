@@ -3409,7 +3409,7 @@ app.put('/api/cards/:id/title', async (req, res) => {
 //     }
 // })
 
-app.put("/api/cards/:cardId/description", async (req, res) => {
+app.put("/api/cards/:id/desc", async (req, res) => {
     const { cardId } = req.params;
     const { description } = req.body;
 
