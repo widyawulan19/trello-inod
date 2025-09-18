@@ -5712,33 +5712,64 @@ app.put('/api/create-card-marketing/:listId/:marketingId', async (req, res) => {
         const marketing = marketingData.rows[0];
 
         // ✅ Description pakai nama hasil join
+        // const description = `
+        // Order Code: ${marketing.code_order}
+        // Input By: ${marketing.input_by_name || 'N/A'}
+        // Approved By: ${marketing.acc_by_name || 'N/A'}
+        // Buyer: ${marketing.buyer_name}
+        // Order Number: ${marketing.order_number}
+        // Account: ${marketing.account_name || 'N/A'}
+        // Deadline: ${marketing.deadline ? new Date(marketing.deadline).toISOString().split('T')[0] : 'N/A'}
+        // Jumlah Revisi: ${marketing.jumlah_revisi}
+        // Order Type: ${marketing.order_type_name || 'N/A'}
+        // Offer Type: ${marketing.offer_type_name || 'N/A'}
+        // Jenis Track: ${marketing.track_type_name || 'N/A'}
+        // Genre: ${marketing.genre_name || 'N/A'}
+        // Jumlah Track: ${marketing.jumlah_track}
+        // Normal Price: $${marketing.price_normal}
+        // Discount: ${marketing.discount ?? 'N/A'}
+        // Basic Price: $${marketing.basic_price ?? 'N/A'}
+        // Required Files: ${marketing.required_files}
+        // Project Type: ${marketing.project_type_name || 'N/A'}
+        // Duration: ${marketing.duration}
+        // Gig Link: ${marketing.gig_link}
+        // Reference: ${marketing.reference_link}
+        // File & Chat: ${marketing.file_and_chat_link}
+        // Kupon Diskon: ${marketing.kupon_diskon_name || 'N/A'}
+        // Status: ${marketing.accept_status_name || 'N/A'}
+        // Detail: ${marketing.detail_project}
+        // `.trim();
+
         const description = `
-        Order Code: ${marketing.code_order}
-        Input By: ${marketing.input_by_name || 'N/A'}
-        Approved By: ${marketing.acc_by_name || 'N/A'}
-        Buyer: ${marketing.buyer_name}
-        Order Number: ${marketing.order_number}
-        Account: ${marketing.account_name || 'N/A'}
-        Deadline: ${marketing.deadline ? new Date(marketing.deadline).toISOString().split('T')[0] : 'N/A'}
-        Jumlah Revisi: ${marketing.jumlah_revisi}
-        Order Type: ${marketing.order_type_name || 'N/A'}
-        Offer Type: ${marketing.offer_type_name || 'N/A'}
-        Jenis Track: ${marketing.track_type_name || 'N/A'}
-        Genre: ${marketing.genre_name || 'N/A'}
-        Jumlah Track: ${marketing.jumlah_track}
-        Normal Price: $${marketing.price_normal}
-        Discount: ${marketing.discount ?? 'N/A'}
-        Basic Price: $${marketing.basic_price ?? 'N/A'}
-        Required Files: ${marketing.required_files}
-        Project Type: ${marketing.project_type_name || 'N/A'}
-        Duration: ${marketing.duration}
-        Gig Link: ${marketing.gig_link}
-        Reference: ${marketing.reference_link}
-        File & Chat: ${marketing.file_and_chat_link}
-        Kupon Diskon: ${marketing.kupon_diskon_name || 'N/A'}
-        Status: ${marketing.accept_status_name || 'N/A'}
-        Detail: ${marketing.detail_project}
+            <pre>
+            <strong>Order Code:</strong>        ${marketing.code_order}
+            <strong>Input By:</strong>          ${marketing.input_by_name || 'N/A'}
+            <strong>Approved By:</strong>       ${marketing.acc_by_name || 'N/A'}
+            <strong>Buyer:</strong>             ${marketing.buyer_name}
+            <strong>Order Number:</strong>      ${marketing.order_number}
+            <strong>Account:</strong>           ${marketing.account_name || 'N/A'}
+            <strong>Deadline:</strong>          ${marketing.deadline ? new Date(marketing.deadline).toISOString().split('T')[0] : 'N/A'}
+            <strong>Jumlah Revisi:</strong>     ${marketing.jumlah_revisi}
+            <strong>Order Type:</strong>        ${marketing.order_type_name || 'N/A'}
+            <strong>Offer Type:</strong>        ${marketing.offer_type_name || 'N/A'}
+            <strong>Jenis Track:</strong>       ${marketing.track_type_name || 'N/A'}
+            <strong>Genre:</strong>             ${marketing.genre_name || 'N/A'}
+            <strong>Jumlah Track:</strong>      ${marketing.jumlah_track}
+            <strong>Normal Price:</strong>      $${marketing.price_normal}
+            <strong>Discount:</strong>          ${marketing.discount ?? 'N/A'}
+            <strong>Basic Price:</strong>       $${marketing.basic_price ?? 'N/A'}
+            <strong>Required Files:</strong>    ${marketing.required_files}
+            <strong>Project Type:</strong>      ${marketing.project_type_name || 'N/A'}
+            <strong>Duration:</strong>          ${marketing.duration}
+            <strong>Gig Link:</strong>          ${marketing.gig_link}
+            <strong>Reference:</strong>         ${marketing.reference_link}
+            <strong>File & Chat:</strong>       ${marketing.file_and_chat_link}
+            <strong>Kupon Diskon:</strong>      ${marketing.kupon_diskon_name || 'N/A'}
+            <strong>Status:</strong>            ${marketing.accept_status_name || 'N/A'}
+            <strong>Detail:</strong>            ${marketing.detail_project}
+            </pre>
         `.trim();
+
 
         // ✅ Card title juga pakai nama genre + buyer
         const newCard = await client.query(
