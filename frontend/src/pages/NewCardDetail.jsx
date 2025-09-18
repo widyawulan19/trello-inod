@@ -819,100 +819,100 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
                                 {cards && cardId && (
                                 <div className="des-content" style={{ height: "fit-content" }}>
                                     {editingDescription === cardId ? (
-  <div className="ta-cont">
-    <ReactQuill
-      ref={quillRef}
-      theme="snow"
-      value={newDescription}
-      onChange={setNewDescription}
-      modules={modules}
-      className="toolbar-box"
-    />
+                                    <div className="ta-cont">
+                                        <ReactQuill
+                                        ref={quillRef}
+                                        theme="snow"
+                                        value={newDescription}
+                                        onChange={setNewDescription}
+                                        modules={modules}
+                                        className="toolbar-box"
+                                        />
 
-    <div className="desc-actions" style={{ marginTop: "8px", display: "flex", gap: "8px" }}>
-      <button
-        className="btn-save"
-        onClick={() => handleSaveDescription(cardId)}
-        disabled={loading}
-        style={{
-          background: "#4caf50",
-          color: "white",
-          border: "none",
-          padding: "6px 12px",
-          borderRadius: "6px",
-          cursor: "pointer",
-        }}
-      >
-        {loading ? "Saving..." : "Save"}
-      </button>
+                                        <div className="desc-actions" style={{ marginTop: "8px", display: "flex", gap: "8px" }}>
+                                        <button
+                                            className="btn-save"
+                                            onClick={() => handleSaveDescription(cardId)}
+                                            disabled={loading}
+                                            style={{
+                                            background: "#4caf50",
+                                            color: "white",
+                                            border: "none",
+                                            padding: "6px 12px",
+                                            borderRadius: "6px",
+                                            cursor: "pointer",
+                                            }}
+                                        >
+                                            {loading ? "Saving..." : "Save"}
+                                        </button>
 
-      <button
-        className="btn-cancel"
-        onClick={() => {
-          setEditingDescription(null);
-          setNewDescription(cards.description || "");
-        }}
-        style={{
-          background: "#f44336",
-          color: "white",
-          border: "none",
-          padding: "6px 12px",
-          borderRadius: "6px",
-          cursor: "pointer",
-        }}
-      >
-        Cancel
-      </button>
-    </div>
-  </div>
-) : (
-  <div
-    onClick={(e) => handleEditDescription(e, cardId, cards.description)}
-    style={{ cursor: "pointer", whiteSpace: "pre-wrap" }}
-    className="div-p"
-  >
-    {cards.description && cards.description.trim() !== "" ? (
-      <>
-        <div
-          dangerouslySetInnerHTML={{
-            __html: showMore
-              ? linkify(cards.description)
-              : linkify(cards.description.substring(0, maxChars)),
-          }}
-          style={{ cursor: "text" }}
-          onClick={(e) => {
-            if (e.target.tagName === "A") e.stopPropagation();
-          }}
-        />
-        {cards.description.length > maxChars && (
-          <span
-            onClick={(e) => {
-              e.stopPropagation();
-              setShowMore((prev) => !prev);
-            }}
-            style={{
-              color: "#5557e7",
-              fontWeight: "500",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "flex-start",
-              marginTop: "8px",
-              gap: "5px",
-            }}
-          >
-            {showMore ? "Show Less" : "Show More"}
-            {showMore ? <HiChevronUp /> : <HiChevronDown />}
-          </span>
-        )}
-      </>
-    ) : (
-      <div className="placeholder-desc">
-        <p>(click to add description)</p>
-      </div>
-    )}
-  </div>
-)}
+                                        <button
+                                            className="btn-cancel"
+                                            onClick={() => {
+                                            setEditingDescription(null);
+                                            setNewDescription(cards.description || "");
+                                            }}
+                                            style={{
+                                            background: "#f44336",
+                                            color: "white",
+                                            border: "none",
+                                            padding: "6px 12px",
+                                            borderRadius: "6px",
+                                            cursor: "pointer",
+                                            }}
+                                        >
+                                            Cancel
+                                        </button>
+                                        </div>
+                                    </div>
+                                    ) : (
+                                    <div
+                                        onClick={(e) => handleEditDescription(e, cardId, cards.description)}
+                                        style={{ cursor: "pointer", whiteSpace: "pre-wrap" }}
+                                        className="div-p"
+                                    >
+                                        {cards.description && cards.description.trim() !== "" ? (
+                                        <>
+                                            <div
+                                            dangerouslySetInnerHTML={{
+                                                __html: showMore
+                                                ? linkify(cards.description)
+                                                : linkify(cards.description.substring(0, maxChars)),
+                                            }}
+                                            style={{ cursor: "text" }}
+                                            onClick={(e) => {
+                                                if (e.target.tagName === "A") e.stopPropagation();
+                                            }}
+                                            />
+                                            {cards.description.length > maxChars && (
+                                            <span
+                                                onClick={(e) => {
+                                                e.stopPropagation();
+                                                setShowMore((prev) => !prev);
+                                                }}
+                                                style={{
+                                                color: "#5557e7",
+                                                fontWeight: "500",
+                                                cursor: "pointer",
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "flex-start",
+                                                marginTop: "8px",
+                                                gap: "5px",
+                                                }}
+                                            >
+                                                {showMore ? "Show Less" : "Show More"}
+                                                {showMore ? <HiChevronUp /> : <HiChevronDown />}
+                                            </span>
+                                            )}
+                                        </>
+                                        ) : (
+                                        <div className="placeholder-desc">
+                                            <p>(click to add description)</p>
+                                        </div>
+                                        )}
+                                    </div>
+                                    )}
 
 
                                 </div>
@@ -920,6 +920,7 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
                             </div>
 
                         </div>
+                        
                         
 
                         {/* ATTACHMENT  */}
