@@ -3418,7 +3418,7 @@ app.put("/api/cards/:cardId/description", async (req, res) => {
     console.log("📝 description (asli):", description);
 
     try {
-        await pool.query(
+        await client.query(
             "UPDATE cards SET description = $1 WHERE id = $2",
             [description, cardId]
         );
