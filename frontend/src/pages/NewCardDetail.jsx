@@ -38,6 +38,7 @@ import CardDescription from '../modals/CardDesctiption';
 import ReactQuill from 'react-quill-new';
 // import "react-quill-new/dist/quill.snow.css"; // ✅ CSS dari react-quill-new
 import "quill/dist/quill.snow.css";
+import CardDescriptionExample from '../modals/CardDescriptionExample';
 
 const NewCardDetail=()=> {
     //STATE
@@ -1026,11 +1027,9 @@ const NewCardDetail=()=> {
         {showModalDes && (
         <div className="modal-des-container">
             <div className="modals-content">
-                <div className="modals-header">
-                    {/* HEADER TITLE  */}
+                {/* <div className="modals-header">
                     {cards && cardId && (
                         <div className="ct-box">
-                            {/* <HiOutlineCreditCard className='ct-icon'/> */}
                             {editingTitle === cardId ? (
                             <input
                                 value={newTitle}
@@ -1049,11 +1048,12 @@ const NewCardDetail=()=> {
                     <div className="modal-close" onClick={() => setShowModalDes(false)}>
                         <FaXmark/>
                     </div>
-                </div>
+                </div> */}
 
-                <div className="modals-body" style={{height:'fit-content'}}>
+                {/* <div className="modals-body" style={{height:'fit-content'}}>
                    <CardDescription card={cards} onUpdate={(newDesc) => setCards({ ...cards, description: newDesc })} />
-                </div>
+                </div> */}
+                <CardDescriptionExample card={cards} />
             </div>
         </div>
         )}
