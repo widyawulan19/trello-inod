@@ -88,3 +88,13 @@
     height: 80vh;
     overflow-y: auto;
 }
+
+
+/* DAILY  */
+.daily-container {
+    /* border: 1px solid blue; */
+}
+
+.daily-container .daily-total {
+    margin: 10px 0px;
+}

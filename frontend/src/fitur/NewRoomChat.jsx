@@ -5,6 +5,7 @@ import { FaXmark } from 'react-icons/fa6';
 import { IoArrowUpOutline, IoReturnDownBackSharp, IoTrash } from "react-icons/io5";
 import { BsArrowReturnLeft } from "react-icons/bs";
 import { useSnackbar } from '../context/Snackbar';
+import bg from '../assets/tele-wallps.png';
 
 const NewRoomChat=({cardId, userId, onClose})=> {
   const [chats, setChats] = useState([]);
@@ -147,6 +148,7 @@ const NewRoomChat=({cardId, userId, onClose})=> {
             </div>
         </div>
 
+      {/* INTI CHAT  */}
        <div
             className={`chat-bubble ${chat.user_id === userId ? 'chat-bubble-own' : 'chat-bubble-other'}`}
             dangerouslySetInnerHTML={{ __html: autoLinkHTML(chat.message) }}
@@ -246,10 +248,18 @@ const NewRoomChat=({cardId, userId, onClose})=> {
 
     
 return (
-  <div className="chat-room-container">
+  <div className="chat-room-container"
+    style={{
+      backgroundImage: `url(${bg})`,
+      backgroundSize: "cover",   // menyesuaikan ukuran gambar
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "center",
+
+    }}
+  >
     <div className="chat-title">
         <h3>Chat Room</h3>
-        <FaXmark onClick={onClose}/>
+        <FaXmark onClick={onClose} style={{cursor:'pointer'}}/>
     </div>
     
 

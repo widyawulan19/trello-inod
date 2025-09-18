@@ -430,3 +430,140 @@ export default MarketingDashboard;
         
         export default ExportDataMarketingExample;
         
+
+
+
+import React, { useEffect, useState } from "react";
+import { getAllMarketing, getAllMarketingExports } from "./services/marketingService";
+import { exportMarketing } from "./services/marketingExportService";
+
+const MarketingList = () => {
+  const [marketingList, setMarketingList] = useState([]);
+  const [marketingExports, setMarketingExports] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const marketing = await getAllMarketing();
+      const exportsData = await getAllMarketingExports();
+      setMarketingList(marketing);
+      setMarketingExports(exportsData);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleTransfile = async (marketingId) => {
+    try {
+      await exportMarketing(marketingId);
+      // Update state marketingExports supaya tombol langsung berubah
+      setMarketingExports((prev) => [...prev, { marketing_id: marketingId }]);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  if (loading) return <p>Loading...</p>;
+
+  return (
+    <div>
+      <h2>Marketing List</h2>
+      <ul>
+        {marketingList.map((m) => {
+          const exported = isExported(m.id, marketingExports);
+          return (
+            <li key={m.id} style={{ marginBottom: "10px" }}>
+              {m.buyer_name} ({m.code_order})
+              <button
+                onClick={() => !exported && handleTransfile(m.id)}
+                disabled={exported}
+                style={{
+                  marginLeft: "10px",
+                  backgroundColor: exported ? "gray" : "blue",
+                  color: "white",
+                  cursor: exported ? "not-allowed" : "pointer",
+                }}
+              >
+                {exported ? "Sudah Transfile" : "Belum Transfile"}
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+};
+
+export default MarketingList;
+
+
+import React, { useState, useEffect } from "react";
+import { getAllMarketingExports } from "./services/marketingService";
+
+const DetailMarketing = ({ dataMarketings, marketingId, handleExportToSheets }) => {
+  const [marketingTransfile, setMarketingTransfile] = useState([]);
+  const [isExported, setIsExported] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  // Ambil data marketing_exports saat mount
+  const fetchDataTransfile = async () => {
+    try {
+      setLoading(true);
+      const response = await getAllMarketingExports();
+      setMarketingTransfile(response);
+      // cek apakah marketingId sudah ada di export
+      const exported = response.some((m) => m.marketing_id === marketingId);
+      setIsExported(exported);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDataTransfile();
+  }, [marketingId]);
+
+  // handle tombol klik
+  const handleClick = async () => {
+    await handleExportToSheets(marketingId);
+    // setelah berhasil, set status exported true
+    setIsExported(true);
+  };
+
+  return (
+    <div className="view-dm-container">
+      <div className="vdm-header">
+        <div className="vdm-left">
+          <h4>DETAIL DATA MARKETING</h4>
+          {dataMarketings.genre} | {dataMarketings.buyer_name} | {dataMarketings.account} | {getLastFiveCodeOrder(dataMarketings.code_order)}
+        </div>
+        <div className="vdm-right">
+          <div className="export" style={{ marginRight: "5px" }}>
+            <button
+              onClick={handleClick}
+              disabled={isExported} // disable jika sudah di-transfile
+              style={{
+                backgroundColor: isExported ? "gray" : "blue",
+                color: "white",
+                cursor: isExported ? "not-allowed" : "pointer",
+              }}
+            >
+              {isExported ? "Sudah Transfile" : "Transfile to SpreedSheets"}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default DetailMarketing;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { getAllLists, getDataMarketingById,getAllDataMarketingJoinedById, createCardFromMarketing, checkCardIdNullOrNot, exportDataMarketingToSheets, getMarketingWithExportStatus,checkMarketingExport ,addMarketingExport,addExportMarketing} from '../services/ApiServices';
+import { getAllLists, getDataMarketingById,getAllDataMarketingJoinedById, createCardFromMarketing, checkCardIdNullOrNot, exportDataMarketingToSheets, getMarketingWithExportStatus,checkMarketingExport ,addMarketingExport,addExportMarketing, getAllMarketingExports} from '../services/ApiServices';
 import { data, useParams } from 'react-router-dom';
 import '../style/pages/ViewDataMarketing.css'
 import { HiCube, HiCubeTransparent, HiOutlinePlus, HiOutlineXMark } from 'react-icons/hi2';
@@ -13,11 +13,12 @@ import { useSnackbar } from '../context/Snackbar';
 
 
 
-const ViewDataMarketing=({marketingId, onClose})=> {
+const ViewDataMarketing=({marketingId, onClose, isExported, setIsExported,marketingTransfile, fetchDataTransfile,onExport})=> {
     //STATE
     const {workspaceId, boardId} = useRouterContext()
     console.log('Data workspace id berhasil diteruskan:', workspaceId)
-    console.log('Data marketing berhasil diteruskan:', marketingId)
+    console.log('ONEXPORT marketing berhasil diteruskan:', onExport)
+    console.log('berhasil meneruskan isExported:', isExported)
     const [dataMarketings, setDataMarketings] = useState([]);
     const [lists, setLists] = useState([]);
     const [selectedListId, setSelectedListId] = useState('');
@@ -27,6 +28,9 @@ const ViewDataMarketing=({marketingId, onClose})=> {
     const [cardId, setCardId] = useState(null)
     const [loadingCardId, setLoadingCardId] = useState(true)
     const {showSnackbar} = useSnackbar();
+    // const [marketingTransfile, setMarketingTransfile] = useState([]);
+    // const [isExported, setIsExported] = useState(false);
+
 
 
     const handleShowLists = (marketingId) => {
@@ -119,44 +123,6 @@ const ViewDataMarketing=({marketingId, onClose})=> {
     fetchCardId();
   }, [marketingId]);
 
-  //7. kirim satu data ke google sheets
-  // const handleExportToSheets = async (marketingId) =>{
-  //   try{
-  //     setIsLoading(true);
-  //     await exportDataMarketingToSheets(marketingId);
-  //     showSnackbar(`Data "${marketingId.buyer_name}" berhasil dikirim ke Google Sheets`, 'success');
-  //   }catch(error){
-  //     console.log('Gagal kirim data ke sheets:', error)
-  //     showSnackbar(`Gagal kirim data ke sheets "${marketingId.buyer_name}"`, 'error');
-  //   }finally{
-  //     setIsLoading(false);
-  //   }
-  // }
-
-// Fungsi untuk export & insert ke marketing_exports
-// Fungsi untuk export ke Google Sheets
-
-// Fungsi handle utama
-const handleExportToSheets = async (marketingId) => {
-  try {
-    setIsLoading(true);
-
-    // 1. Export ke Google Sheets
-    await exportDataMarketingToSheets(marketingId);
-
-   // 2️⃣ Tambahkan marketingId ke marketing_exports
-    const res = await addExportMarketing(marketingId);
-    console.log(res);
-
-    console.log("berhasil kirim data ke sheets:");
-    showSnackbar(`berhasil kirim data ke sheets ID: ${marketingId}`, "success");
-  } catch (error) {
-    console.error("❌ Gagal kirim data ke sheets:", error);
-    showSnackbar(`❌ Gagal kirim data ke sheets ID: ${marketingId}`, "error");
-  } finally {
-    setIsLoading(false);
-  }
-};
 
 
 
@@ -165,14 +131,21 @@ const handleExportToSheets = async (marketingId) => {
       <div className="vdm-header">
         <div className="vdm-left">
           <h4>DETAIL DATA MARKETING</h4>
-          {dataMarketings.genre} | {dataMarketings.buyer_name} | {dataMarketings.account} | {getLastFiveCodeOrder(dataMarketings.code_order)}
+          {dataMarketings.genre_name} | {dataMarketings.buyer_name} | {dataMarketings.account_name} | {getLastFiveCodeOrder(dataMarketings.code_order)}
         </div>
         <div className="vdm-right">
           <div className="export" style={{ marginRight: "5px" }}>
             <button
-              onClick={() => handleExportToSheets(marketingId)}
+              onClick={() => onExport(marketingId)}
+              disabled={isExported} // disable jika sudah di-transfile
+              style={{
+                backgroundColor: isExported ? "green" : "grey",
+                color: "white",
+                cursor: isExported ? "not-allowed" : "pointer",
+                border:'1px solid none'
+              }}
             >
-              Transfile to SpreedSheets
+              {isExported ? "Sudah Transfile" : "Transfile to SpreedSheets"}
             </button>
           </div>
 
