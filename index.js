@@ -5741,7 +5741,7 @@ app.put('/api/create-card-marketing/:listId/:marketingId', async (req, res) => {
         // `.trim();
 
         const description = `
-            <pre>
+            
             <strong>Order Code:</strong>        ${marketing.code_order}
             <strong>Input By:</strong>          ${marketing.input_by_name || 'N/A'}
             <strong>Approved By:</strong>       ${marketing.acc_by_name || 'N/A'}
@@ -5767,7 +5767,7 @@ app.put('/api/create-card-marketing/:listId/:marketingId', async (req, res) => {
             <strong>Kupon Diskon:</strong>      ${marketing.kupon_diskon_name || 'N/A'}
             <strong>Status:</strong>            ${marketing.accept_status_name || 'N/A'}
             <strong>Detail:</strong>            ${marketing.detail_project}
-            </pre>
+        
         `.trim();
 
 
