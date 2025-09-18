@@ -3410,17 +3410,17 @@ app.put('/api/cards/:id/title', async (req, res) => {
 // })
 
 app.put("/api/cards/:id/desc", async (req, res) => {
-    const { cardId } = req.params;
+    const { id } = req.params;
     const { description } = req.body;
 
     console.log("👉 Request diterima untuk update description");
-    console.log("📦 cardId:", cardId);
+    console.log("📦 cardId:", id);
     console.log("📝 description (asli):", description);
 
     try {
         await client.query(
             "UPDATE cards SET description = $1 WHERE id = $2",
-            [description, cardId]
+            [description, id]
         );
 
         res.json({ message: "Description updated", description });
