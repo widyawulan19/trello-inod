@@ -821,12 +821,12 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
                                     {editingDescription === cardId ? (
                                     <div className="ta-cont">
                                         <ReactQuill
-                                        ref={quillRef}
-                                        theme="snow"
-                                        value={newDescription}
-                                        onChange={setNewDescription}
-                                        modules={modules}
-                                        className="toolbar-box"
+                                            ref={quillRef}
+                                            theme="snow"
+                                            value={newDescription}
+                                            onChange={setNewDescription}
+                                            modules={modules}
+                                            className="toolbar-box"
                                         />
 
                                         <div className="desc-actions">
