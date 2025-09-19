@@ -1054,6 +1054,36 @@ app.get('/api/uploaded-files/:cardId/count', async (req, res) => {
     }
 });
 
+//endpoin delete uploaded file
+app.delete('/api/delete-file/:cardId', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const result = await client.query(
+            `DELETE FROM uploaded_files WHERE id = $1 RETURNING *`,
+            [id],
+        );
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'User not found in this workspace' });
+        }
+
+        //log activity for delete workspace user
+        await logActivity(
+            'Workspace user',
+            workspaceId,
+            'delete',
+            userId,
+            'File attachement deleted',
+            null,
+            null,
+        )
+        res.status(200).json({ message: 'file uploaded removed from card' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+})
+
+
+
 //END ENDPOIN UPLOAD
 
 // ENDPOINT SEARCH CARD (DENGAN ID)
