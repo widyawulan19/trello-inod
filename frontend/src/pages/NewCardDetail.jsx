@@ -1090,7 +1090,23 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
                 {/* <div className="modals-body" style={{height:'fit-content'}}>
                    <CardDescription card={cards} onUpdate={(newDesc) => setCards({ ...cards, description: newDesc })} />
                 </div> */}
-                <CardDescriptionExample card={cards} />
+                <CardDescriptionExample 
+                    card={cards} 
+                    setCard={setCards} 
+                    onClose={handleCloseModalDes} 
+                    cardId={cardId}
+                    setNewDescription={setNewDescription}
+                    handleSaveDescription={handleSaveDescription}
+                    loading={loading}
+                    setLoading={setLoading}
+                    setEditingDescription={setEditingDescription}
+                    showMore={showMore}
+                    setShowMore={setShowMore}
+                    linkify={linkify}
+                    handleEditDescription={handleEditDescription}
+                    maxChars={maxChars} 
+                    modules={modules}                   
+                />
             </div>
         </div>
         )}
