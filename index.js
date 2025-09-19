@@ -1055,7 +1055,7 @@ app.get('/api/uploaded-files/:cardId/count', async (req, res) => {
 });
 
 //endpoin delete uploaded file
-app.delete('/api/delete-file/:cardId', async (req, res) => {
+app.delete('/api/delete-file/:id', async (req, res) => {
     const { id } = req.params;
     try {
         const result = await client.query(
