@@ -594,9 +594,6 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
         return `<a href="${url}" target="_blank" rel="noopener noreferrer" style="color:#5557e7; text-decoration:underline;">${url}</a>`;
     });
     };
-
-
-
     
   
 
@@ -943,7 +940,7 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
                             <div className="attach-body">
                                 {totalFile > 0 ? (
                                 <div className="file-cont">
-                                    <UploadFile cardId={cardId} />
+                                    <UploadFile cardId={cardId} fetchCardById={fetchCardById} />
                                 </div>
                                 ) : (
                                 <div className="no-file">

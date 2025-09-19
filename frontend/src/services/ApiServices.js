@@ -23,6 +23,9 @@ export const uploadFile = (file, cardId) => {
   }).then(res => res.data);
 };
 
+// DELETE FILE BY CARD 
+export const deleteFile = (cardId) => axios.delete(`${API_URL}/delete-file/${cardId}`);
+
 //UPLOADED FILE
 export const getAllUploadFiles = (cardId) => axios.get(`${API_URL}/uploaded-files/${cardId}`);
 export const getTotalFile = (cardId) => axios.get(`${API_URL}/uploaded-files/${cardId}/count`);
