@@ -829,7 +829,7 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
                                         className="toolbar-box"
                                         />
 
-                                        <div className="desc-actions" style={{ marginTop: "8px", display: "flex", gap: "8px" }}>
+                                        <div className="desc-actions">
                                         <button
                                             className="btn-save"
                                             onClick={() => handleSaveDescription(cardId)}
@@ -841,6 +841,8 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
                                             padding: "6px 12px",
                                             borderRadius: "6px",
                                             cursor: "pointer",
+                                            width:'10vw',
+                                            textAlign:'center'
                                             }}
                                         >
                                             {loading ? "Saving..." : "Save"}
@@ -859,6 +861,7 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
                                             padding: "6px 12px",
                                             borderRadius: "6px",
                                             cursor: "pointer",
+                                            width:'10vw',
                                             }}
                                         >
                                             Cancel

@@ -808,6 +808,13 @@
     text-align: center;
 }
 
+.desc-actions{
+    border:'1px solid red';
+    margin-top:8px;
+    display:flex;
+    gap:10px;
+}
+
 /* RIGHT  */
 .ncd-main-content .ncd-main-right {
     /* border: 1px solid green; */
