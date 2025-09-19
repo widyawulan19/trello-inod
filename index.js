@@ -1055,13 +1055,13 @@ app.get('/api/uploaded-files/:cardId/count', async (req, res) => {
 });
 
 //endpoin delete uploaded file
-app.delete('/api/delete-file/:id', async (req, res) => {
-    const { id } = req.params;
+app.delete('/api/delete-file/:cardId', async (req, res) => {
+    const { cardId } = req.params;
 
     try {
         const result = await client.query(
-            `DELETE FROM uploaded_files WHERE id = $1 RETURNING *`,
-            [id],
+            `DELETE FROM uploaded_files WHERE cardId = $1 RETURNING *`,
+            [cardId],
         );
         res.status(200).json({ message: 'file uploaded removed from card' });
     } catch (error) {
