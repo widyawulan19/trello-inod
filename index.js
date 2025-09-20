@@ -1069,6 +1069,20 @@ app.delete('/api/delete-file/:cardId', async (req, res) => {
     }
 })
 
+app.delete('/api/delete-file/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const result = await client.query(
+            `DELETE FORM uploaded_file WHERE id = $1 RETURNING * `,
+            [id],
+        );
+        res.status(200).json({ message: 'file uploaded removed from card' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+})
+
 
 
 //END ENDPOIN UPLOAD
