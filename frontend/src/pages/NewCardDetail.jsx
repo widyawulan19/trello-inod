@@ -828,19 +828,9 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
 
                                         <div className="desc-actions">
                                         <button
-                                            className="btn-save"
+                                            className="btn-des-save"
                                             onClick={() => handleSaveDescription(cardId)}
                                             disabled={loading}
-                                            style={{
-                                            background: "#4caf50",
-                                            color: "white",
-                                            border: "none",
-                                            padding: "6px 12px",
-                                            borderRadius: "6px",
-                                            cursor: "pointer",
-                                            width:'10vw',
-                                            textAlign:'center'
-                                            }}
                                         >
                                             {loading ? "Saving..." : "Save"}
                                         </button>
@@ -851,16 +841,7 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
                                             setEditingDescription(null);
                                             setNewDescription(cards.description || "");
                                             }}
-                                            style={{
-                                            background: "#f44336",
-                                            color: "white",
-                                            border: "none",
-                                            padding: "6px 12px",
-                                            borderRadius: "6px",
-                                            cursor: "pointer",
-                                            width:'10vw',
-                                            }}
-                                        >
+                                            >
                                             Cancel
                                         </button>
                                         </div>
@@ -1061,48 +1042,24 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
         {showModalDes && (
         <div className="modal-des-container">
             <div className="modals-content">
-                {/* <div className="modals-header">
-                    {cards && cardId && (
-                        <div className="ct-box">
-                            {editingTitle === cardId ? (
-                            <input
-                                value={newTitle}
-                                onChange={(e) => setNewTitle(e.target.value)}
-                                onBlur={()=> handleSaveTitle(cardId)}
-                                onKeyDown={(e) =>handleKeyPressTitle(e, cardId)}
-                                autoFocus
-                            />
-                            ):(
-                            <h5 onClick={(e)=>handleEditingTitle(e, cardId, cards.title)}>
-                                {cards.title}
-                            </h5>
-                            )}
-                        </div>
-                    )}
-                    <div className="modal-close" onClick={() => setShowModalDes(false)}>
-                        <FaXmark/>
-                    </div>
-                </div> */}
-
-                {/* <div className="modals-body" style={{height:'fit-content'}}>
-                   <CardDescription card={cards} onUpdate={(newDesc) => setCards({ ...cards, description: newDesc })} />
-                </div> */}
                 <CardDescriptionExample 
                     card={cards} 
                     setCard={setCards} 
                     onClose={handleCloseModalDes} 
-                    cardId={cardId}
+                    cardId={cardId} 
+                    newDescription={newDescription}
                     setNewDescription={setNewDescription}
                     handleSaveDescription={handleSaveDescription}
                     loading={loading}
                     setLoading={setLoading}
-                    setEditingDescription={setEditingDescription}
                     showMore={showMore}
                     setShowMore={setShowMore}
                     linkify={linkify}
                     handleEditDescription={handleEditDescription}
                     maxChars={maxChars} 
-                    modules={modules}                   
+                    modules={modules}  
+                    editingDescription={editingDescription} 
+                    setEditingDescription={setEditingDescription}        
                 />
             </div>
         </div>
@@ -1113,8 +1070,3 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
 }
 
 export default NewCardDetail
-
-{/* <div className="card-detail-left">
-                    <h2>Card Detail</h2>
-                    <button onClick={() => setLayoutOpen(true)}>Open Chat</button>
-                </div> */}

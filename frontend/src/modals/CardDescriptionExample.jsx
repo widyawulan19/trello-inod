@@ -1,190 +1,130 @@
-import { useState, useEffect, useRef } from "react";
+import { useRef } from "react";
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
-import { updateDescCard } from "../services/ApiServices";
 import { HiChevronDown, HiChevronUp, HiXMark } from "react-icons/hi2";
+import '../style/modals/CardDescriptionExample.css'
 
-const CardDescriptionExample=({ 
+const CardDescriptionExample = ({ 
   card, 
-  cardId, 
-  setCard, 
+  setCard,
   onClose,
-  // setNewDescription,
+  cardId, 
+  newDescription,
+  setNewDescription,
   handleSaveDescription,
   loading,
   setLoading,
-  // setEditingDescription,
+  setEditingDescription,
+  editingDescription,
   showMore,
   setShowMore,
   linkify,
   handleEditDescription,
   maxChars,
-  modules
-})=> {
-  const [cards, setCards] = useState({});
-  const [description, setDescription] = useState(card.description || "");
-  const [isSaving, setIsSaving] = useState(false);
-  const [editingDescription, setEditingDescription] = useState(null);
-  const [newDescription, setNewDescription] = useState('');
+  modules,
+}) => {
   const quillRef = useRef(null);
 
-  // debug 
-  console.log('card deskripsi menerima data card:', card);
-  console.log('card deskripsi menerima data cardId:', cardId);
-    
+  // 👉 Pastikan saat klik edit, state newDescription diisi dengan data lama
+  const handleStartEdit = (e) => {
+    setNewDescription(card.description || "");
+    handleEditDescription(e, cardId, card.description);
+  };
 
-  return(
+  return (
     <div className='card-description-container'>
-      <div className="desc-header">
-        
-        <HiXMark onClick={onClose}/>
+      {/* HEADER */}
+      <div className="cd-header">
+        <h3>Detail Description</h3>
+        <HiXMark onClick={onClose} className="cd-icon"/>
       </div>
-      <div className="des-content">
-        {card.description}
-      </div>
-      {/* <div className="des-content">
-          {cards && cardId && (
-          <div className="des-content" style={{ height: "fit-content" }}>
-              {editingDescription === cardId ? (
-              <div className="ta-cont">
-                  <ReactQuill
-                      ref={quillRef}
-                      theme="snow"
-                      value={newDescription}
-                      onChange={setNewDescription}
-                      modules={modules}
-                      className="toolbar-box"
+
+      {/* CONTENT */}
+      {card && cardId && (
+        <div className="des-content">
+          {editingDescription === cardId ? (
+            <div className="ta-cont">
+              <ReactQuill
+                ref={quillRef}
+                theme="snow"
+                value={newDescription}
+                onChange={setNewDescription}
+                modules={modules}
+                className="toolbar-box"
+              />
+
+              <div className="action-btn">
+                <button
+                  className="btn-desc-save"
+                  onClick={() => handleSaveDescription(cardId)}
+                  disabled={loading}
+                >
+                  {loading ? "Saving..." : "Save"}
+                </button>
+
+                <button
+                  className="btn-desc-cancel"
+                  onClick={() => {
+                    setEditingDescription(null);
+                    setNewDescription(card.description || "");
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div
+              onClick={handleStartEdit}   // ✅ pakai handleStartEdit biar isi newDescription dulu
+              style={{ cursor: "pointer", whiteSpace: "pre-wrap", minHeight:'50vh', maxHeight:'78vh', overflowY:'auto' }}
+              className="div-p"
+            >
+              {card.description && card.description.trim() !== "" ? (
+                <>
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: showMore
+                        ? linkify(card.description)
+                        : linkify(card.description.substring(0, maxChars)),
+                    }}
+                    style={{ cursor: "text" }}
+                    onClick={(e) => {
+                      if (e.target.tagName === "A") e.stopPropagation();
+                    }}
                   />
-      
-                  <div className="desc-actions">
-                  <button
-                      className="btn-save"
-                      onClick={() => handleSaveDescription(cardId)}
-                      disabled={loading}
-                      style={{
-                      background: "#4caf50",
-                      color: "white",
-                      border: "none",
-                      padding: "6px 12px",
-                      borderRadius: "6px",
-                      cursor: "pointer",
-                      width:'10vw',
-                      textAlign:'center'
-                      }}
-                  >
-                      {loading ? "Saving..." : "Save"}
-                  </button>
-      
-                  <button
-                      className="btn-cancel"
-                      onClick={() => {
-                      setEditingDescription(null);
-                      setNewDescription(cards.description || "");
-                      }}
-                      style={{
-                      background: "#f44336",
-                      color: "white",
-                      border: "none",
-                      padding: "6px 12px",
-                      borderRadius: "6px",
-                      cursor: "pointer",
-                      width:'10vw',
-                      }}
-                  >
-                      Cancel
-                  </button>
-                  </div>
-              </div>
-              ) : (
-              <div
-                  onClick={(e) => handleEditDescription(e, cardId, cards.description)}
-                  style={{ cursor: "pointer", whiteSpace: "pre-wrap" }}
-                  className="div-p"
-              >
-                  {cards.description && cards.description.trim() !== "" ? (
-                  <>
-                      <div
-                      dangerouslySetInnerHTML={{
-                          __html: showMore
-                          ? linkify(cards.description)
-                          : linkify(cards.description.substring(0, maxChars)),
-                      }}
-                      style={{ cursor: "text" }}
+                  {card.description.length > maxChars && (
+                    <span
                       onClick={(e) => {
-                          if (e.target.tagName === "A") e.stopPropagation();
+                        e.stopPropagation();
+                        setShowMore((prev) => !prev);
                       }}
-                      />
-                      {cards.description.length > maxChars && (
-                      <span
-                          onClick={(e) => {
-                          e.stopPropagation();
-                          setShowMore((prev) => !prev);
-                          }}
-                          style={{
-                          color: "#5557e7",
-                          fontWeight: "500",
-                          cursor: "pointer",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "flex-start",
-                          marginTop: "8px",
-                          gap: "5px",
-                          }}
-                      >
-                          {showMore ? "Show Less" : "Show More"}
-                          {showMore ? <HiChevronUp /> : <HiChevronDown />}
-                      </span>
-                      )}
-                  </>
-                  ) : (
-                  <div className="placeholder-desc">
-                      <p>(click to add description)</p>
-                  </div>
+                      style={{
+                        color: "#5557e7",
+                        fontWeight: "500",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "flex-start",
+                        marginTop: "8px",
+                        gap: "5px",
+                      }}
+                    >
+                      {showMore ? "Show Less" : "Show More"}
+                      {showMore ? <HiChevronUp /> : <HiChevronDown />}
+                    </span>
                   )}
-              </div>
+                </>
+              ) : (
+                <div className="placeholder-desc">
+                  <p>(click to add description)</p>
+                </div>
               )}
-          </div>
+            </div>
+          )}
+        </div>
       )}
-    </div> */}
-    
     </div>
-  )
+  );
+};
 
-
-
-}
-
-export default CardDescriptionExample
-
-
-// return (
-//     <div className="space-y-3">
-//       <h3 className="text-lg font-semibold">Deskripsi</h3>
-//       {/* <HiXMark onClick={onClose}/> */}
-
-//       {/* ReactQuill editor */}
-//       <ReactQuill
-//         theme="snow"
-//         value={description}
-//         onChange={setDescription}
-//         modules={{
-//           toolbar: [
-//             ["bold", "italic", "underline", "strike"],
-//             [{ list: "ordered" }, { list: "bullet" }],
-//             ["blockquote", "code-block"],
-//             ["link"],
-//             ["clean"],
-//           ],
-//         }}
-//         className="bg-white rounded-md"
-//       />
-
-//       <button
-//         onClick={handleSave}
-//         disabled={isSaving}
-//         className="px-4 py-2 text-white bg-blue-600 rounded-md disabled:opacity-50"
-//       >
-//         {isSaving ? "Menyimpan..." : "Simpan"}
-//       </button>
-//     </div>
-//   );
+export default CardDescriptionExample;
