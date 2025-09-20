@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { getAllLists, getDataMarketingById,getAllDataMarketingJoinedById, createCardFromMarketing, checkCardIdNullOrNot } from '../services/ApiServices';
+import { getAllLists, getDataMarketingById,getAllDataMarketingJoinedById, createCardFromMarketing, checkCardIdNullOrNot, exportDataMarketingToSheets, getMarketingWithExportStatus,checkMarketingExport ,addMarketingExport,addExportMarketing, getAllMarketingExports} from '../services/ApiServices';
 import { data, useParams } from 'react-router-dom';
 import '../style/pages/ViewDataMarketing.css'
 import { HiCube, HiCubeTransparent, HiOutlinePlus, HiOutlineXMark } from 'react-icons/hi2';
@@ -9,13 +9,16 @@ import FormCreateCardMarketing from '../fitur/FormCreateCardMarketing';
 import { useRouterContext } from '../context/RouteContext';
 import { FaXmark } from 'react-icons/fa6';
 import ExportDataMarketingId from '../exports/ExportDataMarketingId';
+import { useSnackbar } from '../context/Snackbar';
 
 
-const ViewDataMarketing=({marketingId, onClose})=> {
+
+const ViewDataMarketing=({marketingId, onClose, isExported, setIsExported,marketingTransfile, fetchDataTransfile,onExport})=> {
     //STATE
     const {workspaceId, boardId} = useRouterContext()
     console.log('Data workspace id berhasil diteruskan:', workspaceId)
-    console.log('Data marketing berhasil diteruskan:', marketingId)
+    console.log('ONEXPORT marketing berhasil diteruskan:', onExport)
+    console.log('berhasil meneruskan isExported:', isExported)
     const [dataMarketings, setDataMarketings] = useState([]);
     const [lists, setLists] = useState([]);
     const [selectedListId, setSelectedListId] = useState('');
@@ -24,6 +27,10 @@ const ViewDataMarketing=({marketingId, onClose})=> {
     const showListRef = OutsideClick(()=> setShowList(false))
     const [cardId, setCardId] = useState(null)
     const [loadingCardId, setLoadingCardId] = useState(true)
+    const {showSnackbar} = useSnackbar();
+    // const [marketingTransfile, setMarketingTransfile] = useState([]);
+    // const [isExported, setIsExported] = useState(false);
+
 
 
     const handleShowLists = (marketingId) => {
@@ -117,17 +124,32 @@ const ViewDataMarketing=({marketingId, onClose})=> {
   }, [marketingId]);
 
 
+
+
   return (
     <div className='view-dm-container'>
       <div className="vdm-header">
         <div className="vdm-left">
           <h4>DETAIL DATA MARKETING</h4>
-          {dataMarketings.genre} | {dataMarketings.buyer_name} | {dataMarketings.account} | {getLastFiveCodeOrder(dataMarketings.code_order)}
+          {dataMarketings.genre_name} | {dataMarketings.buyer_name} | {dataMarketings.account_name} | {getLastFiveCodeOrder(dataMarketings.code_order)}
         </div>
         <div className="vdm-right">
-          <div className="export" style={{marginRight:'5px'}}>
-            <ExportDataMarketingId marketingId={marketingId}/>
+          <div className="export" style={{ marginRight: "5px" }}>
+            <button
+              onClick={() => onExport(marketingId)}
+              disabled={isExported} // disable jika sudah di-transfile
+              style={{
+                backgroundColor: isExported ? "green" : "grey",
+                color: "white",
+                cursor: isExported ? "not-allowed" : "pointer",
+                border:'1px solid none'
+              }}
+            >
+              {isExported ? "Sudah Transfile" : "Transfile to SpreedSheets"}
+            </button>
           </div>
+
+
           {/* CHECK CARD ID  */}
           <div className="card-status">
             {loadingCardId ? (

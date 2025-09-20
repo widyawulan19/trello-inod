@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { getAllDataMarketing,getAllDataMarketingJoined, deleteDataMarketing, getDataMarketingAccepted, getDataMarketingWithCardId, getDataMarketingWithCardIdNull, getDataMarketingRejected, archiveDataMarketing } from "../services/ApiServices";
+import { getAllDataMarketing,getAllDataMarketingJoined, deleteDataMarketing, getDataMarketingAccepted, getDataMarketingWithCardId, getDataMarketingWithCardIdNull, getDataMarketingRejected, archiveDataMarketing, getAllMarketingExports, exportDataMarketingToSheets, addExportMarketing } from "../services/ApiServices";
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import "../style/pages/DataMarketing.css";
 import { HiArrowsUpDown, HiChevronUpDown, HiMiniTableCells, HiOutlineArchiveBox, HiOutlineCircleStack, HiOutlinePencil, HiOutlinePlus, HiOutlineTrash, HiOutlineXCircle } from "react-icons/hi2";
@@ -16,6 +16,7 @@ import { IoEyeSharp } from "react-icons/io5";
 import { handleArchive } from "../utils/handleArchive";
 import ExportDataMarketing from "../exports/ExportDataMarketing";
 import { FaXmark } from "react-icons/fa6";
+import { AiFillCheckCircle } from "react-icons/ai";
 import FormMarketingExample from "../example/FormMarketingExample";
 
 const DataMarketing = () => {
@@ -27,6 +28,9 @@ const DataMarketing = () => {
   const boardId = searchParams.get("boardId");
   const listId = searchParams.get("listId");
   const cardId = searchParams.get("cardId");
+
+  const [marketingTransfile, setMarketingTransfile] = useState([]);
+  const [isExported, setIsExported] = useState(false);
 
   const [data, setData] = useState([]);
   const [dataMarketing, setDataMarketing] = useState([]);
@@ -40,8 +44,7 @@ const DataMarketing = () => {
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
   // const {workspaceId, boardId} = useParams();
-  console.log('workspace id diterima:', workspaceId)
-  //SATE DELETE CONFIRM
+  console.log('lihat select marketingId pada file ini', selectedMarketingId);  //SATE DELETE CONFIRM
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const {showSnackbar} = useSnackbar();
   //FILTER DATA
@@ -139,9 +142,14 @@ const handleCloseForm = () =>{
          item.order_number.toLowerCase().includes(filters.order_number.toLowerCase())
        );
      }
-     if (filters.account) {
+     if (filters.account_name) {
        temp = temp.filter((item) =>
-         item.account.toLowerCase().includes(filters.account.toLowerCase())
+         item.account_name.toLowerCase().includes(filters.account_name.toLowerCase())
+       );
+     }
+     if (filters.input_by_name) {
+       temp = temp.filter((item) =>
+         item.input_by_name.toLowerCase().includes(filters.input_by_name.toLowerCase())
        );
      }
      setFilteredData(temp);
@@ -232,7 +240,8 @@ const handleFilterData = (selectedTerm) => {
         (item) =>
           item.buyer_name.toLowerCase().includes(selectedTerm.toLowerCase()) ||
           item.order_number.toLowerCase().includes(selectedTerm.toLowerCase()) ||
-          item.account.toLowerCase().includes(selectedTerm.toLowerCase()) 
+          item.account_name.toLowerCase().includes(selectedTerm.toLowerCase()) ||
+          item.input_by_name.toLowerCase().includes(selectedTerm.toLowerCase())
       );
       setFilteredData(filtered);
     }
@@ -285,6 +294,46 @@ const getBasicPrice = (price_normal, discount) => {
 };
 
 
+// fungsi data marketing export 
+const fetchDataTransfile = async () => {
+  try {
+    setLoading(true);
+    const response = await getAllMarketingExports();
+    setMarketingTransfile(response);
+  } catch (err) {
+    console.error("❌ Error fetch transfile:", err);
+  } finally {
+    setLoading(false);
+  }
+};
+
+useEffect(() => {
+  fetchDataTransfile();
+}, []);
+
+// Fungsi handle utama (dipindah ke parent)
+const handleExportToSheets = async (marketingId) => {
+  try {
+    // 1. Export ke Google Sheets
+    await exportDataMarketingToSheets(marketingId);
+
+    setIsExported(true);
+
+    // 2. Update state transfile di parent
+    setMarketingTransfile((prev) => [...prev, { marketing_id: marketingId }]);
+
+    // 3. Insert ke DB
+    const res = await addExportMarketing(marketingId);
+    console.log("berhasil kirim data ke sheets:", res);
+
+    showSnackbar(`berhasil kirim data ke sheets ID: ${marketingId}`, "success");
+  } catch (error) {
+    console.error("❌ Gagal kirim data ke sheets:", error);
+    showSnackbar(`❌ Gagal kirim data ke sheets ID: ${marketingId}`, "error");
+  }
+};
+
+
   return (
     <div className="dmc-container">
       <div className="dm-panel">
@@ -318,7 +367,7 @@ const getBasicPrice = (price_normal, discount) => {
             </button>
             <button onClick={handleFilterButton}>
               {/* <HiChevronUpDown className="dm-icon"/> */}
-              SHORT DATA
+              FILTER DATA
             </button>
           </div>
           <div className="mdc-search-container">
@@ -412,11 +461,20 @@ const getBasicPrice = (price_normal, discount) => {
                     <li
                       className="li-filter"
                       onClick={() => {
-                        setShortType('account');
+                        setShortType('account_name');
                         setDropdownOpen(false);
                       }}
                     >
                       Account
+                    </li>
+                    <li
+                      className="li-filter"
+                      onClick={() => {
+                        setShortType('input_by_name');
+                        setDropdownOpen(false);
+                      }}
+                    >
+                      Marketing Name
                     </li>
                   </ul>
                 )}
@@ -486,10 +544,16 @@ const getBasicPrice = (price_normal, discount) => {
                 </tr>
               </thead>
               <tbody>
-                {filteredData.map((item, index) => (
+                {filteredData.map((item, index) => {
+                  // cek apakah marketing_id sudah di-export
+                  const exported = marketingTransfile.some(
+                    (m) => m.marketing_id === item.marketing_id
+                  );
+
+                  return (
                   <tr key={item.marketing_id}>
                     <td>{index + 1}</td>
-                    <td className="input-container">
+                    <td className="input-container" onClick={()=> handleShowDetail(item.marketing_id)}>
                       {item.input_by_name || "-"}
                       {hasCardId(item) && (
                         <span
@@ -509,6 +573,20 @@ const getBasicPrice = (price_normal, discount) => {
                           CARD
                         </span>
                       )}
+                      <button
+                        disabled={exported}
+                        style={{
+                          backgroundColor: "transparent",
+                          color: exported ? "green" : "white",
+                          cursor: exported ? "not-allowed" : "pointer",
+                          padding: "4px 8px",
+                          border: "none",
+                          borderRadius: "4px",
+                          fontSize:'15px',
+                        }}
+                      >
+                        <AiFillCheckCircle />
+                      </button>
                     </td>
 
                     <td className="acc-container">{item.acc_by_name}</td>
@@ -571,13 +649,22 @@ const getBasicPrice = (price_normal, discount) => {
                         
                     </td>
                   </tr>
-                ))}
+                  )
+                })}
               </tbody>
               {/* Detail View */}
                 {showDetail && selectedMarketingId && (
                     <div className="detail-data-marketing">
                         <div className="detail-data-box">
-                            <ViewDataMarketing marketingId={selectedMarketingId} onClose={handleCloseDetail} />
+                            <ViewDataMarketing 
+                              marketingId={selectedMarketingId}
+                              onClose={handleCloseDetail} 
+                              isExported={isExported}
+                              setIsExported={setIsExported} 
+                              marketingTransfile={marketingTransfile}
+                              fetchDataTransfile={fetchDataTransfile}
+                              onExport={handleExportToSheets}
+                            />
                             {/* <button onClick={() => setShowDetail(false)}>Close</button> */}
                         </div>
                     </div>

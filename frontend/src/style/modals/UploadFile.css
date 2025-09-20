@@ -32,6 +32,7 @@
     justify-content: center;
     /* padding: 20px 10px; */
     cursor: pointer;
+    position: relative;
 }
 
 .upload-cont-prev:hover {
@@ -46,6 +47,43 @@
     width: 100%;
     padding: 5px;
 }
+
+.upload-cont-header button {
+    cursor: pointer;
+    color: #6a11cb;
+}
+
+/* setting modal  */
+.file-set {
+    border: 1px solid #ccc;
+    background-color: white;
+    border-radius: 6px;
+    position: absolute;
+    top: 30%;
+    /* tampil tepat di bawah upload-cont-header */
+    right: 0;
+    /* sejajar kanan dengan tombol setting */
+    z-index: 100;
+    padding: 5px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    /* biar lebih rapi */
+}
+
+.file-set .del-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    padding: 5px;
+    border-radius: 1px solid 8px;
+    cursor: pointer;
+}
+
+.del-btn:hover {
+    background-color: #eee;
+}
+
+/* end setting modal  */
 
 .upload-cont-prev button {
     border: 1px solid white;

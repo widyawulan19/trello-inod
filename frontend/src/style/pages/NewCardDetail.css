@@ -808,6 +808,13 @@
     text-align: center;
 }
 
+.desc-actions{
+    border:'1px solid red';
+    margin-top:8px;
+    display:flex;
+    gap:10px;
+}
+
 /* RIGHT  */
 .ncd-main-content .ncd-main-right {
     /* border: 1px solid green; */
@@ -1171,7 +1178,7 @@
 .modal-chatroom {
     /* background-color: #e9e2f3; */
     background-image: linear-gradient(to top, #8c5b68, #7a5068, #634766, #4a4062, #2d395b);
-    border: 1px solid #333;
+    /* border: 1px solid #333; */
     border-radius: 12px;
     padding-bottom: 2px;
     width: 50vw;

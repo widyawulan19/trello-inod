@@ -314,7 +314,18 @@
 } */
 
 /* ============== TABEL HEAD STYLE ========== */
-.input-container,
+.input-container {
+  cursor: pointer;
+  width: 100%;
+  min-width: 25vw;
+  max-width: 25vw;
+}
+
+.input-container:hover {
+  text-decoration: underline;
+  color: #5320be;
+}
+
 .buyer-name-container,
 .code-order-container,
 .project-type-container,

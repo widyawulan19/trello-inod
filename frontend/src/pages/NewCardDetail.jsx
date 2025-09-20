@@ -35,8 +35,10 @@ import UploadFile from '../modals/UploadFile';
 import NewRoomChat from '../fitur/NewRoomChat';
 import { FaXmark } from 'react-icons/fa6';
 import CardDescription from '../modals/CardDesctiption';
-import ReactQuill from "react-quill-new";   // ✅ beda disini
-import "react-quill-new/dist/quill.snow.css"; // ✅ CSS dari react-quill-new
+import ReactQuill from 'react-quill-new';
+// import "react-quill-new/dist/quill.snow.css"; // ✅ CSS dari react-quill-new
+import "quill/dist/quill.snow.css";
+import CardDescriptionExample from '../modals/CardDescriptionExample';
 
 const NewCardDetail=()=> {
     //STATE
@@ -105,22 +107,25 @@ const NewCardDetail=()=> {
 
     const quillRef = useRef(null);
 
+    // SAVE via BLUR atau tombol
     const handleSaveDesc = async () => {
+    if (!cards?.id) return;
+
     try {
         setLoading(true);
-        const res = await updateDescCard(cards.id, newDescription);
+        const res = await updateDescCard(cards.id, newDescription); // ✅ pastikan kirim string
 
-        setNewDescription(res.data.description); // ✅ sync ke local state
-        setEditingDescription(null); // ✅ tutup edit mode
-
-         // ⬅️ update state di parent
-        setCards({ ...cards, description: res.data.description });
+        // sync state lokal
+        setNewDescription(res.data.description);
+        setEditingDescription(null);
+        setCards((prev) => ({ ...prev, description: res.data.description }));
     } catch (err) {
         console.error("❌ Gagal update desc:", err);
     } finally {
         setLoading(false);
     }
     };
+
 
 
     const modules = {
@@ -234,32 +239,36 @@ const NewCardDetail=()=> {
             }
         },[cardId])
     //edit card desc
-    const handleEditDescription = (e, cardId, currentCardDesc) => {
-        console.log("handleEditDescription triggered", { cardId, currentCardDesc });
-        if (!cardId) {
-        console.warn("Card ID is invalid");
-        return;
+// EDIT mode trigger
+const handleEditDescription = (e, cardId, currentCardDesc) => {
+  e.stopPropagation();
+  if (!cardId) {
+    console.warn("Card ID is invalid");
+    return;
+  }
+  setEditingDescription(cardId);
+  setNewDescription(currentCardDesc || "");
+};
+
+    const handleSaveDescription = async (cardId) => {
+        try {
+            const res = await updateDescCard(cardId, newDescription);
+
+            setEditingDescription(null);
+            setCards((prev) => ({ ...prev, description: res.data.description }));
+        } catch (error) {
+            console.error("❌ Error updating card description:", error);
         }
-        e.stopPropagation();
-        setEditingDescription(cardId);
-        setNewDescription(currentCardDesc);
     };
 
-    const handleSaveDescription = async(cardId)=>{
-        try{
-          await updateDescCard(cardId, {description:newDescription})
-          setEditingDescription(null);
-          fetchCardById(cardId)
-        }catch(error){
-          console.error('Error updating card description:', error)
-        }
-      }
-      const handleKeyPressDescription = (e, cardId) =>{
-        if(e.key === 'Enter' && !e.shiftKey){
-          handleSaveDescription(cardId)
-          e.stopPropagation();
-        }
-      }
+      // ENTER key listener
+    const handleKeyPressDescription = (e, cardId) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+        handleSaveDescription(cardId);
+        e.stopPropagation();
+    }
+    };
+
 
 
     //another edit desc
@@ -585,9 +594,6 @@ const NewCardDetail=()=> {
         return `<a href="${url}" target="_blank" rel="noopener noreferrer" style="color:#5557e7; text-decoration:underline;">${url}</a>`;
     });
     };
-
-
-
     
   
 
@@ -809,33 +815,65 @@ const NewCardDetail=()=> {
                             <div className="des-content">
                                 {cards && cardId && (
                                 <div className="des-content" style={{ height: "fit-content" }}>
-                                {editingDescription === cardId ? (
+                                    {editingDescription === cardId ? (
                                     <div className="ta-cont">
-                                    <ReactQuill
-                                        ref={quillRef}
-                                        theme="snow"
-                                        value={newDescription}
-                                        onChange={setNewDescription}
-                                        onBlur={handleSaveDesc} // ✅ save otomatis saat blur
-                                        modules={modules}
-                                        className="toolbar-box"
-                                    />
-                                    {loading && (
-                                        <small className="text-muted">Saving...</small>
-                                    )}
+                                        <ReactQuill
+                                            ref={quillRef}
+                                            theme="snow"
+                                            value={newDescription}
+                                            onChange={setNewDescription}
+                                            modules={modules}
+                                            className="toolbar-box"
+                                        />
+
+                                        <div className="desc-actions">
+                                        <button
+                                            className="btn-save"
+                                            onClick={() => handleSaveDescription(cardId)}
+                                            disabled={loading}
+                                            style={{
+                                            background: "#4caf50",
+                                            color: "white",
+                                            border: "none",
+                                            padding: "6px 12px",
+                                            borderRadius: "6px",
+                                            cursor: "pointer",
+                                            width:'10vw',
+                                            textAlign:'center'
+                                            }}
+                                        >
+                                            {loading ? "Saving..." : "Save"}
+                                        </button>
+
+                                        <button
+                                            className="btn-cancel"
+                                            onClick={() => {
+                                            setEditingDescription(null);
+                                            setNewDescription(cards.description || "");
+                                            }}
+                                            style={{
+                                            background: "#f44336",
+                                            color: "white",
+                                            border: "none",
+                                            padding: "6px 12px",
+                                            borderRadius: "6px",
+                                            cursor: "pointer",
+                                            width:'10vw',
+                                            }}
+                                        >
+                                            Cancel
+                                        </button>
+                                        </div>
                                     </div>
-                                ) : (
+                                    ) : (
                                     <div
-                                        onClick={(e) =>
-                                            handleEditDescription(e, cardId, cards.description)
-                                        }
+                                        onClick={(e) => handleEditDescription(e, cardId, cards.description)}
                                         style={{ cursor: "pointer", whiteSpace: "pre-wrap" }}
                                         className="div-p"
                                     >
-                                    {cards.description && cards.description.trim() !== "" ? (
+                                        {cards.description && cards.description.trim() !== "" ? (
                                         <>
-                                        {/* ✅ Render HTML langsung */}
-                                        <div
+                                            <div
                                             dangerouslySetInnerHTML={{
                                                 __html: showMore
                                                 ? linkify(cards.description)
@@ -843,20 +881,16 @@ const NewCardDetail=()=> {
                                             }}
                                             style={{ cursor: "text" }}
                                             onClick={(e) => {
-                                                if (e.target.tagName === "A") {
-                                                e.stopPropagation();
-                                                }
+                                                if (e.target.tagName === "A") e.stopPropagation();
                                             }}
                                             />
-
-                                        {/* ✅ Show More / Less */}
-                                        {cards.description.length > maxChars && (
+                                            {cards.description.length > maxChars && (
                                             <span
-                                            onClick={(e) => {
+                                                onClick={(e) => {
                                                 e.stopPropagation();
-                                                toggleShowMore();
-                                            }}
-                                            style={{
+                                                setShowMore((prev) => !prev);
+                                                }}
+                                                style={{
                                                 color: "#5557e7",
                                                 fontWeight: "500",
                                                 cursor: "pointer",
@@ -865,26 +899,28 @@ const NewCardDetail=()=> {
                                                 justifyContent: "flex-start",
                                                 marginTop: "8px",
                                                 gap: "5px",
-                                            }}
+                                                }}
                                             >
-                                            {showMore ? "Show Less" : "Show More"}
-                                            {showMore ? <HiChevronUp /> : <HiChevronDown />}
+                                                {showMore ? "Show Less" : "Show More"}
+                                                {showMore ? <HiChevronUp /> : <HiChevronDown />}
                                             </span>
-                                        )}
+                                            )}
                                         </>
-                                    ) : (
-                                        // ✅ Placeholder kalau kosong
+                                        ) : (
                                         <div className="placeholder-desc">
-                                        <p>(click to add description)</p>
+                                            <p>(click to add description)</p>
                                         </div>
-                                    )}
+                                        )}
                                     </div>
-                                )}
+                                    )}
+
+
                                 </div>
                             )}
                             </div>
 
                         </div>
+                        
                         
 
                         {/* ATTACHMENT  */}
@@ -904,7 +940,7 @@ const NewCardDetail=()=> {
                             <div className="attach-body">
                                 {totalFile > 0 ? (
                                 <div className="file-cont">
-                                    <UploadFile cardId={cardId} />
+                                    <UploadFile cardId={cardId} fetchCardById={fetchCardById} />
                                 </div>
                                 ) : (
                                 <div className="no-file">
@@ -1025,11 +1061,9 @@ const NewCardDetail=()=> {
         {showModalDes && (
         <div className="modal-des-container">
             <div className="modals-content">
-                <div className="modals-header">
-                    {/* HEADER TITLE  */}
+                {/* <div className="modals-header">
                     {cards && cardId && (
                         <div className="ct-box">
-                            {/* <HiOutlineCreditCard className='ct-icon'/> */}
                             {editingTitle === cardId ? (
                             <input
                                 value={newTitle}
@@ -1048,11 +1082,28 @@ const NewCardDetail=()=> {
                     <div className="modal-close" onClick={() => setShowModalDes(false)}>
                         <FaXmark/>
                     </div>
-                </div>
+                </div> */}
 
-                <div className="modals-body" style={{height:'fit-content'}}>
+                {/* <div className="modals-body" style={{height:'fit-content'}}>
                    <CardDescription card={cards} onUpdate={(newDesc) => setCards({ ...cards, description: newDesc })} />
-                </div>
+                </div> */}
+                <CardDescriptionExample 
+                    card={cards} 
+                    setCard={setCards} 
+                    onClose={handleCloseModalDes} 
+                    cardId={cardId}
+                    setNewDescription={setNewDescription}
+                    handleSaveDescription={handleSaveDescription}
+                    loading={loading}
+                    setLoading={setLoading}
+                    setEditingDescription={setEditingDescription}
+                    showMore={showMore}
+                    setShowMore={setShowMore}
+                    linkify={linkify}
+                    handleEditDescription={handleEditDescription}
+                    maxChars={maxChars} 
+                    modules={modules}                   
+                />
             </div>
         </div>
         )}

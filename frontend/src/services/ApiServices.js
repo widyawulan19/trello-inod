@@ -27,6 +27,9 @@ export const uploadFile = (file, cardId) => {
   }).then(res => res.data);
 };
 
+// DELETE FILE BY CARD 
+export const deleteFile = (cardId) => axios.delete(`${API_URL}/delete-file/${cardId}`);
+
 //UPLOADED FILE
 export const getAllUploadFiles = (cardId) => axios.get(`${API_URL}/uploaded-files/${cardId}`);
 export const getTotalFile = (cardId) => axios.get(`${API_URL}/uploaded-files/${cardId}/count`);
@@ -343,9 +346,108 @@ export const getTenDaysMarketing = async () => {
   }
 }
 
+// excel 
+// export const exportDataMarketingToSheets = async () => axios.post(`${API_URL}/export-to-sheet`)
+export const exportDataMarketingToSheets = async (marketingData) => {
+  try {
+    const response = await axios.post(`${API_URL}/export-to-sheet`, { marketingData });
+    return response.data;
+  } catch (error) {
+    console.error("❌ Gagal kirim ke Sheets:", error);
+    throw error; // supaya bisa ditangani di UI
+  }
+};
+
+// services/ApiServices.js
+export const exportDataMarketingToSheetsById = async (marketingId) => {
+  try {
+    const response = await axios.post(`${API_URL}/export-to-sheet/${marketingId}`);
+    return response.data;
+  } catch (error) {
+    console.error("❌ Gagal kirim ke Sheets:", error);
+    throw error;
+  }
+};
+
+// export all data in one page 
+export const exportAllDataMarketingToSheets = async (marketingDataList) => {
+  try {
+    const response = await axios.post(`${API_URL}/export-to-sheet`, { marketingDataList });
+    return response.data;
+  } catch (error) {
+    console.error("❌ Gagal kirim ke Sheets:", error);
+    throw error;
+  }
+};
+
+
+
+
 export const getAllDataMarketingJoined = () => axios.get(`${API_URL}/data-marketing/joined`)
 export const getAllDataMarketingJoinedById = (id) => axios.get(`${API_URL}/data-marketing/joined/${id}`)
 export const updateDataMarketingJoined = (id, data) => axios.put(`${API_URL}/data-marketing/joined/${id}`, data)
+
+
+/* =======================
+   MARKETING EXPORT SERVICES
+   ======================= */
+
+// Tambah data export (setelah berhasil transfile)
+export const addMarketingExport = async (marketingId, exportedBy = null) => {
+  try {
+    const res = await axios.post(`${API_URL}/marketing-exports/${marketingId}`, {
+      exported_by: exportedBy,
+    });
+    return res.data;
+  } catch (err) {
+    console.error("❌ Gagal tambah marketing_export:", err);
+    throw err;
+  }
+};
+
+export const addExportMarketing = async (marketingId) => {
+  try {
+    const response = await axios.post(`${API_URL}/marketing-export`, { marketingId });
+    return response.data;
+  } catch (error) {
+    console.error("Gagal export marketing:", error);
+    throw error;
+  }
+};
+
+// Ambil semua data export
+export const getAllMarketingExports = async () => {
+  try {
+    const res = await axios.get(`${API_URL}/marketing-exports`);
+    return res.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil marketing_exports:", err);
+    throw err;
+  }
+};
+
+// Cek apakah marketingId sudah diexport
+export const checkMarketingExport = async (marketingId) => {
+  try {
+    const res = await axios.get(`${API_URL}/marketing-exports/${marketingId}`);
+    return res.data; // { exported: true/false, data: {...} }
+  } catch (err) {
+    console.error("❌ Gagal cek marketing_export:", err);
+    throw err;
+  }
+};
+
+// Ambil semua data marketing + status export
+export const getMarketingWithExportStatus = async () => {
+  try {
+    const res = await axios.get(`${API_URL}/marketing-exports/join`);
+    return res.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil data join marketing_exports:", err);
+    throw err;
+  }
+};
+
 
 //DATA MARKETING DESIGN
 export const getAllDataMarketingDesign = () => axios.get(`${API_URL}/marketing-design`)

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { getAllUploadFiles, getTotalFile } from '../services/ApiServices';
+import { deleteFile, getAllUploadFiles, getTotalFile } from '../services/ApiServices';
 import '../style/modals/UploadFile.css';
 import { BsSoundwave } from "react-icons/bs";
 import { IoDocumentTextOutline } from "react-icons/io5";
@@ -8,12 +8,29 @@ import { BsFiletypeMp3,BsFiletypeMp4,BsFiletypePng,BsFiletypeJpg } from "react-i
 import { FaRegFilePdf } from "react-icons/fa6";
 import { AiOutlineFileUnknown } from "react-icons/ai";
 import BootstrapTooltip from '../components/Tooltip';
-import { HiAdjustments } from 'react-icons/hi';
+import { HiAdjustments, HiTrash } from 'react-icons/hi';
+import OutsideClick from '../hook/OutsideClick';
+import { useSnackbar } from '../context/Snackbar';
 
-const UploadFile=({cardId})=> {
+const UploadFile=({cardId,fetchCardById})=> {
     //STATE
     const [allUploadFile, setAllUploadFile] = useState([]);
+    const [showSetting, setShowSetting] = useState();
+    const settingRef = OutsideClick(()=>setShowSetting(false));
+    const {showSnackbar} = useSnackbar();
     // const cardId = 297;
+    
+    // fungsi delete 
+    const handleDeleteFile = async(cardId)=>{
+        try{
+            console.log('Deleting file using cardId');
+            const response = await deleteFile(cardId);
+            showSnackbar('Delete file succesfully', 'success');
+            fetchCardById();
+        }catch(error){
+            console.log(error)
+        }
+    }
 
     //debug
     console.log('Upload file menerima data cardId, ', cardId)
@@ -32,6 +49,13 @@ const UploadFile=({cardId})=> {
     useEffect(()=>{
         fetchAllUploadFile();
     },[])
+
+    const handleShowSetting = () =>{
+        setShowSetting(!showSetting);
+    }
+    const handleCloseSetting = () =>{
+        setShowSetting(!showSetting);
+    }
 
 
 
@@ -78,17 +102,27 @@ const UploadFile=({cardId})=> {
 
 
   return (
-    <div className='upload-file-container'>
+    <div className='upload-file-container' >
         {Array.isArray(allUploadFile) && allUploadFile.map((file, index) => (
         <div key={index} className='upload-cont'>
             <div className="upload-cont-prev">
-                 <div className="upload-cont-header">
-                    <button><HiAdjustments/></button>
+                 <div className="upload-cont-header" >
+                    <button onClick={handleShowSetting}><HiAdjustments/></button>
                 </div>
                 <div className='upload-icon' style={{color: iconColor[file.type]}}>
                     {iconType[file.type] || <AiOutlineFileUnknown />} 
                 </div>
+                 {showSetting && (
+                    <div className='file-set' ref={settingRef}>
+                        <div className='del-btn'>
+                            Delete file
+                        </div>
+                    </div>
+                )}
+                
             </div>
+           
+            
             <div className="upload-cont-body">
                 <div className="upload-desc">
                     <h5>{file.file_name}</h5>
@@ -97,11 +131,9 @@ const UploadFile=({cardId})=> {
                         <a href={file.file_url} target="_blank" rel="noopener noreferrer">View</a>
                     </BootstrapTooltip>
                 </div>
-                {/* <div className="upload-user">
-                    <img src={file.photo_url} alt={file.username} />
-                </div> */}
-                
             </div>
+
+            
             
         </div>
         ))}
@@ -110,8 +142,3 @@ const UploadFile=({cardId})=> {
 }
 
 export default UploadFile
-
-//  <div key={index}>
-//             <p>{file.file_name}</p>
-//             <a href={file.file_url} target="_blank" rel="noopener noreferrer">Lihat File</a>
-//         </div>
