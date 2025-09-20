@@ -115,6 +115,10 @@
     font-size: 12px;
     color: #333;
     font-weight: bold;
+    /* border: 1px solid red; */
+    width: 13vw;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .upload-desc p {
