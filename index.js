@@ -10156,6 +10156,7 @@ app.get('/api/cards/:cardId/chats', async (req, res) => {
 });
 
 //2. post mention, create new chat 
+//2. post mention, create new chat 
 app.post('/api/cards/:cardId/chats', async (req, res) => {
     try {
         const { cardId } = req.params;
@@ -10164,8 +10165,8 @@ app.post('/api/cards/:cardId/chats', async (req, res) => {
         // Step 1: Simpan chat dulu
         const result = await client.query(
             `INSERT INTO card_chats (card_id, user_id, message, parent_message_id)
-       VALUES ($1, $2, $3, $4)
-       RETURNING *`,
+             VALUES ($1, $2, $3, $4)
+             RETURNING *`,
             [cardId, user_id, message, parent_message_id]
         );
 
@@ -10190,13 +10191,12 @@ app.post('/api/cards/:cardId/chats', async (req, res) => {
                 const senderUsername = senderResult.rows[0]?.username || 'Someone';
 
                 await client.query(
-                    `INSERT INTO notifications (user_id, chat_id, message, type)
-        VALUES ($1, $2, $3, 'reply')`,
-                    [parentUserId, newChat.id, `${senderUsername} replied to your message`]
+                    `INSERT INTO notifications (user_id, chat_id, card_id, message, type)
+                     VALUES ($1, $2, $3, $4, 'reply')`,
+                    [parentUserId, newChat.id, cardId, `${senderUsername} replied to your message`]
                 );
             }
         }
-
 
         // Step 3: Mention detection
         const mentionMatches = message.match(/@(\w+)/g);
@@ -10217,21 +10217,42 @@ app.post('/api/cards/:cardId/chats', async (req, res) => {
 
                     // Simpan notifikasi mention
                     await client.query(
-                        `INSERT INTO notifications (user_id, chat_id, message, type)
-             VALUES ($1, $2, $3, 'mention')`,
-                        [mentionedUserId, newChat.id, message]
+                        `INSERT INTO notifications (user_id, chat_id, card_id, message, type)
+                         VALUES ($1, $2, $3, $4, 'mention')`,
+                        [mentionedUserId, newChat.id, cardId, message]
                     );
                 }
             }
 
-            // Step 4: Simpan list user_id ke kolom mentions (jsonb)
+            // Simpan list user_id ke kolom mentions (jsonb)
             await client.query(
                 `UPDATE card_chats SET mentions = $1 WHERE id = $2`,
                 [JSON.stringify(mentionedUserIds), newChat.id]
             );
         }
 
-        // Step 5: Ambil data chat setelah mentions di-update
+        // ✅ Step 4: Notifikasi pesan baru ke semua member card (kecuali pengirim)
+        const members = await client.query(
+            `SELECT user_id FROM card_members WHERE card_id = $1 AND user_id != $2`,
+            [cardId, user_id]
+        );
+
+        // Ambil username pengirim
+        const senderResult = await client.query(
+            `SELECT username FROM users WHERE id = $1`,
+            [user_id]
+        );
+        const senderUsername = senderResult.rows[0]?.username || 'Someone';
+
+        for (const member of members.rows) {
+            await client.query(
+                `INSERT INTO notifications (user_id, chat_id, card_id, message, type)
+                 VALUES ($1, $2, $3, $4, 'new_message')`,
+                [member.user_id, newChat.id, cardId, `${senderUsername} posted a new message in card ${cardId}`]
+            );
+        }
+
+        // Step 5: Ambil data chat setelah semua update
         const updatedChat = await client.query(
             `SELECT * FROM card_chats WHERE id = $1`,
             [newChat.id]
@@ -10244,6 +10265,97 @@ app.post('/api/cards/:cardId/chats', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+
+
+// app.post('/api/cards/:cardId/chats', async (req, res) => {
+//     try {
+//         const { cardId } = req.params;
+//         const { user_id, message, parent_message_id } = req.body;
+
+//         // Step 1: Simpan chat dulu
+//         const result = await client.query(
+//             `INSERT INTO card_chats (card_id, user_id, message, parent_message_id)
+//        VALUES ($1, $2, $3, $4)
+//        RETURNING *`,
+//             [cardId, user_id, message, parent_message_id]
+//         );
+
+//         const newChat = result.rows[0];
+
+//         // Step 2: Notifikasi balasan
+//         if (parent_message_id) {
+//             const parent = await client.query(
+//                 `SELECT user_id FROM card_chats WHERE id = $1`,
+//                 [parent_message_id]
+//             );
+
+//             const parentUserId = parent.rows[0]?.user_id;
+
+//             if (parentUserId && parentUserId !== user_id) {
+//                 // Ambil username dari pengirim pesan (bukan parent)
+//                 const senderResult = await client.query(
+//                     `SELECT username FROM users WHERE id = $1`,
+//                     [user_id]
+//                 );
+
+//                 const senderUsername = senderResult.rows[0]?.username || 'Someone';
+
+//                 await client.query(
+//                     `INSERT INTO notifications (user_id, chat_id, message, type)
+//         VALUES ($1, $2, $3, 'reply')`,
+//                     [parentUserId, newChat.id, `${senderUsername} replied to your message`]
+//                 );
+//             }
+//         }
+
+
+//         // Step 3: Mention detection
+//         const mentionMatches = message.match(/@(\w+)/g);
+//         let mentionedUserIds = [];
+
+//         if (mentionMatches) {
+//             for (const mention of mentionMatches) {
+//                 const username = mention.slice(1); // Hapus "@"
+
+//                 const userResult = await client.query(
+//                     `SELECT id FROM users WHERE username = $1`,
+//                     [username]
+//                 );
+
+//                 if (userResult.rows.length > 0) {
+//                     const mentionedUserId = userResult.rows[0].id;
+//                     mentionedUserIds.push(mentionedUserId);
+
+//                     // Simpan notifikasi mention
+//                     await client.query(
+//                         `INSERT INTO notifications (user_id, chat_id, message, type)
+//              VALUES ($1, $2, $3, 'mention')`,
+//                         [mentionedUserId, newChat.id, message]
+//                     );
+//                 }
+//             }
+
+//             // Step 4: Simpan list user_id ke kolom mentions (jsonb)
+//             await client.query(
+//                 `UPDATE card_chats SET mentions = $1 WHERE id = $2`,
+//                 [JSON.stringify(mentionedUserIds), newChat.id]
+//             );
+//         }
+
+//         // Step 5: Ambil data chat setelah mentions di-update
+//         const updatedChat = await client.query(
+//             `SELECT * FROM card_chats WHERE id = $1`,
+//             [newChat.id]
+//         );
+
+//         res.status(201).json(updatedChat.rows[0]);
+
+//     } catch (err) {
+//         console.error('Error post chat:', err);
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+// });
 
 //3. soft delete message
 app.delete('/api/chats/:chatId', async (req, res) => {
