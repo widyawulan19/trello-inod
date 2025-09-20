@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { deleteCard, getCardById, getCardByList,updateTitleCard , onCardMove, archiveCard, getCardPriority, getDueDateById, getAllDueDateByCardId, getStatusByCardId, getAllStatus, getStatusCard, getTotalMessageInCard} from '../services/ApiServices';
+import { deleteCard, getCardById, getCardByList,updateTitleCard , onCardMove, archiveCard, getCardPriority, getDueDateById, getAllDueDateByCardId, getStatusByCardId, getAllStatus, getStatusCard, getTotalMessageInCard, getTotalFile} from '../services/ApiServices';
 import '../style/pages/Card.css'
 import '../style/modules/BoxStatus.css'
 import {    HiOutlineEllipsisHorizontal,
@@ -78,6 +78,8 @@ const Card=({card,boards, lists,userId,listName, listId,fetchBoardDetail,fetchLi
     const [allStatuses, setAllStatuses] = useState([]);
     const [selectedStatus, setSelectedStatus] = useState('')
     console.log('file card diterima cardID:', card);
+    // total file 
+    const [totalFile, setTotalFile] = useState(0);
 
     //FUNCTION STATUS CARD
     useEffect(() => {
@@ -98,6 +100,22 @@ const Card=({card,boards, lists,userId,listName, listId,fetchBoardDetail,fetchLi
     }, [card.id]);
     
 
+    // FECT TOTAL FILE 
+    const fetchTotalFile = async()=>{
+        try{
+            const result = await getTotalFile(card.id);
+            setTotalFile(result.data.total_files)
+        }catch(error){
+            console.error('Error fetching total file:', error)
+        }
+    }
+   useEffect(() => {
+    if (card.id) {
+        fetchTotalFile();
+    }
+    }, [card.id]);
+
+    console.log('total file:', totalFile);
 
 
 
@@ -370,7 +388,7 @@ const Card=({card,boards, lists,userId,listName, listId,fetchBoardDetail,fetchLi
             </div>
         </div>
         <div className="cfooter">
-           <CardFooter cardId={card.id}/>
+           <CardFooter cardId={card.id} totalFile={totalFile}/>
         </div>
        {/* {card.title} */}
     </div>

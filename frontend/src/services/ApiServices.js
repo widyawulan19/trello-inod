@@ -24,7 +24,8 @@ export const uploadFile = (file, cardId) => {
 };
 
 // DELETE FILE BY CARD 
-export const deleteFile = (cardId) => axios.delete(`${API_URL}/delete-file/${cardId}`);
+export const deleteFileByCardId = (cardId) => axios.delete(`${API_URL}/delete-file/${cardId}`);
+export const deleteFile = (id) => axios.delete(`${API_URL}/delete-file-id/${id}`);
 
 //UPLOADED FILE
 export const getAllUploadFiles = (cardId) => axios.get(`${API_URL}/uploaded-files/${cardId}`);
