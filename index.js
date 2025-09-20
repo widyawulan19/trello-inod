@@ -1069,7 +1069,7 @@ app.delete('/api/delete-file/:cardId', async (req, res) => {
     }
 })
 
-app.delete('/api/delete-file/:id', async (req, res) => {
+app.delete('/api/delete-file-id/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
