@@ -1074,7 +1074,7 @@ app.delete('/api/delete-file-id/:id', async (req, res) => {
 
     try {
         const result = await client.query(
-            `DELETE FORM uploaded_file WHERE id = $1 RETURNING * `,
+            `DELETE FROM uploaded_file WHERE id = $1 RETURNING * `,
             [id],
         );
         res.status(200).json({ message: 'file uploaded removed from card' });
