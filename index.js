@@ -2727,7 +2727,7 @@ app.put('/api/archive-lists/:listId', async (req, res) => {
 
 // CARD POSITION IN LIST 
 //1.  get all card in list
-app.get('/lists/:listId/cards', async (req, res) => {
+app.get('/api/lists/:listId/cards', async (req, res) => {
     const { listId } = req.params;
 
     try {
@@ -2742,7 +2742,7 @@ app.get('/lists/:listId/cards', async (req, res) => {
 });
 
 //2. update posisi satu card saja
-app.patch('/cards/:cardId/position', async (req, res) => {
+app.patch('/api/cards/:cardId/position', async (req, res) => {
     const { cardId } = req.params;
     const { newPosition, listId } = req.body;
 
@@ -2761,7 +2761,7 @@ app.patch('/cards/:cardId/position', async (req, res) => {
 });
 
 //3. reorder untuk drag and drop
-app.put('/lists/:listId/cards/reorder', async (req, res) => {
+app.put('/api/lists/:listId/cards/reorder', async (req, res) => {
     const { listId } = req.params;
     const { cards } = req.body;
 
