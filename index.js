@@ -10226,6 +10226,13 @@ app.post('/api/cards/:cardId/chats', async (req, res) => {
             );
         }
 
+        // Ambil nama card
+        const cardResult = await client.query(
+        `SELECT title FROM cards WHERE id = $1`,
+        [cardId]
+        );
+        const cardName = cardResult.rows[0]?.title || `Card ${cardId}`;
+
         // Step 4: Notifikasi pesan baru ke semua member card (kecuali pengirim)
         const members = await client.query(
             `SELECT user_id FROM card_users WHERE card_id = $1 AND user_id != $2`,
@@ -10241,8 +10248,8 @@ app.post('/api/cards/:cardId/chats', async (req, res) => {
         for (const member of members.rows) {
             await client.query(
                 `INSERT INTO notifications (user_id, chat_id, message, type)
-                 VALUES ($1, $2, $3, 'new_message')`,
-                [member.user_id, newChat.id, `${senderUsername} posted a new message in card ${cardId}`]
+                VALUES ($1, $2, $3, 'new_message')`,
+                [member.user_id, newChat.id, `${senderUsername} posted a new message in ${cardName}`]
             );
         }
 
