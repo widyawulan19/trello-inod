@@ -100,7 +100,7 @@ const NavbarMessageNotif=({
                               ? '📢 Kamu dimention:'
                               : notif.type === 'reply'
                               ? '💬 Balasan untukmu:'
-                              : '🔔 Notifikasi'}
+                              : '🔔 New Message'}
                           </p>
                           <p style={{color:'#5e5e5e', fontSize:'12px'}}>{notif.message}</p>
                         </div>
