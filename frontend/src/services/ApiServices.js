@@ -580,6 +580,7 @@ export const getUserTotalNotificationUnread = (userId) => axios.get(`${API_URL}/
 //MENAMPILKAN SEMUA NOTIFICATION CHAT DAN SYSTEM
 export const getAllNotif = (userId) => axios.get(`${API_URL}/all-notif/${userId}`);
 export const getNotifications = (userId) => axios.get(`${API_URL}/notifications/${userId}`);
+export const checkHasNewChat = (cardId, userId) => axios.get(`${API_URL}/cards/${cardId}/users/${userId}/has-new-chat`);
 
 
 //NOTIFICATION

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { deleteCard, getCardById, getCardByList,updateTitleCard , onCardMove, archiveCard, getCardPriority, getDueDateById, getAllDueDateByCardId, getStatusByCardId, getAllStatus, getStatusCard, getTotalMessageInCard, getTotalFile, getNotifications, patchReadNotification} from '../services/ApiServices';
+import { deleteCard, getCardById, getCardByList,updateTitleCard , onCardMove, archiveCard, getCardPriority, getDueDateById, getAllDueDateByCardId, getStatusByCardId, getAllStatus, getStatusCard, getTotalMessageInCard, getTotalFile, getNotifications, patchReadNotification,checkHasNewChat} from '../services/ApiServices';
 import '../style/pages/Card.css'
 import '../style/modules/BoxStatus.css'
 import {    HiOutlineEllipsisHorizontal,
@@ -83,6 +83,28 @@ const Card=({card,boards, lists,userId,listName, listId,fetchBoardDetail,fetchLi
     //state to create mark notif
     const [notifications, setNotifications] = useState([]);
     const [unreadCount, setUnreadCount] = useState(0);
+    const [hasNewChat, setHasNewChat] = useState(false); 
+
+    // Fetch status "new chat" untuk tiap card
+    useEffect(() => {
+    const fetchNewChat = async () => {
+      try {
+        const res = await checkHasNewChat(cardId, userId);
+        setHasNewChat(res.data.hasNewChat);
+      } catch (err) {
+        console.error("Error checking new chat:", err);
+      }
+    };
+
+    fetchNewChat();
+
+    // auto polling tiap 10 detik
+    const interval = setInterval(fetchNewChat, 10000);
+
+    return () => clearInterval(interval);
+  }, [cardId, userId]);
+
+  
 
     //FUNCTION GET MARK NOTIFICATION
       const fetchNotifications = async () => {
@@ -429,7 +451,15 @@ const Card=({card,boards, lists,userId,listName, listId,fetchBoardDetail,fetchLi
             </div>
         </div>
         <div className="cfooter">
-           <CardFooter cardId={card.id} totalFile={totalFile} unreadCount={getUnreadCountByCard(card.id)} notifications={notifications} handleMarkAsRead={handleMarkAsRead}/>
+           <CardFooter 
+                cardId={card.id} 
+                totalFile={totalFile} 
+                unreadCount={getUnreadCountByCard(card.id)} 
+                notifications={notifications} 
+                handleMarkAsRead={handleMarkAsRead} 
+                hasNewChat={hasNewChat}
+                // hasNewChat={newChatMarks[card.id] || false}
+            />
         </div>
        {/* {card.title} */}
     </div>

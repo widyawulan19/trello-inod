@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import '../style/pages/NewCardDetail.css'
 import BootstrapTooltip from '../components/Tooltip';
 import { GiCloudUpload } from "react-icons/gi";
-import { archiveCard, deleteUserFromCard, getAllCardUsers, getAllDueDateByCardId, getAllStatus, getAllUserAssignToCard, getCardById, getCardPriority, getCoverByCard, getLabelByCard, getListById, getStatusByCardId, getTotalFile, updateDescCard, updateTitleCard } from '../services/ApiServices';
+import { archiveCard, deleteUserFromCard, getAllCardUsers, getAllDueDateByCardId, getAllStatus, getAllUploadFiles, getAllUserAssignToCard, getCardById, getCardPriority, getCoverByCard, getLabelByCard, getListById, getStatusByCardId, getTotalFile, updateDescCard, updateTitleCard } from '../services/ApiServices';
 import SelectedLabels from '../UI/SelectedLabels';
 import CardDetailPanel from '../modules/CardDetailPanel';
 import DetailCard from '../modules/DetailCard';
@@ -104,6 +104,8 @@ const NewCardDetail=()=> {
     const [statusVisible, setStatusVisible] = useState(true); // default: visible
     //MODAL DES
     const [showModalDes, setShowModalDes] = useState(false);
+    // ATTACHMENT 
+    const [allUploadFile, setAllUploadFile] = useState([]);
 
     const quillRef = useRef(null);
 
@@ -152,6 +154,20 @@ const NewCardDetail=()=> {
     },
   };
 
+
+    // fetch upload file
+    const fetchAllUploadFile = async () => {
+      try {
+        const result = await getAllUploadFiles(cardId);
+        setAllUploadFile(result.data);
+      } catch (error) {
+        console.error('Error fetching all file:', error);
+      }
+    };
+  
+    useEffect(() => {
+      fetchAllUploadFile();
+    }, [cardId]);
 
     const handleShowModalDes = () =>{
         setShowModalDes(!showModalDes)
@@ -921,7 +937,13 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
                             <div className="attach-body">
                                 {totalFile > 0 ? (
                                 <div className="file-cont">
-                                    <UploadFile cardId={cardId} fetchCardById={fetchCardById} />
+                                    <UploadFile 
+                                        cardId={cardId} 
+                                        fetchCardById={fetchCardById} 
+                                        allUploadFile={allUploadFile}
+                                        fetchAllUploadFile={fetchAllUploadFile}
+
+                                    />
                                 </div>
                                 ) : (
                                 <div className="no-file">
@@ -938,7 +960,12 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
 
                             {showFormUpload && (
                             <div className="upload-form-modals">
-                                <FormUpload cardId={cardId} onClose={handleCloseFormUpload} />
+                                <FormUpload 
+                                    cardId={cardId} 
+                                    onClose={handleCloseFormUpload} 
+                                    fetchCardById={fetchCardById}
+                                    fetchAllUploadFile={fetchAllUploadFile}
+                                    />
                             </div>
                             )}
                             {/* END ATTACHMENT  */}
