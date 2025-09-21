@@ -4,7 +4,7 @@ import { HiOutlineChatBubbleLeftRight,HiOutlineCheckCircle, HiOutlinePaperClip }
 import '../style/modules/CardFooter.css'
 import BootstrapTooltip from '../components/Tooltip'
 
-const CardFooter=({cardId, totalFile, unreadCount, notifications, handleMarkAsRead})=> {
+const CardFooter=({cardId, totalFile, unreadCount,hasNewChat, notifications, handleMarkAsRead})=> {
     //STATE
     const [stats, setStats] = useState({total:0, checked:0, unchecked:0})
 
@@ -74,7 +74,10 @@ useEffect(() => {
         <BootstrapTooltip title='Chat' placement='top'>
             <button>
                 <HiOutlineChatBubbleLeftRight className='cf-icon'/>
-                {messageCount} {unreadCount > 0 && <span style={{backgroundColor:'red',border:'1px solid red', borderRadius:'18px', color:'white'}}>{unreadCount}</span>}
+                {messageCount} 
+                {hasNewChat && (
+                    <span style={{ color: "red", marginLeft: "8px" }}>★</span>
+                )}
             </button>
         </BootstrapTooltip>
        

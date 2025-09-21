@@ -9,7 +9,7 @@ import { FaRegFilePdf } from "react-icons/fa6";
 import { BsFiletypeMp3,BsFiletypeMp4,BsFiletypePng,BsFiletypeJpg } from "react-icons/bs";
 import { useSnackbar } from '../context/Snackbar';
 
-const FormUpload = ({ cardId, onClose }) => {
+const FormUpload = ({ cardId, onClose, fetchCardById,fetchAllUploadFile }) => {
   const [file, setFile] = useState(null);         // file yg dipilih
   const [uploadedFile, setUploadedFile] = useState(null); // file yg berhasil diupload
   const [loading, setLoading] = useState(false);
@@ -25,6 +25,8 @@ const FormUpload = ({ cardId, onClose }) => {
       const result = await uploadFile(file, cardId); // upload ke server
       setUploadedFile(result); // simpan response
       setFile(null); // reset input
+      fetchCardById();
+      fetchAllUploadFile();
       showSnackbar('Success upload file!', 'success');
     } catch (error) {
       console.error('Error upload file:', error);
@@ -133,7 +135,7 @@ const FormUpload = ({ cardId, onClose }) => {
 
         {uploadedFile && (
           <div style={{ marginTop: '1rem' }}>
-            <strong>Uploaded:</strong><br />
+            <strong>Success Uploaded File:</strong><br />
             <a href={uploadedFile.file_url} target="_blank" rel="noreferrer">
               {uploadedFile.file_name}
             </a>

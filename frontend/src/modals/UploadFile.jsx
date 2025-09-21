@@ -11,9 +11,9 @@ import { HiAdjustments } from 'react-icons/hi';
 import OutsideClick from '../hook/OutsideClick';
 import { useSnackbar } from '../context/Snackbar';
 
-const UploadFile = ({ cardId, fetchCardById }) => {
+const UploadFile = ({ cardId, fetchCardById, fetchAllUploadFile, allUploadFile }) => {
   // STATE
-  const [allUploadFile, setAllUploadFile] = useState([]);
+  // const [allUploadFile, setAllUploadFile] = useState([]);
   const [showSetting, setShowSetting] = useState(null);
   const settingRef = OutsideClick(() => setShowSetting(null));
   const { showSnackbar } = useSnackbar();
@@ -38,19 +38,19 @@ const UploadFile = ({ cardId, fetchCardById }) => {
     }
   };
 
-  // fetch upload file
-  const fetchAllUploadFile = async () => {
-    try {
-      const result = await getAllUploadFiles(cardId);
-      setAllUploadFile(result.data);
-    } catch (error) {
-      console.error('Error fetching all file:', error);
-    }
-  };
+  // // fetch upload file
+  // const fetchAllUploadFile = async () => {
+  //   try {
+  //     const result = await getAllUploadFiles(cardId);
+  //     setAllUploadFile(result.data);
+  //   } catch (error) {
+  //     console.error('Error fetching all file:', error);
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchAllUploadFile();
-  }, [cardId]);
+  // useEffect(() => {
+  //   fetchAllUploadFile();
+  // }, [cardId]);
 
   const handleShowSetting = (fileId) => {
     setShowSetting(showSetting === fileId ? null : fileId);
