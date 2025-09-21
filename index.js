@@ -10155,8 +10155,7 @@ app.get('/api/cards/:cardId/chats', async (req, res) => {
     }
 });
 
-//2. 
-// CREATE CHAT + NOTIFIKASI
+//2. CREATE CHAT + NOTIFIKASI
 app.post('/api/cards/:cardId/chats', async (req, res) => {
     try {
         const { cardId } = req.params;
@@ -10186,13 +10185,12 @@ app.post('/api/cards/:cardId/chats', async (req, res) => {
                     `SELECT username FROM users WHERE id = $1`,
                     [user_id]
                 );
-
                 const senderUsername = senderResult.rows[0]?.username || 'Someone';
 
                 await client.query(
-                    `INSERT INTO notifications (user_id, chat_id, card_id, message, type)
-                     VALUES ($1, $2, $3, $4, 'reply')`,
-                    [parentUserId, newChat.id, cardId, `${senderUsername} replied to your message`]
+                    `INSERT INTO notifications (user_id, chat_id, message, type)
+                     VALUES ($1, $2, $3, 'reply')`,
+                    [parentUserId, newChat.id, `${senderUsername} replied to your message`]
                 );
             }
         }
@@ -10203,7 +10201,7 @@ app.post('/api/cards/:cardId/chats', async (req, res) => {
 
         if (mentionMatches) {
             for (const mention of mentionMatches) {
-                const username = mention.slice(1); // Hapus "@"
+                const username = mention.slice(1);
 
                 const userResult = await client.query(
                     `SELECT id FROM users WHERE username = $1`,
@@ -10215,14 +10213,13 @@ app.post('/api/cards/:cardId/chats', async (req, res) => {
                     mentionedUserIds.push(mentionedUserId);
 
                     await client.query(
-                        `INSERT INTO notifications (user_id, chat_id, card_id, message, type)
-                         VALUES ($1, $2, $3, $4, 'mention')`,
-                        [mentionedUserId, newChat.id, cardId, `${message}`]
+                        `INSERT INTO notifications (user_id, chat_id, message, type)
+                         VALUES ($1, $2, $3, 'mention')`,
+                        [mentionedUserId, newChat.id, `${message}`]
                     );
                 }
             }
 
-            // Simpan mentions ke chat
             await client.query(
                 `UPDATE card_chats SET mentions = $1 WHERE id = $2`,
                 [JSON.stringify(mentionedUserIds), newChat.id]
@@ -10243,9 +10240,9 @@ app.post('/api/cards/:cardId/chats', async (req, res) => {
 
         for (const member of members.rows) {
             await client.query(
-                `INSERT INTO notifications (user_id, chat_id, card_id, message, type)
-                 VALUES ($1, $2, $3, $4, 'new_message')`,
-                [member.user_id, newChat.id, cardId, `${senderUsername} posted a new message in card ${cardId}`]
+                `INSERT INTO notifications (user_id, chat_id, message, type)
+                 VALUES ($1, $2, $3, 'new_message')`,
+                [member.user_id, newChat.id, `${senderUsername} posted a new message in card ${cardId}`]
             );
         }
 
