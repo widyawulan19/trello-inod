@@ -11057,6 +11057,32 @@ app.get('/api/chat/:chatId/user/:userId', async (req, res) => {
     }
 });
 
+
+//5.1 // GET unread chat status untuk card tertentu
+app.get('/api/cards/:cardId/users/:userId/has-new-chat', async (req, res) => {
+  const { cardId, userId } = req.params;
+  try {
+    const result = await client.query(
+      `SELECT EXISTS (
+         SELECT 1
+         FROM notifications n
+         JOIN card_chats c ON n.chat_id = c.id
+         WHERE n.user_id = $1
+           AND c.card_id = $2
+           AND n.type = 'new_message'
+           AND n.is_read = false
+       ) AS has_new_chat`,
+      [userId, cardId]
+    );
+
+    res.json({ hasNewChat: result.rows[0].has_new_chat });
+  } catch (err) {
+    console.error('Error checking new chat status:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
 //6. endpoin untuk mengetahui total notifikasi yang belum dibaca dari dua tabel (system_notifikasi dan notifikasi pesan)
 app.get('/api/notifications/unread-count/:userId', async (req, res) => {
     const { userId } = req.params;
