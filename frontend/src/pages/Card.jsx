@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { deleteCard, getCardById, getCardByList,updateTitleCard , onCardMove, archiveCard, getCardPriority, getDueDateById, getAllDueDateByCardId, getStatusByCardId, getAllStatus, getStatusCard, getTotalMessageInCard, getTotalFile} from '../services/ApiServices';
+import { deleteCard, getCardById, getCardByList,updateTitleCard , onCardMove, archiveCard, getCardPriority, getDueDateById, getAllDueDateByCardId, getStatusByCardId, getAllStatus, getStatusCard, getTotalMessageInCard, getTotalFile, getNotifications, patchReadNotification} from '../services/ApiServices';
 import '../style/pages/Card.css'
 import '../style/modules/BoxStatus.css'
 import {    HiOutlineEllipsisHorizontal,
@@ -80,6 +80,47 @@ const Card=({card,boards, lists,userId,listName, listId,fetchBoardDetail,fetchLi
     console.log('file card diterima cardID:', card);
     // total file 
     const [totalFile, setTotalFile] = useState(0);
+    //state to create mark notif
+    const [notifications, setNotifications] = useState([]);
+    const [unreadCount, setUnreadCount] = useState(0);
+
+    //FUNCTION GET MARK NOTIFICATION
+      const fetchNotifications = async () => {
+        try {
+          const res = await getNotifications(userId);
+          setNotifications(res.data);
+    
+          // hitung unread
+          const unread = res.data.filter((n) => !n.is_read).length;
+          setUnreadCount(unread);
+        } catch (err) {
+          console.error("Error fetch notifications:", err);
+        }
+      };
+    
+      // Tandai notif sudah dibaca
+      const handleMarkAsRead = async (notifId) => {
+        try {
+          await patchReadNotification(notifId);
+          fetchNotifications(); // refresh notif
+        } catch (err) {
+          console.error("Error mark as read:", err);
+        }
+      };
+
+      const getUnreadCountByCard = (cardId) => {
+            return notifications.filter(
+                (n) => !n.is_read && n.card_id === cardId // pastikan notif ada card_id
+            ).length;
+        };
+    
+      useEffect(() => {
+        fetchNotifications();
+    
+        // optional polling setiap 10 detik
+        const interval = setInterval(fetchNotifications, 10000);
+        return () => clearInterval(interval);
+      }, []);
 
     //FUNCTION STATUS CARD
     useEffect(() => {
@@ -388,7 +429,7 @@ const Card=({card,boards, lists,userId,listName, listId,fetchBoardDetail,fetchLi
             </div>
         </div>
         <div className="cfooter">
-           <CardFooter cardId={card.id} totalFile={totalFile}/>
+           <CardFooter cardId={card.id} totalFile={totalFile} unreadCount={getUnreadCountByCard(card.id)} notifications={notifications} handleMarkAsRead={handleMarkAsRead}/>
         </div>
        {/* {card.title} */}
     </div>
