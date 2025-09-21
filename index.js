@@ -2663,7 +2663,7 @@ app.post('/api/duplicate-list/:listId', async (req, res) => {
     }
 });
 
-//archive data lists
+//8. archive data lists
 app.put('/api/archive-lists/:listId', async (req, res) => {
     const { listId } = req.params;
     const userId = req.user.id;
@@ -2724,6 +2724,72 @@ app.put('/api/archive-lists/:listId', async (req, res) => {
 })
 
 //END LISTS
+
+// CARD POSITION IN LIST 
+//1.  get all card in list
+app.get('/lists/:listId/cards', async (req, res) => {
+    const { listId } = req.params;
+
+    try {
+        const result = await client.query(
+            `SELECT * FROM cards WHERE list_id = $1 ORDER BY position ASC`,
+            [listId]
+        );
+        res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+//2. update posisi satu card saja
+app.patch('/cards/:cardId/position', async (req, res) => {
+    const { cardId } = req.params;
+    const { newPosition, listId } = req.body;
+
+    try {
+        await client.query(
+            `UPDATE cards 
+       SET position = $1, updated_at = NOW() 
+       WHERE id = $2 AND list_id = $3`,
+            [newPosition, cardId, listId]
+        );
+
+        res.json({ success: true, cardId, newPosition });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+//3. reorder untuk drag and drop
+app.put('/lists/:listId/cards/reorder', async (req, res) => {
+    const { listId } = req.params;
+    const { cards } = req.body;
+
+    try {
+        await client.query('BEGIN');
+
+        for (const card of cards) {
+            await client.query(
+                `UPDATE cards 
+         SET position = $1, updated_at = NOW() 
+         WHERE id = $2 AND list_id = $3`,
+                [card.position, card.id, listId]
+            );
+        }
+
+        await client.query('COMMIT');
+        res.json({ success: true, updated: cards.length });
+    } catch (err) {
+        await client.query('ROLLBACK');
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+
+// END CARD POSITION IN LIST 
+
+
 
 //CARD
 //1. get all cards
@@ -10228,8 +10294,8 @@ app.post('/api/cards/:cardId/chats', async (req, res) => {
 
         // Ambil nama card
         const cardResult = await client.query(
-        `SELECT title FROM cards WHERE id = $1`,
-        [cardId]
+            `SELECT title FROM cards WHERE id = $1`,
+            [cardId]
         );
         const cardName = cardResult.rows[0]?.title || `Card ${cardId}`;
 
@@ -11060,10 +11126,10 @@ app.get('/api/chat/:chatId/user/:userId', async (req, res) => {
 
 //5.1 // GET unread chat status untuk card tertentu
 app.get('/api/cards/:cardId/users/:userId/has-new-chat', async (req, res) => {
-  const { cardId, userId } = req.params;
-  try {
-    const result = await client.query(
-      `SELECT EXISTS (
+    const { cardId, userId } = req.params;
+    try {
+        const result = await client.query(
+            `SELECT EXISTS (
          SELECT 1
          FROM notifications n
          JOIN card_chats c ON n.chat_id = c.id
@@ -11072,14 +11138,14 @@ app.get('/api/cards/:cardId/users/:userId/has-new-chat', async (req, res) => {
            AND n.type = 'new_message'
            AND n.is_read = false
        ) AS has_new_chat`,
-      [userId, cardId]
-    );
+            [userId, cardId]
+        );
 
-    res.json({ hasNewChat: result.rows[0].has_new_chat });
-  } catch (err) {
-    console.error('Error checking new chat status:', err);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+        res.json({ hasNewChat: result.rows[0].has_new_chat });
+    } catch (err) {
+        console.error('Error checking new chat status:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 
