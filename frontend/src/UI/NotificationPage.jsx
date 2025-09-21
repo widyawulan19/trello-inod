@@ -113,7 +113,7 @@ const handleNavigateToCard = async (chatId, notificationId) => {
                             ? '📢 Kamu dimention:'
                             : notif.type === 'reply'
                             ? '💬 Balasan untukmu:'
-                            : '🔔 Notifikasi'}
+                            : '🔔 New Message'}
                         </p>
                         <p  className='nch-p'>{notif.message}</p>
                       </div>
