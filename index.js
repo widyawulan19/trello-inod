@@ -10156,7 +10156,6 @@ app.get('/api/cards/:cardId/chats', async (req, res) => {
 });
 
 //2. post mention, create new chat 
-//2. post mention, create new chat 
 app.post('/api/cards/:cardId/chats', async (req, res) => {
     try {
         const { cardId } = req.params;
@@ -10412,6 +10411,29 @@ app.get('/api/notification-mention/:userId', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 })
+
+// Ambil semua notifikasi untuk user
+app.get('/api/notifications/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        const result = await client.query(
+            `SELECT n.*, u.username as sender_name
+             FROM notifications n
+             LEFT JOIN card_chats c ON n.chat_id = c.id
+             LEFT JOIN users u ON c.user_id = u.id
+             WHERE n.user_id = $1
+             ORDER BY n.created_at DESC`,
+            [userId]
+        );
+
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Error get notifications:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 
 //6. endpoin untuk menampilkan endpoin yang sudah dibaca
 app.patch('/api/notification-read/:id', async (req, res) => {
