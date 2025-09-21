@@ -10155,7 +10155,8 @@ app.get('/api/cards/:cardId/chats', async (req, res) => {
     }
 });
 
-//2. post mention, create new chat 
+//2. 
+// CREATE CHAT + NOTIFIKASI
 app.post('/api/cards/:cardId/chats', async (req, res) => {
     try {
         const { cardId } = req.params;
@@ -10171,7 +10172,7 @@ app.post('/api/cards/:cardId/chats', async (req, res) => {
 
         const newChat = result.rows[0];
 
-        // Step 2: Notifikasi balasan
+        // Step 2: Notifikasi balasan (reply)
         if (parent_message_id) {
             const parent = await client.query(
                 `SELECT user_id FROM card_chats WHERE id = $1`,
@@ -10181,7 +10182,6 @@ app.post('/api/cards/:cardId/chats', async (req, res) => {
             const parentUserId = parent.rows[0]?.user_id;
 
             if (parentUserId && parentUserId !== user_id) {
-                // Ambil username dari pengirim pesan (bukan parent)
                 const senderResult = await client.query(
                     `SELECT username FROM users WHERE id = $1`,
                     [user_id]
@@ -10197,7 +10197,7 @@ app.post('/api/cards/:cardId/chats', async (req, res) => {
             }
         }
 
-        // Step 3: Mention detection
+        // Step 3: Notifikasi mention
         const mentionMatches = message.match(/@(\w+)/g);
         let mentionedUserIds = [];
 
@@ -10214,29 +10214,27 @@ app.post('/api/cards/:cardId/chats', async (req, res) => {
                     const mentionedUserId = userResult.rows[0].id;
                     mentionedUserIds.push(mentionedUserId);
 
-                    // Simpan notifikasi mention
                     await client.query(
                         `INSERT INTO notifications (user_id, chat_id, card_id, message, type)
                          VALUES ($1, $2, $3, $4, 'mention')`,
-                        [mentionedUserId, newChat.id, cardId, message]
+                        [mentionedUserId, newChat.id, cardId, `${message}`]
                     );
                 }
             }
 
-            // Simpan list user_id ke kolom mentions (jsonb)
+            // Simpan mentions ke chat
             await client.query(
                 `UPDATE card_chats SET mentions = $1 WHERE id = $2`,
                 [JSON.stringify(mentionedUserIds), newChat.id]
             );
         }
 
-        // ✅ Step 4: Notifikasi pesan baru ke semua member card (kecuali pengirim)
+        // Step 4: Notifikasi pesan baru ke semua member card (kecuali pengirim)
         const members = await client.query(
             `SELECT user_id FROM card_users WHERE card_id = $1 AND user_id != $2`,
             [cardId, user_id]
         );
 
-        // Ambil username pengirim
         const senderResult = await client.query(
             `SELECT username FROM users WHERE id = $1`,
             [user_id]
@@ -10251,7 +10249,7 @@ app.post('/api/cards/:cardId/chats', async (req, res) => {
             );
         }
 
-        // Step 5: Ambil data chat setelah semua update
+        // Step 5: Return chat
         const updatedChat = await client.query(
             `SELECT * FROM card_chats WHERE id = $1`,
             [newChat.id]
