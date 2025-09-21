@@ -10232,7 +10232,7 @@ app.post('/api/cards/:cardId/chats', async (req, res) => {
 
         // ✅ Step 4: Notifikasi pesan baru ke semua member card (kecuali pengirim)
         const members = await client.query(
-            `SELECT user_id FROM card_members WHERE card_id = $1 AND user_id != $2`,
+            `SELECT user_id FROM card_users WHERE card_id = $1 AND user_id != $2`,
             [cardId, user_id]
         );
 
