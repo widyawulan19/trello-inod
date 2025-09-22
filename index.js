@@ -2785,58 +2785,58 @@ app.put('/api/lists/:listId/cards/reorder', async (req, res) => {
     }
 });
 
-// app.patch('/cards/:cardId/position', async (req, res) => {
-//     const { cardId } = req.params;
-//     const { newPosition, listId } = req.body;
+app.patch('/cards/:cardId/new-position', async (req, res) => {
+    const { cardId } = req.params;
+    const { newPosition, listId } = req.body;
 
-//     try {
-//         await client.query('BEGIN');
+    try {
+        await client.query('BEGIN');
 
-//         // Ambil posisi lama
-//         const { rows } = await client.query(
-//             `SELECT position FROM cards WHERE id = $1 AND list_id = $2`,
-//             [cardId, listId]
-//         );
-//         if (rows.length === 0) {
-//             await client.query('ROLLBACK');
-//             return res.status(404).json({ error: 'Card not found' });
-//         }
-//         const oldPosition = rows[0].position;
+        // Ambil posisi lama
+        const { rows } = await client.query(
+            `SELECT position FROM cards WHERE id = $1 AND list_id = $2`,
+            [cardId, listId]
+        );
+        if (rows.length === 0) {
+            await client.query('ROLLBACK');
+            return res.status(404).json({ error: 'Card not found' });
+        }
+        const oldPosition = rows[0].position;
 
-//         if (newPosition > oldPosition) {
-//             // geser semua card di antara old+1 .. new ke atas (pos -1)
-//             await client.query(
-//                 `UPDATE cards
-//          SET position = position - 1
-//          WHERE list_id = $1 AND position > $2 AND position <= $3`,
-//                 [listId, oldPosition, newPosition]
-//             );
-//         } else if (newPosition < oldPosition) {
-//             // geser semua card di antara new .. old-1 ke bawah (pos +1)
-//             await client.query(
-//                 `UPDATE cards
-//          SET position = position + 1
-//          WHERE list_id = $1 AND position >= $2 AND position < $3`,
-//                 [listId, newPosition, oldPosition]
-//             );
-//         }
+        if (newPosition > oldPosition) {
+            // geser semua card di antara old+1 .. new ke atas (pos -1)
+            await client.query(
+                `UPDATE cards
+         SET position = position - 1
+         WHERE list_id = $1 AND position > $2 AND position <= $3`,
+                [listId, oldPosition, newPosition]
+            );
+        } else if (newPosition < oldPosition) {
+            // geser semua card di antara new .. old-1 ke bawah (pos +1)
+            await client.query(
+                `UPDATE cards
+         SET position = position + 1
+         WHERE list_id = $1 AND position >= $2 AND position < $3`,
+                [listId, newPosition, oldPosition]
+            );
+        }
 
 
-//         // Update card yang dipindah
-//         await client.query(
-//             `UPDATE cards
-//        SET position = $1, update_at = NOW()
-//        WHERE id = $2 AND list_id = $3`,
-//             [newPosition, cardId, listId]
-//         );
+        // Update card yang dipindah
+        await client.query(
+            `UPDATE cards
+       SET position = $1, update_at = NOW()
+       WHERE id = $2 AND list_id = $3`,
+            [newPosition, cardId, listId]
+        );
 
-//         await client.query('COMMIT');
-//         res.json({ success: true, cardId, newPosition });
-//     } catch (err) {
-//         await client.query('ROLLBACK');
-//         res.status(500).json({ error: err.message });
-//     }
-// });
+        await client.query('COMMIT');
+        res.json({ success: true, cardId, newPosition });
+    } catch (err) {
+        await client.query('ROLLBACK');
+        res.status(500).json({ error: err.message });
+    }
+});
 
 
 
