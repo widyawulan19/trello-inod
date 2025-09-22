@@ -2785,6 +2785,7 @@ app.put('/api/lists/:listId/cards/reorder', async (req, res) => {
     }
 });
 
+//4. patch satu card untuk semua card dalam list
 app.patch('/api/cards/:cardId/new-position', async (req, res) => {
     const { cardId } = req.params;
     const { newPosition, listId } = req.body;
