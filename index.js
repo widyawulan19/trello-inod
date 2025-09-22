@@ -142,6 +142,49 @@ app.post("/api/export-design-to-sheet", async (req, res) => {
     }
 });
 
+// POST /api/marketing-design-export
+app.post("/api/marketing-design-export", async (req, res) => {
+    const { marketingDesignId } = req.body;
+    const exportedBy = "admin"; // default user / bisa ambil dari req.user
+
+    try {
+        // Cek apakah sudah ada di marketing_design_exports
+        const checkQuery = `SELECT * FROM marketing_design_exports WHERE marketing_design_id = $1`;
+        const { rows: existing } = await client.query(checkQuery, [marketingDesignId]);
+
+        if (existing.length > 0) {
+            return res.status(200).json({ message: "Marketing design data already exported" });
+        }
+
+        // Insert baru
+        const insertQuery = `
+            INSERT INTO marketing_design_exports (marketing_design_id, exported_by, exported_at)
+            VALUES ($1, $2, NOW())
+            RETURNING *
+        `;
+        const { rows: inserted } = await client.query(insertQuery, [marketingDesignId, exportedBy]);
+
+        res.status(201).json({ message: "Marketing design exported successfully", data: inserted[0] });
+    } catch (err) {
+        console.error("❌ Error export marketing design:", err);
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
+// GET /api/marketing-design-export/:id
+app.get("/api/marketing-design-export/:id", async (req, res) => {
+    const { id } = req.params;
+    try {
+        const query = `SELECT * FROM marketing_design_exports WHERE marketing_design_id = $1`;
+        const { rows } = await client.query(query, [id]);
+        res.json({ exported: rows.length > 0, data: rows });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
+
 // END DATA MARKEGING DESIGN 
 
 
