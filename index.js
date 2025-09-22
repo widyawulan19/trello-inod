@@ -2785,6 +2785,58 @@ app.put('/api/lists/:listId/cards/reorder', async (req, res) => {
     }
 });
 
+app.patch('/cards/:cardId/position', async (req, res) => {
+    const { cardId } = req.params;
+    const { newPosition, listId } = req.body;
+
+    try {
+        await client.query('BEGIN');
+
+        // Ambil posisi lama
+        const { rows } = await client.query(
+            `SELECT position FROM cards WHERE id = $1 AND list_id = $2`,
+            [cardId, listId]
+        );
+        if (rows.length === 0) {
+            await client.query('ROLLBACK');
+            return res.status(404).json({ error: 'Card not found' });
+        }
+        const oldPosition = rows[0].position;
+
+        if (newPosition > oldPosition) {
+            // geser semua card di antara old+1 .. new ke atas (pos -1)
+            await client.query(
+                `UPDATE cards
+         SET position = position - 1
+         WHERE list_id = $1 AND position > $2 AND position <= $3`,
+                [listId, oldPosition, newPosition]
+            );
+        } else if (newPosition < oldPosition) {
+            // geser semua card di antara new .. old-1 ke bawah (pos +1)
+            await client.query(
+                `UPDATE cards
+         SET position = position + 1
+         WHERE list_id = $1 AND position >= $2 AND position < $3`,
+                [listId, newPosition, oldPosition]
+            );
+        }
+
+        // Update card yang dipindah
+        await client.query(
+            `UPDATE cards
+       SET position = $1, updated_at = NOW()
+       WHERE id = $2 AND list_id = $3`,
+            [newPosition, cardId, listId]
+        );
+
+        await client.query('COMMIT');
+        res.json({ success: true, cardId, newPosition });
+    } catch (err) {
+        await client.query('ROLLBACK');
+        res.status(500).json({ error: err.message });
+    }
+});
+
 
 
 // END CARD POSITION IN LIST 
@@ -5808,35 +5860,6 @@ app.put('/api/create-card-marketing/:listId/:marketingId', async (req, res) => {
 
         const marketing = marketingData.rows[0];
 
-        // ✅ Description pakai nama hasil join
-        // const description = `
-        // Order Code: ${marketing.code_order}
-        // Input By: ${marketing.input_by_name || 'N/A'}
-        // Approved By: ${marketing.acc_by_name || 'N/A'}
-        // Buyer: ${marketing.buyer_name}
-        // Order Number: ${marketing.order_number}
-        // Account: ${marketing.account_name || 'N/A'}
-        // Deadline: ${marketing.deadline ? new Date(marketing.deadline).toISOString().split('T')[0] : 'N/A'}
-        // Jumlah Revisi: ${marketing.jumlah_revisi}
-        // Order Type: ${marketing.order_type_name || 'N/A'}
-        // Offer Type: ${marketing.offer_type_name || 'N/A'}
-        // Jenis Track: ${marketing.track_type_name || 'N/A'}
-        // Genre: ${marketing.genre_name || 'N/A'}
-        // Jumlah Track: ${marketing.jumlah_track}
-        // Normal Price: $${marketing.price_normal}
-        // Discount: ${marketing.discount ?? 'N/A'}
-        // Basic Price: $${marketing.basic_price ?? 'N/A'}
-        // Required Files: ${marketing.required_files}
-        // Project Type: ${marketing.project_type_name || 'N/A'}
-        // Duration: ${marketing.duration}
-        // Gig Link: ${marketing.gig_link}
-        // Reference: ${marketing.reference_link}
-        // File & Chat: ${marketing.file_and_chat_link}
-        // Kupon Diskon: ${marketing.kupon_diskon_name || 'N/A'}
-        // Status: ${marketing.accept_status_name || 'N/A'}
-        // Detail: ${marketing.detail_project}
-        // `.trim();
-
         const description = `
             <div>
             <p><strong> Order Code:</strong> ${marketing.code_order}</p>
@@ -5873,16 +5896,27 @@ app.put('/api/create-card-marketing/:listId/:marketingId', async (req, res) => {
             ? marketing.code_order.slice(-5)
             : 'XXXXX'; // default kalau code_order kosong
 
+        // ambil posisi terakhir
+        const posResult = await client.query(
+            `SELECT COALESCE(MAX(position), -1) + 1 AS next_position
+        FROM cards
+        WHERE list_id = $1`,
+            [listId]
+        );
+
+        const nextPosition = posResult.rows[0].next_position;
+
         // ✅ Card title juga pakai nama genre + buyer
+        // insert card baru di posisi terakhir
         const newCard = await client.query(
             `INSERT INTO cards (list_id, title, description, position, due_date) 
-             VALUES ($1, $2, $3, $4, $5) 
-             RETURNING id`,
+        VALUES ($1, $2, $3, $4, $5) 
+        RETURNING id`,
             [
                 listId,
                 `'New Project' - ${marketing.buyer_name || 'Unknown'} - (${marketing.account_name || '-'}) - ${marketing.order_type_name || 'N/A'} - ${lastFiveDigits}`,
                 description,
-                0, // posisi default
+                nextPosition, // posisi terakhir
                 marketing.deadline
             ]
         );
