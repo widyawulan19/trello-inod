@@ -2821,6 +2821,7 @@ app.patch('/cards/:cardId/position', async (req, res) => {
             );
         }
 
+
         // Update card yang dipindah
         await client.query(
             `UPDATE cards
