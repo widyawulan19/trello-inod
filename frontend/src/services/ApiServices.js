@@ -160,6 +160,25 @@ export const duplicateCard = (cardId, listId) => axios.post(`${API_URL}/duplicat
 export const moveCardToList = (cardId, listId) => axios.put(`${API_URL}/move-card-to-list/${cardId}/${listId}`)
 export const archiveCard = (cardId) => axios.put(`${API_URL}/archive-card/${cardId}`, cardId);
 
+// CARD POSITION 
+// 🔹 Ambil semua card dalam list tertentu
+export const getCardsByList = (listId) =>
+  axios.get(`${API_URL}/lists/${listId}/cards`);
+
+// 🔹 Update posisi 1 card (otomatis geser card lain di backend)
+export const updateCardPosition = (cardId, newPosition, listId) =>
+  axios.patch(`${API_URL}/cards/${cardId}/new-position`, {
+    newPosition,
+    listId,
+  });
+
+// 🔹 Reorder semua card dalam list sekaligus
+export const reorderCardsInList = (listId, cards) =>
+  axios.put(`${API_URL}/lists/${listId}/cards/reorder`, {
+    listId,
+    cards,
+  });
+
 //CARD USERS
 export const getAllUserAssignToCard = (cardId) => axios.get(`${API_URL}/cards/${cardId}/assignable-users`)
 export const assignUserToCard = (cardId, userId) => axios.post(`${API_URL}/cards/${cardId}/users/${userId}`)
@@ -180,6 +199,7 @@ export const getCoverByCard = (id) => axios.get(`${API_URL}/card-cover/${id}`)
 export const addCoverCard = (data) => axios.post(`${API_URL}/add-cover`, data)
 export const updateCardCover = (data) => axios.put(`${API_URL}/update-cover`, data)
 export const deleteCoverCard = (cardId) => axios.delete(`${API_URL}/delete-cover/${cardId}`)
+
 
 //COVER 
 export const getAllCovers = () => axios.get(`${API_URL}/covers`)

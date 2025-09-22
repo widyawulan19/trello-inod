@@ -18,8 +18,10 @@ import {    HiOutlineEllipsisHorizontal,
             HiMiniEye,
             HiMiniXCircle,
             HiCheckCircle,
-            HiArrowUturnLeft
+            HiArrowUturnLeft,
+            HiChevronDown
         } from 'react-icons/hi2';
+import { GiCardExchange } from "react-icons/gi";
 import BootstrapTooltip from '../components/Tooltip';
 import CoverCard from '../modules/CoverCard';
 import CoverSelect from '../UI/CoverSelect';
@@ -44,7 +46,22 @@ import CardFooter from '../modules/CardFooter';
 import NewCardDetail from './NewCardDetail';
 import { handleArchive } from '../utils/handleArchive';
 
-const Card=({card,boards, lists,userId,listName, listId,fetchBoardDetail,fetchLists,fetchCardList,onRefetch})=> {
+const Card=({
+    card,
+    boards,
+    lists,
+    userId,
+    listName,
+    listId,
+    fetchBoardDetail,
+    fetchLists,
+    fetchCardList,
+    onRefetch,
+    cardsInList,
+    cardPositionDropdown,
+    setCardPositionDropdown,
+    handleChangeCardPosition,
+})=> {
     // console.log('cards diterima:', card)
     const { workspaceId, boardId} = useParams();
     //DEBUG
@@ -84,6 +101,9 @@ const Card=({card,boards, lists,userId,listName, listId,fetchBoardDetail,fetchLi
     const [notifications, setNotifications] = useState([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const [hasNewChat, setHasNewChat] = useState(false); 
+
+    // dorpwon card position 
+    const [showPosition, setShowPosition] = useState(false);
 
     // Fetch status "new chat" untuk tiap card
     useEffect(() => {
@@ -332,6 +352,10 @@ const Card=({card,boards, lists,userId,listName, listId,fetchBoardDetail,fetchLi
         Returned: <HiArrowUturnLeft/>
     }
 
+    const handleShowPosition = () =>{
+        setShowPosition(!showPosition)
+    }
+
 
   return (
     <div className='card-box-container' >
@@ -370,6 +394,37 @@ const Card=({card,boards, lists,userId,listName, listId,fetchBoardDetail,fetchLi
                         <HiOutlineSquare2Stack className='cs-icon'/>
                         Duplicate
                     </button>
+                    <button
+                        onClick={() => setCardPositionDropdown(cardPositionDropdown === card.id ? null : card.id)}
+                        className="relative"
+                        >
+                        <GiCardExchange className='cs-icon' />
+                        Card Position <span style={{color:'red', marginLeft:'5px'}}>"{card.position}"</span>
+
+                        {cardPositionDropdown === card.id && (
+                            <div className="position-modals">
+                                <div className="ph">
+                                    <p>Select Position</p>
+                                </div>
+                                <div className="pb">
+                                <ul>
+                                    {(cardsInList || []).map((_, i) => (
+                                    <li
+                                        key={i}
+                                        onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleChangeCardPosition(card.id, i);
+                                        }}
+                                    >
+                                        {i}
+                                    </li>
+                                    ))}
+                                </ul>
+                                </div>
+                                
+                            </div>
+                        )}
+                        </button>
                     <button onClick={()=> handleArchiveCard(card.id)}>
                         <HiOutlineArchiveBox className='cs-icon'/>
                         Archive

@@ -60,7 +60,7 @@ const Sidebar = () => {
             { to: 'activity', icon: <HiOutlineCog8Tooth className='icon' />, label: 'User Activity', name: 'User Activity' },
             { to: 'faq', icon: <HiAdjustmentsHorizontal className='icon' />, label: 'FaQ', name: 'faq' },
             // { to: 'example-marketing-design', icon: <HiAdjustmentsHorizontal className='icon' />, label: 'Development', name: 'Dev page' },
-            { to: 'transfer-data-id', icon: <HiAdjustmentsHorizontal className='icon' />, label: 'Development', name: 'Dev page' },
+            { to: 'card-list', icon: <HiAdjustmentsHorizontal className='icon' />, label: 'Development', name: 'Dev page' },
           ].map((item) => (
             <div
               key={item.name}
