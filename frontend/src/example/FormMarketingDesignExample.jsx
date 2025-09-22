@@ -480,9 +480,10 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
                         <input 
                             type="text" 
                             name='price_normal'
+                            placeholder='Isi "0" jika data kosong'
                             value={form.price_normal}
                             onChange={handleChange}
-                            required
+                            // required
                         />
                         </div>
                         <div className="box-content">
@@ -490,9 +491,10 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
                         <input 
                             type="text" 
                             name='price_discount'
+                            placeholder='Isi "0" jika data kosong'
                             value={form.price_discount}
                             onChange={handleChange}
-                            required
+                            // required
                         />
                         </div>
                         <div className="box-content">
@@ -500,9 +502,10 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
                         <input 
                             type="text" 
                             name='discount_percentage'
+                            placeholder='Isi "0" jika data kosong'
                             value={form.discount_percentage}
                             onChange={handleChange}
-                            required
+                            // required
                         />
                         </div>
                     </div>
@@ -521,6 +524,7 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
                                 name='reference'
                                 value={form.reference}
                                 onChange={handleChange}
+                                placeholder="https://example.com"
                                 // required
                             />
                         </div>
@@ -533,6 +537,7 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
                                 name='file_and_chat'
                                 value={form.file_and_chat}
                                 onChange={handleChange}
+                                placeholder="https://example.com"
                                 // required
                             />
                         </div>
@@ -542,7 +547,7 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
                 {/* DETAIL PROJECT  */}
                 <div className="form-content">
                     <h4>DETAIL PROJECT</h4>
-                    <div className="sec-content">
+                    <div className="sec-content" style={{border:'1px solid white'}}>
 
                         {/* REFERENCE  */}
                         <div className="box-content">
