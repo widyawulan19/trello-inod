@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { checkCardIdNullOrNotForDesign, getMarketingDesignById } from '../services/ApiServices'
+import { checkCardIdNullOrNotForDesign, getExportMarketingDesign, getMarketingDesignById } from '../services/ApiServices'
 import {HiPlus } from 'react-icons/hi2'
 import { FaXmark } from "react-icons/fa6";
 import BootstrapTooltip from '../components/Tooltip'
@@ -8,7 +8,7 @@ import OutsideClick from '../hook/OutsideClick';
 import FormCreateCardDesign from '../fitur/FormCreateCardDesign'
 import ExportMarketingDesignById from '../exports/ExportMarketingDesignById';
 
-const ViewDataMarketingDesign=({marketingDesignId, onClose})=> {
+const ViewDataMarketingDesign=({marketingDesignId, onClose, fetchMarketingDesign, handleExportToSheet})=> {
     //STATE
     console.log('marketing design id diterima:', marketingDesignId)
     const [dataMarketingDesign, setDataMarketingDesign] = useState([])
@@ -17,6 +17,7 @@ const ViewDataMarketingDesign=({marketingDesignId, onClose})=> {
     const [loadingCardId, setLoadingCardId] = useState(true)
     const [showCardForm, setShowCardForm] = useState({})
     const showCreateRef = OutsideClick(()=> setShowCardForm(false))
+    const [isExported, setIsExported] = useState(false);
 
 
     //FUNCTION 
@@ -113,6 +114,31 @@ const renderTextWithLinks = (text) => {
 };
 
 
+// 🔎 Cek apakah sudah di-export dari API
+  useEffect(() => {
+    const checkExportStatus = async () => {
+      try {
+        const res = await getExportMarketingDesign(marketingDesignId);
+        // kalau API balikin data (misalnya ada row di marketing_design_exports), berarti udah exported
+        setIsExported(res.data?.length > 0);
+      } catch (err) {
+        console.error("❌ Gagal cek status export:", err);
+      }
+    };
+    checkExportStatus();
+  }, [marketingDesignId]);
+
+  // 🟢 handle export ke sheets
+  const handleClickExport = async () => {
+    try {
+      await handleExportToSheet(marketingDesignId, dataMarketingDesign.buyer_name);
+      setIsExported(true); // ✅ update langsung di FE juga
+    } catch (error) {
+      console.error("❌ Error export:", error);
+    }
+  };
+
+
 
 
   return (
@@ -124,7 +150,20 @@ const renderTextWithLinks = (text) => {
         </div>
         <div className="vmd-right">
           <div className="export">
-            <ExportMarketingDesignById marketingId={marketingDesignId}/>
+            <button
+              onClick={handleClickExport}
+              disabled={isExported}
+              style={{
+                backgroundColor: isExported ? "#ccc" : "#4CAF50", // abu-abu kalau disable, hijau kalau aktif
+                color: isExported ? "#666" : "#fff",
+                padding: "10px 20px",
+                border: "none",
+                borderRadius: "6px",
+                cursor: isExported ? "not-allowed" : "pointer"
+              }}
+            >
+              {isExported ? "✅ Sudah di-export" : "Transfile to Sheets"}
+            </button>
           </div>
             <div className="card-status">
               {loadingCardId ? (

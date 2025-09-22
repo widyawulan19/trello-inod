@@ -466,6 +466,19 @@ export const getMarketingWithExportStatus = async () => {
 };
 
 
+// EXPORT MARKETING DESIGN 
+// 1. Export data design ke Google Sheets
+export const exportDesignToSheets = (designData) =>
+  axios.post(`${API_URL}/export-design-to-sheet`, { designData });
+
+// 2. Tandai marketing design sudah di-export
+export const addExportMarketingDesign = (marketingDesignId) =>
+  axios.post(`${API_URL}/marketing-design-export`, { marketingDesignId });
+
+// 3. Cek apakah marketing design sudah di-export
+export const getExportMarketingDesign = (marketingDesignId) =>
+  axios.get(`${API_URL}/marketing-design-export/${marketingDesignId}`);
+
 //DATA MARKETING DESIGN
 export const getAllDataMarketingDesign = () => axios.get(`${API_URL}/marketing-design`)
 export const getCardIdMarketingDesignByMarketingId = (id) => axios.get(`${API_URL}/card-id-design/${id}`)
