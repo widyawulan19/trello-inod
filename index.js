@@ -2824,7 +2824,7 @@ app.patch('/cards/:cardId/position', async (req, res) => {
         // Update card yang dipindah
         await client.query(
             `UPDATE cards
-       SET position = $1, updated_at = NOW()
+       SET position = $1, update_at = NOW()
        WHERE id = $2 AND list_id = $3`,
             [newPosition, cardId, listId]
         );
