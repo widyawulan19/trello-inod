@@ -98,14 +98,15 @@ app.post("/api/export-design-to-sheet", async (req, res) => {
     try {
         const { designData } = req.body; // Data dari frontend
 
-        const client = await auth.getClient();
-        const sheets = google.sheets({ version: "v4", auth: client });
+        const clientAuth = await auth.getClient();
+        const sheets = google.sheets({ version: "v4", auth: clientAuth });
 
         console.log("📤 Data Design yang dikirim:", designData);
 
+        // 1. Masukin data ke Google Sheets
         await sheets.spreadsheets.values.append({
-            spreadsheetId: process.env.SPREADSHEET_ID, // sama kayak musik
-            range: "Design!A:Z", // tab khusus untuk data design
+            spreadsheetId: process.env.SPREADSHEET_ID,
+            range: "Design!A:Z",
             valueInputOption: "RAW",
             requestBody: {
                 values: [[
@@ -135,12 +136,30 @@ app.post("/api/export-design-to-sheet", async (req, res) => {
             },
         });
 
-        res.json({ success: true, message: "✅ Data Design berhasil masuk ke Google Sheet (Design tab)" });
+        // 2. Simpan jejak ke tabel marketing_design_exports
+        const exportedBy = "admin"; // bisa ambil dari req.user
+        const insertQuery = `
+      INSERT INTO marketing_design_exports (marketing_design_id, exported_by, exported_at)
+      VALUES ($1, $2, NOW())
+      ON CONFLICT (marketing_design_id) DO NOTHING
+      RETURNING *;
+    `;
+        const { rows } = await client.query(insertQuery, [
+            designData.marketing_design_id,
+            exportedBy,
+        ]);
+
+        res.json({
+            success: true,
+            message: "✅ Data Design berhasil masuk ke Google Sheet (Design tab) & dicatat ke DB",
+            exportLog: rows[0] || null,
+        });
     } catch (error) {
         console.error("❌ Error:", error);
         res.status(500).json({ success: false, message: "Gagal update Google Sheet untuk Design" });
     }
 });
+
 
 // POST /api/marketing-design-export
 app.post("/api/marketing-design-export", async (req, res) => {
