@@ -2855,20 +2855,8 @@ app.get('/api/cards', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 })
+
 //get card by id
-// app.get('/api/cards/:id', async (req, res) => {
-//     const { id } = req.params;
-//     try {
-//         const result = await client.query('SELECT * FROM cards WHERE id = $1', [id])
-//         if (result.rows.length > 0) {
-//             res.json(result.rows[0]);
-//         } else {
-//             res.status(404).json({ message: 'card not found' })
-//         }
-//     } catch (error) {
-//         res.status(500).json({ error: error.message });
-//     }
-// })
 app.get('/api/cards/:id', async (req, res) => {
     const { id } = req.params;
 
@@ -2972,12 +2960,30 @@ app.delete('/api/cards/:cardId', async (req, res) => {
     const userId = req.user.id;
 
     try {
-        const result = await client.query("DELETE FROM cards WHERE id = $1 RETURNING *", [cardId]);
-        if (result.rows.length === 0) {
+        // 1. Dapatkan list_id dan posisi card yang dihapus
+        const cardRes = await client.query(
+            "SELECT list_id, position FROM cards WHERE id = $1",
+            [cardId]
+        );
+
+        if (cardRes.rows.length === 0) {
             return res.status(404).json({ error: "Card not found" });
         }
 
-        //add log activity
+        const { list_id, position } = cardRes.rows[0];
+
+        // 2. Hapus card
+        await client.query("DELETE FROM cards WHERE id = $1", [cardId]);
+
+        // 3. Update posisi card lain yang lebih besar dari posisi card yang dihapus
+        await client.query(
+            `UPDATE cards
+       SET position = position - 1
+       WHERE list_id = $1 AND position > $2`,
+            [list_id, position]
+        );
+
+        // 4. Tambahkan log activity
         await logActivity(
             'card',
             cardId,
@@ -2986,13 +2992,14 @@ app.delete('/api/cards/:cardId', async (req, res) => {
             `Card with id ${cardId} deleted`,
             'list',
             cardId
-        )
+        );
 
-        res.json({ message: "Card deleted successfully" });
+        res.json({ message: "Card deleted successfully and positions updated" });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
-})
+});
+
 
 //5. duplicate card
 // Endpoint untuk duplikasi card ke list tertentu
@@ -3271,66 +3278,65 @@ app.put('/api/move-card-to-list/:cardId/:listId', async (req, res) => {
 
 //7. archive card data
 app.put('/api/archive-card/:cardId', async (req, res) => {
-    const { cardId } = req.params;
-    const userId = req.user.id;
+  const { cardId } = req.params;
+  const userId = req.user.id;
 
-    try {
-        // Retrieve the card data to be archived
-        const cardQuery = 'SELECT * FROM public.cards WHERE id = $1';
-        const cardResult = await client.query(cardQuery, [cardId]);
+  try {
+    // 1. Ambil data card
+    const cardResult = await client.query(
+      'SELECT list_id, position, title, description FROM public.cards WHERE id = $1',
+      [cardId]
+    );
 
-        if (cardResult.rows.length === 0) {
-            return res.status(404).json({ error: 'Card not found' });
-        }
-
-        const card = cardResult.rows[0];
-
-        // Insert the card into the archive table
-        const archiveQuery = `
-            INSERT INTO public.archive (entity_type, entity_id, name, description, parent_id, parent_type)
-            VALUES ($1, $2, $3, $4, $5, $6)
-            RETURNING id, entity_type, entity_id, name, description, parent_id, parent_type, archived_at
-        `;
-        const archiveResult = await client.query(archiveQuery, [
-            'card',               // entity_type
-            card.id,              // entity_id
-            card.title,           // name
-            card.description,     // description
-            card.list_id,         // parent_id (list)
-            'list',               // parent_type
-        ]);
-
-        const archivedData = archiveResult.rows[0];
-
-        // Delete the card from the cards table
-        const deleteQuery = 'DELETE FROM public.cards WHERE id = $1';
-        await client.query(deleteQuery, [cardId]);
-
-
-        //add log activity
-        await logActivity(
-            'card',
-            cardId,
-            'archive',
-            userId,
-            `Card dengan ID ${cardId} berhasil di archive`,
-            'list',
-            cardId
-        )
-
-        return res.status(200).json({
-            message: 'Card archived successfully',
-            archivedData: archivedData,
-        });
-
-
-    } catch (error) {
-        console.error('Error archiving card:', error);
-        return res.status(500).json({
-            error: 'An error occurred while archiving the card',
-        });
+    if (cardResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Card not found' });
     }
-})
+
+    const { list_id, position, title, description } = cardResult.rows[0];
+
+    // 2. Insert card ke archive
+    const archiveResult = await client.query(
+      `INSERT INTO public.archive (entity_type, entity_id, name, description, parent_id, parent_type)
+       VALUES ($1, $2, $3, $4, $5, $6)
+       RETURNING id, entity_type, entity_id, name, description, parent_id, parent_type, archived_at`,
+      ['card', cardId, title, description, list_id, 'list']
+    );
+
+    const archivedData = archiveResult.rows[0];
+
+    // 3. Hapus card dari table cards
+    await client.query('DELETE FROM public.cards WHERE id = $1', [cardId]);
+
+    // 4. Reorder posisi card lain di list
+    await client.query(
+      `UPDATE public.cards
+       SET position = position - 1
+       WHERE list_id = $1 AND position > $2`,
+      [list_id, position]
+    );
+
+    // 5. Log activity
+    await logActivity(
+      'card',
+      cardId,
+      'archive',
+      userId,
+      `Card dengan ID ${cardId} berhasil di archive`,
+      'list',
+      cardId
+    );
+
+    return res.status(200).json({
+      message: 'Card archived successfully and positions updated',
+      archivedData,
+    });
+
+  } catch (error) {
+    console.error('Error archiving card:', error);
+    return res.status(500).json({ error: 'An error occurred while archiving the card' });
+  }
+});
+
 //END CARD
 
 //CARD USER
