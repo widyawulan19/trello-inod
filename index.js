@@ -2785,7 +2785,7 @@ app.put('/api/lists/:listId/cards/reorder', async (req, res) => {
     }
 });
 
-app.patch('/cards/:cardId/new-position', async (req, res) => {
+app.patch('/api/cards/:cardId/new-position', async (req, res) => {
     const { cardId } = req.params;
     const { newPosition, listId } = req.body;
 
