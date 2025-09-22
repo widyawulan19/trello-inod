@@ -91,6 +91,59 @@ const transporter = nodemailer.createTransport({
     }
 })
 
+// DATA MARKETING DESIGN 
+// Endpoint untuk export data ke Google Sheets
+// Endpoint untuk export data Marketing Design ke Google Sheets
+app.post("/api/export-design-to-sheet", async (req, res) => {
+    try {
+        const { designData } = req.body; // Data dari frontend
+
+        const client = await auth.getClient();
+        const sheets = google.sheets({ version: "v4", auth: client });
+
+        console.log("📤 Data Design yang dikirim:", designData);
+
+        await sheets.spreadsheets.values.append({
+            spreadsheetId: process.env.SPREADSHEET_ID, // sama kayak musik
+            range: "Design!A:Z", // tab khusus untuk data design
+            valueInputOption: "RAW",
+            requestBody: {
+                values: [[
+                    designData.input_by_name,
+                    designData.acc_by_name,
+                    designData.buyer_name,
+                    designData.code_order,
+                    designData.order_number,
+                    designData.account_name,
+                    designData.deadline,
+                    designData.jumlah_design,
+                    designData.jumlah_revisi,
+                    designData.order_type_name,
+                    designData.offer_type_name,
+                    designData.project_type_name,
+                    designData.style_name,
+                    designData.status_project_name,
+                    designData.resolution,
+                    designData.reference,
+                    designData.price_normal,
+                    designData.price_discount,
+                    designData.discount_percentage,
+                    designData.required_files,
+                    designData.file_and_chat,
+                    designData.detail_project
+                ]],
+            },
+        });
+
+        res.json({ success: true, message: "✅ Data Design berhasil masuk ke Google Sheet (Design tab)" });
+    } catch (error) {
+        console.error("❌ Error:", error);
+        res.status(500).json({ success: false, message: "Gagal update Google Sheet untuk Design" });
+    }
+});
+
+// END DATA MARKEGING DESIGN 
+
 
 
 // Endpoint untuk export data ke Google Sheets
@@ -105,7 +158,7 @@ app.post("/api/export-to-sheet", async (req, res) => {
 
         await sheets.spreadsheets.values.append({
             spreadsheetId,
-            range: "Sheet1!A:E", // sesuai kolom data
+            range: "Musik!A:Z", // sesuai kolom data
             valueInputOption: "RAW",
             requestBody: {
                 values: [[
@@ -204,26 +257,6 @@ app.post("/api/export-to-sheet", async (req, res) => {
 
 
 // MARKETING EXPORT 
-// 1. Tambah data ke tabel marketing_exports
-// app.post("/api/marketing-exports/:marketingId", async (req, res) => {
-//     try {
-//         const { marketingId } = req.params;
-//         const { exported_by } = req.body; // optional, bisa dikirim user login
-
-//         const result = await client.query(
-//             `INSERT INTO marketing_exports (marketing_id, exported_by)
-//        VALUES ($1, $2)
-//        RETURNING *`,
-//             [marketingId, exported_by || null]
-//         );
-
-//         res.json({ success: true, data: result.rows[0] });
-//     } catch (error) {
-//         console.error("❌ Error insert marketing_export:", error);
-//         res.status(500).json({ success: false, message: "Gagal simpan export" });
-//     }
-// });
-
 // 2. Ambil semua data export
 app.get("/api/marketing-exports", async (req, res) => {
     try {
@@ -3278,63 +3311,63 @@ app.put('/api/move-card-to-list/:cardId/:listId', async (req, res) => {
 
 //7. archive card data
 app.put('/api/archive-card/:cardId', async (req, res) => {
-  const { cardId } = req.params;
-  const userId = req.user.id;
+    const { cardId } = req.params;
+    const userId = req.user.id;
 
-  try {
-    // 1. Ambil data card
-    const cardResult = await client.query(
-      'SELECT list_id, position, title, description FROM public.cards WHERE id = $1',
-      [cardId]
-    );
+    try {
+        // 1. Ambil data card
+        const cardResult = await client.query(
+            'SELECT list_id, position, title, description FROM public.cards WHERE id = $1',
+            [cardId]
+        );
 
-    if (cardResult.rows.length === 0) {
-      return res.status(404).json({ error: 'Card not found' });
-    }
+        if (cardResult.rows.length === 0) {
+            return res.status(404).json({ error: 'Card not found' });
+        }
 
-    const { list_id, position, title, description } = cardResult.rows[0];
+        const { list_id, position, title, description } = cardResult.rows[0];
 
-    // 2. Insert card ke archive
-    const archiveResult = await client.query(
-      `INSERT INTO public.archive (entity_type, entity_id, name, description, parent_id, parent_type)
+        // 2. Insert card ke archive
+        const archiveResult = await client.query(
+            `INSERT INTO public.archive (entity_type, entity_id, name, description, parent_id, parent_type)
        VALUES ($1, $2, $3, $4, $5, $6)
        RETURNING id, entity_type, entity_id, name, description, parent_id, parent_type, archived_at`,
-      ['card', cardId, title, description, list_id, 'list']
-    );
+            ['card', cardId, title, description, list_id, 'list']
+        );
 
-    const archivedData = archiveResult.rows[0];
+        const archivedData = archiveResult.rows[0];
 
-    // 3. Hapus card dari table cards
-    await client.query('DELETE FROM public.cards WHERE id = $1', [cardId]);
+        // 3. Hapus card dari table cards
+        await client.query('DELETE FROM public.cards WHERE id = $1', [cardId]);
 
-    // 4. Reorder posisi card lain di list
-    await client.query(
-      `UPDATE public.cards
+        // 4. Reorder posisi card lain di list
+        await client.query(
+            `UPDATE public.cards
        SET position = position - 1
        WHERE list_id = $1 AND position > $2`,
-      [list_id, position]
-    );
+            [list_id, position]
+        );
 
-    // 5. Log activity
-    await logActivity(
-      'card',
-      cardId,
-      'archive',
-      userId,
-      `Card dengan ID ${cardId} berhasil di archive`,
-      'list',
-      cardId
-    );
+        // 5. Log activity
+        await logActivity(
+            'card',
+            cardId,
+            'archive',
+            userId,
+            `Card dengan ID ${cardId} berhasil di archive`,
+            'list',
+            cardId
+        );
 
-    return res.status(200).json({
-      message: 'Card archived successfully and positions updated',
-      archivedData,
-    });
+        return res.status(200).json({
+            message: 'Card archived successfully and positions updated',
+            archivedData,
+        });
 
-  } catch (error) {
-    console.error('Error archiving card:', error);
-    return res.status(500).json({ error: 'An error occurred while archiving the card' });
-  }
+    } catch (error) {
+        console.error('Error archiving card:', error);
+        return res.status(500).json({ error: 'An error occurred while archiving the card' });
+    }
 });
 
 //END CARD
