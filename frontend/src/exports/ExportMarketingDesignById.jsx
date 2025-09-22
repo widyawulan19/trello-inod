@@ -1,146 +1,117 @@
-import React from 'react'
-import ExcelJs from "exceljs"
-import { saveAs } from 'file-saver'
-import { getAllDataMarketingJoinedById,getMarketingDesignById } from '../services/ApiServices'
-import { useSnackbar } from '../context/Snackbar'
-import '../style/pages/DataMarketing.css'
+import { useEffect, useState } from "react";
+import {
+  getAllMarketingDesignJoined,
+  exportDesignToSheets,
+} from "../services/ApiServices";
 
-const ExportMarketingDesignById = ({ marketingId }) => {
-  const { showSnackbar } = useSnackbar();
+const ExportMarketingDesignById = () => {
+  const [designList, setDesignList] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  //DEBUG
-  console.log('data marketingId diterima di halaman export data marketing:', marketingId)
-
-  const handleExport = async () => {
+  // ✅ Fetch semua data marketing design
+  const fetchDesignData = async () => {
     try {
-        const response = await getMarketingDesignById(marketingId);
-        console.log("Full response axios:", response); // 👈 cek struktur lengkap
-
-        let rawData = response.data;
-        console.log("Raw export data by id (awal):", rawData);
-
-
-      // 🔹 Pastikan selalu dalam bentuk array
-      if (!Array.isArray(rawData)) {
-        rawData = rawData ? [rawData] : [];
-      }
-
-      if (rawData.length === 0) {
-        showSnackbar('Tidak ada data yang ditemukan untuk diexport!', 'error');
-        return;
-      }
-
-      const workbook = new ExcelJs.Workbook();
-      const worksheet = workbook.addWorksheet("Data Marketing");
-
-      // 🔹 Definisikan kolom sesuai struktur database
-      worksheet.columns = [
-        { header: "No", key: "no", width: 5 },
-        { header: "Input By", key: "input_by_name", width: 20 },
-        { header: "Acc By", key: "acc_by_name", width: 20 },
-        { header: "Buyer Name", key: "buyer_name", width: 25 },
-        { header: "Order Code", key: "code_order", width: 20 },
-        { header: "Order Number", key: "order_number", width: 15 },
-        { header: "Account", key: "account_name", width: 20 },
-        { header: "Deadline", key: "deadline", width: 15 },
-        { header: "Jumlah Design", key: "jumlah_design", width: 15 },
-        { header: "Jumlah Revisi", key: "jumlah_revisi", width: 15 },
-        { header: "Order Type", key: "order_type_name", width: 15 },
-        { header: "Offer Type", key: "offer_type_name", width: 15 },
-        { header: "Style", key: "style_name", width: 20 },
-        { header: "Resolution", key: "resolution", width: 20 },
-        { header: "Price Normal", key: "price_normal", width: 15 },
-        { header: "Price Discount", key: "price_discount", width: 15 },
-        { header: "Discount %", key: "discount_percentage", width: 15 },
-        { header: "Required Files", key: "required_files", width: 30 },
-        { header: "Project Type", key: "project_type_name", width: 25 },
-        // { header: "Duration", key: "duration", width: 15 },
-        { header: "Reference", key: "reference", width: 25 },
-        { header: "File & Chat", key: "file_and_chat", width: 35 },
-        { header: "Detail Project", key: "detail_project", width: 50 },
-        { header: "Created At", key: "create_at", width: 20 },
-        { header: "Updated At", key: "update_at", width: 20 },
-        { header: "Is Accepted", key: "is_accepted", width: 15 }
-      ];
-
-      // 🔹 Isi data ke baris
-      rawData.forEach((item, index) => {
-        worksheet.addRow({
-          no: index + 1,
-          input_by_name: item.input_by_name,
-          acc_by_name: item.acc_by_name,
-          buyer_name: item.buyer_name,
-          code_order: item.code_order,
-          order_number: item.order_number,
-          account_name: item.account_name,
-          deadline: item.deadline ? new Date(item.deadline).toLocaleDateString() : "-",
-          jumlah_design: item.jumlah_design,
-          jumlah_revisi: item.jumlah_revisi,
-          order_type_name: item.order_type_name,
-          offer_type_name: item.offer_type_name,
-          style_name: item.style_name,
-          resolution: item.resolution,
-          price_normal: item.price_normal,
-          price_discount: item.price_discount,
-          discount_percentage: item.discount_percentage,
-          required_files: item.required_files,
-          project_type_name: item.project_type_name,
-          // duration: item.duration,
-          reference: item.reference,
-          file_and_chat: item.file_and_chat,
-          detail_project: item.detail_project,
-          create_at: item.create_at ? new Date(item.create_at).toLocaleString() : "-",
-          update_at: item.update_at ? new Date(item.update_at).toLocaleString() : "-",
-          is_accepted: item.is_accepted ? "Yes" : "No"
-      });
-    });
-
-      // 🔹 Styling header
-      worksheet.getRow(1).eachCell((cell) => {
-        cell.fill = {
-          type: "pattern",
-          pattern: "solid",
-          fgColor: { argb: "FF4CAF50" }
-        };
-        cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
-        cell.alignment = { vertical: "middle", horizontal: "center" };
-        cell.border = {
-          top: { style: "thin" },
-          left: { style: "thin" },
-          bottom: { style: "thin" },
-          right: { style: "thin" }
-        };
-      });
-
-      // 🔹 Border semua cell
-      worksheet.eachRow((row, rowNumber) => {
-        row.eachCell((cell) => {
-          cell.border = {
-            top: { style: "thin" },
-            left: { style: "thin" },
-            bottom: { style: "thin" },
-            right: { style: "thin" }
-          };
-          if (rowNumber > 1) {
-            cell.alignment = { vertical: "middle", horizontal: "left", wrapText: true };
-          }
-        });
-      });
-
-      // 🔹 Save file
-      const buffer = await workbook.xlsx.writeBuffer();
-      saveAs(new Blob([buffer]), "data_marketing_design.xlsx");
-    } catch (error) {
-      console.error('Gagal export data:', error);
-      showSnackbar('Export data gagal, cek console untuk detailnya.', 'error');
+      setLoading(true);
+      const res = await getAllMarketingDesignJoined();
+      setDesignList(res.data);
+    } catch (err) {
+      console.error("❌ Gagal fetch data:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  return (
-    <button onClick={handleExport} className="btn-export">
-      Export Excel
-    </button>
-  )
-}
+  // ✅ Kirim satu data ke Google Sheets
+  const handleExportDesignToSheet = async (designData) => {
+    try {
+      setLoading(true);
+      await exportDesignToSheets(designData);
+      alert(`✅ Data design "${designData.buyer_name}" berhasil dikirim ke Google Sheets`);
+    } catch (err) {
+      console.error("❌ Gagal kirim ke Sheets:", err);
+      alert(`❌ Gagal kirim data design "${designData.buyer_name}"`);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-export default ExportMarketingDesignById
+  useEffect(() => {
+    fetchDesignData();
+  }, []);
+
+  return (
+    <div className="container p-4 mx-auto" style={{ border: "1px solid green", overflowX: "auto" }}>
+      <h1 className="mb-4 text-2xl font-bold">Marketing Design Dashboard</h1>
+
+      {loading && <p>Loading...</p>}
+
+      <table className="min-w-full border">
+        <thead>
+          <tr>
+            <th className="px-4 py-2 border">Input By</th>
+            <th className="px-4 py-2 border">Acc By</th>
+            <th className="px-4 py-2 border">Buyer Name</th>
+            <th className="px-4 py-2 border">Code Order</th>
+            <th className="px-4 py-2 border">Order Number</th>
+            <th className="px-4 py-2 border">Account</th>
+            <th className="px-4 py-2 border">Deadline</th>
+            <th className="px-4 py-2 border">Jumlah Design</th>
+            <th className="px-4 py-2 border">Revisi</th>
+            <th className="px-4 py-2 border">Order Type</th>
+            <th className="px-4 py-2 border">Offer Type</th>
+            <th className="px-4 py-2 border">Project Type</th>
+            <th className="px-4 py-2 border">Style</th>
+            <th className="px-4 py-2 border">Status</th>
+            <th className="px-4 py-2 border">Resolution</th>
+            <th className="px-4 py-2 border">Reference</th>
+            <th className="px-4 py-2 border">Price Normal</th>
+            <th className="px-4 py-2 border">Price Discount</th>
+            <th className="px-4 py-2 border">Discount %</th>
+            <th className="px-4 py-2 border">Required Files</th>
+            <th className="px-4 py-2 border">File & Chat</th>
+            <th className="px-4 py-2 border">Detail Project</th>
+            <th className="px-4 py-2 border">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {designList.map((item) => (
+            <tr key={item.marketing_design_id}>
+              <td className="px-4 py-2 border">{item.input_by_name}</td>
+              <td className="px-4 py-2 border">{item.acc_by_name}</td>
+              <td className="px-4 py-2 border">{item.buyer_name}</td>
+              <td className="px-4 py-2 border">{item.code_order}</td>
+              <td className="px-4 py-2 border">{item.order_number}</td>
+              <td className="px-4 py-2 border">{item.account_name}</td>
+              <td className="px-4 py-2 border">{item.deadline}</td>
+              <td className="px-4 py-2 border">{item.jumlah_design}</td>
+              <td className="px-4 py-2 border">{item.jumlah_revisi}</td>
+              <td className="px-4 py-2 border">{item.order_type_name}</td>
+              <td className="px-4 py-2 border">{item.offer_type_name}</td>
+              <td className="px-4 py-2 border">{item.project_type_name}</td>
+              <td className="px-4 py-2 border">{item.style_name}</td>
+              <td className="px-4 py-2 border">{item.status_project_name}</td>
+              <td className="px-4 py-2 border">{item.resolution}</td>
+              <td className="px-4 py-2 border">{item.reference}</td>
+              <td className="px-4 py-2 border">{item.price_normal}</td>
+              <td className="px-4 py-2 border">{item.price_discount}</td>
+              <td className="px-4 py-2 border">{item.discount_percentage}</td>
+              <td className="px-4 py-2 border">{item.required_files}</td>
+              <td className="px-4 py-2 border">{item.file_and_chat}</td>
+              <td className="px-4 py-2 border">{item.detail_project}</td>
+              <td className="px-4 py-2 border">
+                <button
+                  className="px-3 py-1 text-white bg-blue-500 rounded hover:bg-blue-600"
+                  onClick={() => handleExportDesignToSheet(item)}
+                >
+                  Export to Sheets
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+export default ExportMarketingDesignById;

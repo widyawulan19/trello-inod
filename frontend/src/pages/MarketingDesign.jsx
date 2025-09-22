@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { archiveDataMarektingDesign, deleteDataMarketingDesign, getAllDataMarketingDesign, getAllMarketingDesignJoined, getDataMarketingDesignAccept, getDataMarketingDesignNotAccept, getDataWhereCardIdIsNull, getDataWhereCardIdNotNull } from '../services/ApiServices';
+import { archiveDataMarektingDesign, deleteDataMarketingDesign, getAllDataMarketingDesign, getAllMarketingDesignJoined, getDataMarketingDesignAccept, getDataMarketingDesignNotAccept, getDataWhereCardIdIsNull, getDataWhereCardIdNotNull,exportDesignToSheets } from '../services/ApiServices';
 import '../style/pages/MarketingDesign.css'
 // import '../style/pages/AcceptDataDesign.css'
 import BootstrapTooltip from '../components/Tooltip';
@@ -230,6 +230,26 @@ const MarketingDesign=()=> {
     const hasCardId = (item) => {
       return item.card_id !== null && item.card_id !== undefined && item.card_id !== "";
     };
+
+  // export ke Google Sheets
+  const handleExportToSheet = async (designData) => {
+    try {
+      setLoading(true);
+      await exportDesignToSheets(designData); // ✅ kirim seluruh data
+      alert(`✅ Data "${designData.buyer_name}" berhasil dikirim ke Google Sheets`);
+      fetchMarketingDesign(); // refresh data kalau perlu
+    } catch (err) {
+      console.error("❌ Gagal kirim ke Sheets:", err);
+      alert(`❌ Gagal kirim data "${designData.buyer_name}"`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  useEffect(() => {
+    fetchMarketingDesign();
+  }, []);
 
   // SHOW DATA CONTENT 
   const handleShowData = () =>{
@@ -533,7 +553,12 @@ const MarketingDesign=()=> {
                 {showDetail && selectedMarketingDesign && (
                     <div className="detail-data-design">
                         <div className="detail-cont">
-                            <ViewDataMarketingDesign marketingDesignId={selectedMarketingDesign} onClose={handleCloseDetail}/>
+                            <ViewDataMarketingDesign 
+                              marketingDesignId={selectedMarketingDesign} 
+                              onClose={handleCloseDetail}
+                              handleExportToSheet={handleExportToSheet}
+                              fetchMarketingDesign={fetchMarketingDesign}
+                              />
                         </div>
                     </div>
                 )}
