@@ -14,7 +14,7 @@ import { HiMiniListBullet,
         HiOutlineChevronRight,
         HiOutlineListBullet
          } from 'react-icons/hi2'
-import { archiveList, deleteLists, duplicateBoards, getAllLists, getBoardById, getCardByList, getListByBoard, updateLists } from '../services/ApiServices'
+import { archiveList, deleteLists, duplicateBoards, getAllLists, getBoardById, getCardByList, getListByBoard, updateLists,updateCardPosition } from '../services/ApiServices'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import Card from './Card'
 import OutsideClick from '../hook/OutsideClick'
@@ -48,6 +48,7 @@ const BoardList=()=> {
     const [listId, setListId] = useState([]);
     const [clickedListId, setClickedListId] = useState(null);
     const [cards, setCards] = useState({});
+    const [cardPositionDropdown, setCardPositionDropdown] = useState(null);
     //state show
     const [showSetting, setShowSetting] = useState({})
     const settingRef = OutsideClick(()=>setShowSetting(false))
@@ -311,18 +312,24 @@ const handleArchiveLists = (listId) =>{
         showSnackbar: showSnackbar,
     })
 }
-// const handleArchiveLists = async(listId)=>{
-//     console.log('Archiving list with id:',listId)
-//     try{
-//         const response = await archiveList(listId)
-//         console.log('lists archived successfully:', response.data)
-//         showSnackbar('List berhasil diarsipkan','success')
-//         fetchLists()
-//     }catch(error){
-//         console.error('Error archiving lists:', error)
-//         showSnackbar('Gagal mengarsipkan list','error')
-//     }
-// }
+
+// FUNCTION CARD POSITION 
+const handleChangeCardPosition = async (cardId, newPosition) => {
+  const listId = Object.keys(cards).find(id => 
+    cards[id].some(c => c.id === cardId)
+  );
+  if (!listId) return;
+
+  try {
+    await updateCardPosition(cardId, newPosition, listId);
+    setCardPositionDropdown(null);
+    fetchCardList(listId);
+    showSnackbar('Success change card position!', 'success');
+  } catch (error) {
+    console.error(error);
+    showSnackbar('Error change card posititon, Try Again Bro!', 'error');
+  }
+};
 
 //NAVIGATION
 // <Route path='/workspaces/:workspaceId' element={<WorkspacePage/>}/>
@@ -444,13 +451,13 @@ const handleNavigateToBoard = (workspaceId,boardId) =>{
                                         fetchBoardDetail={fetchBoardDetail}
                                         fetchLists={fetchLists}
                                         fetchCardList={fetchCardList}
+                                        cardsInList={cards[list.id] || []}
                                         boards={boards}
                                         lists={lists}
                                         listName={list.name}
-                                        // onCardMoved={() => {
-                                        //     fetchLists(); // kalau ingin update list juga
-                                        //     fetchCardList(); // atau fetch semua cards
-                                        //   }}
+                                        cardPositionDropdown={cardPositionDropdown}
+                                        setCardPositionDropdown={setCardPositionDropdown}
+                                        handleChangeCardPosition={handleChangeCardPosition}
                                     />
                                     {/* <CardDetailPopup isOpen={showDetail} onClose={handleShowDetail} cardId={card.id} /> */}
                                     </>
