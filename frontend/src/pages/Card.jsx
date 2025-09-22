@@ -329,20 +329,7 @@ const Card=({
             showSnackbar: showSnackbar,
         })
     }
-    // const handleArchiveCard = async(cardId)=>{
-    //     console.log('Arciving card with id:', cardId)
-    //     try{
-    //         const response = await archiveCard(cardId)
-    //         console.log('Card archiving successfully:', response.data)
-    //         // fetchCardList(cardId)
-    //         fetchCardList(listId)
-    //         setShowSetting(false)
-    //         showSnackbar('Card archived successfully','success')
-    //     }catch(error){
-    //         console.error('Error archiving cards:', error)
-    //         showSnackbar('Failed to archive card', 'error')
-    //     }
-    // }
+
 
     //fungsi menampilkan icon 
     const ICON_STATUS = {
