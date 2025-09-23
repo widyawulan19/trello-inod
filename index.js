@@ -207,6 +207,11 @@ app.post("/api/export-to-sheet", async (req, res) => {
 
         console.log("📤 Data yang dikirim:", marketingData); // cek di logs
 
+        //merubah format deadline
+        const deadline = marketingData.deadline
+            ? new Date(marketingData.deadline).toLocaleDateString("id-ID") // 25/9/2025
+            : "";
+
         await sheets.spreadsheets.values.append({
             spreadsheetId,
             range: "Musik!A:Y", // A sampai Y (25 kolom sesuai header)
@@ -219,7 +224,8 @@ app.post("/api/export-to-sheet", async (req, res) => {
                     marketingData.code_order || "",        // Code order (D)
                     marketingData.order_number || "",      // Order number (E)
                     marketingData.account_name || "",      // Account name (F)
-                    marketingData.deadline || "",          // Deadline (G)
+                    // marketingData.deadline || "",          // Deadline (G)
+                    deadline,
                     marketingData.jumlah_revisi || "",     // Jumlah revisi (H)
                     marketingData.order_type_name || "",   // Order type (I)
                     marketingData.offer_type_name || "",   // Offer type (J)
