@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { archiveDataMarektingDesign, deleteDataMarketingDesign, getAllDataMarketingDesign, getAllMarketingDesignJoined, getDataMarketingDesignAccept, getDataMarketingDesignNotAccept, getDataWhereCardIdIsNull, getDataWhereCardIdNotNull,exportDesignToSheets } from '../services/ApiServices';
+import { archiveDataMarektingDesign, deleteDataMarketingDesign, getAllDataMarketingDesign, getAllMarketingDesignJoined, getDataMarketingDesignAccept, getDataMarketingDesignNotAccept, getDataWhereCardIdIsNull, getDataWhereCardIdNotNull,exportDesignToSheets, addExportMarketingDesign } from '../services/ApiServices';
 import '../style/pages/MarketingDesign.css'
 // import '../style/pages/AcceptDataDesign.css'
 import BootstrapTooltip from '../components/Tooltip';
@@ -46,6 +46,7 @@ const MarketingDesign=()=> {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [shortType, setShortType] = useState('');
     const [isExported, setIsExported] = useState(false);
+    const [designTransfile,setDesignTransfile] = useState([]);
 
     //STATE FETCH DATA MARKETING
     const [filters, setFilters] = useState({
@@ -232,41 +233,37 @@ const MarketingDesign=()=> {
       return item.card_id !== null && item.card_id !== undefined && item.card_id !== "";
     };
 
-  // export ke Google Sheets
-  const handleExportToSheet = async (marketing_design_id, buyerName) => {
-    try {
-      setLoading(true);
-      const res = await exportDesignToSheets({ marketing_design_id, buyer_name: buyerName });
 
-      alert(res.data.message);
+// fungsi handle utama untuk export design
+const handleExportToSheet = async (marketing_design_id, buyer_name) => {
+  try {
+    // 1. Export ke Google Sheets
+    await exportDesignToSheets({ marketing_design_id, buyer_name });
 
-      // update state langsung kalau sukses
-      if (res.data.exportLog) {
-        setIsExported(true);
-      }
+    // 3. Update state biar button disable
+    setDesignTransfile((prev) => [
+      ...prev,
+      { marketing_design_id }
+    ]);
 
-      fetchMarketingDesign(); // refresh data kalau mau
-    } catch (err) {
-      console.error("❌ Gagal kirim ke Sheets:", err);
-      alert(`❌ Gagal kirim data "${buyerName}"`);
-    } finally {
-      setLoading(false);
-    }
-  };
+     // 2. Insert ke DB
+    await addExportMarketingDesign(marketing_design_id);
 
-  // const handleExportToSheet = async (designData) => {
-  //   try {
-  //     setLoading(true);
-  //     await exportDesignToSheets(designData); // ✅ kirim seluruh data
-  //     alert(`✅ Data "${designData.buyer_name}" berhasil dikirim ke Google Sheets`);
-  //     fetchMarketingDesign(); // refresh data kalau perlu
-  //   } catch (err) {
-  //     console.error("❌ Gagal kirim ke Sheets:", err);
-  //     alert(`❌ Gagal kirim data "${designData.buyer_name}"`);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+    showSnackbar(
+      `✅ Data "${buyer_name}" berhasil dikirim ke Google Sheets`,
+      "success"
+    );
+  } catch (error) {
+    console.error("❌ Gagal kirim data ke sheets:", error);
+    showSnackbar(
+      `❌ Gagal kirim data "${buyer_name}"`,
+      "error"
+    );
+  }
+};
+
+
+
 
 
   useEffect(() => {
@@ -582,6 +579,8 @@ const MarketingDesign=()=> {
                               fetchMarketingDesign={fetchMarketingDesign}
                               setIsExported={setIsExported}
                               isExported={isExported}
+                              designTransfile={designTransfile}
+                              setDesignTransfile={setDesignTransfile}
                               />
                         </div>
                     </div>

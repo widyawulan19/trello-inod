@@ -136,6 +136,7 @@ const ViewDataMarketing=({marketingId, onClose, isExported, setIsExported,market
         <div className="vdm-right">
           <div className="export" style={{ marginRight: "5px" }}>
             <button
+              // onClick={() => onExport(marketingId)}
               onClick={() => onExport(marketingId)}
               disabled={isExported} // disable jika sudah di-transfile
               style={{
