@@ -8,7 +8,7 @@ import OutsideClick from '../hook/OutsideClick';
 import FormCreateCardDesign from '../fitur/FormCreateCardDesign'
 import ExportMarketingDesignById from '../exports/ExportMarketingDesignById';
 
-const ViewDataMarketingDesign=({marketingDesignId, onClose, fetchMarketingDesign, handleExportToSheet})=> {
+const ViewDataMarketingDesign=({marketingDesignId, onClose, fetchMarketingDesign, handleExportToSheet, isExported,setIsExported})=> {
     //STATE
     console.log('marketing design id diterima:', marketingDesignId)
     const [dataMarketingDesign, setDataMarketingDesign] = useState([])
@@ -17,7 +17,6 @@ const ViewDataMarketingDesign=({marketingDesignId, onClose, fetchMarketingDesign
     const [loadingCardId, setLoadingCardId] = useState(true)
     const [showCardForm, setShowCardForm] = useState({})
     const showCreateRef = OutsideClick(()=> setShowCardForm(false))
-    const [isExported, setIsExported] = useState(false);
 
 
     //FUNCTION 
