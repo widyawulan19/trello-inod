@@ -45,6 +45,7 @@ const MarketingDesign=()=> {
     const [filterType, setFilterType] = useState('DATA MARKETING DESIGN');
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [shortType, setShortType] = useState('');
+    const [isExported, setIsExported] = useState(false);
 
     //STATE FETCH DATA MARKETING
     const [filters, setFilters] = useState({
@@ -232,19 +233,40 @@ const MarketingDesign=()=> {
     };
 
   // export ke Google Sheets
-  const handleExportToSheet = async (designData) => {
+  const handleExportToSheet = async (marketing_design_id, buyerName) => {
     try {
       setLoading(true);
-      await exportDesignToSheets(designData); // ✅ kirim seluruh data
-      alert(`✅ Data "${designData.buyer_name}" berhasil dikirim ke Google Sheets`);
-      fetchMarketingDesign(); // refresh data kalau perlu
+      const res = await exportDesignToSheets({ marketing_design_id, buyer_name: buyerName });
+
+      alert(res.data.message);
+
+      // update state langsung kalau sukses
+      if (res.data.exportLog) {
+        setIsExported(true);
+      }
+
+      fetchMarketingDesign(); // refresh data kalau mau
     } catch (err) {
       console.error("❌ Gagal kirim ke Sheets:", err);
-      alert(`❌ Gagal kirim data "${designData.buyer_name}"`);
+      alert(`❌ Gagal kirim data "${buyerName}"`);
     } finally {
       setLoading(false);
     }
   };
+
+  // const handleExportToSheet = async (designData) => {
+  //   try {
+  //     setLoading(true);
+  //     await exportDesignToSheets(designData); // ✅ kirim seluruh data
+  //     alert(`✅ Data "${designData.buyer_name}" berhasil dikirim ke Google Sheets`);
+  //     fetchMarketingDesign(); // refresh data kalau perlu
+  //   } catch (err) {
+  //     console.error("❌ Gagal kirim ke Sheets:", err);
+  //     alert(`❌ Gagal kirim data "${designData.buyer_name}"`);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
 
   useEffect(() => {
@@ -558,6 +580,8 @@ const MarketingDesign=()=> {
                               onClose={handleCloseDetail}
                               handleExportToSheet={handleExportToSheet}
                               fetchMarketingDesign={fetchMarketingDesign}
+                              setIsExported={setIsExported}
+                              isExported={isExported}
                               />
                         </div>
                     </div>
