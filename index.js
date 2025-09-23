@@ -92,8 +92,8 @@ const transporter = nodemailer.createTransport({
 })
 
 // DATA MARKETING DESIGN 
-// Endpoint untuk export data ke Google Sheets
 // Endpoint untuk export data Marketing Design ke Google Sheets
+// Endpoint untuk export data Design ke Google Sheets
 app.post("/api/export-design-to-sheet", async (req, res) => {
     try {
         const { designData } = req.body; // Data dari frontend
@@ -103,7 +103,7 @@ app.post("/api/export-design-to-sheet", async (req, res) => {
 
         console.log("📤 Data Design yang dikirim:", designData);
 
-        // 1. Masukin data ke Google Sheets
+        // 1. Masukin data ke Google Sheets (tab Design)
         await sheets.spreadsheets.values.append({
             spreadsheetId: process.env.SPREADSHEET_ID,
             range: "Design!A:Z",
@@ -136,27 +136,16 @@ app.post("/api/export-design-to-sheet", async (req, res) => {
             },
         });
 
-        // 2. Simpan jejak ke tabel marketing_design_exports
-        const exportedBy = "admin"; // bisa ambil dari req.user
-        const insertQuery = `
-      INSERT INTO marketing_design_exports (marketing_design_id, exported_by, exported_at)
-      VALUES ($1, $2, NOW())
-      ON CONFLICT (marketing_design_id) DO NOTHING
-      RETURNING *;
-    `;
-        const { rows } = await client.query(insertQuery, [
-            designData.marketing_design_id,
-            exportedBy,
-        ]);
-
         res.json({
             success: true,
-            message: "✅ Data Design berhasil masuk ke Google Sheet (Design tab) & dicatat ke DB",
-            exportLog: rows[0] || null,
+            message: "✅ Data Design berhasil masuk ke Google Sheet (Design tab)",
         });
     } catch (error) {
         console.error("❌ Error:", error);
-        res.status(500).json({ success: false, message: "Gagal update Google Sheet untuk Design" });
+        res.status(500).json({
+            success: false,
+            message: "Gagal update Google Sheet untuk Design",
+        });
     }
 });
 
