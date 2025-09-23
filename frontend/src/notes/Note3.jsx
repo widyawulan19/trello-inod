@@ -134,3 +134,25 @@ app.patch('/api/cards/:cardId/new-position', async (req, res) => {
                                 </div>
                             </div>
                         )}
+
+// fungsi handle utama untuk export design
+const handleExportDesign = async (designData) => {
+  try {
+    // 1. Export ke Google Sheets
+    await exportDesignToSheets(designData);
+
+    // 2. Insert ke DB
+    await addExportMarketingDesign(designData.marketing_design_id);
+
+    // 3. Update state biar button disable
+    setDesignTransfile((prev) => [
+      ...prev,
+      { marketing_design_id: designData.marketing_design_id }
+    ]);
+
+    showSnackbar(`✅ Data "${designData.buyer_name}" berhasil dikirim ke Google Sheets`, "success");
+  } catch (error) {
+    console.error("❌ Gagal kirim data ke sheets:", error);
+    showSnackbar(`❌ Gagal kirim data "${designData.buyer_name}"`, "error");
+  }
+};

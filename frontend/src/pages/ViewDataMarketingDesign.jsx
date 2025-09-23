@@ -8,7 +8,7 @@ import OutsideClick from '../hook/OutsideClick';
 import FormCreateCardDesign from '../fitur/FormCreateCardDesign'
 import ExportMarketingDesignById from '../exports/ExportMarketingDesignById';
 
-const ViewDataMarketingDesign=({marketingDesignId, onClose, fetchMarketingDesign, handleExportToSheet, isExported,setIsExported})=> {
+const ViewDataMarketingDesign=({marketingDesignId, onClose, fetchMarketingDesign, handleExportToSheet, isExported,setIsExported, designTransfile, setDesignTransfile})=> {
     //STATE
     console.log('marketing design id diterima:', marketingDesignId)
     const [dataMarketingDesign, setDataMarketingDesign] = useState([])
@@ -149,7 +149,7 @@ const renderTextWithLinks = (text) => {
         </div>
         <div className="vmd-right">
           <div className="export">
-            <button
+            {/* <button
               onClick={handleClickExport}
               disabled={isExported}
               style={{
@@ -162,6 +162,14 @@ const renderTextWithLinks = (text) => {
               }}
             >
               {isExported ? "✅ Sudah di-export" : "Transfile to Sheets"}
+            </button> */}
+            <button
+              onClick={() => handleExportToSheet(dataMarketingDesign.marketing_design_id, dataMarketingDesign.buyer_name)}
+              disabled={designTransfile.some(d => d.marketing_design_id === dataMarketingDesign.marketing_design_id)}
+            >
+              {designTransfile.some(d => d.marketing_design_id === dataMarketingDesign.marketing_design_id)
+                ? "✅ Sudah di-export"
+                : "Transfile to Sheets"}
             </button>
           </div>
             <div className="card-status">
