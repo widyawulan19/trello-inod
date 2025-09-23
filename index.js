@@ -209,38 +209,39 @@ app.post("/api/export-to-sheet", async (req, res) => {
 
         await sheets.spreadsheets.values.append({
             spreadsheetId,
-            range: "Musik!A:Z", // sesuai kolom data
-            valueInputOption: "RAW",
+            range: "Musik!A:Y", // A sampai Y (25 kolom sesuai header)
+            valueInputOption: "USER_ENTERED",
             requestBody: {
                 values: [[
-                    marketingData.input_by_name,
-                    marketingData.acc_by_name,
-                    marketingData.buyer_name,
-                    marketingData.code_order,
-                    marketingData.order_number,
-                    marketingData.account_name,
-                    marketingData.Deadline,
-                    marketingData.jumlah_revisi,
-                    marketingData.order_type_name,
-                    marketingData.offer_type_name,
-                    marketingData.jenis_track,
-                    marketingData.genre_name,
-                    marketingData.price_normal,
-                    marketingData.price_discount,
-                    marketingData.discount,
-                    marketingData.basic_price,
-                    marketingData.kupon_diskon_name,
-                    marketingData.gig_link,
-                    marketingData.required_files,
-                    marketingData.project_type_name,
-                    marketingData.duration,
-                    marketingData.reference_link,
-                    marketingData.file_and_chat_link,
-                    marketingData.detail_project,
-                    marketingData.accept_status_name
-                ]],
-            },
+                    marketingData.input_by_name || "",     // Input by (A)
+                    marketingData.acc_by_name || "",       // Acc by (B)
+                    marketingData.buyer_name || "",        // Buyer name (C)
+                    marketingData.code_order || "",        // Code order (D)
+                    marketingData.order_number || "",      // Order number (E)
+                    marketingData.account_name || "",      // Account name (F)
+                    marketingData.deadline || "",          // Deadline (G)
+                    marketingData.jumlah_revisi || "",     // Jumlah revisi (H)
+                    marketingData.order_type_name || "",   // Order type (I)
+                    marketingData.offer_type_name || "",   // Offer type (J)
+                    marketingData.jenis_track || "",       // Jenis track (K)
+                    marketingData.genre_name || "",        // Genre (L)
+                    marketingData.price_normal || "",      // Price normal (M)
+                    marketingData.price_discount || "",    // Price discount (N)
+                    marketingData.discount || "",          // Discount (O)
+                    marketingData.basic_price || "",       // Basic price (P)
+                    marketingData.kupon_diskon_name || "", // Kupon name (Q)
+                    marketingData.gig_link || "",          // Gig link (R)
+                    marketingData.required_files || "",    // Required file (S)
+                    marketingData.project_type_name || "", // Project type (T)
+                    marketingData.duration || "",          // Duration (U)
+                    marketingData.reference_link || "",    // Reference link (V)
+                    marketingData.file_and_chat_link || "",// File and chat (W)
+                    marketingData.detail_project || "",    // Detail project (X)
+                    marketingData.accept_status_name || "" // Accept status (Y)
+                ]]
+            }
         });
+
 
         res.json({ success: true, message: "✅ Data berhasil masuk ke Google Sheet" });
     } catch (error) {
