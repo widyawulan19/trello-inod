@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { archiveDataMarektingDesign, deleteDataMarketingDesign, getAllDataMarketingDesign, getAllMarketingDesignJoined, getDataMarketingDesignAccept, getDataMarketingDesignNotAccept, getDataWhereCardIdIsNull, getDataWhereCardIdNotNull,exportDesignToSheets, addExportMarketingDesign, getExportMarketingDesign } from '../services/ApiServices';
+import { archiveDataMarektingDesign, deleteDataMarketingDesign, getAllDataMarketingDesign, getAllMarketingDesignJoined, getDataMarketingDesignAccept, getDataMarketingDesignNotAccept, getDataWhereCardIdIsNull, getDataWhereCardIdNotNull,exportDesignToSheets, addExportMarketingDesign, getExportMarketingDesign, getAllMarketingDesignExports } from '../services/ApiServices';
 import '../style/pages/MarketingDesign.css'
 // import '../style/pages/AcceptDataDesign.css'
 import BootstrapTooltip from '../components/Tooltip';
@@ -268,12 +268,21 @@ const MarketingDesign=()=> {
 
 
     //fungsi data marketinf design export
-    // const fetchDataTransfile = async () =>{
-    //   try{
-    //     setLoading(true);
-    //     const response = await get
-    //   }
-    // }
+    const fetchDataTransfile = async () =>{
+      try{
+        setLoading(true);
+        const response = await getAllMarketingDesignExports();
+        setDesignTransfile(response);
+      }catch(error){
+        console.error("Error fetch transfile:", error);
+      }finally{
+        setLoading(false);
+      }
+    }
+
+    useEffect(()=>{
+      fetchDataTransfile();
+    },[]);
 
 // fungsi handle utama untuk export design
 const handleExportToSheet = async (marketingDesignId) => {

@@ -479,6 +479,17 @@ export const addExportMarketingDesign = (marketingDesignId) =>
 export const getExportMarketingDesign = (marketingDesignId) =>
   axios.get(`${API_URL}/marketing-design-export/${marketingDesignId}`);
 
+//4. get all data marketing design export
+export const getAllMarketingDesignExports = async () => {
+  try {
+    const res = await axios.get(`${API_URL}/marketing-design-export`);
+    return res.data;
+  } catch (err) {
+    console.error("❌ Gagal ambil marketing_exports:", err);
+    throw err;
+  }
+};
+
 //DATA MARKETING DESIGN
 export const getAllDataMarketingDesign = () => axios.get(`${API_URL}/marketing-design`)
 export const getCardIdMarketingDesignByMarketingId = (id) => axios.get(`${API_URL}/card-id-design/${id}`)
