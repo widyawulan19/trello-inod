@@ -311,27 +311,6 @@ useEffect(() => {
   fetchDataTransfile();
 }, []);
 
-// Fungsi handle utama (dipindah ke parent)
-// const handleExportToSheets = async (marketingId) => {
-//   try {
-//     // 1. Export ke Google Sheets
-//     await exportDataMarketingToSheets(marketingId);
-
-//     setIsExported(true);
-
-//     // 2. Update state transfile di parent
-//     setMarketingTransfile((prev) => [...prev, { marketing_id: marketingId }]);
-
-//     // 3. Insert ke DB
-//     // const res = await addExportMarketing(marketingId);
-//     // console.log("berhasil kirim data ke sheets:", res);
-
-//     showSnackbar(`berhasil kirim data ke sheets ID: ${marketingId}`, "success");
-//   } catch (error) {
-//     console.error("❌ Gagal kirim data ke sheets:", error);
-//     showSnackbar(`❌ Gagal kirim data ke sheets ID: ${marketingId}`, "error");
-//   }
-// };
 
 const handleExportToSheets = async (marketingId) => {
   try {
@@ -352,10 +331,11 @@ const handleExportToSheets = async (marketingId) => {
     const res = await addExportMarketing(marketingId);
     console.log("berhasil kirim data ke sheets:", res);
 
-    showSnackbar(`✅ berhasil kirim data ke sheets ID: ${marketingId}`, "success");
+    showSnackbar(`Berhasil kirim data ke sheets file`, "success");
+    fetchDataMarketing();
   } catch (error) {
-    console.error("❌ Gagal kirim data ke sheets:", error);
-    showSnackbar(`❌ Gagal kirim data ke sheets ID: ${marketingId}`, "error");
+    console.error("Gagal kirim data ke sheets:", error);
+    showSnackbar(` Gagal kirim data ke sheets file`, "error");
   }
 };
 
