@@ -583,6 +583,8 @@ export const getUserTotalNotificationUnread = (userId) => axios.get(`${API_URL}/
 
 //MENAMPILKAN SEMUA NOTIFICATION CHAT DAN SYSTEM
 export const getAllNotif = (userId) => axios.get(`${API_URL}/all-notif/${userId}`);
+export const getNotifications = (userId) => axios.get(`${API_URL}/notifications/${userId}`);
+
 
 //NOTIFICATION
 export const getNotificationForUser = (userId) => axios.get(`${API_URL}/notification-mention/${userId}`);
