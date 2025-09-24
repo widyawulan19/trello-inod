@@ -180,6 +180,17 @@ app.post("/api/marketing-design-export", async (req, res) => {
     }
 });
 
+//GET SEMUA DATA EXPORT MARKETING DESIGN
+app.get('/api/marketing-design-export', async (req, res) => {
+    try {
+        const result = await client.query('SELECT * FROM marketing_design_exports ORDER BY exported_at DESC');
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error get all data marketing design export', error);
+        res.status(500).json({ success: false, message: "Gagal ambil data" });
+    }
+})
+
 // GET /api/marketing-design-export/:id
 app.get("/api/marketing-design-export/:id", async (req, res) => {
     const { id } = req.params;
