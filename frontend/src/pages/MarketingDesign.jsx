@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { archiveDataMarektingDesign, deleteDataMarketingDesign, getAllDataMarketingDesign, getAllMarketingDesignJoined, getDataMarketingDesignAccept, getDataMarketingDesignNotAccept, getDataWhereCardIdIsNull, getDataWhereCardIdNotNull,exportDesignToSheets, addExportMarketingDesign } from '../services/ApiServices';
+import { archiveDataMarektingDesign, deleteDataMarketingDesign, getAllDataMarketingDesign, getAllMarketingDesignJoined, getDataMarketingDesignAccept, getDataMarketingDesignNotAccept, getDataWhereCardIdIsNull, getDataWhereCardIdNotNull,exportDesignToSheets, addExportMarketingDesign, getExportMarketingDesign } from '../services/ApiServices';
 import '../style/pages/MarketingDesign.css'
 // import '../style/pages/AcceptDataDesign.css'
 import BootstrapTooltip from '../components/Tooltip';
@@ -21,6 +21,7 @@ import ExportMarketingDesign from '../exports/ExportMarketingDesign';
 import { FaXmark } from 'react-icons/fa6';
 import FormMarketingDesignExample from '../example/FormMarketingDesignExample';
 import NewEditMarketingDesign from './NewEditMarketingDesign';
+import { AiFillCheckCircle } from 'react-icons/ai';
 
 const MarketingDesign=()=> {
     //STATE
@@ -93,9 +94,14 @@ const MarketingDesign=()=> {
         }
         if (filters.account) {
           temp = temp.filter((item) =>
-            item.account_name?.toLowerCase().includes(filters.account.toLowerCase())
+            item.account_name.toLowerCase().includes(filters.account.toLowerCase())
         );
-}
+        }
+        if (filters.input_by_name) {
+            temp = temp.filter((item) =>
+              item.input_by_name.toLowerCase().includes(filters.input_by_name.toLowerCase())
+            );
+          }
         setFilteredData(temp);
       }, [filters, data]);
     
@@ -155,15 +161,41 @@ const MarketingDesign=()=> {
     }
     //FUNCTION
     //1. fetch marketing design 
-    const fetchMarketingDesign = async()=>{
-        try{
-            const response = await getAllMarketingDesignJoined();
-            setDataMarketingDesign(response.data)
-            setFilteredData(response.data)
-        }catch(error){
-            console.error('Error fetching marketing design data:', error);
-        }
-    }
+    const fetchMarketingDesign = async () => {
+      try {
+        const response = await getAllMarketingDesignJoined();
+        const designList = response.data;
+
+        // Tambahkan status exported dengan cek endpoint
+        const withExportStatus = await Promise.all(
+          designList.map(async (d) => {
+            try {
+              const check = await getExportMarketingDesign(d.marketing_design_id);
+              // Sesuaikan dengan struktur response endpoint
+              return { ...d, is_transfiled: check.data?.exported || false };
+            } catch (err) {
+              console.error(`❌ Gagal cek export untuk id ${d.marketing_design_id}:`, err);
+              return { ...d, is_transfiled: false };
+            }
+          })
+        );
+
+        setDataMarketingDesign(withExportStatus);
+        setFilteredData(withExportStatus);
+      } catch (error) {
+        console.error("Error fetching marketing design data:", error);
+      }
+    };
+
+    // const fetchMarketingDesign = async()=>{
+    //     try{
+    //         const response = await getAllMarketingDesignJoined();
+    //         setDataMarketingDesign(response.data)
+    //         setFilteredData(response.data)
+    //     }catch(error){
+    //         console.error('Error fetching marketing design data:', error);
+    //     }
+    // }
 
     //2. filtered data
     const handleFilterData = (selectedTerm) =>{
@@ -175,7 +207,8 @@ const MarketingDesign=()=> {
                 (item) =>
                     item.buyer_name.toLowerCase().includes(selectedTerm.toLowerCase()) ||
                     item.order_number.toLowerCase().includes(selectedTerm.toLowerCase()) ||
-                    item.account_name?.toLowerCase().includes(selectedTerm.toLowerCase())
+                    item.account_name.toLowerCase().includes(selectedTerm.toLowerCase()) ||
+                    item.input_by_name.toLowerCase().includes(selectedTerm.toLowerCase())
             );
             setFilteredData(filtered);
         }
@@ -235,28 +268,39 @@ const MarketingDesign=()=> {
 
 
 // fungsi handle utama untuk export design
-const handleExportToSheet = async (marketing_design_id, buyer_name) => {
+const handleExportToSheet = async (marketingDesignId) => {
   try {
-    // 1. Export ke Google Sheets
-    await exportDesignToSheets({ marketing_design_id, buyer_name });
+    //ambil  data marketing design
+    const marketingDesign = dataMarketingDesign.find(m => m.marketing_design_id === marketingDesignId);
+    console.log('data marketing design bisa dilihat disini:', dataMarketingDesign);
 
-    // 3. Update state biar button disable
+    if(!marketingDesign){
+      throw new Error("Data marketing tidak ditemukan");
+    }
+
+    // 1. Export ke Google Sheets
+    await exportDesignToSheets(marketingDesign);
+
+    // 2. Update state biar button disable
+    setIsExported(true);
     setDesignTransfile((prev) => [
       ...prev,
-      { marketing_design_id }
+      { marketing_design_id: marketingDesignId }
     ]);
 
-     // 2. Insert ke DB
-    await addExportMarketingDesign(marketing_design_id);
+     // 3. Insert ke DB
+    const res = await addExportMarketingDesign(marketingDesignId);
+    console.log('Berhasil mengirim data ke sheets',res);
 
     showSnackbar(
-      `✅ Data "${buyer_name}" berhasil dikirim ke Google Sheets`,
+      `Data berhasil dikirim ke Google Sheets`,
       "success"
     );
+    fetchMarketingDesign();
   } catch (error) {
-    console.error("❌ Gagal kirim data ke sheets:", error);
+    console.error("Gagal kirim data ke sheets:", error);
     showSnackbar(
-      `❌ Gagal kirim data "${buyer_name}"`,
+      `Gagal kirim data ke sheets`,
       "error"
     );
   }
@@ -414,6 +458,15 @@ const handleExportToSheet = async (marketing_design_id, buyer_name) => {
                     >
                       Account
                     </li>
+                     <li
+                      className="li-ftc"
+                      onClick={() => {
+                        setShortType('input_by_name');
+                        setDropdownOpen(false);
+                      }}
+                    >
+                      Marketing Name
+                    </li>
                   </ul>
                 )}
               </div>
@@ -489,83 +542,105 @@ const handleExportToSheet = async (marketing_design_id, buyer_name) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredData.map((item, index)=>(
-                    <tr key={item.marketing_design_id}>
-                      <td>{index + 1}</td>
-                      <td className='input-container'  onClick={()=> handleShowDetail(item.marketing_design_id)}>
-                        {item.input_by_name || "-"}
-                        {hasCardId(item) && (
+                  {filteredData.map((item, index)=>{
+                    const exported = designTransfile.some(
+                      (m) => m.marketing_design_id === item.marketing_design_id
+                    );
+
+                    return(
+                      <tr key={item.marketing_design_id}>
+                        <td>{index + 1}</td>
+                        <td className='input-container'  onClick={()=> handleShowDetail(item.marketing_design_id)}>
+                          {item.input_by_name || "-"}
+                          {hasCardId(item) && (
+                            <span style={{
+                              backgroundColor: '#e0f7fa',
+                              color: '#00796b',
+                              padding: '4px 6px',
+                              fontSize: '10px',
+                              fontWeight:'bold',
+                              borderRadius: '4px',
+                              marginLeft: '5px',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '4px'
+                            }}>
+                              {'CARD'}
+                              <HiHandThumbUp />
+                            </span>
+                          )}
+                          <button
+                            disabled={item.is_transfiled}
+                            style={{
+                              backgroundColor: "transparent",
+                              color: item.is_transfiled ? "green" : "white",
+                              cursor: item.is_transfiled ? "not-allowed" : "pointer",
+                              padding: "4px 8px",
+                              border: "none",
+                              borderRadius: "4px",
+                              fontSize: "15px",
+                            }}
+                          >
+                            <AiFillCheckCircle />
+                          </button>
+
+                        </td>
+                        <td className='acc-container'>{item.acc_by_name}</td>
+                        <td className='status-container' style={{textAlign:'left' }}>
                           <span style={{
-                            backgroundColor: '#e0f7fa',
-                            color: '#00796b',
-                            padding: '4px 6px',
-                            fontSize: '10px',
-                            fontWeight:'bold',
-                            borderRadius: '4px',
-                            marginLeft: '5px',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '4px'
+                            padding: '2px 8px',
+                            borderRadius: '12px',
+                            backgroundColor: item.status_project_name ? '#C8E6C9' : '#FFCDD2',
+                            color: item.status_project_name ? '#2E7D32' : '#C62828',
+                            fontWeight: 'bold'
                           }}>
-                            {'CARD'}
-                            <HiHandThumbUp />
+                            {item.status_project_name}
                           </span>
-                        )}
-                      </td>
-                      <td className='acc-container'>{item.acc_by_name}</td>
-                      <td className='status-container' style={{textAlign:'left' }}>
-                         <span style={{
-                           padding: '2px 8px',
-                           borderRadius: '12px',
-                           backgroundColor: item.status_project_name ? '#C8E6C9' : '#FFCDD2',
-                           color: item.status_project_name ? '#2E7D32' : '#C62828',
-                           fontWeight: 'bold'
-                         }}>
-                           {item.status_project_name}
-                         </span>
-                       </td>
-                      <td className='buyer-name-container'>{item.buyer_name}</td>
-                      <td className='code-order-container'>{item.code_order}</td>
-                      <td className='jumlah-container' style={{textAlign:'center' }}>{item.jumlah_design}</td>
-                      <td className='order-number-container'>{item.order_number}</td>
-                      <td className='account-container'>{item.account_name}</td>
-                      <td className='deadline-container' style={{ textAlign:'center' }}>{new Date(item.deadline).toLocaleDateString()}</td>
-                      <td className='jumlah-revisi-container' style={{textAlign:'center' }}>{item.jumlah_revisi}</td>
-                      <td className='order-type-container'>{item.order_type_name}</td>
-                      <td className='offer-type-container'>{item.offer_type_name}</td>
-                      <td className='style-container'>{item.style_name}</td>
-                      <td className='resolution-container'>{item.resolution}</td>
-                      <td className='resolution-container'>{item.reference}</td>
-                      <td className='price-normal-container' style={{textAlign:'center', color:'#1E1E1E'}}>{item.price_normal}</td>
-                      <td className='price-discount-container' style={{textAlign:'center', color:'#E53935'}}>{item.price_discount}</td>
-                      <td className='discount_percentage-container' style={{textAlign:'center', color:'#388E3C'}}>{item.discount_percentage}%</td>
-                      <td className='project-type-container'>{item.project_type_name}</td>
-                      <td className='action-container'>
-                        <div className="action-table">
-                          <BootstrapTooltip title='View Data' placement='top'>
-                            <button onClick={()=> handleShowDetail(item.marketing_design_id)}>
-                                <IoEyeSharp style={{color:'white'}}/>
-                            </button>
-                        </BootstrapTooltip>
-                        <BootstrapTooltip title='Edit Data' placement='top'>
-                            <button onClick={()=> handleShowEdit(item.marketing_design_id)}>
-                                <HiOutlinePencil style={{color:'white'}}/>
-                            </button>
-                        </BootstrapTooltip>
-                        <BootstrapTooltip title='Archive Data' placement='top'>
-                            <button onClick={()=>handleArchiveDataMarketingDesign(item.marketing_design_id)}>
-                              <HiOutlineArchiveBox style={{color:'white'}}/>
-                            </button>
-                        </BootstrapTooltip>
-                        <BootstrapTooltip title='Delete Data' placement='top'>
-                            <button onClick={()=>handleDeleteClick(item.marketing_design_id)}>
-                              <HiOutlineTrash style={{color:'white'}}/>
-                            </button>
-                        </BootstrapTooltip>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                        </td>
+                        <td className='buyer-name-container'>{item.buyer_name}</td>
+                        <td className='code-order-container'>{item.code_order}</td>
+                        <td className='jumlah-container' style={{textAlign:'center' }}>{item.jumlah_design}</td>
+                        <td className='order-number-container'>{item.order_number}</td>
+                        <td className='account-container'>{item.account_name}</td>
+                        <td className='deadline-container' style={{ textAlign:'center' }}>{new Date(item.deadline).toLocaleDateString()}</td>
+                        <td className='jumlah-revisi-container' style={{textAlign:'center' }}>{item.jumlah_revisi}</td>
+                        <td className='order-type-container'>{item.order_type_name}</td>
+                        <td className='offer-type-container'>{item.offer_type_name}</td>
+                        <td className='style-container'>{item.style_name}</td>
+                        <td className='resolution-container'>{item.resolution}</td>
+                        <td className='resolution-container'>{item.reference}</td>
+                        <td className='price-normal-container' style={{textAlign:'center', color:'#1E1E1E'}}>{item.price_normal}</td>
+                        <td className='price-discount-container' style={{textAlign:'center', color:'#E53935'}}>{item.price_discount}</td>
+                        <td className='discount_percentage-container' style={{textAlign:'center', color:'#388E3C'}}>{item.discount_percentage}%</td>
+                        <td className='project-type-container'>{item.project_type_name}</td>
+                        <td className='action-container'>
+                          <div className="action-table">
+                            <BootstrapTooltip title='View Data' placement='top'>
+                              <button onClick={()=> handleShowDetail(item.marketing_design_id)}>
+                                  <IoEyeSharp style={{color:'white'}}/>
+                              </button>
+                          </BootstrapTooltip>
+                          <BootstrapTooltip title='Edit Data' placement='top'>
+                              <button onClick={()=> handleShowEdit(item.marketing_design_id)}>
+                                  <HiOutlinePencil style={{color:'white'}}/>
+                              </button>
+                          </BootstrapTooltip>
+                          <BootstrapTooltip title='Archive Data' placement='top'>
+                              <button onClick={()=>handleArchiveDataMarketingDesign(item.marketing_design_id)}>
+                                <HiOutlineArchiveBox style={{color:'white'}}/>
+                              </button>
+                          </BootstrapTooltip>
+                          <BootstrapTooltip title='Delete Data' placement='top'>
+                              <button onClick={()=>handleDeleteClick(item.marketing_design_id)}>
+                                <HiOutlineTrash style={{color:'white'}}/>
+                              </button>
+                          </BootstrapTooltip>
+                          </div>
+                        </td>
+                      </tr>
+                    )
+                    
+                  })}
                 </tbody>
                 {/* SHOW  */}
                 {/* DETAIL VIEW  */}

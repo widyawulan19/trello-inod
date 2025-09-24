@@ -113,29 +113,29 @@ const renderTextWithLinks = (text) => {
 };
 
 
-// 🔎 Cek apakah sudah di-export dari API
-  useEffect(() => {
-    const checkExportStatus = async () => {
-      try {
-        const res = await getExportMarketingDesign(marketingDesignId);
-        // kalau API balikin data (misalnya ada row di marketing_design_exports), berarti udah exported
-        setIsExported(res.data?.length > 0);
-      } catch (err) {
-        console.error("❌ Gagal cek status export:", err);
-      }
-    };
-    checkExportStatus();
-  }, [marketingDesignId]);
+// // 🔎 Cek apakah sudah di-export dari API
+//   useEffect(() => {
+//     const checkExportStatus = async () => {
+//       try {
+//         const res = await getExportMarketingDesign(marketingDesignId);
+//         // kalau API balikin data (misalnya ada row di marketing_design_exports), berarti udah exported
+//         setIsExported(res.data?.length > 0);
+//       } catch (err) {
+//         console.error("❌ Gagal cek status export:", err);
+//       }
+//     };
+//     checkExportStatus();
+//   }, [marketingDesignId]);
 
-  // 🟢 handle export ke sheets
-  const handleClickExport = async () => {
-    try {
-      await handleExportToSheet(marketingDesignId, dataMarketingDesign.buyer_name);
-      setIsExported(true); // ✅ update langsung di FE juga
-    } catch (error) {
-      console.error("❌ Error export:", error);
-    }
-  };
+//   // 🟢 handle export ke sheets
+//   const handleClickExport = async () => {
+//     try {
+//       await handleExportToSheet(marketingDesignId, dataMarketingDesign.buyer_name);
+//       setIsExported(true); // ✅ update langsung di FE juga
+//     } catch (error) {
+//       console.error("❌ Error export:", error);
+//     }
+//   };
 
 
 
@@ -149,8 +149,8 @@ const renderTextWithLinks = (text) => {
         </div>
         <div className="vmd-right">
           <div className="export">
-            {/* <button
-              onClick={handleClickExport}
+            <button
+              onClick={()=> handleExportToSheet(marketingDesignId)}
               disabled={isExported}
               style={{
                 backgroundColor: isExported ? "#ccc" : "#4CAF50", // abu-abu kalau disable, hijau kalau aktif
@@ -161,15 +161,7 @@ const renderTextWithLinks = (text) => {
                 cursor: isExported ? "not-allowed" : "pointer"
               }}
             >
-              {isExported ? "✅ Sudah di-export" : "Transfile to Sheets"}
-            </button> */}
-            <button
-              onClick={() => handleExportToSheet(dataMarketingDesign.marketing_design_id, dataMarketingDesign.buyer_name)}
-              disabled={designTransfile.some(d => d.marketing_design_id === dataMarketingDesign.marketing_design_id)}
-            >
-              {designTransfile.some(d => d.marketing_design_id === dataMarketingDesign.marketing_design_id)
-                ? "✅ Sudah di-export"
-                : "Transfile to Sheets"}
+              {isExported ? "Sudah Transfile" : "Transfile to SpreedSheets"}
             </button>
           </div>
             <div className="card-status">
