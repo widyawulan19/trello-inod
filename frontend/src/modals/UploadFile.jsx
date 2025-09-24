@@ -15,20 +15,28 @@ import { useSnackbar } from '../context/Snackbar';
 const UploadFile=({cardId,fetchCardById})=> {
     //STATE
     const [allUploadFile, setAllUploadFile] = useState([]);
-    const [showSetting, setShowSetting] = useState();
-    const settingRef = OutsideClick(()=>setShowSetting(false));
+    const [showSetting, setShowSetting] = useState(null);
+    const settingRef = OutsideClick(()=>setShowSetting(null));
     const {showSnackbar} = useSnackbar();
+    const [loading, setLoading] = useState(false);
     // const cardId = 297;
     
     // fungsi delete 
     const handleDeleteFile = async(cardId)=>{
+        if(!window.confirm("Yakin mau hapus file ini?")) return;
+
         try{
             console.log('Deleting file using cardId');
-            const response = await deleteFile(cardId);
+
+            setLoading(true);
+            await deleteFile(cardId);
             showSnackbar('Delete file succesfully', 'success');
             fetchCardById();
         }catch(error){
             console.log(error)
+            showSnackbar('Failed delete file!', 'error');
+        }finally{
+            setLoading(false);
         }
     }
 
@@ -48,15 +56,11 @@ const UploadFile=({cardId,fetchCardById})=> {
     } 
     useEffect(()=>{
         fetchAllUploadFile();
-    },[])
+    },[cardId])
 
-    const handleShowSetting = () =>{
-        setShowSetting(!showSetting);
-    }
-    const handleCloseSetting = () =>{
-        setShowSetting(!showSetting);
-    }
-
+    const handleShowSetting = (fileId) => {
+        setShowSetting(showSetting === fileId ? null : fileId);
+    };
 
 
     const iconType = {
@@ -106,35 +110,37 @@ const UploadFile=({cardId,fetchCardById})=> {
         {Array.isArray(allUploadFile) && allUploadFile.map((file, index) => (
         <div key={index} className='upload-cont'>
             <div className="upload-cont-prev">
-                 <div className="upload-cont-header" >
-                    <button onClick={handleShowSetting}><HiAdjustments/></button>
-                </div>
-                <div className='upload-icon' style={{color: iconColor[file.type]}}>
-                    {iconType[file.type] || <AiOutlineFileUnknown />} 
-                </div>
-                 {showSetting && (
-                    <div className='file-set' ref={settingRef}>
-                        <div className='del-btn'>
-                            Delete file
-                        </div>
-                    </div>
-                )}
-                
+            <div className="upload-cont-header" >
+                <button onClick={() => handleShowSetting(file.id)}>
+                <HiAdjustments/>
+                </button>
             </div>
-           
+            <div className='upload-icon' style={{color: iconColor[file.type]}}>
+                {iconType[file.type] || <AiOutlineFileUnknown />} 
+            </div>
             
-            <div className="upload-cont-body">
-                <div className="upload-desc">
-                    <h5>{file.file_name}</h5>
-                    <p>{formatDate(file.uploaded_at)}</p>
-                    <BootstrapTooltip title='View File' placement='top'>
-                        <a href={file.file_url} target="_blank" rel="noopener noreferrer">View</a>
-                    </BootstrapTooltip>
+            {/* hanya tampil kalau cocok */}
+              {showSetting === file.id && (
+                <div className="file-set" ref={settingRef}>
+                  <div
+                    className="del-btn"
+                    onClick={() => handleDeleteFile(file.id)}
+                  >
+                    Delete file
+                  </div>
                 </div>
+              )}
             </div>
 
-            
-            
+            <div className="upload-cont-body">
+            <div className="upload-desc">
+                <h5>{file.file_name}</h5>
+                <p>{formatDate(file.uploaded_at)}</p>
+                <BootstrapTooltip title='View File' placement='top'>
+                <a href={file.file_url} target="_blank" rel="noopener noreferrer">View</a>
+                </BootstrapTooltip>
+            </div>
+            </div>
         </div>
         ))}
     </div>
