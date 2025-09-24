@@ -385,9 +385,9 @@ const handleExportToSheets = async (marketingId) => {
                 />
                 <HiOutlineSearch className="dms-icon"/>
             </div>
-            <div className="dm-search-export">
+            {/* <div className="dm-search-export">
               <ExportDataMarketing/>
-            </div>   
+            </div>    */}
           </div>
         </div>
 
@@ -552,8 +552,8 @@ const handleExportToSheets = async (marketingId) => {
               <tbody>
                 {filteredData.map((item, index) => {
                   // cek apakah marketing_id sudah di-export
-                  const exported = marketingTransfile.some(
-                    (m) => m.marketing_id === item.marketing_id
+                 const isExported = marketingTransfile.some(
+                    (exp) => exp.marketing_id === item.marketing_id
                   );
 
                   return (
@@ -580,11 +580,11 @@ const handleExportToSheets = async (marketingId) => {
                         </span>
                       )}
                       <button
-                        disabled={exported}
+                        disabled={isExported}
                         style={{
                           backgroundColor: "transparent",
-                          color: exported ? "green" : "white",
-                          cursor: exported ? "not-allowed" : "pointer",
+                          color: isExported ? "green" : "white",
+                          cursor: isExported ? "not-allowed" : "pointer",
                           padding: "4px 8px",
                           border: "none",
                           borderRadius: "4px",

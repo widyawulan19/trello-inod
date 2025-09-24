@@ -20,7 +20,8 @@ import {
   addOrderTypeMusic,
   addKuponDiskon,
   addKepalaDivisi,
-  getAllAcceptStatus
+  getAllAcceptStatus,
+  addAcceptStatus
 } from "../services/ApiServices";
 
 import CustomDropdown from "../marketing/CustomDropdown";
@@ -69,6 +70,7 @@ const NewEditDataMarketing = ({ marketingId , onClose, fetchDataMarketing }) => 
 
   const [inputByNew, setInputByNew] = useState("");
   const [accByNew, setAccByNew] = useState("");
+  const [newStatus, setNewStatus] = useState("");
   const [accountNew, setAccountNew] = useState("");
   const [offerNew, setOfferNew] = useState("");
   const [newTrack, setNewTrack] = useState("");
@@ -196,6 +198,17 @@ console.log('data selcted acc:', selectedAccById);
     setAccByNew("");
     showSnackbar('Berhasil menambahkan data baru!', 'success');
   };
+
+  //STATUS ACCEPT 
+  const handleStatusAccept = async() =>{
+    if(!newStatus.trim()) return;
+    const created = await addAcceptStatus({status_name: newStatus});
+    const newOption = {id: created.id, name: created.status_name};
+    setDropdownData({ ...dropdownData, statusAccept: [...dropdownData.statusAccept, newOption]});
+    setForm({ ...form, accept_status_id: created.id });
+    setNewStatus("");
+    showSnackbar('Berhasil menambahakn data baru!', 'success');
+  }
 
   // Tambah Account
   const handleAddAccount = async () => {
@@ -380,12 +393,12 @@ console.log('data selcted acc:', selectedAccById);
                     options={dropdownData.statusAccept}
                     value={form.accept_status_id}  // pakai ID string, misal "2"
                     onChange={(val) => setForm({ ...form, accept_status_id: val })}
-                    // newItem={accByNew}
-                    // setNewItem={setAccByNew}
-                    // addNew={handleAddAccBy}
+                    newItem={newStatus}
+                    setNewItem={setNewStatus}
+                    addNew={handleStatusAccept}
                     placeholder="Status Accept"
                     searchPlaceholder="Search status..."
-                    // addPlaceholder="Add new accepted user..."
+                    addPlaceholder="Add new status accept"
                   />
               </div>
 

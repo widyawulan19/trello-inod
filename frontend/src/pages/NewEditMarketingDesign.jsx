@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useSnackbar } from '../context/Snackbar';
-import { addDesignOrderType, addKepalaDivisiDesign, addOfferTypeDesign, addProjectTypeDesign, addStyleDesign, createAccountDesign, createMarketingDesainUser, getAllAccountDesign, getAllDesignOrderType, getAllKepalaDivisiDesign, getAllMarketingDesainUsers, getAllOfferTypesDesign, getAllProjectTypesDesign, getAllStatusProjectDesign, getAllStyleDesign, getMarketingDesignById, updateDataMarketingJoined, updateMarketingDesign } from '../services/ApiServices';
+import { addDesignOrderType, addKepalaDivisiDesign, addOfferTypeDesign, addProjectTypeDesign, addStatusProjectDesign, addStyleDesign, createAccountDesign, createMarketingDesainUser, getAllAccountDesign, getAllDesignOrderType, getAllKepalaDivisiDesign, getAllMarketingDesainUsers, getAllOfferTypesDesign, getAllProjectTypesDesign, getAllStatusProjectDesign, getAllStyleDesign, getMarketingDesignById, updateDataMarketingJoined, updateMarketingDesign } from '../services/ApiServices';
 import BootstrapTooltip from '../components/Tooltip';
 import { FaXmark } from 'react-icons/fa6';
 import '../style/pages/EditMarketingForm.css';
-import CustomDropdownDesign from '../marketing/CustomDropdownDesign';
+// import CustomDropdownDesign from '../marketing/CustomDropdownDesign';
+import CustomDropdownDesignEdit from '../marketing/CustomDropdownDesignEdit';
 
 const initialFormState = {
    buyer_name: "",
@@ -82,7 +83,7 @@ console.log('data marketing design:', marketingDesignId);
         setDropdownData({
           users: users.data.map((u) => ({ id: String(u.id), name: u.nama_marketing })),
           accs: accs.data.map((a) => ({ id: String(a.id), name: a.nama })),
-          statusAccept: statusProject.data.map((s) => ({ id: String(s.id), name: s.status_name })),
+          statusProject: statusProject.data.map((sts) => ({ id: String(sts.id), name: sts.status_name })),
           accounts: accounts.data.map((ac) => ({ id: String(ac.id), name: ac.nama_account })),
           offers: offers.data.map((of) => ({ id: String(of.id), name: of.offer_name })),
           style: style.data.map((s) => ({ id: String(s.id), name: s.style_name })),
@@ -145,6 +146,7 @@ console.log('data marketing design:', marketingDesignId);
         setDropdownData(prev => ({ ...prev, users: [...prev.users, { id: created.id, name: created.nama_marketing }] }));
         setForm({ ...form, input_by: created.id });
         setInputByNew("");
+        showSnackbar('Berhasil menambahkan data baru!', 'success');
     };
 
     const handleAccBy = async () => {
@@ -154,22 +156,37 @@ console.log('data marketing design:', marketingDesignId);
         setDropdownData(prev => ({ ...prev, accs: [...prev.accs, { id: created.id, name: created.nama }] }));
         setForm({ ...form, acc_by: created.id });
         setAccByNew("");
+        showSnackbar('Berhasil menambahkan data baru!', 'success');
     };
+
+    const handleStatusProject = async() =>{
+      if(!newStatus.trim()) return;
+      const res = await addStatusProjectDesign({status_name:newStatus});
+      const created = res.data;
+      setDropdownData(prev => ({ ...prev, statusProject: [...prev.statusProject,{id: created.id, name: created.status_name}]}));
+      setForm({ ...form, status_project_id: created.id});
+      setNewStatus("");
+      showSnackbar('Berhasil menambahkan data baru!', 'success');
+    }
 
     const handleAddAccount = async () => {
         if (!accountNew.trim()) return;
-        const created = await createAccountDesign({ nama_account: accountNew });
+        const res = await createAccountDesign({ nama_account: accountNew });
+        const created = res.data;
         setDropdownData(prev => ({ ...prev, accounts: [...prev.accounts, { id: created.id, name: created.nama_account }] }));
         setForm({ ...form, account: created.id });
         setAccountNew("");
+        showSnackbar('Berhasil menambahkan data baru!', 'success');
     };
 
     const handleAddOffer = async () => {
         if (!offerNew.trim()) return;
-        const created = await addOfferTypeDesign({ offer_name: offerNew });
+        const res = await addOfferTypeDesign({ offer_name: offerNew });
+        const created = res.data;
         setDropdownData(prev => ({ ...prev, offers: [...prev.offers, { id: created.id, name: created.offer_name }] }));
         setForm({ ...form, offer_type: created.id });
         setOfferNew("");
+        showSnackbar('Berhasil menambahkan data baru!', 'success');
     };
 
     const handleAddStyle = async () => {
@@ -179,22 +196,27 @@ console.log('data marketing design:', marketingDesignId);
         setDropdownData(prev => ({ ...prev, style: [...prev.style, { id: created.id, name: created.style_name }] }));
         setForm({ ...form, style_id: created.id });
         setNewStyle("");
+        showSnackbar('Berhasil menambahkan data baru!', 'success');
     };
 
     const handleAddProjectType = async () => {
         if (!newProject.trim()) return;
-        const created = await addProjectTypeDesign({ project_name: newProject });
+        const res = await addProjectTypeDesign({ project_name: newProject });
+        const created = res.data;
         setDropdownData(prev => ({ ...prev, projectType: [...prev.projectType, { id: created.id, name: created.project_name }] }));
         setForm({ ...form, project_type_id: created.id });
         setNewProject("");
+        showSnackbar('Berhasil menambahkan data baru!', 'success');
     };
 
      const handleAddNewOrderType = async () => {
         if (!newOrder.trim()) return;
-        const created = await addDesignOrderType({ order_name: newOrder });
+        const res = await addDesignOrderType({ order_name: newOrder });
+        const created = res.data;
         setDropdownData(prev => ({ ...prev, orderType: [...prev.orderType, { id: created.id, name: created.order_name }] }));
         setForm({ ...form, order_type_id: created.id });
         setNewOrder("");
+        showSnackbar('Berhasil menambahkan data baru!', 'success');
     };
   // END ENDPOIN ADD 
 
@@ -252,7 +274,7 @@ console.log('data marketing design:', marketingDesignId);
               {/* Input By  */}
               <div className="box-content">
                 <label>Input By</label>
-                <CustomDropdownDesign
+                <CustomDropdownDesignEdit
                   options={dropdownData.users}
                   value={form.input_by} // harus sama dengan nama column di db
                   onChange={(val) => setForm({ ...form, input_by: val })}
@@ -268,7 +290,7 @@ console.log('data marketing design:', marketingDesignId);
               {/* Acc By */}
               <div className="box-content">
                 <label >Accept By</label>
-                <CustomDropdownDesign
+                <CustomDropdownDesignEdit
                   options={dropdownData.accs}  // <- benar-benar dari kepala_divisi
                   value={form.acc_by}
                   onChange={(val) => setForm({ ...form, acc_by: val })}
@@ -284,12 +306,16 @@ console.log('data marketing design:', marketingDesignId);
               {/* STATUS ACCEPT */}
               <div className="box-content">
                   <label>Status</label>
-                  <CustomDropdownDesign
-                      options={dropdownData.statusAccept}  // <- benar-benar dari kepala_divisi
+                  <CustomDropdownDesignEdit
+                      options={dropdownData.statusProject}  // <- benar-benar dari kepala_divisi
                       value={form.status_project_id}
                       onChange={(val) => setForm({ ...form, status_project_id: val })}
+                      newItem={newStatus}
+                      setNewItem={setNewStatus}
+                      addNew={handleStatusProject}
                       placeholder="Status Accept"
                       searchPlaceholder="Search status..."
+                      addPlaceholder="Add new status project..."
                   />
               </div>
 
@@ -333,7 +359,7 @@ console.log('data marketing design:', marketingDesignId);
               {/* Account */}
               <div className="box-content">
                   <label>Account</label>
-                  <CustomDropdownDesign
+                  <CustomDropdownDesignEdit
                       options={dropdownData.accounts}// data dari API
                       value={form.account}
                       onChange={(val) => setForm({ ...form, account: val })}
@@ -378,7 +404,7 @@ console.log('data marketing design:', marketingDesignId);
                 {/* Order Number */}
                 <div className="box-content">
                     <label >Order Type</label>
-                    <CustomDropdownDesign
+                    <CustomDropdownDesignEdit
                         options={dropdownData.orderType}
                         value={form.order_type_id}
                         onChange={(val) => setForm({ ...form, order_type_id: val })}
@@ -394,7 +420,7 @@ console.log('data marketing design:', marketingDesignId);
                 {/* Project Type  */}
                 <div className="box-content">
                     <label>Project Type</label>
-                    <CustomDropdownDesign
+                    <CustomDropdownDesignEdit
                         options={dropdownData.projectType}
                         value={form.project_type_id}
                         onChange={(val) => setForm({ ...form, project_type_id: val })}
@@ -411,7 +437,7 @@ console.log('data marketing design:', marketingDesignId);
                 {/* Offers type */}
                 <div className="box-content">
                     <label >Offer Type</label>
-                    <CustomDropdownDesign
+                    <CustomDropdownDesignEdit
                         options={dropdownData.offers}        // data dari API
                         value={form.offer_type}
                         onChange={(val) => setForm({ ...form, offer_type: val })}
@@ -446,7 +472,7 @@ console.log('data marketing design:', marketingDesignId);
                     {/* Jumlah Design */}
                     <div className="box-content">
                         <label >Style</label>
-                        <CustomDropdownDesign
+                        <CustomDropdownDesignEdit
                           options={dropdownData.style}
                           value={form.style_id}
                           onChange={(val) => setForm({ ...form, style_id: val })}

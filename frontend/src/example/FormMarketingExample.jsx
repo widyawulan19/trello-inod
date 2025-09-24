@@ -272,12 +272,8 @@ useEffect(() => {
                     options={dropdownData.statusAccept}  // <- benar-benar dari kepala_divisi
                     value={form.accept_status_id}
                     onChange={(val) => setForm({ ...form, accept_status_id: val })}
-                    // newItem={accByNew}
-                    // setNewItem={setAccByNew}
-                    // addNew={handleAddAccBy}
                     placeholder="Status Accept"
                     searchPlaceholder="Search status..."
-                    // addPlaceholder="Add new accepted user..."
                   />
                 </div>
 
