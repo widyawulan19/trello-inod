@@ -148,22 +148,31 @@ const renderTextWithLinks = (text) => {
           {/* {dataMarketingDesign.style_name} | {dataMarketingDesign.buyer_name} | {dataMarketingDesign.account_name} | {getLastFiveCodeOrder(dataMarketingDesign.code_order)} */}
         </div>
         <div className="vmd-right">
-          <div className="export">
+          <div className="export" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <button
-              onClick={()=> handleExportToSheet(marketingDesignId)}
-              disabled={isExported}
+              onClick={() => handleExportToSheet(marketingDesignId)}
+              disabled={designTransfile.some(exp => exp.marketing_design_id === marketingDesignId)} 
               style={{
-                backgroundColor: isExported ? "#ccc" : "#4CAF50", // abu-abu kalau disable, hijau kalau aktif
-                color: isExported ? "#666" : "#fff",
+                backgroundColor: designTransfile.some(exp => exp.marketing_design_id === marketingDesignId) ? "#ccc" : "#4CAF50",
+                color: designTransfile.some(exp => exp.marketing_design_id === marketingDesignId) ? "#666" : "#fff",
                 padding: "10px 20px",
                 border: "none",
                 borderRadius: "6px",
-                cursor: isExported ? "not-allowed" : "pointer"
+                cursor: designTransfile.some(exp => exp.marketing_design_id === marketingDesignId) ? "not-allowed" : "pointer"
               }}
             >
-              {isExported ? "Sudah Transfile" : "Transfile to SpreedSheets"}
+              {designTransfile.some(exp => exp.marketing_design_id === marketingDesignId)
+                ? "Sudah Transfile"
+                : "Transfile to SpreedSheets"}
             </button>
+
+            {/* {designTransfile.some(exp => exp.marketing_design_id === marketingDesignId) ? (
+              <AiFillCheckCircle color="green" size={20} />
+            ) : (
+              <AiFillCheckCircle color="red" size={20} />
+            )} */}
           </div>
+
             <div className="card-status">
               {loadingCardId ? (
                 <p>Memeriksa...</p>

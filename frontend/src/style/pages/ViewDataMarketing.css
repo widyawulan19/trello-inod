@@ -52,11 +52,13 @@
 }
 
 .vdm-right {
-    /* border: 1px solid #333; */
+    /* border: 1px solid red; */
     display: flex;
+    /* flex-direction: column; */
     align-items: center;
     justify-content: center;
 }
+
 
 .card-status .created {
     border: 1px solid #5380EB;

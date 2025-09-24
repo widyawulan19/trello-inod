@@ -3,14 +3,16 @@ import '../style/pages/MarketingDesignReport.css'
 import DesignTenDaysReport from './DesignTenDaysReport';
 import DesignDayliReport from './DesignDayliReport';
 import { HiOutlineDocumentReport } from "react-icons/hi";
+import { useNavigate } from 'react-router-dom';
 
 const MarketingDesignReport =()=> {
     //STATE
     const [activeReport, setActiveReport] = useState('today');
+    const navigate = useNavigate();
 
     //FUNCTION
 
-    // show data 
+    //1. show data 
     const renderReport = () =>{
         switch (activeReport) {
             case 'today':
@@ -20,6 +22,11 @@ const MarketingDesignReport =()=> {
             default:
                 return <div className="fade"><h4>Data Report Marketing Design</h4></div>
         }
+    }
+
+    //2. navigate to data marketing design
+    const navigateToMarketingDesign = () =>{
+        navigate('/layout/marketing-design')
     }
 
   return (
@@ -37,6 +44,11 @@ const MarketingDesignReport =()=> {
             </div>
             <div className="report-button">
                 <button
+                    onClick={navigateToMarketingDesign}
+                >
+                    Marketing Design
+                </button>
+                <button
                     className={activeReport === 'today' ? 'active': ''}
                     onClick={()=> setActiveReport('today')}
                 >
@@ -48,6 +60,7 @@ const MarketingDesignReport =()=> {
                 >
                     Report Period
                 </button>
+                
             </div>
             <div className="report-body">
                 <div className="report-content">

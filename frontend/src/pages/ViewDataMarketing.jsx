@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { getAllLists, getDataMarketingById,getAllDataMarketingJoinedById, createCardFromMarketing, checkCardIdNullOrNot, exportDataMarketingToSheets, getMarketingWithExportStatus,checkMarketingExport ,addMarketingExport,addExportMarketing, getAllMarketingExports} from '../services/ApiServices';
-import { data, useParams } from 'react-router-dom';
+import { data, useNavigate, useParams } from 'react-router-dom';
 import '../style/pages/ViewDataMarketing.css'
 import { HiCube, HiCubeTransparent, HiOutlinePlus, HiOutlineXMark } from 'react-icons/hi2';
 import BootstrapTooltip from '../components/Tooltip';
@@ -10,6 +10,7 @@ import { useRouterContext } from '../context/RouteContext';
 import { FaXmark } from 'react-icons/fa6';
 import ExportDataMarketingId from '../exports/ExportDataMarketingId';
 import { useSnackbar } from '../context/Snackbar';
+import { AiFillCheckCircle } from 'react-icons/ai';
 
 
 
@@ -28,6 +29,7 @@ const ViewDataMarketing=({marketingId, onClose, isExported, setIsExported,market
     const [cardId, setCardId] = useState(null)
     const [loadingCardId, setLoadingCardId] = useState(true)
     const {showSnackbar} = useSnackbar();
+    const navigate = useNavigate();
     // const [marketingTransfile, setMarketingTransfile] = useState([]);
     // const [isExported, setIsExported] = useState(false);
 
@@ -123,6 +125,11 @@ const ViewDataMarketing=({marketingId, onClose, isExported, setIsExported,market
     fetchCardId();
   }, [marketingId]);
 
+  //NAVIGATE 
+  const navigateToEditPage = () =>{
+    navigate('/layout/edit-marketing-musik')
+  }
+
 
 
 
@@ -134,21 +141,26 @@ const ViewDataMarketing=({marketingId, onClose, isExported, setIsExported,market
           {dataMarketings.genre_name} | {dataMarketings.buyer_name} | {dataMarketings.account_name} | {getLastFiveCodeOrder(dataMarketings.code_order)}
         </div>
         <div className="vdm-right">
-          <div className="export" style={{ marginRight: "5px" }}>
+          <div className="export" style={{ marginRight: "5px", display: "flex", alignItems: "center", gap: "8px" }}>
             <button
               // onClick={() => onExport(marketingId)}
               onClick={() => onExport(marketingId)}
-              disabled={isExported} // disable jika sudah di-transfile
+              disabled={marketingTransfile.some(exp => exp.marketing_id === marketingId)} // disable jika sudah di-transfile
               style={{
-                backgroundColor: isExported ? "green" : "grey",
+                backgroundColor: marketingTransfile.some(exp => exp.marketing_id === marketingId) ? "green" : "grey",
                 color: "white",
-                cursor: isExported ? "not-allowed" : "pointer",
-                border:'1px solid none'
+                cursor: marketingTransfile.some(exp => exp.marketing_id === marketingId) ? "not-allowed" : "pointer",
+                border: "none",
+                padding: "6px 12px",
+                borderRadius: "4px"
               }}
             >
-              {isExported ? "Sudah Transfile" : "Transfile to SpreedSheets"}
+              {marketingTransfile.some(exp => exp.marketing_id === marketingId)
+                ? "Sudah Transfile"
+                : "Transfile to Sheets"}
             </button>
           </div>
+
 
 
           {/* CHECK CARD ID  */}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { archiveDataMarektingDesign, deleteDataMarketingDesign, getAllDataMarketingDesign, getAllMarketingDesignJoined, getDataMarketingDesignAccept, getDataMarketingDesignNotAccept, getDataWhereCardIdIsNull, getDataWhereCardIdNotNull,exportDesignToSheets, addExportMarketingDesign, getExportMarketingDesign } from '../services/ApiServices';
+import { archiveDataMarektingDesign, deleteDataMarketingDesign, getAllDataMarketingDesign, getAllMarketingDesignJoined, getDataMarketingDesignAccept, getDataMarketingDesignNotAccept, getDataWhereCardIdIsNull, getDataWhereCardIdNotNull,exportDesignToSheets, addExportMarketingDesign, getExportMarketingDesign, getAllMarketingDesignExports } from '../services/ApiServices';
 import '../style/pages/MarketingDesign.css'
 // import '../style/pages/AcceptDataDesign.css'
 import BootstrapTooltip from '../components/Tooltip';
@@ -267,6 +267,23 @@ const MarketingDesign=()=> {
     };
 
 
+    //fungsi data marketinf design export
+    const fetchDataTransfile = async () =>{
+      try{
+        setLoading(true);
+        const response = await getAllMarketingDesignExports();
+        setDesignTransfile(response);
+      }catch(error){
+        console.error("Error fetch transfile:", error);
+      }finally{
+        setLoading(false);
+      }
+    }
+
+    useEffect(()=>{
+      fetchDataTransfile();
+    },[]);
+
 // fungsi handle utama untuk export design
 const handleExportToSheet = async (marketingDesignId) => {
   try {
@@ -306,13 +323,21 @@ const handleExportToSheet = async (marketingDesignId) => {
   }
 };
 
-
-
-
-
   useEffect(() => {
     fetchMarketingDesign();
   }, []);
+
+  // FUNCTION TO SHOW STATUS 
+  const STATUS_COLORS ={
+    "ACCEPTED":"#2E7D32",
+    "NOT ACCEPTED":'#C62828',
+    "ON PROGRESS":'#C38D24'
+  }
+  const STATUS_BG = {
+    "ACCEPTED":'#C8E6C9',
+    "NOT ACCEPTED":'#FFCDD2',
+    "ON PROGRESS":'#FFDCB3'
+  }
 
   // SHOW DATA CONTENT 
   const handleShowData = () =>{
@@ -375,9 +400,9 @@ const handleExportToSheet = async (marketingDesignId) => {
                     />
                     <HiOutlineSearch className='mdh-search-icon'/>
                 </div>
-                <div className="export-btn">
+                {/* <div className="export-btn">
                   <ExportMarketingDesign/>
-                </div>
+                </div> */}
               </div>
             </div>
             {/* SHOW COMPONENT  */}
@@ -543,8 +568,8 @@ const handleExportToSheet = async (marketingDesignId) => {
                 </thead>
                 <tbody>
                   {filteredData.map((item, index)=>{
-                    const exported = designTransfile.some(
-                      (m) => m.marketing_design_id === item.marketing_design_id
+                    const isExported = designTransfile.some(
+                      (exp) => exp.marketing_design_id === item.marketing_design_id
                     );
 
                     return(
@@ -570,15 +595,15 @@ const handleExportToSheet = async (marketingDesignId) => {
                             </span>
                           )}
                           <button
-                            disabled={item.is_transfiled}
+                            disabled={isExported}
                             style={{
                               backgroundColor: "transparent",
-                              color: item.is_transfiled ? "green" : "white",
-                              cursor: item.is_transfiled ? "not-allowed" : "pointer",
+                              color: isExported ? "green" : "white",
+                              cursor: isExported ? "not-allowed" : "pointer",
                               padding: "4px 8px",
                               border: "none",
                               borderRadius: "4px",
-                              fontSize: "15px",
+                              fontSize:'15px',
                             }}
                           >
                             <AiFillCheckCircle />
@@ -590,8 +615,8 @@ const handleExportToSheet = async (marketingDesignId) => {
                           <span style={{
                             padding: '2px 8px',
                             borderRadius: '12px',
-                            backgroundColor: item.status_project_name ? '#C8E6C9' : '#FFCDD2',
-                            color: item.status_project_name ? '#2E7D32' : '#C62828',
+                            backgroundColor: STATUS_BG[item.status_project_name],
+                            color: STATUS_COLORS[item.status_project_name],
                             fontWeight: 'bold'
                           }}>
                             {item.status_project_name}

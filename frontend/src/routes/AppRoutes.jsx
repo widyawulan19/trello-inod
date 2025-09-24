@@ -53,6 +53,8 @@ import FormMarketingDesignExample from '../example/FormMarketingDesignExample';
 import CardList from '../example/CardList';
 import ExportDataMarketingExample from '../exports/ExportDataMarketingExample';
 import ExportDataMarketingByIdExample from '../exports/ExportDataMarketingByIdExample';
+import NewEditDataMarketing from '../pages/NewEditDataMarketing';
+import NewEditMarketingDesign from '../pages/NewEditMarketingDesign';
 
 const AppRoutes=()=> {
   return (
@@ -115,6 +117,8 @@ const AppRoutes=()=> {
         <Route path='transfer-data' element={<ExportDataMarketingExample/>}/>
         <Route path='transfer-data-id' element={<ExportDataMarketingByIdExample/>}/>
         <Route path='card-list' element={<CardList/>}/>
+        <Route path='edit-marketing-musik' element={<NewEditDataMarketing/>}/>
+        <Route path='edit-marketing-desing' element={<NewEditMarketingDesign/>}/>
         </Route>
     </Routes>
   )

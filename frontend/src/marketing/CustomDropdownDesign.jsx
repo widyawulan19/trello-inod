@@ -85,7 +85,7 @@ const CustomDropdownDesign = ({
           </div>
 
           {/* Add new */}
-          {!loading && (
+          {/* {!loading && (
             <li className='new-li'>
               <input
                 type="text"
@@ -100,7 +100,7 @@ const CustomDropdownDesign = ({
                 <FaPlus/>
               </button>
             </li>
-          )}
+          )} */}
         </ul>
       )}
     </div>

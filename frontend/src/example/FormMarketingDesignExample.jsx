@@ -68,7 +68,7 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
                 setDropdownData({
                   users: users.data.map(u => ({ id: u.id, name: u.nama_marketing })),
                   accs: accArray.data.map(a => ({ id: a.id, name: a.nama })),
-                  statusAccept: statusAccept.data.map(s => ({ id: s.id, name: s.status_name })),
+                  statusAccept: statusAccept.data.map(sts => ({ id: sts.id, name: sts.status_name })),
                   accounts: accounts.data.map(ac => ({ id: ac.id, name: ac.nama_account })),
                   offers: offers.data.map(of => ({ id: of.id, name: of.offer_name })),
                   style: style.data.map(s => ({ id: s.id, name: s.style_name })),
@@ -269,12 +269,8 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
                                 options={dropdownData.statusAccept}  // <- benar-benar dari kepala_divisi
                                 value={form.status_project_id}
                                 onChange={(val) => setForm({ ...form, status_project_id: val })}
-                                // newItem={accByNew}
-                                // setNewItem={setAccByNew}
-                                // addNew={handleAddAccBy}
                                 placeholder="Status Accept"
                                 searchPlaceholder="Search status..."
-                                // addPlaceholder="Add new accepted user..."
                             />
                         </div>
 
