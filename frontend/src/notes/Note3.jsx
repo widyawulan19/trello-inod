@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-=======
+
 // src/services/ApiServices.js
 import axios from "axios";
 
@@ -145,4 +144,4 @@ const UploadFile = ({ cardId, fetchCardById }) => {
     </div>
   );
 };
->>>>>>> c1cde09 (perubahan di fitur attach)
+

@@ -64,6 +64,9 @@
     cursor: pointer;
     font-weight: bold;
 }
+.custom-upload-button:hover{
+    text-decoration:underline;
+}
 
 .input-con input {
     /* border: 1px solid green; */
@@ -90,4 +93,29 @@
     color: white;
     background: linear-gradient(to right, #6a11cb, #2575fc);
     font-size: 13px;
+}
+
+
+/* animate  */
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #555;
+  font-size: 14px;
+}
+
+.spinner {
+  border: 3px solid #f3f3f3; /* background */
+  border-top: 3px solid #3498db; /* warna animasi */
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 0.5rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

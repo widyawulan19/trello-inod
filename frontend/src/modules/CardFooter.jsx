@@ -4,12 +4,15 @@ import { HiOutlineChatBubbleLeftRight,HiOutlineCheckCircle, HiOutlinePaperClip }
 import '../style/modules/CardFooter.css'
 import BootstrapTooltip from '../components/Tooltip'
 
-const CardFooter=({cardId})=> {
+const CardFooter=({cardId, totalFile})=> {
     //STATE
     const [stats, setStats] = useState({total:0, checked:0, unchecked:0})
 
     //SHOW TOTAL CHATS
     const [messageCount, setMessageCount] = useState(null);
+
+    //debug
+    console.log('total file berhasil diteruksan ke card footer:', totalFile);
     
     //FUNCTION
     //1. fetch checklist stats
@@ -78,7 +81,7 @@ useEffect(() => {
         <BootstrapTooltip title='Attachment' placement='top'>
             <button>
                 <HiOutlinePaperClip className='cf-icon'/>
-                0
+                {totalFile}
             </button>
         </BootstrapTooltip>
        
