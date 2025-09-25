@@ -48,6 +48,7 @@
 form h4 {
     margin: 0px;
     font-size: 12px;
+    font-weight: bold;
 }
 
 /* .em-container form{
@@ -57,29 +58,45 @@ form h4 {
 .form-edit {
     /* border: 1px solid blue; */
     width: 100%;
-    padding-bottom: 5px;
-    padding: 10px 5px;
+    /* height: 100%; */
+    padding: 5px 10px;
 }
 
 .form-edit .form-content {
-    /* border: 1px solid red; */
+    /* border: 1px solid red;
     width: 100%;
-    margin: 20px 0px;
+    margin: 20px 0px; */
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 15px 10px;
 }
 
-.form-content h4 {
-    font-size: 15px;
+.form-content .h4 {
+    font-size: 13px;
     font-weight: bold;
     color: #333;
     margin-bottom: 5px;
 }
 
-.form-content .sec-content {
-    border: 1px solid #ddd;
+.form-content .sec-content-edit {
+    /* border: 1px solid red; */
     border-radius: 4px;
     padding: 5px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.form-content .sec-content-edit-ref {
+    /* border: 1px solid red; */
+    border-radius: 4px;
+    padding: 5px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     align-items: center;
     justify-content: center;
     gap: 5px;
@@ -97,9 +114,10 @@ form h4 {
 }
 
 .box-content label {
-    font-size: 12px;
+    font-size: 10px !important;
     margin-bottom: 3px;
-    font-weight: bold;
+    font-weight: normal !important;
+    /* color: grey; */
 }
 
 .box-content input {
@@ -126,7 +144,8 @@ form h4 {
     border: 1px solid #ddd;
     border-radius: 8px;
     padding: 5px;
-    width: 57vw;
+    width: 64vw !important;
+    /* width: 100%; */
     min-height: 20vh;
     font-size: 12px;
     cursor: pointer;

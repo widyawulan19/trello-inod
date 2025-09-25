@@ -724,7 +724,7 @@ console.log('data selcted acc:', selectedAccById);
             <h4>PROJECT DESCRIPTION</h4>
             <div className="sec-content">
               <div className="box-content">
-                <label>Detail Project</label>
+                {/* <label>Detail Project</label> */}
                 <textarea
                   name="detail_project"
                   value={form.detail_project}

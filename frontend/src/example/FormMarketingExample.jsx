@@ -599,10 +599,11 @@ useEffect(() => {
             {/* PROJECT DESCRIPTION */}
             <div className="form-content">
               <h4>PROJECT DESCRIPTION</h4>
-              <div className="sec-content" style={{border:'1px solid white'}}>
+              <div className="sec-content-detail" style={{border:'1px solid white'}}>
                 <div className="box-content">
-                  <label>Detail Project</label>
+                  {/* <label>Detail Project</label> */}
                   <textarea
+                  className="textarea"
                     name="detail_project"
                     value={form.detail_project}
                     onChange={handleChange}

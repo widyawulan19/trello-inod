@@ -268,8 +268,8 @@ console.log('data marketing design:', marketingDesignId);
         <div className="form-edit">
 
           <div className="form-content">
-            <h4>INFORMASI PESANAN</h4>
-            <div className="sec-content">
+            <h4 className='h4'>INFORMASI PESANAN</h4>
+            <div className="sec-content-edit">
 
               {/* Input By  */}
               <div className="box-content">
@@ -375,8 +375,8 @@ console.log('data marketing design:', marketingDesignId);
           </div>
 
           <div className="form-content">
-            <h4>DETAIL PESANAN</h4>
-            <div className="sec-content">
+            <h4 className='h4'>DETAIL PESANAN</h4>
+            <div className="sec-content-edit">
                 {/* Jumlah Design */}
                 <div className="box-content">
                     <label >Jumlah Design</label>
@@ -466,8 +466,8 @@ console.log('data marketing design:', marketingDesignId);
 
             {/* FORM CONTENT  */}
             <div className="form-content">
-                <h4>DETAIL DESIGN</h4>
-                <div className="sec-content">
+                <h4 className='h4'>DETAIL DESIGN</h4>
+                <div className="sec-content-edit">
 
                     {/* Jumlah Design */}
                     <div className="box-content">
@@ -513,8 +513,8 @@ console.log('data marketing design:', marketingDesignId);
 
             {/* DETAIL PRICE  */}
             <div className="form-content">
-                <h4>DETAIL PRICE</h4>
-                <div className="sec-content">
+                <h4 className='h4'>DETAIL PRICE</h4>
+                <div className="sec-content-edit">
                     <div className="box-content">
                     <label>Price Normal</label>
                     <input 
@@ -550,8 +550,8 @@ console.log('data marketing design:', marketingDesignId);
 
             {/* REFERENCE AND FILES  */}
             <div className="form-content">
-                <h4>REFERENCE AND FILES</h4>
-                <div className="sec-content">
+                <h4 className='h4'>REFERENCE AND FILES</h4>
+                <div className="sec-content-edit-ref">
 
                     {/* REFERENCE  */}
                     <div className="box-content">
@@ -581,8 +581,8 @@ console.log('data marketing design:', marketingDesignId);
 
             {/* DETAIL PROJECT  */}
             <div className="form-content">
-                <h4>DETAIL PROJECT</h4>
-                <div className="sec-content">
+                <h4 className='h4'>DETAIL PROJECT</h4>
+                <div className="sec-content-edit">
 
                     {/* REFERENCE  */}
                     <div className="box-content">

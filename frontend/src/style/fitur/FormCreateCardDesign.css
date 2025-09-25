@@ -25,6 +25,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
+  color: #333;
 }
 
 .cc-title .cch-icon {
@@ -58,6 +59,7 @@
   cursor: pointer;
   border: 1px solid white;
   border-radius: 4px;
+  color: #333;
 }
 
 .cch-icon2:hover {
@@ -92,6 +94,7 @@
 
 .fcd-select-box label {
   /* border: 1px solid red; */
+  color: #333;
   width: 100%;
   text-align: left;
   margin: 0px;
@@ -110,7 +113,7 @@
 .fcd-dropdown {
   border-radius: 4px;
   position: absolute;
-  top: 50%;
+  top: 100%;
   left: 0;
   right: 0;
   background-color: white;
@@ -167,6 +170,7 @@
   border-radius: 4px;
   position: absolute;
   background-color: white;
+  color: #333;
   margin-top: 0px;
   box-shadow: 0px 4px 8px #6f30dc54;
   height: 25vh;
@@ -182,6 +186,7 @@
 .fcd-select-list {
   width: 100%;
   margin-top: 10px;
+  color: #333;
   /* border: 1px solid blue; */
 }
 
