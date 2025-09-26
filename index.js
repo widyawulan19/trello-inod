@@ -5371,6 +5371,7 @@ app.get("/api/data-marketing/joined", async (req, res) => {
         dm.detail_project,
         dm.create_at,
         dm.update_at,
+        dm.project_number,
 
         -- Relasi (balikin ID + Nama)
         mu.id AS input_by,
@@ -5452,6 +5453,7 @@ app.get("/api/data-marketing/joined/:id", async (req, res) => {
         dm.detail_project,
         dm.create_at,
         dm.update_at,
+        dm.project_number,
 
         -- Relasi (balikin ID + Nama)
         mu.id AS input_by,
@@ -5544,7 +5546,8 @@ app.put("/api/data-marketing/joined/:id", async (req, res) => {
         genre,
         project_type,
         kupon_diskon_id,
-        accept_status_id
+        accept_status_id,
+        project_number,
     } = req.body;
 
     try {
@@ -5578,8 +5581,9 @@ app.put("/api/data-marketing/joined/:id", async (req, res) => {
         project_type     = $24,
         kupon_diskon_id  = $25,
         accept_status_id = $26,
+        project_number = $27
         update_at        = NOW()
-      WHERE marketing_id = $27
+      WHERE marketing_id = $28
       RETURNING *;
       `,
             [
@@ -5609,6 +5613,7 @@ app.put("/api/data-marketing/joined/:id", async (req, res) => {
                 project_type,
                 kupon_diskon_id,
                 accept_status_id,
+                project_number,
                 id,
             ]
         );
