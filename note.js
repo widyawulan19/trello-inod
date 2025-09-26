@@ -428,3 +428,81 @@ const filteredTenDays = tenDaysData.filter((row) => {
   if (selectedRange === "21-31") return row.period === 3;
   return true; // all
 });
+
+
+const dayjs = require("dayjs");
+require("dayjs/locale/id");
+dayjs.locale("id");
+
+// 5. membuat data baru
+app.post("/api/marketing", async (req, res) => {
+  try {
+    const {
+      input_by,
+      acc_by,
+      buyer_name,
+      code_order,
+      jumlah_track,
+      order_number,
+      account,
+      deadline,
+      jumlah_revisi,
+      order_type,
+      offer_type,
+      jenis_track,
+      genre,
+      price_normal,
+      price_discount,
+      discount,
+      basic_price,
+      gig_link,
+      required_files,
+      project_type,
+      duration,
+      reference_link,
+      file_and_chat_link,
+      detail_project,
+    } = req.body;
+
+    // --- hitung project_number ---
+    const createAt = new Date(); // default pakai waktu saat insert
+    const monthStart = dayjs(createAt).startOf("month").toDate();
+    const monthEnd = dayjs(createAt).endOf("month").toDate();
+
+    const countResult = await client.query(
+      `SELECT COUNT(*) AS count
+       FROM data_marketing
+       WHERE create_at BETWEEN $1 AND $2`,
+      [monthStart, monthEnd]
+    );
+
+    const nextNumber = parseInt(countResult.rows[0].count) + 1;
+    const monthName = dayjs(createAt).format("MMMM");
+    const projectNumber = `P${String(nextNumber).padStart(2, "0")} ${monthName}`;
+
+    // --- insert ke tabel ---
+    const result = await client.query(
+      `INSERT INTO data_marketing 
+      (input_by, acc_by, buyer_name, code_order, jumlah_track, order_number, 
+       account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre, 
+       price_normal, price_discount, discount, basic_price, gig_link, required_files, 
+       project_type, duration, reference_link, file_and_chat_link, detail_project, 
+       create_at, project_number) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, 
+              $16, $17, $18, $19, $20, $21, $22, $23, $24, CURRENT_TIMESTAMP, $25) 
+      RETURNING *`,
+      [
+        input_by, acc_by, buyer_name, code_order, jumlah_track, order_number,
+        account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre,
+        price_normal, price_discount, discount, basic_price, gig_link, required_files,
+        project_type, duration, reference_link, file_and_chat_link, detail_project,
+        projectNumber,
+      ]
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
