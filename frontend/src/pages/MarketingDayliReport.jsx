@@ -82,6 +82,7 @@ const totalBasicPrice = data.reduce((sum, item) => {
                 <tr>
                     <th style={{ borderTopLeftRadius: '8px'}}>No</th>
                     {/* <th>Title</th> */}
+                    <th>Project Number</th>
                     <th>Input By</th>
                     {/* <th>Acc by</th> */}
                     {/* <th>Status</th> */}
@@ -110,6 +111,7 @@ const totalBasicPrice = data.reduce((sum, item) => {
                     <tr key={item.marketing_id}>
                     {/* <td>{item.marketing_design_id}</td> */}
                         <td>{index + 1}</td>
+                        <td  className='input-container'>{item.project_number}</td>
                         {/* <td className='resolution-container' style={{color:'#5D12EB', textDecoration:'underline', cursor:'pointer'}}>{item.buyer_name} | {item.account} | {getLastFiveCodeOrder(item.code_order)}</td> */}
                         <td className='input-container'>{item.input_by_name}</td>
                         {/* <td className='acc-container'>{item.acc_by_name}</td> */}

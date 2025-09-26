@@ -124,6 +124,7 @@ const getBasicPrice = (price_normal, discount) => {
               <table className="min-w-full border border-gray-300">
                 <thead>
                     <tr className="bg-gray-100">
+                    <th className="input-container">Project Number</th>
                     <th className="input-container">Input By</th>
                     <th className="acc-container">Acc By</th>
                     <th className="status-container">Status</th>
@@ -150,6 +151,7 @@ const getBasicPrice = (price_normal, discount) => {
                 <tbody>
                     {item.details.map((detail, dIdx) => (
                     <tr key={dIdx} className="text-center hover:bg-gray-50">
+                        <td className="px-2 py-1 border">{detail["project_number"] || "-"}</td>
                         <td className="px-2 py-1 border">{detail["input_by_name"] || "-"}</td>
                         <td className="px-2 py-1 border">{detail["acc_by_name"] || "-"}</td>
                         <td className="px-2 py-1 border">
