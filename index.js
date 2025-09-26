@@ -6616,6 +6616,7 @@ app.get("/api/marketing-design/joined/:id", async (req, res) => {
         md.card_id,
         md.resolution,
         md.reference,
+        md.project_number,
 
         -- Relasi Input By
         mdu.id AS input_by_id,
