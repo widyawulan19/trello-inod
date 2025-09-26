@@ -6536,6 +6536,7 @@ app.get("/api/marketing-design/joined", async (req, res) => {
         md.card_id,
         md.resolution,
         md.reference,
+        md.project_number,
 
         -- Relasi Input By
         mdu.id AS input_by_id,
@@ -6705,6 +6706,7 @@ app.put("/api/marketing-design/joined/:id", async (req, res) => {
         status_project_id,
         resolution,
         reference,
+        project_number,
     } = req.body;
 
     try {
@@ -6734,8 +6736,9 @@ app.put("/api/marketing-design/joined/:id", async (req, res) => {
         status_project_id   = $20,
         resolution          = $21,
         reference           = $22,
+        project_number      = $23,
         update_at           = NOW()
-      WHERE marketing_design_id = $23
+      WHERE marketing_design_id = $24
       RETURNING *;
       `,
             [
@@ -6761,6 +6764,7 @@ app.put("/api/marketing-design/joined/:id", async (req, res) => {
                 status_project_id,
                 resolution,
                 reference,
+                project_number,
                 id,
             ]
         );
@@ -6790,6 +6794,7 @@ app.put("/api/marketing-design/joined/:id", async (req, res) => {
         md.update_at,
         md.resolution,
         md.reference,
+        md.project_number,
 
         mdu.id AS input_by,
         mdu.nama_marketing AS input_by_name,
