@@ -6995,7 +6995,7 @@ app.post('/api/marketing-design', async (req, res) => {
     let {
         input_by, buyer_name, code_order, jumlah_design, order_number, account, deadline,
         jumlah_revisi, order_type, offer_type, style, resolution, price_normal, price_discount,
-        discount_percentage, required_files, project_type, reference, file_and_chat, detail_project, acc_by, is_accepted
+        discount_percentage, required_files, project_type, reference, file_and_chat, detail_project, acc_by, is_accepted, project_number,
     } = req.body;
 
     // ✅ Default value jika is_accepted tidak dikirim
@@ -7027,7 +7027,8 @@ app.post('/api/marketing-design', async (req, res) => {
     }
 });
 
-// Tambah data marketing_design baru (lengkap dengan order_type)
+
+// Tambah data marketing_design baru (lengkap dengan order_type + project_number)
 app.post("/api/marketing-design/joined", async (req, res) => {
     const {
         buyer_name,
@@ -7042,50 +7043,66 @@ app.post("/api/marketing-design/joined", async (req, res) => {
         required_files,
         file_and_chat,
         detail_project,
-        input_by,          // ID dari marketing_desain_user
-        acc_by,            // ID dari kepala_divisi_design
-        account,           // ID dari account_design
-        offer_type,        // ID dari offer_type_design
+        input_by,
+        acc_by,
+        account,
+        offer_type,
         order_type_id,
-        resolution, // ✅ Tambahan
-        reference, // ✅ Tambahan
-        project_type_id,   // ID dari project_type_design
-        style_id,          // ID dari style_design
-        status_project_id  // ID dari status_project_design
+        resolution,
+        reference,
+        project_type_id,
+        style_id,
+        status_project_id
     } = req.body;
 
     try {
+        // --- Hitung project_number otomatis ---
+        const createAt = new Date();
+        const monthStart = dayjs(createAt).startOf("month").toDate();
+        const monthEnd = dayjs(createAt).endOf("month").toDate();
+
+        const countResult = await client.query(
+            `SELECT COUNT(*) AS count
+             FROM marketing_design
+             WHERE create_at BETWEEN $1 AND $2`,
+            [monthStart, monthEnd]
+        );
+
+        const nextNumber = parseInt(countResult.rows[0].count) + 1;
+        const monthName = dayjs(createAt).format("MMMM");
+        const projectNumber = `P${String(nextNumber).padStart(2, "0")} ${monthName}`;
+
         // Insert data baru
         const result = await client.query(
             `
             INSERT INTO marketing_design (
-            buyer_name,
-            code_order,
-            order_number,
-            jumlah_design,
-            deadline,
-            jumlah_revisi,
-            price_normal,
-            price_discount,
-            discount_percentage,
-            required_files,
-            file_and_chat,
-            detail_project,
-            input_by,
-            acc_by,
-            account,
-            offer_type,
-            order_type_id,
-            resolution,
-            reference,
-            project_type_id,
-            style_id,
-            status_project_id,
-            create_at
-        )
-        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22, NOW())
-        RETURNING *;
-
+                buyer_name,
+                code_order,
+                order_number,
+                jumlah_design,
+                deadline,
+                jumlah_revisi,
+                price_normal,
+                price_discount,
+                discount_percentage,
+                required_files,
+                file_and_chat,
+                detail_project,
+                input_by,
+                acc_by,
+                account,
+                offer_type,
+                order_type_id,
+                resolution,
+                reference,
+                project_type_id,
+                style_id,
+                status_project_id,
+                project_number,   -- ✅ tambahin project_number
+                create_at
+            )
+            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23, NOW())
+            RETURNING *;
             `,
             [
                 buyer_name,
@@ -7104,12 +7121,13 @@ app.post("/api/marketing-design/joined", async (req, res) => {
                 acc_by,
                 account,
                 offer_type,
-                order_type_id,         // ✅ Tambahan
+                order_type_id,
                 resolution,
                 reference,
                 project_type_id,
                 style_id,
-                status_project_id
+                status_project_id,
+                projectNumber // ✅ masukin hasil generate
             ]
         );
 
@@ -7132,6 +7150,7 @@ app.post("/api/marketing-design/joined", async (req, res) => {
                 md.detail_project,
                 md.resolution,
                 md.reference,
+                md.project_number, -- ✅ tampilkan juga di hasil GET
 
                 mdu.id AS input_by,
                 mdu.nama_marketing AS input_by_name,
@@ -7155,12 +7174,8 @@ app.post("/api/marketing-design/joined", async (req, res) => {
                 sp.id AS status_project,
                 sp.status_name AS status_project_name,
 
-                -- Relasi Design Order Type (baru ditambahkan)
                 dot.id AS order_type_id,
                 dot.order_name AS order_type_name
-
-
-
             FROM marketing_design md
             LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
             LEFT JOIN kepala_divisi_design kdd ON md.acc_by = kdd.id
@@ -7184,7 +7199,6 @@ app.post("/api/marketing-design/joined", async (req, res) => {
         res.status(500).json({ error: "Failed to create marketing_design" });
     }
 });
-
 
 
 
