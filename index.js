@@ -114,6 +114,7 @@ app.post("/api/export-design-to-sheet", async (req, res) => {
             valueInputOption: "RAW",
             requestBody: {
                 values: [[
+                    designData.project_number,
                     designData.input_by_name,
                     designData.acc_by_name,
                     designData.buyer_name,
@@ -233,6 +234,8 @@ app.post("/api/export-to-sheet", async (req, res) => {
             valueInputOption: "USER_ENTERED",
             requestBody: {
                 values: [[
+
+                    marketingData.project_number || "",
                     marketingData.input_by_name || "",     // Input by (A)
                     marketingData.acc_by_name || "",       // Acc by (B)
                     marketingData.buyer_name || "",        // Buyer name (C)
@@ -285,6 +288,7 @@ app.post("/api/export-to-sheet", async (req, res) => {
 
         // mapping semua object → array of array untuk Google Sheets
         const values = marketingDataList.map((data) => [
+            data.project_number,
             data.input_by_name,
             data.acc_by_name,
             data.buyer_name,
@@ -5902,6 +5906,7 @@ app.put('/api/create-card-marketing/:listId/:marketingId', async (req, res) => {
                 dm.detail_project,
                 dm.create_at,
                 dm.update_at,
+                dm.project_number,
 
                 mu.nama_marketing AS input_by_name,
                 kd.nama AS acc_by_name,
@@ -5936,6 +5941,7 @@ app.put('/api/create-card-marketing/:listId/:marketingId', async (req, res) => {
 
         const description = `
             <div>
+            <p><strong> Project Number:</strong> ${marketing.project_number}</p>
             <p><strong> Order Code:</strong> ${marketing.code_order}</p>
             <p><strong> Input By:</strong> ${marketing.input_by_name || 'N/A'}</p>
             <p><strong> Approved By:</strong> ${marketing.acc_by_name || 'N/A'}</p>
@@ -6098,6 +6104,7 @@ app.get('/api/data-marketing-cardId', async (req, res) => {
         dm.card_id,
         dm.create_at,
         dm.update_at,
+        dm.project_number,
 
         -- Relasi (balikin ID + Nama)
         mu.id AS input_by,
@@ -6178,6 +6185,7 @@ app.get('/api/data-marketing-cardId-null', async (req, res) => {
         dm.card_id,
         dm.create_at,
         dm.update_at,
+        dm.project_number,
 
         -- Relasi (balikin ID + Nama)
         mu.id AS input_by,
@@ -6258,6 +6266,7 @@ app.get("/api/data-marketing/accepted", async (req, res) => {
         dm.detail_project,
         dm.create_at,
         dm.update_at,
+        dm.project_number,
 
         mu.id AS input_by,
         mu.nama_marketing AS input_by_name,
@@ -6336,6 +6345,7 @@ app.get("/api/data-marketing/rejected", async (req, res) => {
         dm.detail_project,
         dm.create_at,
         dm.update_at,
+        dm.project_number,
 
         mu.id AS input_by,
         mu.nama_marketing AS input_by_name,
@@ -7314,26 +7324,49 @@ app.put('/api/create-card-marketing-design/:listId/:marketingDesignId', async (r
 
         // Pakai field hasil join
         const description = `
-            Code Order: ${marketing.code_order}
-            Input By: ${marketing.input_by_name} (${marketing.input_by_divisi || '-'})
-            Buyer: ${marketing.buyer_name}
-            Order Number: ${marketing.order_number}
-            Account: ${marketing.account_name}
-            Design Count: ${marketing.jumlah_design}
-            Deadline: ${deadlineFormatted}
-            Revisi: ${marketing.jumlah_revisi}
-            Offer Type: ${marketing.offer_type_name}
-            Project Type: ${marketing.project_type_name}
-            Style: ${marketing.style_name}
-            Normal Price: ${marketing.price_normal}
-            Discount Price: ${marketing.price_discount}
-            Discount: ${marketing.discount_percentage}%
-            Required Files: ${marketing.required_files}
-            File/Chat: ${marketing.file_and_chat}
-            Detail: ${marketing.detail_project}
-            Approved By: ${marketing.acc_by_name} (${marketing.acc_by_divisi || '-'})
-            Status Project: ${marketing.status_project_name}
+            <div>
+                <p><strong>Project Number:</strong> ${marketing.project_number || 'N/A'}</p>
+                <p><strong>Code Order:</strong> ${marketing.code_order || 'N/A'}</p>
+                <p><strong>Input By:</strong> ${marketing.input_by_name || 'N/A'} (${marketing.input_by_divisi || '-'})</p>
+                <p><strong>Buyer:</strong> ${marketing.buyer_name || 'N/A'}</p>
+                <p><strong>Order Number:</strong> ${marketing.order_number || 'N/A'}</p>
+                <p><strong>Account:</strong> ${marketing.account_name || 'N/A'}</p>
+                <p><strong>Design Count:</strong> ${marketing.jumlah_design || '0'}</p>
+                <p><strong>Deadline:</strong> ${marketing.deadline ? new Date(marketing.deadline).toISOString().split('T')[0] : 'N/A'}</p>
+                <p><strong>Jumlah Revisi:</strong> ${marketing.jumlah_revisi || '0'}</p>
+                <p><strong>Offer Type:</strong> ${marketing.offer_type_name || 'N/A'}</p>
+                <p><strong>Project Type:</strong> ${marketing.project_type_name || 'N/A'}</p>
+                <p><strong>Style:</strong> ${marketing.style_name || 'N/A'}</p>
+                <p><strong>Normal Price:</strong> $${marketing.price_normal ?? 'N/A'}</p>
+                <p><strong>Discount Price:</strong> $${marketing.price_discount ?? 'N/A'}</p>
+                <p><strong>Discount Percentage:</strong> ${marketing.discount_percentage ?? '0'}%</p>
+                <p><strong>Required Files:</strong> ${marketing.required_files || 'N/A'}</p>
+                <p><strong>File/Chat:</strong> ${marketing.file_and_chat || 'N/A'}</p>
+                <p><strong>Detail:</strong> ${marketing.detail_project || 'N/A'}</p>
+                <p><strong>Approved By:</strong> ${marketing.acc_by_name || 'N/A'} (${marketing.acc_by_divisi || '-'})</p>
+                <p><strong>Status Project:</strong> ${marketing.status_project_name || 'N/A'}</p>
+                <p><strong>Reference:</strong> ${marketing.reference || 'N/A'}</p>
+                <p><strong>Resolution:</strong> ${marketing.resolution || 'N/A'}</p>
+            </div>
         `.trim();
+
+
+        // Ambil 5 digit terakhir code_order
+        const lastFiveDigits = marketing.code_order
+            ? marketing.code_order.slice(-5)
+            : 'XXXXX'; // default kalau code_order kosong
+
+        // ambil posisi terakhir
+        const posResult = await client.query(
+            `SELECT COALESCE(MAX(position), -1) + 1 AS next_position
+        FROM cards
+        WHERE list_id = $1`,
+            [listId]
+        );
+
+
+        const nextPosition = posResult.rows[0].next_position;
+
 
         // Membuat card baru
         const newCard = await client.query(
@@ -7342,9 +7375,10 @@ app.put('/api/create-card-marketing-design/:listId/:marketingDesignId', async (r
              RETURNING id`,
             [
                 listId,
-                `${marketing.buyer_name} - ${marketing.order_number} (${marketing.account_name})`,
+                `'New Project' - ${marketing.buyer_name || 'Unknown'} - ${marketing.account_name || '-'} - ${marketing.project_type_name || "-"} - ${lastFiveDigits}`,
+                // `${marketing.buyer_name} - ${marketing.order_number} (${marketing.account_name})`,
                 description,
-                0, // posisi default
+                nextPosition,
                 marketing.deadline
             ]
         );
