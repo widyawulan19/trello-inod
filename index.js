@@ -6916,6 +6916,7 @@ app.get("/api/marketing-design/reports", async (req, res) => {
             'update_at', md.update_at,
             'resolution', md.resolution,
             'reference', md.reference,
+            'project_number', md.project_number,   -- ✅ ditambah
 
             -- Relasi Input By
             'input_by', mdu.id,
