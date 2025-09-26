@@ -30,6 +30,7 @@ const initialFormState = {
     style_id: "",
     status_project_id: "",
     resolution: "",
+    project_number: "",
 };
 
 const NewEditMarketingDesign=({marketingDesignId, onClose, fetchMarketingDesign})=> {
@@ -110,6 +111,7 @@ console.log('data marketing design:', marketingDesignId);
             file_and_chat: m.file_and_chat || "",
             detail_project: m.detail_project || "",
             resolution: m.resolution || "",
+            project_number: m.project_number || "",
 
             // simpan hanya ID, bukan object
             input_by: m.input_by_id ? String(m.input_by_id) : "",
@@ -270,6 +272,19 @@ console.log('data marketing design:', marketingDesignId);
           <div className="form-content">
             <h4 className='h4'>INFORMASI PESANAN</h4>
             <div className="sec-content-edit">
+
+              {/* Project Number */}
+              <div className="box-content">
+                  <label>Project Number</label>
+                  <input
+                      type="text"
+                      name="project_number"
+                      value={form.project_number}
+                      onChange={handleChange}
+                      placeholder="Project Number"
+                      className="w-full p-2 border rounded"
+                  />
+              </div>
 
               {/* Input By  */}
               <div className="box-content">

@@ -522,6 +522,7 @@ const handleExportToSheet = async (marketingDesignId) => {
                 <thead>
                   <tr>
                     <th className='rounded-tl-md'>NO</th>
+                    <th>Project Number</th>
                     <th>INPUT BY</th>
                     <th>ACC BY</th>
                     <th>STATUS</th>
@@ -575,7 +576,10 @@ const handleExportToSheet = async (marketingDesignId) => {
                     return(
                       <tr key={item.marketing_design_id}>
                         <td>{index + 1}</td>
-                        <td className='input-container'  onClick={()=> handleShowDetail(item.marketing_design_id)}>
+                        <td className='input-container' onClick={()=> handleShowDetail(item.marketing_design_id)}>
+                          {item.project_number}
+                        </td>
+                        <td className='input-container'>
                           {item.input_by_name || "-"}
                           {hasCardId(item) && (
                             <span style={{

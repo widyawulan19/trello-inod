@@ -206,6 +206,12 @@ const renderTextWithLinks = (text) => {
           <h4>Informasi Pesanan</h4>
           <div className="vmd-content" >
             <div className="box-content" >
+              <p>Project Number</p>
+              <div className="box-box">
+                <p>{dataMarketingDesign.project_number}</p>
+              </div>
+            </div>
+            <div className="box-content" >
               <p>Input By</p>
               <div className="box-box">
                 <p>{dataMarketingDesign.input_by_name}</p>
