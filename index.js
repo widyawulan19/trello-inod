@@ -15,7 +15,10 @@ const jwt = require("jsonwebtoken");
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const dotenv = require("dotenv");
-const { google } = require("googleapis")
+const { google } = require("googleapis");
+const dayjs = require("dayjs");
+require("dayjs/locale/id");  // aktifkan bahasa Indonesia
+dayjs.locale("id");
 
 
 
@@ -5738,10 +5741,66 @@ app.delete("/api/marketing/:id", async (req, res) => {
     }
 });
 //5. membuat data baru
+// app.post("/api/marketing", async (req, res) => {
+//     try {
+//         const {
+//             // card_id,
+//             input_by,
+//             acc_by,
+//             buyer_name,
+//             code_order,
+//             jumlah_track,
+//             order_number,
+//             account,
+//             deadline,
+//             jumlah_revisi,
+//             order_type,
+//             offer_type,
+//             jenis_track,
+//             genre,
+//             price_normal,
+//             price_discount,
+//             discount,
+//             basic_price,
+//             gig_link,
+//             required_files,
+//             project_type,
+//             duration,
+//             reference_link,
+//             file_and_chat_link,
+//             detail_project,
+//         } = req.body;
+
+//         const result = await client.query(
+//             `INSERT INTO data_marketing 
+//         (input_by, acc_by, buyer_name, code_order, jumlah_track, order_number, 
+//         account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre, 
+//         price_normal, price_discount, discount, basic_price, gig_link, required_files, 
+//         project_type, duration, reference_link, file_and_chat_link, detail_project, create_at) 
+//         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, 
+//         $16, $17, $18, $19, $20, $21, $22, $23, $24, CURRENT_TIMESTAMP) RETURNING *`,
+//             [
+//                 input_by, acc_by, buyer_name, code_order, jumlah_track, order_number,
+//                 account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre,
+//                 price_normal, price_discount, discount, basic_price, gig_link, required_files,
+//                 project_type, duration, reference_link, file_and_chat_link, detail_project
+//             ]
+//         );
+
+//         res.status(201).json(result.rows[0]);
+//     } catch (err) {
+//         console.error(err.message);
+//         res.status(500).send("Server error");
+//     }
+// });
+const dayjs = require("dayjs");
+require("dayjs/locale/id");
+dayjs.locale("id");
+
+// 5. membuat data baru
 app.post("/api/marketing", async (req, res) => {
     try {
         const {
-            // card_id,
             input_by,
             acc_by,
             buyer_name,
@@ -5768,19 +5827,39 @@ app.post("/api/marketing", async (req, res) => {
             detail_project,
         } = req.body;
 
+        // --- hitung project_number ---
+        const createAt = new Date(); // default pakai waktu saat insert
+        const monthStart = dayjs(createAt).startOf("month").toDate();
+        const monthEnd = dayjs(createAt).endOf("month").toDate();
+
+        const countResult = await client.query(
+            `SELECT COUNT(*) AS count
+       FROM data_marketing
+       WHERE create_at BETWEEN $1 AND $2`,
+            [monthStart, monthEnd]
+        );
+
+        const nextNumber = parseInt(countResult.rows[0].count) + 1;
+        const monthName = dayjs(createAt).format("MMMM");
+        const projectNumber = `P${String(nextNumber).padStart(2, "0")} ${monthName}`;
+
+        // --- insert ke tabel ---
         const result = await client.query(
             `INSERT INTO data_marketing 
-        (input_by, acc_by, buyer_name, code_order, jumlah_track, order_number, 
-        account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre, 
-        price_normal, price_discount, discount, basic_price, gig_link, required_files, 
-        project_type, duration, reference_link, file_and_chat_link, detail_project, create_at) 
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, 
-        $16, $17, $18, $19, $20, $21, $22, $23, $24, CURRENT_TIMESTAMP) RETURNING *`,
+      (input_by, acc_by, buyer_name, code_order, jumlah_track, order_number, 
+       account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre, 
+       price_normal, price_discount, discount, basic_price, gig_link, required_files, 
+       project_type, duration, reference_link, file_and_chat_link, detail_project, 
+       create_at, project_number) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, 
+              $16, $17, $18, $19, $20, $21, $22, $23, $24, CURRENT_TIMESTAMP, $25) 
+      RETURNING *`,
             [
                 input_by, acc_by, buyer_name, code_order, jumlah_track, order_number,
                 account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre,
                 price_normal, price_discount, discount, basic_price, gig_link, required_files,
-                project_type, duration, reference_link, file_and_chat_link, detail_project
+                project_type, duration, reference_link, file_and_chat_link, detail_project,
+                projectNumber,
             ]
         );
 
@@ -5791,125 +5870,6 @@ app.post("/api/marketing", async (req, res) => {
     }
 });
 
-//6. mengubah data marketing menjadi cards
-// app.put('/api/create-card-marketing/:listId/:marketingId', async (req, res) => {
-//     const { listId, marketingId } = req.params;
-
-//     try {
-//         // ✅ Ambil data marketing dengan JOIN lengkap
-//         const marketingData = await client.query(`
-//             SELECT 
-//                 dm.marketing_id,
-//                 dm.card_id,
-//                 dm.buyer_name,
-//                 dm.code_order,
-//                 dm.order_number,
-//                 dm.jumlah_track,
-//                 dm.duration,
-//                 dm.jumlah_revisi,
-//                 dm.deadline,
-//                 dm.price_normal,
-//                 dm.price_discount,
-//                 dm.discount,
-//                 dm.basic_price,
-//                 dm.gig_link,
-//                 dm.reference_link,
-//                 dm.required_files,
-//                 dm.file_and_chat_link,
-//                 dm.detail_project,
-//                 dm.create_at,
-//                 dm.update_at,
-
-//                 mu.nama_marketing AS input_by_name,
-//                 kd.nama AS acc_by_name,
-//                 am.nama_account AS account_name,
-//                 ot.order_name AS order_type_name,
-//                 oft.offer_name AS offer_type_name,
-//                 tt.track_name AS track_type_name,
-//                 g.genre_name AS genre_name,
-//                 pt.nama_project AS project_type_name,
-//                 k.nama_kupon AS kupon_diskon_name,
-//                 s.status_name AS accept_status_name
-
-//             FROM data_marketing dm
-//             LEFT JOIN marketing_musik_user mu ON mu.id = dm.input_by
-//             LEFT JOIN kepala_divisi kd ON kd.id = dm.acc_by
-//             LEFT JOIN account_music am ON am.id = dm.account
-//             LEFT JOIN music_order_type ot ON ot.id = dm.order_type
-//             LEFT JOIN offer_type_music oft ON oft.id = dm.offer_type
-//             LEFT JOIN track_types tt ON tt.id = dm.jenis_track
-//             LEFT JOIN genre_music g ON g.id = dm.genre
-//             LEFT JOIN project_type pt ON pt.id = dm.project_type
-//             LEFT JOIN kupon_diskon k ON k.id = dm.kupon_diskon_id
-//             LEFT JOIN accept_status s ON s.id = dm.accept_status_id
-//             WHERE dm.marketing_id = $1 AND dm.card_id IS NULL
-//         `, [marketingId]);
-
-//         if (marketingData.rows.length === 0) {
-//             return res.status(404).json({ message: 'Data marketing tidak ditemukan atau sudah memiliki card_id' });
-//         }
-
-//         const marketing = marketingData.rows[0];
-
-//         // ✅ Description pakai nama hasil join
-//         const description = `
-//         Order Code: ${marketing.code_order}
-//         Input By: ${marketing.input_by_name || 'N/A'}
-//         Approved By: ${marketing.acc_by_name || 'N/A'}
-//         Buyer: ${marketing.buyer_name}
-//         Order Number: ${marketing.order_number}
-//         Account: ${marketing.account_name || 'N/A'}
-//         Deadline: ${marketing.deadline ? new Date(marketing.deadline).toISOString().split('T')[0] : 'N/A'}
-//         Jumlah Revisi: ${marketing.jumlah_revisi}
-//         Order Type: ${marketing.order_type_name || 'N/A'}
-//         Offer Type: ${marketing.offer_type_name || 'N/A'}
-//         Jenis Track: ${marketing.track_type_name || 'N/A'}
-//         Genre: ${marketing.genre_name || 'N/A'}
-//         Jumlah Track: ${marketing.jumlah_track}
-//         Normal Price: $${marketing.price_normal}
-//         Discount: ${marketing.discount ?? 'N/A'}
-//         Basic Price: $${marketing.basic_price ?? 'N/A'}
-//         Required Files: ${marketing.required_files}
-//         Project Type: ${marketing.project_type_name || 'N/A'}
-//         Duration: ${marketing.duration}
-//         Gig Link: ${marketing.gig_link}
-//         Reference: ${marketing.reference_link}
-//         File & Chat: ${marketing.file_and_chat_link}
-//         Kupon Diskon: ${marketing.kupon_diskon_name || 'N/A'}
-//         Status: ${marketing.accept_status_name || 'N/A'}
-//         Detail: ${marketing.detail_project}
-//         `.trim();
-
-//         // ✅ Card title juga pakai nama genre + buyer
-//         const newCard = await client.query(
-//             `INSERT INTO cards (list_id, title, description, position, due_date) 
-//              VALUES ($1, $2, $3, $4, $5) 
-//              RETURNING id`,
-//             [
-//                 listId,
-//                 `'New Project' ${marketing.genre_name || 'Unknown'} - ${marketing.buyer_name} (${marketing.account_name || '-'})`,
-//                 description,
-//                 0, // posisi default
-//                 marketing.deadline
-//             ]
-//         );
-
-//         // ✅ Update card_id di data_marketing
-//         await client.query(
-//             'UPDATE data_marketing SET card_id = $1 WHERE marketing_id = $2',
-//             [newCard.rows[0].id, marketingId]
-//         );
-
-//         return res.status(201).json({
-//             message: 'Card berhasil dibuat dari data marketing.',
-//             cardId: newCard.rows[0].id
-//         });
-
-//     } catch (error) {
-//         console.error('Error creating card from marketing data:', error);
-//         return res.status(500).json({ message: 'Terjadi kesalahan saat membuat card dari data marketing.' });
-//     }
-// });
 
 //6. mengubah data marketing menjadi cards
 app.put('/api/create-card-marketing/:listId/:marketingId', async (req, res) => {
