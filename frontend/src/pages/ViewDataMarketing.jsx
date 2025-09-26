@@ -205,6 +205,12 @@ const ViewDataMarketing=({marketingId, onClose, isExported, setIsExported,market
           <h4>Informasi Pesanan</h4>
           <div className="sec-content">
             <div className="box">
+              <p>Project Number</p>
+              <div className='box1'>
+                <p>{dataMarketings.project_number}</p>
+              </div>
+            </div>
+            <div className="box">
               <p>Input By</p>
               <div className='box1'>
                 <p>{dataMarketings.input_by_name}</p>

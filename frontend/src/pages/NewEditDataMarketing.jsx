@@ -59,6 +59,7 @@ const initialFormState = {
   project_type: "",
   kupon_diskon_id: "",
   accept_status_id:"",
+  project_number:"",
 };
 
 const NewEditDataMarketing = ({ marketingId , onClose, fetchDataMarketing }) => {
@@ -144,6 +145,7 @@ useEffect(() => {
         file_and_chat_link: m.file_and_chat_link || "",
         gig_link: m.gig_link || "",
         detail_project: m.detail_project || "",
+        project_number: m.project_number || "",
        
         input_by: m.input_by ? String(m.input_by) : "",
         acc_by: m.acc_by ? String(m.acc_by) : "",
@@ -350,6 +352,19 @@ console.log('data selcted acc:', selectedAccById);
           <div className="form-content">
             <h4>INFORMASI PESANAN</h4>
             <div className="sec-content">
+
+              {/* Project Number */}
+              <div className="box-content">
+                <label>Project Number</label>
+                <input
+                  type="text"
+                  name="project_number"
+                  value={form.project_number}
+                  onChange={handleChange}
+                  placeholder="Project Number"
+                />
+              </div>
+
               {/* Input By */}
               <div className="box-content">
                 <label>Input By</label>

@@ -511,6 +511,7 @@ const handleExportToSheets = async (marketingId) => {
               <thead>
                 <tr>
                   <th style={{ borderTopLeftRadius: '8px'}}>No</th>
+                  <th>Project Number</th>
                   <th>Input By</th>
                   <th>Accepted By</th>
                   <th>STATUS</th>
@@ -559,7 +560,8 @@ const handleExportToSheets = async (marketingId) => {
                   return (
                   <tr key={item.marketing_id}>
                     <td>{index + 1}</td>
-                    <td className="input-container" onClick={()=> handleShowDetail(item.marketing_id)}>
+                    <td className="input-container" onClick={()=> handleShowDetail(item.marketing_id)}>{item.project_number}</td>
+                    <td className="input-container" >
                       {item.input_by_name || "-"}
                       {hasCardId(item) && (
                         <span
