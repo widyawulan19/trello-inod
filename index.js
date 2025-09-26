@@ -5793,9 +5793,6 @@ app.delete("/api/marketing/:id", async (req, res) => {
 //         res.status(500).send("Server error");
 //     }
 // });
-const dayjs = require("dayjs");
-require("dayjs/locale/id");
-dayjs.locale("id");
 
 // 5. membuat data baru
 app.post("/api/marketing", async (req, res) => {
