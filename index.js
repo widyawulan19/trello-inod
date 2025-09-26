@@ -5297,6 +5297,7 @@ app.get("/api/marketing/reports", async (req, res) => {
             'card_id', dm.card_id,
             'create_at', dm.create_at,
             'update_at', dm.update_at,
+            'project_number', dm.project_number,
 
             -- Relasi (pakai hasil join)
             'input_by', dm.input_by,
