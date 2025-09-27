@@ -247,7 +247,7 @@ app.post("/api/export-to-sheet", async (req, res) => {
                     marketingData.jumlah_revisi || "",     // Jumlah revisi (H)
                     marketingData.order_type_name || "",   // Order type (I)
                     marketingData.offer_type_name || "",   // Offer type (J)
-                    marketingData.jenis_track || "",       // Jenis track (K)
+                    marketingData.track_type_name || "",   // Jenis track (K)
                     marketingData.genre_name || "",        // Genre (L)
                     marketingData.price_normal || "",      // Price normal (M)
                     marketingData.price_discount || "",    // Price discount (N)
