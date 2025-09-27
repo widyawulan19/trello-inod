@@ -112,97 +112,91 @@ const renderTextWithLinks = (text) => {
   );
 };
 
-
-// // 🔎 Cek apakah sudah di-export dari API
-//   useEffect(() => {
-//     const checkExportStatus = async () => {
-//       try {
-//         const res = await getExportMarketingDesign(marketingDesignId);
-//         // kalau API balikin data (misalnya ada row di marketing_design_exports), berarti udah exported
-//         setIsExported(res.data?.length > 0);
-//       } catch (err) {
-//         console.error("❌ Gagal cek status export:", err);
-//       }
-//     };
-//     checkExportStatus();
-//   }, [marketingDesignId]);
-
-//   // 🟢 handle export ke sheets
-//   const handleClickExport = async () => {
-//     try {
-//       await handleExportToSheet(marketingDesignId, dataMarketingDesign.buyer_name);
-//       setIsExported(true); // ✅ update langsung di FE juga
-//     } catch (error) {
-//       console.error("❌ Error export:", error);
-//     }
-//   };
-
-
-
+  // FUNCTION TO SHOW STATUS 
+  const STATUS_COLORS ={
+    "ACCEPTED ":'#2E7D32',
+    "NOT ACCEPTED":'#C62828',
+    "ON PROGRESS":'#C38D24',
+    "UNKNOWN":'#F5F5F5',
+  }
+  const STATUS_BG = {
+    "ACCEPTED ":'#C8E6C9',
+    "NOT ACCEPTED":'#FFCDD2',
+    "ON PROGRESS":'#FFDCB3',
+    "UNKNOWN":"#9E9E9E",
+  }
 
   return (
     <div className='view-md-container'>
       <div className="vmd-header">
         <div className="vmd-left">
           <h4>DETAIL DATA MARKETING DESIGN</h4>
-          {/* {dataMarketingDesign.style_name} | {dataMarketingDesign.buyer_name} | {dataMarketingDesign.account_name} | {getLastFiveCodeOrder(dataMarketingDesign.code_order)} */}
+          {dataMarketingDesign.buyer_name} | {dataMarketingDesign.account_name} | {dataMarketingDesign.order_type_name} | {getLastFiveCodeOrder(dataMarketingDesign.code_order)}
         </div>
-        <div className="vmd-right">
+        <div className="vmd-center">
           <div className="export" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <button
               onClick={() => handleExportToSheet(marketingDesignId)}
               disabled={designTransfile.some(exp => exp.marketing_design_id === marketingDesignId)} 
               style={{
-                backgroundColor: designTransfile.some(exp => exp.marketing_design_id === marketingDesignId) ? "#ccc" : "#4CAF50",
+                backgroundColor: designTransfile.some(exp => exp.marketing_design_id === marketingDesignId) ? "#ccc" : "#1C7821",
                 color: designTransfile.some(exp => exp.marketing_design_id === marketingDesignId) ? "#666" : "#fff",
-                padding: "10px 20px",
+                padding: "6px 7px",
                 border: "none",
                 borderRadius: "6px",
+                fontWeight:'bold',
                 cursor: designTransfile.some(exp => exp.marketing_design_id === marketingDesignId) ? "not-allowed" : "pointer"
               }}
             >
+
               {designTransfile.some(exp => exp.marketing_design_id === marketingDesignId)
                 ? "Sudah Transfile"
                 : "Transfile to SpreedSheets"}
             </button>
-
-            {/* {designTransfile.some(exp => exp.marketing_design_id === marketingDesignId) ? (
-              <AiFillCheckCircle color="green" size={20} />
-            ) : (
-              <AiFillCheckCircle color="red" size={20} />
-            )} */}
           </div>
 
-            <div className="card-status">
+          <button className='create-btn' onClick={()=> showCreateForm(marketingDesignId)}>
+            {/* <HiPlus size={15}/> */}
+            CREATE CARD
+          </button>
+          {showCardForm[marketingDesignId]&& (
+            <div className="vmd-form">
+              <FormCreateCardDesign marketingDesignId={marketingDesignId} onClose={()=> handleCloseForm(marketingDesignId)}/>
+            </div>
+          )}
+
+          <div className="card-status">
               {loadingCardId ? (
                 <p>Memeriksa...</p>
               ): cardId ? (
-                <button className='created'>Created</button>
+                <button className='created-status'>Created</button>
               ):(
-                <button className='uncreated'>Not Created</button>
+                <button className='uncreated-status'>Not Created</button>
               )}
-            </div>
-
-            <button className='create-btn' onClick={()=> showCreateForm(marketingDesignId)}>
-              <HiPlus size={15}/>
-              CREATE CARD
-            </button>
-            <BootstrapTooltip title='Close' placement='top'>
-              <FaXmark onClick={onClose} className='vmd-icon'/>
-            </BootstrapTooltip>
+          </div>
 
         </div>
+        
+          
+        <div className="vmd-right">
+          <BootstrapTooltip title='Close' placement='top'>
+            <FaXmark onClick={onClose} className='vmd-icon'/>
+          </BootstrapTooltip>
+        </div>
+
       </div>
-      {showCardForm[marketingDesignId]&& (
-        <div className="vmd-form">
-          <FormCreateCardDesign marketingDesignId={marketingDesignId} onClose={()=> handleCloseForm(marketingDesignId)}/>
-        </div>
-      )}
+      
       {/* FORM CREATE  */}
       <div className="vmd-body">
         <div className="sec-informasi">
           <h4>Informasi Pesanan</h4>
           <div className="vmd-content" >
+            <div className="box-content" >
+              <p>Project Number</p>
+              <div className="box-box">
+                <p>{dataMarketingDesign.project_number}</p>
+              </div>
+            </div>
             <div className="box-content" >
               <p>Input By</p>
               <div className="box-box">
@@ -222,8 +216,8 @@ const renderTextWithLinks = (text) => {
                   style={{
                     padding: '5px 8px',
                     borderRadius: '3px',
-                    backgroundColor:'#FFCDD2',
-                    color: '#C62828',
+                    backgroundColor: STATUS_BG[dataMarketingDesign?.status_project_name],
+                    color:STATUS_COLORS[dataMarketingDesign?.status_project_name],
                     fontWeight: 'bold',
                     textAlign:'center'
                   }}

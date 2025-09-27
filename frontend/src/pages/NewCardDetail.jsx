@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import '../style/pages/NewCardDetail.css'
 import BootstrapTooltip from '../components/Tooltip';
 import { GiCloudUpload } from "react-icons/gi";
-import { archiveCard, deleteUserFromCard, getAllCardUsers, getAllDueDateByCardId, getAllStatus, getAllUploadFiles, getAllUserAssignToCard, getCardById, getCardPriority, getCoverByCard, getLabelByCard, getListById, getStatusByCardId, getTotalFile, updateDescCard, updateTitleCard } from '../services/ApiServices';
+import { archiveCard, deleteUserFromCard, getAllCardUsers, getAllDueDateByCardId, getAllStatus, getAllUploadFiles, getAllUserAssignToCard, getCardById, getCardPriority, getChecklistItemChecked, getCoverByCard, getLabelByCard, getListById, getStatusByCardId, getTotalChecklistItemByCardId, getTotalFile, updateDescCard, updateTitleCard } from '../services/ApiServices';
 import SelectedLabels from '../UI/SelectedLabels';
 import CardDetailPanel from '../modules/CardDetailPanel';
 import DetailCard from '../modules/DetailCard';
@@ -58,6 +58,10 @@ const NewCardDetail=()=> {
     const [newDescription, setNewDescription] = useState('');
     const [showMore, setShowMore] = useState(false);
     const maxChars = 1000;
+
+    //checklist state
+    const [checklistTotal, setChecklistTotal] = useState(0);
+    const [checkChecklist, setChecklist] = useState(0);
     
     //LABEL
     const [labels, setLabels] = useState([]);
@@ -570,6 +574,38 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
         navigate(`/layout/workspaces/${workspaceId}/board/${boardId}`)
     }
 
+    //function checklist
+    const fetchTotalChecklist = async()=>{
+        try{
+            const response = await getTotalChecklistItemByCardId(cardId);
+            setChecklistTotal(response.data);
+        }catch(error){
+            console.log('Error fetching total checklist!', error)
+            setChecklistTotal(0);
+        }finally{
+            setLoading(false);
+        }
+    }
+
+    //function fetch checklist already checklist
+    const fetchChecklist = async() =>{
+        try{
+            const response = await getChecklistItemChecked(cardId);
+            setChecklist(response.data);
+        }catch(error){
+            setChecklist(0)
+        }finally{
+            setLoading(false);
+        }
+    }
+
+     useEffect(()=>{
+        if(cardId){
+            fetchTotalChecklist();
+            fetchChecklist();
+        }
+    },[cardId])
+
     //SHOW FUNCTION
     //1. show cover
     const handleShowCover = () =>{
@@ -1049,6 +1085,19 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
                                     />
                                 </div>   
                             )}
+                        </div>
+
+                        {/* CHECKLIST  */}
+                        <div className="ncd-card-checklist">
+                            <div className="ncd-checklist-header">
+                                Checklist List
+                                <button>
+                                    {checkChecklist.checked} /  {checklistTotal.total}
+                                </button>
+                            </div>
+                            <div className="ncd-checklist-content">
+                                <Checklist cardId={cardId}/>
+                            </div>
                         </div>
 
                         {/* CARD ACTIVITY */}

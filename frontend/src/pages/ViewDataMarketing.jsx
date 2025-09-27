@@ -135,11 +135,58 @@ const ViewDataMarketing=({marketingId, onClose, isExported, setIsExported,market
 
   return (
     <div className='view-dm-container'>
-      <div className="vdm-header">
+
+      <div className="vmd-header">
         <div className="vdm-left">
           <h4>DETAIL DATA MARKETING</h4>
-          {dataMarketings.genre_name} | {dataMarketings.buyer_name} | {dataMarketings.account_name} | {getLastFiveCodeOrder(dataMarketings.code_order)}
+          {/* nama buyer , akun, order type , code order */}
+          {dataMarketings.buyer_name} | {dataMarketings.account_name} | {dataMarketings.order_type_name} | {getLastFiveCodeOrder(dataMarketings.code_order)}
         </div>
+        
+        <div className="vdm-center">
+          <div className="export">
+              <button
+                onClick={() => onExport(marketingId)}
+                disabled={marketingTransfile.some(exp => exp.marketing_id === marketingId)} // disable jika sudah di-transfile
+                style={{
+                  backgroundColor: marketingTransfile.some(exp => exp.marketing_id === marketingId) ? "#ccc" : "#1C7821",
+                  color: "white",
+                  cursor: marketingTransfile.some(exp => exp.marketing_id === marketingId) ? "not-allowed" : "pointer",
+                  border: "none",
+                  padding: "6px 7px",
+                  borderRadius: "6px"
+                }}
+              >
+                {marketingTransfile.some(exp => exp.marketing_id === marketingId)
+                  ? "Sudah Transfile"
+                  : "Transfile to SpreedSheets"}
+              </button>
+
+              <button className='cc-btn' onClick={()=> handleShowLists(marketingId)}>
+                {/* <HiOutlinePlus style={{fontSize:'15px'}}/> */}
+                CREATE CARD
+              </button>
+
+              {/* CHECK CARD ID  */}
+              <div className="card-status-musik">
+                {loadingCardId ? (
+                  <p>Memeriksa...</p>
+                ): cardId ? (
+                  <button className='created'>Created</button>
+                ):(
+                  <button className='uncreated'>Not Created</button>
+                )}
+              </div>
+
+              {showList[marketingId]&& (
+                // <div ref={showListRef}>Marketing lists</div>
+                <div className='vdm-form'>
+                  <FormCreateCardMarketing marketingId={marketingId} onClose={() => handleShowClose(marketingId)}/>
+                </div>
+              )}
+          </div>
+        </div>
+
         <div className="vdm-right">
           <div className="export" style={{ marginRight: "5px", display: "flex", alignItems: "center", gap: "8px" }}>
             <button
@@ -159,42 +206,25 @@ const ViewDataMarketing=({marketingId, onClose, isExported, setIsExported,market
                 ? "Sudah Transfile"
                 : "Transfile to Sheets"}
             </button>
+
           </div>
-
-
-
-          {/* CHECK CARD ID  */}
-          <div className="card-status">
-            {loadingCardId ? (
-              <p>Memeriksa...</p>
-            ): cardId ? (
-              <button className='created'>Created</button>
-            ):(
-              <button className='uncreated'>Not Created</button>
-            )}
-          </div>
-
-          <button className='cc-btn' onClick={()=> handleShowLists(marketingId)}>
-            <HiOutlinePlus style={{fontSize:'15px'}}/>
-            CREATE CARD
-          </button>
-          <BootstrapTooltip title='Close Detail' placement='top'>
-            <FaXmark onClick={onClose} className='vdm-icon'/>
-          </BootstrapTooltip>
         </div>
       </div>
-      {showList[marketingId]&& (
-        // <div ref={showListRef}>Marketing lists</div>
-        <div className='vdm-form'>
-          <FormCreateCardMarketing marketingId={marketingId} onClose={() => handleShowClose(marketingId)}/>
-        </div>
-      )}
+
+      
+      
 
       <div className="vdm-body">
         {/* INFORMASI PESANAN CONTAINER  */}
         <div className="sec">
           <h4>Informasi Pesanan</h4>
           <div className="sec-content">
+            <div className="box">
+              <p>Project Number</p>
+              <div className='box1'>
+                <p>{dataMarketings.project_number}</p>
+              </div>
+            </div>
             <div className="box">
               <p>Input By</p>
               <div className='box1'>

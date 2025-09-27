@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { deleteCard, getCardById, getCardByList,updateTitleCard , onCardMove, archiveCard, getCardPriority, getDueDateById, getAllDueDateByCardId, getStatusByCardId, getAllStatus, getStatusCard, getTotalMessageInCard, getTotalFile, getNotifications, patchReadNotification,checkHasNewChat} from '../services/ApiServices';
+import { deleteCard, getCardById, getCardByList,updateTitleCard , onCardMove, archiveCard, getCardPriority, getDueDateById, getAllDueDateByCardId, getStatusByCardId, getAllStatus, getStatusCard, getTotalMessageInCard, getTotalFile, getNotifications, patchReadNotification,checkHasNewChat, getTotalChecklistItemByCardId, getChecklistItemChecked} from '../services/ApiServices';
 import '../style/pages/Card.css'
 import '../style/modules/BoxStatus.css'
 import {    HiOutlineEllipsisHorizontal,
@@ -95,6 +95,10 @@ const Card=({
     const [allStatuses, setAllStatuses] = useState([]);
     const [selectedStatus, setSelectedStatus] = useState('')
     console.log('file card diterima cardID:', card);
+    //checklist state
+    const [checklistTotal, setChecklistTotal] = useState(0);
+    const [checkChecklist, setChecklist] = useState(0);
+    const [loading, setLoading] = useState(false);
     // total file 
     const [totalFile, setTotalFile] = useState(0);
     //state to create mark notif
@@ -343,6 +347,39 @@ const Card=({
         setShowPosition(!showPosition)
     }
 
+    //function checklist
+    const fetchTotalChecklist = async()=>{
+        try{
+            const response = await getTotalChecklistItemByCardId(card.id);
+            setChecklistTotal(response.data);
+        }catch(error){
+            console.log('Error fetching total checklist!', error)
+            setChecklistTotal(0);
+        }finally{
+            setLoading(false);
+        }
+    }
+
+    //function fetch checklist already checklist
+    const fetchChecklist = async() =>{
+        try{
+            const response = await getChecklistItemChecked(card.id);
+            setChecklist(response.data);
+        }catch(error){
+            setChecklist(0)
+        }finally{
+            setLoading(false);
+        }
+    }
+
+     useEffect(()=>{
+        if(card.id){
+            fetchTotalChecklist();
+            fetchChecklist();
+        }
+    },[card.id])
+
+
 
   return (
     <div className='card-box-container' >
@@ -500,6 +537,8 @@ const Card=({
                 notifications={notifications} 
                 handleMarkAsRead={handleMarkAsRead} 
                 hasNewChat={hasNewChat}
+                checkChecklist={checkChecklist}
+                checklistTotal={checklistTotal}
                 // hasNewChat={newChatMarks[card.id] || false}
             />
         </div>
@@ -519,18 +558,12 @@ const Card=({
                      fetchLists={fetchLists}
                      fetchCardList={fetchCardList}
                      listName={listName}
+                     checkChecklist={checkChecklist}
+                     checklistTotal={checklistTotal}
                 />
             </div>
         </div>
     )}
-    {/* {showDetail && (
-    <div className="cc-detail">
-        <div className="modal-overlay" onClick={handleShowDetail}> show</div>
-        <div className="modal-content">
-            <CardDetail cardId={card.id} onClose={handleClose} workspaceId={workspaceId} boardId={boardId} listId={listId} fetchCardList={fetchCardList}/>
-         </div>
-    </div>
-    )} */}
     </div>
   )
 }

@@ -329,14 +329,16 @@ const handleExportToSheet = async (marketingDesignId) => {
 
   // FUNCTION TO SHOW STATUS 
   const STATUS_COLORS ={
-    "ACCEPTED":"#2E7D32",
+    "ACCEPTED ":'#2E7D32',
     "NOT ACCEPTED":'#C62828',
-    "ON PROGRESS":'#C38D24'
+    "ON PROGRESS":'#C38D24',
+    "UNKNOWN":'#F5F5F5',
   }
   const STATUS_BG = {
-    "ACCEPTED":'#C8E6C9',
+    "ACCEPTED ":'#C8E6C9',
     "NOT ACCEPTED":'#FFCDD2',
-    "ON PROGRESS":'#FFDCB3'
+    "ON PROGRESS":'#FFDCB3',
+    "UNKNOWN":"#9E9E9E",
   }
 
   // SHOW DATA CONTENT 
@@ -522,6 +524,7 @@ const handleExportToSheet = async (marketingDesignId) => {
                 <thead>
                   <tr>
                     <th className='rounded-tl-md'>NO</th>
+                    <th>Project Number</th>
                     <th>INPUT BY</th>
                     <th>ACC BY</th>
                     <th>STATUS</th>
@@ -575,7 +578,10 @@ const handleExportToSheet = async (marketingDesignId) => {
                     return(
                       <tr key={item.marketing_design_id}>
                         <td>{index + 1}</td>
-                        <td className='input-container'  onClick={()=> handleShowDetail(item.marketing_design_id)}>
+                        <td className='input-container' onClick={()=> handleShowDetail(item.marketing_design_id)}>
+                          {item.project_number}
+                        </td>
+                        <td className='input-container'>
                           {item.input_by_name || "-"}
                           {hasCardId(item) && (
                             <span style={{

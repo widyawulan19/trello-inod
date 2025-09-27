@@ -227,8 +227,8 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
 
             <form onSubmit={handleSubmit}>
             <div className="form-new">
-                <div className="form-content">
-                    <h4>INFORMASI PESANAN</h4>
+                <div className="form-content" style={{marginTop:'5px'}}>
+                    <h4 className='h4'>INFORMASI PESANAN</h4>
                     <div className="sec-content">
                         {/* Input By */}
                         <div className="box-content">
@@ -330,7 +330,7 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
                 </div>
 
                 <div className="form-content">
-                    <h4>DETAIL PESANAN</h4>
+                    <h4 className='h4'>DETAIL PESANAN</h4>
                     <div className="sec-content">
                         {/* Jumlah Design */}
                         <div className="box-content">
@@ -422,7 +422,7 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
 
                 {/* FORM CONTENT  */}
                 <div className="form-content">
-                    <h4>DETAIL DESIGN</h4>
+                    <h4 className='h4'>DETAIL DESIGN</h4>
                     <div className="sec-content">
 
                         {/* Jumlah Design */}
@@ -469,7 +469,7 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
 
                 {/* DETAIL PRICE  */}
                 <div className="form-content">
-                    <h4>DETAIL PRICE</h4>
+                    <h4 className='h4'>DETAIL PRICE</h4>
                     <div className="sec-content">
                         <div className="box-content">
                         <label>Price Normal</label>
@@ -509,8 +509,8 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
 
                 {/* REFERENCE AND FILES  */}
                 <div className="form-content">
-                    <h4>REFERENCE AND FILES</h4>
-                    <div className="sec-content">
+                    <h4 className='h4'>REFERENCE AND FILES</h4>
+                    <div className="sec-content-ref">
 
                         {/* REFERENCE  */}
                         <div className="box-content">
@@ -542,13 +542,14 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
 
                 {/* DETAIL PROJECT  */}
                 <div className="form-content">
-                    <h4>DETAIL PROJECT</h4>
-                    <div className="sec-content" style={{border:'1px solid white'}}>
+                    <h4 className='h4'>DETAIL PROJECT</h4>
+                    <div className="sec-content-detail">
 
                         {/* REFERENCE  */}
                         <div className="box-content">
-                            <label>Detail Project</label>
+                            {/* <label>Detail Project</label> */}
                             <textarea 
+                            className='textarea'
                                 type="text" 
                                 name='detail_project'
                                 value={form.detail_project}

@@ -30,6 +30,7 @@ const initialFormState = {
     style_id: "",
     status_project_id: "",
     resolution: "",
+    project_number: "",
 };
 
 const NewEditMarketingDesign=({marketingDesignId, onClose, fetchMarketingDesign})=> {
@@ -110,6 +111,7 @@ console.log('data marketing design:', marketingDesignId);
             file_and_chat: m.file_and_chat || "",
             detail_project: m.detail_project || "",
             resolution: m.resolution || "",
+            project_number: m.project_number || "",
 
             // simpan hanya ID, bukan object
             input_by: m.input_by_id ? String(m.input_by_id) : "",
@@ -268,8 +270,21 @@ console.log('data marketing design:', marketingDesignId);
         <div className="form-edit">
 
           <div className="form-content">
-            <h4>INFORMASI PESANAN</h4>
-            <div className="sec-content">
+            <h4 className='h4'>INFORMASI PESANAN</h4>
+            <div className="sec-content-edit">
+
+              {/* Project Number */}
+              <div className="box-content">
+                  <label>Project Number</label>
+                  <input
+                      type="text"
+                      name="project_number"
+                      value={form.project_number}
+                      onChange={handleChange}
+                      placeholder="Project Number"
+                      className="w-full p-2 border rounded"
+                  />
+              </div>
 
               {/* Input By  */}
               <div className="box-content">
@@ -375,8 +390,8 @@ console.log('data marketing design:', marketingDesignId);
           </div>
 
           <div className="form-content">
-            <h4>DETAIL PESANAN</h4>
-            <div className="sec-content">
+            <h4 className='h4'>DETAIL PESANAN</h4>
+            <div className="sec-content-edit">
                 {/* Jumlah Design */}
                 <div className="box-content">
                     <label >Jumlah Design</label>
@@ -466,8 +481,8 @@ console.log('data marketing design:', marketingDesignId);
 
             {/* FORM CONTENT  */}
             <div className="form-content">
-                <h4>DETAIL DESIGN</h4>
-                <div className="sec-content">
+                <h4 className='h4'>DETAIL DESIGN</h4>
+                <div className="sec-content-edit">
 
                     {/* Jumlah Design */}
                     <div className="box-content">
@@ -513,8 +528,8 @@ console.log('data marketing design:', marketingDesignId);
 
             {/* DETAIL PRICE  */}
             <div className="form-content">
-                <h4>DETAIL PRICE</h4>
-                <div className="sec-content">
+                <h4 className='h4'>DETAIL PRICE</h4>
+                <div className="sec-content-edit">
                     <div className="box-content">
                     <label>Price Normal</label>
                     <input 
@@ -550,8 +565,8 @@ console.log('data marketing design:', marketingDesignId);
 
             {/* REFERENCE AND FILES  */}
             <div className="form-content">
-                <h4>REFERENCE AND FILES</h4>
-                <div className="sec-content">
+                <h4 className='h4'>REFERENCE AND FILES</h4>
+                <div className="sec-content-edit-ref">
 
                     {/* REFERENCE  */}
                     <div className="box-content">
@@ -581,8 +596,8 @@ console.log('data marketing design:', marketingDesignId);
 
             {/* DETAIL PROJECT  */}
             <div className="form-content">
-                <h4>DETAIL PROJECT</h4>
-                <div className="sec-content">
+                <h4 className='h4'>DETAIL PROJECT</h4>
+                <div className="sec-content-edit">
 
                     {/* REFERENCE  */}
                     <div className="box-content">

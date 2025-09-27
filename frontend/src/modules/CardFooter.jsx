@@ -4,7 +4,7 @@ import { HiOutlineChatBubbleLeftRight,HiOutlineCheckCircle, HiOutlinePaperClip }
 import '../style/modules/CardFooter.css'
 import BootstrapTooltip from '../components/Tooltip'
 
-const CardFooter=({cardId, totalFile, unreadCount,hasNewChat, notifications, handleMarkAsRead})=> {
+const CardFooter=({cardId, totalFile, unreadCount,hasNewChat, notifications, handleMarkAsRead, checklistTotal,checkChecklist})=> {
     //STATE
     const [stats, setStats] = useState({total:0, checked:0, unchecked:0})
 
@@ -91,7 +91,8 @@ useEffect(() => {
         <BootstrapTooltip title='Total checklist' placement='top'>
             <button>
                 <HiOutlineCheckCircle className='cf-icon'/> 
-                {stats.checked}/{stats.total}
+                {/* {stats.checked}/{stats.total} */}
+                <p>{checkChecklist?.checked} / {checklistTotal?.total} </p>
             </button>
         </BootstrapTooltip>
     </div>

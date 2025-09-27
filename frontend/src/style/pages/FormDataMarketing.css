@@ -50,7 +50,8 @@
 /* FORM  */
 .fdm-container form {
     /* border: 1px solid green; */
-    padding: 10px;
+    /* padding: 10px; */
+    padding-top: 0px;
     height: 82vh;
     width: 100%;
     overflow-x: auto;
@@ -69,22 +70,25 @@
 }
 
 .form-new .form-content {
-    /* border: 1px solid red; */
     width: 100%;
-    margin: 20px 0px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 15px 0px;
 }
 
-.form-content h4 {
-    font-size: 15px;
+.form-content .h4 {
+    font-size: 13px;
     font-weight: bold;
     color: #333;
     margin-bottom: 5px;
 }
 
 .form-content .sec-content {
-    border: 1px solid #ddd;
+    border: 1px solid #fff;
     border-radius: 4px;
-    padding: 5px;
+    padding: 0px !important;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     align-items: center;
@@ -92,6 +96,32 @@
     gap: 5px;
 }
 
+.form-content .sec-content-ref {
+    border: 1px solid #fff;
+    border-radius: 4px;
+    padding: 0px !important;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.form-content .sec-content-detail {
+    /* border: 1px solid red; */
+    gap: 5px;
+    width: 100%;
+}
+
+
+.sec-content-ref .box-content {
+    /* border: 1px solid red; */
+    border-radius: 4px;
+    padding: 2px;
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+}
 
 .sec-content .box-content {
     /* border: 1px solid red; */
@@ -101,6 +131,16 @@
     flex-direction: column;
     justify-content: flex-start;
     width: 95%;
+}
+
+.sec-content-detail .box-content {
+    /* border: 1px solid red; */
+    border-radius: 4px;
+    padding: 2px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 100%;
 }
 
 .box-content label {
@@ -129,21 +169,22 @@
     box-shadow: 0px 4px 8px #6f30dc54;
 }
 
-.box-content textarea {
-    border: 1px solid #ddd;
+.sec-content-detail .textarea {
+    /* border: 1px solid red; */
     border-radius: 8px;
     padding: 5px;
-    width: 51vw;
+    /* width: 100%; */
+    width: 51vw !important;
     min-height: 20vh;
     font-size: 12px;
     cursor: pointer;
 }
 
-.box-content textarea:hover {
+.box-content .textarea:hover {
     box-shadow: 0px 4px 8px #6f30dc54;
 }
 
-.box-content textarea:focus {
+.box-content .textarea:focus {
     outline: none;
     border: 1px solid #6f30dc47;
     box-shadow: 0px 4px 8px #6f30dc54;

@@ -62,6 +62,21 @@ const getBasicPrice = (price_normal, discount) => {
 };
 
 
+  // FUNCTION TO SHOW STATUS 
+  const STATUS_COLORS ={
+    "ACCEPTED ":'#2E7D32',
+    "NOT ACCEPTED":'#C62828',
+    "ON PROGRESS":'#C38D24',
+    "UNKNOWN":'#F5F5F5',
+  }
+  const STATUS_BG = {
+    "ACCEPTED ":'#C8E6C9',
+    "NOT ACCEPTED":'#FFCDD2',
+    "ON PROGRESS":'#FFDCB3',
+    "UNKNOWN":"#9E9E9E",
+  }
+
+
   return (
     <div className='design-period-container'>
         <div className="dp-title">
@@ -124,6 +139,7 @@ const getBasicPrice = (price_normal, discount) => {
               <table className="min-w-full border border-gray-300">
                 <thead>
                     <tr className="bg-gray-100">
+                    <th className="input-container">Project Number</th>
                     <th className="input-container">Input By</th>
                     <th className="acc-container">Acc By</th>
                     <th className="status-container">Status</th>
@@ -150,17 +166,20 @@ const getBasicPrice = (price_normal, discount) => {
                 <tbody>
                     {item.details.map((detail, dIdx) => (
                     <tr key={dIdx} className="text-center hover:bg-gray-50">
+                        <td className="px-2 py-1 border">{detail["project_number"] || "-"}</td>
                         <td className="px-2 py-1 border">{detail["input_by_name"] || "-"}</td>
                         <td className="px-2 py-1 border">{detail["acc_by_name"] || "-"}</td>
                         <td className="px-2 py-1 border">
                           <span
-                            className={`px-2 py-1 rounded-full font-bold ${
-                              detail.accept_status_id === 1
-                                ? "bg-green-100 text-green-700"
-                                : "bg-red-100 text-red-700"
-                            }`}
+                            style={{
+                              padding: '2px 8px',
+                              borderRadius: '12px',
+                              backgroundColor: STATUS_BG[detail.accept_status_name],
+                              color: STATUS_COLORS[detail.accept_status_name],
+                              fontWeight: 'bold'
+                            }}
                           >
-                            {detail.accept_status_id === 1 ? "Accepted" : "Not Accepted"}
+                            {detail.accept_status_name}
                           </span>
                         </td>
                         <td className="px-2 py-1 border">{detail["buyer_name"] || "-"}</td>

@@ -989,6 +989,44 @@
     box-shadow: 0px 4px 8px #5e12eb46;
 }
 
+/* CHECKLIST CARD  */
+.ncd-card-checklist {
+    margin-top: 10px;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    padding: 10px 5px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.ncd-card-checklist .ncd-checklist-header {
+    border-left: 3px solid orange;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding-left: 10px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.ncd-checklist-header button {
+    font-size: 10px;
+    padding: 2px 8px;
+    cursor: pointer;
+    border: 1px solid #ABBAFA;
+    border-radius: 4px;
+    background-color: #EEF2FE;
+    color: #646BED;
+}
+
+.ncd-checklist-content {
+    /* border: 1px solid blue; */
+    /* padding: 5px; */
+    margin-top: 5px;
+}
+
+/* END CHECKOLIST CARD  */
+
 /* CARD ACTIVITY  */
 .ncd-card-activity {
     margin-top: 10px;
@@ -1000,7 +1038,7 @@
 
 .ncd-card-activity .ncd-activity-header {
     /* border: 1px solid grey; */
-    border-left: 3px solid orange;
+    border-left: 3px solid rgb(144, 0, 255);
     display: flex;
     align-items: center;
     justify-content: space-between;
