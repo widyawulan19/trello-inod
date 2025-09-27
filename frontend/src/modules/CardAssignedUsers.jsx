@@ -30,20 +30,6 @@ if (!assignedUsers || assignedUsers.length === 0) return null;
   const visibleUsers = assignedUsers.slice(0, 5);
   const extraUserCount = assignedUsers.length - visibleUsers.length;
 
-//REMOVE USER
-  // const handleRemoveUser = async (userId) => {
-  //   console.log('')
-  //   try{
-  //     await deleteUserFromCard(cardId, userId);
-  //     fetchAssignedUsers();
-  //     fetchAssignableUsers();
-  //     showSnackbar('User removed successfully!', 'success');
-  //   }catch(error){
-  //     console.error('Error deleting userId from card:', error)
-  //     showSnackbar('Failed deleting user from card:', 'error');
-  //   }
-  // };
-
   return (
     <div className="assigned-users-preview">
       {assignedUsers.length === 0 ? (

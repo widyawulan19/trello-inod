@@ -112,33 +112,19 @@ const renderTextWithLinks = (text) => {
   );
 };
 
-
-// // 🔎 Cek apakah sudah di-export dari API
-//   useEffect(() => {
-//     const checkExportStatus = async () => {
-//       try {
-//         const res = await getExportMarketingDesign(marketingDesignId);
-//         // kalau API balikin data (misalnya ada row di marketing_design_exports), berarti udah exported
-//         setIsExported(res.data?.length > 0);
-//       } catch (err) {
-//         console.error("❌ Gagal cek status export:", err);
-//       }
-//     };
-//     checkExportStatus();
-//   }, [marketingDesignId]);
-
-//   // 🟢 handle export ke sheets
-//   const handleClickExport = async () => {
-//     try {
-//       await handleExportToSheet(marketingDesignId, dataMarketingDesign.buyer_name);
-//       setIsExported(true); // ✅ update langsung di FE juga
-//     } catch (error) {
-//       console.error("❌ Error export:", error);
-//     }
-//   };
-
-
-
+  // FUNCTION TO SHOW STATUS 
+  const STATUS_COLORS ={
+    "ACCEPTED ":'#2E7D32',
+    "NOT ACCEPTED":'#C62828',
+    "ON PROGRESS":'#C38D24',
+    "UNKNOWN":'#F5F5F5',
+  }
+  const STATUS_BG = {
+    "ACCEPTED ":'#C8E6C9',
+    "NOT ACCEPTED":'#FFCDD2',
+    "ON PROGRESS":'#FFDCB3',
+    "UNKNOWN":"#9E9E9E",
+  }
 
   return (
     <div className='view-md-container'>
@@ -230,8 +216,8 @@ const renderTextWithLinks = (text) => {
                   style={{
                     padding: '5px 8px',
                     borderRadius: '3px',
-                    backgroundColor:'#FFCDD2',
-                    color: '#C62828',
+                    backgroundColor: STATUS_BG[dataMarketingDesign?.status_project_name],
+                    color:STATUS_COLORS[dataMarketingDesign?.status_project_name],
                     fontWeight: 'bold',
                     textAlign:'center'
                   }}

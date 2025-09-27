@@ -8,6 +8,7 @@ import { TbCheckbox } from "react-icons/tb";
 import { HiOutlineCheck, HiOutlineEllipsisHorizontal, HiOutlinePlus, HiOutlineTrash, HiPlus, HiUserCircle, HiXMark, } from 'react-icons/hi2';
 import '../style/modules/Checklist.css';
 import { useSnackbar } from '../context/Snackbar';
+import { FaXmark } from 'react-icons/fa6';
 
 const Checklist = ({ cardId }) => {
     const [checklists, setChecklists] = useState([]);
@@ -266,7 +267,7 @@ const Checklist = ({ cardId }) => {
                     <div className="fc-header">
                         <h5>Checklist</h5>
                         <BootstrapTooltip title='Close' placement='top'>
-                            <HiXMark onClick={handleCloseChecklisHandler} className='fc-icon'/>
+                            <FaXmark onClick={handleCloseChecklisHandler} className='fc-icon'/>
                         </BootstrapTooltip>
                     </div>
                     <div className="fc-con">

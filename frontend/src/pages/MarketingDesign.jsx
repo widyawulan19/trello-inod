@@ -329,13 +329,13 @@ const handleExportToSheet = async (marketingDesignId) => {
 
   // FUNCTION TO SHOW STATUS 
   const STATUS_COLORS ={
-    "ACCEPTED":"#2E7D32",
+    "ACCEPTED ":'#2E7D32',
     "NOT ACCEPTED":'#C62828',
     "ON PROGRESS":'#C38D24',
     "UNKNOWN":'#F5F5F5',
   }
   const STATUS_BG = {
-    "ACCEPTED":'#C8E6C9',
+    "ACCEPTED ":'#C8E6C9',
     "NOT ACCEPTED":'#FFCDD2',
     "ON PROGRESS":'#FFDCB3',
     "UNKNOWN":"#9E9E9E",

@@ -339,15 +339,18 @@ const handleExportToSheets = async (marketingId) => {
   }
 };
 
- const STATUS_COLORS ={
-    "ACCEPTED":"#2E7D32",
+  // FUNCTION TO SHOW STATUS 
+  const STATUS_COLORS ={
+    "ACCEPTED ":'#2E7D32',
     "NOT ACCEPTED":'#C62828',
-    "ON PROGRESS":'#C38D24'
+    "ON PROGRESS":'#C38D24',
+    "UNKNOWN":'#F5F5F5',
   }
   const STATUS_BG = {
-    "ACCEPTED":'#C8E6C9',
+    "ACCEPTED ":'#C8E6C9',
     "NOT ACCEPTED":'#FFCDD2',
-    "ON PROGRESS":'#FFDCB3'
+    "ON PROGRESS":'#FFDCB3',
+    "UNKNOWN":"#9E9E9E",
   }
 
 
@@ -613,9 +616,8 @@ const handleExportToSheets = async (marketingId) => {
                         <span style={{
                           padding: "2px 8px",
                           borderRadius: "12px",
-                          backgroundColor:
-                            item.accept_status_name === "Accepted" ? "#C8E6C9" : "#FFCDD2",
-                          color: item.accept_status_name === "Accepted" ? "#2E7D32" : "#C62828",
+                          color:STATUS_COLORS[item.accept_status_name],
+                          backgroundColor:STATUS_BG[item.accept_status_name],
                           fontWeight: "bold",
                         }}>
                           {item.accept_status_name}
