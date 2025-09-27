@@ -339,6 +339,17 @@ const handleExportToSheets = async (marketingId) => {
   }
 };
 
+ const STATUS_COLORS ={
+    "ACCEPTED":"#2E7D32",
+    "NOT ACCEPTED":'#C62828',
+    "ON PROGRESS":'#C38D24'
+  }
+  const STATUS_BG = {
+    "ACCEPTED":'#C8E6C9',
+    "NOT ACCEPTED":'#FFCDD2',
+    "ON PROGRESS":'#FFDCB3'
+  }
+
 
   return (
     <div className="dmc-container">
