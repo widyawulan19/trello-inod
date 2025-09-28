@@ -69,8 +69,21 @@
     border: 1px solid red;
 }
 
-
 /* BODY  */
+
+.no-activity {
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50%;
+    width: 100%;
+}
+
+.no-activity h4 {
+    color: #7246eb;
+    /* text-decoration: italic; */
+}
 
 .activity-table-container {
     overflow-x: auto;

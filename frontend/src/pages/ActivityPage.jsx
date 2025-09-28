@@ -106,7 +106,13 @@ const UserActivityPage = () => {
       {loading ? (
         <p>Memuat aktivitas...</p>
       ) : filteredActivities.length === 0 ? (
-        <p>{message}</p>
+        // <p>{message}</p>
+        <div className="no-activity">
+          <h4>
+            Wah, masih sepi banget nih 🙈
+Saatnya bikin aktivitas biar halaman ini jadi lebih hidup!
+          </h4>
+        </div>
       ) : (
         <div className="activity-table-container">
           <table className="activity-table">
