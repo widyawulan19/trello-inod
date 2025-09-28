@@ -5750,59 +5750,6 @@ app.delete("/api/marketing/:id", async (req, res) => {
         res.status(500).send("Server error");
     }
 });
-//5. membuat data baru
-// app.post("/api/marketing", async (req, res) => {
-//     try {
-//         const {
-//             // card_id,
-//             input_by,
-//             acc_by,
-//             buyer_name,
-//             code_order,
-//             jumlah_track,
-//             order_number,
-//             account,
-//             deadline,
-//             jumlah_revisi,
-//             order_type,
-//             offer_type,
-//             jenis_track,
-//             genre,
-//             price_normal,
-//             price_discount,
-//             discount,
-//             basic_price,
-//             gig_link,
-//             required_files,
-//             project_type,
-//             duration,
-//             reference_link,
-//             file_and_chat_link,
-//             detail_project,
-//         } = req.body;
-
-//         const result = await client.query(
-//             `INSERT INTO data_marketing 
-//         (input_by, acc_by, buyer_name, code_order, jumlah_track, order_number, 
-//         account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre, 
-//         price_normal, price_discount, discount, basic_price, gig_link, required_files, 
-//         project_type, duration, reference_link, file_and_chat_link, detail_project, create_at) 
-//         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, 
-//         $16, $17, $18, $19, $20, $21, $22, $23, $24, CURRENT_TIMESTAMP) RETURNING *`,
-//             [
-//                 input_by, acc_by, buyer_name, code_order, jumlah_track, order_number,
-//                 account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre,
-//                 price_normal, price_discount, discount, basic_price, gig_link, required_files,
-//                 project_type, duration, reference_link, file_and_chat_link, detail_project
-//             ]
-//         );
-
-//         res.status(201).json(result.rows[0]);
-//     } catch (err) {
-//         console.error(err.message);
-//         res.status(500).send("Server error");
-//     }
-// });
 
 // 5. membuat data baru
 app.post("/api/marketing", async (req, res) => {
@@ -5848,7 +5795,9 @@ app.post("/api/marketing", async (req, res) => {
 
         const nextNumber = parseInt(countResult.rows[0].count) + 1;
         const monthName = dayjs(createAt).format("MMMM");
-        const projectNumber = `P${String(nextNumber).padStart(2, "0")} ${monthName}`;
+        // const projectNumber = `P${String(nextNumber).padStart(2, "0")} ${monthName}`;
+        const projectNumber = `P${String(nextNumber).padStart(2, "0")} ${dayjs(createAt).locale("id").format("DD/MMM/YYYY")}`;
+
 
         // --- insert ke tabel ---
         const result = await client.query(
