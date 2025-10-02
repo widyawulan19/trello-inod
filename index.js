@@ -10446,96 +10446,6 @@ app.post('/api/cards/:cardId/chats', async (req, res) => {
 });
 
 
-
-// app.post('/api/cards/:cardId/chats', async (req, res) => {
-//     try {
-//         const { cardId } = req.params;
-//         const { user_id, message, parent_message_id } = req.body;
-
-//         // Step 1: Simpan chat dulu
-//         const result = await client.query(
-//             `INSERT INTO card_chats (card_id, user_id, message, parent_message_id)
-//        VALUES ($1, $2, $3, $4)
-//        RETURNING *`,
-//             [cardId, user_id, message, parent_message_id]
-//         );
-
-//         const newChat = result.rows[0];
-
-//         // Step 2: Notifikasi balasan
-//         if (parent_message_id) {
-//             const parent = await client.query(
-//                 `SELECT user_id FROM card_chats WHERE id = $1`,
-//                 [parent_message_id]
-//             );
-
-//             const parentUserId = parent.rows[0]?.user_id;
-
-//             if (parentUserId && parentUserId !== user_id) {
-//                 // Ambil username dari pengirim pesan (bukan parent)
-//                 const senderResult = await client.query(
-//                     `SELECT username FROM users WHERE id = $1`,
-//                     [user_id]
-//                 );
-
-//                 const senderUsername = senderResult.rows[0]?.username || 'Someone';
-
-//                 await client.query(
-//                     `INSERT INTO notifications (user_id, chat_id, message, type)
-//         VALUES ($1, $2, $3, 'reply')`,
-//                     [parentUserId, newChat.id, `${senderUsername} replied to your message`]
-//                 );
-//             }
-//         }
-
-
-//         // Step 3: Mention detection
-//         const mentionMatches = message.match(/@(\w+)/g);
-//         let mentionedUserIds = [];
-
-//         if (mentionMatches) {
-//             for (const mention of mentionMatches) {
-//                 const username = mention.slice(1); // Hapus "@"
-
-//                 const userResult = await client.query(
-//                     `SELECT id FROM users WHERE username = $1`,
-//                     [username]
-//                 );
-
-//                 if (userResult.rows.length > 0) {
-//                     const mentionedUserId = userResult.rows[0].id;
-//                     mentionedUserIds.push(mentionedUserId);
-
-//                     // Simpan notifikasi mention
-//                     await client.query(
-//                         `INSERT INTO notifications (user_id, chat_id, message, type)
-//              VALUES ($1, $2, $3, 'mention')`,
-//                         [mentionedUserId, newChat.id, message]
-//                     );
-//                 }
-//             }
-
-//             // Step 4: Simpan list user_id ke kolom mentions (jsonb)
-//             await client.query(
-//                 `UPDATE card_chats SET mentions = $1 WHERE id = $2`,
-//                 [JSON.stringify(mentionedUserIds), newChat.id]
-//             );
-//         }
-
-//         // Step 5: Ambil data chat setelah mentions di-update
-//         const updatedChat = await client.query(
-//             `SELECT * FROM card_chats WHERE id = $1`,
-//             [newChat.id]
-//         );
-
-//         res.status(201).json(updatedChat.rows[0]);
-
-//     } catch (err) {
-//         console.error('Error post chat:', err);
-//         res.status(500).json({ error: 'Internal server error' });
-//     }
-// });
-
 //3. soft delete message
 app.delete('/api/chats/:chatId', async (req, res) => {
     const { chatId } = req.params;
@@ -10649,6 +10559,56 @@ app.delete('/api/notifications/:id', async (req, res) => {
     }
 })
 
+
+// MEDIA CHATS 
+app.post('/api/chats/:chatId/media', upload.single('file'), async (req, res) => {
+    const { chatId } = req.params;
+
+    if (!req.file || !chatId) {
+        return res.status(400).json({ error: 'Missing file or chatId' });
+    }
+
+    try {
+        // Upload buffer ke Cloudinary
+        const result = await new Promise((resolve, reject) => {
+            cloudinary.uploader.upload_stream(
+                {
+                    resource_type: 'auto', // auto = bisa image, video, pdf, dll
+                    folder: 'trello_chat_media',
+                    public_id: `${Date.now()}-${req.file.originalname}`,
+                },
+                (error, result) => {
+                    if (error) reject(error);
+                    else resolve(result);
+                }
+            ).end(req.file.buffer);
+        });
+
+        const fileUrl = result.secure_url;
+        const fileName = req.file.originalname;
+
+        // Tentukan tipe media berdasarkan mimetype
+        const mimeType = req.file.mimetype;
+        let mediaType = 'file';
+        if (mimeType.startsWith('image/')) mediaType = 'image';
+        else if (mimeType.startsWith('video/')) mediaType = 'video';
+        else if (mimeType.startsWith('audio/')) mediaType = 'audio';
+
+        // Simpan ke tabel cards_chats_media
+        const dbResult = await client.query(
+            `INSERT INTO cards_chats_media (chat_id, media_url, media_type)
+             VALUES ($1, $2, $3) RETURNING *`,
+            [chatId, fileUrl, mediaType]
+        );
+
+        res.status(201).json(dbResult.rows[0]);
+    } catch (error) {
+        console.error('Upload error:', error);
+        res.status(500).json({ error: 'Upload failed', message: error.message });
+    }
+});
+
+// END MEDIA CHATS 
 
 
 //SCHEDULE
