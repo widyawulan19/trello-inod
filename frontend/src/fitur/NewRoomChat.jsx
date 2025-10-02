@@ -167,6 +167,7 @@ const NewRoomChat=({cardId, userId, onClose})=> {
       await uploadChatMedia(chatId, file);
       fetchChats();
       showSnackbar("File uploaded!", "success");
+      console.log('button sudah diklik!')
     } catch (err) {
       console.error("Upload error:", err);
       showSnackbar("Upload failed", "error");
