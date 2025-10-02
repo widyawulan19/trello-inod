@@ -469,7 +469,7 @@ const handleExportToSheets = async (marketingId) => {
                     >
                       Buyer Name
                     </li>
-                    <li
+                    {/* <li
                       className="li-filter"
                       onClick={() => {
                         setShortType('order_number');
@@ -477,7 +477,7 @@ const handleExportToSheets = async (marketingId) => {
                       }}
                     >
                       Order Number
-                    </li>
+                    </li> */}
                     <li
                       className="li-filter"
                       onClick={() => {

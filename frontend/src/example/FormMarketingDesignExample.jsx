@@ -11,6 +11,8 @@ import BootstrapTooltip from '../components/Tooltip';
 import { HiXMark } from 'react-icons/hi2';
 import '../style/pages/FormDataMarketing.css';
 import CustomDropdownDesign from '../marketing/CustomDropdownDesign';
+import ReactQuill from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
 
 const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
     const {showSnackbar} = useSnackbar();
@@ -143,10 +145,56 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
     };
     // END ADD FUNCTIONS
 
+    const handleChangeQuill = (value) => {
+    setForm({ ...form, detail_project: value });
+  };
+
+  // konfigurasi toolbar ReactQuill
+  const modules = {
+    toolbar: [
+      [{ header: [1, 2, 3, false] }],
+      ["bold", "italic", "underline", "strike"], 
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["link", "blockquote", "code-block"],
+      [{ align: [] }],
+      ["clean"], // hapus format
+    ],
+  };
+
     const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        const fieldLabels = {
+            buyer_name: "Nama Buyer",
+            code_order: "Code Order",
+            order_number: "Order Number",
+            jumlah_design: "Jumlah Design",
+            deadline: "Deadline",
+            jumlah_revisi: "Jumlah Revisi",
+            price_normal: "Price Normal",
+            price_discount: "Price Discount",
+            discount_percentage: "discount precentage",
+            required_files: "required files",
+            file_and_chat: "file and chat",
+            detail_project: "detail project",
+            input_by: "Input By",
+            acc_by: "Accepted By",
+            account: "Account",
+            offer_type: "Offer Type",
+            reference: "Reference",
+            resolution: "Resolution"
+        };
+
+        const requiredFields = Object.keys(fieldLabels);
+        const emptyFields = requiredFields.filter(field => !form[field]);
+
+         if (emptyFields.length > 0) {
+            showSnackbar(`Data yang belum diisi: ${emptyFields.join(", ")}`, "error");
+            return; // stop submit
+        }
+
         try {
             const payload = {
                 buyer_name: form.buyer_name,
@@ -512,19 +560,6 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
                     <h4 className='h4'>REFERENCE AND FILES</h4>
                     <div className="sec-content-ref">
 
-                        {/* REFERENCE  */}
-                        <div className="box-content">
-                            <label>Reference</label>
-                            <input 
-                                type="textarea" 
-                                name='reference'
-                                value={form.reference}
-                                onChange={handleChange}
-                                placeholder="https://example.com"
-                                // required
-                            />
-                        </div>
-
                         {/* FILE AND CHAT  */}
                         <div className="box-content">
                             <label>File and Chat</label>
@@ -532,6 +567,20 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
                                 type="text" 
                                 name='file_and_chat'
                                 value={form.file_and_chat}
+                                onChange={handleChange}
+                                placeholder="https://example.com"
+                                // required
+                            />
+                        </div>
+
+                        {/* REFERENCE  */}
+                        <div className="box-content">
+                            <label>Reference</label>
+                            <textarea
+                            className="textarea"
+                                type="textarea" 
+                                name='reference'
+                                value={form.reference}
                                 onChange={handleChange}
                                 placeholder="https://example.com"
                                 // required
@@ -547,14 +596,14 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
 
                         {/* REFERENCE  */}
                         <div className="box-content">
-                            {/* <label>Detail Project</label> */}
-                            <textarea 
-                            className='textarea'
-                                type="text" 
-                                name='detail_project'
-                                value={form.detail_project}
-                                onChange={handleChange}
-                                // required
+                            <ReactQuill
+                              className="my-editor"
+                              theme="snow"
+                              value={form.detail_project}
+                              onChange={handleChangeQuill}
+                              modules={modules}
+                              placeholder="Deskripsikan detail project..."
+                              style={{ minHeight: "150px" }}
                             />
                         </div>
                     </div>

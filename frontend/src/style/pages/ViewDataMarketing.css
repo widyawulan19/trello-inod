@@ -146,18 +146,55 @@
 }
 
 .sec .sec-content-link {
-    border: 1px solid white;
+    /* border: 1px solid blue; */
     border-radius: 4px;
     display: flex;
     align-items: center;
     padding: 5px;
     gap: 5px;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    /* grid-column: 10px; */
-    /* margin-bottom: 10px; */
+    display: flex;
+    flex-direction: column;
     height: 100%;
 }
+
+.sec-content-link .box {
+    /* border: 1px solid red; */
+    width: 100%;
+    margin: 5px 0px;
+}
+
+.box .box1-ref {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 5px;
+    margin-top: 3px;
+    font-size: 12px;
+    width: 100%;
+    max-width: 100%;
+    /* biar ga lebih dari container */
+    overflow-wrap: break-word;
+    /* pecah kata panjang */
+    word-wrap: break-word;
+    /* support lama */
+    word-break: break-word;
+    /* biar paksa turun */
+    white-space: normal;
+}
+
+.box1-ref a {
+    color: #1a73e8;
+    /* biru khas link */
+    text-decoration: underline;
+    /* kasih underline */
+    font-weight: 500;
+    /* opsional biar lebih jelas */
+}
+
+.box1-ref a:hover {
+    color: #0c47a1;
+    /* warna saat hover */
+}
+
 
 .sec .sec-content {
     border: 1px solid white;
@@ -190,13 +227,41 @@
     border-radius: 6px;
     padding: 5px;
     margin-top: 3px;
-    width: 95%;
+    width: 100%;
+    max-width: 100%;
+    /* biar ga lebih dari container */
+    overflow-wrap: break-word;
+    /* pecah kata panjang */
+    word-wrap: break-word;
+    /* support lama */
+    word-break: break-word;
+    /* biar paksa turun */
+    white-space: normal;
 }
 
-.box1 p,
-.box1 a {
+.box .box1-des {
+    /* border: 1px solid red; */
+    padding: 5px;
+    width: 100%;
+}
+
+.box1 p {
     color: #333;
     font-size: 12px;
+}
+
+.box1 a {
+    color: #1a73e8;
+    /* biru khas link */
+    text-decoration: underline;
+    /* kasih underline */
+    font-weight: 500;
+    /* opsional biar lebih jelas */
+}
+
+.box1 a:hover {
+    color: #0c47a1;
+    /* warna saat hover */
 }
 
 .box1:hover {

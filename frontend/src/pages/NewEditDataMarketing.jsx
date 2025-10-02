@@ -30,6 +30,8 @@ import { FaXmark } from "react-icons/fa6";
 import '../style/pages/EditMarketingForm.css'
 import { useSnackbar } from "../context/Snackbar";
 import CustomDropdownEdit from "../marketing/CustomDropdownEdit";
+import ReactQuill from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
 
 const initialFormState = {
   marketing_id: "",
@@ -68,6 +70,7 @@ const NewEditDataMarketing = ({ marketingId , onClose, fetchDataMarketing }) => 
   const [loading, setLoading] = useState(true);
   const {showSnackbar} = useSnackbar();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  
 
   const [inputByNew, setInputByNew] = useState("");
   const [accByNew, setAccByNew] = useState("");
@@ -331,6 +334,25 @@ console.log('data selcted acc:', selectedAccById);
     setIsDropdownOpen(false);
   }
 
+   const handleChangeQuill = (value) => {
+  setForm((prevForm) => ({
+    ...prevForm,
+    detail_project: value,
+  }));
+};
+
+
+  // konfigurasi toolbar ReactQuill
+  const modules = {
+    toolbar: [
+      [{ header: [1, 2, 3, false] }],
+      ["bold", "italic", "underline", "strike"], 
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["link", "blockquote", "code-block"],
+      [{ align: [] }],
+      ["clean"], // hapus format
+    ],
+  };
 
   return (
     <div className="em-container">
@@ -682,7 +704,7 @@ console.log('data selcted acc:', selectedAccById);
           {/* REFERENSI DAN FILE PENDUKUNG */}
           <div className="form-content">
             <h4>REFERENSI DAN FILE PENDUKUNG</h4>
-            <div className="sec-content">
+            <div className="sec-content-edit-ref">
 
               <div className="box-content">
                 <label >GIG Link</label>
@@ -690,18 +712,6 @@ console.log('data selcted acc:', selectedAccById);
                   type="url"
                   name="gig_link"
                   value={form.gig_link}
-                  onChange={handleChange}
-                  pattern="(https?://.*)?"
-                  placeholder="https://example.com"
-                />
-              </div>
-
-              <div className="box-content">
-                <label >Reference Link</label>
-                <input
-                  type="url"
-                  name="reference_link"
-                  value={form.reference_link}
                   onChange={handleChange}
                   pattern="(https?://.*)?"
                   placeholder="https://example.com"
@@ -730,6 +740,18 @@ console.log('data selcted acc:', selectedAccById);
                   placeholder="https://example.com"
                 />
               </div>
+
+               <div className="box-content-ref">
+                <label >Reference Link</label>
+                <textarea
+                  type="url"
+                  name="reference_link"
+                  value={form.reference_link}
+                  onChange={handleChange}
+                  pattern="(https?://.*)?"
+                  placeholder="https://example.com"
+                />
+              </div>
             </div>
           </div>
             
@@ -737,19 +759,20 @@ console.log('data selcted acc:', selectedAccById);
           {/* PROJECT DESCRIPTION */}
           <div className="form-content">
             <h4>PROJECT DESCRIPTION</h4>
-            <div className="sec-content">
+            <div className="sec-content" style={{display:'flex',flexDirection:'column', alignItems:'center', justifyContent:'center'}}>
               <div className="box-content">
-                {/* <label>Detail Project</label> */}
-                <textarea
-                  name="detail_project"
+                <ReactQuill
+                  className="my-editor"
+                  theme="snow"
                   value={form.detail_project}
-                  onChange={handleChange}
+                  onChange={handleChangeQuill}
+                  modules={modules}
                   placeholder="Deskripsikan detail project..."
+                  style={{ minHeight: "150px" }}
                 />
               </div>
             </div>
           </div>
-
         </div>
 
         {/* kamu bisa copy dropdown lain persis dari DataMarketingForm */}

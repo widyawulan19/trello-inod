@@ -131,6 +131,14 @@ const ViewDataMarketing=({marketingId, onClose, isExported, setIsExported,market
   }
 
 
+      // link reference 
+    function linkify(text) {
+      const urlRegex = /(https?:\/\/[^\s]+)/g;
+      return text.replace(urlRegex, (url) => {
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+      });
+    }
+
 
 
   return (
@@ -186,29 +194,11 @@ const ViewDataMarketing=({marketingId, onClose, isExported, setIsExported,market
               )}
           </div>
         </div>
-
         <div className="vdm-right">
-          <div className="export" style={{ marginRight: "5px", display: "flex", alignItems: "center", gap: "8px" }}>
-            <button
-              // onClick={() => onExport(marketingId)}
-              onClick={() => onExport(marketingId)}
-              disabled={marketingTransfile.some(exp => exp.marketing_id === marketingId)} // disable jika sudah di-transfile
-              style={{
-                backgroundColor: marketingTransfile.some(exp => exp.marketing_id === marketingId) ? "green" : "grey",
-                color: "white",
-                cursor: marketingTransfile.some(exp => exp.marketing_id === marketingId) ? "not-allowed" : "pointer",
-                border: "none",
-                padding: "6px 12px",
-                borderRadius: "4px"
-              }}
-            >
-              {marketingTransfile.some(exp => exp.marketing_id === marketingId)
-                ? "Sudah Transfile"
-                : "Transfile to Sheets"}
-            </button>
-
+            <BootstrapTooltip title='Close' placement='top'>
+              <FaXmark onClick={onClose} className='vdm-icon'/>
+            </BootstrapTooltip>
           </div>
-        </div>
       </div>
 
       
@@ -383,28 +373,35 @@ const ViewDataMarketing=({marketingId, onClose, isExported, setIsExported,market
           <div className="sec-content-link">
             <div className="box">
               <p>Gig Link</p>
-              <div className='box1'>
+              <div className='box1-ref'>
                 <a href={dataMarketings.gig_link} target="_blank" rel="noopener noreferrer">{dataMarketings.gig_link}</a>
               </div>
             </div>
-            <div className="box">
-              <p>Reference Link</p>
-              <div className='box1'>
-                <a href={dataMarketings.reference_link} target="_blank" rel="noopener noreferrer">{dataMarketings.reference_link}</a>
-              </div>
-            </div>
+            
             <div className="box">
               <p>Require Link</p>
-              <div className='box1'>
+              <div className='box1-ref'>
                 <a href={dataMarketings.required_files} target="_blank" rel="noopener noreferrer">{dataMarketings.required_files}</a>
               </div>
             </div>
             <div className="box">
               <p>File & Chat</p>
-              <div className='box1'>
+              <div className='box1-ref'>
                 <a href={dataMarketings.file_and_chat_link} target="_blank" rel="noopener noreferrer">{dataMarketings.file_and_chat_link}</a>
               </div>
             </div>
+            
+            <div className="box" style={{width:'100%', padding:'0px 5px'}}>
+              <p>Reference Link</p>
+              <div className='box1-ref' style={{minHeight:'10vh',maxHeight:'20vh', width:'100%', overflowY:'auto'}}>
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: linkify(dataMarketings.reference_link || ""),
+                  }}
+                />
+              </div>
+            </div>
+          
             </div>
         </div>
         {/* END REFERENSI DAN FILE PENDUKUNG  */}
@@ -415,11 +412,17 @@ const ViewDataMarketing=({marketingId, onClose, isExported, setIsExported,market
           <div className="sec-desc-content">
             <div className="box" style={{width:'100%', padding:'0px 5px'}}>
               {/* <p>Description</p> */}
-              <div className='box1' style={{minHeight:'10vh',maxHeight:'20vh', width:'100%', overflowY:'auto'}}>
-                <p>{dataMarketings.detail_project}</p>
+              <div className='box1-des'>
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: linkify(dataMarketings.detail_project || ""),
+                  }}
+                />
+
               </div>
             </div>
           </div>
+          
         </div>
         {/* END DESCRIPTION PROJECT  */}
       </div>

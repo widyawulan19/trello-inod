@@ -7,11 +7,13 @@ import { IoCreate } from "react-icons/io5";
 import BootstrapTooltip from "../components/Tooltip";
 import { HiXMark } from "react-icons/hi2";
 import { useSnackbar } from "../context/Snackbar";
+import ReactQuill from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
 
 const FormMarketingExample = ({onClose, fetchData}) => {
   const {showSnackbar} = useSnackbar();
   const [dropdownData, setDropdownData] = useState({ users: [], accs: [], accounts:[] });
-  const [form, setForm] = useState({ buyer_name: "", code_order: "", input_by: "", acc_by: "",  kupon_diskon_id: "", accept_status_id: "" });
+  const [form, setForm] = useState({ buyer_name: "", code_order: "", input_by: "", acc_by: "",  kupon_diskon_id: "", accept_status_id: "", detail_project:"" });
   const [inputByNew, setInputByNew] = useState("");
   const [accByNew, setAccByNew] = useState("");
   const [accountNew, setAccountNew] = useState("");
@@ -21,6 +23,9 @@ const FormMarketingExample = ({onClose, fetchData}) => {
   const [newProject, setNewProject] = useState("");
   const [newOrder, setNewOrder] = useState("");
   const [newKupon, setNewKupon] = useState("");
+  const [links, setLinks] = useState([""]);
+
+  
 
 useEffect(() => {
   const fetchData = async () => {
@@ -71,8 +76,8 @@ useEffect(() => {
         genres: genres.map(g => ({id: g.id, name: g.genre_name})),
         projectType: projectType.map(pt => ({id: pt.id, name: pt.nama_project})),
         orderType: orderType.map(ot => ({id: ot.id, name: ot.order_name})),
-        kuponDiskon: kuponDiskon.map(kd => ({ id: kd.id, name: kd.nama_kupon})),
-        statusAccept: statusAccept.map(s => ({id: s.id, name: s.status_name})),
+        kuponDiskon: kuponDiskon.map((kd) => ({ id: String(kd.id), name: kd.nama_kupon })),
+        statusAccept: statusAccept.map((s) => ({id: String(s.id), name: s.status_name})),
       });
 
     } catch (error) {
@@ -172,15 +177,64 @@ useEffect(() => {
     const created = await addKuponDiskon({ nama_kupon: newKupon });
     const newOption = { id: created.id, name: created.nama_kupon };
     setDropdownData({ ...dropdownData, kuponDiskon: [...dropdownData.kuponDiskon, newOption] });
-    setForm({ ...form, kuponDiskon: created.id });
+    // setForm({ ...form, kuponDiskon: created.id });
+    setForm({ ...form, kupon_diskon_id: created.id , kupon_diskon_name: created.nama_kupon });
     setNewKupon("");
   }
 
+  const handleChangeQuill = (value) => {
+    setForm({ ...form, detail_project: value });
+  };
+
+  // konfigurasi toolbar ReactQuill
+  const modules = {
+    toolbar: [
+      [{ header: [1, 2, 3, false] }],
+      ["bold", "italic", "underline", "strike"], 
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["link", "blockquote", "code-block"],
+      [{ align: [] }],
+      ["clean"], // hapus format
+    ],
+  };
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
       e.preventDefault();
+
+      // cek required field
+      const fieldLabels = {
+        input_by: "Input By",
+        acc_by: "Accepted By",
+        buyer_name: "Buyer Name",
+        code_order: "Code Order",
+        jumlah_track: "Jumlah Track",
+        order_number: "Order Number",
+        account: "Account",
+        deadline: "Deadline",
+        jumlah_revisi: "Jumlah Revisi",
+        order_type: "Order Type",
+        offer_type: "Offer Type",
+        jenis_track: "Jenis Track",
+        genre: "Genre",
+        price_normal: "Price",
+        required_files: "Required File",
+        project_type: "Project Type",
+        duration: "Duration",
+        reference_link: "Reference",
+        file_and_chat_link: "File and Chat",
+        detail_project: "Detail Project"
+      };
+
+      const requiredFields = Object.keys(fieldLabels);
+
+      const emptyFields = requiredFields.filter(field => !form[field]);
+
+      if (emptyFields.length > 0) {
+        showSnackbar(`Data yang belum diisi: ${emptyFields.join(", ")}`, "error");
+        return; // stop submit
+      }
       try {
         await addDataMarketing(form);
         showSnackbar('Data Marketing berhasil ditambahkan!', 'success');
@@ -213,6 +267,15 @@ useEffect(() => {
       }
     };
 
+    // link reference 
+    function linkify(text) {
+      const urlRegex = /(https?:\/\/[^\s]+)/g;
+      return text.replace(urlRegex, (url) => {
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+      });
+    }
+
+
   return (
     <div className="fdm-container">
       <div className="fdm-header">
@@ -235,7 +298,7 @@ useEffect(() => {
               <div className="sec-content">
                 {/* Input By */}
                 <div className="box-content">
-                  <label>Input By</label>
+                  <label>Input By </label>
                   <CustomDropdown
                     options={dropdownData.users}
                     value={form.input_by} // harus sama dengan nama column di db
@@ -246,12 +309,13 @@ useEffect(() => {
                     placeholder="Pilih Marketing user"
                     searchPlaceholder="Search marketing user..."
                     addPlaceholder="Add new marketing user..."
+                    // className={!form.buyer_name ? "error" : ""}
                   />
                 </div>
 
                 {/* Acc By */}
                 <div className="box-content">
-                  <label >Accept By <span style={{color:'red', fontSize:'6px'}}> ** diisi oleh kadiv</span></label>
+                  <label >Accept By <span style={{color:'red', fontSize:'10px'}}> ** diisi oleh kadiv</span></label>
                   <CustomDropdown
                     options={dropdownData.accs}  // <- benar-benar dari kepala_divisi
                     value={form.acc_by}
@@ -267,11 +331,18 @@ useEffect(() => {
 
                 {/* STATUS ACCEPT */}
                 <div className="box-content">
-                  <label>Status <span style={{color:'red', fontSize:'6px'}}> ** diisi oleh kadiv</span></label>
+                  <label>Status <span style={{color:'red', fontSize:'10px'}}> ** diisi oleh kadiv</span></label>
                   <CustomDropdown
                     options={dropdownData.statusAccept}  // <- benar-benar dari kepala_divisi
                     value={form.accept_status_id}
-                    onChange={(val) => setForm({ ...form, accept_status_id: val })}
+                    // onChange={(val) => setForm({ ...form, accept_status_id: val })}
+                    onChange={(val, option) =>
+                      setForm({
+                        ...form,
+                        accept_status_id: val,
+                        accept_status_name: option?.name, // simpan juga name
+                      })
+                    }
                     placeholder="Status Accept"
                     searchPlaceholder="Search status..."
                   />
@@ -326,7 +397,7 @@ useEffect(() => {
                   />
                 </div>
 
-                {/* Order Number */}
+                {/* Order Number */} 
                 <div className="box-content">
                   <label >Order Number</label>
                   <input
@@ -400,7 +471,7 @@ useEffect(() => {
 
                 {/* Genre */}
                 <div className="box-content">
-                  <label >Genre <span style={{color:'red', fontSize:'6px'}}> ** diisi oleh kadiv</span></label>
+                  <label >Genre <span style={{color:'red', fontSize:'10px'}}> ** diisi oleh kadiv</span></label>
                   <CustomDropdown
                     options={dropdownData.genres}        // data dari API
                     value={form.genre}
@@ -544,25 +615,13 @@ useEffect(() => {
             {/* REFERENSI DAN FILE PENDUKUNG */}
             <div className="form-content">
               <h4>REFERENSI DAN FILE PENDUKUNG</h4>
-              <div className="sec-content">
+              <div className="sec-content-ref">
                   <div className="box-content">
                     <label>GIG Link</label>
                     <input
                       type="url"
                       name="gig_link"
                       value={form.gig_link}
-                      onChange={handleChange}
-                      pattern="(https?://.*)?"
-                      placeholder="https://example.com"
-                    />
-                  </div>
-
-                  <div className="box-content">
-                    <label>Reference Link</label>
-                    <input
-                      type="url"
-                      name="reference_link"
-                      value={form.reference_link}
                       onChange={handleChange}
                       pattern="(https?://.*)?"
                       placeholder="https://example.com"
@@ -591,9 +650,20 @@ useEffect(() => {
                       placeholder="https://example.com"
                     />
                   </div>
-              </div>
-              
-              </div>
+
+                  <div className="box-content">
+                    <label>Reference Link</label>
+                    <textarea
+                      className="textarea"
+                      name="reference_link"
+                      value={form.reference_link}
+                      onChange={handleChange}
+                      pattern="(https?://.*)?"
+                      placeholder="https://example.com"
+                    />
+                  </div>
+              </div>  
+            </div>
             
 
             {/* PROJECT DESCRIPTION */}
@@ -601,15 +671,18 @@ useEffect(() => {
               <h4>PROJECT DESCRIPTION</h4>
               <div className="sec-content-detail" style={{border:'1px solid white'}}>
                 <div className="box-content">
-                  {/* <label>Detail Project</label> */}
-                  <textarea
-                  className="textarea"
-                    name="detail_project"
+                  {/* <label style={{fontWeight:'bold'}}>Detail Project</label> */}
+                  <ReactQuill
+                    className="my-editor"
+                    theme="snow"
                     value={form.detail_project}
-                    onChange={handleChange}
+                    onChange={handleChangeQuill}
+                    modules={modules}
                     placeholder="Deskripsikan detail project..."
+                    style={{ minHeight: "150px" }}
                   />
                 </div>
+
               </div>
             </div>
           </div>

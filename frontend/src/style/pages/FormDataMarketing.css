@@ -85,6 +85,7 @@
     margin-bottom: 5px;
 }
 
+
 .form-content .sec-content {
     border: 1px solid #fff;
     border-radius: 4px;
@@ -113,6 +114,16 @@
     width: 100%;
 }
 
+.form-content .sec-content-ref {
+    /* border: 1px solid red; */
+    border-radius: 4px;
+    padding: 0px !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
 
 .sec-content-ref .box-content {
     /* border: 1px solid red; */
@@ -141,6 +152,7 @@
     flex-direction: column;
     justify-content: flex-start;
     width: 100%;
+    margin: 10px 0px;
 }
 
 .box-content label {
@@ -169,21 +181,25 @@
     box-shadow: 0px 4px 8px #6f30dc54;
 }
 
+
+.box-content .textarea,
 .sec-content-detail .textarea {
     /* border: 1px solid red; */
     border-radius: 8px;
     padding: 5px;
     /* width: 100%; */
     width: 51vw !important;
-    min-height: 20vh;
+    min-height: 10vh;
     font-size: 12px;
     cursor: pointer;
 }
 
+.box-content .textarea:hover,
 .box-content .textarea:hover {
     box-shadow: 0px 4px 8px #6f30dc54;
 }
 
+.box-content .textarea:focus,
 .box-content .textarea:focus {
     outline: none;
     border: 1px solid #6f30dc47;
@@ -391,6 +407,20 @@
     background: linear-gradient(to bottom, #5D12EB, #6E30DC);
     box-shadow: 0px 4px 8px #6f30dc7c;
 }
+
+/* SNOW REACT QUILL  */
+.my-editor .ql-container.ql-snow {
+    border: 1px solid #fff;
+}
+
+.my-editor .ql-toolbar.ql-snow {
+    border: 1px solid #f2f1ff;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    background-color: #f2f1ff;
+    color: white;
+}
+
 
 /* MEDIA QUERY  */
 @media (min-width: 992px) and (max-width: 1199.98px) {}

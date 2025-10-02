@@ -91,14 +91,15 @@ form h4 {
     gap: 5px;
 }
 
+
 .form-content .sec-content-edit-ref {
     /* border: 1px solid red; */
     border-radius: 4px;
     padding: 5px;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: left;
     gap: 5px;
 }
 
@@ -113,7 +114,8 @@ form h4 {
     width: 95%;
 }
 
-.box-content label {
+.box-content label,
+.box-content-ref {
     font-size: 10px !important;
     margin-bottom: 3px;
     font-weight: normal !important;
@@ -161,6 +163,35 @@ form h4 {
     box-shadow: 0px 4px 8px #6f30dc54;
 }
 
+.sec-content-edit-ref .box-content-ref {
+    /* border: 1px solid red; */
+    border-radius: 4px;
+    padding: 2px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.sec-content-edit-ref textarea {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 5px;
+    /* width: 100%; */
+    min-height: 15vh;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.sec-content-edit-ref textarea:hover {
+    box-shadow: 0px 4px 8px #6f30dc54;
+}
+
+.sec-content-edit-ref textarea:focus {
+    outline: none;
+    border: 1px solid #6f30dc47;
+    box-shadow: 0px 4px 8px #6f30dc54;
+}
 
 /* BUTTON SUBMIT  */
 .form-submit {
@@ -453,6 +484,21 @@ form h4 {
 }
 
 /* END DROPDOWN CUSTOM STYLE  */
+
+
+/* SNOW REACT QUILL  */
+.my-editor .ql-container.ql-snow {
+    border: 1px solid #f2f1ff;
+}
+
+.my-editor .ql-toolbar.ql-snow {
+    border: 1px solid #f2f1ff;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    background-color: #f2f1ff;
+    color: white;
+}
+
 
 /* MEDIA QUERY  */
 /* ukuran handpone kecil */
