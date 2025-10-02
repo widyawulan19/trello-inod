@@ -270,6 +270,29 @@
   gap: 6px;
 }
 
+.chat-upload {
+  /* border: 1px solid red; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.upload-label {
+  display: inline-block;
+  background: #4a3ab9;
+  color: white;
+  padding: 3px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 10px;
+  transition: background 0.2s;
+}
+
+.upload-label:hover {
+  background: #357ab8;
+}
+
+
 
 /* TOOLBAR CONTAINER   */
 
@@ -347,6 +370,18 @@
   transform: scale(1.2);
 }
 
+
+.chat-inline-img {
+  max-width: 200px;
+  margin: 5px 0;
+  border-radius: 8px;
+}
+
+.chat-inline-video {
+  max-width: 250px;
+  margin: 5px 0;
+  border-radius: 8px;
+}
 
 /* MEDIA QUERY  */
 /* Extra large devices (large desktops, ≥1200px) */

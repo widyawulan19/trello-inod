@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { createMessage, deleteMessage, getAllCardChat } from '../services/ApiServices';
+import { createMessage, deleteMessage, getAllCardChat, uploadChatMedia } from '../services/ApiServices';
 import '../style/fitur/NewRoomChat.css'
 import { FaXmark } from 'react-icons/fa6';
 import { IoArrowUpOutline, IoReturnDownBackSharp, IoTrash } from "react-icons/io5";
@@ -17,6 +17,9 @@ const NewRoomChat=({cardId, userId, onClose})=> {
   const replyEditorRefs = useRef({}); 
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const {showSnackbar} = useSnackbar();
+  const [uploading, setUploading] = useState(false);
+  const [pendingFiles, setPendingFiles] = useState([]);
+
 
     useEffect(() => {
       fetchChats();
@@ -38,19 +41,51 @@ const NewRoomChat=({cardId, userId, onClose})=> {
     //SEND MESSAGE
     const handleSendMessage = async () => {
     const html = editorRef.current?.innerHTML;
-    if (!html || html === '<br>') return;
+    if ((!html || html === "<br>") && pendingFiles.length === 0) return;
 
-    await createMessage(cardId, {
+    try {
+      // Buat message baru
+      const res = await createMessage(cardId, {
         user_id: userId,
         message: html,
         parent_message_id: null,
-    });
+      });
 
-    editorRef.current.innerHTML = '';
-    fetchChats();
-    showSnackbar('Success add a new message', 'success')
-    console.log('Success create a new message');
-    };
+      const chatId = res.data.id;
+
+      // Upload semua pending files ke message yang baru dibuat
+      for (let file of pendingFiles) {
+        await uploadChatMedia(chatId, file.file); 
+        // pastikan API uploadChatMedia bisa terima chatId + file
+      }
+
+      // Reset editor & files
+      editorRef.current.innerHTML = "";
+      setPendingFiles([]);
+
+      fetchChats();
+      showSnackbar("Success add a new message", "success");
+    } catch (err) {
+      console.error("Send error:", err);
+      showSnackbar("Failed to send message", "error");
+    }
+  };
+
+    // const handleSendMessage = async () => {
+    // const html = editorRef.current?.innerHTML;
+    // if (!html || html === '<br>') return;
+
+    // await createMessage(cardId, {
+    //     user_id: userId,
+    //     message: html,
+    //     parent_message_id: null,
+    // });
+
+    // editorRef.current.innerHTML = '';
+    // fetchChats();
+    // showSnackbar('Success add a new message', 'success')
+    // console.log('Success create a new message');
+    // };
 
     //CREATE & REPLY
     const handleSendReply = async (parentId) => {
@@ -122,6 +157,88 @@ const NewRoomChat=({cardId, userId, onClose})=> {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
+
+  // UPLOAD FILE
+  const handleUploadFile = async (chatId, e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+      setUploading(true);
+      await uploadChatMedia(chatId, file);
+      fetchChats();
+      showSnackbar("File uploaded!", "success");
+    } catch (err) {
+      console.error("Upload error:", err);
+      showSnackbar("Upload failed", "error");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  // Upload file dari editor (main/reply)
+    const handleUploadFromEditor = async (e, target = "main") => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      setUploading(true);
+
+      // Upload file dulu ke backend (API kamu -> Cloudinary)
+      const uploaded = await uploadChatMedia(null, file); // null karena belum ada chat_id
+
+      // Simpan ke pendingFiles biar nanti ikut terkirim saat send
+      setPendingFiles((prev) => [...prev, uploaded]);
+
+      // Tentukan editor yang aktif
+      let editor =
+        target === "main" ? editorRef.current : replyEditorRefs.current[target];
+
+      if (!editor) return;
+
+      // Sisipkan preview ke editor
+      if (uploaded.media_type === "image") {
+        editor.innerHTML += `<img src="${uploaded.media_url}" class="chat-inline-img" style="max-width:150px; margin:5px 0; border-radius:6px; cursor:pointer;" />`;
+      } else if (uploaded.media_type === "video") {
+        editor.innerHTML += `<video src="${uploaded.media_url}" controls style="max-width:200px; margin:5px 0; border-radius:6px;"></video>`;
+      } else {
+        editor.innerHTML += `<a href="${uploaded.media_url}" target="_blank" style="color:blue; text-decoration:underline;">📎 ${file.name}</a>`;
+      }
+
+      showSnackbar("File berhasil diupload!", "success");
+    } catch (err) {
+      console.error("Upload error:", err);
+      showSnackbar("Upload gagal", "error");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+
+
+    // RENDER CHAT MEDIA
+    const renderMedia = (medias) => {
+      if (!medias || medias.length === 0) return null;
+      return (
+        <div className="chat-media">
+          {medias.map((m) => {
+            if (m.media_type === "image") {
+              return <img key={m.id} src={m.media_url} alt="chat" className="chat-media-img" />;
+            } else if (m.media_type === "video") {
+              return <video key={m.id} src={m.media_url} controls className="chat-media-video" />;
+            } else if (m.media_type === "audio") {
+              return <audio key={m.id} src={m.media_url} controls />;
+            } else {
+              return (
+                <a key={m.id} href={m.media_url} target="_blank" rel="noreferrer" className="chat-media-file">
+                  📎 File
+                </a>
+              );
+            }
+          })}
+        </div>
+      );
+    };
+
     //render chat 
     const renderChats = (chatList, level = 0) => {
     return chatList.map((chat) => (
@@ -149,10 +266,18 @@ const NewRoomChat=({cardId, userId, onClose})=> {
         </div>
 
       {/* INTI CHAT  */}
-       <div
-            className={`chat-bubble ${chat.user_id === userId ? 'chat-bubble-own' : 'chat-bubble-other'}`}
-            dangerouslySetInnerHTML={{ __html: autoLinkHTML(chat.message) }}
+      <div
+        className={`chat-bubble ${chat.user_id === userId ? 'chat-bubble-own' : 'chat-bubble-other'}`}
+      >
+        {/* isi pesan */}
+        <div
+          dangerouslySetInnerHTML={{ __html: autoLinkHTML(chat.message) }}
         />
+
+        {/* media (image/video/file) */}
+        {renderMedia(chat.medias)}
+      </div>
+
 
         {/* CHAT REPLY  */}
         <div className="chat-actions">
@@ -172,6 +297,18 @@ const NewRoomChat=({cardId, userId, onClose})=> {
           >
             <IoTrash/> Delete
           </button>
+
+           {/* UPLOAD FILE */}
+          <div className="chat-upload">
+            <label className="upload-label">
+              📎 Upload
+              <input
+                type="file"
+                onChange={(e) => handleUploadFile(chat.id, e)}
+                style={{ display: "none" }}
+              />
+            </label>
+          </div>
         </div>
 
         {replyTo === chat.id && (
@@ -221,6 +358,16 @@ const NewRoomChat=({cardId, userId, onClose})=> {
                         placeholder="Write a reply..."
                         suppressContentEditableWarning={true}
                     />
+
+                    {/* upload di reply */}
+                    <label className="upload-btn">
+                      📎
+                      <input
+                        type="file"
+                        hidden
+                        onChange={(e) => handleUploadFromEditor(e, chat.id, chat.id)}
+                      />
+                    </label>
 
                     <div className='reply-send' onClick={() => handleSendReply(chat.id)}><IoArrowUpOutline/></div>
                 </div>
@@ -285,6 +432,17 @@ return (
             <button onClick={() => handleFormat('underline')}>
                 <u>U</u>
             </button>
+
+            {/* Upload File */}
+            <label className="upload-btn">
+              📎
+              <input
+                type="file"
+                style={{ display: "none" }}
+                onChange={(e) => handleUploadFromEditor(e, "main")}
+              />
+            </label>
+
             {/* <button onClick={() => handleFormat('insertText', '😄')}>😄</button> */}
             <div className="emoji-picker-wrapper">
                 <button onClick={() =>

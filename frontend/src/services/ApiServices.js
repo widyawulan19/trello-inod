@@ -622,6 +622,22 @@ export const createMessage = (cardId, data) => axios.post(`${API_URL}/cards/${ca
 export const deleteMessage = (chatId) => axios.delete(`${API_URL}/chats/${chatId}`);
 export const getTotalMessageInCard = (cardId) => axios.get(`${API_URL}/chats-total/cards/${cardId}`);
 
+// Upload file ke chat
+export const uploadChatMedia = async (chatId, file) => {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  try {
+    const res = await axios.post(`${API_URL}/chats/${chatId}/media`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return res.data;
+  } catch (err) {
+    console.error("Error uploading media:", err);
+    throw err;
+  }
+};
+
 //TOTAL NOTIFICATION UNREAD (NOTIFICTION CHAT + NOTIFICATION SYSTEM)
 export const getUserTotalNotificationUnread = (userId) => axios.get(`${API_URL}/notifications/unread-count/${userId}`);
 

@@ -1,364 +1,185 @@
-import React, { useState } from 'react';
-import { createDataMarketingDesign } from '../services/ApiServices';
-import '../style/pages/NewFormMarketingDesign.css';
-import {HiPlus, HiXMark } from 'react-icons/hi2';
-import BootstrapTooltip from '../components/Tooltip';
-import {GiCircle} from 'react-icons/gi'
-import { CiCircleCheck } from "react-icons/ci";
-import { useSnackbar } from '../context/Snackbar';
-import { IoCreate } from 'react-icons/io5';
+import React, { useEffect, useState } from "react";
+import { getChatsByCardId } from "../api";
 
-const NewFormMarketingDesign = ({ onClose, fetchMarketingDesign }) => {
-  const { showSnackbar } = useSnackbar();
-  const [formData, setFormData] = useState({
-    input_by: "",
-    acc_by: "",
-    buyer_name: "",
-    code_order: "",
-    jumlah_design: "",
-    order_number: "",
-    account: "",
-    deadline: "",
-    jumlah_revisi: "",
-    order_type: "",
-    offer_type: "",
-    style: "",
-    resolution: "",
-    price_normal: "",
-    price_discount: "",
-    discount_percentage: "",
-    required_files: "",
-    project_type: "",
-    reference: "",
-    file_and_chat: "",
-    detail_project: "",
-  });
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await createDataMarketingDesign(formData);
-      console.log('Data successfully added:', response.data);
-      showSnackbar('Data Marketing Design Successfully Added!', 'success');
-      setFormData({
-        input_by: "",
-        acc_by: "",
-        buyer_name: "",
-        code_order: "",
-        jumlah_design: "",
-        order_number: "",
-        account: "",
-        deadline: "",
-        jumlah_revisi: "",
-        order_type: "",
-        offer_type: "",
-        style: "",
-        resolution: "",
-        price_normal: "",
-        price_discount: "",
-        discount_percentage: "",
-        required_files: "",
-        project_type: "",
-        reference: "",
-        file_and_chat: "",
-        detail_project: "",
-      });
-      fetchMarketingDesign();
-    } catch (error) {
-      console.error('Error adding data:', error);
-      showSnackbar('Failed to add data', 'error');
-    }
-  };
-
-  const getFieldsByCategory = () => ({
-    "1. Informasi Pesanan": [
-      { name: "input_by", label: "Input By", type: "text" },
-      { name: "acc_by", label: "Acc By", type: "text" },
-      { name: "buyer_name", label: "Buyer Name", type: "text" },
-      { name: "code_order", label: "Code Order", type: "text" },
-      { name: "order_number", label: "Order Number", type: "text" },
-      { name: "account", label: "Account", type: "text" },
-    ],
-    "2. Detail Pesanan": [
-      { name: "jumlah_design", label: "Jumlah Design", type: "number" },
-      { name: "jumlah_revisi", label: "Jumlah Revisi", type: "number" },
-      { name: "order_type", label: "Order Type", type: "text" },
-      { name: "project_type", label: "Project Type", type: "text" },
-      { name: "offer_type", label: "Offer Type", type: "text" },
-      { name: "deadline", label: "Deadline", type: "datetime-local" },
-    ],
-    "3. Detail Design": [
-      { name: "style", label: "Style", type: "text" },
-      { name: "resolution", label: "Resolution", type: "text" },
-      { name: "required_files", label: "Required Files", type: "textarea" },
-    ],
-    "4. Detail Price": [
-      { name: "price_normal", label: "Price Normal", type: "text" },
-      { name: "price_discount", label: "Price Discount", type: "text" },
-      { name: "discount_percentage", label: "Discount Percentage", type: "text" },
-    ],
-    "5. Reference and File": [
-      { name: "reference", label: "Reference", type: "textarea" },
-      { name: "file_and_chat", label: "File and Chat", type: "textarea" },
-    ],
-    "6. Detail Project": [
-      { name: "detail_project", label: "Detail Project", type: "textarea" },
-    ],
-  });
-
-  const getCategoryCompletionStatus = () => {
-    const categories = getFieldsByCategory();
-    const status = [];
-
-    Object.entries(categories).forEach(([category, fields]) => {
-      const total = fields.length;
-      const filled = fields.filter(
-        (field) =>
-          formData[field.name] && formData[field.name].toString().trim() !== ""
-      ).length;
-      const isComplete = filled === total;
-
-      status.push({
-        category,
-        filled,
-        total,
-        isComplete,
-      });
-    });
-
-    return status;
-  };
-
-  const calculateGlobalProgress = () => {
-    const status = getCategoryCompletionStatus();
-    const totalCategories = status.length;
-    const completed = status.filter((cat) => cat.isComplete).length;
-
-    if (completed <= 1) return 0;
-
-    const adjustedCompleted = completed - 1;
-    const adjustedTotal = totalCategories - 1;
-
-    return Math.round((adjustedCompleted / adjustedTotal) * 100);
-  };
-
-  const getLabelByName = (name) => {
-    const allFields = Object.values(getFieldsByCategory()).flat();
-    const found = allFields.find((field) => field.name === name);
-    return found?.label || name;
-  };
-
-  const getTypeByName = (name) => {
-    const allFields = Object.values(getFieldsByCategory()).flat();
-    const found = allFields.find((field) => field.name === name);
-    return found?.type || "text";
-  };
-
-  return (
-    <div className='setting-container'>
-      <div className="sc-header">
-        
-        <h4> <IoCreate size={15}/> CREATE DATA MARKETING DESIGN</h4>
-        <BootstrapTooltip title='Close Form' placement='top'>
-          <HiXMark onClick={onClose} className='sch-icon' />
-        </BootstrapTooltip>
-      </div>
-
-      <div className="sc-body">
-        <div className="scb-progres">
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', width: '100%' }}>
-            {getCategoryCompletionStatus().map(({ category, filled, total, isComplete }) => (
-              <p key={category}
-                style={{
-                  margin: "0px",
-                  fontWeight: isComplete ? "bold" : "normal",
-                  color: isComplete ? "#4caf50" : "#000",
-                  width: '25%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  fontSize: '10px'
-                }}>
-                {isComplete ? <span><CiCircleCheck size={15}/></span> : <GiCircle size={15} />} {filled}/{total}
-              </p>
-            ))}
-          </div>
-
-          <div>
-              <div style={{ height: "5px", backgroundColor: "#eee", borderRadius: "6px", overflow: "hidden", width: '85%' }}>
-                <div
-                  style={{
-                    width: `${calculateGlobalProgress()}%`,
-                    height: "100%",
-                    backgroundColor: "#4caf50",
-                    transition: "width 0.3s ease-in-out",
-                  }}
-                />
-              </div>
-              <p style={{ fontSize: "10px", marginTop: "6px", color: "#333", fontWeight: "bold" }}>
-                {getCategoryCompletionStatus().filter((cat) => cat.isComplete).length} /{" "}
-                {getCategoryCompletionStatus().length} kategori lengkap
-              </p>
-          </div>
-      </div>
-
-        <div className="scb-form">
-          <form onSubmit={handleSubmit}>
-            <div className="fmd-container">
-              {Object.entries(getFieldsByCategory()).map(([category, fields]) => (
-                <div key={category} className="category-section">
-                  <h4 style={{ marginTop: '20px' }}>{category}</h4>
-                  {fields.map(({ name, label, type }) => (
-                    <div className="box" key={name}>
-                      <label>{label}</label>
-                      {type === "textarea" ? (
-                        <textarea
-                          name={name}
-                          value={formData[name] || ""}
-                          onChange={handleChange}
-                        />
-                      ) : (
-                        <input
-                          type={type}
-                          name={name}
-                          value={formData[name] || ""}
-                          onChange={handleChange}
-                        />
-                      )}
-                    </div>
-                  ))}
-                </div>
-              ))}
-              
-              <div className="fmd-button">
-                <button type="submit">SUBMIT NEW DATA</button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default NewFormMarketingDesign;
-
-
-import React, { useEffect, useState } from 'react';
-import { getActivityForUserId } from '../services/ApiServices';
-import '../style/pages/ActivityPage.css';
-import { HiMiniCalendarDateRange } from 'react-icons/hi2';
-import OutsideClick from '../utils/OutsideClick';
-
-const ActivityPage = ({ userId }) => {
-  const [activities, setActivities] = useState([]);
-  const [message, setMessage] = useState('');
-  const [selectedAction, setSelectedAction] = useState('');
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+const CardChats = ({ cardId }) => {
+  const [chats, setChats] = useState([]);
 
   useEffect(() => {
-    fetchActivities();
-  }, []);
-
-  const fetchActivities = async () => {
-    try {
-      const response = await getActivityForUserId(userId);
-      const logs = response.data;
-
-      if (logs.length === 0) {
-        setMessage('User belum memiliki aktivitas saat ini');
-        setActivities([]);
-      } else {
-        setActivities(logs);
+    const fetchChats = async () => {
+      try {
+        const data = await getChatsByCardId(cardId);
+        setChats(data);
+      } catch (err) {
+        console.error("Failed to load chats", err);
       }
-    } catch (error) {
-      console.error(error);
-      setMessage('Gagal memuat aktivitas.');
-    }
-  };
+    };
+    fetchChats();
+  }, [cardId]);
 
-  const handleSelectAction = (action) => {
-    setSelectedAction(action);
-    setDropdownOpen(false);
-  };
+  // Recursive render kalau ada replies
+  const renderChats = (chatList) => {
+    return chatList.map((chat) => (
+      <div
+        key={chat.id}
+        className="p-3 mb-2 border rounded-lg bg-gray-50 shadow-sm"
+      >
+        <div className="flex items-center gap-2 mb-1">
+          <img
+            src={chat.photo_url || "https://via.placeholder.com/40"}
+            alt={chat.username}
+            className="w-8 h-8 rounded-full"
+          />
+          <div>
+            <p className="font-semibold text-sm">{chat.username}</p>
+            <p className="text-xs text-gray-500">{chat.send_time}</p>
+          </div>
+        </div>
 
-  const filteredActivities = selectedAction
-    ? activities.filter((log) => log.action === selectedAction)
-    : activities;
+        <p className="text-gray-800 mb-2">{chat.message}</p>
 
-  const renderActionLabel = (action) => {
-    switch (action) {
-      case 'create':
-        return 'Membuat';
-      case 'update':
-        return 'Memperbarui';
-      case 'delete':
-        return 'Menghapus';
-      default:
-        return action;
-    }
+        {/* Media render */}
+        {chat.medias?.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {chat.medias.map((media) => {
+              if (media.media_type === "image") {
+                return (
+                  <img
+                    key={media.id}
+                    src={media.media_url}
+                    alt="chat media"
+                    className="w-32 h-32 object-cover rounded-lg"
+                  />
+                );
+              } else if (media.media_type === "video") {
+                return (
+                  <video
+                    key={media.id}
+                    src={media.media_url}
+                    controls
+                    className="w-48 rounded-lg"
+                  />
+                );
+              } else if (media.media_type === "audio") {
+                return (
+                  <audio
+                    key={media.id}
+                    controls
+                    src={media.media_url}
+                    className="w-full"
+                  />
+                );
+              } else {
+                return (
+                  <a
+                    key={media.id}
+                    href={media.media_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-blue-600 underline"
+                  >
+                    Download File
+                  </a>
+                );
+              }
+            })}
+          </div>
+        )}
+
+        {/* Replies */}
+        {chat.replies?.length > 0 && (
+          <div className="ml-6 mt-2 border-l pl-3">
+            {renderChats(chat.replies)}
+          </div>
+        )}
+      </div>
+    ));
   };
 
   return (
-    <div className="activity-container">
-      <div className="activity-header">
-        <h3>Aktivitas User</h3>
-        <OutsideClick onClickOutside={() => setDropdownOpen(false)}>
-          <div className="custom-dropdown">
-            <div
-              className="dropdown-trigger"
-              onClick={() => setDropdownOpen(!dropdownOpen)}
-            >
-              {selectedAction ? renderActionLabel(selectedAction) : 'Filter Aksi'}
-            </div>
-            {dropdownOpen && (
-              <ul className="dropdown-list">
-                <li onClick={() => handleSelectAction('')}>Semua Aksi</li>
-                <li onClick={() => handleSelectAction('create')}>Membuat</li>
-                <li onClick={() => handleSelectAction('update')}>Memperbarui</li>
-                <li onClick={() => handleSelectAction('delete')}>Menghapus</li>
-              </ul>
-            )}
-          </div>
-        </OutsideClick>
-      </div>
-
-      {filteredActivities.length === 0 ? (
-        <p>{message}</p>
-      ) : (
-        <div className="table-wrapper">
-          <table className="activity-table">
-            <thead className="sticky-header">
-              <tr>
-                <th>Aksi</th>
-                <th>Entity</th>
-                <th>Parent</th>
-                <th>Deskripsi</th>
-                <th>Tanggal</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredActivities.map((log) => (
-                <tr key={log.id}>
-                  <td>{renderActionLabel(log.action)}</td>
-                  <td>{log.entity_type} #{log.entity_id}</td>
-                  <td>{log.parent_entity} #{log.parent_entity_id}</td>
-                  <td>{log.details}</td>
-                  <td>
-                    <HiMiniCalendarDateRange />
-                    {new Date(log.timestamp).toLocaleString('id-ID')}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+    <div className="space-y-3">
+      {chats.length > 0 ? renderChats(chats) : <p>No chats yet.</p>}
     </div>
   );
 };
 
-// export default ActivityPage;
+export default CardChats;
+
+
+// Upload file dari editor (main/reply)
+const handleUploadFromEditor = async (e, target = "main", chatId = null) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  try {
+    setUploading(true);
+
+    // Kalau target reply → upload ke parent chat (chatId), 
+    // kalau main → buat message dulu, lalu upload
+    let messageId = chatId;
+
+    if (!messageId) {
+      // Buat dulu message kosong (supaya ada ID untuk media)
+      const res = await createMessage(cardId, {
+        user_id: userId,
+        message: "", // kosong dulu
+        parent_message_id: target !== "main" ? target : null,
+      });
+      messageId = res.data.id;
+    }
+
+    // Upload file
+    const uploaded = await uploadChatMedia(messageId, file);
+
+    // Insert ke editor
+    let editor =
+      target === "main" ? editorRef.current : replyEditorRefs.current[target];
+
+    if (uploaded.media_type === "image") {
+      editor.innerHTML += `<img src="${uploaded.media_url}" class="chat-inline-img" />`;
+    } else if (uploaded.media_type === "video") {
+      editor.innerHTML += `<video src="${uploaded.media_url}" controls class="chat-inline-video"></video>`;
+    } else {
+      editor.innerHTML += `<a href="${uploaded.media_url}" target="_blank">📎 ${file.name}</a>`;
+    }
+
+    setUploading(false);
+    showSnackbar("File berhasil diupload!", "success");
+  } catch (err) {
+    console.error("Upload error:", err);
+    setUploading(false);
+    showSnackbar("Upload gagal", "error");
+  }
+};
+
+
+const handleSendMessage = async () => {
+  const html = editorRef.current?.innerHTML;
+  if ((!html || html === "<br>") && pendingFiles.length === 0) return;
+
+  try {
+    // Buat message baru
+    const res = await createMessage(cardId, {
+      user_id: userId,
+      message: html,
+      parent_message_id: null,
+    });
+
+    const chatId = res.data.id;
+
+    // Upload semua pending files ke message yang baru dibuat
+    for (let file of pendingFiles) {
+      await uploadChatMedia(chatId, file.file); 
+      // pastikan API uploadChatMedia bisa terima chatId + file
+    }
+
+    // Reset editor & files
+    editorRef.current.innerHTML = "";
+    setPendingFiles([]);
+
+    fetchChats();
+    showSnackbar("Success add a new message", "success");
+  } catch (err) {
+    console.error("Send error:", err);
+    showSnackbar("Failed to send message", "error");
+  }
+};
