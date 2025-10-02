@@ -10285,26 +10285,40 @@ app.post('/api/activity-log', async (req, res) => {
 
 //CHAT ROOM
 //1. mengambil semua data chat room
+// 1. mengambil semua data chat room beserta media
 app.get('/api/cards/:cardId/chats', async (req, res) => {
     const { cardId } = req.params;
 
     try {
         const result = await client.query(
             `SELECT 
-           cc.*, 
-           u.username,
-           p.profile_name,
-           p.photo_url
-         FROM card_chats cc
-         JOIN users u ON cc.user_id = u.id
-         LEFT JOIN user_profil up ON u.id = up.user_id
-         LEFT JOIN profil p ON up.profil_id = p.id
-         WHERE cc.card_id = $1 AND cc.deleted_at IS NULL
-         ORDER BY cc.send_time ASC`,
+                cc.*, 
+                u.username,
+                p.profile_name,
+                p.photo_url,
+                json_agg(
+                    json_build_object(
+                        'id', cm.id,
+                        'media_url', cm.media_url,
+                        'media_type', cm.media_type,
+                        'created_at', cm.created_at
+                    )
+                ) AS medias
+             FROM card_chats cc
+             JOIN users u ON cc.user_id = u.id
+             LEFT JOIN user_profil up ON u.id = up.user_id
+             LEFT JOIN profil p ON up.profil_id = p.id
+             LEFT JOIN cards_chats_media cm ON cm.chat_id = cc.id
+             WHERE cc.card_id = $1 AND cc.deleted_at IS NULL
+             GROUP BY cc.id, u.username, p.profile_name, p.photo_url
+             ORDER BY cc.send_time ASC`,
             [cardId]
         );
 
-        const allChats = result.rows;
+        const allChats = result.rows.map(chat => ({
+            ...chat,
+            medias: chat.medias[0] && chat.medias[0].id ? chat.medias : [] // kalau gak ada media biar [] kosong
+        }));
 
         // Buat map ID ke chat
         const chatMap = {};
@@ -10332,6 +10346,54 @@ app.get('/api/cards/:cardId/chats', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+// app.get('/api/cards/:cardId/chats', async (req, res) => {
+//     const { cardId } = req.params;
+
+//     try {
+//         const result = await client.query(
+//             `SELECT 
+//            cc.*, 
+//            u.username,
+//            p.profile_name,
+//            p.photo_url
+//          FROM card_chats cc
+//          JOIN users u ON cc.user_id = u.id
+//          LEFT JOIN user_profil up ON u.id = up.user_id
+//          LEFT JOIN profil p ON up.profil_id = p.id
+//          WHERE cc.card_id = $1 AND cc.deleted_at IS NULL
+//          ORDER BY cc.send_time ASC`,
+//             [cardId]
+//         );
+
+//         const allChats = result.rows;
+
+//         // Buat map ID ke chat
+//         const chatMap = {};
+//         allChats.forEach(chat => {
+//             chat.replies = [];
+//             chatMap[chat.id] = chat;
+//         });
+
+//         // Susun struktur nested
+//         const chatTree = [];
+//         allChats.forEach(chat => {
+//             if (chat.parent_message_id) {
+//                 const parent = chatMap[chat.parent_message_id];
+//                 if (parent) {
+//                     parent.replies.push(chat);
+//                 }
+//             } else {
+//                 chatTree.push(chat);
+//             }
+//         });
+
+//         res.status(200).json(chatTree);
+//     } catch (err) {
+//         console.error('Error fetching chats:', err);
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+// });
 
 //2. CREATE CHAT + NOTIFIKASI
 app.post('/api/cards/:cardId/chats', async (req, res) => {
