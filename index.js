@@ -10308,7 +10308,7 @@ app.get('/api/cards/:cardId/chats', async (req, res) => {
              JOIN users u ON cc.user_id = u.id
              LEFT JOIN user_profil up ON u.id = up.user_id
              LEFT JOIN profil p ON up.profil_id = p.id
-             LEFT JOIN cards_chats_media cm ON cm.chat_id = cc.id
+             LEFT JOIN card_chats_media cm ON cm.chat_id = cc.id
              WHERE cc.card_id = $1 AND cc.deleted_at IS NULL
              GROUP BY cc.id, u.username, p.profile_name, p.photo_url
              ORDER BY cc.send_time ASC`,
