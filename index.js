@@ -10594,9 +10594,9 @@ app.post('/api/chats/:chatId/media', upload.single('file'), async (req, res) => 
         else if (mimeType.startsWith('video/')) mediaType = 'video';
         else if (mimeType.startsWith('audio/')) mediaType = 'audio';
 
-        // Simpan ke tabel cards_chats_media
+        // Simpan ke tabel card_chats_media
         const dbResult = await client.query(
-            `INSERT INTO cards_chats_media (chat_id, media_url, media_type)
+            `INSERT INTO card_chats_media (chat_id, media_url, media_type)
              VALUES ($1, $2, $3) RETURNING *`,
             [chatId, fileUrl, mediaType]
         );
