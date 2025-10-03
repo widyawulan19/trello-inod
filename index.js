@@ -8332,6 +8332,7 @@ app.get('/api/marketing-designs/not-null', async (req, res) => {
         md.create_at,
         md.update_at,
         md.resolution,
+        md.project_number,
 
         -- Relasi (ID + Name) | NULLIF biar ga keluar string "null"
         NULLIF(mdu.id::text, '')::int      AS input_by,
@@ -8405,6 +8406,7 @@ app.get('/api/marketing-designs/null', async (req, res) => {
         md.create_at,
         md.update_at,
         md.resolution,
+        md.project_number,
 
         -- Relasi (ID + Name) | NULLIF biar ga keluar string "null"
         NULLIF(mdu.id::text, '')::int      AS input_by,
