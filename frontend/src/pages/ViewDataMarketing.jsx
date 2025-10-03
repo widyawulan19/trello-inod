@@ -433,13 +433,3 @@ const ViewDataMarketing=({marketingId, onClose, isExported, setIsExported,market
 }
 
 export default ViewDataMarketing
-
-{/* <h3>Data Marketing Design for <br />New Project | {marketingDesign.style} | {marketingDesign.buyer_name} | {marketingDesign.account} | {lastFiveChars}</h3> */}
-// <h2>Marketing Detail</h2>
-//       <p><strong>ID:</strong> {dataMarketings.id}</p>
-//       <p><strong>Buyer Name:</strong> {dataMarketings.buyer_name}</p>
-//       <p><strong>Order Number:</strong> {dataMarketings.order_number}</p>
-//       <p><strong>Account:</strong> {dataMarketings.account}</p>
-//       <p><strong>Deadline:</strong> {new Date(dataMarketings.deadline).toLocaleDateString()}</p>
-//       {/* Tambahkan detail lainnya sesuai kebutuhan */}
-

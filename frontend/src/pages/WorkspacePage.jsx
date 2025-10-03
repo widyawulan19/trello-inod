@@ -16,6 +16,7 @@ import { IoTime } from 'react-icons/io5';
 import { handleArchive } from '../utils/handleArchive';
 import { HiViewBoards } from "react-icons/hi";
 import { useUser } from '../context/UserContext';
+import { PiAlignTopFill } from 'react-icons/pi';
 
 const WorkspacePage=()=> {
   const location = useLocation();
@@ -384,7 +385,7 @@ const handleNavigateToWorkspace = () =>{
         </div>
         <div className="more-action">
           <div className="create-board-btn" onClick={handleShowForm}>
-            <FaPlus className='cbb-icon'/>
+            <HiPlus className='cbb-icon'/>
             <p>Create Board</p>
           </div>
         </div>
@@ -415,12 +416,12 @@ const handleNavigateToWorkspace = () =>{
                 />
             </div>
             <div className="fdesc">
-              <label>Board Description <span>*</span></label>
+              <label>Board Description</label>
               <textarea
                 type="text" 
                 value={boardDescription}
                 onChange={(e)=> setBoardDescription(e.target.value)}
-                required
+                // required
               />
             </div>
             <button type='submit'>
@@ -444,7 +445,9 @@ const handleNavigateToWorkspace = () =>{
           <div key={board.id} className='wp-card'>
             <div className="wp-name">
               <div className="wp-name-text">
-                <CiAlignTop/>
+                <div className="name-icon">
+                  <PiAlignTopFill className='ni-mini'/>
+                </div>
                 {/* <h5>{board.name}</h5> */}
                 {editingName === board.id ? (
                   <input 

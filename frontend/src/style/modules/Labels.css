@@ -1,6 +1,6 @@
 .label-container {
     /* border: 1px solid red; */
-    border: 1px solid #E5E7EB;
+    /* border: 1px solid #E5E7EB; */
     border-radius: 8px;
     padding: 0px;
     /* width: 50%; */
@@ -11,7 +11,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 5px 10px;
+    padding: 2px 10px;
     color: white;
     margin-bottom: 5px;
     border-top-left-radius: 8px;
@@ -23,7 +23,7 @@
 .lc-header h5 {
     margin: 0px;
     padding: 5px;
-    margin-bottom: 5px;
+    /* margin-bottom: 5px; */
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -38,7 +38,7 @@
     border: 1px solid rgba(255, 255, 255, 0);
     border-radius: 4px;
     cursor: pointer;
-    font-size: 20px;
+    font-size: 15px;
 }
 
 .l-close:hover {
@@ -306,19 +306,19 @@
 .fl-label .form-label {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: space-between;
     width: 100%;
     /* border: 1px solid green; */
 }
 
 .form-label input {
-    width: 60%;
+    width: 70%;
     color: #6551e7;
     border: 1px solid #ddd;
     border-radius: 4px;
     padding: 5px;
-    margin-right: 5px;
-    font-size: 12px;
+    /* margin-right: 5px; */
+    font-size: 10px;
 }
 
 .form-label input:hover {
@@ -335,7 +335,7 @@
     color: white;
     width: fit-content;
     font-size: 12px;
-    font-weight: bold;
+    font-weight: normal;
     border: 1px solid #6a11cb !important;
     border-radius: 4px !important;
     background: linear-gradient(to right, #6a11cb, #2575fc);

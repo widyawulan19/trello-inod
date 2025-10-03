@@ -77,22 +77,23 @@
 }
 
 .more-action .create-board-btn {
-    border: 1px solid #5D12EB;
-    border-radius: 8px;
-    background: linear-gradient(to right, #6a11cb, #2575fc);
-    color: white;
-    font-weight: bold;
-    font-size: 13px;
-    padding: 10px 15px;
-    gap: 5px;
+    padding: 8px 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    border-radius: 8px;
+    color: white;
+    gap: 5px;
+    /* font-weight: bold; */
+    font-size: 13px;
+    border: 1px solid #eee;
+    background: linear-gradient(90deg, #7246eb, #532189);
 }
 
 .more-action .create-board-btn:hover {
-    background: linear-gradient(to right, #2575fc, #6a11cb);
+    background: linear-gradient(to right, #532189, #7246eb);
+    box-shadow: 0px 4px 8px #5e12eb46;
 }
 
 .bform-workspace {
@@ -325,7 +326,7 @@
 }
 
 .wp-card:hover {
-    border: 1px solid #5D12EB;
+    border: 1px solid #dad0ed;
     box-shadow: 0px 4px 8px #5e12eb46;
 }
 
@@ -344,6 +345,19 @@
     justify-content: flex-start;
     /* border: 1px solid red; */
     width: 90%;
+}
+
+.wp-name-text .name-icon {
+    color: white;
+    padding: 5px;
+    border-radius: 6px;
+    font-size: 12px;
+    background: linear-gradient(90deg, #7246eb, #532189)
+}
+
+.name-icon .ni-mini {
+    font-size: 12px;
+    color: white;
 }
 
 .wp-name-text h5 {
@@ -660,20 +674,19 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 5px 10px;
-    border-radius: 4px;
+    padding: 5px 7px;
+    border-radius: 8px;
     border: 1px solid #5D12EB;
-    background-color: #5D12EB;
+    background: linear-gradient(90deg, #7246eb, #532189);
     cursor: pointer;
     color: #fff;
     font-weight: normal;
     font-size: 12px;
     gap: 5px;
-    /* width: 50%; */
 }
 
 .wp-btm .view:hover {
-    box-shadow: 0px 4px 10px #5e12eb44;
+    box-shadow: 0px 4px 8px #5e12eb46;
 }
 
 /* end body  */

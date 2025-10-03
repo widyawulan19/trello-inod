@@ -87,6 +87,7 @@ const Label = ({ cardId, fetchCardDetail, labels, setLabels, fetchLabels, onClos
             await addLabelToCard(cardId, label);
             setLabels([...labels, label]);
             fetchCardDetail(cardId);
+            fetchAllLabels();
             showSnackbar('Successfully adding label to card', 'success');
         } catch (error) {
             console.error('Error adding label to card:', error);
@@ -156,6 +157,8 @@ const Label = ({ cardId, fetchCardDetail, labels, setLabels, fetchLabels, onClos
             await addColorToBgColorLabel(labelId, data);
             showSnackbar('Label background updated successfully', 'success');
             fetchAllLabels(); // refresh label list
+            fetchLabels(cardId);
+            fetchCardDetail(cardId);
         } catch (error) {
             console.error('Failed to assign bg color to label:', error);
             showSnackbar('Failed to update label background', 'error');
@@ -181,7 +184,7 @@ const Label = ({ cardId, fetchCardDetail, labels, setLabels, fetchLabels, onClos
             <div className="labels-main-body">
                 <div className='labels-cont'>
                     <h5 style={{
-                        fontSize:'13px',
+                        fontSize:'10px',
                         fontWeight:'bold',
                         color:'#4F5966',
                         borderBottom:'1px solid #ddd',
@@ -197,7 +200,7 @@ const Label = ({ cardId, fetchCardDetail, labels, setLabels, fetchLabels, onClos
                                     backgroundColor: label.bg_color,
                                     // color: label.color,
                                     color:'#333',
-                                    padding: "4px",
+                                    padding: "4px 6px",
                                     margin: "2px",
                                     borderRadius: "4px",
                                     display: 'flex',
@@ -226,7 +229,7 @@ const Label = ({ cardId, fetchCardDetail, labels, setLabels, fetchLabels, onClos
                 <div className="show-label" ref={showLabelRef}>
                     <h5
                         style={{
-                        fontSize:'13px',
+                        fontSize:'10px',
                         fontWeight:'bold',
                         color:'#4F5966',
                         borderBottom:'1px solid #ddd',
@@ -299,7 +302,7 @@ const Label = ({ cardId, fetchCardDetail, labels, setLabels, fetchLabels, onClos
                 <div className='fl-label'>
                     <h5
                         style={{
-                        fontSize:'13px',
+                        fontSize:'10px',
                         fontWeight:'bold',
                         color:'#4F5966',
                         borderBottom:'1px solid #ddd',

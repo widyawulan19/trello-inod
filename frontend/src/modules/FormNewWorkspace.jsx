@@ -69,12 +69,12 @@ const FormNewWorkspace = ({ userId,fetchWorkspaceUser, onCloseForm }) => {
                     />
                 </div>
                 <div className="box-form">
-                    <label>Description: <span style={{color:'red'}}>*</span></label>
+                    <label>Description:</label>
                     <textarea
                         value={description}
                         placeholder="Enter workspace description"
                         onChange={(e) => setDescription(e.target.value)}
-                        required
+                        // required
                     />
                 </div>
                 <div className="workspace-btn-form">

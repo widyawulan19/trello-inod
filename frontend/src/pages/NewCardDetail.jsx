@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import '../style/pages/NewCardDetail.css'
 import BootstrapTooltip from '../components/Tooltip';
 import { GiCloudUpload } from "react-icons/gi";
-import { archiveCard, deleteUserFromCard, getAllCardUsers, getAllDueDateByCardId, getAllStatus, getAllUploadFiles, getAllUserAssignToCard, getCardById, getCardPriority, getChecklistItemChecked, getCoverByCard, getLabelByCard, getListById, getStatusByCardId, getTotalChecklistItemByCardId, getTotalFile, updateDescCard, updateTitleCard } from '../services/ApiServices';
+import { archiveCard, deleteUserFromCard, getAllCardUsers, getAllDueDateByCardId, getAllStatus, getAllUploadFiles, getAllUserAssignToCard, getCardById, getCardPriority, getChecklistItemChecked, getChecklistsWithItemsByCardId, getCoverByCard, getLabelByCard, getListById, getStatusByCardId, getTotalChecklistItemByCardId, getTotalFile, updateDescCard, updateTitleCard } from '../services/ApiServices';
 import SelectedLabels from '../UI/SelectedLabels';
 import CardDetailPanel from '../modules/CardDetailPanel';
 import DetailCard from '../modules/DetailCard';
@@ -62,6 +62,7 @@ const NewCardDetail=()=> {
     //checklist state
     const [checklistTotal, setChecklistTotal] = useState(0);
     const [checkChecklist, setChecklist] = useState(0);
+    const [checklists, setChecklists] = useState([]);
     
     //LABEL
     const [labels, setLabels] = useState([]);
@@ -157,6 +158,29 @@ const NewCardDetail=()=> {
       },
     },
   };
+
+
+   // Fetch checklists
+    const fetchCardChecklists = async () => {
+        try {
+            const response = await getChecklistsWithItemsByCardId(cardId);
+            console.log('Fetched checklists:', response);
+
+            if (Array.isArray(response.data)) {
+                setChecklists(response.data);
+            } else {
+                console.error('Unexpected API response format:', response);
+                setChecklists([]);
+            }
+        } catch (error) {
+            console.error('Error fetching checklist data:', error);
+            setChecklists([]);
+        }
+    };
+
+    useEffect(() => {
+        fetchCardChecklists();
+    }, [cardId]);
 
 
     // fetch upload file
@@ -709,17 +733,14 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
                             )}
 
                             {/* HEADER LABEL  */}
-                            {/* <div className="ncd-label">
+                            <div className="ncd-label">
                                 <SelectedLabels
                                     cardId={cardId}
                                     fetchCardDetail={fetchCardById}
                                     labels={labels}
                                     fetchLabels={fetchLabels}
                                 />
-                            </div> */}
-                            {/* HEADER LABEL  */}
-                            <div className="ncd-label">
-                            {cards?.project_type_name === "ORIGINAL" ? (
+                            {/* {cards?.project_type_name === "ORIGINAL" ? (
                                 // ✅ Kalau project_type ORIGINAL, paksa render label Mixing & Mastering
                                 <div className="labels">
                                 <span
@@ -744,7 +765,7 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
                                 labels={labels}
                                 fetchLabels={fetchLabels}
                                 />
-                            )}
+                            )} */}
                             </div>
 
                         </div>
@@ -1008,13 +1029,6 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
 
                     </div>
 
-                    {/* 
-                    import { IoDocumentTextOutline,IoImage } from "react-icons/io5";
-                    import { HiBars4 } from "react-icons/hi2";
-                    import { BsSoundwave } from "react-icons/bs";
-                    import { TbPdf } from "react-icons/tb";
-                    */}
-
 
                     <div className="ncd-main-right">
 
@@ -1092,11 +1106,18 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
                             <div className="ncd-checklist-header">
                                 Checklist List
                                 <button>
-                                    {checkChecklist.checked} /  {checklistTotal.total}
+                                    {/* {checkChecklist.checked} /  {checklistTotal.total} */}
                                 </button>
                             </div>
                             <div className="ncd-checklist-content">
-                                <Checklist cardId={cardId}/>
+                                <Checklist 
+                                    cardId={cardId}
+                                    checklists={checklists}
+                                    setChecklist={setChecklist}
+                                    fetchCardChecklists={fetchCardChecklists}
+                                    fetchCardById={fetchCardById}
+                                    fetchTotalChecklist={fetchTotalChecklist}
+                                />
                             </div>
                         </div>
 

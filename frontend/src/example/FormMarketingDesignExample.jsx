@@ -296,7 +296,7 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
 
                         {/* Acc By */}
                         <div className="box-content">
-                          <label >Accept By <span style={{color:'red', fontSize:'6px'}}> ** diisi oleh kadiv</span></label>
+                          <label >Accept By <span style={{color:'red', fontSize:'10px'}}> ** diisi oleh kadiv</span></label>
                           <CustomDropdownDesign
                             options={dropdownData.accs}  // <- benar-benar dari kepala_divisi
                             value={form.acc_by}
@@ -312,7 +312,7 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
 
                          {/* STATUS ACCEPT */}
                         <div className="box-content">
-                            <label>Status <span style={{color:'red', fontSize:'6px'}}> ** diisi oleh kadiv</span></label>
+                            <label>Status <span style={{color:'red', fontSize:'10px'}}> ** diisi oleh kadiv</span></label>
                             <CustomDropdownDesign
                                 options={dropdownData.statusAccept}  // <- benar-benar dari kepala_divisi
                                 value={form.status_project_id}
@@ -475,7 +475,7 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
 
                         {/* Jumlah Design */}
                         <div className="box-content">
-                            <label >Style <span style={{color:'red', fontSize:'6px'}}> ** diisi oleh kadiv</span></label>
+                            <label >Style <span style={{color:'red', fontSize:'10px'}}> ** diisi oleh kadiv</span></label>
                             <CustomDropdownDesign
                               options={dropdownData.style}
                               value={form.style_id}

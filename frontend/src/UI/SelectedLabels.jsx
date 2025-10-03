@@ -35,7 +35,7 @@ const SelectedLabels = ({ cardId, fetchCardDetail,labels }) => {
                 <div 
                 key={label.label_id} 
                 className="label-item"
-                style={{ backgroundColor: label.bg_color, color:'#333' }}
+                style={{ backgroundColor: label.bg_color, color:'#333', fontWeight:'bold' }}
                 >
                 {label.label_name}
                 </div>

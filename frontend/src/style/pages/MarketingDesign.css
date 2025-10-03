@@ -236,7 +236,8 @@
 .th {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
+    text-align: center;
 }
 
 .data-accept-design tbody tr:hover {
@@ -245,7 +246,7 @@
 
 
 /* TABEL HEADER  */
-.acc-container,
+
 .code-order-container,
 .jumlah-container,
 .order-number-container,
@@ -270,12 +271,8 @@
 .input-container,
 .buyer-name-container,
 .status-container,
-.price-normal-container,
-.price-discount-container,
-.discount_percentage-container
-
-/* .action-container */
-    {
+.resolution-container,
+.action-container {
     width: 100%;
     min-width: 13vw;
     max-width: 13vw;
@@ -285,7 +282,17 @@
     /* border: 1px solid blue; */
 }
 
-.action-container {
+.price-normal-container,
+.price-discount-container,
+.discount_percentage-container {
+    width: 100%;
+    min-width: 8vw;
+    max-width: 8vw;
+}
+
+.acc-container,
+.style-container,
+.project-type-container {
     width: 100%;
     min-width: 15vw;
     max-width: 15vw;
@@ -294,17 +301,6 @@
     text-overflow: ellipsis;
 }
 
-
-.project-type-container,
-.resolution-container,
-.style-container {
-    width: 100%;
-    min-width: 20vw;
-    max-width: 20vw;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
 
 
 /* .action-table */
@@ -634,7 +630,7 @@
     /* END BODY TABEL  */
 
     /* TABEL HEADER  */
-    .acc-container,
+
     .code-order-container,
     .jumlah-container,
     .order-number-container,
@@ -648,6 +644,7 @@
         max-width: 15vw;
     }
 
+    .acc-container,
     .input-container,
     .buyer-name-container,
     .status-container,

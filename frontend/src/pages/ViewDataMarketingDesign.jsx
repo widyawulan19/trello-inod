@@ -112,6 +112,15 @@ const renderTextWithLinks = (text) => {
   );
 };
 
+      // link reference 
+    function linkify(text) {
+      const urlRegex = /(https?:\/\/[^\s]+)/g;
+      return text.replace(urlRegex, (url) => {
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+      });
+    }
+
+
   // FUNCTION TO SHOW STATUS 
   const STATUS_COLORS ={
     "ACCEPTED ":'#2E7D32',
@@ -387,8 +396,13 @@ const renderTextWithLinks = (text) => {
           <div className="vmd-detail">
             <div className="box-content" style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
               {/* <p>Detail Project</p> */}
-              <div className="box-ref" style={{height:'30vh',overflowY:'auto'}}>
-                <p>{renderTextWithLinks(dataMarketingDesign?.detail_project || "-")}</p>
+              <div className="box-ref" >
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: linkify(dataMarketingDesign.detail_project || ""),
+                  }}
+                />
+                {/* <p>{renderTextWithLinks(dataMarketingDesign?.detail_project || "-")}</p> */}
               </div>
             </div>
           </div>

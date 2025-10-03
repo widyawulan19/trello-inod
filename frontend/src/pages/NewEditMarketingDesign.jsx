@@ -6,6 +6,9 @@ import { FaXmark } from 'react-icons/fa6';
 import '../style/pages/EditMarketingForm.css';
 // import CustomDropdownDesign from '../marketing/CustomDropdownDesign';
 import CustomDropdownDesignEdit from '../marketing/CustomDropdownDesignEdit';
+import ReactQuill from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
+
 
 const initialFormState = {
    buyer_name: "",
@@ -250,6 +253,27 @@ console.log('data marketing design:', marketingDesignId);
   const get5LastChar = (codeOrder) => {
     return codeOrder ? codeOrder.slice(-5) :'';
   }
+
+  const handleChangeQuill = (value) => {
+    setForm((prevForm) => ({
+      ...prevForm,
+      detail_project: value,
+    }));
+  };
+
+    // konfigurasi toolbar ReactQuill
+  const modules = {
+    toolbar: [
+      [{ header: [1, 2, 3, false] }],
+      ["bold", "italic", "underline", "strike"], 
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["link", "blockquote", "code-block"],
+      [{ align: [] }],
+      ["clean"], // hapus format
+    ],
+  };
+
+
 
 
   return (
@@ -597,18 +621,17 @@ console.log('data marketing design:', marketingDesignId);
             {/* DETAIL PROJECT  */}
             <div className="form-content">
                 <h4 className='h4'>DETAIL PROJECT</h4>
-                <div className="sec-content-edit">
-
-                    {/* REFERENCE  */}
+                <div className="sec-content" style={{display:'flex',flexDirection:'column', alignItems:'center', justifyContent:'center'}}>
                     <div className="box-content">
-                        <label>Detail Project</label>
-                        <textarea 
-                            type="text" 
-                            name='detail_project'
-                            value={form.detail_project}
-                            onChange={handleChange}
-                            // required
-                        />
+                      <ReactQuill
+                        className="my-editor"
+                        theme="snow"
+                        value={form.detail_project}
+                        onChange={handleChangeQuill}
+                        modules={modules}
+                        placeholder="Deskripsikan detail project..."
+                        style={{ minHeight: "150px" }}
+                      />
                     </div>
                 </div>
             </div>

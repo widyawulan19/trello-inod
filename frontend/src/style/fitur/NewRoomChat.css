@@ -383,6 +383,24 @@
   border-radius: 8px;
 }
 
+
+/* RENDER MEDIA  */
+.chat-media {
+  /* border: 1px solid blue; */
+}
+
+.chat-media .chat-media-img,
+.chat-media .chat-media-video,
+.chat-media .chat-media-audio,
+.chat-media .chat-media-file {
+  /* border: 1px solid red; */
+  width: 50%;
+  height: 50%;
+  border-radius: 8px;
+}
+
+/* END RENDER MEDIA  */
+
 /* MEDIA QUERY  */
 /* Extra large devices (large desktops, ≥1200px) */
 @media (min-width: 1200px) and (max-width:1400px) {

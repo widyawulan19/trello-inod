@@ -527,7 +527,7 @@ const handleExportToSheet = async (marketingDesignId) => {
                     <th>Project Number</th>
                     <th>INPUT BY</th>
                     <th>ACC BY</th>
-                    <th>STATUS</th>
+                    <th style={{textAlign:'center'}}>STATUS</th>
                     <th>
                       <div className='th'>
                         BUYER NAME <HiArrowsUpDown/>
@@ -545,27 +545,27 @@ const handleExportToSheet = async (marketingDesignId) => {
                         ACCOUNT <HiArrowsUpDown/>
                       </div>
                     </th>
-                    <th>DEADLINE</th>
+                    <th style={{textAlign:'center'}}>DEADLINE</th>
                     <th>JUMLAH REVISI</th>
                     <th>ORDER TYPE</th>
                     <th>OFFER TYPE</th>
-                    <th>STYLE</th>
-                    <th>RESOLUTION</th>
-                    <th>REFERENCE</th>
+                    <th style={{textAlign:'center'}}>STYLE</th>
+                    <th style={{textAlign:'center'}}>RESOLUTION</th>
+                    {/* <th>REFERENCE</th> */}
                     <th>
                       <div className="th">
-                        PRICE NORMAL <CgDollar/>
+                        PRICE NORMAL $
                       </div>
                     </th>
                     <th>
                       <div className="th">
-                        PRICE DISCOUNT <CgDollar/>
+                        PRICE DISCOUNT $
                       </div>
                     </th>
-                    <th>
+                    <th style={{textAlign:'center'}}>
                         DISCOUNT PRESENTAGE
                     </th>
-                    <th>PROJECT TYPE</th>
+                    <th style={{textAlign:'center'}}>PROJECT TYPE</th>
                     <th style={{textAlign:'center'}}>ACTION</th>
                   </tr>
                 </thead>
@@ -617,7 +617,7 @@ const handleExportToSheet = async (marketingDesignId) => {
 
                         </td>
                         <td className='acc-container'>{item.acc_by_name}</td>
-                        <td className='status-container' style={{textAlign:'left' }}>
+                        <td className='status-container' style={{textAlign:'center' }}>
                           <span style={{
                             padding: '2px 8px',
                             borderRadius: '12px',
@@ -637,14 +637,14 @@ const handleExportToSheet = async (marketingDesignId) => {
                         <td className='jumlah-revisi-container' style={{textAlign:'center' }}>{item.jumlah_revisi}</td>
                         <td className='order-type-container'>{item.order_type_name}</td>
                         <td className='offer-type-container'>{item.offer_type_name}</td>
-                        <td className='style-container'>{item.style_name}</td>
-                        <td className='resolution-container'>{item.resolution}</td>
-                        <td className='resolution-container'>{item.reference}</td>
+                        <td className='style-container' style={{textAlign:'center' }}>{item.style_name}</td>
+                        <td className='resolution-container' style={{textAlign:'center' }}>{item.resolution}</td>
+                        {/* <td className='resolution-container'>{item.reference}</td> */}
                         <td className='price-normal-container' style={{textAlign:'center', color:'#1E1E1E'}}>{item.price_normal}</td>
                         <td className='price-discount-container' style={{textAlign:'center', color:'#E53935'}}>{item.price_discount}</td>
                         <td className='discount_percentage-container' style={{textAlign:'center', color:'#388E3C'}}>{item.discount_percentage}%</td>
-                        <td className='project-type-container'>{item.project_type_name}</td>
-                        <td className='action-container'>
+                        <td className='project-type-container' style={{textAlign:'center' }}>{item.project_type_name}</td>
+                        <td className='action-container' style={{textAlign:'center' }}>
                           <div className="action-table">
                             <BootstrapTooltip title='View Data' placement='top'>
                               <button onClick={()=> handleShowDetail(item.marketing_design_id)}>

@@ -1,9 +1,13 @@
 .checklist-container {
     width: 100%;
+    min-height: 10vh;
+    height: 10vh;
     cursor: pointer;
     margin: 0px;
     padding: 0px;
     position: relative;
+    overflow-y: auto;
+    /* border: 1px solid red; */
 }
 
 .c-content {

@@ -10,7 +10,7 @@ import '../style/modules/Checklist.css';
 import { useSnackbar } from '../context/Snackbar';
 import { FaXmark } from 'react-icons/fa6';
 
-const Checklist = ({ cardId }) => {
+const Checklist = ({ cardId, fetchCardById ,fetchTotalChecklist}) => {
     const [checklists, setChecklists] = useState([]);
     const [newChecklistName, setNewChecklistName] = useState('');
     const [checklistItems, setChecklistItems] = useState([]);
@@ -43,6 +43,7 @@ const Checklist = ({ cardId }) => {
             } else {
                 console.error('Unexpected API response format:', response);
                 setChecklists([]);
+                fetchTotalChecklist();
             }
         } catch (error) {
             console.error('Error fetching checklist data:', error);
@@ -67,6 +68,7 @@ const Checklist = ({ cardId }) => {
                 setNewChecklistName('');
                 setShowChecklist(false);
                 fetchCardChecklists();
+                fetchCardById(cardId)
             }
             showSnackbar('Checklist added successfully!','success');
         } catch (error) {
@@ -87,6 +89,7 @@ const Checklist = ({ cardId }) => {
             await updateChecklistName(checklistId, { name: newName });
             setEditName(null);
             fetchCardChecklists();
+            // fetchCardById(cardId)
         } catch (error) {
             console.error('Error updating checklist name:', error);
         }
