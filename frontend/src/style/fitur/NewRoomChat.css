@@ -38,7 +38,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  /* border: 1px solid green; */
+  border: 1px solid green;
   height: 65vh;
   /* height: fit-content; */
   padding: 10px 20px;
@@ -53,6 +53,7 @@
 /* RENDER CHAT  */
 .chat-message {
   background-color: #ffffff;
+  /* border: 1px solid red; */
   border: 1px solid white;
   border-radius: 12px;
   padding: 5px 14px;
@@ -403,11 +404,12 @@
 
 /* MEDIA QUERY  */
 /* Extra large devices (large desktops, ≥1200px) */
-@media (min-width: 1200px) and (max-width:1400px) {
+@media (min-width: 1200px) and (max-width:1600px) {
 
   /* CSS monitor besar */
   .chat-list {
     height: 73vh;
+    /* border: 1px solid red; */
   }
 }
 

@@ -95,7 +95,7 @@
 .daily-container {
     /* border: 1px solid red; */
     height: 75vh;
-    width: 90vw;
+    width: 80vw;
 }
 
 .daily-container .dayli-title {
@@ -114,7 +114,7 @@
 
 .daily-container .dayli-table {
     /* border: 1px solid green; */
-    height: 73vh;
+    height: 50vh;
     width: 100%;
     overflow-x: auto;
 }
