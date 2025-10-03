@@ -37,7 +37,7 @@ const BoardList=()=> {
     //STATE
     const location = useLocation();
     const {user} = useUser();
-    const userId = user.id;
+    const userId = user?.id;
     console.log('File Board List menerima data user:', user)
     console.log('berhasil menerima userId:', userId)
     const {boardId, workspaceId} = useParams();
@@ -340,6 +340,11 @@ const handleNavigateToWorkspace = (workspaceId) => {
 const handleNavigateToBoard = (workspaceId,boardId) =>{
     navigate(`/layout/workspaces/${workspaceId}/board/${boardId}`);
 }
+
+if (!userId) {
+    return <p>Loading board list page</p>; // atau navigate("/login")
+}
+
 
   return (
     <div className='bl-container'>

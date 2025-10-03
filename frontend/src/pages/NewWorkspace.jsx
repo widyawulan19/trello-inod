@@ -38,7 +38,7 @@ import { handleArchive } from '../utils/handleArchive';
 
 function NewWorkspace() {
   const {user} = useUser();
-  const userId = user.id;
+  const userId = user?.id;
 
   //state
   const navigate = useNavigate();
@@ -450,6 +450,10 @@ const handleCloseDetail = () =>{
   setDetailWorkspace(false)
 }
 
+
+ if (!userId) {
+    return <p>Loading workspace user</p>; // atau navigate("/login")
+  }
 
 
 

@@ -3,6 +3,8 @@ import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import { HiChevronDown, HiChevronUp, HiXMark } from "react-icons/hi2";
 import '../style/modals/CardDescriptionExample.css'
+// import ReactQuill from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
 
 const CardDescriptionExample = ({ 
   card, 
@@ -43,14 +45,14 @@ const CardDescriptionExample = ({
       {card && cardId && (
         <div className="des-content">
           {editingDescription === cardId ? (
-            <div className="ta-cont">
+            <div className="ta-content">
               <ReactQuill
                 ref={quillRef}
                 theme="snow"
                 value={newDescription}
                 onChange={setNewDescription}
                 modules={modules}
-                className="toolbar-box"
+                className="my-editor"
               />
 
               <div className="action-btn">

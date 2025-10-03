@@ -896,7 +896,7 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
                                             value={newDescription}
                                             onChange={setNewDescription}
                                             modules={modules}
-                                            className="toolbar-box"
+                                            className="my-editor"
                                         />
 
                                         <div className="desc-actions">

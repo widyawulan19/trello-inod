@@ -23,7 +23,7 @@ const WorkspacePage=()=> {
   // const userId = location.state?.userId;
   // const userId = 3;
   const {user} = useUser();
-  const userId = user.id;
+  const userId = user?.id;
   console.log("File workspace page berhasil menerima userId", userId)
   const navigate = useNavigate();
   const {workspaceId} = useParams();
@@ -371,6 +371,10 @@ const handleNavigateToBoardList = (workspaceId, boardId) =>{
 const handleNavigateToWorkspace = () =>{
   navigate(`/layout/workspaces`);
 }
+
+  if (!userId) {
+    return <p>Loading workspace user...</p>; // atau navigate("/login")
+  }
 
   return (
     <div className='wp-container'>

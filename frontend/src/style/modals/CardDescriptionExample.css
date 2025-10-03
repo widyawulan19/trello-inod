@@ -80,8 +80,27 @@
     background-color: #B72619;
 }
 
+.des-content .ta-content {
+    /* border: 1px solid red; */
+    height: 80vh;
+}
 
 /* .des-content .div-p {
     border: 1px solid green;
     height: 80vh !important;
 } */
+
+/* SNOW REACT QUILL  */
+.my-editor .ql-container.ql-snow {
+    border: 1px solid white;
+    height: 65vh;
+}
+
+.my-editor .ql-toolbar.ql-snow {
+    border: 1px solid #f2f1ff;
+    /* border: 1px solid blue; */
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    background-color: #f2f1ff;
+    color: white;
+}

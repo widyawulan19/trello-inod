@@ -1249,6 +1249,19 @@
     box-shadow: 0px 4px 8px #5e12eb46;
 }
 
+/* SNOW REACT QUILL  */
+.my-editor .ql-container.ql-snow {
+    border: 1px solid #f2f1ff;
+}
+
+.my-editor .ql-toolbar.ql-snow {
+    border: 1px solid #f2f1ff;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    background-color: #f2f1ff;
+    color: white;
+}
+
 /* MODAL CHATROOM  */
 .modal-chatroom {
     /* background-color: #e9e2f3; */
