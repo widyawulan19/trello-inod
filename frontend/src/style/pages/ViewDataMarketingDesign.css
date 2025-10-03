@@ -281,6 +281,22 @@
     height: 500px;
 }
 
+.box-ref ul {
+  list-style-type: disc;
+  margin-left: 20px;
+  padding-left: 20px;
+}
+
+.box-ref ol {
+  list-style-type: decimal;
+  margin-left: 20px;
+  padding-left: 20px;
+}
+
+.box-ref p {
+  margin: 5px 0;
+}
+
 
 /* Large devices (desktops, ≥992px) */
 @media (min-width: 992px) {

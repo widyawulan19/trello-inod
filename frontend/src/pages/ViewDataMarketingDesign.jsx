@@ -7,6 +7,9 @@ import '../style/pages/ViewDataMarketingDesign.css'
 import OutsideClick from '../hook/OutsideClick';
 import FormCreateCardDesign from '../fitur/FormCreateCardDesign'
 import ExportMarketingDesignById from '../exports/ExportMarketingDesignById';
+import ReactQuill from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
+
 
 const ViewDataMarketingDesign=({marketingDesignId, onClose, fetchMarketingDesign, handleExportToSheet, isExported,setIsExported, designTransfile, setDesignTransfile})=> {
     //STATE
@@ -112,13 +115,13 @@ const renderTextWithLinks = (text) => {
   );
 };
 
-      // link reference 
-    function linkify(text) {
-      const urlRegex = /(https?:\/\/[^\s]+)/g;
-      return text.replace(urlRegex, (url) => {
-        return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
-      });
-    }
+  // link reference 
+  function linkify(text) {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    return text.replace(urlRegex, (url) => {
+      return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+    });
+  }
 
 
   // FUNCTION TO SHOW STATUS 
@@ -134,6 +137,34 @@ const renderTextWithLinks = (text) => {
     "ON PROGRESS":'#FFDCB3',
     "UNKNOWN":"#9E9E9E",
   }
+
+
+  const DetailProjectInput = ({ value, onChange }) => {
+  return (
+    <ReactQuill
+      value={value}
+      onChange={onChange}
+      modules={{
+        toolbar: [
+          [{ header: [1, 2, 3, false] }],
+          ["bold", "italic", "underline", "strike"],
+          [{ list: "ordered" }, { list: "bullet" }],
+          [{ indent: "-1" }, { indent: "+1" }],
+          ["link"],
+          ["clean"],
+        ],
+      }}
+      formats={[
+        "header",
+        "bold", "italic", "underline", "strike",
+        "list", "bullet", "indent",
+        "link"
+      ]}
+      style={{ minHeight: "200px", marginBottom: "20px" }}
+    />
+  );
+};
+
 
   return (
     <div className='view-md-container'>
