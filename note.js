@@ -506,3 +506,8 @@ app.post("/api/marketing", async (req, res) => {
     res.status(500).send("Server error");
   }
 });
+
+
+
+export const getDataWhereCardIdNotNull = () => axios.get(`${API_URL}/marketing-designs/not-null`);
+export const getDataWhereCardIdIsNull = () => axios.get(`${API_URL}/marketing-designs/null`);
