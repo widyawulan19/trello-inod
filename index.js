@@ -3387,12 +3387,39 @@ app.put('/api/move-card-to-list/:cardId/:listId', async (req, res) => {
             [cardId, cardId]
         );
 
-        // ambil nama list lama (asal)
+        // === Ambil info list + board lama ===
         const oldListRes = await client.query(
-            `SELECT name FROM lists WHERE id = $1`,
+            `SELECT l.id AS list_id, l.name AS list_name, b.id AS board_id, b.name AS board_name
+            FROM lists l
+            JOIN boards b ON l.board_id = b.id
+            WHERE l.id = $1`,
             [oldListId]
         );
+
+        const fromBoardId = oldListRes.rows[0]?.id;
+        const fromBoardName = oldListRes.rows[0]?.name || "Unknown Board";
         const oldListName = oldListRes.rows[0]?.name || "Unknown List";
+
+        // === Ambil info list + board baru ===
+        const newListRes = await client.query(
+            `SELECT l.id AS list_id, l.name AS list_name, b.id AS board_id, b.name AS board_name
+            FROM lists l
+            JOIN boards b ON l.board_id = b.id
+            WHERE l.id = $1`,
+            [listId]
+        )
+
+        // const listName = newListRes.rows[0]?.list_name || "Unknown List";
+        const toBoardId = newListRes.rows[0]?.id;
+        const toBoardName = newListRes.rows[0]?.name || "Unknown Board";
+
+
+        // // ambil nama list lama (asal)
+        // const oldListRes = await client.query(
+        //     `SELECT name FROM lists WHERE id = $1`,
+        //     [oldListId]
+        // // );
+        // const oldListName = oldListRes.rows[0]?.name || "Unknown List";
 
 
         // ambil nama list tujuan
@@ -3431,11 +3458,15 @@ app.put('/api/move-card-to-list/:cardId/:listId', async (req, res) => {
             entity: 'list',
             entity_id: listId,
             details: {
-                fromListId: oldListId,
-                fromListName: oldListName,   // ← ambil nama list lama
-                toListId: listId,
-                toListName: listName,        // ← ambil nama list baru
                 cardTitle: newCardTitle,
+                fromBoardId,
+                fromBoardName,
+                fromListId: oldListId,
+                fromListName: oldListName,
+                toBoardId,
+                toBoardName,
+                toListId: listId,
+                toListName: listName,
                 movedBy: { id: userId, username: userName }
             }
         });
@@ -3443,20 +3474,29 @@ app.put('/api/move-card-to-list/:cardId/:listId', async (req, res) => {
         res.status(200).json({
             message: 'Card berhasil dipindahkan',
             cardId,
-            listId,
-            listName,   // <<=== tambahin ini
+            fromBoardId,
+            fromBoardName,
+            fromListId: oldListId,
+            fromListName: oldListName,
+            toBoardId,
+            toBoardName,
+            toListId: listId,
+            toListName: listName,
             newPosition,
             newCard: {
                 id: cardId,
                 title: newCardTitle,
                 listId: listId,
-                listName: listName,   // <<=== tambahin ini juga
+                listName: listName,
+                boardId: toBoardId,
+                boardName: toBoardName,
                 movedBy: {
                     id: userId,
                     username: userName
                 }
             }
         });
+
     } catch (err) {
         // Rollback transaksi jika terjadi kesalahan
         await client.query('ROLLBACK');
