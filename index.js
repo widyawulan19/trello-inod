@@ -3202,7 +3202,7 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
 
         //ambil nama list 
         const listRes = await client.query(
-            `SELECT title FROM lists WHERE id = $1`,
+            `SELECT name FROM lists WHERE id = $1`,
             [listId]
         );
         const listName = listRes.rows[0]?.title || "Unknown List";
@@ -3390,7 +3390,7 @@ app.put('/api/move-card-to-list/:cardId/:listId', async (req, res) => {
 
         // ambil nama list tujuan
         const listRes = await client.query(
-        `SELECT title FROM lists WHERE id = $1`,
+        `SELECT name FROM lists WHERE id = $1`,
             [listId]
         );
         const listName = listRes.rows[0]?.title || "Unknown List";
