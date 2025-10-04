@@ -3111,7 +3111,7 @@ app.delete('/api/cards/:cardId', async (req, res) => {
 });
 
 
-//5. duplicate card
+// 5. duplicate card
 // Endpoint untuk duplikasi card ke list tertentu
 app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
     const { cardId, listId } = req.params;
@@ -3127,7 +3127,7 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
                     (SELECT COALESCE(MAX(position), 0) + 1 FROM public.cards WHERE list_id = $1)
              FROM public.cards 
              WHERE id = $2 
-             RETURNING id, title`,
+             RETURNING id, title, list_id`,
             [listId, cardId]
         );
 
@@ -3200,12 +3200,31 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
         );
         const userName = userRes.rows[0]?.username || 'Unknown';
 
-        //ambil nama list 
-        const listRes = await client.query(
-            `SELECT name FROM lists WHERE id = $1`,
+        // === Ambil info list + board asal (dari card lama) ===
+        const oldListRes = await client.query(
+            `SELECT l.id AS list_id, l.name AS list_name, b.id AS board_id, b.name AS board_name
+             FROM cards c
+             JOIN lists l ON c.list_id = l.id
+             JOIN boards b ON l.board_id = b.id
+             WHERE c.id = $1`,
+            [cardId]
+        );
+        const oldListId = oldListRes.rows[0]?.list_id;
+        const oldListName = oldListRes.rows[0]?.list_name || "Unknown List";
+        const fromBoardId = oldListRes.rows[0]?.board_id;
+        const fromBoardName = oldListRes.rows[0]?.board_name || "Unknown Board";
+
+        // === Ambil info list + board tujuan ===
+        const newListRes = await client.query(
+            `SELECT l.id AS list_id, l.name AS list_name, b.id AS board_id, b.name AS board_name
+             FROM lists l
+             JOIN boards b ON l.board_id = b.id
+             WHERE l.id = $1`,
             [listId]
         );
-        const listName = listRes.rows[0]?.name || "Unknown List";
+        const newListName = newListRes.rows[0]?.list_name || "Unknown List";
+        const toBoardId = newListRes.rows[0]?.board_id;
+        const toBoardName = newListRes.rows[0]?.board_name || "Unknown Board";
 
         await client.query('COMMIT');
 
@@ -3215,7 +3234,7 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
             newCardId,
             'duplicate',
             userId,
-            `Card dengan ID ${cardId} diduplikasi ke list ${listId}`,
+            `Card dengan ID ${cardId} diduplikasi dari list ${oldListId} ke list ${listId}`,
             'list',
             listId
         );
@@ -3229,8 +3248,14 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
             entity_id: listId,
             details: {
                 cardTitle: newCardTitle,
+                fromListId: oldListId,
+                fromListName: oldListName,
+                fromBoardId,
+                fromBoardName,
                 toListId: listId,
-                toListName: listName,  // <<=== ini yang dipakai di FE
+                toListName: newListName,
+                toBoardId,
+                toBoardName,
                 duplicatedBy: { id: userId, username: userName }
             }
         });
@@ -3240,12 +3265,12 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
             message: 'Card berhasil diduplikasi',
             cardId: newCardId,
             listId,
-            listName,   // <<=== kirimkan
+            listName: newListName,
             newCard: {
                 id: newCardId,
                 title: newCardTitle,
                 listId,
-                listName, // <<=== kirimkan
+                listName: newListName,
                 duplicatedBy: {
                     id: userId,
                     username: userName
@@ -3259,6 +3284,7 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
         res.status(500).json({ error: 'Terjadi kesalahan saat menyalin card ke list yang baru' });
     }
 });
+
 
 //6. move card
 app.put('/api/move-card-to-list/:cardId/:listId', async (req, res) => {
