@@ -84,10 +84,10 @@ const CardActivity = ({ cardId }) => {
               }
             }
             if (activity.action_type === 'move') {
-              if (detail.fromListName && detail.toListName) {
-                message = `${activity.username} moved card from "${detail.fromListName}" to "${detail.toListName}"`;
-              }
+              message = `${activity.username} moved "${detail.cardTitle}" 
+                        from "${detail.fromListName}" to "${detail.toListName}"`;
             }
+
             if (activity.action_type === 'duplicate') {
               if (detail.cardTitle) {
                 message = `${activity.username} duplicated card as "${detail.cardTitle}" in list "${detail.toListName}"`;
