@@ -18,7 +18,7 @@ async function logCardActivity({ action, card_id, user_id, entity = null, entity
     entity,
     entity_id,
     details,
-  });
+  })
 
   if (!card_id || !user_id || !action) {
     console.error("❌ logCardActivity error: card_id, user_id, or action missing!");
