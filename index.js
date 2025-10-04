@@ -3205,7 +3205,7 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
             `SELECT name FROM lists WHERE id = $1`,
             [listId]
         );
-        const listName = listRes.rows[0]?.title || "Unknown List";
+        const listName = listRes.rows[0]?.name || "Unknown List";
 
         await client.query('COMMIT');
 
@@ -3393,7 +3393,7 @@ app.put('/api/move-card-to-list/:cardId/:listId', async (req, res) => {
         `SELECT name FROM lists WHERE id = $1`,
             [listId]
         );
-        const listName = listRes.rows[0]?.title || "Unknown List";
+        const listName = listRes.rows[0]?.name || "Unknown List";
 
         // mengambil user untuk di catat di activity 
         const userRes = await client.query(
