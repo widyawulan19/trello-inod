@@ -3396,9 +3396,9 @@ app.put('/api/move-card-to-list/:cardId/:listId', async (req, res) => {
             [oldListId]
         );
 
-        const fromBoardId = oldListRes.rows[0]?.id;
-        const fromBoardName = oldListRes.rows[0]?.name || "Unknown Board";
-        const oldListName = oldListRes.rows[0]?.name || "Unknown List";
+        const fromBoardId = oldListRes.rows[0]?.board_id;
+        const fromBoardName = oldListRes.rows[0]?.board_name || "Unknown Board";
+        const oldListName = oldListRes.rows[0]?.list_name || "Unknown List";
 
         // === Ambil info list + board baru ===
         const newListRes = await client.query(
@@ -3410,8 +3410,8 @@ app.put('/api/move-card-to-list/:cardId/:listId', async (req, res) => {
         )
 
         // const listName = newListRes.rows[0]?.list_name || "Unknown List";
-        const toBoardId = newListRes.rows[0]?.id;
-        const toBoardName = newListRes.rows[0]?.name || "Unknown Board";
+        const toBoardId = newListRes.rows[0]?.board_id;
+        const toBoardName = newListRes.rows[0]?.board_name || "Unknown Board";
 
 
         // // ambil nama list lama (asal)
