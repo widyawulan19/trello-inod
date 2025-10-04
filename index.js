@@ -3197,10 +3197,10 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
 
         // 3. Ambil nama user untuk dicatat di activity
         const userRes = await client.query(
-            "SELECT name FROM users WHERE id = $1",
+            "SELECT username FROM users WHERE id = $1",
             [userId]
         );
-        const userName = userRes.rows[0]?.name || 'Unknown';
+        const userName = userRes.rows[0]?.username || 'Unknown';
 
         await client.query('COMMIT');
 
@@ -3226,7 +3226,7 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
                 fromCardId: cardId,
                 toListId: listId,
                 cardTitle: newCardTitle,
-                duplicatedBy: { id: userId, name: userName }
+                duplicatedBy: { id: userId, username: userName }
             }
         });
 
