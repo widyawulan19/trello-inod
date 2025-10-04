@@ -3387,6 +3387,13 @@ app.put('/api/move-card-to-list/:cardId/:listId', async (req, res) => {
             [cardId, cardId]
         );
 
+        // ambil nama list lama (asal)
+        const oldListRes = await client.query(
+            `SELECT name FROM lists WHERE id = $1`,
+            [oldListId]
+        );
+        const oldListName = oldListRes.rows[0]?.name || "Unknown List";
+
 
         // ambil nama list tujuan
         const listRes = await client.query(
