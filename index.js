@@ -3111,7 +3111,7 @@ app.delete('/api/cards/:cardId', async (req, res) => {
 });
 
 
-// 5. duplicate card
+//5. duplicate card
 // Endpoint untuk duplikasi card ke list tertentu
 app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
     const { cardId, listId } = req.params;
@@ -3209,8 +3209,8 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
              WHERE c.id = $1`,
             [cardId]
         );
-        const oldListId = oldListRes.rows[0]?.list_id;
-        const oldListName = oldListRes.rows[0]?.list_name || "Unknown List";
+        const fromListId = oldListRes.rows[0]?.list_id;
+        const fromListName = oldListRes.rows[0]?.list_name || "Unknown List";
         const fromBoardId = oldListRes.rows[0]?.board_id;
         const fromBoardName = oldListRes.rows[0]?.board_name || "Unknown Board";
 
@@ -3222,7 +3222,7 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
              WHERE l.id = $1`,
             [listId]
         );
-        const newListName = newListRes.rows[0]?.list_name || "Unknown List";
+        const toListName = newListRes.rows[0]?.list_name || "Unknown List";
         const toBoardId = newListRes.rows[0]?.board_id;
         const toBoardName = newListRes.rows[0]?.board_name || "Unknown Board";
 
@@ -3234,7 +3234,7 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
             newCardId,
             'duplicate',
             userId,
-            `Card dengan ID ${cardId} diduplikasi dari list ${oldListId} ke list ${listId}`,
+            `Card dengan ID ${cardId} diduplikasi dari list ${fromListId} ke list ${listId}`,
             'list',
             listId
         );
@@ -3248,12 +3248,12 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
             entity_id: listId,
             details: {
                 cardTitle: newCardTitle,
-                fromListId: oldListId,
-                fromListName: oldListName,
+                fromListId,
+                fromListName,
                 fromBoardId,
                 fromBoardName,
                 toListId: listId,
-                toListName: newListName,
+                toListName,
                 toBoardId,
                 toBoardName,
                 duplicatedBy: { id: userId, username: userName }
@@ -3265,12 +3265,14 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
             message: 'Card berhasil diduplikasi',
             cardId: newCardId,
             listId,
-            listName: newListName,
+            listName: toListName,
+            fromBoard: { id: fromBoardId, name: fromBoardName },
+            toBoard: { id: toBoardId, name: toBoardName },
             newCard: {
                 id: newCardId,
                 title: newCardTitle,
                 listId,
-                listName: newListName,
+                listName: toListName,
                 duplicatedBy: {
                     id: userId,
                     username: userName
