@@ -3231,7 +3231,18 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
         });
 
         // Response sukses
-        res.status(201).json({ newCardId });
+        res.status(201).json({
+            message: "Card berhasil diduplikasi",
+            newCard: {
+                id: newCardId,
+                title: newCardTitle,
+                listId: listId,
+                duplicatedBy: {
+                    id: userId,
+                    username: userName
+                }
+            }
+        });
 
     } catch (err) {
         await client.query('ROLLBACK');
