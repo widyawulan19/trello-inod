@@ -3113,115 +3113,98 @@ app.delete('/api/cards/:cardId', async (req, res) => {
 
 //5. duplicate card
 // Endpoint untuk duplikasi card ke list tertentu
+//5. duplicate card
+// Endpoint untuk duplikasi card ke list tertentu
 app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
     const { cardId, listId } = req.params;
     const userId = req.user.id;
 
     try {
-        // Mulai transaksi untuk memastikan konsistensi data
         await client.query('BEGIN');
 
-        // 1. Salin data card utama dan masukkan ke dalam list yang dituju
+        // 1. Salin data card utama
         const result = await client.query(
             `INSERT INTO public.cards (title, description, list_id, position) 
              SELECT title, description, $1, 
                     (SELECT COALESCE(MAX(position), 0) + 1 FROM public.cards WHERE list_id = $1)
              FROM public.cards 
              WHERE id = $2 
-             RETURNING id`,
+             RETURNING id, title`,
             [listId, cardId]
         );
 
-        //fungsi untuk mendapatkan id
         const newCardId = result.rows[0].id;
+        const newCardTitle = result.rows[0].title;
 
-        // 2. Salin relasi terkait (checklists, cover, etc.)
-
-        // Salin checklists
+        // 2. Salin relasi-relasi card
         await client.query(
             `INSERT INTO public.card_checklists (card_id, checklist_id, created_at, updated_at)
              SELECT $1, checklist_id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
-             FROM public.card_checklists
-             WHERE card_id = $2`,
+             FROM public.card_checklists WHERE card_id = $2`,
             [newCardId, cardId]
         );
 
-        // Salin cover
         await client.query(
             `INSERT INTO public.card_cover (card_id, cover_id)
-             SELECT $1, cover_id
-             FROM public.card_cover
-             WHERE card_id = $2`,
+             SELECT $1, cover_id FROM public.card_cover WHERE card_id = $2`,
             [newCardId, cardId]
         );
 
-        // Salin descriptions
         await client.query(
             `INSERT INTO public.card_descriptions (card_id, description, created_at, updated_at)
              SELECT $1, description, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
-             FROM public.card_descriptions
-             WHERE card_id = $2`,
+             FROM public.card_descriptions WHERE card_id = $2`,
             [newCardId, cardId]
         );
 
-        // Salin due dates
         await client.query(
             `INSERT INTO public.card_due_dates (card_id, due_date, created_at, updated_at)
              SELECT $1, due_date, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
-             FROM public.card_due_dates
-             WHERE card_id = $2`,
+             FROM public.card_due_dates WHERE card_id = $2`,
             [newCardId, cardId]
         );
 
-        // Salin labels
         await client.query(
             `INSERT INTO public.card_labels (card_id, label_id)
-             SELECT $1, label_id
-             FROM public.card_labels
-             WHERE card_id = $2`,
+             SELECT $1, label_id FROM public.card_labels WHERE card_id = $2`,
             [newCardId, cardId]
         );
 
-        // Salin members
         await client.query(
             `INSERT INTO public.card_members (card_id, user_id)
-             SELECT $1, user_id
-             FROM public.card_members
-             WHERE card_id = $2`,
+             SELECT $1, user_id FROM public.card_members WHERE card_id = $2`,
             [newCardId, cardId]
         );
 
-        // Salin priorities
         await client.query(
             `INSERT INTO public.card_priorities (card_id, priority_id)
-             SELECT $1, priority_id
-             FROM public.card_priorities
-             WHERE card_id = $2`,
+             SELECT $1, priority_id FROM public.card_priorities WHERE card_id = $2`,
             [newCardId, cardId]
         );
 
-        // Salin status
         await client.query(
             `INSERT INTO public.card_status (card_id, status_id, assigned_at)
              SELECT $1, status_id, CURRENT_TIMESTAMP
-             FROM public.card_status
-             WHERE card_id = $2`,
+             FROM public.card_status WHERE card_id = $2`,
             [newCardId, cardId]
         );
 
-        // Salin users
         await client.query(
             `INSERT INTO public.card_users (card_id, user_id)
-             SELECT $1, user_id
-             FROM public.card_users
-             WHERE card_id = $2`,
+             SELECT $1, user_id FROM public.card_users WHERE card_id = $2`,
             [newCardId, cardId]
         );
 
-        // Commit transaksi
+        // 3. Ambil nama user untuk dicatat di activity
+        const userRes = await client.query(
+            "SELECT name FROM users WHERE id = $1",
+            [userId]
+        );
+        const userName = userRes.rows[0]?.name || 'Unknown';
+
         await client.query('COMMIT');
 
-        //add log activity
+        // 4. Log ke user_activity (global activity)
         await logActivity(
             'card',
             newCardId,
@@ -3230,18 +3213,163 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
             `Card dengan ID ${cardId} diduplikasi ke list ${listId}`,
             'list',
             listId
-        )
+        );
 
-        // Mengembalikan response dengan id card baru yang telah disalin
+        // 5. Log ke card_activities (activity di card baru)
+        await logCardActivity({
+            action: 'duplicate',
+            card_id: newCardId,
+            user_id: userId,
+            entity: 'list',
+            entity_id: listId,
+            details: {
+                fromCardId: cardId,
+                toListId: listId,
+                cardTitle: newCardTitle,
+                duplicatedBy: { id: userId, name: userName }
+            }
+        });
+
+        // Response sukses
         res.status(201).json({ newCardId });
 
     } catch (err) {
-        // Rollback transaksi jika ada error
         await client.query('ROLLBACK');
         console.error(err);
         res.status(500).json({ error: 'Terjadi kesalahan saat menyalin card ke list yang baru' });
     }
 });
+
+
+// app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
+//     const { cardId, listId } = req.params;
+//     const userId = req.user.id;
+
+//     try {
+//         // Mulai transaksi untuk memastikan konsistensi data
+//         await client.query('BEGIN');
+
+//         // 1. Salin data card utama dan masukkan ke dalam list yang dituju
+//         const result = await client.query(
+//             `INSERT INTO public.cards (title, description, list_id, position) 
+//              SELECT title, description, $1, 
+//                     (SELECT COALESCE(MAX(position), 0) + 1 FROM public.cards WHERE list_id = $1)
+//              FROM public.cards 
+//              WHERE id = $2 
+//              RETURNING id`,
+//             [listId, cardId]
+//         );
+
+//         //fungsi untuk mendapatkan id
+//         const newCardId = result.rows[0].id;
+
+//         // 2. Salin relasi terkait (checklists, cover, etc.)
+
+//         // Salin checklists
+//         await client.query(
+//             `INSERT INTO public.card_checklists (card_id, checklist_id, created_at, updated_at)
+//              SELECT $1, checklist_id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+//              FROM public.card_checklists
+//              WHERE card_id = $2`,
+//             [newCardId, cardId]
+//         );
+
+//         // Salin cover
+//         await client.query(
+//             `INSERT INTO public.card_cover (card_id, cover_id)
+//              SELECT $1, cover_id
+//              FROM public.card_cover
+//              WHERE card_id = $2`,
+//             [newCardId, cardId]
+//         );
+
+//         // Salin descriptions
+//         await client.query(
+//             `INSERT INTO public.card_descriptions (card_id, description, created_at, updated_at)
+//              SELECT $1, description, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+//              FROM public.card_descriptions
+//              WHERE card_id = $2`,
+//             [newCardId, cardId]
+//         );
+
+//         // Salin due dates
+//         await client.query(
+//             `INSERT INTO public.card_due_dates (card_id, due_date, created_at, updated_at)
+//              SELECT $1, due_date, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+//              FROM public.card_due_dates
+//              WHERE card_id = $2`,
+//             [newCardId, cardId]
+//         );
+
+//         // Salin labels
+//         await client.query(
+//             `INSERT INTO public.card_labels (card_id, label_id)
+//              SELECT $1, label_id
+//              FROM public.card_labels
+//              WHERE card_id = $2`,
+//             [newCardId, cardId]
+//         );
+
+//         // Salin members
+//         await client.query(
+//             `INSERT INTO public.card_members (card_id, user_id)
+//              SELECT $1, user_id
+//              FROM public.card_members
+//              WHERE card_id = $2`,
+//             [newCardId, cardId]
+//         );
+
+//         // Salin priorities
+//         await client.query(
+//             `INSERT INTO public.card_priorities (card_id, priority_id)
+//              SELECT $1, priority_id
+//              FROM public.card_priorities
+//              WHERE card_id = $2`,
+//             [newCardId, cardId]
+//         );
+
+//         // Salin status
+//         await client.query(
+//             `INSERT INTO public.card_status (card_id, status_id, assigned_at)
+//              SELECT $1, status_id, CURRENT_TIMESTAMP
+//              FROM public.card_status
+//              WHERE card_id = $2`,
+//             [newCardId, cardId]
+//         );
+
+//         // Salin users
+//         await client.query(
+//             `INSERT INTO public.card_users (card_id, user_id)
+//              SELECT $1, user_id
+//              FROM public.card_users
+//              WHERE card_id = $2`,
+//             [newCardId, cardId]
+//         );
+
+//         // Commit transaksi
+//         await client.query('COMMIT');
+
+//         //add log activity
+//         await logActivity(
+//             'card',
+//             newCardId,
+//             'duplicate',
+//             userId,
+//             `Card dengan ID ${cardId} diduplikasi ke list ${listId}`,
+//             'list',
+//             listId
+//         )
+
+//         // Mengembalikan response dengan id card baru yang telah disalin
+//         res.status(201).json({ newCardId });
+
+//     } catch (err) {
+//         // Rollback transaksi jika ada error
+//         await client.query('ROLLBACK');
+//         console.error(err);
+//         res.status(500).json({ error: 'Terjadi kesalahan saat menyalin card ke list yang baru' });
+//     }
+// });
 
 //6. move card
 app.put('/api/move-card-to-list/:cardId/:listId', async (req, res) => {
