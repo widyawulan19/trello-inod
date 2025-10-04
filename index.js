@@ -3200,6 +3200,13 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
         );
         const userName = userRes.rows[0]?.username || 'Unknown';
 
+        //ambil nama list 
+        const listRes = await client.query(
+            `SELECT title FROM lists WHERE id = $1`,
+            [listId]
+        );
+        const listName = listRes.rows[0]?.title || "Unknown List";
+
         await client.query('COMMIT');
 
         // 4. Log ke user_activity (global activity)
@@ -3229,12 +3236,16 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
         });
 
         // Response sukses
-        res.status(201).json({
-            message: "Card berhasil diduplikasi",
+        res.status(200).json({
+            message: 'Card berhasil diduplikasi',
+            cardId: newCardId,
+            listId,
+            listName,   // <<=== kirimkan
             newCard: {
                 id: newCardId,
                 title: newCardTitle,
-                listId: listId,
+                listId,
+                listName, // <<=== kirimkan
                 duplicatedBy: {
                     id: userId,
                     username: userName
@@ -3377,6 +3388,13 @@ app.put('/api/move-card-to-list/:cardId/:listId', async (req, res) => {
         );
 
 
+        // ambil nama list tujuan
+        const listRes = await client.query(
+        `SELECT title FROM lists WHERE id = $1`,
+            [listId]
+        );
+        const listName = listRes.rows[0]?.title || "Unknown List";
+
         // mengambil user untuk di catat di activity 
         const userRes = await client.query(
             "SELECT username FROM users WHERE id = $1",
@@ -3414,18 +3432,20 @@ app.put('/api/move-card-to-list/:cardId/:listId', async (req, res) => {
 
         })
 
-        res.status(200).json({
-            message: 'Card berhasil dipindahkan',
-            cardId,
-            listId,
+        res.status(200).json({ 
+            message: 'Card berhasil dipindahkan', 
+            cardId, 
+            listId, 
+            listName,   // <<=== tambahin ini
             newPosition,
             newCard: {
                 id: cardId,
                 title: newCardTitle,
                 listId: listId,
+                listName: listName,   // <<=== tambahin ini juga
                 movedBy: {
-                    id: userId,
-                    username: userName
+                id: userId,
+                username: userName
                 }
             }
         });
