@@ -3228,9 +3228,9 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
             entity: 'list',
             entity_id: listId,
             details: {
-                fromCardId: cardId,
-                toListId: listId,
                 cardTitle: newCardTitle,
+                toListId: listId,
+                toListName: listName,  // <<=== ini yang dipakai di FE
                 duplicatedBy: { id: userId, username: userName }
             }
         });
@@ -3390,7 +3390,7 @@ app.put('/api/move-card-to-list/:cardId/:listId', async (req, res) => {
 
         // ambil nama list tujuan
         const listRes = await client.query(
-        `SELECT name FROM lists WHERE id = $1`,
+            `SELECT name FROM lists WHERE id = $1`,
             [listId]
         );
         const listName = listRes.rows[0]?.name || "Unknown List";
@@ -3425,17 +3425,18 @@ app.put('/api/move-card-to-list/:cardId/:listId', async (req, res) => {
             entity_id: listId,
             details: {
                 fromListId: oldListId,
+                fromListName: oldListName,   // ← ambil nama list lama
                 toListId: listId,
+                toListName: listName,        // ← ambil nama list baru
                 cardTitle: newCardTitle,
                 movedBy: { id: userId, username: userName }
             }
+        });
 
-        })
-
-        res.status(200).json({ 
-            message: 'Card berhasil dipindahkan', 
-            cardId, 
-            listId, 
+        res.status(200).json({
+            message: 'Card berhasil dipindahkan',
+            cardId,
+            listId,
             listName,   // <<=== tambahin ini
             newPosition,
             newCard: {
@@ -3444,8 +3445,8 @@ app.put('/api/move-card-to-list/:cardId/:listId', async (req, res) => {
                 listId: listId,
                 listName: listName,   // <<=== tambahin ini juga
                 movedBy: {
-                id: userId,
-                username: userName
+                    id: userId,
+                    username: userName
                 }
             }
         });
