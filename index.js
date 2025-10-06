@@ -2597,8 +2597,8 @@ app.put('/api/lists/:id', async (req, res) => {
 
 // 4. reorder lists in a board
 app.put('/api/lists/reorder', async (req, res) => {
-    const { board_id, boardId, lists } = req.body;
-    const boardIdToUse = board_id || boardId;
+    const { board_id, id, lists } = req.body;
+    const boardIdToUse = board_id || id;
     const userId = req.user ? req.user.id : null;
 
     console.log("📦 Received reorder payload:", req.body);
@@ -2607,7 +2607,7 @@ app.put('/api/lists/reorder', async (req, res) => {
         return res.status(400).json({ error: "Invalid input data" });
     }
 
-    const client = await pool.connect();
+    const client = await client.query();
 
     try {
         await client.query("BEGIN");
