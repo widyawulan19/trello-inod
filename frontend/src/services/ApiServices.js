@@ -153,6 +153,18 @@ export const deleteLists = (id) => axios.delete(`${API_URL}/lists/${id}`)
 export const moveListToBoard = (listId, data) => axios.put(`${API_URL}/move-list/${listId}`, data)
 export const duplicateList = (listId, data) => axios.post(`${API_URL}/duplicate-list/${listId}`, data)
 export const archiveList = (listId) => axios.put(`${API_URL}/archive-lists/${listId}`)
+export const updateListPositions = async (boardId, lists) => {
+  try {
+    const response = await axios.put(`${API_URL}/lists/reorder`, {
+      board_id: boardId,
+      lists: lists, // array berisi id & posisi baru
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error updating list positions:', error);
+    throw error;
+  }
+};
 
 //CARDS
 export const getAllCard = () => axios.get(`${API_URL}/cards`)

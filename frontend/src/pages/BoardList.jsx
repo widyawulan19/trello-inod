@@ -32,6 +32,7 @@ import { useUser } from '../context/UserContext'
 import { FaChevronRight, FaPlus } from 'react-icons/fa6'
 import { handleArchive } from '../utils/handleArchive'
 import SearchCard from '../fitur/SearchCard'
+import PositionList from '../modules/PositionList'
 
 const BoardList=()=> {
     //STATE
@@ -423,6 +424,9 @@ if (!userId) {
                                             <HiOutlineTrash className='cs-delete'/>
                                             Delete
                                           </button>
+                                        </div>
+                                        <div>
+                                            <PositionList boardId={boardId} lists={lists} setLists={setLists}/>
                                         </div>
                                     </div>
                                 )}
