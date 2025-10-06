@@ -2594,6 +2594,48 @@ app.put('/api/lists/:id', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 })
+
+// 4. reorder lists in a board
+app.put('/api/lists/reorder', async (req, res) => {
+    const { board_id, lists } = req.body;
+    const userId = req.user.id;
+
+    if (!board_id || !Array.isArray(lists)) {
+        return res.status(400).json({ error: "Invalid input data" });
+    }
+
+    try {
+        await client.query("BEGIN"); // mulai transaction
+
+        for (const list of lists) {
+            const { id, position } = list;
+            await client.query(
+                "UPDATE lists SET position = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2 AND board_id = $3",
+                [position, id, board_id]
+            );
+        }
+
+        await client.query("COMMIT");
+
+        // optional: log activity
+        await logActivity(
+            'list',
+            null,
+            'reorder',
+            userId,
+            `Lists reordered in board ${board_id}`,
+            'board',
+            board_id
+        );
+
+        res.status(200).json({ message: "List positions updated successfully" });
+    } catch (error) {
+        await client.query("ROLLBACK");
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
 //5. delete lists
 app.delete('/api/lists/:id', async (req, res) => {
     const { id } = req.params;
