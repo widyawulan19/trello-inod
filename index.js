@@ -2597,43 +2597,55 @@ app.put('/api/lists/:id', async (req, res) => {
 
 // 4. reorder lists in a board
 app.put('/api/lists/reorder', async (req, res) => {
-    const { board_id, lists } = req.body;
-    const userId = req.user.id;
+    const { board_id, boardId, lists } = req.body;
+    const boardIdToUse = board_id || boardId;
+    const userId = req.user ? req.user.id : null;
 
-    if (!board_id || !Array.isArray(lists)) {
+    console.log("📦 Received reorder payload:", req.body);
+
+    if (!boardIdToUse || !Array.isArray(lists)) {
         return res.status(400).json({ error: "Invalid input data" });
     }
 
+    const client = await pool.connect();
+
     try {
-        await client.query("BEGIN"); // mulai transaction
+        await client.query("BEGIN");
 
         for (const list of lists) {
             const { id, position } = list;
+            if (!id || typeof position === "undefined") continue;
+
             await client.query(
                 "UPDATE lists SET position = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2 AND board_id = $3",
-                [position, id, board_id]
+                [position, id, boardIdToUse]
             );
         }
 
         await client.query("COMMIT");
 
-        // optional: log activity
-        await logActivity(
-            'list',
-            null,
-            'reorder',
-            userId,
-            `Lists reordered in board ${board_id}`,
-            'board',
-            board_id
-        );
+        if (userId) {
+            await logActivity(
+                'list',
+                null,
+                'reorder',
+                userId,
+                `Lists reordered in board ${boardIdToUse}`,
+                'board',
+                boardIdToUse
+            );
+        }
 
         res.status(200).json({ message: "List positions updated successfully" });
     } catch (error) {
         await client.query("ROLLBACK");
+        console.error("❌ Error updating list positions:", error);
         res.status(500).json({ error: error.message });
+    } finally {
+        client.release();
     }
 });
+
 
 
 //5. delete lists
