@@ -6,8 +6,8 @@ import BootstrapTooltip from '../components/Tooltip';
 import '../style/fitur/MoveCard.css';
 import { useSnackbar } from '../context/Snackbar';
 
-const MoveCard = ({ cardId, workspaceId, onClose, userId, currentBoardId,onCardMoved,fetchCardList}) => {
-    console.log('File move card menerima board id:', currentBoardId)
+const MoveCard = ({ cardId, workspaceId, onClose, userId, boardId,onCardMoved,fetchCardList,fetchBoardDetail, listId}) => {
+    console.log('File move card menerima board id:', boardId)
     const [boards, setBoards] = useState([]);
     const [lists, setLists] = useState([]);
     const [searchBoard, setSearchBoard] = useState('');
@@ -55,25 +55,63 @@ const MoveCard = ({ cardId, workspaceId, onClose, userId, currentBoardId,onCardM
     }, [selectedBoardId]);
 
     const handleMoveCard = async () => {
-        if (!cardId || !selectedList) {
-            alert('Please select both board and list!');
-            return;
-        }
+    if (!cardId || !selectedList?.id) {
+        alert('Please select both board and list!');
+        return;
+    }
 
-        setIsMoving(true);
-        try {
-            await moveCardToList(cardId, selectedList.id);
-            showSnackbar('Card moved successfully!', 'success');
-            navigate(`/layout/workspaces/${workspaceId}/board/${selectedBoardId}`);
-            fetchCardList(selectedList.id)
-            onClose();
-        } catch (error) {
-            console.error('Error moving card:', error);
-            showSnackbar('Failed to move the card!', 'error');
-        } finally {
-            setIsMoving(false);
-        }
+    setIsMoving(true);
+
+    try {
+        const result = await moveCardToList(cardId, selectedList.id);
+        console.log('Card moved to target list:', result.data);
+
+        showSnackbar('Card moved successfully!', 'success');
+
+        // Navigasi ke board tujuan
+        navigate(`/layout/workspaces/${workspaceId}/board/${selectedBoardId}`);
+
+        // ✅ panggil refetch dari parent
+        if (onCardMoved) onCardMoved();
+
+        // kalau masih mau jaga-jaga
+        // if (fetchBoardDetail) fetchBoardDetail();
+        // if (fetchCardList) fetchCardList(selectedList.id);
+        fetchCardList(listId);
+        fetchCardList(selectedList.id)
+
+        onClose();
+    } catch (error) {
+        console.error('Error moving card:', error);
+        showSnackbar('Failed to move the card!', 'error');
+    } finally {
+        setIsMoving(false);
+    }
     };
+
+
+    // const handleMoveCard = async () => {
+    //     if (!cardId || !selectedList.id) {
+    //         alert('Please select both board and list!');
+    //         return;
+    //     }
+
+    //     setIsMoving(true);
+
+    //    try{
+    //         const result = await moveCardToList(cardId, selectedList.id);
+    //         console.log('Card moved to target list:', result.data)
+    //         showSnackbar('Card moved successfully!', 'success');
+    //         navigate(`/layout/workspaces/${workspaceId}/board/${selectedBoardId}`);
+    //         fetchCardList(selectedList.id)
+    //         onClose();
+    //    }catch(error){
+    //         console.error('Error moving card:', error);
+    //         showSnackbar('Failed to move the card!', 'error');
+    //    }finally {
+    //         setIsMoving(false);
+    //     }
+    // };
 
     return (
         <div className="mc-container">
@@ -163,6 +201,7 @@ const MoveCard = ({ cardId, workspaceId, onClose, userId, currentBoardId,onCardM
                                             className={`mcl-item ${selectedList?.id === list.id ? 'selected' : ''}`}
                                             onClick={() => {
                                                 setSelectedList(list);
+                                                // setSelectedList(null);
                                                 setShowListDropdown(false);
                                             }}
                                         >

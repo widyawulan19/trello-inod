@@ -469,13 +469,30 @@ const Card=({
             />
             {showDuplicate[card.id] && (
                 <div className="card-move-modal">
-                    <DuplicateCard cardId={card.id} boardId={boardId} listId={listId} workspaceId={workspaceId} onClose={()=> handleCloseDuplicate(card.id)} fetchCardList={fetchCardList}/>
+                    <DuplicateCard 
+                        cardId={card.id} 
+                        boardId={boardId} 
+                        listId={listId} 
+                        workspaceId={workspaceId} 
+                        onClose={()=> handleCloseDuplicate(card.id)} 
+                        fetchCardList={fetchCardList}
+                    />
                 </div>
             )}
 
             {showMove[card.id]&&(
                 <div className="card-move-modal">
-                    <MoveCard cardId={card.id} currentBoardId={boardId} listId={listId} workspaceId={workspaceId} onClose={()=> handleCloseMove(card.id)}  fetchCardList={fetchCardList}/>
+                    <MoveCard 
+                        cardId={card.id} 
+                        boardId={boardId} 
+                        listId={listId} 
+                        workspaceId={workspaceId} 
+                        onClose={()=> handleCloseMove(card.id)}  
+                        fetchCardList={fetchCardList}
+                        fetchLists={fetchLists}
+                        fetchBoardDetail={fetchBoardDetail}
+                        onRefetch={onRefetch}
+                    />
                 </div>
             )}
 

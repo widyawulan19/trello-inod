@@ -73,31 +73,71 @@ const CardActivity = ({ cardId }) => {
           {cardActivities.map((activity) => {
             const detail = activity.action_detail ? JSON.parse(activity.action_detail) : {};
             const borderColor = COLOR_BORDER[activity.action_type] || '#ddd';
-            const messageText = MESSAGE_ACTIVITY[activity.action_type] || activity.action_type;
 
-            let message = `${activity.username} ${messageText}`;
+            let messageElement = null;
 
-            // --- Custom handling ---
-            if (activity.action_type === 'updated_title') {
-              if (detail.new_title) {
-                message += ` "${detail.new_title}"`;
+            if (activity.action_type === 'updated_title' && detail.new_title) {
+              messageElement = (
+                <>
+                  <span className="font-semibold">{activity.username}</span> updated title to{" "}
+                  <span className="font-bold">"{detail.new_title}"</span>
+                </>
+              );
+            }
+
+            if (activity.action_type === 'move' && detail.cardTitle) {
+              if (detail.fromBoardName === detail.toBoardName) {
+                messageElement = (
+                  <>
+                    <span className="font-semibold">{activity.username}</span> moved{" "}
+                    <span className="font-bold">"{detail.cardTitle}"</span> from{" "}
+                    <span className="text-red-500">"{detail.fromListName}"</span> to{" "}
+                    <span className="text-green-600">"{detail.toListName}"</span> on board{" "}
+                    <span className="italic">"{detail.toBoardName}"</span>
+                  </>
+                );
+              } else {
+                messageElement = (
+                  <>
+                    <span className="font-semibold">{activity.username}</span> moved{" "}
+                    <span className="font-bold">"{detail.cardTitle}"</span> from{" "}
+                    <span className="text-red-500">"{detail.fromListName}"</span> (board{" "}
+                    <span className="italic">"{detail.fromBoardName}"</span>) to{" "}
+                    <span className="text-green-600">"{detail.toListName}"</span> (board{" "}
+                    <span className="italic">"{detail.toBoardName}"</span>)
+                  </>
+                );
               }
             }
-            if (activity.action_type === 'move') {
-              message = `${activity.username} moved "${detail.cardTitle}" 
-                        from "${detail.fromListName}" to "${detail.toListName}"`;
-            }
 
-            if (activity.action_type === 'duplicate') {
-              if (detail.cardTitle) {
-                message = `${activity.username} duplicated card as "${detail.cardTitle}" in list "${detail.toListName}"`;
+            if (activity.action_type === 'duplicate' && detail.cardTitle) {
+              if (detail.fromBoardName === detail.toBoardName) {
+                messageElement = (
+                  <>
+                    <span className="font-semibold">{activity.username}</span> duplicated card as{" "}
+                    <span className="font-bold">"{detail.cardTitle}"</span> in list{" "}
+                    <span className="text-green-600">"{detail.toListName}"</span> on board{" "}
+                    <span className="italic">"{detail.toBoardName}"</span>
+                  </>
+                );
+              } else {
+                messageElement = (
+                  <>
+                    <span className="font-semibold">{activity.username}</span> duplicated card as{" "}
+                    <span className="font-bold">"{detail.cardTitle}"</span> from list{" "}
+                    <span className="text-red-500">"{detail.fromListName}"</span> (board{" "}
+                    <span className="italic">"{detail.fromBoardName}"</span>) to list{" "}
+                    <span className="text-green-600">"{detail.toListName}"</span> (board{" "}
+                    <span className="italic">"{detail.toBoardName}"</span>)
+                  </>
+                );
               }
             }
 
             return (
               <li
                 key={activity.id}
-                className='ca-li'
+                className="ca-li"
                 style={{
                   padding: '0.25rem',
                   borderLeftWidth: '4px',
@@ -107,20 +147,23 @@ const CardActivity = ({ cardId }) => {
                   borderRadius: '0.25rem',
                 }}
               >
-                <p style={{ fontSize:'12px', margin:0 }}>{message}</p>
-                <p style={{
-                  fontSize:'10px',
-                  width:'100%',
-                  display:'flex',
-                  alignItems:'center',
-                  justifyContent:'flex-end'
-                }}>
+                <p style={{ fontSize: '10px', margin: 0 }}>{messageElement}</p>
+                <p
+                  style={{
+                    fontSize: '10px',
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'flex-end',
+                  }}
+                >
                   {new Date(activity.created_at).toLocaleString()}
                 </p>
               </li>
             );
           })}
         </ul>
+
       )}
     </div>
   );

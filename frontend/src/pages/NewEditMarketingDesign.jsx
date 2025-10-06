@@ -328,7 +328,7 @@ console.log('data marketing design:', marketingDesignId);
 
               {/* Acc By */}
               <div className="box-content">
-                <label >Accept By</label>
+                <label >Accept By <span style={{color:'red', fontSize:'10px'}}> ** Periksa oleh kadiv</span></label>
                 <CustomDropdownDesignEdit
                   options={dropdownData.accs}  // <- benar-benar dari kepala_divisi
                   value={form.acc_by}
@@ -344,7 +344,7 @@ console.log('data marketing design:', marketingDesignId);
 
               {/* STATUS ACCEPT */}
               <div className="box-content">
-                  <label>Status</label>
+                  <label>Status <span style={{color:'red', fontSize:'10px'}}> ** Periksa oleh kadiv</span></label>
                   <CustomDropdownDesignEdit
                       options={dropdownData.statusProject}  // <- benar-benar dari kepala_divisi
                       value={form.status_project_id}
@@ -510,7 +510,7 @@ console.log('data marketing design:', marketingDesignId);
 
                     {/* Jumlah Design */}
                     <div className="box-content">
-                        <label >Style</label>
+                        <label >Style <span style={{color:'red', fontSize:'10px'}}> ** Periksa oleh kadiv</span> </label>
                         <CustomDropdownDesignEdit
                           options={dropdownData.style}
                           value={form.style_id}

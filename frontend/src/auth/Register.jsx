@@ -6,9 +6,11 @@ import { HiArrowLeft } from 'react-icons/hi2';
 import { useNavigate } from 'react-router-dom';
 import BootstrapTooltip from '../components/Tooltip';
 import { registerUser } from '../services/ApiServices';
+import { useSnackbar } from '../context/Snackbar';
 
 const Register = () => {
   const navigate = useNavigate();
+  const {showSnackbar} = useSnackbar();
 
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -31,12 +33,12 @@ const Register = () => {
       };
 
       await registerUser(payload); // ✅ Pakai service API
-
-      alert('Registrasi berhasil!');
+      // alert('Registrasi berhasil!');
+      showSnackbar('Registrasi berhasil bestie 🫡', 'success');
       navigate('/login');
     } catch (err) {
-      console.error(err);
-      alert('Registrasi gagal. Coba lagi ya bestie.');
+      // alert('Registrasi gagal. Coba lagi ya bestie.');
+      showSnackbar('Registrasi gagal. Coba lagi ya bestie 🥲 ', 'error')
     }
   };
 

@@ -333,12 +333,14 @@ const handleExportToSheet = async (marketingDesignId) => {
     "NOT ACCEPTED":'#C62828',
     "ON PROGRESS":'#C38D24',
     "UNKNOWN":'#F5F5F5',
+    "CONFIRMED": "#1565C0"
   }
   const STATUS_BG = {
     "ACCEPTED ":'#C8E6C9',
     "NOT ACCEPTED":'#FFCDD2',
     "ON PROGRESS":'#FFDCB3',
     "UNKNOWN":"#9E9E9E",
+    "CONFIRMED": "#BBDEFB" 
   }
 
   // SHOW DATA CONTENT 

@@ -6,7 +6,7 @@ import { HiMiniArrowLeftStartOnRectangle, HiOutlineChevronDown, HiOutlineXMark }
 import '../style/fitur/MoveList.css'
 import { useSnackbar } from '../context/Snackbar';
 
-const MoveList = ({ boardId, userId, onClose, listId }) => {
+const MoveList = ({ boardId, userId, onClose, listId ,fetchLists,fetchCardList}) => {
     // STATE
     console.log("user Id diterima pada halaman move list :", userId)
     const [workspaces, setWorkspaces] = useState([]);
@@ -64,6 +64,7 @@ const MoveList = ({ boardId, userId, onClose, listId }) => {
             showSnackbar('List moved successfully!', 'success')
             onClose();
             navigate(`/layout/workspaces/${selectedWorkspaceId}/board/${selectedBoardId}`);
+            fetchCardList()
         } catch (error) {
             console.error('Error moving list:', error);
             showSnackbar('Failed to move the list. Please try again', 'error')

@@ -191,12 +191,15 @@ const BoardList=()=> {
     // },[lists, fetchCardList]);
 
     //FETCH ALL
-    const handleRefetchBoard = () => {
-        fetchBoardDetail();
-        fetchLists();
-        fetchCardList(listId)
-      };
+    const fetchAllCardList = useCallback(() => {
+    lists.forEach(list => fetchCardList(list.id));
+    }, [lists, fetchCardList]);
 
+    const handleRefetchBoard = () => {
+    fetchBoardDetail();
+    fetchLists();   // otomatis setelah fetchLists selesai → lists berubah → useEffect jalan → fetchAllCardList
+    fetchAllCardList();
+    };
 
     //4. create new list 
     const handleListCreated = (newList) => {
@@ -432,7 +435,7 @@ if (!userId) {
                                 />
                                 {showMovePopup[list.id] && (
                                     <div className="new-move-list-modal">
-                                        <MoveList userId={userId} currentBoardId={boardId} listId={list.id} workspaceId={workspaceId} onClose={()=> handleCloseMovePopup(list.id)}/>
+                                        <MoveList userId={userId} currentBoardId={boardId} listId={list.id} workspaceId={workspaceId} onClose={()=> handleCloseMovePopup(list.id)} fetchLists={fetchLists}/>
                                     </div>
                                 )}
                                 {showDuplicatePopup[list.id] && (
@@ -491,6 +494,12 @@ if (!userId) {
                     
                     </div>
                 ))}
+                {/* <div className="list-box">
+                    <div className="list-box-content" onClick={handleShowListForm}>
+                        <HiOutlinePlus className=''/>
+                        CREATE A NEW LIST
+                    </div>
+                </div> */}
             </div>
             
         </div>
