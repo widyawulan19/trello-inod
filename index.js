@@ -2595,56 +2595,46 @@ app.put('/api/lists/:id', async (req, res) => {
     }
 })
 
-// 4. reorder lists in a board
+// 4. reorder lists in a board (tanpa log activity)
 app.put('/api/lists/reorder', async (req, res) => {
-    const { board_id, id, lists } = req.body;
-    const boardIdToUse = board_id || id;
-    const userId = req.user ? req.user.id : null;
+  const { board_id, lists } = req.body;
 
-    console.log("📦 Received reorder payload:", req.body);
+  // validasi data
+  if (!board_id || !Array.isArray(lists)) {
+    return res.status(400).json({ error: "Invalid input data" });
+  }
 
-    if (!boardIdToUse || !Array.isArray(lists)) {
-        return res.status(400).json({ error: "Invalid input data" });
-    }
+  try {
+    await client.query("BEGIN"); // mulai transaksi
 
-    const client = await client.query();
+    for (const list of lists) {
+      const { id, position } = list;
 
-    try {
-        await client.query("BEGIN");
-
-        for (const list of lists) {
-            const { id, position } = list;
-            if (!id || typeof position === "undefined") continue;
-
-            await client.query(
-                "UPDATE lists SET position = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2 AND board_id = $3",
-                [position, id, boardIdToUse]
-            );
-        }
-
-        await client.query("COMMIT");
-
-        if (userId) {
-            await logActivity(
-                'list',
-                null,
-                'reorder',
-                userId,
-                `Lists reordered in board ${boardIdToUse}`,
-                'board',
-                boardIdToUse
-            );
-        }
-
-        res.status(200).json({ message: "List positions updated successfully" });
-    } catch (error) {
+      // pastikan id & position ada
+      if (!id || position == null) {
         await client.query("ROLLBACK");
-        console.error("❌ Error updating list positions:", error);
-        res.status(500).json({ error: error.message });
-    } finally {
-        client.release();
+        return res.status(400).json({ error: "Each list must have id and position" });
+      }
+
+      // update posisi list berdasarkan board_id & id
+      await client.query(
+        `UPDATE lists 
+         SET position = $1, update_at = CURRENT_TIMESTAMP 
+         WHERE id = $2 AND board_id = $3`,
+        [position, id, board_id]
+      );
     }
+
+    await client.query("COMMIT");
+    res.status(200).json({ message: "✅ List positions updated successfully!" });
+
+  } catch (error) {
+    await client.query("ROLLBACK");
+    console.error("❌ Error updating list positions:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
+
 
 
 
