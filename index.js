@@ -2596,7 +2596,7 @@ app.put('/api/lists/:id', async (req, res) => {
 })
 
 // reorder lists in a board
-app.put('/api/lists/reorder', async (req, res) => {
+app.put('/api/lists/reorder-list', async (req, res) => {
     const { board_id, lists } = req.body;
 
     if (!board_id || !Array.isArray(lists)) {
