@@ -2494,6 +2494,37 @@ app.delete('/api/card-priority', async (req, res) => {
 //END CARD PRIORITY
 
 //LISTS
+
+// reorder lists in a board
+app.put('/api/lists/reorder-list', async (req, res) => {
+    const { board_id, lists } = req.body;
+
+    if (!board_id || !Array.isArray(lists)) {
+        return res.status(400).json({ error: 'board_id dan lists wajib diisi' });
+    }
+
+    try {
+        await client.query('BEGIN');
+
+        for (const list of lists) {
+            await client.query(
+                `UPDATE lists 
+         SET position = $1, updated_at = NOW() 
+         WHERE id = $2 AND board_id = $3`,
+                [list.position, list.id, board_id]
+            );
+        }
+
+        await client.query('COMMIT');
+        res.json({ success: true, updated: lists.length });
+    } catch (err) {
+        await client.query('ROLLBACK');
+        console.error('Error updating list positions:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
 //1. get all lists
 app.get('/api/lists', async (req, res) => {
     try {
@@ -2595,34 +2626,6 @@ app.put('/api/lists/:id', async (req, res) => {
     }
 })
 
-// reorder lists in a board
-app.put('/api/lists/reorder-list', async (req, res) => {
-    const { board_id, lists } = req.body;
-
-    if (!board_id || !Array.isArray(lists)) {
-        return res.status(400).json({ error: 'board_id dan lists wajib diisi' });
-    }
-
-    try {
-        await client.query('BEGIN');
-
-        for (const list of lists) {
-            await client.query(
-                `UPDATE lists 
-         SET position = $1, updated_at = NOW() 
-         WHERE id = $2 AND board_id = $3`,
-                [list.position, list.id, board_id]
-            );
-        }
-
-        await client.query('COMMIT');
-        res.json({ success: true, updated: lists.length });
-    } catch (err) {
-        await client.query('ROLLBACK');
-        console.error('Error updating list positions:', err);
-        res.status(500).json({ error: err.message });
-    }
-});
 
 
 
