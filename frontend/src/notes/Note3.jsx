@@ -1,199 +1,84 @@
-// if (activity.action_type === 'move') {
-//               message = `${activity.username} moved "${detail.cardTitle}" 
-//                         from "${detail.fromListName}" to "${detail.toListName}"`;
-//             }
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { reorderListPosition } from "../api/listApi";
 
-// if (activity.action_type === 'duplicate') {
-//   if (detail.cardTitle) {
-//     // kalau board sama
-//     if (detail.fromBoardName === detail.toBoardName) {
-//       message = `${activity.username} duplicated card as "${detail.cardTitle}" 
-//                  in list "${detail.toListName}" on board "${detail.toBoardName}"`;
-//     } else {
-//       // kalau duplicate antar board
-//       message = `${activity.username} duplicated card as "${detail.cardTitle}" 
-//                  from list "${detail.fromListName}" (board "${detail.fromBoardName}") 
-//                  to list "${detail.toListName}" (board "${detail.toBoardName}")`;
-//     }
-//   }
-// }
+const BoardView = ({ boardId }) => {
+  const [lists, setLists] = useState([]);
+  const [positions, setPositions] = useState({}); // simpan posisi baru per list
 
+  // 🔹 Ambil semua list berdasarkan board
+  useEffect(() => {
+    const fetchLists = async () => {
+      try {
+        const res = await axios.get(`http://localhost:5000/api/lists?board_id=${boardId}`);
+        setLists(res.data);
+      } catch (err) {
+        console.error("Error fetching lists:", err);
+      }
+    };
+    fetchLists();
+  }, [boardId]);
 
+  // 🔹 Fungsi untuk ubah posisi
+  const handlePositionChange = (listId, value) => {
+    setPositions((prev) => ({
+      ...prev,
+      [listId]: value,
+    }));
+  };
 
-// // {
-// //     "message": "Card berhasil dipindahkan",
-// //     "cardId": "485",
-// //     "fromBoardId": 216,
-// //     "fromBoardName": "[DESIGN] ACTIVE ORDER",
-// //     "fromListId": 360,
-// //     "fromListName": "2. FAHMISANS",
-// //     "toBoardId": 216,
-// //     "toBoardName": "[DESIGN] ACTIVE ORDER",
-// //     "toListId": "360",
-// //     "toListName": "2. FAHMISANS",
-// //     "newPosition": 7,
-// //     "newCard": {
-// //         "id": "485",
-// //         "title": "card contoh duplicate move duplicate again",
-// //         "listId": "360",
-// //         "listName": "2. FAHMISANS",
-// //         "boardId": 216,
-// //         "boardName": "[DESIGN] ACTIVE ORDER",
-// //         "movedBy": {
-// //             "id": 3,
-// //             "username": "anandradoe"
-// //         }
-// //     }
-// // }
+  // 🔹 Simpan perubahan posisi
+  const handleUpdatePosition = async (listId) => {
+    const newPosition = parseInt(positions[listId]);
+    if (isNaN(newPosition)) {
+      alert("Masukkan angka posisi yang valid!");
+      return;
+    }
 
+    try {
+      await reorderListPosition(listId, newPosition, boardId);
+      alert("List position updated successfully!");
 
-// <ul className="space-y-3">
-//   {cardActivities.map((activity) => {
-//     const detail = activity.action_detail ? JSON.parse(activity.action_detail) : {};
-//     const borderColor = COLOR_BORDER[activity.action_type] || '#ddd';
+      // ambil ulang urutan list
+      const res = await axios.get(`http://localhost:5000/api/lists?board_id=${boardId}`);
+      setLists(res.data);
+    } catch (err) {
+      console.error("Failed to update list position:", err);
+      alert("Gagal memperbarui posisi list.");
+    }
+  };
 
-//     let messageElement = null;
+  return (
+    <div className="p-4">
+      <h2 className="font-bold text-xl mb-4">Board Lists</h2>
+      <div className="grid grid-cols-3 gap-4">
+        {lists.map((list) => (
+          <div key={list.id} className="bg-white shadow-md rounded-xl p-4">
+            <h3 className="font-semibold text-lg mb-2">{list.title}</h3>
+            <p className="text-sm text-gray-600 mb-2">
+              Current Position: <b>{list.position}</b>
+            </p>
 
-//     if (activity.action_type === 'updated_title' && detail.new_title) {
-//       messageElement = (
-//         <>
-//           <span className="font-semibold">{activity.username}</span> updated title to{" "}
-//           <span className="font-bold">"{detail.new_title}"</span>
-//         </>
-//       );
-//     }
+            <div className="flex items-center gap-2">
+              <input
+                type="number"
+                placeholder="New position"
+                className="border rounded px-2 py-1 w-24"
+                value={positions[list.id] || ""}
+                onChange={(e) => handlePositionChange(list.id, e.target.value)}
+              />
+              <button
+                className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg"
+                onClick={() => handleUpdatePosition(list.id)}
+              >
+                Update
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
-//     if (activity.action_type === 'move' && detail.cardTitle) {
-//       if (detail.fromBoardName === detail.toBoardName) {
-//         messageElement = (
-//           <>
-//             <span className="font-semibold">{activity.username}</span> moved{" "}
-//             <span className="font-bold">"{detail.cardTitle}"</span> from{" "}
-//             <span className="text-red-500">"{detail.fromListName}"</span> to{" "}
-//             <span className="text-green-600">"{detail.toListName}"</span> on board{" "}
-//             <span className="italic">"{detail.toBoardName}"</span>
-//           </>
-//         );
-//       } else {
-//         messageElement = (
-//           <>
-//             <span className="font-semibold">{activity.username}</span> moved{" "}
-//             <span className="font-bold">"{detail.cardTitle}"</span> from{" "}
-//             <span className="text-red-500">"{detail.fromListName}"</span> (board{" "}
-//             <span className="italic">"{detail.fromBoardName}"</span>) to{" "}
-//             <span className="text-green-600">"{detail.toListName}"</span> (board{" "}
-//             <span className="italic">"{detail.toBoardName}"</span>)
-//           </>
-//         );
-//       }
-//     }
-
-//     if (activity.action_type === 'duplicate' && detail.cardTitle) {
-//       if (detail.fromBoardName === detail.toBoardName) {
-//         messageElement = (
-//           <>
-//             <span className="font-semibold">{activity.username}</span> duplicated card as{" "}
-//             <span className="font-bold">"{detail.cardTitle}"</span> in list{" "}
-//             <span className="text-green-600">"{detail.toListName}"</span> on board{" "}
-//             <span className="italic">"{detail.toBoardName}"</span>
-//           </>
-//         );
-//       } else {
-//         messageElement = (
-//           <>
-//             <span className="font-semibold">{activity.username}</span> duplicated card as{" "}
-//             <span className="font-bold">"{detail.cardTitle}"</span> from list{" "}
-//             <span className="text-red-500">"{detail.fromListName}"</span> (board{" "}
-//             <span className="italic">"{detail.fromBoardName}"</span>) to list{" "}
-//             <span className="text-green-600">"{detail.toListName}"</span> (board{" "}
-//             <span className="italic">"{detail.toBoardName}"</span>)
-//           </>
-//         );
-//       }
-//     }
-
-//     return (
-//       <li
-//         key={activity.id}
-//         className="ca-li"
-//         style={{
-//           padding: '0.25rem',
-//           borderLeftWidth: '4px',
-//           borderLeftStyle: 'solid',
-//           borderLeftColor: borderColor,
-//           backgroundColor: '#f8fafc',
-//           borderRadius: '0.25rem',
-//         }}
-//       >
-//         <p style={{ fontSize: '12px', margin: 0 }}>{messageElement}</p>
-//         <p
-//           style={{
-//             fontSize: '10px',
-//             width: '100%',
-//             display: 'flex',
-//             alignItems: 'center',
-//             justifyContent: 'flex-end',
-//           }}
-//         >
-//           {new Date(activity.created_at).toLocaleString()}
-//         </p>
-//       </li>
-//     );
-//   })}
-// </ul>
-
-
-
-//     const handleMoveCard = async () => {
-//         if (!cardId || !selectedList.id) {
-//             alert('Please select both board and list!');
-//             return;
-//         }
-
-//         setIsMoving(true);
-
-//         try {
-//             await moveCardToList(cardId, selectedList.id);
-//             showSnackbar('Card moved successfully!', 'success');
-//             navigate(`/layout/workspaces/${workspaceId}/board/${selectedBoardId}`);
-//             fetchCardList(selectedList.id)
-//             onClose();
-//         } catch (error) {
-//             console.error('Error moving card:', error);
-//             showSnackbar('Failed to move the card!', 'error');
-//         } finally {
-//             setIsMoving(false);
-//         }
-//     };
-
-
-
-//   const handleMoveCard = async () => {
-//   if (!cardId || !selectedList?.id) {
-//     alert('Please select both board and list!');
-//     return;
-//   }
-
-//   setIsMoving(true);
-
-//   try {
-//     const result = await moveCardToList(cardId, selectedList.id);
-//     console.log('Card moved to target list:', result.data);
-
-//     showSnackbar('Card moved successfully!', 'success');
-
-//     // Navigasi ke board tujuan
-//     navigate(`/layout/workspaces/${workspaceId}/board/${selectedBoardId}`);
-
-//     // Refetch board + lists + cards
-//     if (fetchBoardDetail) fetchBoardDetail();
-//     if (fetchCardList) fetchCardList(selectedList.id);
-
-//     onClose();
-//   } catch (error) {
-//     console.error('Error moving card:', error);
-//     showSnackbar('Failed to move the card!', 'error');
-//   } finally {
-//     setIsMoving(false);
-//   }
-// };
+export default BoardView;

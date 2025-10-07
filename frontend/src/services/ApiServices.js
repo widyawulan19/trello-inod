@@ -165,6 +165,18 @@ export const updateListPositions = async (boardId, lists) => {
     throw error;
   }
 };
+export const reorderListPosition = async (listId, newPosition, boardId) => {
+  try {
+    const response = await axios.patch(`${API_URL}/lists/${listId}/new-position`, {
+      newPosition,
+      boardId,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating list position:", error.response?.data || error.message);
+    throw error;
+  }
+};
 
 //CARDS
 export const getAllCard = () => axios.get(`${API_URL}/cards`)

@@ -14,7 +14,7 @@ import { HiMiniListBullet,
         HiOutlineChevronRight,
         HiOutlineListBullet
          } from 'react-icons/hi2'
-import { archiveList, deleteLists, duplicateBoards, getAllLists, getBoardById, getCardByList, getListByBoard, updateLists,updateCardPosition } from '../services/ApiServices'
+import { archiveList, deleteLists, duplicateBoards, getAllLists, getBoardById, getCardByList, getListByBoard, updateLists,updateCardPosition, reorderListPosition } from '../services/ApiServices'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import Card from './Card'
 import OutsideClick from '../hook/OutsideClick'
@@ -47,6 +47,7 @@ const BoardList=()=> {
     const [boards, setBoards] = useState({});
     const [lists, setLists] = useState([]);
     const [listId, setListId] = useState([]);
+    const [positions, setPositions] = useState({});
     const [clickedListId, setClickedListId] = useState(null);
     const [cards, setCards] = useState({});
     const [cardPositionDropdown, setCardPositionDropdown] = useState(null);
@@ -334,6 +335,35 @@ const handleChangeCardPosition = async (cardId, newPosition) => {
     showSnackbar('Error change card posititon, Try Again Bro!', 'error');
   }
 };
+
+    // POSITIONS 
+    const handlePositionChange = (listId, value) => {
+        setPositions((prev) => ({
+        ...prev,
+        [listId]: value,
+        }));
+    };
+
+// 🔹 Simpan perubahan posisi
+//   const handleUpdatePosition = async (listId) => {
+//     const newPosition = parseInt(positions[listId]);
+//     if (isNaN(newPosition)) {
+//       alert("Masukkan angka posisi yang valid!");
+//       return;
+//     }
+
+//     try {
+//       await reorderListPosition(listId, newPosition, boardId);
+//       alert("List position updated successfully!");
+
+//       // ambil ulang urutan list
+//       const res = await axios.get(`http://localhost:5000/api/lists?board_id=${boardId}`);
+//       setLists(res.data);
+//     } catch (err) {
+//       console.error("Failed to update list position:", err);
+//       alert("Gagal memperbarui posisi list.");
+//     }
+//   };
 
 //NAVIGATION
 // <Route path='/workspaces/:workspaceId' element={<WorkspacePage/>}/>
