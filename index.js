@@ -2582,6 +2582,24 @@ app.patch('/api/lists/:listId/new-position', async (req, res) => {
     }
 });
 
+// ✅ GET semua list dalam board tertentu, terurut berdasarkan posisi
+app.get('/api/lists/board/:boardId', async (req, res) => {
+    const { boardId } = req.params;
+
+    try {
+        const { rows } = await client.query(
+            `SELECT * FROM lists WHERE board_id = $1 ORDER BY position ASC`,
+            [boardId]
+        );
+
+        res.json(rows);
+    } catch (err) {
+        console.error('Error fetching lists by board:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
 
 
 //1. get all lists
