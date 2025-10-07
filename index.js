@@ -2568,7 +2568,7 @@ app.patch('/api/lists/:listId/new-position', async (req, res) => {
         // Update posisi list yang dipindah
         await client.query(
             `UPDATE lists
-       SET position = $1, updated_at = NOW()
+       SET position = $1, update_at = NOW()
        WHERE id = $2 AND board_id = $3`,
             [newPosition, listId, boardId]
         );
