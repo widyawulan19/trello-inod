@@ -2509,7 +2509,7 @@ app.put('/api/lists/reorder-list', async (req, res) => {
         for (const list of lists) {
             await client.query(
                 `UPDATE lists 
-         SET position = $1, updated_at = NOW() 
+         SET position = $1, update_at = NOW() 
          WHERE id = $2 AND board_id = $3`,
                 [list.position, list.id, board_id]
             );
