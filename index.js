@@ -1858,19 +1858,31 @@ app.get('/api/workspace/:workspaceId/user/:userId', async (req, res) => {
 // END ASSIGN USER 
 
 //BOARD
+
+app.put('/api/boards/reorder', async (req, res) => {
+  const { workspace_id, boards } = req.body; // boards = array berisi {id, position}
+
+  try {
+    await client.query('BEGIN');
+    for (const { id, position } of boards) {
+      await client.query('UPDATE boards SET position = $1 WHERE id = $2', [position, id]);
+    }
+    await client.query('COMMIT');
+    res.status(200).json({ message: 'Board positions updated successfully' });
+  } catch (error) {
+    await client.query('ROLLBACK');
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
 // Endpoint to get all boards
 app.get('/api/boards', async (req, res) => {
     try {
-        // Simple query to fetch all boards
-        const query = 'SELECT * FROM public.boards';
-        const result = await client.query(query);
-
-        // Check if any boards exist
+        const result = await client.query('SELECT * FROM public.boards ORDER BY position ASC');
         if (result.rows.length === 0) {
             return res.status(404).json({ message: 'No boards found' });
         }
-
-        // Return the result
         return res.status(200).json(result.rows);
     } catch (err) {
         console.error(err);
@@ -1882,12 +1894,16 @@ app.get('/api/boards', async (req, res) => {
 app.get('/api/workspaces/:workspaceId/boards', async (req, res) => {
     const { workspaceId } = req.params;
     try {
-        const result = await client.query('SELECT * FROM boards WHERE workspace_id = $1', [workspaceId]);
+        const result = await client.query(
+            'SELECT * FROM boards WHERE workspace_id = $1 ORDER BY position ASC',
+            [workspaceId]
+        );
         res.json(result.rows);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
-})
+});
+
 //2. get board by id
 app.get('/api/boards/:id', async (req, res) => {
     const { id } = req.params;
@@ -1903,53 +1919,32 @@ app.get('/api/boards/:id', async (req, res) => {
     }
 })
 //3. create board
-// app.post('/api/boards', async (req, res) => {
-//   const { user_id, name, description, workspace_id, } = req.body;
-//   try {
-//     const result = await client.query(
-//       'INSERT INTO boards (user_id, name, description, workspace_id, create_at) VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP) RETURNING *',
-//       [user_id, name, description, workspace_id || []]
-//     );
-
-//     //mengambil board id
-//     boardId = result.rows[0].id;
-//     console.log('endpoin post ini menerima boardId', boardId);
-
-//     await logActivity(
-//       'board',
-//       boardId,
-//       'create',
-//       user_id,
-//       `Board '${name}' created `,
-//       'workspace',
-//       workspace_id
-//     )
-//     res.status(201).json(result.rows[0]);
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// })
 app.post('/api/boards', async (req, res) => {
     const { user_id, name, description, workspace_id } = req.body;
-    // const userId = req.user.id; // ✅ ambil dari token user yang login
 
     try {
+        // Hitung jumlah board di workspace untuk menentukan posisi baru
+        const { rows: existingBoards } = await client.query(
+            'SELECT COUNT(*) AS count FROM boards WHERE workspace_id = $1',
+            [workspace_id]
+        );
+        const newPosition = parseInt(existingBoards[0].count) + 1;
+
         const result = await client.query(
-            `INSERT INTO boards (user_id, name, description, workspace_id, create_at) 
-       VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP) 
+            `INSERT INTO boards (user_id, name, description, workspace_id, position, create_at) 
+       VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP) 
        RETURNING *`,
-            [user_id, name, description, workspace_id]
+            [user_id, name, description, workspace_id, newPosition]
         );
 
         const boardId = result.rows[0].id;
-        console.log('📍 endpoin post ini menerima boardId:', boardId);
 
         await logActivity(
             'board',
             boardId,
             'create',
             user_id,
-            `Board '${name}' created `,
+            `Board '${name}' created`,
             'workspace',
             workspace_id
         );
@@ -1969,7 +1964,9 @@ app.put('/api/boards/:id', async (req, res) => {
 
     try {
         const result = await client.query(
-            'UPDATE boards SET name = $1, description = $2, background_image_id = $3, assign = $4 , update_at = CURRENT_TIMESTAMP WHERE id = $5 RETURNING *',
+            `UPDATE boards 
+       SET name = $1, description = $2, background_image_id = $3, assign = $4, update_at = CURRENT_TIMESTAMP 
+       WHERE id = $5 RETURNING *`,
             [name, description, background_image_id, assign, id]
         );
 
@@ -1981,34 +1978,57 @@ app.put('/api/boards/:id', async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
-})
+});
+
 //5. delete a board
 app.delete('/api/boards/:id', async (req, res) => {
     const { id } = req.params;
     const userId = req.user.id;
 
     try {
-        const result = await client.query('DELETE FROM boards WHERE id = $1 RETURNING *', [id]);
-        if (result.rows.length > 0) {
-            res.json({ message: 'Board deleted successfully' });
+        await client.query('BEGIN');
 
-            //add activity log
-            await logActivity(
-                'board',
-                id,
-                'delete',
-                userId,
-                `Board dengan Id ${id} deleted`,
-                'workspace',
-                id
-            )
-        } else {
-            res.status(404).json({ message: 'Board not found' });
+        // ambil workspace_id dulu biar tau konteks posisi
+        const { rows } = await client.query('SELECT workspace_id FROM boards WHERE id = $1', [id]);
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'Board not found' });
         }
+        const workspaceId = rows[0].workspace_id;
+
+        await client.query('DELETE FROM boards WHERE id = $1', [id]);
+
+        // resekuens posisi board di workspace ini
+        await client.query(
+            `WITH reordered AS (
+        SELECT id, ROW_NUMBER() OVER (ORDER BY position) AS new_pos
+        FROM boards WHERE workspace_id = $1
+      )
+      UPDATE boards b
+      SET position = r.new_pos
+      FROM reordered r
+      WHERE b.id = r.id`,
+            [workspaceId]
+        );
+
+        await logActivity(
+            'board',
+            id,
+            'delete',
+            userId,
+            `Board dengan Id ${id} deleted`,
+            'workspace',
+            workspaceId
+        );
+
+        await client.query('COMMIT');
+        res.json({ message: 'Board deleted successfully' });
     } catch (error) {
+        await client.query('ROLLBACK');
+        console.error(error);
         res.status(500).json({ error: error.message });
     }
-})
+});
+
 //6. update board name
 app.put('/api/boards/:id/name', async (req, res) => {
     const { id } = req.params;
@@ -2274,9 +2294,6 @@ app.post('/api/boards/:boardId/archive', async (req, res) => {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 });
-
-
-
 //END BOARDS
 
 //BOARD PRIORITY 
