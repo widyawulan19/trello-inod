@@ -290,3 +290,183 @@ app.put('/api/boards/:id/description', async (req, res) => {
     }
 
 })
+
+
+// ✅ GET: semua boards (urut berdasarkan position)
+app.get('/api/boards', async (req, res) => {
+  try {
+    const result = await client.query('SELECT * FROM public.boards ORDER BY position ASC');
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'No boards found' });
+    }
+    return res.status(200).json(result.rows);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Error fetching boards' });
+  }
+});
+
+
+// ✅ GET: semua board berdasarkan workspace_id (urut by position)
+app.get('/api/workspaces/:workspaceId/boards', async (req, res) => {
+  const { workspaceId } = req.params;
+  try {
+    const result = await client.query(
+      'SELECT * FROM boards WHERE workspace_id = $1 ORDER BY position ASC',
+      [workspaceId]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+// ✅ CREATE: board baru disimpan di posisi terakhir workspace-nya
+app.post('/api/boards', async (req, res) => {
+  const { user_id, name, description, workspace_id } = req.body;
+
+  try {
+    // Hitung jumlah board di workspace untuk menentukan posisi baru
+    const { rows: existingBoards } = await client.query(
+      'SELECT COUNT(*) AS count FROM boards WHERE workspace_id = $1',
+      [workspace_id]
+    );
+    const newPosition = parseInt(existingBoards[0].count) + 1;
+
+    const result = await client.query(
+      `INSERT INTO boards (user_id, name, description, workspace_id, position, create_at) 
+       VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP) 
+       RETURNING *`,
+      [user_id, name, description, workspace_id, newPosition]
+    );
+
+    const boardId = result.rows[0].id;
+
+    await logActivity(
+      'board',
+      boardId,
+      'create',
+      user_id,
+      `Board '${name}' created`,
+      'workspace',
+      workspace_id
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error('❌ Error creating board:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+// ✅ UPDATE board (name, description, dll tetap sama)
+app.put('/api/boards/:id', async (req, res) => {
+  const { id } = req.params;
+  const { name, description, background_image_id, assign } = req.body;
+
+  try {
+    const result = await client.query(
+      `UPDATE boards 
+       SET name = $1, description = $2, background_image_id = $3, assign = $4, update_at = CURRENT_TIMESTAMP 
+       WHERE id = $5 RETURNING *`,
+      [name, description, background_image_id, assign, id]
+    );
+
+    if (result.rows.length > 0) {
+      res.json(result.rows[0]);
+    } else {
+      res.status(404).json({ message: 'Board not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+// ✅ UPDATE board name (tidak ubah position)
+app.put('/api/boards/:id/name', async (req, res) => {
+  const { id } = req.params;
+  const { name } = req.body;
+  const userId = req.user.id;
+
+  try {
+    const result = await client.query(
+      `UPDATE boards 
+       SET name = $1, update_at = CURRENT_TIMESTAMP 
+       WHERE id = $2 
+       RETURNING *`,
+      [name, id]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Board not found' });
+    }
+
+    await logActivity(
+      'board',
+      result.rows[0].id,
+      'update',
+      userId,
+      `Board name updated to '${name}'`,
+      'board',
+      id
+    );
+
+    res.status(200).json(result.rows[0]);
+  } catch (error) {
+    console.error('Error updating board name:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+// ✅ DELETE board (setelah hapus, posisinya diresekuens)
+app.delete('/api/boards/:id', async (req, res) => {
+  const { id } = req.params;
+  const userId = req.user.id;
+
+  try {
+    await client.query('BEGIN');
+
+    // ambil workspace_id dulu biar tau konteks posisi
+    const { rows } = await client.query('SELECT workspace_id FROM boards WHERE id = $1', [id]);
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'Board not found' });
+    }
+    const workspaceId = rows[0].workspace_id;
+
+    await client.query('DELETE FROM boards WHERE id = $1', [id]);
+
+    // resekuens posisi board di workspace ini
+    await client.query(
+      `WITH reordered AS (
+        SELECT id, ROW_NUMBER() OVER (ORDER BY position) AS new_pos
+        FROM boards WHERE workspace_id = $1
+      )
+      UPDATE boards b
+      SET position = r.new_pos
+      FROM reordered r
+      WHERE b.id = r.id`,
+      [workspaceId]
+    );
+
+    await logActivity(
+      'board',
+      id,
+      'delete',
+      userId,
+      `Board dengan Id ${id} deleted`,
+      'workspace',
+      workspaceId
+    );
+
+    await client.query('COMMIT');
+    res.json({ message: 'Board deleted successfully' });
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+});
