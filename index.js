@@ -1902,7 +1902,7 @@ app.patch('/api/boards/:boardId/new-position', async (req, res) => {
         // Update posisi board yang dipindah
         await client.query(
             `UPDATE boards
-       SET position = $1, updated_at = NOW()
+       SET position = $1, update_at = NOW()
        WHERE id = $2 AND workspace_id = $3`,
             [newPosition, boardId, workspaceId]
         );
