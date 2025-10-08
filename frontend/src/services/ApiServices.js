@@ -177,6 +177,7 @@ export const reorderListPosition = async (listId, newPosition, boardId) => {
     throw error;
   }
 };
+export const getListPositions = (boardId) => axios.get(`${API_URL}/lists/board/${boardId}`);
 
 //CARDS
 export const getAllCard = () => axios.get(`${API_URL}/cards`)

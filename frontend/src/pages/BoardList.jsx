@@ -14,7 +14,7 @@ import { HiMiniListBullet,
         HiOutlineChevronRight,
         HiOutlineListBullet
          } from 'react-icons/hi2'
-import { archiveList, deleteLists, duplicateBoards, getAllLists, getBoardById, getCardByList, getListByBoard, updateLists,updateCardPosition, reorderListPosition } from '../services/ApiServices'
+import { archiveList, deleteLists, duplicateBoards, getAllLists, getBoardById, getCardByList, getListByBoard, updateLists,updateCardPosition, reorderListPosition, getListPositions, updateListPositions } from '../services/ApiServices'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import Card from './Card'
 import OutsideClick from '../hook/OutsideClick'
@@ -33,6 +33,7 @@ import { FaChevronRight, FaPlus } from 'react-icons/fa6'
 import { handleArchive } from '../utils/handleArchive'
 import SearchCard from '../fitur/SearchCard'
 import PositionList from '../modules/PositionList'
+import { GiCardExchange } from 'react-icons/gi'
 
 const BoardList=()=> {
     //STATE
@@ -51,6 +52,8 @@ const BoardList=()=> {
     const [clickedListId, setClickedListId] = useState(null);
     const [cards, setCards] = useState({});
     const [cardPositionDropdown, setCardPositionDropdown] = useState(null);
+    const [showPosition,setShowPosition] = useState({});
+    const [listPositionDropdown, setListPositionDropdown] = useState(null);
     //state show
     const [showSetting, setShowSetting] = useState({})
     const settingRef = OutsideClick(()=>setShowSetting(false))
@@ -336,34 +339,29 @@ const handleChangeCardPosition = async (cardId, newPosition) => {
   }
 };
 
-    // POSITIONS 
-    const handlePositionChange = (listId, value) => {
-        setPositions((prev) => ({
-        ...prev,
-        [listId]: value,
-        }));
-    };
 
-// 🔹 Simpan perubahan posisi
-//   const handleUpdatePosition = async (listId) => {
-//     const newPosition = parseInt(positions[listId]);
-//     if (isNaN(newPosition)) {
-//       alert("Masukkan angka posisi yang valid!");
-//       return;
-//     }
+const handleShowPosition = (e, listId) => {
+  e.stopPropagation();
+  setShowPosition((prev) => ({
+    ...prev,
+    [listId]: !prev[listId],
+  }));
+};
 
-//     try {
-//       await reorderListPosition(listId, newPosition, boardId);
-//       alert("List position updated successfully!");
+// Fungsi ubah urutan list manual (tanpa drag)
+const handleChangeListPosition = async (listId, newPosition) => {
+    try {
+      await reorderListPosition(listId, newPosition, boardId);
 
-//       // ambil ulang urutan list
-//       const res = await axios.get(`http://localhost:5000/api/lists?board_id=${boardId}`);
-//       setLists(res.data);
-//     } catch (err) {
-//       console.error("Failed to update list position:", err);
-//       alert("Gagal memperbarui posisi list.");
-//     }
-//   };
+      setListPositionDropdown(null); // Tutup dropdown setelah update
+      await fetchLists(); // Refresh list setelah posisi diubah
+      showSnackbar("Success change list position!", "success");
+    } catch (error) {
+      console.error("Error changing list position:", error);
+      showSnackbar("Failed to change list position, try again!", "error");
+    }
+  };
+
 
 //NAVIGATION
 // <Route path='/workspaces/:workspaceId' element={<WorkspacePage/>}/>
@@ -449,14 +447,26 @@ if (!userId) {
                                           <HiOutlineArchiveBox className='cs-icon'/>
                                           Archive
                                         </button>
+                                        {/* <button onClick={(e) => handleShowPosition(e, list.id)}>
+                                            <GiCardExchange className='cs-icon'/>
+                                            Position
+                                        </button> */}
+                                        <button
+                                            onClick={() =>
+                                                setListPositionDropdown(
+                                                    listPositionDropdown === list.id ? null : list.id
+                                                )
+                                            }
+                                        >
+                                            <GiCardExchange className='cs-icon'/>
+                                            Posisi: {list.position}
+                                        </button>
+                                       
                                         <div className="delete">
                                           <button onClick={()=> handleDeleteClick(list.id)} className="flex items-center gap-1 text-red-500 hover:text-red-700">
                                             <HiOutlineTrash className='cs-delete'/>
                                             Delete
                                           </button>
-                                        </div>
-                                        <div>
-                                            <PositionList boardId={boardId} lists={lists} setLists={setLists}/>
                                         </div>
                                     </div>
                                 )}
@@ -477,6 +487,38 @@ if (!userId) {
                                         <DuplicateList userId={userId} boardId={boardId} listId={list.id} workspaceId={workspaceId} onClose={()=> handleCloseDuplicate(list.id)} fetchLists={fetchLists}/>
                                     </div>
                                 )}
+                                {/* Dropdown ubah posisi list */}
+                                {listPositionDropdown === list.id && (
+                                    <ul
+                                    style={{
+                                        listStyle: "none",
+                                        padding: "5px",
+                                        margin: "5px 0 0 0",
+                                        border: "1px solid #ccc",
+                                        borderRadius: "4px",
+                                        position: "absolute",
+                                        background: "#fff",
+                                        zIndex: 10,
+                                        minWidth: "100px",
+                                    }}
+                                    >
+                                    {lists.map((_, i) => (
+                                        <li
+                                        key={i}
+                                        style={{
+                                            padding: "5px 10px",
+                                            cursor: "pointer",
+                                            background: i === list.position ? "#eee" : "#fff",
+                                        }}
+                                        onClick={() => handleChangeListPosition(list.id, i)}
+                                        >
+                                        {i}
+                                        </li>
+                                    ))}
+                                    </ul>
+                                )}
+                                
+                                
                                 </div>
                                 <div className="list-body">
                                 {cards[list.id]?.map((card) => (
