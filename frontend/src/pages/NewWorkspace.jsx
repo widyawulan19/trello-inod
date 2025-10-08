@@ -148,6 +148,7 @@ function NewWorkspace() {
       });
       // Re-fetch workspaces setelah berhasil create
       const workspaceResult = await getWorkspacesByUserId(userId);
+      console.log("Response workspaceResult.data:", workspaceResult.data);
       setWorkspaces(workspaceResult.data);
       console.log('cworkspace successfully:', response.data); 
     }catch(error){
