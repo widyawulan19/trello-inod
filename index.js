@@ -1859,26 +1859,63 @@ app.get('/api/workspace/:workspaceId/user/:userId', async (req, res) => {
 
 //BOARD
 //patch dan reorder board position in workspace
-// app.patch('/api/board/:boardId/new-position', async(req,res)=>{
-//     const {boardId} = req.params;
-//     const {newPosition, workspaceId} = req.body;
+// PATCH - reorder board position in workspace
+app.patch('/api/boards/:boardId/new-position', async (req, res) => {
+    const { boardId } = req.params;
+    const { newPosition, workspaceId } = req.body;
 
-//     try{
-//         await client.query('BEGIN');
+    try {
+        await client.query('BEGIN');
 
+        // Ambil posisi lama dari board yang dipindah
+        const { rows } = await client.query(
+            `SELECT position FROM boards WHERE id = $1 AND workspace_id = $2`,
+            [boardId, workspaceId]
+        );
 
-//         //mengambil posisi lama dari list yang dipindah
-//         const {rows} = await client.query(
-//             `SELECT position FROM boards WHERE id = $1 AND workspace_id = $2`,
-//             [listId, boardId]
-//         );
+        if (rows.length === 0) {
+            await client.query('ROLLBACK');
+            return res.status(404).json({ error: 'Board not found' });
+        }
 
-//         if(rows.length === 0){
-//             await client.query('ROLLBACK');
-//             return res.status
-//         }
-//     }
-// })
+        const oldPosition = rows[0].position;
+
+        // Jika board dipindah ke bawah
+        if (newPosition > oldPosition) {
+            await client.query(
+                `UPDATE boards
+         SET position = position - 1
+         WHERE workspace_id = $1 AND position > $2 AND position <= $3`,
+                [workspaceId, oldPosition, newPosition]
+            );
+        }
+        // Jika board dipindah ke atas
+        else if (newPosition < oldPosition) {
+            await client.query(
+                `UPDATE boards
+         SET position = position + 1
+         WHERE workspace_id = $1 AND position >= $2 AND position < $3`,
+                [workspaceId, newPosition, oldPosition]
+            );
+        }
+
+        // Update posisi board yang dipindah
+        await client.query(
+            `UPDATE boards
+       SET position = $1, updated_at = NOW()
+       WHERE id = $2 AND workspace_id = $3`,
+            [newPosition, boardId, workspaceId]
+        );
+
+        await client.query('COMMIT');
+        res.json({ success: true, boardId, newPosition });
+    } catch (err) {
+        await client.query('ROLLBACK');
+        console.error('Error reordering board:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 
 app.put('/api/boards/reorder', async (req, res) => {
     const { workspace_id, boards } = req.body; // boards = array berisi {id, position}
