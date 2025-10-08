@@ -1858,6 +1858,27 @@ app.get('/api/workspace/:workspaceId/user/:userId', async (req, res) => {
 // END ASSIGN USER 
 
 //BOARD
+//patch dan reorder board position in workspace
+// app.patch('/api/board/:boardId/new-position', async(req,res)=>{
+//     const {boardId} = req.params;
+//     const {newPosition, workspaceId} = req.body;
+
+//     try{
+//         await client.query('BEGIN');
+
+
+//         //mengambil posisi lama dari list yang dipindah
+//         const {rows} = await client.query(
+//             `SELECT position FROM boards WHERE id = $1 AND workspace_id = $2`,
+//             [listId, boardId]
+//         );
+
+//         if(rows.length === 0){
+//             await client.query('ROLLBACK');
+//             return res.status
+//         }
+//     }
+// })
 
 app.put('/api/boards/reorder', async (req, res) => {
     const { workspace_id, boards } = req.body; // boards = array berisi {id, position}
