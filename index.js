@@ -1860,19 +1860,19 @@ app.get('/api/workspace/:workspaceId/user/:userId', async (req, res) => {
 //BOARD
 
 app.put('/api/boards/reorder', async (req, res) => {
-  const { workspace_id, boards } = req.body; // boards = array berisi {id, position}
+    const { workspace_id, boards } = req.body; // boards = array berisi {id, position}
 
-  try {
-    await client.query('BEGIN');
-    for (const { id, position } of boards) {
-      await client.query('UPDATE boards SET position = $1 WHERE id = $2', [position, id]);
+    try {
+        await client.query('BEGIN');
+        for (const { id, position } of boards) {
+            await client.query('UPDATE boards SET position = $1 WHERE id = $2', [position, id]);
+        }
+        await client.query('COMMIT');
+        res.status(200).json({ message: 'Board positions updated successfully' });
+    } catch (error) {
+        await client.query('ROLLBACK');
+        res.status(500).json({ error: error.message });
     }
-    await client.query('COMMIT');
-    res.status(200).json({ message: 'Board positions updated successfully' });
-  } catch (error) {
-    await client.query('ROLLBACK');
-    res.status(500).json({ error: error.message });
-  }
 });
 
 
