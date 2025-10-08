@@ -217,3 +217,76 @@
 // };
 
 // export default Board;
+
+
+//6. update board name
+app.put('/api/boards/:id/name', async (req, res) => {
+    const { id } = req.params;
+    const { name } = req.body;
+    const userId = req.user.id;
+
+    try {
+        const result = await client.query(
+            "UPDATE boards SET name = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *",
+            [name, id]
+        );
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'Boards is not found' });
+        }
+
+        //CHECK USER ID
+        console.log('endpoin update board name ini menerima userId:', userId);
+
+        //LOG ACTIVITY 
+        await logActivity(
+            'board',
+            result.rows[0].id,
+            'update',
+            userId,
+            `Board name updated to '${name}' in board`,
+            'board',
+            id
+        )
+
+        res.status(200).json(result.rows[0]);
+    } catch (error) {
+        console.error('Error updating board name:', error);
+        res.status(500).json({ error: error.message });
+    }
+})
+//7. update description boards
+app.put('/api/boards/:id/description', async (req, res) => {
+    const { id } = req.params;
+    const { description } = req.body;
+    const userId = req.user.id;
+
+    try {
+        const result = await client.query(
+            "UPDATE boards SET description = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *",
+            [description, id]
+        );
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'Boards is not found' });
+        }
+
+        //check user id
+        console.log('Endpoin update desctiption ini menerima userId:', userId);
+
+        //log activity
+        await logActivity(
+            'board',
+            result.rows[0].id,
+            'update',
+            userId,
+            `Board description updated to '${description}' in board`,
+            'board',
+            id
+        )
+
+        res.status(200).json(result.rows[0]);
+    } catch (error) {
+        console.error('Error updating board name:', error);
+        res.status(500).json({ error: error.message });
+    }
+
+})
