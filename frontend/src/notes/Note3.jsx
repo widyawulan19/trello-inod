@@ -470,3 +470,62 @@ app.delete('/api/boards/:id', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+
+
+// PATCH - reorder board position in workspace
+app.patch('/api/boards/:boardId/new-position', async (req, res) => {
+    const { boardId } = req.params;
+    const { newPosition, workspaceId } = req.body;
+
+    try {
+        await client.query('BEGIN');
+
+        // Ambil posisi lama dari board yang dipindah
+        const { rows } = await client.query(
+            `SELECT position FROM boards WHERE id = $1 AND workspace_id = $2`,
+            [boardId, workspaceId]
+        );
+
+        if (rows.length === 0) {
+            await client.query('ROLLBACK');
+            return res.status(404).json({ error: 'Board not found' });
+        }
+
+        const oldPosition = rows[0].position;
+
+        // Jika board dipindah ke bawah
+        if (newPosition > oldPosition) {
+            await client.query(
+                `UPDATE boards
+         SET position = position - 1
+         WHERE workspace_id = $1 AND position > $2 AND position <= $3`,
+                [workspaceId, oldPosition, newPosition]
+            );
+        }
+        // Jika board dipindah ke atas
+        else if (newPosition < oldPosition) {
+            await client.query(
+                `UPDATE boards
+         SET position = position + 1
+         WHERE workspace_id = $1 AND position >= $2 AND position < $3`,
+                [workspaceId, newPosition, oldPosition]
+            );
+        }
+
+        // Update posisi board yang dipindah
+        await client.query(
+            `UPDATE boards
+       SET position = $1, update_at = NOW()
+       WHERE id = $2 AND workspace_id = $3`,
+            [newPosition, boardId, workspaceId]
+        );
+
+        await client.query('COMMIT');
+        res.json({ success: true, boardId, newPosition });
+    } catch (err) {
+        await client.query('ROLLBACK');
+        console.error('Error reordering board:', err);
+        res.status(500).json({ error: err.message });
+    }
+});

@@ -129,6 +129,18 @@ export const updateBoardDescription = (id, description) => axios.put(`${API_URL}
 export const duplicateBoards = (boardId, workspaceId) => axios.post(`${API_URL}/duplicate-board/${boardId}/to-workspace/${workspaceId}`)
 export const moveBoardToWorkspace = (boardId, workspaceId) => axios.post(`${API_URL}/move-board/${boardId}/to-workspace/${workspaceId}`)
 export const archiveBoard = (boardId) => axios.post(`${API_URL}/boards/${boardId}/archive`);
+export const reorderBoardPosition = async (boardId, newPosition, workspaceId) => {
+  try {
+    const response = await axios.patch(`${API_URL}/boards/${boardId}/new-position`, {
+      newPosition,
+      workspaceId,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating list position:", error.response?.data || error.message);
+    throw error;
+  }
+}
 
 
 //BOARD PRIORITY
@@ -178,6 +190,8 @@ export const reorderListPosition = async (listId, newPosition, boardId) => {
   }
 };
 export const getListPositions = (boardId) => axios.get(`${API_URL}/lists/board/${boardId}`);
+
+
 
 //CARDS
 export const getAllCard = () => axios.get(`${API_URL}/cards`)

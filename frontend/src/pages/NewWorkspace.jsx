@@ -167,7 +167,7 @@ function NewWorkspace() {
   //5. load all workspace user
   const fetchWorkspaceUser = async () => {
     try {
-      const workspaceResult = await getWorkspacesByUserId(userId);
+      const workspaceResult = await getAllUsersWorkspace(userId);
       setWorkspaces(workspaceResult.data);
       fetchAdmins(workspaceResult.data);  // Jika ada data admin yang perlu diambil
     } catch (error) {

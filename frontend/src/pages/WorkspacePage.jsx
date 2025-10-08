@@ -4,7 +4,7 @@ import '../style/pages/WorkspacePage.css';
 import {HiOutlineSquaresPlus,HiMiniSlash, HiOutlineEllipsisHorizontal,HiOutlineClock,HiMiniLightBulb,HiChevronRight, HiOutlinePlus, HiMiniXMark, HiOutlineSquare2Stack,HiMiniArrowLeftStartOnRectangle, HiOutlineArchiveBox, HiOutlineTrash, HiOutlineChevronRight, HiOutlineXMark, HiMiniCalendar, HiPlus,  } from 'react-icons/hi2';
 import { FaPlus } from "react-icons/fa";
 import { CiAlignTop } from "react-icons/ci";
-import { addPriorityToBoard, createBoard, deletePropertyFromBoard, duplicateBoards, getALlPriorities, getBoardById, getBoardPriorities, getBoardsWorkspace, getWorkspaceById, updateBoardDescription, updateBoardName, archiveBoard, deleteBoard } from '../services/ApiServices';
+import { addPriorityToBoard, createBoard, deletePropertyFromBoard, duplicateBoards, getALlPriorities, getBoardById, getBoardPriorities, getBoardsWorkspace, getWorkspaceById, updateBoardDescription, updateBoardName, archiveBoard, deleteBoard, reorderBoardPosition } from '../services/ApiServices';
 import OutsideClick from '../hook/OutsideClick';
 import BootstrapTooltip from '../components/Tooltip';
 import MoveBoard from '../fitur/MoveBoard';
@@ -17,6 +17,7 @@ import { handleArchive } from '../utils/handleArchive';
 import { HiViewBoards } from "react-icons/hi";
 import { useUser } from '../context/UserContext';
 import { PiAlignTopFill } from 'react-icons/pi';
+import { GiCardExchange } from 'react-icons/gi';
 
 const WorkspacePage=()=> {
   const location = useLocation();
@@ -57,7 +58,9 @@ const WorkspacePage=()=> {
   //delete
   const [selectedBoardId, setSelectedBoardId] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false)
-
+  //board position
+  const [showBoardPosition, setShowBoardPosition] = useState({})
+  const [boardPositionDropdown, setBoardPositionDropdown] = useState(null);
 
   const handleDeleteClick = (boardId) =>{
     setSelectedBoardId(boardId);
@@ -357,6 +360,19 @@ const handleArchiveBoard = (boardId) =>{
   })
 }
 
+// fungsi ubah urutan board manual 
+const handleChangeBoardPosition = async (boardId, newPosition) => {
+  try {
+    await reorderBoardPosition(boardId, newPosition, workspaceId);
+    setBoardPositionDropdown(null);
+    await fetchBoards();
+    showSnackbar('Success change board position!', 'success');
+  } catch (error) {
+    console.error('Error changing board position:', error);
+    showSnackbar('Failed to change board position', 'error');
+  }
+};
+
 
 //navigate to board list
 const handleNavigateToBoardList = (workspaceId, boardId) =>{
@@ -489,6 +505,18 @@ const handleNavigateToWorkspace = () =>{
                     <HiOutlineArchiveBox className='bs-icon'/>
                     Archive
                   </button>
+
+                  <button
+                    onClick={() =>
+                      setBoardPositionDropdown(
+                        boardPositionDropdown === board.id ? null : board.id
+                      )
+                    }
+                  >
+                    <GiCardExchange className='bs-icon'/>
+                    Posisi : {board.position}
+                  </button>
+
                   <hr />
                   <button 
                     className='delete'
@@ -507,6 +535,37 @@ const handleNavigateToWorkspace = () =>{
             {showDuplicatePopup[board.id] && (
               <div className="duplicate-modal">
                   <DuplicateBoard fetchBoards={fetchBoards} boardId={board.id} userId={userId} onClose={() => handleCloseDuplicatePopup(board.id)}/>
+              </div>
+            )}
+            {boardPositionDropdown === board.id && (
+              <div className="duplocat-modal">
+                <ul
+                  style={{
+                    listStyle: "none",
+                    padding: "5px",
+                    margin: "5px 0 0 0",
+                    border: "1px solid #ccc",
+                    borderRadius: "4px",
+                    position: "absolute",
+                    background: "#fff",
+                    zIndex: 10,
+                    minWidth: "100px",
+                  }}
+                >
+                  {boards.map((_, i) => (
+                    <li
+                      key={i}
+                      style={{
+                        padding: "5px 10px",
+                        cursor: "pointer",
+                        background: i + 1 === board.position ? "#eee" : "#fff",
+                      }}
+                      onClick={() => handleChangeBoardPosition(board.id, i + 1)} // +1 biar mulai dari 1
+                    >
+                      {i + 1}
+                    </li>
+                  ))}
+                </ul>
               </div>
             )}
 
