@@ -404,11 +404,11 @@
 
 /* MEDIA QUERY  */
 /* Extra large devices (large desktops, ≥1200px) */
-@media (min-width: 1200px) and (max-width:1600px) {
+@media (min-width: 1200px) and (max-width:1700px) {
 
   /* CSS monitor besar */
   .chat-list {
-    height: 73vh;
+    height: 75vh;
     /* border: 1px solid red; */
   }
 }

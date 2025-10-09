@@ -48,20 +48,46 @@ const NewRoomChat=({cardId, userId, onClose})=> {
   };
 
   // === SEND MESSAGE (MAIN) ===
+// const handleSendMessage = async () => {
+//   const textOnly = editorRef.current?.innerText || "";
+//   if (!textOnly && pendingFiles.length === 0) return;
+
+//   try {
+//     const res = await createMessage(cardId, {
+//       user_id: userId,
+//       message: textOnly, // Hanya text saja
+//       parent_message_id: null,
+//     });
+
+//     const chatId = res.data.id;
+
+//     // Upload file dan simpan URL di server
+//     for (let file of pendingFiles) {
+//       await uploadChatMedia(chatId, file);
+//     }
+
+//     editorRef.current.innerHTML = "";
+//     setPendingFiles([]);
+//     fetchChats();
+//     showSnackbar("Pesan + file terkirim!", "success");
+//   } catch (err) {
+//     console.error("Send error:", err);
+//     showSnackbar("Gagal kirim pesan", "error");
+//   }
+// };
 const handleSendMessage = async () => {
-  const textOnly = editorRef.current?.innerText || "";
-  if (!textOnly && pendingFiles.length === 0) return;
+  const html = editorRef.current?.innerHTML || "";
+  if (!html.trim() && pendingFiles.length === 0) return;
 
   try {
     const res = await createMessage(cardId, {
       user_id: userId,
-      message: textOnly, // Hanya text saja
+      message: html, // simpan dengan format HTML
       parent_message_id: null,
     });
 
     const chatId = res.data.id;
 
-    // Upload file dan simpan URL di server
     for (let file of pendingFiles) {
       await uploadChatMedia(chatId, file);
     }
@@ -79,41 +105,69 @@ const handleSendMessage = async () => {
 
 
   // === SEND REPLY ===
+  // const handleSendReply = async (parentId) => {
+  //   // const html = replyEditorRefs.current[parentId]?.innerHTML;
+  //   const textOnly = replyEditorRefs.current[parentId]?.innerText;
+  //   const files = replyPendingFiles[parentId] || [];
+
+  //   // if ((!html || html === "<br>") && files.length === 0) return;
+  //   if(!textOnly && replyPendingFiles.length === 0) return;
+
+  //   try {
+  //     const res = await createMessage(cardId, {
+  //       user_id: userId,
+  //       // message: html,
+  //       message:textOnly,
+  //       parent_message_id: parentId,
+  //     });
+
+  //     const chatId = res.data.id;
+
+  //     // Upload semua file reply
+  //     for (let file of files) {
+  //       await uploadChatMedia(chatId, file);
+  //     }
+
+  //     // Reset reply editor & files
+  //     // replyEditorRefs.current[parentId].innerHTML = "";
+  //       replyEditorRefs.current[parentId].innerText = "";
+  //     setReplyPendingFiles((prev) => ({ ...prev, [parentId]: [] }));
+
+  //     fetchChats();
+  //     showSnackbar("Success reply", "success");
+  //   } catch (err) {
+  //     console.error("Reply error:", err);
+  //     showSnackbar("Reply failed", "error");
+  //   }
+  // };
   const handleSendReply = async (parentId) => {
-    // const html = replyEditorRefs.current[parentId]?.innerHTML;
-    const textOnly = replyEditorRefs.current[parentId]?.innerText;
-    const files = replyPendingFiles[parentId] || [];
+  const html = replyEditorRefs.current[parentId]?.innerHTML || "";
+  const files = replyPendingFiles[parentId] || [];
+  if (!html.trim() && files.length === 0) return;
 
-    // if ((!html || html === "<br>") && files.length === 0) return;
-    if(!textOnly && replyPendingFiles.length === 0) return;
+  try {
+    const res = await createMessage(cardId, {
+      user_id: userId,
+      message: html, // simpan dengan format HTML
+      parent_message_id: parentId,
+    });
 
-    try {
-      const res = await createMessage(cardId, {
-        user_id: userId,
-        // message: html,
-        message:textOnly,
-        parent_message_id: parentId,
-      });
-
-      const chatId = res.data.id;
-
-      // Upload semua file reply
-      for (let file of files) {
-        await uploadChatMedia(chatId, file);
-      }
-
-      // Reset reply editor & files
-      // replyEditorRefs.current[parentId].innerHTML = "";
-        replyEditorRefs.current[parentId].innerText = "";
-      setReplyPendingFiles((prev) => ({ ...prev, [parentId]: [] }));
-
-      fetchChats();
-      showSnackbar("Success reply", "success");
-    } catch (err) {
-      console.error("Reply error:", err);
-      showSnackbar("Reply failed", "error");
+    const chatId = res.data.id;
+    for (let file of files) {
+      await uploadChatMedia(chatId, file);
     }
-  };
+
+    replyEditorRefs.current[parentId].innerHTML = "";
+    setReplyPendingFiles((prev) => ({ ...prev, [parentId]: [] }));
+
+    fetchChats();
+    showSnackbar("Success reply", "success");
+  } catch (err) {
+    console.error("Reply error:", err);
+    showSnackbar("Reply failed", "error");
+  }
+};
+
 
   // === DELETE CHAT ===
   const handleDeleteChat = async (chatId) => {
@@ -253,9 +307,19 @@ const handleUploadFromEditor = async (e, target = "main") => {
         {replyTo === chat.id && (
           <div className="chat-reply-form">
             <div className="chat-toolbar">
+              {/* <button onClick={() => handleFormat('bold')}><b>B</b></button>
+              <button onClick={() => handleFormat('italic')}><i>I</i></button>
+              <button onClick={() => handleFormat('underline')}><u>U</u></button> */}
               <button onClick={() => handleFormat('bold')}><b>B</b></button>
               <button onClick={() => handleFormat('italic')}><i>I</i></button>
               <button onClick={() => handleFormat('underline')}><u>U</u></button>
+              <button onClick={() => handleFormat('strikethrough')}><s>S</s></button>
+              <button onClick={() => handleFormat('orderedList')}>1.</button>
+              <button onClick={() => handleFormat('unorderedList')}>•</button>
+              <button onClick={() => handleFormat('code')}>
+                <code>{`</>`}</code>
+              </button>
+
               <label className="upload-btn">
                 📎
                 <input type="file" hidden onChange={(e) => handleUploadFromEditor(e, chat.id)} />
@@ -313,9 +377,18 @@ const handleUploadFromEditor = async (e, target = "main") => {
       {/* Toolbar Main */}
       <div className="chat-toolbar-container">
         <div className="chat-toolbar">
+          {/* <button onClick={() => handleFormat('bold')}><b>B</b></button>
+          <button onClick={() => handleFormat('italic')}><i>I</i></button>
+          <button onClick={() => handleFormat('underline')}><u>U</u></button> */}
           <button onClick={() => handleFormat('bold')}><b>B</b></button>
           <button onClick={() => handleFormat('italic')}><i>I</i></button>
           <button onClick={() => handleFormat('underline')}><u>U</u></button>
+          <button onClick={() => handleFormat('strikethrough')}><s>S</s></button>
+          <button onClick={() => handleFormat('orderedList')}>1.</button>
+          <button onClick={() => handleFormat('unorderedList')}>•</button>
+          <button onClick={() => handleFormat('code')}>
+            <code>{`</>`}</code>
+          </button>
           <label className="upload-btn">
             📎
             <input type="file" style={{ display: "none" }} onChange={(e) => handleUploadFromEditor(e, "main")} />
