@@ -3196,12 +3196,21 @@ app.get('/api/cards/:id', async (req, res) => {
 app.get('/api/cards/list/:listId', async (req, res) => {
     const { listId } = req.params;
     try {
-        const result = await client.query("SELECT * FROM cards WHERE list_id = $1 ORDER BY position", [listId]);
+        const result = await client.query("SELECT * FROM cards WHERE list_id = $1 AND is_deleted = FALSE ORDER BY position", [listId]);
         res.json(result.rows);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 })
+// app.get('/api/cards/list/:listId', async (req, res) => {
+//     const { listId } = req.params;
+//     try {
+//         const result = await client.query("SELECT * FROM cards WHERE list_id = $1 ORDER BY position", [listId]);
+//         res.json(result.rows);
+//     } catch (error) {
+//         res.status(500).json({ error: error.message });
+//     }
+// })
 //3. create a new card
 app.post('/api/cards', async (req, res) => {
     const { title, description, list_id } = req.body;
