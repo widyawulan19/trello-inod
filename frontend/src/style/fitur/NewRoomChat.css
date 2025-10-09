@@ -408,7 +408,7 @@
   /* CSS monitor besar */
   .chat-list {
     height: 75vh;
-    border: 1px solid greenyellow;
+    /* border: 1px solid greenyellow; */
   }
 }
 
