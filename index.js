@@ -2106,41 +2106,116 @@ app.delete('/api/boards/:id', async (req, res) => {
     try {
         await client.query('BEGIN');
 
-        // ambil workspace_id dulu biar tau konteks posisi
-        // const { rows } = await client.query('SELECT workspace_id FROM boards WHERE id = $1', [id]);
-        const { rows } = await client.query('SELECT workspace_id, position FROM boards WHERE id = $1 AND is_deleted = FALSE', [id]);
-        if (rows.length === 0) {
-            return res.status(404).json({ message: 'Board not found' });
-        }
-        const workspaceId = rows[0].workspace_id;
-
-        await client.query('DELETE FROM boards WHERE id = $1', [id]);
-
-        // resekuens posisi board di workspace ini
-        await client.query(
-            `WITH reordered AS (
-        SELECT id, ROW_NUMBER() OVER (ORDER BY position) AS new_pos
-        FROM boards WHERE workspace_id = $1
-      )
-      UPDATE boards b
-      SET position = r.new_pos
-      FROM reordered r
-      WHERE b.id = r.id`,
-            [workspaceId]
+        // Ambil workspace_id & posisi board sebelum dihapus
+        const { rows } = await client.query(
+            `SELECT workspace_id, position FROM boards 
+             WHERE id = $1 AND is_deleted = FALSE`,
+            [id]
         );
 
+        if (rows.length === 0) {
+            await client.query('ROLLBACK');
+            return res.status(404).json({ message: 'Board not found or already deleted' });
+        }
+
+        const { workspace_id } = rows[0];
+
+        // Soft delete board (tidak dihapus permanen)
+        await client.query(
+            `UPDATE boards 
+             SET is_deleted = TRUE, deleted_at = NOW() 
+             WHERE id = $1`,
+            [id]
+        );
+
+        // Reorder posisi board yang tersisa di workspace
+        await client.query(
+            `WITH reordered AS (
+                SELECT id, ROW_NUMBER() OVER (ORDER BY position) AS new_pos
+                FROM boards 
+                WHERE workspace_id = $1 AND is_deleted = FALSE
+            )
+            UPDATE boards b
+            SET position = r.new_pos
+            FROM reordered r
+            WHERE b.id = r.id`,
+            [workspace_id]
+        );
+
+        // Log activity
         await logActivity(
             'board',
             id,
-            'delete',
+            'soft_delete',
             userId,
-            `Board dengan Id ${id} deleted`,
+            `Board with id ${id} soft deleted`,
             'workspace',
-            workspaceId
+            workspace_id
         );
 
         await client.query('COMMIT');
-        res.json({ message: 'Board deleted successfully' });
+        res.json({ message: 'Board soft deleted successfully' });
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+//Restore soft deleted board
+app.patch('/api/boards/:id/restore', async (req, res) => {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    try {
+        await client.query('BEGIN');
+
+        // Pastikan board memang terhapus (soft delete)
+        const { rows } = await client.query(
+            `SELECT workspace_id FROM boards WHERE id = $1 AND is_deleted = TRUE`,
+            [id]
+        );
+
+        if (rows.length === 0) {
+            await client.query('ROLLBACK');
+            return res.status(404).json({ message: 'No soft-deleted board found' });
+        }
+
+        const { workspace_id } = rows[0];
+
+        // Hitung posisi terakhir agar board dikembalikan ke urutan akhir
+        const { rows: posRows } = await client.query(
+            `SELECT COALESCE(MAX(position), 0) + 1 AS new_position 
+             FROM boards WHERE workspace_id = $1 AND is_deleted = FALSE`,
+            [workspace_id]
+        );
+        const newPosition = posRows[0].new_position;
+
+        // Restore board
+        const result = await client.query(
+            `UPDATE boards 
+             SET is_deleted = FALSE, deleted_at = NULL, position = $2
+             WHERE id = $1 
+             RETURNING *`,
+            [id, newPosition]
+        );
+
+        // Log activity
+        await logActivity(
+            'board',
+            id,
+            'restore',
+            userId,
+            `Board with id ${id} restored`,
+            'workspace',
+            workspace_id
+        );
+
+        await client.query('COMMIT');
+        res.json({
+            message: 'Board restored successfully',
+            restoredBoard: result.rows[0],
+        });
     } catch (error) {
         await client.query('ROLLBACK');
         console.error(error);
