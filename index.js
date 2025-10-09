@@ -3258,41 +3258,135 @@ app.delete('/api/cards/:cardId', async (req, res) => {
     const userId = req.user.id;
 
     try {
-        // 1. Dapatkan list_id dan posisi card yang dihapus
-        const cardRes = await client.query(
-            "SELECT list_id, position FROM cards WHERE id = $1",
+        const { rows } = await client.query(
+            "SELECT list_id, position FROM cards WHERE id = $1 AND is_deleted = FALSE",
             [cardId]
         );
 
-        if (cardRes.rows.length === 0) {
-            return res.status(404).json({ error: "Card not found" });
+        if (rows.length === 0) {
+            return res.status(404).json({ error: "Card not found or already deleted" });
         }
 
-        const { list_id, position } = cardRes.rows[0];
+        const { list_id, position } = rows[0];
 
-        // 2. Hapus card
-        await client.query("DELETE FROM cards WHERE id = $1", [cardId]);
+        // 1️⃣ Update card jadi 'deleted'
+        await client.query(
+            "UPDATE cards SET is_deleted = TRUE WHERE id = $1",
+            [cardId]
+        );
 
-        // 3. Update posisi card lain yang lebih besar dari posisi card yang dihapus
+        // 2️⃣ Update posisi card lain dalam list
         await client.query(
             `UPDATE cards
-       SET position = position - 1
-       WHERE list_id = $1 AND position > $2`,
+             SET position = position - 1
+             WHERE list_id = $1 AND position > $2 AND is_deleted = FALSE`,
             [list_id, position]
         );
 
-        // 4. Tambahkan log activity
+        // 3️⃣ Log activity
         await logActivity(
             'card',
             cardId,
-            'delete',
+            'soft_delete',
             userId,
-            `Card with id ${cardId} deleted`,
+            `Card with id ${cardId} moved to recycle bin`,
             'list',
             cardId
         );
 
-        res.json({ message: "Card deleted successfully and positions updated" });
+        res.json({ message: "Card moved to recycle bin (soft deleted)" });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+// app.delete('/api/cards/:cardId', async (req, res) => {
+//     const { cardId } = req.params;
+//     const userId = req.user.id;
+
+//     try {
+//         // 1. Dapatkan list_id dan posisi card yang dihapus
+//         const cardRes = await client.query(
+//             "SELECT list_id, position FROM cards WHERE id = $1",
+//             [cardId]
+//         );
+
+//         if (cardRes.rows.length === 0) {
+//             return res.status(404).json({ error: "Card not found" });
+//         }
+
+//         const { list_id, position } = cardRes.rows[0];
+
+//         // 2. Hapus card
+//         await client.query("DELETE FROM cards WHERE id = $1", [cardId]);
+
+//         // 3. Update posisi card lain yang lebih besar dari posisi card yang dihapus
+//         await client.query(
+//             `UPDATE cards
+//        SET position = position - 1
+//        WHERE list_id = $1 AND position > $2`,
+//             [list_id, position]
+//         );
+
+//         // 4. Tambahkan log activity
+//         await logActivity(
+//             'card',
+//             cardId,
+//             'delete',
+//             userId,
+//             `Card with id ${cardId} deleted`,
+//             'list',
+//             cardId
+//         );
+
+//         res.json({ message: "Card deleted successfully and positions updated" });
+//     } catch (error) {
+//         res.status(500).json({ error: error.message });
+//     }
+// });
+
+// restore soft-deleted card
+app.patch('/api/cards/:cardId/restore', async (req, res) => {
+    const { cardId } = req.params;
+    const userId = req.user.id;
+
+    try {
+        // Ambil list_id card yang mau direstore
+        const { rows } = await client.query(
+            "SELECT list_id FROM cards WHERE id = $1 AND is_deleted = TRUE",
+            [cardId]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({ error: "Card not found or not deleted" });
+        }
+
+        const { list_id } = rows[0];
+
+        // Dapatkan posisi terakhir di list untuk card aktif
+        const { rows: activeCards } = await client.query(
+            "SELECT COUNT(*) AS count FROM cards WHERE list_id = $1 AND is_deleted = FALSE",
+            [list_id]
+        );
+        const newPosition = parseInt(activeCards[0].count) + 1;
+
+        // Restore card
+        await client.query(
+            "UPDATE cards SET is_deleted = FALSE, position = $1 WHERE id = $2",
+            [newPosition, cardId]
+        );
+
+        // Log activity
+        await logActivity(
+            'card',
+            cardId,
+            'restore',
+            userId,
+            `Card with id ${cardId} restored from recycle bin`,
+            'list',
+            cardId
+        );
+
+        res.json({ message: "Card restored successfully" });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
