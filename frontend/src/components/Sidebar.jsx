@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import '../style/components/Sidebar.css';
-import { HiOutlineCircleStack, HiOutlineUsers, HiOutlineArrowLeftCircle, HiOutlineArrowRightCircle, HiOutlineSquaresPlus, HiOutlineFolder, HiOutlineCog8Tooth, HiAdjustmentsHorizontal,HiOutlineCalendarDateRange, HiOutlineArchiveBoxArrowDown, HiOutlineChartBar } from "react-icons/hi2";
+import { HiOutlineCircleStack, HiOutlineUsers, HiOutlineArrowLeftCircle, HiOutlineArrowRightCircle, HiOutlineSquaresPlus, HiOutlineFolder, HiOutlineCog8Tooth, HiAdjustmentsHorizontal,HiOutlineCalendarDateRange, HiOutlineArchiveBoxArrowDown, HiOutlineChartBar, HiOutlineTrash } from "react-icons/hi2";
 import { Tooltip, tooltipClasses } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
@@ -59,7 +59,7 @@ const Sidebar = () => {
             { to: 'archive-data', icon: <HiOutlineArchiveBoxArrowDown className='icon' />, label: 'Archive Data', name: 'archive' },
             { to: 'activity', icon: <HiOutlineCog8Tooth className='icon' />, label: 'User Activity', name: 'User Activity' },
             { to: 'faq', icon: <HiAdjustmentsHorizontal className='icon' />, label: 'FaQ', name: 'faq' },
-            // { to: 'example-marketing-design', icon: <HiAdjustmentsHorizontal className='icon' />, label: 'Development', name: 'Dev page' },
+            { to: 'data-delete', icon: <HiOutlineTrash className='icon' />, label: 'Trash', name: 'Trash' },
             // { to: 'card-list', icon: <HiAdjustmentsHorizontal className='icon' />, label: 'Development', name: 'Dev page' },
           ].map((item) => (
             <div
