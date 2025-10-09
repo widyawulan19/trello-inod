@@ -1721,7 +1721,7 @@ app.get('/api/user/:userId/workspaces', async (req, res) => {
             `SELECT w.id, w.name, w.description, w.create_at, w.update_at
             FROM workspaces w
             JOIN workspaces_users wu ON w.id = wu.workspace_id
-            WHERE wu.user_id = $1`, [userId]
+            WHERE wu.user_id = $1 AND is_deleted = FALSE`, [userId]
         );
 
         if (result.rows.length === 0) {
