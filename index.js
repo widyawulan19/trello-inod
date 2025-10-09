@@ -1588,29 +1588,89 @@ app.put('/api/workspace-user/:workspaceId/user/:userId', async (req, res) => {
 app.delete('/api/workspace-user/:workspaceId/user/:userId', async (req, res) => {
     const { workspaceId, userId } = req.params;
     try {
-        const result = await client.query(
-            `DELETE FROM workspaces_users WHERE workspace_id = $1 AND user_id = $2 RETURNING *`,
+        // Pastikan user ada dan belum dihapus
+        const { rows } = await client.query(
+            `SELECT * FROM workspaces_users WHERE workspace_id = $1 AND user_id = $2 AND is_deleted = FALSE`,
             [workspaceId, userId]
         );
-        if (result.rowCount === 0) {
-            return res.status(404).json({ error: 'User not found in this workspace' });
+
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'User not found or already removed from this workspace' });
         }
 
-        //Log activity for delete workspace user
+        // Soft delete user
+        const result = await client.query(
+            `UPDATE workspaces_users
+             SET is_deleted = TRUE, deleted_at = NOW()
+             WHERE workspace_id = $1 AND user_id = $2
+             RETURNING *`,
+            [workspaceId, userId]
+        );
+
+        // Log activity untuk soft delete
         await logActivity(
             'workspace user',
             workspaceId,
-            'delete',
+            'soft_delete',
             userId,
-            `Workspace user deleted`,
+            `Workspace user soft deleted`,
             null,
-            null,
-        )
-        res.status(200).json({ message: 'User removed from workspace' });
+            null
+        );
+
+        res.status(200).json({
+            message: 'User soft deleted (removed logically) from workspace',
+            deletedUser: result.rows[0],
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
-})
+});
+
+//Restore soft deleted workspace user
+app.patch('/api/workspace-user/:workspaceId/user/:userId/restore', async (req, res) => {
+    const { workspaceId, userId } = req.params;
+    try {
+        // Pastikan user ada dan sudah dihapus (soft delete)
+        const { rows } = await client.query(
+            `SELECT * FROM workspaces_users 
+             WHERE workspace_id = $1 AND user_id = $2 AND is_deleted = TRUE`,
+            [workspaceId, userId]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'No deleted user found for this workspace' });
+        }
+
+        // Restore data
+        const result = await client.query(
+            `UPDATE workspaces_users
+             SET is_deleted = FALSE, deleted_at = NULL
+             WHERE workspace_id = $1 AND user_id = $2
+             RETURNING *`,
+            [workspaceId, userId]
+        );
+
+        // Log activity
+        await logActivity(
+            'workspace user',
+            workspaceId,
+            'restore',
+            userId,
+            `Workspace user restored`,
+            null,
+            null
+        );
+
+        res.status(200).json({
+            message: 'User restored successfully to workspace',
+            restoredUser: result.rows[0],
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 
 //5. archive workspace user
 app.post('/api/archive-workspace-user/:workspaceId', async (req, res) => {
@@ -3202,15 +3262,7 @@ app.get('/api/cards/list/:listId', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 })
-// app.get('/api/cards/list/:listId', async (req, res) => {
-//     const { listId } = req.params;
-//     try {
-//         const result = await client.query("SELECT * FROM cards WHERE list_id = $1 ORDER BY position", [listId]);
-//         res.json(result.rows);
-//     } catch (error) {
-//         res.status(500).json({ error: error.message });
-//     }
-// })
+
 //3. create a new card
 app.post('/api/cards', async (req, res) => {
     const { title, description, list_id } = req.body;
@@ -3308,50 +3360,7 @@ app.delete('/api/cards/:cardId', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
-// app.delete('/api/cards/:cardId', async (req, res) => {
-//     const { cardId } = req.params;
-//     const userId = req.user.id;
 
-//     try {
-//         // 1. Dapatkan list_id dan posisi card yang dihapus
-//         const cardRes = await client.query(
-//             "SELECT list_id, position FROM cards WHERE id = $1",
-//             [cardId]
-//         );
-
-//         if (cardRes.rows.length === 0) {
-//             return res.status(404).json({ error: "Card not found" });
-//         }
-
-//         const { list_id, position } = cardRes.rows[0];
-
-//         // 2. Hapus card
-//         await client.query("DELETE FROM cards WHERE id = $1", [cardId]);
-
-//         // 3. Update posisi card lain yang lebih besar dari posisi card yang dihapus
-//         await client.query(
-//             `UPDATE cards
-//        SET position = position - 1
-//        WHERE list_id = $1 AND position > $2`,
-//             [list_id, position]
-//         );
-
-//         // 4. Tambahkan log activity
-//         await logActivity(
-//             'card',
-//             cardId,
-//             'delete',
-//             userId,
-//             `Card with id ${cardId} deleted`,
-//             'list',
-//             cardId
-//         );
-
-//         res.json({ message: "Card deleted successfully and positions updated" });
-//     } catch (error) {
-//         res.status(500).json({ error: error.message });
-//     }
-// });
 
 // restore soft-deleted card
 app.patch('/api/cards/:cardId/restore', async (req, res) => {
