@@ -49,15 +49,22 @@ const NewRoomChat=({cardId, userId, onClose})=> {
 
   // === SEND MESSAGE (MAIN) ===
 const handleSendMessage = async () => {
-  const textOnly = editorRef.current?.innerText || "";
-  if (!textOnly && pendingFiles.length === 0) return;
+  // const textOnly = editorRef.current?.innerText || "";
+  // if (!textOnly && pendingFiles.length === 0) return;
+  const html = editorRef.current?.innerHTML || "";
+  if ((!html || html === "<br>") && pendingFiles.length === 0) return;
 
   try {
+    // const res = await createMessage(cardId, {
+    //   user_id: userId,
+    //   message: textOnly, // Hanya text saja
+    //   parent_message_id: null,
     const res = await createMessage(cardId, {
-      user_id: userId,
-      message: textOnly, // Hanya text saja
-      parent_message_id: null,
-    });
+    user_id: userId,
+    message: html, // simpan HTML biar bold/italic tetap tampil
+    parent_message_id: null,
+  });
+
 
     const chatId = res.data.id;
 
@@ -107,17 +114,18 @@ const handleSendMessage = async () => {
   // === SEND REPLY ===
   const handleSendReply = async (parentId) => {
     // const html = replyEditorRefs.current[parentId]?.innerHTML;
-    const textOnly = replyEditorRefs.current[parentId]?.innerText;
+    // const textOnly = replyEditorRefs.current[parentId]?.innerText;
+    const html = replyEditorRefs.current[parentId]?.innerHTML || "";
     const files = replyPendingFiles[parentId] || [];
 
-    // if ((!html || html === "<br>") && files.length === 0) return;
-    if(!textOnly && replyPendingFiles.length === 0) return;
+    if ((!html || html === "<br>") && files.length === 0) return;
+    // if(!textOnly && replyPendingFiles.length === 0) return;
 
     try {
       const res = await createMessage(cardId, {
         user_id: userId,
-        // message: html,
-        message:textOnly,
+        message: html,
+        // message:textOnly,
         parent_message_id: parentId,
       });
 
@@ -182,9 +190,73 @@ const handleSendMessage = async () => {
   };
 
   // === FORMAT TOOLS ===
-  const handleFormat = (command, value = null) => {
-    document.execCommand(command, false, value);
-  };
+  // const handleFormat = (command, value = null) => {
+  //   document.execCommand(command, false, value);
+  // };
+  // === FORMAT TOOLS ===
+    const handleFormat = (command, value = null) => {
+      document.execCommand(command, false, value);
+      editorRef.current?.focus();
+    };
+  
+    // === SHORTCUT HANDLER ===
+    const handleKeyDown = (e) => {
+      if (!e.ctrlKey && !e.metaKey) return; // hanya tangkap Ctrl/Cmd
+  
+      // Bold: Ctrl + B
+      if (e.key.toLowerCase() === "b") {
+        e.preventDefault();
+        handleFormat("bold");
+      }
+  
+      // Italic: Ctrl + I
+      if (e.key.toLowerCase() === "i") {
+        e.preventDefault();
+        handleFormat("italic");
+      }
+  
+      // Underline: Ctrl + U
+      if (e.key.toLowerCase() === "u") {
+        e.preventDefault();
+        handleFormat("underline");
+      }
+  
+      // Strikethrough: Ctrl + Shift + S
+      if (e.shiftKey && e.key.toLowerCase() === "s") {
+        e.preventDefault();
+        handleFormat("strikeThrough");
+      }
+  
+      // Ordered list: Ctrl + Shift + O
+      if (e.shiftKey && e.key.toLowerCase() === "o") {
+        e.preventDefault();
+        handleFormat("insertOrderedList");
+      }
+  
+      // Unordered list: Ctrl + Shift + U
+      if (e.shiftKey && e.key.toLowerCase() === "u") {
+        e.preventDefault();
+        handleFormat("insertUnorderedList");
+      }
+  
+      // Inline code: Ctrl + E
+      if (e.key.toLowerCase() === "e") {
+        e.preventDefault();
+        // ambil teks yang dipilih lalu bungkus dengan <code>
+        const selection = window.getSelection();
+        if (selection.rangeCount > 0) {
+          const range = selection.getRangeAt(0);
+          const codeNode = document.createElement("code");
+          range.surroundContents(codeNode);
+        }
+      }
+    };
+  
+    useEffect(() => {
+      const editor = editorRef.current;
+      if (editor) editor.addEventListener("keydown", handleKeyDown);
+      return () => editor?.removeEventListener("keydown", handleKeyDown);
+    }, []);
 
   // === EMOJI ===
   const emojiList = ["😀","😄","😁","😆","😅","😂","🤣","😊","😍","😎","🤩","😘","😢","😭","😡","🤔","👍","👎","🙏","👏","🔥","💯","🎉","❤️"];
@@ -310,6 +382,7 @@ const handleUploadFromEditor = async (e, target = "main") => {
               {/* <button onClick={() => handleFormat('bold')}><b>B</b></button>
               <button onClick={() => handleFormat('italic')}><i>I</i></button>
               <button onClick={() => handleFormat('underline')}><u>U</u></button> */}
+
               <button onClick={() => handleFormat('bold')}><b>B</b></button>
               <button onClick={() => handleFormat('italic')}><i>I</i></button>
               <button onClick={() => handleFormat('underline')}><u>U</u></button>
@@ -349,9 +422,15 @@ const handleUploadFromEditor = async (e, target = "main") => {
 
   // === AUTO LINK ===
   function autoLinkHTML(html) {
-    const urlRegex = /(\b(https?|ftp):\/\/[^\s<]+)/gi;
-    return html.replace(urlRegex, (url) => `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`);
-  }
+  if (!html) return "";
+
+  // Jangan ubah kalau sudah ada <a> tag di dalam HTML
+  // Ini hanya menautkan URL plain text yang *tidak* diapit <a ...>
+  return html.replace(
+    /(^|[^">])(https?:\/\/[^\s<]+)/g,
+    (match, prefix, url) => `${prefix}<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`
+  );
+}
 
   if (loading) return <p className="chat-loading">Loading chats...</p>;
 
@@ -380,6 +459,7 @@ const handleUploadFromEditor = async (e, target = "main") => {
           {/* <button onClick={() => handleFormat('bold')}><b>B</b></button>
           <button onClick={() => handleFormat('italic')}><i>I</i></button>
           <button onClick={() => handleFormat('underline')}><u>U</u></button> */}
+
           <button onClick={() => handleFormat('bold')}><b>B</b></button>
           <button onClick={() => handleFormat('italic')}><i>I</i></button>
           <button onClick={() => handleFormat('underline')}><u>U</u></button>
