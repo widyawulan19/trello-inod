@@ -2107,7 +2107,8 @@ app.delete('/api/boards/:id', async (req, res) => {
         await client.query('BEGIN');
 
         // ambil workspace_id dulu biar tau konteks posisi
-        const { rows } = await client.query('SELECT workspace_id FROM boards WHERE id = $1', [id]);
+        // const { rows } = await client.query('SELECT workspace_id FROM boards WHERE id = $1', [id]);
+        const { rows } = await client.query('SELECT workspace_id, position FROM boards WHERE id = $1 AND is_deleted = FALSE', [id]);
         if (rows.length === 0) {
             return res.status(404).json({ message: 'Board not found' });
         }

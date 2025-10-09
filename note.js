@@ -1,513 +1,501 @@
-//register user
-app.post("/api/auth/register", async (req, res) => {
-  const { username, email, password } = req.body;
+// 4. soft delete card (bisa direstore lagi)
+app.delete('/api/cards/:cardId', async (req, res) => {
+  const { cardId } = req.params;
+  const userId = req.user.id;
+
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const result = await client.query(
-      `INSERT INTO users (username, email, password)
-       VALUES ($1, $2, $3) RETURNING id, username, email`,
-      [username, email, hashedPassword]
-    );
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    res.status(500).json({ message: "Error registering user", error: err });
-  }
-});
-
-
-// LOGIN 
-import jwt from "jsonwebtoken";
-
-app.post("/api/auth/login", async (req, res) => {
-  const { email, password } = req.body;
-  try {
-    const user = await client.query(`SELECT * FROM users WHERE email = $1`, [email]);
-    if (user.rows.length === 0) return res.status(401).json({ message: "Invalid email" });
-
-    const validPass = await bcrypt.compare(password, user.rows[0].password);
-    if (!validPass) return res.status(401).json({ message: "Invalid password" });
-
-    const token = jwt.sign(
-      { id: user.rows[0].id, username: user.rows[0].username, email: user.rows[0].email },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
+    const { rows } = await client.query(
+      "SELECT list_id, position FROM cards WHERE id = $1 AND is_deleted = FALSE",
+      [cardId]
     );
 
-    res.json({ token, user: { id: user.rows[0].id, username: user.rows[0].username, email: user.rows[0].email } });
-  } catch (err) {
-    res.status(500).json({ message: "Error logging in", error: err });
-  }
-});
-
-
-// Middleware verifyToken
-
-const verifyToken = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-  if (!token) return res.status(401).json({ message: 'No token provided' });
-
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) return res.status(403).json({ message: 'Invalid or expired token' });
-    req.user = user; // simpan payload token
-    next();
-  });
-};
-
-// contoh penggunaannya 
-app.get("/api/auth/me", verifyToken, (req, res) => {
-  res.json({ message: `Hello ${req.user.username}`, user: req.user });
-});
-
-
-const nodemailer = require("nodemailer");
-
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: "your.email@gmail.com", // ganti dengan emailmu
-    pass: "your_app_password",    // gunakan App Password (bukan password biasa)
-  },
-});
-
-
-const crypto = require("crypto");
-const nodemailer = require("nodemailer");
-
-// buat transporter seperti di atas dulu ya
-
-app.post("/api/auth/request-reset", async (req, res) => {
-  const { email } = req.body;
-  try {
-    const user = await client.query(`SELECT * FROM users WHERE email = $1`, [email]);
-    if (user.rows.length === 0) {
-      return res.status(404).json({ message: "Email not found" });
+    if (rows.length === 0) {
+      return res.status(404).json({ error: "Card not found or already deleted" });
     }
 
-    const resetToken = crypto.randomBytes(32).toString("hex");
-    const resetExpires = new Date(Date.now() + 3600000); // 1 jam
+    const { list_id, position } = rows[0];
 
+    // 1️⃣ Update card jadi 'deleted'
     await client.query(
-      `UPDATE users SET password_reset_token = $1, password_reset_expires = $2 WHERE email = $3`,
-      [resetToken, resetExpires, email]
+      "UPDATE cards SET is_deleted = TRUE WHERE id = $1",
+      [cardId]
     );
 
-    const resetLink = `http://localhost:3000/reset-password?token=${resetToken}`;
-
-    // Kirim email
-    const mailOptions = {
-      from: "your.email@gmail.com",
-      to: email,
-      subject: "Password Reset",
-      html: `<p>Kamu meminta reset password. Klik link berikut untuk reset:</p>
-             <a href="${resetLink}">${resetLink}</a>
-             <p>Link berlaku selama 1 jam.</p>`,
-    };
-
-    await transporter.sendMail(mailOptions);
-
-    res.json({ message: "Reset link has been sent to your email" });
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Error requesting password reset" });
-  }
-});
-
-
-
-// new register 
-app.post("/api/auth/register", async (req, res) => {
-  const { username, email, password, security_question, security_answer } = req.body;
-
-  try {
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const userResult = await client.query(
-      `INSERT INTO users (username, email, password, security_question, security_answer)
-       VALUES ($1, $2, $3, $4, $5)
-       RETURNING id, username, email, security_question`,
-      [username, email, hashedPassword, security_question, security_answer]
-    );
-
-    const userId = userResult.rows[0].id;
-
-    // ✅ Insert default profil (misalnya profil ID 1)
+    // 2️⃣ Update posisi card lain dalam list
     await client.query(
-      `INSERT INTO user_profil (user_id, profil_id)
-       VALUES ($1, $2)`,
-      [userId, 1]
+      `UPDATE cards
+             SET position = position - 1
+             WHERE list_id = $1 AND position > $2 AND is_deleted = FALSE`,
+      [list_id, position]
     );
 
-    // ✅ Insert default data ke user_data
-    await client.query(
-      `INSERT INTO user_data (user_id, name, nomor, divisi, jabatan)
-       VALUES ($1, $2, $3, $4, $5)`,
-      [userId, '', '', 'Umum', 'Anggota']
+    // 3️⃣ Log activity
+    await logActivity(
+      'card',
+      cardId,
+      'soft_delete',
+      userId,
+      `Card with id ${cardId} moved to recycle bin`,
+      'list',
+      cardId
     );
 
-    res.status(201).json({
-      message: "User registered successfully",
-      user: userResult.rows[0],
-    });
+    res.json({ message: "Card moved to recycle bin (soft deleted)" });
   } catch (error) {
-    console.error("Error during registration:", error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
 
-app.post("/api/auth/register", async (req, res) => {
-  const { username, email, password, security_question, security_answer } = req.body;
+// 5. restore soft-deleted card
+app.patch('/api/cards/:cardId/restore', async (req, res) => {
+  const { cardId } = req.params;
+  const userId = req.user.id;
 
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const hashedSecurityAnswer = await bcrypt.hash(security_answer, 10);
-
-    const userResult = await client.query(
-      `INSERT INTO users (username, email, password, security_question, security_answer)
-       VALUES ($1, $2, $3, $4, $5)
-       RETURNING id, username, email, security_question`,
-      [username, email, hashedPassword, security_question, hashedSecurityAnswer]
+    // Ambil list_id card yang mau direstore
+    const { rows } = await client.query(
+      "SELECT list_id FROM cards WHERE id = $1 AND is_deleted = TRUE",
+      [cardId]
     );
 
-    const userId = userResult.rows[0].id;
+    if (rows.length === 0) {
+      return res.status(404).json({ error: "Card not found or not deleted" });
+    }
 
+    const { list_id } = rows[0];
+
+    // Dapatkan posisi terakhir di list untuk card aktif
+    const { rows: activeCards } = await client.query(
+      "SELECT COUNT(*) AS count FROM cards WHERE list_id = $1 AND is_deleted = FALSE",
+      [list_id]
+    );
+    const newPosition = parseInt(activeCards[0].count) + 1;
+
+    // Restore card
     await client.query(
-      `INSERT INTO user_profil (user_id, profil_id)
-       VALUES ($1, $2)`,
-      [userId, 1]
+      "UPDATE cards SET is_deleted = FALSE, position = $1 WHERE id = $2",
+      [newPosition, cardId]
     );
 
-    await client.query(
-      `INSERT INTO user_data (user_id, name, nomor, divisi, jabatan)
-       VALUES ($1, $2, $3, $4, $5)`,
-      [userId, '', '', 'Umum', 'Anggota']
+    // Log activity
+    await logActivity(
+      'card',
+      cardId,
+      'restore',
+      userId,
+      `Card with id ${cardId} restored from recycle bin`,
+      'list',
+      cardId
     );
 
-    res.status(201).json({
-      message: "User registered successfully",
-      user: userResult.rows[0],
-    });
+    res.json({ message: "Card restored successfully" });
   } catch (error) {
-    console.error("Error during registration:", error.message);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
-app.post("/api/auth/register", async (req, res) => {
-  const { username, email, password, security_question, security_answer } = req.body;
-
+app.get('/api/cards/deleted', async (req, res) => {
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const hashedSecurityAnswer = await bcrypt.hash(security_answer, 10); // ini yang disimpan
-
-    const userResult = await client.query(
-      `INSERT INTO users (username, email, password, security_question, security_answer_hash)
-       VALUES ($1, $2, $3, $4, $5)
-       RETURNING id, username, email, security_question`,
-      [username, email, hashedPassword, security_question, hashedSecurityAnswer]
+    const { rows } = await client.query(
+      "SELECT * FROM cards WHERE is_deleted = TRUE ORDER BY updated_at DESC"
     );
-
-    const userId = userResult.rows[0].id;
-
-    await client.query(
-      `INSERT INTO user_profil (user_id, profil_id)
-       VALUES ($1, $2)`,
-      [userId, 1]
-    );
-
-    await client.query(
-      `INSERT INTO user_data (user_id, name, nomor, divisi, jabatan)
-       VALUES ($1, $2, $3, $4, $5)`,
-      [userId, '', '', 'Umum', 'Anggota']
-    );
-
-    res.status(201).json({
-      message: "User registered successfully",
-      user: userResult.rows[0],
-    });
+    res.json(rows);
   } catch (error) {
-    console.error("Error during registration:", error.message);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
 
-// REGISTER
-app.post("/api/auth/register", async (req, res) => {
-  const { username, email, password, security_question, security_answer } = req.body;
-
+// ✅ Get cards by listId (tanpa card yang dihapus)
+app.get('/api/cards/list/:listId', async (req, res) => {
+  const { listId } = req.params;
   try {
-    // Hash password dan security_answer
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const hashedSecurityAnswer = await bcrypt.hash(security_answer, 10);
-
-    // Simpan ke tabel users
     const result = await client.query(
-      `INSERT INTO users (username, email, password, security_question, security_answer_hash)
-       VALUES ($1, $2, $3, $4, $5)
-       RETURNING id, username, email, security_question`,
-      [username, email, hashedPassword, security_question, hashedSecurityAnswer]
+      "SELECT * FROM cards WHERE list_id = $1 AND is_deleted = FALSE ORDER BY position",
+      [listId]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// 🗑️ Get all cards including deleted (opsional)
+app.get('/api/cards/list/:listId/all', async (req, res) => {
+  const { listId } = req.params;
+  try {
+    const result = await client.query(
+      "SELECT * FROM cards WHERE list_id = $1 ORDER BY position",
+      [listId]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+// 4. Soft delete workspace user
+app.delete('/api/workspace-user/:workspaceId/user/:userId', async (req, res) => {
+  const { workspaceId, userId } = req.params;
+  try {
+    // Pastikan user ada dan belum dihapus
+    const { rows } = await client.query(
+      `SELECT * FROM workspaces_users WHERE workspace_id = $1 AND user_id = $2 AND is_deleted = FALSE`,
+      [workspaceId, userId]
     );
 
-    res.status(201).json({
-      message: "User registered successfully",
-      user: result.rows[0]
+    if (rows.length === 0) {
+      return res.status(404).json({ error: 'User not found or already removed from this workspace' });
+    }
+
+    // Soft delete user
+    const result = await client.query(
+      `UPDATE workspaces_users
+             SET is_deleted = TRUE, deleted_at = NOW()
+             WHERE workspace_id = $1 AND user_id = $2
+             RETURNING *`,
+      [workspaceId, userId]
+    );
+
+    // Log activity untuk soft delete
+    await logActivity(
+      'workspace user',
+      workspaceId,
+      'soft_delete',
+      userId,
+      `Workspace user soft deleted`,
+      null,
+      null
+    );
+
+    res.status(200).json({
+      message: 'User soft deleted (removed logically) from workspace',
+      deletedUser: result.rows[0],
     });
   } catch (error) {
-    console.error("Error during registration:", error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
 
 
 
-// /api/user-setting/:userId
-app.put('/api/user-setting/:userId', async (req, res) => {
-  const { userId } = req.params;
-  const {
-    username,
-    email,
-    name,
-    nomor_wa,
-    divisi,
-    jabatan,
-    photo_url,
-  } = req.body;
+//WORKSAPCE 
+//4. delete workspace user -> works
+app.delete('/api/workspace-user/:workspaceId/user/:userId', async (req, res) => {
+  const { workspaceId, userId } = req.params;
+  try {
+    // Pastikan user ada dan belum dihapus
+    const { rows } = await client.query(
+      `SELECT * FROM workspaces_users WHERE workspace_id = $1 AND user_id = $2 AND is_deleted = FALSE`,
+      [workspaceId, userId]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ error: 'User not found or already removed from this workspace' });
+    }
+
+    // Soft delete user
+    const result = await client.query(
+      `UPDATE workspaces_users
+             SET is_deleted = TRUE, deleted_at = NOW()
+             WHERE workspace_id = $1 AND user_id = $2
+             RETURNING *`,
+      [workspaceId, userId]
+    );
+
+    // Log activity untuk soft delete
+    await logActivity(
+      'workspace user',
+      workspaceId,
+      'soft_delete',
+      userId,
+      `Workspace user soft deleted`,
+      null,
+      null
+    );
+
+    res.status(200).json({
+      message: 'User soft deleted (removed logically) from workspace',
+      deletedUser: result.rows[0],
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+//Restore soft deleted workspace user
+app.patch('/api/workspace-user/:workspaceId/user/:userId/restore', async (req, res) => {
+  const { workspaceId, userId } = req.params;
+  try {
+    // Pastikan user ada dan sudah dihapus (soft delete)
+    const { rows } = await client.query(
+      `SELECT * FROM workspaces_users 
+             WHERE workspace_id = $1 AND user_id = $2 AND is_deleted = TRUE`,
+      [workspaceId, userId]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ error: 'No deleted user found for this workspace' });
+    }
+
+    // Restore data
+    const result = await client.query(
+      `UPDATE workspaces_users
+             SET is_deleted = FALSE, deleted_at = NULL
+             WHERE workspace_id = $1 AND user_id = $2
+             RETURNING *`,
+      [workspaceId, userId]
+    );
+
+    // Log activity
+    await logActivity(
+      'workspace user',
+      workspaceId,
+      'restore',
+      userId,
+      `Workspace user restored`,
+      null,
+      null
+    );
+
+    res.status(200).json({
+      message: 'User restored successfully to workspace',
+      restoredUser: result.rows[0],
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// END WORKSPACE 
+
+
+// BOARDS 
+// 5. Soft delete a board
+app.delete('/api/boards/:id', async (req, res) => {
+  const { id } = req.params;
+  const userId = req.user.id;
 
   try {
     await client.query('BEGIN');
 
-    // Update tabel users
+    // Ambil workspace_id & posisi board sebelum dihapus
+    const { rows } = await client.query(
+      `SELECT workspace_id, position FROM boards 
+             WHERE id = $1 AND is_deleted = FALSE`,
+      [id]
+    );
+
+    if (rows.length === 0) {
+      await client.query('ROLLBACK');
+      return res.status(404).json({ message: 'Board not found or already deleted' });
+    }
+
+    const { workspace_id } = rows[0];
+
+    // Soft delete board (tidak dihapus permanen)
     await client.query(
-      `UPDATE users 
-       SET username = $1, email = $2, photo_url = $3 
-       WHERE id = $4`,
-      [username, email, photo_url, userId]
+      `UPDATE boards 
+             SET is_deleted = TRUE, deleted_at = NOW() 
+             WHERE id = $1`,
+      [id]
     );
 
-    // Update tabel user_data
+    // Reorder posisi board yang tersisa di workspace
     await client.query(
-      `UPDATE user_data 
-       SET name = $1, nomor_wa = $2, divisi = $3, jabatan = $4 
-       WHERE user_id = $5`,
-      [name, nomor_wa, divisi, jabatan, userId]
+      `WITH reordered AS (
+                SELECT id, ROW_NUMBER() OVER (ORDER BY position) AS new_pos
+                FROM boards 
+                WHERE workspace_id = $1 AND is_deleted = FALSE
+            )
+            UPDATE boards b
+            SET position = r.new_pos
+            FROM reordered r
+            WHERE b.id = r.id`,
+      [workspace_id]
     );
 
-    await client.query('COMMIT');
-    res.status(200).json({ message: 'User setting updated successfully' });
-  } catch (error) {
-    await client.query('ROLLBACK');
-    console.error('Error updating user setting:', error);
-    res.status(500).json({ message: 'Failed to update user setting' });
-  }
-});
-
-
-export const getSystemNotificationByUser = (userId) => axios.get(`${API_URL}/system-notification/user/${userId}`);
-
-
-// CREATE BOARD BY USER 
-app.post('/api/boards', verifyToken, async (req, res) => {
-  const { name, description, workspace_id } = req.body;
-  const userId = req.user.id; // ✅ dari token login
-
-  try {
-    const result = await client.query(
-      'INSERT INTO boards (user_id, name, description, workspace_id, create_at) VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP) RETURNING *',
-      [userId, name, description, workspace_id]
-    );
-
-    const boardId = result.rows[0].id;
-
+    // Log activity
     await logActivity(
       'board',
-      boardId,
-      'create',
+      id,
+      'soft_delete',
       userId,
-      `Board '${name}' created `,
+      `Board with id ${id} soft deleted`,
       'workspace',
       workspace_id
     );
 
-    res.status(201).json(result.rows[0]);
+    await client.query('COMMIT');
+    res.json({ message: 'Board soft deleted successfully' });
   } catch (error) {
+    await client.query('ROLLBACK');
+    console.error(error);
     res.status(500).json({ error: error.message });
   }
 });
 
-// server.js atau routes/report.js
-import express from "express";
-import pool from "./connect.js"; // koneksi PostgreSQL
+// 6. Restore soft deleted board
+app.patch('/api/boards/:id/restore', async (req, res) => {
+  const { id } = req.params;
+  const userId = req.user.id;
 
-const router = express.Router();
-
-// GET /api/marketing-design/reports?mode=auto
-// GET /api/marketing-design/reports?mode=manual&bulan=2025-05&period=2
-router.get("/marketing-design/reports", async (req, res) => {
   try {
-    const { mode, bulan, periode } = req.query;
-    let query = "";
-    let values = [];
+    await client.query('BEGIN');
 
-    if (mode === "auto") {
-      // ✅ ambil data create_at = hari ini
-      query = `
-        SELECT * 
-        FROM marketing_design 
-        WHERE DATE(create_at) = CURRENT_DATE
-        ORDER BY create_at DESC
-      `;
-    } else if (mode === "manual") {
-      if (!bulan || !periode) {
-        return res.status(400).json({ error: "bulan dan periode wajib diisi untuk mode manual" });
-      }
+    // Pastikan board memang terhapus (soft delete)
+    const { rows } = await client.query(
+      `SELECT workspace_id FROM boards WHERE id = $1 AND is_deleted = TRUE`,
+      [id]
+    );
 
-      // ambil tahun & bulan dari string "YYYY-MM"
-      const [year, month] = bulan.split("-");
-
-      let startDay, endDay;
-      if (periode === "1") {
-        startDay = 1;
-        endDay = 10;
-      } else if (periode === "2") {
-        startDay = 11;
-        endDay = 20;
-      } else if (periode === "3") {
-        startDay = 21;
-        // last day of month pakai fungsi PostgreSQL
-        query = `
-          SELECT * 
-          FROM marketing_design
-          WHERE create_at >= $1::date
-          AND create_at < (DATE_TRUNC('month', $1::date) + INTERVAL '1 month')
-          ORDER BY create_at DESC
-        `;
-        values = [`${year}-${month}-21`];
-      }
-
-      if (periode === "1" || periode === "2") {
-        query = `
-          SELECT * 
-          FROM marketing_design
-          WHERE create_at >= $1::date
-          AND create_at <= $2::date
-          ORDER BY create_at DESC
-        `;
-        values = [
-          `${year}-${month}-${String(startDay).padStart(2, "0")}`,
-          `${year}-${month}-${String(endDay).padStart(2, "0")}`,
-        ];
-      }
-    } else {
-      return res.status(400).json({ error: "mode harus 'auto' atau 'manual'" });
+    if (rows.length === 0) {
+      await client.query('ROLLBACK');
+      return res.status(404).json({ message: 'No soft-deleted board found' });
     }
 
-    const result = await pool.query(query, values);
-    res.json(result.rows);
+    const { workspace_id } = rows[0];
+
+    // Hitung posisi terakhir agar board dikembalikan ke urutan akhir
+    const { rows: posRows } = await client.query(
+      `SELECT COALESCE(MAX(position), 0) + 1 AS new_position 
+             FROM boards WHERE workspace_id = $1 AND is_deleted = FALSE`,
+      [workspace_id]
+    );
+    const newPosition = posRows[0].new_position;
+
+    // Restore board
+    const result = await client.query(
+      `UPDATE boards 
+             SET is_deleted = FALSE, deleted_at = NULL, position = $2
+             WHERE id = $1 
+             RETURNING *`,
+      [id, newPosition]
+    );
+
+    // Log activity
+    await logActivity(
+      'board',
+      id,
+      'restore',
+      userId,
+      `Board with id ${id} restored`,
+      'workspace',
+      workspace_id
+    );
+
+    await client.query('COMMIT');
+    res.json({
+      message: 'Board restored successfully',
+      restoredBoard: result.rows[0],
+    });
   } catch (error) {
-    console.error("❌ Error fetching report:", error);
+    await client.query('ROLLBACK');
+    console.error(error);
     res.status(500).json({ error: error.message });
   }
 });
 
-export default router;
+// END BOARDS 
 
+// CARD 
+//4. delete card
+app.delete('/api/cards/:cardId', async (req, res) => {
+  const { cardId } = req.params;
+  const userId = req.user.id;
 
-const filteredTenDays = tenDaysData.filter((row) => {
-  const d = parseDate(row);
-  if (!d) return false;
-
-  const monthKey = d.toISOString().slice(0, 7);
-  if (monthKey !== selectedMonth) return false;
-
-  if (selectedRange === "1-10") return row.period === 1;
-  if (selectedRange === "11-20") return row.period === 2;
-  if (selectedRange === "21-31") return row.period === 3;
-  return true; // all
-});
-
-
-const dayjs = require("dayjs");
-require("dayjs/locale/id");
-dayjs.locale("id");
-
-// 5. membuat data baru
-app.post("/api/marketing", async (req, res) => {
   try {
-    const {
-      input_by,
-      acc_by,
-      buyer_name,
-      code_order,
-      jumlah_track,
-      order_number,
-      account,
-      deadline,
-      jumlah_revisi,
-      order_type,
-      offer_type,
-      jenis_track,
-      genre,
-      price_normal,
-      price_discount,
-      discount,
-      basic_price,
-      gig_link,
-      required_files,
-      project_type,
-      duration,
-      reference_link,
-      file_and_chat_link,
-      detail_project,
-    } = req.body;
-
-    // --- hitung project_number ---
-    const createAt = new Date(); // default pakai waktu saat insert
-    const monthStart = dayjs(createAt).startOf("month").toDate();
-    const monthEnd = dayjs(createAt).endOf("month").toDate();
-
-    const countResult = await client.query(
-      `SELECT COUNT(*) AS count
-       FROM data_marketing
-       WHERE create_at BETWEEN $1 AND $2`,
-      [monthStart, monthEnd]
+    const { rows } = await client.query(
+      "SELECT list_id, position FROM cards WHERE id = $1 AND is_deleted = FALSE",
+      [cardId]
     );
 
-    const nextNumber = parseInt(countResult.rows[0].count) + 1;
-    const monthName = dayjs(createAt).format("MMMM");
-    const projectNumber = `P${String(nextNumber).padStart(2, "0")} ${monthName}`;
+    if (rows.length === 0) {
+      return res.status(404).json({ error: "Card not found or already deleted" });
+    }
 
-    // --- insert ke tabel ---
-    const result = await client.query(
-      `INSERT INTO data_marketing 
-      (input_by, acc_by, buyer_name, code_order, jumlah_track, order_number, 
-       account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre, 
-       price_normal, price_discount, discount, basic_price, gig_link, required_files, 
-       project_type, duration, reference_link, file_and_chat_link, detail_project, 
-       create_at, project_number) 
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, 
-              $16, $17, $18, $19, $20, $21, $22, $23, $24, CURRENT_TIMESTAMP, $25) 
-      RETURNING *`,
-      [
-        input_by, acc_by, buyer_name, code_order, jumlah_track, order_number,
-        account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre,
-        price_normal, price_discount, discount, basic_price, gig_link, required_files,
-        project_type, duration, reference_link, file_and_chat_link, detail_project,
-        projectNumber,
-      ]
+    const { list_id, position } = rows[0];
+
+    // 1️⃣ Update card jadi 'deleted'
+    await client.query(
+      "UPDATE cards SET is_deleted = TRUE WHERE id = $1",
+      [cardId]
     );
 
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
+    // 2️⃣ Update posisi card lain dalam list
+    await client.query(
+      `UPDATE cards
+             SET position = position - 1
+             WHERE list_id = $1 AND position > $2 AND is_deleted = FALSE`,
+      [list_id, position]
+    );
+
+    // 3️⃣ Log activity
+    await logActivity(
+      'card',
+      cardId,
+      'soft_delete',
+      userId,
+      `Card with id ${cardId} moved to recycle bin`,
+      'list',
+      cardId
+    );
+
+    res.json({ message: "Card moved to recycle bin (soft deleted)" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
 
+// restore soft-deleted card
+app.patch('/api/cards/:cardId/restore', async (req, res) => {
+  const { cardId } = req.params;
+  const userId = req.user.id;
 
-export const getDataWhereCardIdNotNull = () => axios.get(`${API_URL}/marketing-designs/not-null`);
-export const getDataWhereCardIdIsNull = () => axios.get(`${API_URL}/marketing-designs/null`);
+  try {
+    // Ambil list_id card yang mau direstore
+    const { rows } = await client.query(
+      "SELECT list_id FROM cards WHERE id = $1 AND is_deleted = TRUE",
+      [cardId]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ error: "Card not found or not deleted" });
+    }
+
+    const { list_id } = rows[0];
+
+    // Dapatkan posisi terakhir di list untuk card aktif
+    const { rows: activeCards } = await client.query(
+      "SELECT COUNT(*) AS count FROM cards WHERE list_id = $1 AND is_deleted = FALSE",
+      [list_id]
+    );
+    const newPosition = parseInt(activeCards[0].count) + 1;
+
+    // Restore card
+    await client.query(
+      "UPDATE cards SET is_deleted = FALSE, position = $1 WHERE id = $2",
+      [newPosition, cardId]
+    );
+
+    // Log activity
+    await logActivity(
+      'card',
+      cardId,
+      'restore',
+      userId,
+      `Card with id ${cardId} restored from recycle bin`,
+      'list',
+      cardId
+    );
+
+    res.json({ message: "Card restored successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+// END CARD 
