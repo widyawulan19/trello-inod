@@ -403,13 +403,22 @@
 /* END RENDER MEDIA  */
 
 /* MEDIA QUERY  */
-/* Extra large devices (large desktops, ≥1200px) */
-@media (min-width: 1200px) and (max-width:1900px) {
+@media (min-width: 1401px) and (max-width: 2100px) {
 
   /* CSS monitor besar */
   .chat-list {
     height: 75vh;
-    border: 1px solid red;
+    border: 1px solid greenyellow;
+  }
+}
+
+/* Extra large devices (large desktops, ≥1200px) */
+@media (min-width: 1200px) and (max-width:1400px) {
+
+  /* CSS monitor besar */
+  .chat-list {
+    height: 75vh;
+    /* border: 1px solid red; */
   }
 }
 
