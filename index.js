@@ -261,7 +261,6 @@ app.post("/api/restore-marketing-design-by-project-number", async (req, res) => 
                 $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14,
                 NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, $15, false, NOW(), NOW()
             )
-            ON CONFLICT (project_number) DO NOTHING
             RETURNING *`,
             [
                 buyer_name,
