@@ -158,92 +158,75 @@ app.post("/api/export-design-to-sheet", async (req, res) => {
 // ===============================
 // RESTORE SATU DATA DARI GOOGLE SHEET BY PROJECT NUMBER
 // ===============================
-app.post("/api/restore-design-from-sheet/:projectNumber", async (req, res) => {
+app.post("/api/restore-marketing-design/:projectNumber", async (req, res) => {
     const { projectNumber } = req.params;
 
     try {
         const clientAuth = await auth.getClient();
         const sheets = google.sheets({ version: "v4", auth: clientAuth });
-        const spreadsheetId = process.env.SPREADSHEET_ID;
 
-        // 1️⃣ Ambil semua data dari tab "Design"
-        const response = await sheets.spreadsheets.values.get({
-            spreadsheetId,
-            range: "Design!A:W", // karena ada 23 kolom
+        // Ambil semua data dari sheet Design
+        const sheetResponse = await sheets.spreadsheets.values.get({
+            spreadsheetId: process.env.SPREADSHEET_ID,
+            range: "Design!A:Z",
         });
 
-        const rows = response.data.values;
-        if (!rows || rows.length < 2) {
+        const rows = sheetResponse.data.values;
+        if (!rows || rows.length === 0) {
             return res.status(404).json({
                 success: false,
-                message: "❌ Tidak ada data di tab Design pada Google Sheet",
+                message: "❌ Tidak ada data di Google Sheet",
             });
         }
 
-        const dataRows = rows.slice(1); // lewati header
+        // Header dan data
+        const header = rows[0];
+        const dataRows = rows.slice(1);
 
-        // 2️⃣ Cari berdasarkan project_number (kolom A)
-        const foundRow = dataRows.find(
-            (row) =>
-                (row[0] || "")
-                    .toString()
-                    .trim()
-                    .toLowerCase()
-                    .includes(projectNumber.toLowerCase()) // biar fleksibel (P033 atau P033 Oktober)
+        // Cari baris berdasarkan project_number
+        const indexProjectNumber = header.indexOf("Project Number");
+        if (indexProjectNumber === -1) {
+            return res.status(400).json({
+                success: false,
+                message: "❌ Kolom 'Project Number' tidak ditemukan di Sheet",
+            });
+        }
+
+        const matchedRow = dataRows.find(
+            (row) => row[indexProjectNumber] === projectNumber
         );
 
-        if (!foundRow) {
+        if (!matchedRow) {
             return res.status(404).json({
                 success: false,
-                message: `❌ Data dengan project_number ${projectNumber} tidak ditemukan di Google Sheet.`,
+                message: `❌ Data dengan project_number ${projectNumber} tidak ditemukan di Google Sheet`,
             });
         }
 
-        // 3️⃣ Mapping kolom sesuai urutan dari Google Sheet
-        const [
-            project_number, // A
-            input_by_name, // B
-            acc_by_name, // C
-            buyer_name, // D
-            code_order, // E
-            order_number, // F
-            account_name, // G
-            deadline, // H
-            jumlah_design, // I
-            jumlah_revisi, // J
-            order_type_name, // K
-            offer_type_name, // L
-            project_type_name, // M
-            style_name, // N
-            status_project_name, // O
-            resolution, // P
-            reference, // Q
-            price_normal, // R
-            price_discount, // S
-            discount_percentage, // T
-            required_files, // U
-            file_and_chat, // V
-            detail_project // W
-        ] = foundRow;
+        // Konversi data sesuai urutan header
+        const designData = {};
+        header.forEach((key, i) => {
+            designData[key] = matchedRow[i] || null;
+        });
 
-        // 4️⃣ Insert ke tabel marketing_design
+        // Query untuk restore ke tabel marketing_design
         const insertQuery = `
       INSERT INTO marketing_design (
         project_number,
-        input_by_name,
-        acc_by_name,
+        input_by,
+        acc_by,
         buyer_name,
         code_order,
         order_number,
-        account_name,
+        account,
         deadline,
         jumlah_design,
         jumlah_revisi,
-        order_type_name,
-        offer_type_name,
-        project_type_name,
-        style_name,
-        status_project_name,
+        order_type_id,
+        offer_type,
+        project_type_id,
+        style_id,
+        status_project_id,
         resolution,
         reference,
         price_normal,
@@ -251,51 +234,54 @@ app.post("/api/restore-design-from-sheet/:projectNumber", async (req, res) => {
         discount_percentage,
         required_files,
         file_and_chat,
-        detail_project
+        detail_project,
+        is_deleted,
+        deleted_at
       )
       VALUES (
         $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
         $11, $12, $13, $14, $15, $16, $17, $18,
-        $19, $20, $21, $22, $23
+        $19, $20, $21, $22, $23, $24, false, NULL
       )
       RETURNING *;
     `;
 
+        // Map data dari Sheet ke kolom tabel
         const values = [
-            project_number,
-            input_by_name,
-            acc_by_name,
-            buyer_name,
-            code_order,
-            order_number,
-            account_name,
-            deadline,
-            jumlah_design,
-            jumlah_revisi,
-            order_type_name,
-            offer_type_name,
-            project_type_name,
-            style_name,
-            status_project_name,
-            resolution,
-            reference,
-            price_normal,
-            price_discount,
-            discount_percentage,
-            required_files,
-            file_and_chat,
-            detail_project,
+            designData["Project Number"],
+            designData["Input By (marketing)"] || null,
+            designData["Accepted By"] || null,
+            designData["Buyer Name"] || null,
+            designData["Code Order"] || null,
+            designData["Order Number"] || null,
+            designData["Account Name"] || null,
+            designData["Deadine"] || null,
+            designData["Jumlah Design"] || null,
+            designData["Jumlah Revisi"] || null,
+            designData["Order Type"] || null,
+            designData["Offer Type"] || null,
+            designData["Project Type "] || null,
+            designData["Style"] || null,
+            designData["Status "] || null,
+            designData["Resolusi"] || null,
+            designData["Reference"] || null,
+            designData["Price normal"] || null,
+            designData["Price Discount"] || null,
+            designData["Besaran Discount"] || null,
+            designData["Requirement File"] || null,
+            designData["File and chat"] || null,
+            designData["Detail Project"] || null,
         ];
 
         const result = await client.query(insertQuery, values);
 
         res.json({
             success: true,
-            message: `✅ Data ${project_number} berhasil direstore dari Google Sheet.`,
+            message: `✅ Data project ${projectNumber} berhasil direstore ke tabel marketing_design`,
             data: result.rows[0],
         });
     } catch (error) {
-        console.error("❌ Gagal restore:", error);
+        console.error("❌ Error restore marketing_design:", error);
         res.status(500).json({
             success: false,
             message: "Gagal restore data dari Google Sheet",
@@ -303,7 +289,6 @@ app.post("/api/restore-design-from-sheet/:projectNumber", async (req, res) => {
         });
     }
 });
-
 
 
 
