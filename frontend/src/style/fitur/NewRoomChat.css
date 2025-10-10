@@ -15,8 +15,8 @@
   position: sticky;
   top: 0;
   z-index: 1;
-  background-image: linear-gradient(to bottom, #090996, #200995, #2c0895, #370994, #3f0994);
-  /* background-color: #113DA1; */
+  /* background-image: linear-gradient(to bottom, #090996, #200995, #2c0895, #370994, #3f0994); */
+  background-color: #2c0895;
   /* background: linear-gradient(to right, #532189, #7246eb) !important; */
   /* background-color: red; */
   padding: 10px;
@@ -39,7 +39,7 @@
   flex-direction: column;
   gap: 12px;
   /* border: 1px solid green; */
-  height: 65vh;
+  height: 75vh;
   /* height: fit-content; */
   padding: 10px 20px;
   overflow-y: auto;
@@ -65,7 +65,7 @@
 
 .chat-message:hover {
   /* background-color: #f1f1f1; */
-  border: 1px solid #6E30DC;
+  /* border: 1px solid #6E30DC; */
 }
 
 .chat-reply {
@@ -81,7 +81,7 @@
 }
 
 .chat-own {
-  border-left: 2px solid #6E30DC;
+  /* border-left: 2px solid #6E30DC; */
 }
 
 .chat-header {
@@ -125,7 +125,7 @@
 .chat-bubble {
   background-color: #f0f2f5;
   /* background-color: red; */
-  border-radius: 10px;
+  border-radius: 6px;
   padding: 5px;
   font-size: 10px;
   color: #34495e;
@@ -312,20 +312,17 @@
 .chat-toolbar {
   display: flex;
   padding: 3px 10px;
-  /* border: 1px solid #f1f1f1; */
-  border: 1px solid #113DA1;
+  border: 1px solid #2c0895;
+  background-color: #2c0895;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
-  /* background: #f1f1f1; */
-  background-color: #113DA1;
-  /* border: 1px solid red; */
 }
 
 .chat-toolbar button {
   /* background: #f1f1f1;
   border: 1px solid #f1f1f1; */
-  background-color: #113DA1;
-  border: 1px solid #113DA1;
+  background-color: #2c0895;
+  border: 1px solid #2c0895;
   padding: 2px 8px;
   cursor: pointer;
   border-radius: 8px;
@@ -336,8 +333,8 @@
 }
 
 .chat-toolbar button:hover {
-  background-color: #e0e0e0;
-  color: #333;
+  background-color: #393cb2;
+  color: #fff;
 }
 
 /* EMOJI WRAPPER  */

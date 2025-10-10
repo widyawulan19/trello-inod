@@ -437,8 +437,8 @@ const handleUploadFromEditor = async (e, target = "main") => {
   return (
     <div className="chat-room-container"
       style={{
-        // backgroundColor:'white'
-        backgroundImage: `url(${bg})`,
+        backgroundColor:'white',
+        // backgroundImage: `url(${bg})`,
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
@@ -456,10 +456,6 @@ const handleUploadFromEditor = async (e, target = "main") => {
       {/* Toolbar Main */}
       <div className="chat-toolbar-container">
         <div className="chat-toolbar">
-          {/* <button onClick={() => handleFormat('bold')}><b>B</b></button>
-          <button onClick={() => handleFormat('italic')}><i>I</i></button>
-          <button onClick={() => handleFormat('underline')}><u>U</u></button> */}
-
           <button onClick={() => handleFormat('bold')}><b>B</b></button>
           <button onClick={() => handleFormat('italic')}><i>I</i></button>
           <button onClick={() => handleFormat('underline')}><u>U</u></button>

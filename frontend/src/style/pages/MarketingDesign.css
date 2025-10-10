@@ -551,7 +551,7 @@
 /* MEDIA QUERY  */
 
 /* Large devices (desktops, ≥992px) */
-@media (min-width: 992px) {
+@media (min-width: 992px) and (max-width: 1199.98px) {
 
     /* button header  */
     .mdh-right {
@@ -581,6 +581,18 @@
         width: 100%;
         min-width: 18vw;
         max-width: 18vw;
+    }
+
+    .acc-container,
+    .input-container,
+    .buyer-name-container,
+    .status-container,
+    .price-normal-container,
+    .price-discount-container,
+    .discount_percentage-container {
+        width: 100%;
+        min-width: 20vw;
+        max-width: 20vw;
     }
 
     /* FORM ADD DATA  */
