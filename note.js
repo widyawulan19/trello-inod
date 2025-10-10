@@ -632,6 +632,25 @@ app.patch("/api/marketing/:id/restore", async (req, res) => {
 // WHERE s.status_name = 'Not Accepted' AND dm.is_deleted = false
 
 
+// Restore soft-deleted marketing design
+app.patch('/api/marketing-design/:id/restore', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await client.query(
+      'UPDATE marketing_design SET is_deleted = FALSE, deleted_at = NULL WHERE marketing_design_id = $1 AND is_deleted = TRUE RETURNING *',
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'Data not found or not deleted' });
+    }
+
+    res.json({ message: 'Data restored successfully', data: result.rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 import dayjs from "dayjs";
 
 // Tambah data marketing_design baru (lengkap dengan order_type + project_number)
