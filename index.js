@@ -166,63 +166,122 @@ app.post("/api/restore-design-from-sheet/:projectNumber", async (req, res) => {
         const sheets = google.sheets({ version: "v4", auth: clientAuth });
         const spreadsheetId = process.env.SPREADSHEET_ID;
 
+        // Ambil data dari Sheet
         const response = await sheets.spreadsheets.values.get({
             spreadsheetId,
             range: "Design!A:Z",
         });
 
         const rows = response.data.values;
-        if (!rows || rows.length < 2) {
-            return res.status(404).json({ success: false, message: "Tidak ada data di Sheet." });
-        }
+        if (!rows || rows.length < 2)
+            return res.status(404).json({ success: false, message: "Tidak ada data di Google Sheet" });
 
         const dataRows = rows.slice(1);
 
-        // 🔍 cari data lebih fleksibel (case-insensitive dan partial match)
-        const foundRow = dataRows.find((row) => {
-            const cellValue = (row[0] || "").toString().trim().toLowerCase();
-            const searchValue = projectNumber.toString().trim().toLowerCase();
-            return cellValue.includes(searchValue);
-        });
+        // Cari data dengan project_number yang cocok
+        const foundRow = dataRows.find(
+            (row) => (row[0] || "").toString().trim().toLowerCase() === projectNumber.toLowerCase()
+        );
 
         if (!foundRow) {
             return res.status(404).json({
                 success: false,
-                message: `❌ Data dengan project_number ${projectNumber} tidak ditemukan di Sheet.`,
+                message: `Data dengan project_number ${projectNumber} tidak ditemukan di Google Sheet`,
             });
         }
 
-        // cek duplikat di DB
-        const checkExist = await client.query(
-            "SELECT * FROM marketing_design WHERE project_number = $1",
-            [foundRow[0]]
-        );
+        // === Masukkan ke tabel marketing_design ===
+        // Sesuaikan urutan kolom dengan data Sheet-mu
+        const query = `
+      INSERT INTO marketing_design (
+        project_number,
+        buyer_name,
+        code_order,
+        order_number,
+        jumlah_design,
+        jumlah_revisi,
+        deadline,
+        price_normal,
+        price_discount,
+        discount_percentage,
+        required_files,
+        file_and_chat,
+        detail_project,
+        resolution,
+        reference,
+        input_by_id,
+        input_by_name,
+        acc_by_id,
+        acc_by_name,
+        account_id,
+        account_name,
+        offer_type_id,
+        offer_type_name,
+        project_type_id,
+        project_type_name,
+        style_id,
+        style_name,
+        status_project_id,
+        status_project_name,
+        order_type_id,
+        order_type_name,
+        card_id
+      )
+      VALUES (
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
+        $11, $12, $13, $14, $15, $16, $17, $18, $19, $20,
+        $21, $22, $23, $24, $25, $26, $27, $28, $29, $30,
+        $31, $32
+      )
+      RETURNING *;
+    `;
 
-        if (checkExist.rows.length > 0) {
-            return res.json({
-                success: false,
-                message: `⚠️ Data dengan project_number ${foundRow[0]} sudah ada di database.`,
-            });
-        }
+        // Urutan nilai disesuaikan dengan kolom di atas
+        const values = [
+            foundRow[0],  // project_number
+            foundRow[1],  // buyer_name
+            foundRow[2],  // code_order
+            foundRow[3],  // order_number
+            foundRow[4],  // jumlah_design
+            foundRow[5],  // jumlah_revisi
+            foundRow[6],  // deadline
+            foundRow[7],  // price_normal
+            foundRow[8],  // price_discount
+            foundRow[9],  // discount_percentage
+            foundRow[10], // required_files
+            foundRow[11], // file_and_chat
+            foundRow[12], // detail_project
+            foundRow[13], // resolution
+            foundRow[14], // reference
+            foundRow[15], // input_by_id
+            foundRow[16], // input_by_name
+            foundRow[17], // acc_by_id
+            foundRow[18], // acc_by_name
+            foundRow[19], // account_id
+            foundRow[20], // account_name
+            foundRow[21], // offer_type_id
+            foundRow[22], // offer_type_name
+            foundRow[23], // project_type_id
+            foundRow[24], // project_type_name
+            foundRow[25], // style_id
+            foundRow[26], // style_name
+            foundRow[27], // status_project_id
+            foundRow[28], // status_project_name
+            foundRow[29], // order_type_id
+            foundRow[30], // order_type_name
+            foundRow[31], // card_id
+        ];
 
-        await client.query(
-            `INSERT INTO marketing_design (
-        project_number, input_by, acc_by, buyer_name, code_order, order_number,
-        account, deadline, jumlah_design, jumlah_revisi,
-        resolution, reference, price_normal, price_discount, discount_percentage,
-        required_files, file_and_chat, detail_project
-    ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$16,$17,$18,$19,$20,$21,$22,$23)`,
-            foundRow
-        );
-
-        console.log(`✅ Berhasil restore data ${foundRow[0]}`);
+        const result = await client.query(query, values);
+        console.log("✅ Restore berhasil:", result.rows[0]);
 
         res.json({
             success: true,
-            message: `✅ Data dengan project_number ${foundRow[0]} berhasil direstore ke database.`,
+            message: `Data ${projectNumber} berhasil direstore ke database.`,
+            data: result.rows[0],
         });
     } catch (error) {
-        console.error("❌ Error restore by ID:", error);
+        console.error("❌ Gagal restore:", error);
         res.status(500).json({
             success: false,
             message: "Gagal restore data dari Google Sheet",
@@ -230,6 +289,7 @@ app.post("/api/restore-design-from-sheet/:projectNumber", async (req, res) => {
         });
     }
 });
+
 
 
 // POST /api/marketing-design-export
