@@ -172,7 +172,7 @@ app.post("/api/restore-marketing-design-by-project-number", async (req, res) => 
         const clientAuth = await auth.getClient();
         const sheets = google.sheets({ version: "v4", auth: clientAuth });
 
-        // 1️⃣ Ambil semua data dari sheet "Design"
+        // Ambil semua data dari sheet "Design"
         const response = await sheets.spreadsheets.values.get({
             spreadsheetId: process.env.SPREADSHEET_ID,
             range: "Design!A:Z",
@@ -186,10 +186,8 @@ app.post("/api/restore-marketing-design-by-project-number", async (req, res) => 
             });
         }
 
-        // 2️⃣ Ambil baris yang sesuai dengan project_number
-        const header = rows[0];
         const dataRows = rows.slice(1);
-        const matchedRow = dataRows.find(row => row[0] === project_number); // kolom A = project_number
+        const matchedRow = dataRows.find(row => row[0] === project_number);
 
         if (!matchedRow) {
             return res.status(404).json({
@@ -198,9 +196,6 @@ app.post("/api/restore-marketing-design-by-project-number", async (req, res) => 
             });
         }
 
-        console.log(`📥 Ditemukan data untuk ${project_number}:`, matchedRow);
-
-        // 3️⃣ Destructure data sesuai urutan kolom export kamu
         const [
             project_number_val,
             input_by_name,
@@ -227,7 +222,23 @@ app.post("/api/restore-marketing-design-by-project-number", async (req, res) => 
             detail_project
         ] = matchedRow;
 
-        // 4️⃣ Masukkan kembali ke tabel marketing_design
+        // 🔍 Mapping nama → ID dari tabel lain
+        const getId = async (table, column, value) => {
+            if (!value) return null;
+            const res = await client.query(`SELECT id FROM ${table} WHERE ${column} = $1 LIMIT 1`, [value]);
+            return res.rows[0]?.id || null;
+        };
+
+        const input_by_id = await getId("users", "full_name", input_by_name);
+        const acc_by_id = await getId("users", "full_name", acc_by_name);
+        const account_id = await getId("accounts", "name", account_name);
+        const offer_type_id = await getId("offer_type", "name", offer_type_name);
+        const order_type_id = await getId("order_type", "name", order_type_name);
+        const style_id = await getId("style", "name", style_name);
+        const project_type_id = await getId("project_type", "name", project_type_name);
+        const status_project_id = await getId("status_project", "name", status_project_name);
+
+        // 🧩 Insert data ke database
         const result = await client.query(
             `INSERT INTO marketing_design (
                 buyer_name,
@@ -259,7 +270,7 @@ app.post("/api/restore-marketing-design-by-project-number", async (req, res) => 
             )
             VALUES (
                 $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14,
-                NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, $15, false, NOW(), NOW()
+                $15, $16, $17, $18, $19, $20, $21, $22, $23, false, NOW(), NOW()
             )
             RETURNING *`,
             [
@@ -277,20 +288,21 @@ app.post("/api/restore-marketing-design-by-project-number", async (req, res) => 
                 reference,
                 file_and_chat,
                 detail_project,
+                input_by_id,
+                account_id,
+                offer_type_id,
+                project_type_id,
+                style_id,
+                status_project_id,
+                acc_by_id,
+                order_type_id,
                 project_number_val
             ]
         );
 
-        if (result.rowCount === 0) {
-            return res.json({
-                success: false,
-                message: `⚠️ Data dengan project_number '${project_number}' sudah ada di database (tidak di-restore ulang).`,
-            });
-        }
-
         res.json({
             success: true,
-            message: `✅ Data dengan project_number '${project_number}' berhasil direstore dari Google Sheet ke database.`,
+            message: `✅ Data dengan project_number '${project_number}' berhasil direstore ke database.`,
             data: result.rows[0],
         });
 
@@ -303,6 +315,7 @@ app.post("/api/restore-marketing-design-by-project-number", async (req, res) => 
         });
     }
 });
+
 
 
 
