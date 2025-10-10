@@ -161,7 +161,6 @@ app.post("/api/export-design-to-sheet", async (req, res) => {
 app.post("/api/restore-marketing-design", async (req, res) => {
     try {
         const { project_number } = req.body;
-
         if (!project_number) {
             return res.status(400).json({
                 success: false,
@@ -196,7 +195,6 @@ app.post("/api/restore-marketing-design", async (req, res) => {
             });
         }
 
-        // 🧩 Urutan kolom dari spreadsheet
         const [
             project_number_val,
             input_by_name,
@@ -223,7 +221,7 @@ app.post("/api/restore-marketing-design", async (req, res) => {
             detail_project,
         ] = matchedRow;
 
-        // 🔍 Fungsi lookup ID berdasarkan nama dan tabel sesuai relasi di joined endpoint
+        // Fungsi bantu ambil ID berdasarkan nama tabel relasi
         const getId = async (table, column, value) => {
             if (!value) return null;
             const result = await client.query(
@@ -242,94 +240,116 @@ app.post("/api/restore-marketing-design", async (req, res) => {
         const status_project_id = await getId("status_project_design", "status_name", status_project_name);
         const order_type_id = await getId("design_order_type", "order_name", order_type_name);
 
-        // 🧱 Insert ke tabel marketing_design
-        const result = await client.query(
-            `
-      INSERT INTO marketing_design (
-        buyer_name,
-        code_order,
-        jumlah_design,
-        order_number,
-        deadline,
-        jumlah_revisi,
-        resolution,
-        price_normal,
-        price_discount,
-        discount_percentage,
-        required_files,
-        reference,
-        file_and_chat,
-        detail_project,
-        input_by,
-        acc_by,
-        account,
-        offer_type,
-        project_type_id,
-        style_id,
-        status_project_id,
-        order_type_id,
-        project_number,
-        is_deleted,
-        create_at,
-        update_at
-      )
-      VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14,
-        $15, $16, $17, $18, $19, $20, $21, $22, $23, false, NOW(), NOW()
-      )
-      ON CONFLICT (project_number)
-      DO UPDATE SET
-        buyer_name = EXCLUDED.buyer_name,
-        code_order = EXCLUDED.code_order,
-        jumlah_design = EXCLUDED.jumlah_design,
-        order_number = EXCLUDED.order_number,
-        deadline = EXCLUDED.deadline,
-        jumlah_revisi = EXCLUDED.jumlah_revisi,
-        resolution = EXCLUDED.resolution,
-        price_normal = EXCLUDED.price_normal,
-        price_discount = EXCLUDED.price_discount,
-        discount_percentage = EXCLUDED.discount_percentage,
-        required_files = EXCLUDED.required_files,
-        reference = EXCLUDED.reference,
-        file_and_chat = EXCLUDED.file_and_chat,
-        detail_project = EXCLUDED.detail_project,
-        input_by = EXCLUDED.input_by,
-        acc_by = EXCLUDED.acc_by,
-        account = EXCLUDED.account,
-        offer_type = EXCLUDED.offer_type,
-        project_type_id = EXCLUDED.project_type_id,
-        style_id = EXCLUDED.style_id,
-        status_project_id = EXCLUDED.status_project_id,
-        order_type_id = EXCLUDED.order_type_id,
-        update_at = NOW()
-      RETURNING *;
-      `,
-            [
-                buyer_name,
-                code_order,
-                jumlah_design,
-                order_number,
-                deadline || null,
-                jumlah_revisi,
-                resolution,
-                price_normal,
-                price_discount,
-                discount_percentage,
-                required_files,
-                reference,
-                file_and_chat,
-                detail_project,
-                input_by_id,
-                acc_by_id,
-                account_id,
-                offer_type_id,
-                project_type_id,
-                style_id,
-                status_project_id,
-                order_type_id,
-                project_number_val,
-            ]
+        // 🔍 Cek apakah data sudah ada berdasarkan project_number
+        const existing = await client.query(
+            `SELECT marketing_design_id FROM marketing_design WHERE project_number = $1 LIMIT 1`,
+            [project_number_val]
         );
+
+        let result;
+        if (existing.rows.length > 0) {
+            // 🔄 UPDATE data lama
+            result = await client.query(
+                `
+        UPDATE marketing_design
+        SET
+          buyer_name = $1,
+          code_order = $2,
+          jumlah_design = $3,
+          order_number = $4,
+          deadline = $5,
+          jumlah_revisi = $6,
+          resolution = $7,
+          price_normal = $8,
+          price_discount = $9,
+          discount_percentage = $10,
+          required_files = $11,
+          reference = $12,
+          file_and_chat = $13,
+          detail_project = $14,
+          input_by = $15,
+          acc_by = $16,
+          account = $17,
+          offer_type = $18,
+          project_type_id = $19,
+          style_id = $20,
+          status_project_id = $21,
+          order_type_id = $22,
+          is_deleted = false,
+          update_at = NOW()
+        WHERE project_number = $23
+        RETURNING *;
+        `,
+                [
+                    buyer_name,
+                    code_order,
+                    jumlah_design,
+                    order_number,
+                    deadline || null,
+                    jumlah_revisi,
+                    resolution,
+                    price_normal,
+                    price_discount,
+                    discount_percentage,
+                    required_files,
+                    reference,
+                    file_and_chat,
+                    detail_project,
+                    input_by_id,
+                    acc_by_id,
+                    account_id,
+                    offer_type_id,
+                    project_type_id,
+                    style_id,
+                    status_project_id,
+                    order_type_id,
+                    project_number_val,
+                ]
+            );
+        } else {
+            // ➕ INSERT data baru
+            result = await client.query(
+                `
+        INSERT INTO marketing_design (
+          buyer_name, code_order, jumlah_design, order_number, deadline,
+          jumlah_revisi, resolution, price_normal, price_discount,
+          discount_percentage, required_files, reference, file_and_chat,
+          detail_project, input_by, acc_by, account, offer_type,
+          project_type_id, style_id, status_project_id, order_type_id,
+          project_number, is_deleted, create_at, update_at
+        ) VALUES (
+          $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,
+          $15,$16,$17,$18,$19,$20,$21,$22,$23,false,NOW(),NOW()
+        )
+        RETURNING *;
+        `,
+                [
+                    buyer_name,
+                    code_order,
+                    jumlah_design,
+                    order_number,
+                    deadline || null,
+                    jumlah_revisi,
+                    resolution,
+                    price_normal,
+                    price_discount,
+                    discount_percentage,
+                    required_files,
+                    reference,
+                    file_and_chat,
+                    detail_project,
+                    input_by_id,
+                    acc_by_id,
+                    account_id,
+                    offer_type_id,
+                    project_type_id,
+                    style_id,
+                    status_project_id,
+                    order_type_id,
+                    project_number_val,
+                ]
+            );
+        }
 
         res.json({
             success: true,
