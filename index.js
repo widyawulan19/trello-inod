@@ -2013,7 +2013,7 @@ app.get('/api/workspaces/:workspaceId/boards', async (req, res) => {
     const { workspaceId } = req.params;
     try {
         const result = await client.query(
-            'SELECT * FROM boards WHERE workspace_id = $1 ORDER BY position ASC',
+            'SELECT * FROM boards WHERE workspace_id = $1 AND is_deleted = FALSE ORDER BY position ASC',
             [workspaceId]
         );
         res.json(result.rows);
