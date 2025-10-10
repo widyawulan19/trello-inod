@@ -166,10 +166,9 @@ app.post("/api/restore-design-from-sheet/:projectNumber", async (req, res) => {
     const sheets = google.sheets({ version: "v4", auth: clientAuth });
     const spreadsheetId = process.env.SPREADSHEET_ID;
 
-    // Ambil semua data dari tab Design
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId,
-      range: "Design!A:Z", // Pastikan sesuai kolom
+      range: "Design!A:Z",
     });
 
     const rows = response.data.values;
@@ -177,12 +176,14 @@ app.post("/api/restore-design-from-sheet/:projectNumber", async (req, res) => {
       return res.status(404).json({ success: false, message: "Tidak ada data di Sheet." });
     }
 
-    // Ambil header & data
-    const header = rows[0];
     const dataRows = rows.slice(1);
 
-    // Cari data yang sesuai dengan projectNumber
-    const foundRow = dataRows.find((row) => row[0] === projectNumber);
+    // 🔍 cari data lebih fleksibel (case-insensitive dan partial match)
+    const foundRow = dataRows.find((row) => {
+      const cellValue = (row[0] || "").toString().trim().toLowerCase();
+      const searchValue = projectNumber.toString().trim().toLowerCase();
+      return cellValue.includes(searchValue);
+    });
 
     if (!foundRow) {
       return res.status(404).json({
@@ -191,20 +192,19 @@ app.post("/api/restore-design-from-sheet/:projectNumber", async (req, res) => {
       });
     }
 
-    // Cek apakah sudah ada di database
+    // cek duplikat di DB
     const checkExist = await client.query(
       "SELECT * FROM marketing_design WHERE project_number = $1",
-      [projectNumber]
+      [foundRow[0]]
     );
 
     if (checkExist.rows.length > 0) {
       return res.json({
         success: false,
-        message: `⚠️ Data dengan project_number ${projectNumber} sudah ada di database.`,
+        message: `⚠️ Data dengan project_number ${foundRow[0]} sudah ada di database.`,
       });
     }
 
-    // Insert ke database
     await client.query(
       `INSERT INTO marketing_design (
         project_number, input_by, acc_by, buyer_name, code_order, order_number,
@@ -216,11 +216,11 @@ app.post("/api/restore-design-from-sheet/:projectNumber", async (req, res) => {
       foundRow
     );
 
-    console.log(`✅ Berhasil restore data ${projectNumber}`);
+    console.log(`✅ Berhasil restore data ${foundRow[0]}`);
 
     res.json({
       success: true,
-      message: `✅ Data dengan project_number ${projectNumber} berhasil direstore ke database.`,
+      message: `✅ Data dengan project_number ${foundRow[0]} berhasil direstore ke database.`,
     });
   } catch (error) {
     console.error("❌ Error restore by ID:", error);
