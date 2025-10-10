@@ -2816,7 +2816,7 @@ app.get('/api/lists/board/:boardId', async (req, res) => {
 //1. get all lists
 app.get('/api/lists', async (req, res) => {
     try {
-        const result = await client.query("SELECT * FROM lists ORDER BY position");
+        const result = await client.query("SELECT * FROM lists  ORDER BY position");
         res.json(result.rows);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -2917,37 +2917,71 @@ app.put('/api/lists/:id', async (req, res) => {
 
 
 //5. delete lists
+// app.delete('/api/lists/:id', async (req, res) => {
+//     const { id } = req.params;
+//     const userId = req.user.id;
+
+//     try {
+//         // tandai list sebagai terhapus
+//         const result = await client.query(
+//             "UPDATE lists SET is_deleted = true WHERE id = $1 RETURNING *",
+//             [id]
+//         );
+
+//         if (result.rows.length === 0) {
+//             return res.status(404).json({ error: "List not found" });
+//         }
+
+//         //add log activity
+//         await logActivity(
+//             'list',
+//             id,
+//             'delete',
+//             userId,
+//             `List with id '${id}' deleted`,
+//             'board',
+//             id
+//         )
+
+//         res.json({ message: "List deleted successfully" });
+//     } catch (error) {
+//         res.status(500).json({ error: error.message });
+//     }
+// })
 app.delete('/api/lists/:id', async (req, res) => {
     const { id } = req.params;
-    const userId = req.user.id;
+    const userId = req.user?.id || null; // untuk jaga-jaga kalau user belum login
 
     try {
-        // tandai list sebagai terhapus
+        // Soft delete (update flag is_deleted)
         const result = await client.query(
-            "UPDATE lists SET is_deleted = true WHERE id = $1 RETURNING *",
+            'UPDATE lists SET is_deleted = TRUE WHERE id = $1 AND is_deleted = FALSE RETURNING *',
             [id]
         );
 
         if (result.rows.length === 0) {
-            return res.status(404).json({ error: "List not found" });
+            return res.status(404).json({ error: 'List not found or already deleted' });
         }
 
-        //add log activity
+        // Add log activity
         await logActivity(
             'list',
             id,
             'delete',
             userId,
-            `List with id '${id}' deleted`,
+            `List with id '${id}' soft-deleted`,
             'board',
-            id
-        )
+            result.rows[0].board_id // kalau punya relasi ke board
+        );
 
-        res.json({ message: "List deleted successfully" });
+        res.json({ message: 'List soft-deleted successfully', data: result.rows[0] });
     } catch (error) {
+        console.error('Soft delete error:', error.message);
         res.status(500).json({ error: error.message });
     }
-})
+});
+
+
 
 // Restore deleted list
 app.patch('/api/lists/:id/restore', async (req, res) => {
