@@ -263,6 +263,40 @@ export const deleteReminder = (cardId) => axios.delete(`${API_URL}/card-due-date
 export const getAllReminders = () => axios.get(`${API_URL}/card-due-date`);
 export const markReminderAsSent = (cardId) => axios.put(`${API_URL}/card-due-date/${cardId}/mark-reminder-sent`);
 
+// --- GET semua data soft deleted ---
+export const getDeletedItems = async () => {
+  try {
+    const [boards, lists, cards, marketing, marketingDesign] = await Promise.all([
+      axios.get(`${API_URL}/boards?is_deleted=true`),
+      axios.get(`${API_URL}/lists?is_deleted=true`),
+      axios.get(`${API_URL}/cards?is_deleted=true`),
+      axios.get(`${API_URL}/marketing?is_deleted=true`),
+      axios.get(`${API_URL}/marketing-design?is_deleted=true`)
+    ]);
+
+    return {
+      boards: boards.data,
+      lists: lists.data,
+      cards: cards.data,
+      marketing: marketing.data,
+      marketingDesign: marketingDesign.data
+    };
+  } catch (error) {
+    console.error("Error fetching deleted items:", error);
+    throw error;
+  }
+};
+
+
+// --- Restore endpoints ---
+export const restoreBoard = (id) => axios.patch(`${API_URL}/boards/${id}/restore`);
+export const restoreList = (id) => axios.patch(`${API_URL}/lists/${id}/restore`);
+export const restoreCard = (id) => axios.patch(`${API_URL}/cards/${id}/restore`);
+export const restoreMarketing = (id) => axios.patch(`${API_URL}/marketing/${id}/restore`);
+export const restoreMarketingDesign = (id) => axios.patch(`${API_URL}/marketing-design/${id}/restore`);
+export const restoreWorkspaceUser = (workspaceId, userId) => axios.patch(`${API_URL}/workspace-user/${workspaceId}/user/${userId}/restore`);
+
+
 
 //DESCRIPTION CARD
 export const saveCardDescriptions = (cardId, description) => axios.post(`${API_URL}/card-description`, { card_id: cardId, description: description });
