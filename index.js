@@ -158,7 +158,7 @@ app.post("/api/export-design-to-sheet", async (req, res) => {
 // ===============================
 // RESTORE SATU DATA DARI GOOGLE SHEET BY PROJECT NUMBER
 // ===============================
-app.post("/api/restore-marketing-design-by-project-number", async (req, res) => {
+app.post("/api/restore-marketing-design", async (req, res) => {
     try {
         const { project_number } = req.body;
 
@@ -172,7 +172,7 @@ app.post("/api/restore-marketing-design-by-project-number", async (req, res) => 
         const clientAuth = await auth.getClient();
         const sheets = google.sheets({ version: "v4", auth: clientAuth });
 
-        // Ambil semua data dari sheet "Design"
+        // Ambil data dari Google Sheet (tab Design)
         const response = await sheets.spreadsheets.values.get({
             spreadsheetId: process.env.SPREADSHEET_ID,
             range: "Design!A:Z",
@@ -187,7 +187,7 @@ app.post("/api/restore-marketing-design-by-project-number", async (req, res) => 
         }
 
         const dataRows = rows.slice(1);
-        const matchedRow = dataRows.find(row => row[0] === project_number);
+        const matchedRow = dataRows.find((row) => row[0] === project_number);
 
         if (!matchedRow) {
             return res.status(404).json({
@@ -196,6 +196,7 @@ app.post("/api/restore-marketing-design-by-project-number", async (req, res) => 
             });
         }
 
+        // 🧩 Urutan kolom dari spreadsheet
         const [
             project_number_val,
             input_by_name,
@@ -219,60 +220,90 @@ app.post("/api/restore-marketing-design-by-project-number", async (req, res) => 
             discount_percentage,
             required_files,
             file_and_chat,
-            detail_project
+            detail_project,
         ] = matchedRow;
 
-        // 🔍 Mapping nama → ID dari tabel lain
+        // 🔍 Fungsi lookup ID berdasarkan nama dan tabel sesuai relasi di joined endpoint
         const getId = async (table, column, value) => {
             if (!value) return null;
-            const res = await client.query(`SELECT id FROM ${table} WHERE ${column} = $1 LIMIT 1`, [value]);
-            return res.rows[0]?.id || null;
+            const result = await client.query(
+                `SELECT id FROM ${table} WHERE ${column} = $1 LIMIT 1`,
+                [value]
+            );
+            return result.rows[0]?.id || null;
         };
 
-        const input_by_id = await getId("users", "full_name", input_by_name);
-        const acc_by_id = await getId("users", "full_name", acc_by_name);
-        const account_id = await getId("accounts", "name", account_name);
-        const offer_type_id = await getId("offer_type", "name", offer_type_name);
-        const order_type_id = await getId("order_type", "name", order_type_name);
-        const style_id = await getId("style", "name", style_name);
-        const project_type_id = await getId("project_type", "name", project_type_name);
-        const status_project_id = await getId("status_project", "name", status_project_name);
+        const input_by_id = await getId("marketing_desain_user", "nama_marketing", input_by_name);
+        const acc_by_id = await getId("kepala_divisi_design", "nama", acc_by_name);
+        const account_id = await getId("account_design", "nama_account", account_name);
+        const offer_type_id = await getId("offer_type_design", "offer_name", offer_type_name);
+        const project_type_id = await getId("project_type_design", "project_name", project_type_name);
+        const style_id = await getId("style_design", "style_name", style_name);
+        const status_project_id = await getId("status_project_design", "status_name", status_project_name);
+        const order_type_id = await getId("design_order_type", "order_name", order_type_name);
 
-        // 🧩 Insert data ke database
+        // 🧱 Insert ke tabel marketing_design
         const result = await client.query(
-            `INSERT INTO marketing_design (
-                buyer_name,
-                code_order,
-                jumlah_design,
-                order_number,
-                deadline,
-                jumlah_revisi,
-                resolution,
-                price_normal,
-                price_discount,
-                discount_percentage,
-                required_files,
-                reference,
-                file_and_chat,
-                detail_project,
-                input_by,
-                account,
-                offer_type,
-                project_type_id,
-                style_id,
-                status_project_id,
-                acc_by,
-                order_type_id,
-                project_number,
-                is_deleted,
-                create_at,
-                update_at
-            )
-            VALUES (
-                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14,
-                $15, $16, $17, $18, $19, $20, $21, $22, $23, false, NOW(), NOW()
-            )
-            RETURNING *`,
+            `
+      INSERT INTO marketing_design (
+        buyer_name,
+        code_order,
+        jumlah_design,
+        order_number,
+        deadline,
+        jumlah_revisi,
+        resolution,
+        price_normal,
+        price_discount,
+        discount_percentage,
+        required_files,
+        reference,
+        file_and_chat,
+        detail_project,
+        input_by,
+        acc_by,
+        account,
+        offer_type,
+        project_type_id,
+        style_id,
+        status_project_id,
+        order_type_id,
+        project_number,
+        is_deleted,
+        create_at,
+        update_at
+      )
+      VALUES (
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14,
+        $15, $16, $17, $18, $19, $20, $21, $22, $23, false, NOW(), NOW()
+      )
+      ON CONFLICT (project_number)
+      DO UPDATE SET
+        buyer_name = EXCLUDED.buyer_name,
+        code_order = EXCLUDED.code_order,
+        jumlah_design = EXCLUDED.jumlah_design,
+        order_number = EXCLUDED.order_number,
+        deadline = EXCLUDED.deadline,
+        jumlah_revisi = EXCLUDED.jumlah_revisi,
+        resolution = EXCLUDED.resolution,
+        price_normal = EXCLUDED.price_normal,
+        price_discount = EXCLUDED.price_discount,
+        discount_percentage = EXCLUDED.discount_percentage,
+        required_files = EXCLUDED.required_files,
+        reference = EXCLUDED.reference,
+        file_and_chat = EXCLUDED.file_and_chat,
+        detail_project = EXCLUDED.detail_project,
+        input_by = EXCLUDED.input_by,
+        acc_by = EXCLUDED.acc_by,
+        account = EXCLUDED.account,
+        offer_type = EXCLUDED.offer_type,
+        project_type_id = EXCLUDED.project_type_id,
+        style_id = EXCLUDED.style_id,
+        status_project_id = EXCLUDED.status_project_id,
+        order_type_id = EXCLUDED.order_type_id,
+        update_at = NOW()
+      RETURNING *;
+      `,
             [
                 buyer_name,
                 code_order,
@@ -289,25 +320,24 @@ app.post("/api/restore-marketing-design-by-project-number", async (req, res) => 
                 file_and_chat,
                 detail_project,
                 input_by_id,
+                acc_by_id,
                 account_id,
                 offer_type_id,
                 project_type_id,
                 style_id,
                 status_project_id,
-                acc_by_id,
                 order_type_id,
-                project_number_val
+                project_number_val,
             ]
         );
 
         res.json({
             success: true,
-            message: `✅ Data dengan project_number '${project_number}' berhasil direstore ke database.`,
+            message: `✅ Data marketing_design '${project_number}' berhasil direstore dari Google Sheet.`,
             data: result.rows[0],
         });
-
     } catch (error) {
-        console.error("❌ Gagal restore data marketing_design dari Google Sheet:", error);
+        console.error("❌ Gagal restore data marketing_design:", error);
         res.status(500).json({
             success: false,
             message: "Gagal restore data marketing_design dari Google Sheet.",
