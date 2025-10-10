@@ -2098,6 +2098,7 @@ app.put('/api/boards/:id', async (req, res) => {
     }
 });
 
+
 //5. delete a board
 app.delete('/api/boards/:id', async (req, res) => {
     const { id } = req.params;
