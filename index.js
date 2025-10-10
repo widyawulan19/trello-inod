@@ -2799,7 +2799,7 @@ app.get('/api/lists/board/:boardId', async (req, res) => {
 
     try {
         const { rows } = await client.query(
-            `SELECT * FROM lists WHERE board_id = $1 ORDER BY position ASC`,
+            `SELECT * FROM lists WHERE board_id = $1 AND is_deleted = FALSE ORDER BY position ASC`,
             [boardId]
         );
 
