@@ -209,44 +209,42 @@ app.post("/api/restore-marketing-design/:projectNumber", async (req, res) => {
             designData[key] = matchedRow[i] || null;
         });
 
-        // Query untuk restore ke tabel marketing_design
         const insertQuery = `
-      INSERT INTO marketing_design (
-        project_number,
-        input_by,
-        acc_by,
-        buyer_name,
-        code_order,
-        order_number,
-        account,
-        deadline,
-        jumlah_design,
-        jumlah_revisi,
-        order_type_id,
-        offer_type,
-        project_type_id,
-        style_id,
-        status_project_id,
-        resolution,
-        reference,
-        price_normal,
-        price_discount,
-        discount_percentage,
-        required_files,
-        file_and_chat,
-        detail_project,
-        is_deleted,
-        deleted_at
-      )
-      VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
-        $11, $12, $13, $14, $15, $16, $17, $18,
-        $19, $20, $21, $22, $23, $24, false, NULL
-      )
-      RETURNING *;
-    `;
+  INSERT INTO marketing_design (
+    project_number,
+    input_by,
+    acc_by,
+    buyer_name,
+    code_order,
+    order_number,
+    account,
+    deadline,
+    jumlah_design,
+    jumlah_revisi,
+    order_type_id,
+    offer_type,
+    project_type_id,
+    style_id,
+    status_project_id,
+    resolution,
+    reference,
+    price_normal,
+    price_discount,
+    discount_percentage,
+    required_files,
+    file_and_chat,
+    detail_project,
+    is_deleted,
+    deleted_at
+  )
+  VALUES (
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
+    $11, $12, $13, $14, $15, $16, $17, $18,
+    $19, $20, $21, $22, $23, $24, false, NULL
+  )
+  RETURNING *;
+`;
 
-        // Map data dari Sheet ke kolom tabel
         const values = [
             designData["Project Number"],
             designData["Input By (marketing)"] || null,
