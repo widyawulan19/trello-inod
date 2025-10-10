@@ -2706,7 +2706,6 @@ app.delete('/api/card-priority', async (req, res) => {
 //END CARD PRIORITY
 
 //LISTS
-
 // reorder lists in a board simple.
 app.put('/api/lists/reorder-list', async (req, res) => {
     const { board_id, lists } = req.body;
@@ -2827,7 +2826,7 @@ app.get('/api/lists', async (req, res) => {
 app.get('/api/lists/board/:board_id', async (req, res) => {
     const { board_id } = req.params;
     try {
-        const result = await client.query("SELECT * FROM lists WHERE board_id = $1 ORDER BY position", [board_id]);
+        const result = await client.query("SELECT * FROM lists WHERE board_id = $1 AND is_deleted = FALSE ORDER BY position", [board_id]);
         res.json(result.rows);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -2917,15 +2916,18 @@ app.put('/api/lists/:id', async (req, res) => {
 
 
 
-
-
 //5. delete lists
 app.delete('/api/lists/:id', async (req, res) => {
     const { id } = req.params;
     const userId = req.user.id;
 
     try {
-        const result = await client.query("DELETE FROM lists WHERE id = $1 RETURNING *", [id]);
+        // tandai list sebagai terhapus
+        const result = await client.query(
+            "UPDATE lists SET is_deleted = true WHERE id = $1 RETURNING *",
+            [id]
+        );
+
         if (result.rows.length === 0) {
             return res.status(404).json({ error: "List not found" });
         }
@@ -2946,6 +2948,39 @@ app.delete('/api/lists/:id', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 })
+
+// Restore deleted list
+app.patch('/api/lists/:id/restore', async (req, res) => {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    try {
+        const result = await client.query(
+            "UPDATE lists SET is_deleted = false WHERE id = $1 RETURNING *",
+            [id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "List not found or already active" });
+        }
+
+        await logActivity(
+            'list',
+            id,
+            'restore',
+            userId,
+            `List with id '${id}' restored`,
+            'board',
+            id
+        );
+
+        res.json({ message: "List restored successfully", data: result.rows[0] });
+    } catch (error) {
+        console.error("Restore list error:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 //6. move list to another board
 app.put('/api/move-list/:listId', async (req, res) => {
     const { listId } = req.params;
@@ -6142,7 +6177,7 @@ app.put("/api/data-marketing/joined/:id", async (req, res) => {
 //1. get all marketing data
 app.get('/api/marketing', async (req, res) => {
     try {
-        const result = await client.query("SELECT * FROM data_marketing");
+        const result = await client.query("SELECT * FROM data_marketing WHERE is_deleted = FALSE");
         res.json(result.rows);
     } catch (err) {
         console.error(err.message);
@@ -6154,7 +6189,7 @@ app.get('/api/marketing', async (req, res) => {
 app.get('/api/marketing/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        const result = await client.query("SELECT * FROM data_marketing WHERE marketing_id = $1", [id]);
+        const result = await client.query("SELECT * FROM data_marketing WHERE marketing_id = $1 AND is_deleted = FALSE", [id]);
 
         if (result.rows.length === 0) {
             return res.status(404).json({ message: "Data tidak ditemukan" });
@@ -6236,21 +6271,130 @@ app.put('/api/marketing/:id', async (req, res) => {
 //4. menghapus data marketing
 app.delete("/api/marketing/:id", async (req, res) => {
     const { id } = req.params;
+
     try {
-        const result = await client.query("DELETE FROM data_marketing WHERE marketing_id = $1 RETURNING *", [id]);
+        const result = await client.query(
+            "UPDATE data_marketing SET is_deleted = true WHERE marketing_id = $1 RETURNING *",
+            [id]
+        );
 
         if (result.rows.length === 0) {
             return res.status(404).json({ message: "Data tidak ditemukan" });
         }
 
-        res.json({ message: "Data berhasil dihapus" });
+        res.json({ message: "Data berhasil dipindahkan ke Recycle Bin", data: result.rows[0] });
     } catch (err) {
-        console.error(err.message);
+        console.error("Soft delete error:", err.message);
         res.status(500).send("Server error");
     }
 });
 
+// Restore data marketing
+app.patch("/api/marketing/:id/restore", async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const result = await client.query(
+            "UPDATE data_marketing SET is_deleted = false WHERE marketing_id = $1 RETURNING *",
+            [id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: "Data tidak ditemukan atau sudah aktif" });
+        }
+
+        res.json({ message: "Data berhasil direstore", data: result.rows[0] });
+    } catch (err) {
+        console.error("Restore error:", err.message);
+        res.status(500).send("Server error");
+    }
+});
+
+
 // 5. membuat data baru
+// app.post("/api/marketing", async (req, res) => {
+//     try {
+//         const {
+//             input_by,
+//             acc_by,
+//             buyer_name,
+//             code_order,
+//             jumlah_track,
+//             order_number,
+//             account,
+//             deadline,
+//             jumlah_revisi,
+//             order_type,
+//             offer_type,
+//             jenis_track,
+//             genre,
+//             price_normal,
+//             price_discount,
+//             discount,
+//             basic_price,
+//             gig_link,
+//             required_files,
+//             project_type,
+//             duration,
+//             reference_link,
+//             file_and_chat_link,
+//             detail_project,
+//         } = req.body;
+
+//         // --- hitung project_number ---
+//         const createAt = new Date(); // default pakai waktu saat insert
+//         const monthStart = dayjs(createAt).startOf("month").toDate();
+//         const monthEnd = dayjs(createAt).endOf("month").toDate();
+
+//         const countResult = await client.query(
+//             `SELECT COUNT(*) AS count
+//        FROM data_marketing
+//        WHERE create_at BETWEEN $1 AND $2`,
+//             [monthStart, monthEnd]
+//         );
+
+//         const nextNumber = parseInt(countResult.rows[0].count) + 1;
+//         const monthName = dayjs(createAt).format("MMMM");
+//         // const projectNumber = `P${String(nextNumber).padStart(2, "0")} ${monthName}`;
+//         const projectNumber = `P${String(nextNumber).padStart(2, "0")} ${dayjs(createAt).locale("id").format("DD/MMM/YYYY")}`;
+
+
+//         // --- insert ke tabel ---
+//         const result = await client.query(
+//             `INSERT INTO data_marketing 
+//       (input_by, acc_by, buyer_name, code_order, jumlah_track, order_number, 
+//        account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre, 
+//        price_normal, price_discount, discount, basic_price, gig_link, required_files, 
+//        project_type, duration, reference_link, file_and_chat_link, detail_project, 
+//        create_at, project_number) 
+//       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, 
+//               $16, $17, $18, $19, $20, $21, $22, $23, $24, CURRENT_TIMESTAMP, $25) 
+//       RETURNING *`,
+//             [
+//                 input_by, acc_by, buyer_name, code_order, jumlah_track, order_number,
+//                 account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre,
+//                 price_normal, price_discount, discount, basic_price, gig_link, required_files,
+//                 project_type, duration, reference_link, file_and_chat_link, detail_project,
+//                 projectNumber,
+//             ]
+//         );
+
+//         res.status(201).json(result.rows[0]);
+//     } catch (err) {
+//         console.error(err.message);
+//         res.status(500).send("Server error");
+//     }
+// });
+
+
+
+
+//6. mengubah data marketing menjadi cards
+
+// Titik awal nomornya bisa kamu ubah di sini
+let currentOrderNumber = 297;    // nanti otomatis jadi 298, 299, dst
+let currentProjectNumber = 35;   // nanti otomatis jadi P036, P037, dst
+
 app.post("/api/marketing", async (req, res) => {
     try {
         const {
@@ -6259,7 +6403,6 @@ app.post("/api/marketing", async (req, res) => {
             buyer_name,
             code_order,
             jumlah_track,
-            order_number,
             account,
             deadline,
             jumlah_revisi,
@@ -6280,37 +6423,27 @@ app.post("/api/marketing", async (req, res) => {
             detail_project,
         } = req.body;
 
-        // --- hitung project_number ---
-        const createAt = new Date(); // default pakai waktu saat insert
-        const monthStart = dayjs(createAt).startOf("month").toDate();
-        const monthEnd = dayjs(createAt).endOf("month").toDate();
+        // --- generate nomor otomatis ---
+        currentOrderNumber += 1;
+        currentProjectNumber += 1;
 
-        const countResult = await client.query(
-            `SELECT COUNT(*) AS count
-       FROM data_marketing
-       WHERE create_at BETWEEN $1 AND $2`,
-            [monthStart, monthEnd]
-        );
-
-        const nextNumber = parseInt(countResult.rows[0].count) + 1;
-        const monthName = dayjs(createAt).format("MMMM");
-        // const projectNumber = `P${String(nextNumber).padStart(2, "0")} ${monthName}`;
-        const projectNumber = `P${String(nextNumber).padStart(2, "0")} ${dayjs(createAt).locale("id").format("DD/MMM/YYYY")}`;
-
+        const createAt = new Date();
+        const formattedOrderNumber = currentOrderNumber.toString();
+        const projectNumber = `P${String(currentProjectNumber).padStart(2, "0")} ${dayjs(createAt).locale("id").format("DD/MMM/YYYY")}`;
 
         // --- insert ke tabel ---
         const result = await client.query(
             `INSERT INTO data_marketing 
-      (input_by, acc_by, buyer_name, code_order, jumlah_track, order_number, 
-       account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre, 
-       price_normal, price_discount, discount, basic_price, gig_link, required_files, 
-       project_type, duration, reference_link, file_and_chat_link, detail_project, 
-       create_at, project_number) 
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, 
-              $16, $17, $18, $19, $20, $21, $22, $23, $24, CURRENT_TIMESTAMP, $25) 
-      RETURNING *`,
+            (input_by, acc_by, buyer_name, code_order, jumlah_track, order_number, 
+             account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre, 
+             price_normal, price_discount, discount, basic_price, gig_link, required_files, 
+             project_type, duration, reference_link, file_and_chat_link, detail_project, 
+             create_at, project_number) 
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, 
+                    $16, $17, $18, $19, $20, $21, $22, $23, CURRENT_TIMESTAMP, $24) 
+            RETURNING *`,
             [
-                input_by, acc_by, buyer_name, code_order, jumlah_track, order_number,
+                input_by, acc_by, buyer_name, code_order, jumlah_track, formattedOrderNumber,
                 account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre,
                 price_normal, price_discount, discount, basic_price, gig_link, required_files,
                 project_type, duration, reference_link, file_and_chat_link, detail_project,
@@ -6320,13 +6453,12 @@ app.post("/api/marketing", async (req, res) => {
 
         res.status(201).json(result.rows[0]);
     } catch (err) {
-        console.error(err.message);
+        console.error("❌ Error creating marketing data:", err.message);
         res.status(500).send("Server error");
     }
 });
 
 
-//6. mengubah data marketing menjadi cards
 app.put('/api/create-card-marketing/:listId/:marketingId', async (req, res) => {
     const { listId, marketingId } = req.params;
 
@@ -6596,7 +6728,7 @@ app.get('/api/data-marketing-cardId', async (req, res) => {
       LEFT JOIN project_type pt ON pt.id = dm.project_type
       LEFT JOIN kupon_diskon k ON k.id = dm.kupon_diskon_id
       LEFT JOIN accept_status s ON s.id = dm.accept_status_id
-      WHERE dm.card_id IS NOT NULL
+      WHERE dm.card_id IS NOT NULL AND dm.is_deleted = false
       ORDER BY dm.marketing_id DESC;
     `);
 
@@ -6677,7 +6809,7 @@ app.get('/api/data-marketing-cardId-null', async (req, res) => {
       LEFT JOIN project_type pt ON pt.id = dm.project_type
       LEFT JOIN kupon_diskon k ON k.id = dm.kupon_diskon_id
       LEFT JOIN accept_status s ON s.id = dm.accept_status_id
-      WHERE dm.card_id IS NULL
+      WHERE dm.card_id IS NULL AND dm.is_deleted = false
       ORDER BY dm.marketing_id DESC;
     `);
 
@@ -6757,7 +6889,8 @@ app.get("/api/data-marketing/accepted", async (req, res) => {
       LEFT JOIN project_type pt ON pt.id = dm.project_type
       LEFT JOIN kupon_diskon k ON k.id = dm.kupon_diskon_id
       LEFT JOIN accept_status s ON s.id = dm.accept_status_id
-      WHERE s.status_name = 'Accepted'
+      WHERE s.status_name = 'Not Accepted' AND dm.is_deleted = false
+
       ORDER BY dm.marketing_id DESC;
     `);
 
@@ -6836,7 +6969,8 @@ app.get("/api/data-marketing/rejected", async (req, res) => {
       LEFT JOIN project_type pt ON pt.id = dm.project_type
       LEFT JOIN kupon_diskon k ON k.id = dm.kupon_diskon_id
       LEFT JOIN accept_status s ON s.id = dm.accept_status_id
-      WHERE s.status_name = 'Not Accepted'
+    WHERE s.status_name = 'Not Accepted' AND dm.is_deleted = false
+
       ORDER BY dm.marketing_id DESC;
     `);
 
@@ -7038,6 +7172,7 @@ app.get("/api/marketing-design/joined", async (req, res) => {
       LEFT JOIN style_design sd ON md.style_id = sd.id
       LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
       LEFT JOIN design_order_type dot ON md.order_type_id = dot.id
+      WHERE md.is_deleted = false
       ORDER BY md.marketing_design_id DESC;
     `);
 
@@ -7118,7 +7253,7 @@ app.get("/api/marketing-design/joined/:id", async (req, res) => {
       LEFT JOIN style_design sd ON md.style_id = sd.id
       LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
       LEFT JOIN design_order_type dot ON md.order_type_id = dot.id
-      WHERE md.marketing_design_id = $1;
+      WHERE md.marketing_design_id = $1 AND md.is_deleted = FALSE;
     `,
             [id]
         );
@@ -7334,7 +7469,7 @@ app.get('/api/marketing-design/reports/today', async (req, res) => {
       LEFT JOIN style_design sd ON sd.id = md.style_id
       LEFT JOIN project_type_design pt ON pt.id = md.project_type_id
       LEFT JOIN status_project_design sp ON sp.id = md.status_project_id
-      WHERE DATE(md.create_at) = CURRENT_DATE
+      WHERE DATE(md.create_at) = CURRENT_DATE AND md.is_deleted = FALSE
       ORDER BY md.marketing_design_id DESC;
     `);
 
@@ -7419,6 +7554,7 @@ app.get("/api/marketing-design/reports", async (req, res) => {
       LEFT JOIN style_design sd ON md.style_id = sd.id
       LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
       LEFT JOIN design_order_type dot ON md.order_type_id = dot.id
+      WHERE md.is_deleted = false
       GROUP BY month, period
       ORDER BY month DESC, period ASC;
     `);
@@ -7495,11 +7631,379 @@ app.post('/api/marketing-design', async (req, res) => {
 
 
 // Tambah data marketing_design baru (lengkap dengan order_type + project_number)
+// app.post("/api/marketing-design/joined", async (req, res) => {
+//     const {
+//         buyer_name,
+//         code_order,
+//         order_number,
+//         jumlah_design,
+//         deadline,
+//         jumlah_revisi,
+//         price_normal,
+//         price_discount,
+//         discount_percentage,
+//         required_files,
+//         file_and_chat,
+//         detail_project,
+//         input_by,
+//         acc_by,
+//         account,
+//         offer_type,
+//         order_type_id,
+//         resolution,
+//         reference,
+//         project_type_id,
+//         style_id,
+//         status_project_id
+//     } = req.body;
+
+//     try {
+//         // --- Hitung project_number otomatis ---
+//         const createAt = new Date();
+//         const monthStart = dayjs(createAt).startOf("month").toDate();
+//         const monthEnd = dayjs(createAt).endOf("month").toDate();
+
+//         const countResult = await client.query(
+//             `SELECT COUNT(*) AS count
+//              FROM marketing_design
+//              WHERE create_at BETWEEN $1 AND $2`,
+//             [monthStart, monthEnd]
+//         );
+
+//         const nextNumber = parseInt(countResult.rows[0].count) + 1;
+//         const monthName = dayjs(createAt).format("MMMM");
+//         const projectNumber = `P${String(nextNumber).padStart(2, "0")} ${monthName}`;
+
+//         // Insert data baru
+//         const result = await client.query(
+//             `
+//             INSERT INTO marketing_design (
+//                 buyer_name,
+//                 code_order,
+//                 order_number,
+//                 jumlah_design,
+//                 deadline,
+//                 jumlah_revisi,
+//                 price_normal,
+//                 price_discount,
+//                 discount_percentage,
+//                 required_files,
+//                 file_and_chat,
+//                 detail_project,
+//                 input_by,
+//                 acc_by,
+//                 account,
+//                 offer_type,
+//                 order_type_id,
+//                 resolution,
+//                 reference,
+//                 project_type_id,
+//                 style_id,
+//                 status_project_id,
+//                 project_number,   -- ✅ tambahin project_number
+//                 create_at
+//             )
+//             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23, NOW())
+//             RETURNING *;
+//             `,
+//             [
+//                 buyer_name,
+//                 code_order,
+//                 order_number,
+//                 jumlah_design,
+//                 deadline,
+//                 jumlah_revisi,
+//                 price_normal,
+//                 price_discount,
+//                 discount_percentage,
+//                 required_files,
+//                 file_and_chat,
+//                 detail_project,
+//                 input_by,
+//                 acc_by,
+//                 account,
+//                 offer_type,
+//                 order_type_id,
+//                 resolution,
+//                 reference,
+//                 project_type_id,
+//                 style_id,
+//                 status_project_id,
+//                 projectNumber // ✅ masukin hasil generate
+//             ]
+//         );
+
+//         // Ambil data baru dengan join
+//         const joined = await client.query(
+//             `
+//             SELECT 
+//                 md.marketing_design_id,
+//                 md.buyer_name,
+//                 md.code_order,
+//                 md.order_number,
+//                 md.jumlah_design,
+//                 md.deadline,
+//                 md.jumlah_revisi,
+//                 md.price_normal,
+//                 md.price_discount,
+//                 md.discount_percentage,
+//                 md.required_files,
+//                 md.file_and_chat,
+//                 md.detail_project,
+//                 md.resolution,
+//                 md.reference,
+//                 md.project_number, -- ✅ tampilkan juga di hasil GET
+
+//                 mdu.id AS input_by,
+//                 mdu.nama_marketing AS input_by_name,
+//                 mdu.divisi AS input_by_divisi,
+
+//                 kdd.id AS acc_by,
+//                 kdd.nama AS acc_by_name,
+
+//                 ad.id AS account,
+//                 ad.nama_account AS account_name,
+
+//                 ot.id AS offer_type,
+//                 ot.offer_name AS offer_type_name,
+
+//                 pt.id AS project_type,
+//                 pt.project_name AS project_type_name,
+
+//                 sd.id AS style,
+//                 sd.style_name AS style_name,
+
+//                 sp.id AS status_project,
+//                 sp.status_name AS status_project_name,
+
+//                 dot.id AS order_type_id,
+//                 dot.order_name AS order_type_name
+//             FROM marketing_design md
+//             LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
+//             LEFT JOIN kepala_divisi_design kdd ON md.acc_by = kdd.id
+//             LEFT JOIN account_design ad ON md.account = ad.id
+//             LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
+//             LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
+//             LEFT JOIN style_design sd ON md.style_id = sd.id
+//             LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
+//             LEFT JOIN design_order_type dot ON md.order_type_id = dot.id
+//             WHERE md.marketing_design_id = $1
+//             `,
+//             [result.rows[0].marketing_design_id]
+//         );
+
+//         res.status(201).json({
+//             message: "✅ Marketing design created successfully",
+//             data: joined.rows[0],
+//         });
+//     } catch (err) {
+//         console.error("❌ Error creating marketing_design:", err);
+//         res.status(500).json({ error: "Failed to create marketing_design" });
+//     }
+// });
+
+import dayjs from "dayjs";
+
+// Tambah data marketing_design baru (lengkap dengan order_type + project_number)
+// app.post("/api/marketing-design/joined", async (req, res) => {
+//     const {
+//         buyer_name,
+//         code_order,
+//         order_number,
+//         jumlah_design,
+//         deadline,
+//         jumlah_revisi,
+//         price_normal,
+//         price_discount,
+//         discount_percentage,
+//         required_files,
+//         file_and_chat,
+//         detail_project,
+//         input_by,
+//         acc_by,
+//         account,
+//         offer_type,
+//         order_type_id,
+//         resolution,
+//         reference,
+//         project_type_id,
+//         style_id,
+//         status_project_id
+//     } = req.body;
+
+//     try {
+//         // 🧠 Ambil bulan sekarang
+//         const createAt = new Date();
+//         const monthStart = dayjs(createAt).startOf("month").toDate();
+//         const monthEnd = dayjs(createAt).endOf("month").toDate();
+//         const monthName = dayjs(createAt).format("MMMM");
+
+//         // 🧾 Ambil project_number terakhir di bulan ini
+//         const lastProjectQuery = await client.query(
+//             `
+//             SELECT project_number 
+//             FROM marketing_design
+//             WHERE create_at BETWEEN $1 AND $2
+//             ORDER BY marketing_design_id DESC
+//             LIMIT 1;
+//             `,
+//             [monthStart, monthEnd]
+//         );
+
+//         let nextNumber;
+
+//         if (lastProjectQuery.rows.length > 0) {
+//             // 🔢 Ambil angka terakhir dari format "P035 Oktober"
+//             const lastNumberPart = lastProjectQuery.rows[0].project_number.match(/P(\d+)/);
+//             const lastNumber = lastNumberPart ? parseInt(lastNumberPart[1]) : 0;
+//             nextNumber = lastNumber + 1;
+//         } else {
+//             // 🔄 Kalau belum ada di bulan ini, mulai dari 1
+//             nextNumber = 1;
+//         }
+
+//         // 🧮 Buat format project number baru
+//         const projectNumber = `P${String(nextNumber).padStart(3, "0")} ${monthName}`;
+
+//         // 💾 Simpan ke DB
+//         const result = await client.query(
+//             `
+//             INSERT INTO marketing_design (
+//                 buyer_name,
+//                 code_order,
+//                 order_number,
+//                 jumlah_design,
+//                 deadline,
+//                 jumlah_revisi,
+//                 price_normal,
+//                 price_discount,
+//                 discount_percentage,
+//                 required_files,
+//                 file_and_chat,
+//                 detail_project,
+//                 input_by,
+//                 acc_by,
+//                 account,
+//                 offer_type,
+//                 order_type_id,
+//                 resolution,
+//                 reference,
+//                 project_type_id,
+//                 style_id,
+//                 status_project_id,
+//                 project_number,
+//                 create_at
+//             )
+//             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22, NOW())
+//             RETURNING *;
+//             `,
+//             [
+//                 buyer_name,
+//                 code_order,
+//                 order_number,
+//                 jumlah_design,
+//                 deadline,
+//                 jumlah_revisi,
+//                 price_normal,
+//                 price_discount,
+//                 discount_percentage,
+//                 required_files,
+//                 file_and_chat,
+//                 detail_project,
+//                 input_by,
+//                 acc_by,
+//                 account,
+//                 offer_type,
+//                 order_type_id,
+//                 resolution,
+//                 reference,
+//                 project_type_id,
+//                 style_id,
+//                 status_project_id,
+//                 projectNumber
+//             ]
+//         );
+
+//         // Ambil data dengan join biar langsung lengkap tampilannya
+//         const joined = await client.query(
+//             `
+//             SELECT 
+//                 md.marketing_design_id,
+//                 md.buyer_name,
+//                 md.code_order,
+//                 md.order_number,
+//                 md.jumlah_design,
+//                 md.deadline,
+//                 md.jumlah_revisi,
+//                 md.price_normal,
+//                 md.price_discount,
+//                 md.discount_percentage,
+//                 md.required_files,
+//                 md.file_and_chat,
+//                 md.detail_project,
+//                 md.resolution,
+//                 md.reference,
+//                 md.project_number,
+
+//                 mdu.id AS input_by,
+//                 mdu.nama_marketing AS input_by_name,
+//                 mdu.divisi AS input_by_divisi,
+
+//                 kdd.id AS acc_by,
+//                 kdd.nama AS acc_by_name,
+
+//                 ad.id AS account,
+//                 ad.nama_account AS account_name,
+
+//                 ot.id AS offer_type,
+//                 ot.offer_name AS offer_type_name,
+
+//                 pt.id AS project_type,
+//                 pt.project_name AS project_type_name,
+
+//                 sd.id AS style,
+//                 sd.style_name AS style_name,
+
+//                 sp.id AS status_project,
+//                 sp.status_name AS status_project_name,
+
+//                 dot.id AS order_type_id,
+//                 dot.order_name AS order_type_name
+//             FROM marketing_design md
+//             LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
+//             LEFT JOIN kepala_divisi_design kdd ON md.acc_by = kdd.id
+//             LEFT JOIN account_design ad ON md.account = ad.id
+//             LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
+//             LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
+//             LEFT JOIN style_design sd ON md.style_id = sd.id
+//             LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
+//             LEFT JOIN design_order_type dot ON md.order_type_id = dot.id
+//             WHERE md.marketing_design_id = $1
+//             `,
+//             [result.rows[0].marketing_design_id]
+//         );
+
+//         res.status(201).json({
+//             message: "✅ Marketing design created successfully",
+//             data: joined.rows[0],
+//         });
+//     } catch (err) {
+//         console.error("❌ Error creating marketing_design:", err);
+//         res.status(500).json({ error: "Failed to create marketing_design" });
+//     }
+// });
+
+
+
+//4. mengupdate data 
+// Titik awal nomor manual
+let currentOrderNumberDesign = 35;   // ⬅️ ubah ini kalau mau mulai dari nomor lain
+let currentProjectNumberDesign = 35; // ⬅️ ubah ini juga kalau mau mulai dari P035
+
 app.post("/api/marketing-design/joined", async (req, res) => {
     const {
         buyer_name,
         code_order,
-        order_number,
         jumlah_design,
         deadline,
         jumlah_revisi,
@@ -7522,23 +8026,40 @@ app.post("/api/marketing-design/joined", async (req, res) => {
     } = req.body;
 
     try {
-        // --- Hitung project_number otomatis ---
+        // 🧠 Ambil bulan sekarang
         const createAt = new Date();
         const monthStart = dayjs(createAt).startOf("month").toDate();
         const monthEnd = dayjs(createAt).endOf("month").toDate();
+        const monthName = dayjs(createAt).format("MMMM");
 
-        const countResult = await client.query(
-            `SELECT COUNT(*) AS count
-             FROM marketing_design
-             WHERE create_at BETWEEN $1 AND $2`,
+        // 🧾 Ambil project_number terakhir di bulan ini
+        const lastProjectQuery = await client.query(
+            `
+            SELECT project_number 
+            FROM marketing_design
+            WHERE create_at BETWEEN $1 AND $2
+            ORDER BY marketing_design_id DESC
+            LIMIT 1;
+            `,
             [monthStart, monthEnd]
         );
 
-        const nextNumber = parseInt(countResult.rows[0].count) + 1;
-        const monthName = dayjs(createAt).format("MMMM");
-        const projectNumber = `P${String(nextNumber).padStart(2, "0")} ${monthName}`;
+        let nextProjectNumber;
+        if (lastProjectQuery.rows.length > 0) {
+            // 🔢 Ambil angka terakhir dari format "P035 Oktober"
+            const lastNumberPart = lastProjectQuery.rows[0].project_number.match(/P(\d+)/);
+            const lastNumber = lastNumberPart ? parseInt(lastNumberPart[1]) : currentProjectNumberDesign;
+            nextProjectNumber = lastNumber + 1;
+        } else {
+            // 🔄 Kalau bulan baru, mulai lagi dari 1
+            nextProjectNumber = 1;
+        }
 
-        // Insert data baru
+        // 🎨 Generate nomor otomatis
+        const newOrderNumber = ++currentOrderNumberDesign;
+        const projectNumber = `P${String(nextProjectNumber).padStart(3, "0")} ${monthName}`;
+
+        // 💾 Simpan ke DB
         const result = await client.query(
             `
             INSERT INTO marketing_design (
@@ -7564,16 +8085,16 @@ app.post("/api/marketing-design/joined", async (req, res) => {
                 project_type_id,
                 style_id,
                 status_project_id,
-                project_number,   -- ✅ tambahin project_number
+                project_number,
                 create_at
             )
-            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23, NOW())
+            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22, NOW())
             RETURNING *;
             `,
             [
                 buyer_name,
                 code_order,
-                order_number,
+                String(newOrderNumber).padStart(3, "0"), // contoh: 036
                 jumlah_design,
                 deadline,
                 jumlah_revisi,
@@ -7593,11 +8114,11 @@ app.post("/api/marketing-design/joined", async (req, res) => {
                 project_type_id,
                 style_id,
                 status_project_id,
-                projectNumber // ✅ masukin hasil generate
+                projectNumber
             ]
         );
 
-        // Ambil data baru dengan join
+        // 🔗 Ambil data join biar tampil lengkap
         const joined = await client.query(
             `
             SELECT 
@@ -7616,7 +8137,7 @@ app.post("/api/marketing-design/joined", async (req, res) => {
                 md.detail_project,
                 md.resolution,
                 md.reference,
-                md.project_number, -- ✅ tampilkan juga di hasil GET
+                md.project_number,
 
                 mdu.id AS input_by,
                 mdu.nama_marketing AS input_by_name,
@@ -7667,8 +8188,6 @@ app.post("/api/marketing-design/joined", async (req, res) => {
 });
 
 
-
-//4. mengupdate data 
 app.put('/api/marketing-design/:id', async (req, res) => {
     const { id } = req.params;
     const { input_by, buyer_name, code_order, jumlah_design, order_number, account, deadline, jumlah_revisi, order_type, offer_type, style, resolution, price_normal, price_discount, discount_percentage, required_files, project_type, reference, file_and_chat, detail_project, acc_by, is_accepted } = req.body;
@@ -7688,19 +8207,45 @@ app.put('/api/marketing-design/:id', async (req, res) => {
     }
 })
 
-//5. menghapus data
+// 5. Soft delete marketing design
 app.delete('/api/marketing-design/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        const result = await client.query('DELETE FROM marketing_design WHERE marketing_design_id = $1 RETURNING *', [id]);
+        const result = await client.query(
+            'UPDATE marketing_design SET is_deleted = TRUE, deleted_at = NOW() WHERE marketing_design_id = $1 AND is_deleted = FALSE RETURNING *',
+            [id]
+        );
+
         if (result.rows.length === 0) {
-            return res.status(404).json({ message: 'Data not found' });
+            return res.status(404).json({ message: 'Data not found or already deleted' });
         }
-        res.json({ message: 'Data deleted successfully' });
+
+        res.json({ message: 'Data soft-deleted successfully', data: result.rows[0] });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
+
+// Restore soft-deleted marketing design
+app.patch('/api/marketing-design/:id/restore', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const result = await client.query(
+            'UPDATE marketing_design SET is_deleted = FALSE, deleted_at = NULL WHERE marketing_design_id = $1 AND is_deleted = TRUE RETURNING *',
+            [id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'Data not found or not deleted' });
+        }
+
+        res.json({ message: 'Data restored successfully', data: result.rows[0] });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
 
 //6. check card id if null or not
 app.get('/api/check-card-id-design/:marketing_design_id', async (req, res) => {
