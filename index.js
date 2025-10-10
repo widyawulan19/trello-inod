@@ -159,77 +159,76 @@ app.post("/api/export-design-to-sheet", async (req, res) => {
 // RESTORE SATU DATA DARI GOOGLE SHEET BY PROJECT NUMBER
 // ===============================
 app.post("/api/restore-design-from-sheet/:projectNumber", async (req, res) => {
-  const { projectNumber } = req.params;
+    const { projectNumber } = req.params;
 
-  try {
-    const clientAuth = await auth.getClient();
-    const sheets = google.sheets({ version: "v4", auth: clientAuth });
-    const spreadsheetId = process.env.SPREADSHEET_ID;
+    try {
+        const clientAuth = await auth.getClient();
+        const sheets = google.sheets({ version: "v4", auth: clientAuth });
+        const spreadsheetId = process.env.SPREADSHEET_ID;
 
-    const response = await sheets.spreadsheets.values.get({
-      spreadsheetId,
-      range: "Design!A:Z",
-    });
+        const response = await sheets.spreadsheets.values.get({
+            spreadsheetId,
+            range: "Design!A:Z",
+        });
 
-    const rows = response.data.values;
-    if (!rows || rows.length < 2) {
-      return res.status(404).json({ success: false, message: "Tidak ada data di Sheet." });
-    }
+        const rows = response.data.values;
+        if (!rows || rows.length < 2) {
+            return res.status(404).json({ success: false, message: "Tidak ada data di Sheet." });
+        }
 
-    const dataRows = rows.slice(1);
+        const dataRows = rows.slice(1);
 
-    // 🔍 cari data lebih fleksibel (case-insensitive dan partial match)
-    const foundRow = dataRows.find((row) => {
-      const cellValue = (row[0] || "").toString().trim().toLowerCase();
-      const searchValue = projectNumber.toString().trim().toLowerCase();
-      return cellValue.includes(searchValue);
-    });
+        // 🔍 cari data lebih fleksibel (case-insensitive dan partial match)
+        const foundRow = dataRows.find((row) => {
+            const cellValue = (row[0] || "").toString().trim().toLowerCase();
+            const searchValue = projectNumber.toString().trim().toLowerCase();
+            return cellValue.includes(searchValue);
+        });
 
-    if (!foundRow) {
-      return res.status(404).json({
-        success: false,
-        message: `❌ Data dengan project_number ${projectNumber} tidak ditemukan di Sheet.`,
-      });
-    }
+        if (!foundRow) {
+            return res.status(404).json({
+                success: false,
+                message: `❌ Data dengan project_number ${projectNumber} tidak ditemukan di Sheet.`,
+            });
+        }
 
-    // cek duplikat di DB
-    const checkExist = await client.query(
-      "SELECT * FROM marketing_design WHERE project_number = $1",
-      [foundRow[0]]
-    );
+        // cek duplikat di DB
+        const checkExist = await client.query(
+            "SELECT * FROM marketing_design WHERE project_number = $1",
+            [foundRow[0]]
+        );
 
-    if (checkExist.rows.length > 0) {
-      return res.json({
-        success: false,
-        message: `⚠️ Data dengan project_number ${foundRow[0]} sudah ada di database.`,
-      });
-    }
+        if (checkExist.rows.length > 0) {
+            return res.json({
+                success: false,
+                message: `⚠️ Data dengan project_number ${foundRow[0]} sudah ada di database.`,
+            });
+        }
 
-    await client.query(
-      `INSERT INTO marketing_design (
+        await client.query(
+            `INSERT INTO marketing_design (
         project_number, input_by, acc_by, buyer_name, code_order, order_number,
-        account, deadline, jumlah_design, jumlah_revisi, order_type,
-        offer_type, project_type, style, status_project, resolution,
-        reference, price_normal, price_discount, discount_percentage,
+        account, deadline, jumlah_design, jumlah_revisi,
+        resolution, reference, price_normal, price_discount, discount_percentage,
         required_files, file_and_chat, detail_project
-      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23)`,
-      foundRow
-    );
+    ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$16,$17,$18,$19,$20,$21,$22,$23)`,
+            foundRow
+        );
 
-    console.log(`✅ Berhasil restore data ${foundRow[0]}`);
+        console.log(`✅ Berhasil restore data ${foundRow[0]}`);
 
-    res.json({
-      success: true,
-      message: `✅ Data dengan project_number ${foundRow[0]} berhasil direstore ke database.`,
-    });
-  } catch (error) {
-    console.error("❌ Error restore by ID:", error);
-    res.status(500).json({
-      success: false,
-      message: "Gagal restore data dari Google Sheet",
-      error: error.message,
-    });
-  }
+        res.json({
+            success: true,
+            message: `✅ Data dengan project_number ${foundRow[0]} berhasil direstore ke database.`,
+        });
+    } catch (error) {
+        console.error("❌ Error restore by ID:", error);
+        res.status(500).json({
+            success: false,
+            message: "Gagal restore data dari Google Sheet",
+            error: error.message,
+        });
+    }
 });
 
 
