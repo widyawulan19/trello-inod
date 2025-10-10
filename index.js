@@ -2823,15 +2823,15 @@ app.get('/api/lists', async (req, res) => {
     }
 })
 //2. get list by board_id
-app.get('/api/lists/board/:board_id', async (req, res) => {
-    const { board_id } = req.params;
-    try {
-        const result = await client.query("SELECT * FROM lists WHERE board_id = $1 AND is_deleted = FALSE ORDER BY position", [board_id]);
-        res.json(result.rows);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-})
+// app.get('/api/lists/board/:board_id', async (req, res) => {
+//     const { board_id } = req.params;
+//     try {
+//         const result = await client.query("SELECT * FROM lists WHERE board_id = $1 AND is_deleted = FALSE ORDER BY position", [board_id]);
+//         res.json(result.rows);
+//     } catch (error) {
+//         res.status(500).json({ error: error.message });
+//     }
+// })
 
 //get list by id
 app.get('/api/lists/:listId', async (req, res) => {
@@ -5988,6 +5988,7 @@ app.get("/api/data-marketing/joined", async (req, res) => {
       LEFT JOIN project_type pt ON pt.id = dm.project_type
       LEFT JOIN kupon_diskon k ON k.id = dm.kupon_diskon_id
       LEFT JOIN accept_status s ON s.id = dm.accept_status_id
+      WHERE dm.is_deleted = FALSE
       ORDER BY dm.marketing_id DESC;
     `);
 
