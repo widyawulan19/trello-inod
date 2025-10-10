@@ -180,7 +180,7 @@ app.post("/api/restore-design-from-sheet/:projectNumber", async (req, res) => {
 
         // Cari data dengan project_number yang cocok
         const foundRow = dataRows.find(
-            (row) => (row[0] || "").toString().trim().toLowerCase() === projectNumber.toLowerCase()
+            (row) => (row[0] || "").toString().trim().toLowerCase().includes(projectNumber.toLowerCase())
         );
 
         if (!foundRow) {
