@@ -156,70 +156,80 @@ app.post("/api/export-design-to-sheet", async (req, res) => {
 
 
 // ===============================
-// RESTORE DATA DARI GOOGLE SHEET
+// RESTORE SATU DATA DARI GOOGLE SHEET BY PROJECT NUMBER
 // ===============================
-app.post("/api/restore-design-from-sheet", async (req, res) => {
-    try {
-        const clientAuth = await auth.getClient();
-        const sheets = google.sheets({ version: "v4", auth: clientAuth });
-        const spreadsheetId = process.env.SPREADSHEET_ID;
+app.post("/api/restore-design-from-sheet/:projectNumber", async (req, res) => {
+  const { projectNumber } = req.params;
 
-        // Ambil data dari tab "Design"
-        const response = await sheets.spreadsheets.values.get({
-            spreadsheetId,
-            range: "Design!A:Z", // Pastikan sesuai kolom data kamu
-        });
+  try {
+    const clientAuth = await auth.getClient();
+    const sheets = google.sheets({ version: "v4", auth: clientAuth });
+    const spreadsheetId = process.env.SPREADSHEET_ID;
 
-        const rows = response.data.values;
+    // Ambil semua data dari tab Design
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId,
+      range: "Design!A:Z", // Pastikan sesuai kolom
+    });
 
-        if (!rows || rows.length < 2) {
-            return res.status(404).json({ success: false, message: "Tidak ada data di Sheet." });
-        }
-
-        // Lewati header (baris pertama)
-        const dataRows = rows.slice(1);
-
-        console.log(`📥 Ambil ${dataRows.length} baris dari Google Sheet`);
-
-        for (const row of dataRows) {
-            // Pastikan data lengkap minimal ada project_number
-            if (!row[0]) continue;
-
-            // Cegah duplikat di database
-            const check = await client.query(
-                "SELECT * FROM marketing_design WHERE project_number = $1",
-                [row[0]]
-            );
-
-            if (check.rows.length === 0) {
-                await client.query(
-                    `INSERT INTO marketing_design (
-            project_number, input_by, acc_by, buyer_name, code_order, order_number,
-            account, deadline, jumlah_design, jumlah_revisi, order_type,
-            offer_type, project_type, style, status_project, resolution,
-            reference, price_normal, price_discount, discount_percentage,
-            required_files, file_and_chat, detail_project
-          ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23)`,
-                    row
-                );
-                console.log(`✅ Berhasil restore: ${row[0]}`);
-            } else {
-                console.log(`⚠️ Data ${row[0]} sudah ada, dilewati.`);
-            }
-        }
-
-        res.json({
-            success: true,
-            message: "✅ Data berhasil direstore dari Google Sheet ke database",
-        });
-    } catch (error) {
-        console.error("❌ Error restore:", error);
-        res.status(500).json({
-            success: false,
-            message: "Gagal restore data dari Google Sheet",
-            error: error.message,
-        });
+    const rows = response.data.values;
+    if (!rows || rows.length < 2) {
+      return res.status(404).json({ success: false, message: "Tidak ada data di Sheet." });
     }
+
+    // Ambil header & data
+    const header = rows[0];
+    const dataRows = rows.slice(1);
+
+    // Cari data yang sesuai dengan projectNumber
+    const foundRow = dataRows.find((row) => row[0] === projectNumber);
+
+    if (!foundRow) {
+      return res.status(404).json({
+        success: false,
+        message: `❌ Data dengan project_number ${projectNumber} tidak ditemukan di Sheet.`,
+      });
+    }
+
+    // Cek apakah sudah ada di database
+    const checkExist = await client.query(
+      "SELECT * FROM marketing_design WHERE project_number = $1",
+      [projectNumber]
+    );
+
+    if (checkExist.rows.length > 0) {
+      return res.json({
+        success: false,
+        message: `⚠️ Data dengan project_number ${projectNumber} sudah ada di database.`,
+      });
+    }
+
+    // Insert ke database
+    await client.query(
+      `INSERT INTO marketing_design (
+        project_number, input_by, acc_by, buyer_name, code_order, order_number,
+        account, deadline, jumlah_design, jumlah_revisi, order_type,
+        offer_type, project_type, style, status_project, resolution,
+        reference, price_normal, price_discount, discount_percentage,
+        required_files, file_and_chat, detail_project
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23)`,
+      foundRow
+    );
+
+    console.log(`✅ Berhasil restore data ${projectNumber}`);
+
+    res.json({
+      success: true,
+      message: `✅ Data dengan project_number ${projectNumber} berhasil direstore ke database.`,
+    });
+  } catch (error) {
+    console.error("❌ Error restore by ID:", error);
+    res.status(500).json({
+      success: false,
+      message: "Gagal restore data dari Google Sheet",
+      error: error.message,
+    });
+  }
 });
 
 
