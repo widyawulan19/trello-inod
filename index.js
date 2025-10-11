@@ -6204,7 +6204,6 @@ app.get("/api/data-marketing/joined", async (req, res) => {
       LEFT JOIN accept_status s ON s.id = dm.accept_status_id
       WHERE dm.is_deleted = FALSE
       ORDER BY dm.position ASC;
-    //   ORDER BY dm.marketing_id DESC;
     `);
 
         res.json(result.rows);
