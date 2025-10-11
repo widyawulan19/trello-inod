@@ -7921,8 +7921,8 @@ app.post("/api/marketing-design/joined", async (req, res) => {
 
         const nextNumber = parseInt(countResult.rows[0].count) + 1;
         const monthName = dayjs(createAt).format("MMMM");
-        const projectNumber = `P${String(nextNumber).padStart(2, "0")} ${monthName}`;
-
+        // const projectNumber = `P${String(nextNumber).padStart(2, "0")} ${monthName}`;
+        const projectNumber = `P${String(nextNumber).padStart(2, "0")} ${dayjs(createAt).locale("id").format("DD/MMM/YYYY")}$`;
         // Insert data baru
         const result = await client.query(
             `
