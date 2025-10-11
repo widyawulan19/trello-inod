@@ -6908,6 +6908,58 @@ app.get('/api/check-card-id/:marketingId', async (req, res) => {
     }
 })
 
+// POSITION DATA MARKETING 
+app.patch("/api/data-marketing/:id/position", async (req, res) => {
+    const { id } = req.params;
+    const { direction } = req.body; // "up" atau "down"
+
+    try {
+        // Ambil data yang ingin dipindah
+        const { rows } = await client.query(
+            `SELECT marketing_id, position FROM data_marketing WHERE marketing_id = $1`,
+            [id]
+        );
+
+        if (!rows.length)
+            return res.status(404).json({ error: "Data tidak ditemukan" });
+
+        const current = rows[0];
+        const newPosition =
+            direction === "up" ? current.position - 1 : current.position + 1;
+
+        // Cari item yang punya posisi target
+        const swap = await client.query(
+            `SELECT marketing_id FROM data_marketing WHERE position = $1`,
+            [newPosition]
+        );
+
+        if (!swap.rows.length) {
+            return res.json({ message: "Sudah di posisi teratas / terbawah" });
+        }
+
+        const swapId = swap.rows[0].marketing_id;
+
+        // Tukar posisi
+        await client.query("BEGIN");
+        await client.query(
+            `UPDATE data_marketing SET position = $1 WHERE marketing_id = $2`,
+            [newPosition, current.marketing_id]
+        );
+        await client.query(
+            `UPDATE data_marketing SET position = $1 WHERE marketing_id = $2`,
+            [current.position, swapId]
+        );
+        await client.query("COMMIT");
+
+        res.json({ success: true, message: "Posisi diperbarui" });
+    } catch (err) {
+        await client.query("ROLLBACK");
+        console.error("❌ Error ubah posisi data_marketing:", err);
+        res.status(500).json({ error: "Gagal ubah posisi" });
+    }
+});
+
+
 // ✅ Get Data Marketing with cardId IS NOT NULL + JOIN
 app.get('/api/data-marketing-cardId', async (req, res) => {
     try {
