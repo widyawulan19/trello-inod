@@ -2003,26 +2003,43 @@ app.post('/api/archive-workspace-user/:workspaceId', async (req, res) => {
 });
 
 
-//6. get workspace milik user
+// ✅ 6. Get workspace milik user (yang belum dihapus)
 app.get('/api/user/:userId/workspaces', async (req, res) => {
     const { userId } = req.params;
+
     try {
         const result = await client.query(
-            `SELECT w.id, w.name, w.description, w.create_at, w.update_at
-            FROM workspaces w
-            JOIN workspaces_users wu ON w.id = wu.workspace_id
-            WHERE wu.user_id = $1 AND is_deleted = FALSE`, [userId]
+            `
+      SELECT 
+        w.id, 
+        w.name, 
+        w.description, 
+        w.create_at, 
+        w.update_at,
+        w.is_deleted,
+        w.deleted_at
+      FROM workspaces AS w
+      INNER JOIN workspaces_users AS wu 
+        ON w.id = wu.workspace_id
+      WHERE 
+        wu.user_id = $1
+        AND w.is_deleted = FALSE
+      ORDER BY w.create_at DESC
+      `,
+            [userId]
         );
 
         if (result.rows.length === 0) {
-            return res.status(404).json({ error: 'No workspaces found for this user' });
+            return res.status(200).json([]); // kirim array kosong, bukan 404
         }
 
         res.status(200).json(result.rows);
     } catch (error) {
+        console.error("❌ Error fetching user's workspaces:", error);
         res.status(500).json({ error: error.message });
     }
 });
+
 //7. get admin name form workspace
 app.get('/api/:workspaceId/admin', async (req, res) => {
     const { workspaceId } = req.params;
