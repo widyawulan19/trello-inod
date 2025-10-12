@@ -6,6 +6,7 @@ import {
   restoreCard,
   restoreMarketing,
   restoreMarketingDesign,
+  restoreWorkspaceUser
 } from "../services/ApiServices.js";
 import '../style/pages/DataDelete.css';
 import { FaTrashRestore } from "react-icons/fa";
@@ -80,6 +81,8 @@ export default function DataDelete() {
         case "marketingDesign":
           await restoreMarketingDesign(id);
           break;
+        case "workspace":
+          await restoreWorkspaceUser(id);
         default:
           return;
       }
@@ -112,6 +115,8 @@ export default function DataDelete() {
           item.buyer_name ||
           `${item.code_order || ""} (${item.order_number || "No Order"})`
         );
+      case "workspace":
+        return item.name || item.name || `Workspace ID: ${item.id}`;
       default:
         return item.name || `Item ID: ${item.id}`;
     }
@@ -161,7 +166,7 @@ export default function DataDelete() {
             </h3>
 
             {items.length === 0 ? (
-              <p className="text-sm italic text-gray-400">No deleted {key} found.</p>
+              <p className="no-data-delete">No deleted {key} found.</p>
             ) : (
               <div className="rb-card-grid">
                 {items.map((item) => (
@@ -203,67 +208,6 @@ export default function DataDelete() {
           </div>
         ))}
       </div>
-
-
-      {/* {Object.entries(deletedData).map(([key, items]) => (
-        <div
-          key={key}
-          className="p-4 transition-all bg-white border shadow-sm rounded-xl hover:shadow-md"
-        >
-          <h2 className="mb-3 text-lg font-semibold text-gray-800 capitalize">
-            {key.replace(/([A-Z])/g, " $1")}
-          </h2>
-
-          {items.length === 0 ? (
-            <p className="text-sm italic text-gray-500">
-              No deleted {key} found.
-            </p>
-          ) : (
-            <ul className="space-y-2">
-              {items.map((item) => (
-                <li
-                  key={
-                    item.id ||
-                    item.marketing_id ||
-                    item.marketing_design_id
-                  }
-                  className="flex items-center justify-between pb-2 border-b"
-                >
-                  <div className="flex flex-col">
-                    <span className="font-medium text-gray-700">
-                      {getDisplayName(key, item)}
-                    </span>
-                    <span className="text-xs text-gray-500">
-                      ID:{" "}
-                      {item.id ||
-                        item.marketing_id ||
-                        item.marketing_design_id}
-                    </span>
-                  </div>
-
-                  <button
-                    onClick={() =>
-                      handleRestore(
-                        key === "marketingDesign"
-                          ? "marketingDesign"
-                          : key === "marketing"
-                          ? "marketing"
-                          : key.slice(0, -1), // plural → singular
-                        item.id ||
-                          item.marketing_id ||
-                          item.marketing_design_id
-                      )
-                    }
-                    className="px-3 py-1 text-sm text-white transition bg-green-500 rounded hover:bg-green-600"
-                  >
-                    Restore
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      ))} */}
     </div>
   );
 }
