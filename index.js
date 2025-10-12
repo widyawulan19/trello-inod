@@ -3169,7 +3169,10 @@ app.delete('/api/lists/:id', async (req, res) => {
     try {
         // Soft delete (update flag is_deleted)
         const result = await client.query(
-            'UPDATE lists SET is_deleted = TRUE WHERE id = $1 AND is_deleted = FALSE RETURNING *',
+            `UPDATE lists 
+            SET is_deleted = TRUE, deleted_at = NOW() 
+            WHERE id = $1 AND is_deleted = FALSE 
+            RETURNING *`,
             [id]
         );
 
