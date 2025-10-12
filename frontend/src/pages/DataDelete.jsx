@@ -6,11 +6,13 @@ import {
   restoreCard,
   restoreMarketing,
   restoreMarketingDesign,
-  restoreWorkspaceUser
+  restoreWorkspace,
+  // restoreWorkspaceUser
 } from "../services/ApiServices.js";
 import '../style/pages/DataDelete.css';
 import { FaTrashRestore } from "react-icons/fa";
 import { IoSearchOutline } from "react-icons/io5";
+import { useSnackbar } from '../context/Snackbar';
 
 
 export default function DataDelete() {
@@ -18,6 +20,7 @@ export default function DataDelete() {
   const [loading, setLoading] = useState(true);
   const [filteredData, setFilteredData] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
+  const {showSnackbar} = useSnackbar()
 
   const fetchDeletedData = async () => {
     setLoading(true);
@@ -66,6 +69,9 @@ export default function DataDelete() {
   const handleRestore = async (type, id) => {
     try {
       switch (type) {
+        case "workspace":
+          await restoreWorkspace(id);
+          break;
         case "board":
           await restoreBoard(id);
           break;
@@ -81,14 +87,12 @@ export default function DataDelete() {
         case "marketingDesign":
           await restoreMarketingDesign(id);
           break;
-        case "workspace":
-          await restoreWorkspaceUser(id);
         default:
           return;
       }
 
       alert(`${type} restored successfully!`);
-      fetchDeletedData(); // refresh data setelah restore
+      fetchDeletedData(); // Refresh data setelah restore
     } catch (err) {
       console.error(`Failed to restore ${type}:`, err);
     }
@@ -96,31 +100,31 @@ export default function DataDelete() {
 
   if (loading) return <p>Loading recycle bin...</p>;
 
-  // Fungsi bantu untuk menentukan nama yang ditampilkan
+  // 🧩 Tentukan nama yang ditampilkan
   const getDisplayName = (key, item) => {
-    switch (key) {
-      case "boards":
-        return item.name || item.title || `Board ID: ${item.id}`;
-      case "lists":
-        return item.title || item.name || `List ID: ${item.id}`;
-      case "cards":
-        return item.title || item.name || `Card ID: ${item.id}`;
-      case "marketing":
-        return (
-          item.buyer_name ||
-          `${item.code_order || ""} (${item.order_number || "No Order"})`
-        );
-      case "marketingDesign":
-        return (
-          item.buyer_name ||
-          `${item.code_order || ""} (${item.order_number || "No Order"})`
-        );
-      case "workspace":
-        return item.name || item.name || `Workspace ID: ${item.id}`;
-      default:
-        return item.name || `Item ID: ${item.id}`;
-    }
-  };
+      switch (key) {
+        case "workspaces":
+          return item.name || `Workspace ID: ${item.id}`;
+        case "boards":
+          return item.name || item.title || `Board ID: ${item.id}`;
+        case "lists":
+          return item.title || item.name || `List ID: ${item.id}`;
+        case "cards":
+          return item.title || item.name || `Card ID: ${item.id}`;
+        case "marketing":
+          return (
+            item.buyer_name ||
+            `${item.code_order || ""} (${item.order_number || "No Order"})`
+          );
+        case "marketingDesign":
+          return (
+            item.buyer_name ||
+            `${item.code_order || ""} (${item.order_number || "No Order"})`
+          );
+        default:
+          return item.name || `Item ID: ${item.id}`;
+      }
+    };
 
   if (loading) return <p>Loading recycle bin...</p>;
 
@@ -186,19 +190,23 @@ export default function DataDelete() {
                         </span>
                       )}
                     </div>
-                    <button
-                      className="rb-restore-btn"
-                      onClick={() =>
-                        handleRestore(
-                          key === "marketingDesign"
-                            ? "marketingDesign"
-                            : key === "marketing"
-                            ? "marketing"
-                            : key.slice(0, -1),
-                          item.id || item.marketing_id || item.marketing_design_id
-                        )
-                      }
-                    >
+                     <button
+                        className="rb-restore-btn"
+                        onClick={() =>
+                          handleRestore(
+                            key === "marketingDesign"
+                              ? "marketingDesign"
+                              : key === "marketing"
+                              ? "marketing"
+                              : key === "workspaces"
+                              ? "workspace"
+                              : key.slice(0, -1), // plural → singular
+                            item.id ||
+                              item.marketing_id ||
+                              item.marketing_design_id
+                          )
+                        }
+                      >
                       ♻️ Restore
                     </button>
                   </div>

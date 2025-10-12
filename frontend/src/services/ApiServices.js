@@ -294,6 +294,7 @@ export const restoreList = (id) => axios.patch(`${API_URL}/lists/${id}/restore`)
 export const restoreCard = (id) => axios.patch(`${API_URL}/cards/${id}/restore`);
 export const restoreMarketing = (id) => axios.patch(`${API_URL}/marketing/${id}/restore`);
 export const restoreMarketingDesign = (id) => axios.patch(`${API_URL}/marketing-design/${id}/restore`);
+export const restoreWorkspace = (id) => axios.put(`${API_URL}/workspace/restore/${id}`);
 export const restoreWorkspaceUser = (workspaceId, userId) => axios.patch(`${API_URL}/workspace-user/${workspaceId}/user/${userId}/restore`);
 
 
