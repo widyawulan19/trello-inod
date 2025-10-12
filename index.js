@@ -1580,30 +1580,106 @@ app.put('/api/workspace/:id', async (req, res) => {
     }
 })
 //5. delete a workspace dan mengarsipkan workspace sebelum mendelete data 
+// app.delete('/api/workspace/:id', async (req, res) => {
+//     const { id } = req.params;
+//     const userId = req.user.id;
+//     try {
+//         // Salin workspace ke archive sebelum delete
+//         await client.query(`
+//             INSERT INTO archive (entity_type, entity_id, name, description, create_at, update_at)
+//             SELECT 'workspace', id, name, description, create_at, update_at
+//             FROM workspaces
+//             WHERE id = $1
+//         `, [id]);
+
+//         // Hapus workspace setelah disalin
+//         const result = await client.query("DELETE FROM workspaces WHERE id = $1 RETURNING *", [id]);
+
+//         if (result.rows.length === 0) {
+//             return res.status(404).json({ error: "Workspace not found" });
+//         }
+
+//         res.json({ message: "Workspace archived and deleted successfully" });
+//     } catch (err) {
+//         res.status(500).json({ error: err.message });
+//     }
+// })
+// 5. Soft delete workspace (arsipkan dan tandai sebagai terhapus)
 app.delete('/api/workspace/:id', async (req, res) => {
     const { id } = req.params;
-    const userId = req.user.id;
+
     try {
-        // Salin workspace ke archive sebelum delete
-        await client.query(`
-            INSERT INTO archive (entity_type, entity_id, name, description, create_at, update_at)
-            SELECT 'workspace', id, name, description, create_at, update_at
-            FROM workspaces
-            WHERE id = $1
-        `, [id]);
-
-        // Hapus workspace setelah disalin
-        const result = await client.query("DELETE FROM workspaces WHERE id = $1 RETURNING *", [id]);
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({ error: "Workspace not found" });
+        // Cek dulu apakah workspace ada
+        const check = await client.query("SELECT * FROM workspaces WHERE id = $1", [id]);
+        if (check.rows.length === 0) {
+            return res.status(404).json({ success: false, message: "Workspace not found" });
         }
 
-        res.json({ message: "Workspace archived and deleted successfully" });
+        // Simpan data ke tabel archive (opsional, bisa dihapus kalau gak perlu)
+        await client.query(
+            `
+        INSERT INTO archive (entity_type, entity_id, name, description, create_at, update_at)
+        SELECT 'workspace', id, name, description, create_at, update_at
+        FROM workspaces
+        WHERE id = $1
+      `,
+            [id]
+        );
+
+        // Update workspace agar jadi soft delete
+        const result = await client.query(
+            `
+        UPDATE workspaces
+        SET is_deleted = TRUE, deleted_at = NOW()
+        WHERE id = $1
+        RETURNING *
+      `,
+            [id]
+        );
+
+        res.json({
+            success: true,
+            message: "Workspace soft deleted successfully",
+            data: result.rows[0],
+        });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        console.error("Error soft deleting workspace:", err);
+        res.status(500).json({ success: false, error: err.message });
     }
-})
+});
+
+
+// 6. Restore workspace yang dihapus (soft delete restore)
+app.put('/api/workspace/restore/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const result = await client.query(
+            `
+        UPDATE workspaces
+        SET is_deleted = FALSE, deleted_at = NULL
+        WHERE id = $1
+        RETURNING *
+      `,
+            [id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ success: false, message: "Workspace not found or not deleted" });
+        }
+
+        res.json({
+            success: true,
+            message: "Workspace restored successfully",
+            data: result.rows[0],
+        });
+    } catch (err) {
+        console.error("Error restoring workspace:", err);
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+
 
 //6. archive workspace
 app.post('/api/workspace/archive/:id', async (req, res) => {
