@@ -474,6 +474,19 @@ export const exportAllDataMarketingToSheets = async (marketingDataList) => {
   }
 };
 
+//Update posisi data marketing
+export const updateMarketingPosition = async (marketingId, direction) => {
+  try {
+    const response = await axios.patch(
+      `${API_URL}/data-marketing/${marketingId}/position`,
+      { direction }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("❌ Gagal ubah posisi data marketing:", error);
+    throw error.response?.data || { error: "Gagal ubah posisi data marketing" };
+  }
+};
 
 
 

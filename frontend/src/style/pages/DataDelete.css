@@ -1,0 +1,194 @@
+.rb-container {
+    position: relative;
+    background-color: white;
+    margin-left: 10px;
+    margin-top: 10px;
+    border-radius: 8px;
+    height: 97%;
+}
+
+/* HEADER  */
+.rb-container .rb-header {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background-color: white;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.rb-header .header-title {
+    /* border: 1px solid red; */
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header-title .title-left {
+    gap: 10px;
+    /* border: 1px solid grey; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.header-icon {
+    border: 1px solid white;
+    border-radius: 8px;
+    padding: 8px;
+    color: white;
+    font-size: 12px;
+    background: linear-gradient(90deg, #7246eb, #532189);
+}
+
+.title-left h2 {
+    margin: 0px;
+    font-weight: bold;
+    width: 100%;
+    color: #5320be;
+}
+
+.header-title .title-right {
+    /* border: 1px solid red; */
+}
+
+.title-right .rb-search {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    padding: 0px 5px;
+    cursor: pointer;
+}
+
+.rb-search:hover {
+    border: 1px solid #532189;
+    box-shadow: 0px 4px 8px #6f30dc44;
+}
+
+.rb-search input {
+    /* border: 1px solid blue; */
+    border-radius: 8px;
+    font-size: 12px;
+    color: #5e5e5e;
+    padding: 5px;
+    width: 15vw;
+}
+
+.rb-search input:hover,
+.rb-search input:focus {
+    outline: none;
+}
+
+.rb-header .sub-title {
+    /* border: 1px solid red; */
+    width: 100%;
+    margin-top: 5px;
+}
+
+.sub-title p {
+    margin: 0px;
+    font-size: 12px;
+    color: #333;
+}
+
+/* END HEADER  */
+
+
+/* BODY  */
+.rb-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 7px;
+    margin-top: 10px;
+    padding: 5px;
+    /* border: 1px solid red; */
+    height: 84%;
+    overflow-y: auto;
+}
+
+.rb-section {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 16px;
+    height: 60vh;
+    /* overflow-y: auto; */
+    padding: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+}
+
+.rb-section:hover {
+    border: 1px solid #532189;
+    box-shadow: 0px 4px 8px #6f30dc44;
+}
+
+.rb-section-title {
+    font-weight: 600;
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 1px solid #ddd;
+    /* border: 1px solid red; */
+}
+
+.rb-card-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    height: 51vh;
+    overflow-y: auto;
+    border: 1px solid red;
+}
+
+.rb-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #eee;
+    padding: 0.7rem 1rem;
+    border-radius: 12px;
+    transition: all 0.2s ease-in-out;
+}
+
+.rb-card:hover {
+    background-color: #f8fafc;
+    transform: translateY(-1px);
+}
+
+.rb-card-title {
+    font-weight: 500;
+    font-size: 12px;
+    color: #111;
+}
+
+.rb-card-id {
+    font-size: 0.8rem;
+    color: #777;
+}
+
+.rb-restore-btn {
+    background-color: #22c55e;
+    color: white;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.rb-restore-btn:hover {
+    background-color: #16a34a;
+}

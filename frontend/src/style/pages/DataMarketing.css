@@ -314,11 +314,38 @@
 } */
 
 /* ============== TABEL HEAD STYLE ========== */
+.number-container {
+  cursor: pointer;
+  width: 100%;
+  min-width: 5vw;
+  max-width: 5vw;
+}
+
+.number-container .number-box {
+  /* border: 1px solid red; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.icon-position button {
+  border: 1px solid #fff;
+  cursor: pointer;
+  /* padding: 6px; */
+}
+
+.icon-position button:hover {
+  border: 1px solid #eee;
+  background-color: #5320be;
+  color: #fff;
+}
+
 .input-container {
   cursor: pointer;
   width: 100%;
-  min-width: 25vw;
-  max-width: 25vw;
+  min-width: 30vw;
+  max-width: 30vw;
 }
 
 .input-container:hover {

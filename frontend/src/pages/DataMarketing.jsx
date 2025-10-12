@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
-import { getAllDataMarketing,getAllDataMarketingJoined, deleteDataMarketing, getDataMarketingAccepted, getDataMarketingWithCardId, getDataMarketingWithCardIdNull, getDataMarketingRejected, archiveDataMarketing, getAllMarketingExports, exportDataMarketingToSheets, addExportMarketing } from "../services/ApiServices";
+import { getAllDataMarketing,getAllDataMarketingJoined, deleteDataMarketing, getDataMarketingAccepted, getDataMarketingWithCardId, getDataMarketingWithCardIdNull, getDataMarketingRejected, archiveDataMarketing, getAllMarketingExports, exportDataMarketingToSheets, addExportMarketing, updateMarketingPosition } from "../services/ApiServices";
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import "../style/pages/DataMarketing.css";
 import { HiArrowsUpDown, HiChevronUpDown, HiMiniTableCells, HiOutlineArchiveBox, HiOutlineCircleStack, HiOutlinePencil, HiOutlinePlus, HiOutlineTrash, HiOutlineXCircle } from "react-icons/hi2";
-import { HiOutlineFilter, HiOutlineSearch } from "react-icons/hi";
+import { HiChevronDown, HiChevronUp, HiOutlineFilter, HiOutlineSearch } from "react-icons/hi";
 import BootstrapTooltip from "../components/Tooltip";
 import ViewDataMarketing from "./ViewDataMarketing";
 import EditMarketingForm from "./EditMarketingForm";
@@ -218,6 +218,17 @@ const fetchDataMarketing = async()=>{
     console.error('Error fetching data marekting:', error)
   }
 }
+
+// Fungsi ubah posisi (up/down)
+  const handleMove = async (id, direction) => {
+    try {
+      const res = await updateMarketingPosition(id, direction);
+      console.log(res.message);
+      fetchDataMarketing(); // refresh urutan data setelah update
+    } catch (err) {
+      console.error("Gagal ubah posisi:", err);
+    }
+  };
 
 //archive data
 const handleArchiveDataMarketing =(marketing_id)=>{
@@ -573,8 +584,36 @@ const handleExportToSheets = async (marketingId) => {
 
                   return (
                   <tr key={item.marketing_id}>
-                    <td>{index + 1}</td>
-                    <td className="input-container" onClick={()=> handleShowDetail(item.marketing_id)}>{item.project_number}</td>
+                    <td className="number-container">
+                      {/* {index + 1} */}
+                      <div className="number-box">
+                        {index + 1}
+                        <span className="icon-position">
+                          <BootstrapTooltip title='Move Up' placement='top'>
+                            <button
+                              onClick={() => handleMove(item.marketing_id, "up")}
+                              style={{ padding:'2px', fontSize:'11px'}}
+                            >
+
+                                <HiChevronUp/>
+                            </button>
+                          </BootstrapTooltip>
+                          <BootstrapTooltip title='Move Down' placement='top'>
+                          <button
+                            onClick={() => handleMove(item.marketing_id, "down")}
+                            style={{ padding:'2px', fontSize:'11px'}}
+                          >
+                              <HiChevronDown/>
+                          </button>
+                          </BootstrapTooltip>
+                        </span>
+                      </div>
+                    </td>
+                    <td className="input-container" 
+                      onClick={()=> handleShowDetail(item.marketing_id)}
+                      >
+                      {item.project_number}
+                      </td>
                     <td className="input-container" >
                       {item.input_by_name || "-"}
                       {hasCardId(item) && (
