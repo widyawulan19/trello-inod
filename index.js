@@ -3164,23 +3164,21 @@ app.put('/api/lists/:id', async (req, res) => {
 // })
 app.delete('/api/lists/:id', async (req, res) => {
     const { id } = req.params;
-    const userId = req.user?.id || null; // untuk jaga-jaga kalau user belum login
+    const userId = req.user?.id || null;
 
     try {
-        // Soft delete (update flag is_deleted)
         const result = await client.query(
             `UPDATE lists 
-            SET is_deleted = TRUE, deleted_at = NOW() 
-            WHERE id = $1 AND is_deleted = FALSE 
-            RETURNING *`,
+       SET is_deleted = TRUE, deleted_at = NOW() 
+       WHERE id = $1 
+       RETURNING *`,
             [id]
         );
 
         if (result.rows.length === 0) {
-            return res.status(404).json({ error: 'List not found or already deleted' });
+            return res.status(404).json({ error: 'List not found' });
         }
 
-        // Add log activity
         await logActivity(
             'list',
             id,
@@ -3188,15 +3186,19 @@ app.delete('/api/lists/:id', async (req, res) => {
             userId,
             `List with id '${id}' soft-deleted`,
             'board',
-            result.rows[0].board_id // kalau punya relasi ke board
+            result.rows[0].board_id
         );
 
-        res.json({ message: 'List soft-deleted successfully', data: result.rows[0] });
+        res.json({
+            message: 'List soft-deleted successfully',
+            data: result.rows[0],
+        });
     } catch (error) {
         console.error('Soft delete error:', error.message);
         res.status(500).json({ error: error.message });
     }
 });
+
 
 
 
