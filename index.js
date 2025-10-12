@@ -6012,7 +6012,7 @@ app.put('/api/employees/:id', async (req, res) => {
 })
 
 
-//DATA MARKERING
+//DATA MARKETING
 
 // ✅ Get laporan today berdasarkan create_at (full join)
 app.get('/api/marketing/reports/today', async (req, res) => {
@@ -6523,7 +6523,7 @@ app.delete("/api/marketing/:id", async (req, res) => {
 
     try {
         const result = await client.query(
-            "UPDATE data_marketing SET is_deleted = true WHERE marketing_id = $1 RETURNING *",
+            "UPDATE data_marketing SET is_deleted = true, deleted_at = NOW() WHERE marketing_id = $1 RETURNING *",
             [id]
         );
 
