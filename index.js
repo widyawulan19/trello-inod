@@ -3692,7 +3692,9 @@ app.delete('/api/cards/:cardId', async (req, res) => {
 
         // 1️⃣ Update card jadi 'deleted'
         await client.query(
-            "UPDATE cards SET is_deleted = TRUE WHERE id = $1",
+            `UPDATE cards 
+            SET is_deleted = TRUE, deleted_at = NOW() 
+            WHERE id = $1`,
             [cardId]
         );
 
@@ -6523,7 +6525,9 @@ app.delete("/api/marketing/:id", async (req, res) => {
 
     try {
         const result = await client.query(
-            "UPDATE data_marketing SET is_deleted = true, deleted_at = NOW() WHERE marketing_id = $1 RETURNING *",
+            `UPDATE data_marketing 
+            SET is_deleted = true, deleted_at = NOW() 
+            WHERE marketing_id = $1 RETURNING *`,
             [id]
         );
 
