@@ -13,6 +13,7 @@ import '../style/pages/FormDataMarketing.css';
 import CustomDropdownDesign from '../marketing/CustomDropdownDesign';
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
+import CustomDropdownDesignEdit from '../marketing/CustomDropdownDesignEdit';
 
 const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
     const {showSnackbar} = useSnackbar();
@@ -281,7 +282,8 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
                         {/* Input By */}
                         <div className="box-content">
                             <label>Input By</label>
-                            <CustomDropdownDesign
+                            {/* <CustomDropdownDesign */}
+                            <CustomDropdownDesignEdit
                                 options={dropdownData.users}
                                 value={form.input_by} // harus sama dengan nama column di db
                                 onChange={(val) => setForm({ ...form, input_by: val })}
