@@ -890,3 +890,80 @@ app.patch("/api/marketing-design/:id/position", async (req, res) => {
     res.status(500).json({ error: "Gagal ubah posisi" });
   }
 });
+
+
+
+// 5. Soft delete workspace (arsipkan dan tandai sebagai terhapus)
+app.delete('/api/workspace/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Cek dulu apakah workspace ada
+    const check = await client.query("SELECT * FROM workspaces WHERE id = $1", [id]);
+    if (check.rows.length === 0) {
+      return res.status(404).json({ success: false, message: "Workspace not found" });
+    }
+
+    // Simpan data ke tabel archive (opsional, bisa dihapus kalau gak perlu)
+    await client.query(
+      `
+        INSERT INTO archive (entity_type, entity_id, name, description, create_at, update_at)
+        SELECT 'workspace', id, name, description, create_at, update_at
+        FROM workspaces
+        WHERE id = $1
+      `,
+      [id]
+    );
+
+    // Update workspace agar jadi soft delete
+    const result = await client.query(
+      `
+        UPDATE workspaces
+        SET is_deleted = TRUE, deleted_at = NOW()
+        WHERE id = $1
+        RETURNING *
+      `,
+      [id]
+    );
+
+    res.json({
+      success: true,
+      message: "Workspace soft deleted successfully",
+      data: result.rows[0],
+    });
+  } catch (err) {
+    console.error("Error soft deleting workspace:", err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+
+// 6. Restore workspace yang dihapus (soft delete restore)
+app.put('/api/workspace/restore/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await client.query(
+      `
+        UPDATE workspaces
+        SET is_deleted = FALSE, deleted_at = NULL
+        WHERE id = $1
+        RETURNING *
+      `,
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ success: false, message: "Workspace not found or not deleted" });
+    }
+
+    res.json({
+      success: true,
+      message: "Workspace restored successfully",
+      data: result.rows[0],
+    });
+  } catch (err) {
+    console.error("Error restoring workspace:", err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
