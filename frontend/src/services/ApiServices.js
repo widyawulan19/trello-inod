@@ -199,8 +199,11 @@ export const getCardById = (id) => axios.get(`${API_URL}/cards/${id}`)
 export const getCardByList = (listId) => axios.get(`${API_URL}/cards/list/${listId}`)
 export const createCard = (data) => axios.post(`${API_URL}/cards`, data)
 export const deleteCard = (cardId) => axios.delete(`${API_URL}/cards/${cardId}`)
-export const duplicateCard = (cardId, listId) => axios.post(`${API_URL}/duplicate-card-to-list/${cardId}/${listId}`)
+// export const duplicateCard = (cardId, listId) => axios.post(`${API_URL}/duplicate-card-to-list/${cardId}/${listId}`)
 // export const moveCardToList = (cardId, listId) => axios.put(`${API_URL}/move-card-to-list/${cardId}/${listId}`)
+export const duplicateCard = (cardId, listId, position) =>
+  axios.post(`${API_URL}/duplicate-card-to-list/${cardId}/${listId}`, { position });
+
 export const archiveCard = (cardId) => axios.put(`${API_URL}/archive-card/${cardId}`, cardId);
 
 // 🔹 Move card ke list atau board lain + ubah posisi
