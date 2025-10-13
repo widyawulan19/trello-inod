@@ -41,7 +41,7 @@ export const searchCards = (keyword, workspaceId) => axios.get(`${API_URL}/searc
 //SEARCH CARD BY WORKSPACE USER
 // export const searchCardsByUser = (keyword, userId) => axios.get(`${API_URL}/search/global`, { params: { keyword, userId } });
 export const searchCardsByUser = (keyword, userId) => {
-  return axios.get('/api/search/global', {
+  return axios.get(`${API_URL}/search/global`, {
     params: { keyword, userId }
   });
 };

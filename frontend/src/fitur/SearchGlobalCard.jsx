@@ -22,14 +22,26 @@ const SearchGlobalCard = ({ userId }) => {
     return () => clearTimeout(delayDebounce);
   }, [keyword, userId]);
 
+  // const handleSearch = async () => {
+  //   try {
+  //     const response = await searchCardsByUser(keyword, userId);
+  //     console.log('Search results:', response.data); // debug
+  //     setResults(response.data);
+  //   } catch (error) {
+  //     console.error('Search failed:', error);
+  //   }
+  // };
   const handleSearch = async () => {
-    try {
-      const response = await searchCardsByUser(keyword, userId);
-      setResults(response.data);
-    } catch (error) {
-      console.error('Search failed:', error);
-    }
-  };
+  try {
+    const response = await searchCardsByUser(keyword, userId);
+    console.log('Search keyword:', keyword);
+    console.log('User ID:', userId);
+    console.log('API response:', response);
+    setResults(response.data);
+  } catch (error) {
+    console.error('Search failed:', error);
+  }
+};
 
   const extractMatchingSnippet = (description, keyword, contextLength = 30) => {
     if (!description || !keyword) return '';
@@ -78,37 +90,47 @@ const SearchGlobalCard = ({ userId }) => {
 
           {results.length > 0 && (
             <ul className="search-result-list">
-              {results.map((card) => (
-                <li
-                  key={card.card_id}
-                  className={`p-3 mb-2 border rounded cursor-pointer search-result-item hover:bg-gray-100 ${
-                    card.status === 'Archive' ? 'archive-card' : ''
-                  }`}
-                  onClick={() => {
-                    navigate(
-                      `/layout/workspaces/${card.workspace_id}/board/${card.board_id}/lists/${card.list_id}/cards/${card.card_id}`
-                    );
-                    setKeyword('');
-                  }}
-                >
-                  <div className="card-title">
-                    <strong>{card.title}</strong>
-                    {card.status === 'Archive' && (
-                      <span className="archive-badge">Archive</span>
-                    )}
-                  </div>
-                  <p
-                    className="p-desc"
-                    dangerouslySetInnerHTML={{
-                      __html: extractMatchingSnippet(card.description, keyword),
+              {results.map((card) => {
+                const isArchive = card.status === 'Archive';
+                return (
+                  <li
+                    key={card.card_id}
+                    className={`p-3 mb-2 border rounded cursor-pointer search-result-item hover:bg-gray-100 ${
+                      isArchive ? 'archive-card' : ''
+                    }`}
+                    onClick={() => {
+                      if (isArchive) {
+                        navigate(`/archive/cards/${card.card_id}`);
+                      } else if (card.workspace_id) {
+                        navigate(
+                          `/layout/workspaces/${card.workspace_id}/board/${card.board_id}/lists/${card.list_id}/cards/${card.card_id}`
+                        );
+                      }
+                      setKeyword('');
                     }}
-                  ></p>
+                  >
+                    <div className="card-title">
+                      <strong>{card.title}</strong>
+                      {isArchive && <span className="archive-badge">Archive</span>}
+                    </div>
+                    <p
+                      className="p-desc"
+                      dangerouslySetInnerHTML={{
+                        __html: extractMatchingSnippet(card.description, keyword),
+                      }}
+                    ></p>
 
-                  <p className="p-contex">
-                    Workspace: <strong>{card.workspace_name}</strong> | Board: <strong>{card.board_name}</strong> | List: <strong>{card.list_name}</strong>
-                  </p>
-                </li>
-              ))}
+                    <p className="p-contex">
+                      Workspace:{' '}
+                      <strong>{card.workspace_name || <span className="na-text">N/A</span>}</strong> | 
+                      Board:{' '}
+                      <strong>{card.board_name || <span className="na-text">N/A</span>}</strong> | 
+                      List:{' '}
+                      <strong>{card.list_name || <span className="na-text">N/A</span>}</strong>
+                    </p>
+                  </li>
+                );
+              })}
             </ul>
           )}
         </div>

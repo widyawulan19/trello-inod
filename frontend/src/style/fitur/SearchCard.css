@@ -227,6 +227,26 @@ mark {
     overflow-y: auto;
 }
 
+
+.archive-card {
+  background-color: #fff0f0; /* soft red background untuk archive */
+}
+
+.archive-badge {
+  background-color: #ff4d4f;
+  color: white;
+  font-size: 10px;
+  padding: 2px 6px;
+  margin-left: 8px;
+  border-radius: 4px;
+}
+
+.na-text {
+  color: #888888;
+  font-style: italic;
+}
+
+
 /* BREAKPOIN  */
 
 /* Extra large devices (large desktops, ≥1200px) */
