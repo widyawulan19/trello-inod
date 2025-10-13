@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { searchCardsByUser } from '../services/ApiServices'; // ⬅️ pakai service baru
+import { searchCardsByUser } from '../services/ApiServices';
 import '../style/fitur/SearchCard.css';
 import { IoSearchOutline } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
-import { HiXMark } from 'react-icons/hi2';
 import { FaCreditCard } from 'react-icons/fa6';
 
 const SearchGlobalCard = ({ userId }) => {
@@ -25,7 +24,7 @@ const SearchGlobalCard = ({ userId }) => {
 
   const handleSearch = async () => {
     try {
-      const response = await searchCardsByUser(keyword, userId); // ⬅️ ganti call servicenya
+      const response = await searchCardsByUser(keyword, userId);
       setResults(response.data);
     } catch (error) {
       console.error('Search failed:', error);
@@ -69,49 +68,51 @@ const SearchGlobalCard = ({ userId }) => {
           <div className="search-header">
             <h2>
               <div className="sgh-icon">
-                <FaCreditCard/>
+                <FaCreditCard />
               </div>
               Search results
             </h2>
-            {/* <HiXMark className='close-search'/> */}
           </div>
-            {results.length === 0 && (
-            <p className="no-res">No results found.</p>
-            )}
 
-            {results.length > 0 && (
+          {results.length === 0 && <p className="no-res">No results found.</p>}
+
+          {results.length > 0 && (
             <ul className="search-result-list">
-                {results.map((card) => (
+              {results.map((card) => (
                 <li
-                    key={card.card_id}
-                    className="p-3 mb-2 border rounded cursor-pointer search-result-item hover:bg-gray-100"
-                    onClick={() => {
-                      navigate(
-                        `/layout/workspaces/${card.workspace_id}/board/${card.board_id}/lists/${card.list_id}/cards/${card.card_id}`
-                      );
-                      setKeyword(''); // ⬅️ Reset keyword biar result hilang
-                    }}
+                  key={card.card_id}
+                  className={`p-3 mb-2 border rounded cursor-pointer search-result-item hover:bg-gray-100 ${
+                    card.status === 'Archive' ? 'archive-card' : ''
+                  }`}
+                  onClick={() => {
+                    navigate(
+                      `/layout/workspaces/${card.workspace_id}/board/${card.board_id}/lists/${card.list_id}/cards/${card.card_id}`
+                    );
+                    setKeyword('');
+                  }}
                 >
-                    <div className="card-title">
+                  <div className="card-title">
                     <strong>{card.title}</strong>
-                    </div>
-                    <p
+                    {card.status === 'Archive' && (
+                      <span className="archive-badge">Archive</span>
+                    )}
+                  </div>
+                  <p
                     className="p-desc"
                     dangerouslySetInnerHTML={{
-                        __html: extractMatchingSnippet(card.description, keyword),
+                      __html: extractMatchingSnippet(card.description, keyword),
                     }}
-                    ></p>
+                  ></p>
 
-                    <p className="p-contex">
+                  <p className="p-contex">
                     Workspace: <strong>{card.workspace_name}</strong> | Board: <strong>{card.board_name}</strong> | List: <strong>{card.list_name}</strong>
-                    </p>
+                  </p>
                 </li>
-                ))}
+              ))}
             </ul>
-            )}
+          )}
         </div>
-        )}
-
+      )}
     </div>
   );
 };

@@ -39,7 +39,12 @@ export const getTotalFile = (cardId) => axios.get(`${API_URL}/uploaded-files/${c
 export const searchCards = (keyword, workspaceId) => axios.get(`${API_URL}/search`, { params: { keyword, workspaceId } });
 
 //SEARCH CARD BY WORKSPACE USER
-export const searchCardsByUser = (keyword, userId) => axios.get(`${API_URL}/search/global`, { params: { keyword, userId } });
+// export const searchCardsByUser = (keyword, userId) => axios.get(`${API_URL}/search/global`, { params: { keyword, userId } });
+export const searchCardsByUser = (keyword, userId) => {
+  return axios.get('/api/search/global', {
+    params: { keyword, userId }
+  });
+};
 
 // PERSONAL NOTES 
 export const getAllPersonalNotes = () => axios.get(`${API_URL}/all-note`);
