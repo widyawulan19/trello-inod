@@ -4,7 +4,7 @@ import {
   getBoards,
   moveCardToList,
   getListByBoard,
-  getCardsByList, // pastikan ada endpoint ini di ApiServices
+  getCardsByList,
 } from '../services/ApiServices';
 import {
   HiMiniArrowLeftStartOnRectangle,
@@ -19,11 +19,10 @@ const MoveCard = ({
   cardId,
   workspaceId,
   onClose,
-  userId,
   boardId,
+  listId,
   onCardMoved,
   fetchCardList,
-  listId,
 }) => {
   const [boards, setBoards] = useState([]);
   const [lists, setLists] = useState([]);
@@ -40,14 +39,14 @@ const MoveCard = ({
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
 
-  // 1️⃣ Load semua board
+  // 🔹 Load semua board
   useEffect(() => {
     getBoards()
       .then((res) => setBoards(res.data))
       .catch((err) => console.error('❌ Error fetching boards:', err));
   }, []);
 
-  // 2️⃣ Load list berdasarkan board
+  // 🔹 Load lists berdasarkan board
   useEffect(() => {
     if (selectedBoardId) {
       getListByBoard(selectedBoardId)
@@ -56,7 +55,7 @@ const MoveCard = ({
     }
   }, [selectedBoardId]);
 
-  // 3️⃣ Load cards di list terpilih (buat tahu jumlah posisi yg tersedia)
+  // 🔹 Load cards berdasarkan list
   useEffect(() => {
     if (selectedList?.id) {
       getCardsByList(selectedList.id)
@@ -65,7 +64,7 @@ const MoveCard = ({
     }
   }, [selectedList]);
 
-  // 4️⃣ Fungsi pindahkan card
+  // 🔹 Fungsi pindahkan card
   const handleMoveCard = async () => {
     if (!cardId || !selectedList?.id) {
       alert('Please select both board and list!');
@@ -81,15 +80,19 @@ const MoveCard = ({
 
     try {
       const result = await moveCardToList(cardId, selectedList.id, targetPosition);
-      console.log('✅ Card moved to target list:', result.data);
+      console.log('✅ Card moved successfully:', result.data);
       showSnackbar('Card moved successfully!', 'success');
 
-      // Arahkan ke board tujuan
+      // Refresh data parent
+      if (onCardMoved) onCardMoved();
+      if (fetchCardList) {
+        fetchCardList(listId); // list asal
+        fetchCardList(selectedList.id); // list tujuan
+      }
+
+      // Navigasi ke board tujuan
       navigate(`/layout/workspaces/${workspaceId}/board/${selectedBoardId}`);
 
-      if (onCardMoved) onCardMoved();
-      fetchCardList(listId);
-      fetchCardList(selectedList.id);
       onClose();
     } catch (error) {
       console.error('❌ Error moving card:', error);
@@ -233,7 +236,7 @@ const MoveCard = ({
               max={cards.length + 1}
               value={targetPosition}
               onChange={(e) => setTargetPosition(e.target.value)}
-              placeholder="Enter position number"
+              placeholder="Position number"
               className="mc-position-input"
             />
           </div>
@@ -255,6 +258,7 @@ const MoveCard = ({
 };
 
 export default MoveCard;
+
 
 
 // import React, { useState, useEffect, useRef } from 'react';
