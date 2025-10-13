@@ -1539,29 +1539,29 @@ app.get('/api/search/global', async (req, res) => {
     try {
         const query = `
       -- SEARCH CARD AKTIF
-      SELECT 
+        SELECT 
         c.id AS card_id,
         c.title,
         c.description,
-        c.list_id,
+        l.id AS list_id,
         l.name AS list_name,
         b.id AS board_id,
         b.name AS board_name,
         w.id AS workspace_id,
         w.name AS workspace_name,
-        'Active' AS status
-      FROM cards c
-      JOIN lists l ON c.list_id = l.id
-      JOIN boards b ON l.board_id = b.id
-      JOIN workspaces w ON b.workspace_id = w.id
-      JOIN workspaces_users wu ON wu.workspace_id = w.id
-      WHERE wu.user_id = $2
+        'Active' AS status       -- field tambahan hanya untuk response
+        FROM cards c
+        JOIN lists l ON c.list_id = l.id
+        JOIN boards b ON l.board_id = b.id
+        JOIN workspaces w ON b.workspace_id = w.id
+        JOIN workspaces_users wu ON wu.workspace_id = w.id
+        WHERE wu.user_id = $2
         AND (LOWER(c.title) ILIKE LOWER($1) OR LOWER(c.description) ILIKE LOWER($1))
 
-      UNION ALL
+        UNION ALL
 
-      -- SEARCH CARD YANG DI ARCHIVE
-      SELECT
+        -- SEARCH CARD DI ARCHIVE
+        SELECT
         a.entity_id AS card_id,
         a.name AS title,
         a.description,
@@ -1571,11 +1571,11 @@ app.get('/api/search/global', async (req, res) => {
         NULL AS board_name,
         NULL AS workspace_id,
         NULL AS workspace_name,
-        'Archive' AS status
-      FROM archive a
-      JOIN workspaces_users wu ON wu.user_id = $2 -- optional, filter sesuai user
-      WHERE a.entity_type = 'card'
+        'Archive' AS status       -- 🔥 hanya untuk frontend, sebagai pembeda
+        FROM archive a
+        WHERE a.entity_type = 'card'
         AND (LOWER(a.name) ILIKE LOWER($1) OR LOWER(a.description) ILIKE LOWER($1))
+
     `;
 
         const result = await client.query(query, [searchKeyword, numericUserId]);
