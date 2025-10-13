@@ -2389,18 +2389,45 @@ app.get('/api/boards', async (req, res) => {
 });
 
 //1. get all board by workspace id
+// app.get('/api/workspaces/:workspaceId/boards', async (req, res) => {
+//     const { workspaceId } = req.params;
+//     try {
+//         const result = await client.query(
+//             'SELECT * FROM boards WHERE workspace_id = $1 AND is_deleted = FALSE ORDER BY position ASC',
+//             [workspaceId]
+//         );
+//         res.json(result.rows);
+//     } catch (error) {
+//         res.status(500).json({ error: error.message });
+//     }
+// });
+// ✅ Get boards by workspace ID (hanya untuk user yang punya akses)
 app.get('/api/workspaces/:workspaceId/boards', async (req, res) => {
     const { workspaceId } = req.params;
+    const { userId } = req.query; // ← userId dikirim lewat query param
+
     try {
         const result = await client.query(
-            'SELECT * FROM boards WHERE workspace_id = $1 AND is_deleted = FALSE ORDER BY position ASC',
-            [workspaceId]
+            `
+      SELECT b.*
+      FROM boards b
+      JOIN workspaces w ON w.id = b.workspace_id
+      JOIN workspaces_users wu ON wu.workspace_id = w.id
+      WHERE b.workspace_id = $1
+        AND wu.user_id = $2
+        AND b.is_deleted = FALSE
+      ORDER BY b.position ASC
+      `,
+            [workspaceId, userId]
         );
+
         res.json(result.rows);
     } catch (error) {
+        console.error("Error fetching boards:", error);
         res.status(500).json({ error: error.message });
     }
 });
+
 
 //2. get board by id
 app.get('/api/boards/:id', async (req, res) => {
