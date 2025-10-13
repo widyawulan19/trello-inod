@@ -1458,6 +1458,69 @@ app.get('/api/search', async (req, res) => {
 });
 
 //GLOBAL SEARCH CARD (berdasarkan user)
+// app.get('/api/search/global', async (req, res) => {
+//     const { keyword, userId } = req.query;
+
+//     // Validasi input
+//     if (!keyword || !userId) {
+//         return res.status(400).json({ error: 'Keyword and userId are required' });
+//     }
+
+//     const searchKeyword = `%${keyword}%`;
+//     const numericUserId = parseInt(userId);
+
+//     if (isNaN(numericUserId)) {
+//         return res.status(400).json({ error: 'Invalid userId' });
+//     }
+
+//     // Logging input
+//     console.log('🔍 keyword:', keyword);
+//     console.log('🔍 userId:', numericUserId);
+//     console.log('🔍 searchKeyword:', searchKeyword);
+
+//     try {
+//         const query = `
+//       SELECT 
+//         cards.id AS card_id,
+//         cards.title,
+//         cards.description,
+//         cards.list_id,
+//         lists.name AS list_name,
+//         lists.board_id,
+//         boards.name AS board_name,
+//         boards.workspace_id,
+//         workspaces.name AS workspace_name,
+//         workspaces.id AS workspace_id
+//       FROM 
+//         cards
+//       JOIN lists ON cards.list_id = lists.id
+//       JOIN boards ON lists.board_id = boards.id
+//       JOIN workspaces ON boards.workspace_id = workspaces.id
+//       JOIN workspaces_users ON workspaces_users.workspace_id = workspaces.id
+//       WHERE 
+//         workspaces_users.user_id = $2
+//         AND (
+//           LOWER(cards.title) ILIKE LOWER($1)
+//           OR LOWER(cards.description) ILIKE LOWER($1)
+//         )
+//     `;
+
+//         const result = await client.query(query, [searchKeyword, numericUserId]);
+//         res.json(result.rows);
+//     } catch (err) {
+//         console.error('❌ Search error message:', err.message);
+//         console.error('🧨 Full error:', err);
+//         res.status(500).json({
+//             error: 'Internal server error',
+//             detail: err.message
+//         });
+//     }
+// });
+
+
+//WORKSPACE
+//1.Get all workspace
+// GLOBAL SEARCH CARD (termasuk archived)
 app.get('/api/search/global', async (req, res) => {
     const { keyword, userId } = req.query;
 
@@ -1473,37 +1536,41 @@ app.get('/api/search/global', async (req, res) => {
         return res.status(400).json({ error: 'Invalid userId' });
     }
 
-    // Logging input
     console.log('🔍 keyword:', keyword);
     console.log('🔍 userId:', numericUserId);
     console.log('🔍 searchKeyword:', searchKeyword);
 
     try {
         const query = `
-      SELECT 
-        cards.id AS card_id,
-        cards.title,
-        cards.description,
-        cards.list_id,
-        lists.name AS list_name,
-        lists.board_id,
-        boards.name AS board_name,
-        boards.workspace_id,
-        workspaces.name AS workspace_name,
-        workspaces.id AS workspace_id
-      FROM 
-        cards
-      JOIN lists ON cards.list_id = lists.id
-      JOIN boards ON lists.board_id = boards.id
-      JOIN workspaces ON boards.workspace_id = workspaces.id
-      JOIN workspaces_users ON workspaces_users.workspace_id = workspaces.id
-      WHERE 
-        workspaces_users.user_id = $2
-        AND (
-          LOWER(cards.title) ILIKE LOWER($1)
-          OR LOWER(cards.description) ILIKE LOWER($1)
-        )
-    `;
+        SELECT 
+            cards.id AS card_id,
+            cards.title,
+            cards.description,
+            cards.list_id,
+            lists.name AS list_name,
+            lists.board_id,
+            boards.name AS board_name,
+            boards.workspace_id,
+            workspaces.name AS workspace_name,
+            workspaces.id AS workspace_id,
+            CASE 
+                WHEN cards.is_archived THEN 'Archive' 
+                ELSE 'Active' 
+            END AS status
+        FROM 
+            cards
+        JOIN lists ON cards.list_id = lists.id
+        JOIN boards ON lists.board_id = boards.id
+        JOIN workspaces ON boards.workspace_id = workspaces.id
+        JOIN workspaces_users ON workspaces_users.workspace_id = workspaces.id
+        WHERE 
+            workspaces_users.user_id = $2
+            AND (
+                LOWER(cards.title) ILIKE LOWER($1)
+                OR LOWER(cards.description) ILIKE LOWER($1)
+            )
+        ORDER BY cards.is_archived ASC, cards.title ASC
+        `;
 
         const result = await client.query(query, [searchKeyword, numericUserId]);
         res.json(result.rows);
@@ -1518,8 +1585,6 @@ app.get('/api/search/global', async (req, res) => {
 });
 
 
-//WORKSPACE
-//1.Get all workspace
 app.get('/api/workspace', async (req, res) => {
     try {
         const result = await client.query('SELECT * FROM workspaces ORDER BY id ASC');
@@ -4000,13 +4065,13 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
 
         // Ambil semua card di list tujuan untuk generate pilihan posisi
         const cardsInTargetList = await client.query(
-        `SELECT id, title, position FROM public.cards WHERE list_id = $1 ORDER BY position ASC`,
-        [listId]
+            `SELECT id, title, position FROM public.cards WHERE list_id = $1 ORDER BY position ASC`,
+            [listId]
         );
 
         const positions = cardsInTargetList.rows.map((c, index) => ({
-        value: index + 1,
-        label: `${index + 1}. ${c.title}`
+            value: index + 1,
+            label: `${index + 1}. ${c.title}`
         }));
 
 
@@ -4062,7 +4127,7 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
                     username: userName
                 }
             },
-            positions 
+            positions
         });
 
     } catch (err) {
