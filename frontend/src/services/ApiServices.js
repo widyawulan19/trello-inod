@@ -124,7 +124,20 @@ export const updateUserSettingData = (userId, data) => axios.put(`${API_URL}/use
 
 //BOARDS
 export const getBoards = () => axios.get(`${API_URL}/boards`);
-export const getBoardsWorkspace = (workspaceId) => axios.get(`${API_URL}/workspaces/${workspaceId}/boards`);
+// export const getBoardsWorkspace = (workspaceId) => axios.get(`${API_URL}/workspaces/${workspaceId}/boards`);
+export const getBoardsWorkspace = async (workspaceId, userId) => {
+  try {
+    const response = await axios.get(`${API_URL}/workspaces/${workspaceId}/boards`, {
+      params: { userId },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching boards:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+
 export const getBoardById = (id) => axios.get(`${API_URL}/boards/${id}`)
 export const createBoard = (data) => axios.post(`${API_URL}/boards`, data)
 export const updateBoard = (id, data) => axios.put(`${API_URL}/boards/${id}`, data)

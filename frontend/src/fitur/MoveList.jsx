@@ -44,10 +44,12 @@ const MoveList = ({ boardId, userId, onClose, listId ,fetchLists,fetchCardList})
         setSelectedBoardId(null);
 
         try {
-            const response = await getBoardsWorkspace(workspaceId);
-            setFilterBoards(response.data);
+            // ✅ Sesuaikan: panggil getBoardsWorkspace dengan workspaceId dan userId
+            const data = await getBoardsWorkspace(workspaceId, userId);
+            console.log("Boards yang ditemukan:", data);
+            setFilterBoards(data);
         } catch (error) {
-            console.error('Error fetching board by workspace:', error);
+          console.error('Error fetching board by workspace:', error);
         }
     };
 
@@ -59,15 +61,20 @@ const MoveList = ({ boardId, userId, onClose, listId ,fetchLists,fetchCardList})
         }
         setIsMoving(true);
         try {
-            await moveListToBoard(listId, { newBoardId: selectedBoardId });
-            // alert('List moved successfully!');
-            showSnackbar('List moved successfully!', 'success')
-            onClose();
-            navigate(`/layout/workspaces/${selectedWorkspaceId}/board/${selectedBoardId}`);
-            fetchCardList()
+            const res = await moveListToBoard(listId, { newBoardId: selectedBoardId });
+            console.log("✅ Response dari moveListToBoard:", res);
+
+            if (res?.status >= 200 && res?.status < 300) {
+                showSnackbar('List moved successfully!', 'success')
+                onClose();
+                navigate(`/layout/workspaces/${selectedWorkspaceId}/board/${selectedBoardId}`);
+                fetchCardList()
+            } else {
+              throw new Error('Unexpected response from server');
+            }
         } catch (error) {
             console.error('Error moving list:', error);
-            showSnackbar('Failed to move the list. Please try again', 'error')
+            // showSnackbar('Failed to move the list. Please try again', 'error')
             // alert('Failed to move the list. Please try again.');
         } finally {
             setIsMoving(false);
