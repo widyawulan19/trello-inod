@@ -4,7 +4,7 @@ import '../style/pages/WorkspacePage.css';
 import {HiOutlineSquaresPlus,HiMiniSlash, HiOutlineEllipsisHorizontal,HiOutlineClock,HiMiniLightBulb,HiChevronRight, HiOutlinePlus, HiMiniXMark, HiOutlineSquare2Stack,HiMiniArrowLeftStartOnRectangle, HiOutlineArchiveBox, HiOutlineTrash, HiOutlineChevronRight, HiOutlineXMark, HiMiniCalendar, HiPlus,  } from 'react-icons/hi2';
 import { FaPlus } from "react-icons/fa";
 import { CiAlignTop } from "react-icons/ci";
-import { addPriorityToBoard, createBoard, deletePropertyFromBoard, duplicateBoards, getALlPriorities, getBoardById, getBoardPriorities, getBoardsWorkspace, getWorkspaceById, updateBoardDescription, updateBoardName, archiveBoard, deleteBoard, reorderBoardPosition } from '../services/ApiServices';
+import { addPriorityToBoard, createBoard, deletePropertyFromBoard, duplicateBoards, getALlPriorities, getBoardById, getBoardPriorities, getBoardsWorkspace,getBoardsByWorkspace, getWorkspaceById, updateBoardDescription, updateBoardName, archiveBoard, deleteBoard, reorderBoardPosition } from '../services/ApiServices';
 import OutsideClick from '../hook/OutsideClick';
 import BootstrapTooltip from '../components/Tooltip';
 import MoveBoard from '../fitur/MoveBoard';
@@ -43,6 +43,7 @@ const WorkspacePage=()=> {
   const [priorities, setPriorities] = useState([]);
   const [allPriorities, setAllPriorities] = useState([]);
   const [boardPriorities, setBoardPriorities] = useState({});
+  const [loading, setLoading] = useState(true);
   //edit board
   const [editingName, setEditingName] = useState(null);
   const [newName, setNewName] = useState('');
@@ -171,23 +172,43 @@ const WorkspacePage=()=> {
     setShowPropertiForm(false)
   }
   //3. featch boards
-  const fetchBoards = useCallback(async () => {
-    try {
-      const response = await getBoardsWorkspace(workspaceId);
-      setBoards(response.data);
-      if(response.data.length > 0){
-        setBoardId(response.data[0].id)
-      }
-    } catch (error) {
-      console.error('Failed to fetch boards:', error);
-    }
-  }, [workspaceId]);
+  // const fetchBoards = useCallback(async () => {
+  //   try {
+  //     const response = await getBoardsByWorkspace(workspaceId, userId);
+  //     setBoards(response.data);
+  //     if(response.data.length > 0){
+  //       setBoardId(response.data[0].id)
+  //     }
+  //   } catch (error) {
+  //     console.error('Failed to fetch boards:', error);
+  //   }
+  // }, [workspaceId]);
 
-  useEffect(()=>{
-    if(workspaceId){
-      fetchBoards();
-    }
-  },[workspaceId]);
+  // useEffect(()=>{
+  //   if(workspaceId){
+  //     fetchBoards();
+  //   }
+  // },[workspaceId]);
+  //3. fetch boards
+  const fetchBoards = useCallback(async () => {
+      try {
+        setLoading(true);
+        const data = await getBoardsWorkspace(workspaceId, userId);
+        setBoards(data);
+      } catch (error) {
+        console.error('Failed to fetch boards:', error);
+      } finally {
+        setLoading(false);
+      }
+    }, [workspaceId, userId]); // tergantung workspace & userId
+
+    // 🔹 useEffect hanya memanggil fungsi
+    useEffect(() => {
+      if (workspaceId && userId) {
+        fetchBoards();
+      }
+    }, [workspaceId, userId, fetchBoards]);
+
 
   //4. fungsi format date
   const formatDate = (dateString) => {
@@ -461,7 +482,8 @@ const handleNavigateToWorkspace = () =>{
 
       <div className="wp-body-container" >
         <div className="wp-content">
-        {boards.map((board) => (
+          {boards.length > 0 ? (
+        boards.map((board) => (
           <div key={board.id} className='wp-card'>
             <div className="wp-name">
               <div className="wp-name-text">
@@ -608,7 +630,10 @@ const handleNavigateToWorkspace = () =>{
                 </div>
               </div>
             </div>
-          ))}
+          ))
+        ):(
+          <></>
+        )}
 
           <div className="wpf-create">
             <div className="wpf-content" onClick={handleShowForm}>

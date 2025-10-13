@@ -4,9 +4,12 @@ import { LiaNetworkWiredSolid } from "react-icons/lia";
 import { HiArrowRight } from 'react-icons/hi2';
 import { useNavigate } from 'react-router-dom';
 import { getBoardsWorkspace } from '../services/ApiServices';
+import { useUser } from '../context/UserContext';
 
 const WorkspaceSummary = ({ summaries, loading }) => {
   const navigate = useNavigate();
+  const {user} = useUser();
+  const userId = user?.id;
 
   const navigateToWorkspacePage = () => {
     navigate('workspaces');
@@ -14,17 +17,18 @@ const WorkspaceSummary = ({ summaries, loading }) => {
 
   const navigateToFirstBoard = async (workspaceId) => {
     try {
-      const response = await getBoardsWorkspace(workspaceId);
-      const boards = response.data;
+      const data = await getBoardsWorkspace(workspaceId, userId); // ✅ panggil API dengan userId
+      console.log("Boards dari workspace:", data);
 
-      if (boards.length > 0) {
+      if (data.length > 0) {
+        // ✅ Navigasi ke halaman boards milik workspace ini
         navigate(`workspaces/${workspaceId}`);
       } else {
-        alert('No boards found in this workspace.');
+        alert('Workspace ini belum memiliki board.');
       }
     } catch (error) {
-      console.error('Error fetching boards:', error);
-      alert('Failed to fetch boards for navigation.');
+      console.error('Gagal mengambil data boards:', error);
+      alert('Gagal mengambil boards untuk workspace ini.');
     }
   };
 

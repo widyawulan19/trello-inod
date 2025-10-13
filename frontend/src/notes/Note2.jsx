@@ -138,6 +138,59 @@
 //       )}
 //     </div>
 //   );
+<<<<<<< HEAD
 // };
 
 // export default CardActivity;
+=======
+// }
+
+
+import React, { useEffect, useState } from 'react';
+import { getBoardsByWorkspace } from '../services/ApiServices';
+import { useUser } from '../context/UserContext';
+import { useParams } from 'react-router-dom';
+
+const BoardList = () => {
+  const { workspaceId } = useParams();
+  const { user } = useUser(); // pastikan user.id ada
+  const [boards, setBoards] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchBoards = async () => {
+      try {
+        const data = await getBoardsByWorkspace(workspaceId, user.id);
+        setBoards(data);
+      } catch (error) {
+        console.error('Failed to load boards:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (workspaceId && user?.id) {
+      fetchBoards();
+    }
+  }, [workspaceId, user]);
+
+  if (loading) return <p>Loading boards...</p>;
+
+  return (
+    <div>
+      <h2>Boards in Workspace {workspaceId}</h2>
+      {boards.length > 0 ? (
+        <ul>
+          {boards.map((b) => (
+            <li key={b.id}>{b.name}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>No boards found.</p>
+      )}
+    </div>
+  );
+};
+
+export default BoardList;
+>>>>>>> feature
