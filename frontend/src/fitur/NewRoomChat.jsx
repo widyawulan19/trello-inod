@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createMessage, deleteMessage, getAllCardChat, uploadChatMedia } from '../services/ApiServices';
 import '../style/fitur/NewRoomChat.css';
-import { FaXmark } from 'react-icons/fa6';
+import { FaLink, FaXmark } from 'react-icons/fa6';
 import { IoArrowUpOutline, IoReturnDownBackSharp, IoTrash } from "react-icons/io5";
+import { ImAttachment } from "react-icons/im";
 import { useSnackbar } from '../context/Snackbar';
 import bg from '../assets/tele-wallps.png';
+import DOMPurify from "dompurify";
 
 const NewRoomChat = ({ cardId, userId, onClose }) => {
   const [chats, setChats] = useState([]);
@@ -19,6 +21,13 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
   const [pendingFiles, setPendingFiles] = useState([]);
   const [replyPendingFiles, setReplyPendingFiles] = useState({});
 
+  // Insert Link modal state
+  const [linkModalOpen, setLinkModalOpen] = useState(false);
+  const [linkModalTarget, setLinkModalTarget] = useState('main'); // 'main' or replyId
+  const [linkLabel, setLinkLabel] = useState('');
+  const [linkUrl, setLinkUrl] = useState('');
+  const savedRangeRef = useRef(null);
+
   useEffect(() => {
     fetchChats();
   }, [cardId]);
@@ -31,6 +40,17 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
       });
     }
   }, [chats]);
+
+  // fungsi bersihin HTML
+  const cleanHTML = (dirty) => {
+    return DOMPurify.sanitize(dirty, {
+      FORBID_ATTR: ['style', 'class'],
+      ALLOWED_TAGS: [
+        'b', 'strong', 'i', 'em', 'u', 'br', 'p', 'a', 'ul', 'ol', 'li',
+      ],
+      ALLOWED_ATTR: ['href', 'target', 'rel'],
+    });
+  };
 
   const fetchChats = async () => {
     setLoading(true);
@@ -56,10 +76,7 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
       });
 
       const chatId = res.data.id;
-
-      for (let file of pendingFiles) {
-        await uploadChatMedia(chatId, file);
-      }
+      for (let file of pendingFiles) await uploadChatMedia(chatId, file);
 
       editorRef.current.innerHTML = "";
       setPendingFiles([]);
@@ -177,25 +194,106 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
     );
   };
 
-  // function autoLinkHTML(html) {
-  //   if (!html) return "";
-  //   return html.replace(/(^|[^">])(https?:\/\/[^\s<]+)/g,
-  //     (match, prefix, url) => `${prefix}<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`
-  //   );
-  // }
   function autoLinkHTML(html) {
-  if (!html) return "";
+    if (!html) return "";
+    const urlRegex = /(^|[^">])(https?:\/\/[^\s<]+|mailto:[^\s<]+)/g;
+    return html.replace(urlRegex, (match, prefix, url) => {
+      if (/<a\s/i.test(url)) return match;
+      return `${prefix}<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+    });
+  }
 
-  // Regex: http, https, mailto
-  const urlRegex = /(^|[^">])(https?:\/\/[^\s<]+|mailto:[^\s<]+)/g;
+  // ---------------- Insert Link helpers ----------------
+  const openLinkModal = (target = 'main') => {
+    // save selection range
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0) {
+      savedRangeRef.current = sel.getRangeAt(0).cloneRange();
+    } else {
+      savedRangeRef.current = null;
+    }
+    setLinkModalTarget(target);
+    setLinkLabel('');
+    setLinkUrl('');
+    setLinkModalOpen(true);
+  };
 
-  return html.replace(urlRegex, (match, prefix, url) => {
-    // Jangan buat <a> jika sudah ada tag <a>
-    if (/<a\s/i.test(url)) return match;
-    return `${prefix}<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
-  });
-}
+  const closeLinkModal = () => {
+    setLinkModalOpen(false);
+    setLinkLabel('');
+    setLinkUrl('');
+    savedRangeRef.current = null;
+  };
 
+  const handleInsertLink = (e) => {
+    e.preventDefault();
+    if (!linkUrl) { showSnackbar('Masukkan URL dulu', 'error'); return; }
+
+    // restore selection
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    if (savedRangeRef.current) sel.addRange(savedRangeRef.current);
+
+    // determine target editor
+    const target = linkModalTarget;
+    const editor = target === 'main' ? editorRef.current : replyEditorRefs.current[target];
+
+    if (!editor) {
+      showSnackbar('Editor tidak ditemukan', 'error');
+      closeLinkModal();
+      return;
+    }
+
+    // If there's a selection, create link around it
+    try {
+      // execCommand createLink will wrap selection. If no selection, it will create an <a> with URL as text in some browsers; we'll handle both.
+      document.execCommand('createLink', false, linkUrl);
+
+      // find the created/updated link inside editor at selection
+      const currentSel = window.getSelection();
+      let anchor = null;
+      if (currentSel.rangeCount > 0) {
+        const node = currentSel.anchorNode;
+        anchor = node?.nodeType === 1 ? node.closest('a') : node?.parentElement?.closest?.('a');
+      }
+
+      // if we didn't get anchor, try searching for last inserted <a> inside editor with href
+      if (!anchor) {
+        anchor = Array.from(editor.querySelectorAll('a')).reverse().find(a => a.getAttribute('href') === linkUrl);
+      }
+
+      if (anchor) {
+        // set attributes
+        anchor.setAttribute('target', '_blank');
+        anchor.setAttribute('rel', 'noopener noreferrer');
+        if (linkLabel) anchor.textContent = linkLabel;
+      } else {
+        // fallback: insert an <a> node
+        const a = document.createElement('a');
+        a.href = linkUrl;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.textContent = linkLabel || linkUrl;
+        // insert at caret
+        if (savedRangeRef.current) {
+          savedRangeRef.current.deleteContents();
+          savedRangeRef.current.insertNode(a);
+        } else {
+          editor.appendChild(a);
+        }
+      }
+
+      // focus back
+      editor.focus();
+      closeLinkModal();
+    } catch (err) {
+      console.error('Insert link failed', err);
+      showSnackbar('Gagal insert link', 'error');
+      closeLinkModal();
+    }
+  };
+
+  // ---------------- end helpers ----------------
 
   const renderChats = (chatList, level = 0) => chatList.map(chat => (
     <div className={`chat-message ${level > 0 ? 'chat-reply' : ''} ${chat.user_id === userId ? 'chat-own' : ''}`} key={chat.id} style={{ marginLeft: `${level * 30}px` }}>
@@ -209,33 +307,20 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
         </div>
       </div>
 
-      {/* <div
+      <div
         className={`chat-bubble ${chat.user_id === userId ? 'chat-bubble-own' : 'chat-bubble-other'}`}
-        onClick={e => {
+        onClick={(e) => {
           const link = e.target.closest("a");
-          if (link && link.target !== "_blank") {
+          if (link) {
+            e.preventDefault();
+            e.stopPropagation();
             window.open(link.href, "_blank", "noopener,noreferrer");
           }
         }}
       >
-        <div dangerouslySetInnerHTML={{ __html: autoLinkHTML(chat.message) }} />
+        <div dangerouslySetInnerHTML={{ __html: autoLinkHTML(cleanHTML(chat.message || '')) }} />
         {renderMedia(chat.medias)}
-      </div> */}
-      <div
-  className={`chat-bubble ${chat.user_id === userId ? 'chat-bubble-own' : 'chat-bubble-other'}`}
-  onClick={(e) => {
-    const link = e.target.closest("a");
-    if (link) {
-      e.preventDefault(); // cegah browser override default
-      e.stopPropagation(); // ⛔ stop event supaya gak bubble ke parent!
-      window.open(link.href, "_blank", "noopener,noreferrer");
-    }
-  }}
->
-  <div dangerouslySetInnerHTML={{ __html: autoLinkHTML(chat.message) }} />
-  {renderMedia(chat.medias)}
-</div>
-
+      </div>
 
       <div className="chat-actions">
         {chat.parent_message_id === null && <button className="chat-reply-btn" onClick={() => setReplyTo(chat.id)}><IoReturnDownBackSharp/> Reply</button>}
@@ -244,7 +329,7 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
 
       {replyTo === chat.id && (
         <div className="chat-reply-form">
-          <div className="chat-toolbar">
+          <div className="chat-toolbar-fix">
             <button onClick={() => handleFormat('bold')}><b>B</b></button>
             <button onClick={() => handleFormat('italic')}><i>I</i></button>
             <button onClick={() => handleFormat('underline')}><u>U</u></button>
@@ -252,7 +337,8 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
             <button onClick={() => handleFormat('orderedList')}>1.</button>
             <button onClick={() => handleFormat('unorderedList')}>•</button>
             <button onClick={() => handleFormat('code')}><code>{`</>`}</code></button>
-            <label className="upload-btn">📎
+            <button onClick={() => openLinkModal(chat.id)}><FaLink/></button>
+            <label className="upload-btn"><ImAttachment/>
               <input type="file" hidden onChange={e => handleUploadFromEditor(e, chat.id)} />
             </label>
             <div className="emoji-picker-wrapper">
@@ -285,7 +371,7 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
       </div>
 
       <div className="chat-toolbar-container">
-        <div className="chat-toolbar">
+        <div className="chat-toolbar-fix">
           <button onClick={() => handleFormat('bold')}><b>B</b></button>
           <button onClick={() => handleFormat('italic')}><i>I</i></button>
           <button onClick={() => handleFormat('underline')}><u>U</u></button>
@@ -293,8 +379,9 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
           <button onClick={() => handleFormat('orderedList')}>1.</button>
           <button onClick={() => handleFormat('unorderedList')}>•</button>
           <button onClick={() => handleFormat('code')}><code>{`</>`}</code></button>
-          <label className="upload-btn">📎
-            <input type="file" style={{ display: "none" }} onChange={e => handleUploadFromEditor(e, "main")} />
+          <button onClick={() => openLinkModal('main')}><FaLink/></button>
+          <label className="upload-btn"><ImAttachment/>
+            <input type="file" style={{ display: "none" }} onChange={e => handleUploadFromEditor(e, "main") } />
           </label>
           <div className="emoji-picker-wrapper">
             <button onClick={() => setShowEmojiPicker(showEmojiPicker === 'main' ? null : 'main')}>😄</button>
@@ -307,6 +394,21 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
           <div className="btn-send" onClick={handleSendMessage}><IoArrowUpOutline/></div>
         </div>
       </div>
+
+      {/* Link modal (simple) */}
+      {linkModalOpen && (
+        <div className="link-modal-backdrop" onMouseDown={closeLinkModal}>
+          <form className="link-modal" onSubmit={handleInsertLink} style={{position:'absolute', right:20, bottom:100, background:'white', padding:12, borderRadius:8, boxShadow:'0 6px 20px rgba(0,0,0,0.15)'}} onMouseDown={e => e.stopPropagation()}>
+            <div style={{marginBottom:8}}><strong>Insert Link</strong></div>
+            <input placeholder="Label (optional)" value={linkLabel} onChange={e => setLinkLabel(e.target.value)} style={{display:'block',padding:'5px', fontSize:'12px', marginBottom:8, width:300, border:'1px solid #eee', borderRadius:'8px'}} />
+            <input placeholder="https://example.com or mailto:..." value={linkUrl} onChange={e => setLinkUrl(e.target.value)} style={{display:'block', marginBottom:8, width:300,border:'1px solid #eee', borderRadius:'8px',padding:'5px', fontSize:'12px',}} />
+            <div className='link-button' >
+              <button className='btn-cancle' type="button" onClick={closeLinkModal}>Cancel</button>
+              <button className='btn-insert' type="submit">Insert</button>
+            </div>
+          </form>
+        </div>
+      )}
     </div>
   );
 };

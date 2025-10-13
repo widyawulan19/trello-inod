@@ -229,7 +229,8 @@ const MoveCard = ({
         {/* 🔢 Input posisi card */}
         {selectedList && (
           <div className="mc-position">
-            <label>Card Position (1 - {cards.length + 1})</label>
+            {/* <label>Card Position (1 - {cards.length + 1})</label> */}
+            <label>Card Position</label>
             <input
               type="number"
               min="1"

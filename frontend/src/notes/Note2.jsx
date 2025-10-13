@@ -1,168 +1,143 @@
-// const handleSendMessage = async () => {
-//   const html = editorRef.current?.innerHTML || "";
-//   if (!html.trim() && pendingFiles.length === 0) return;
 
-//   try {
-//     const res = await createMessage(cardId, {
-//       user_id: userId,
-//       message: html, // simpan dengan format HTML
-//       parent_message_id: null,
-//     });
+// import React, { useEffect, useState } from 'react';
+// import { getActivityCard } from '../services/ApiServices';
+// import { useUser } from '../context/UserContext';
+// import '../style/modules/CardActivity.css';
 
-//     const chatId = res.data.id;
-
-//     for (let file of pendingFiles) {
-//       await uploadChatMedia(chatId, file);
-//     }
-
-//     editorRef.current.innerHTML = "";
-//     setPendingFiles([]);
-//     fetchChats();
-//     showSnackbar("Pesan + file terkirim!", "success");
-//   } catch (err) {
-//     console.error("Send error:", err);
-//     showSnackbar("Gagal kirim pesan", "error");
-//   }
+// const COLOR_BORDER = {
+//   updated_title: '#3b82f6',      // blue-500
+//   updated_desc: '#6366f1',       // indigo-500
+//   remove_label: '#ef4444',       // red-500
+//   remove_user: '#ef4444',        // red-500
+//   remove_cover: '#ef4444',       // red-500
+//   add_user: '#22c55e',           // green-500
+//   add_label: '#22c55e',          // green-500
+//   add_cover: '#22c55e',          // green-500
+//   // updated_cover: '#eab308',   // yellow-500 (optional, uncomment if needed)
+//   updated_due: '#a855f7',        // purple-500
+//   updated_prio: '#ec4899',       // pink-500
+//   updated_status: '#14b8a6',      // teal-500
+//   move: '#f59e0b',
+//   duplicate:''
 // };
 
-
-// const handleSendReply = async (parentId) => {
-//   const html = replyEditorRefs.current[parentId]?.innerHTML || "";
-//   const files = replyPendingFiles[parentId] || [];
-//   if (!html.trim() && files.length === 0) return;
-
-//   try {
-//     const res = await createMessage(cardId, {
-//       user_id: userId,
-//       message: html, // simpan dengan format HTML
-//       parent_message_id: parentId,
-//     });
-
-//     const chatId = res.data.id;
-//     for (let file of files) {
-//       await uploadChatMedia(chatId, file);
-//     }
-
-//     replyEditorRefs.current[parentId].innerHTML = "";
-//     setReplyPendingFiles((prev) => ({ ...prev, [parentId]: [] }));
-
-//     fetchChats();
-//     showSnackbar("Success reply", "success");
-//   } catch (err) {
-//     console.error("Reply error:", err);
-//     showSnackbar("Reply failed", "error");
-//   }
+// const MESSAGE_ACTIVITY = {
+//   updated_title: 'updated title to',
+//   updated_desc: 'updated description',
+//   remove_label: 'removed label',
+//   remove_user: 'removed user',
+//   remove_cover: 'removed cover from card',
+//   add_user: 'added a user',
+//   add_label: 'added a new label',
+//   add_cover:'added a new cover',
+//   // updated_cover: 'updated cover card',
+//   updated_due: 'updated due date',
+//   updated_prio: 'updated priority card',
+//   updated_status: 'updated status',
+//   move: 'moved this card',
+//   duplicate: 'duplicate this card'
 // };
 
+// const CardActivity = ({ cardId, fetchCardById }) => {
+//   const { user } = useUser();
+//   const userId = user?.id;
+//   const [cardActivities, setCardActivities] = useState([]);
+//   const [loading, setLoading] = useState(false);
 
+//   //debug
+//   console.log('file card activity menerima fetchcardById', fetchCardById);
 
-// const html = editorRef.current?.innerHTML || "";
-// if ((!html || html === "<br>") && pendingFiles.length === 0) return;
-
-// const res = await createMessage(cardId, {
-//   user_id: userId,
-//   message: html, // simpan HTML biar bold/italic tetap tampil
-//   parent_message_id: null,
-// });
-
-
-
-// const html = replyEditorRefs.current[parentId]?.innerHTML || "";
-// ...
-// message: html,
-
-
-// import React, { useRef, useEffect } from "react";
-
-// export default function ChatInput() {
-//   const editorRef = useRef(null);
-
-//   // === FORMAT TOOLS ===
-//   const handleFormat = (command, value = null) => {
-//     document.execCommand(command, false, value);
-//     editorRef.current?.focus();
-//   };
-
-//   // === SHORTCUT HANDLER ===
-//   const handleKeyDown = (e) => {
-//     if (!e.ctrlKey && !e.metaKey) return; // hanya tangkap Ctrl/Cmd
-
-//     // Bold: Ctrl + B
-//     if (e.key.toLowerCase() === "b") {
-//       e.preventDefault();
-//       handleFormat("bold");
-//     }
-
-//     // Italic: Ctrl + I
-//     if (e.key.toLowerCase() === "i") {
-//       e.preventDefault();
-//       handleFormat("italic");
-//     }
-
-//     // Underline: Ctrl + U
-//     if (e.key.toLowerCase() === "u") {
-//       e.preventDefault();
-//       handleFormat("underline");
-//     }
-
-//     // Strikethrough: Ctrl + Shift + S
-//     if (e.shiftKey && e.key.toLowerCase() === "s") {
-//       e.preventDefault();
-//       handleFormat("strikeThrough");
-//     }
-
-//     // Ordered list: Ctrl + Shift + O
-//     if (e.shiftKey && e.key.toLowerCase() === "o") {
-//       e.preventDefault();
-//       handleFormat("insertOrderedList");
-//     }
-
-//     // Unordered list: Ctrl + Shift + U
-//     if (e.shiftKey && e.key.toLowerCase() === "u") {
-//       e.preventDefault();
-//       handleFormat("insertUnorderedList");
-//     }
-
-//     // Inline code: Ctrl + E
-//     if (e.key.toLowerCase() === "e") {
-//       e.preventDefault();
-//       // ambil teks yang dipilih lalu bungkus dengan <code>
-//       const selection = window.getSelection();
-//       if (selection.rangeCount > 0) {
-//         const range = selection.getRangeAt(0);
-//         const codeNode = document.createElement("code");
-//         range.surroundContents(codeNode);
-//       }
+//   const fetchCardActivites = async () => {
+//     try {
+//       setLoading(true);
+//       const response = await getActivityCard(cardId);
+//       setCardActivities(response.data.activities); // Pastikan sesuai struktur
+//     } catch (error) {
+//       console.error('Failed to fetch card activity:', error);
+//     } finally {
+//       setLoading(false);
 //     }
 //   };
 
 //   useEffect(() => {
-//     const editor = editorRef.current;
-//     if (editor) editor.addEventListener("keydown", handleKeyDown);
-//     return () => editor?.removeEventListener("keydown", handleKeyDown);
-//   }, []);
+//     if (cardId) {
+//       fetchCardActivites();
+//     }
+//   }, [cardId]);
 
 //   return (
-//     <div className="p-3 bg-white border rounded-lg shadow">
-//       {/* Toolbar */}
-//       <div className="flex gap-2 mb-2">
-//         <button onClick={() => handleFormat("bold")}><b>B</b></button>
-//         <button onClick={() => handleFormat("italic")}><i>I</i></button>
-//         <button onClick={() => handleFormat("underline")}><u>U</u></button>
-//         <button onClick={() => handleFormat("strikeThrough")}><s>S</s></button>
-//         <button onClick={() => handleFormat("insertOrderedList")}>1.</button>
-//         <button onClick={() => handleFormat("insertUnorderedList")}>•</button>
-//         <button onClick={() => handleFormat("code")}><code>{`</>`}</code></button>
-//       </div>
+//     <div className="ca-container">
+//       {loading ? (
+//         <p>Loading...</p>
+//       ) : cardActivities.length === 0 ? (
+//         <p
+//           style={{
+//             // border:'1px solid red',
+//             width:'100%',
+//             display:'flex',
+//             alignItems:'center',
+//             justifyContent:'center',
+//             fontSize:'12px'
+//           }}
+//         >No activity yet.</p>
+//       ) : (
+//         <ul className="space-y-3">
+//           {cardActivities.map((activity) => {
+//             const detail = activity.action_detail ? JSON.parse(activity.action_detail) : {};
+//             const actionKey = `${activity.action_type}_${activity.entity}`;
+//             const borderColor = COLOR_BORDER[activity.action_type] || '#ddd';
+//             const messageText = MESSAGE_ACTIVITY[activity.action_type] || `${activity.action_type}`;
+            
+//             let message = `${activity.username} ${messageText}`;
+            
 
-//       {/* Editable area */}
-//       <div
-//         ref={editorRef}
-//         contentEditable
-//         suppressContentEditableWarning
-//         className="min-h-[120px] border p-2 rounded focus:outline-none"
-//         placeholder="Tulis pesanmu..."
-//       />
+
+//             if (detail.old_title && detail.new_title) {
+//               message += ` "${detail.new_title}"`;
+//               // message += ` from "${detail.old_title}" to "${detail.new_title}"`;
+//             } else if (detail.new_title) {
+//               message += ` "${detail.new_title}"`;
+//             }
+
+//             return (
+//               <li
+//                 key={activity.id}
+//                 className='ca-li'
+//                 style={{
+//                   padding: '0.25rem',
+//                   borderLeftWidth: '4px',
+//                   borderLeftStyle: 'solid',
+//                   borderLeftColor: borderColor,
+//                   backgroundColor: '#f8fafc', // slate-50
+//                   borderRadius: '0.25rem',
+//                 }}
+//               >
+//                 <p 
+//                   style={{
+//                     fontSize:'12px',
+//                     padding:'0px',
+//                     margin:'0px'
+//                   }}
+//                 className="text-sm">{message}</p>
+//                 <p 
+//                   style={{
+//                     fontSize:'10px',
+//                     // border:'1px solid red',
+//                     width:'100%',
+//                     display:'flex',
+//                     alignItems:'center',
+//                     justifyContent:'flex-end'
+//                   }}
+//                 >
+//                   {new Date(activity.created_at).toLocaleString()}
+//                 </p>
+//               </li>
+//             );
+//           })}
+//         </ul>
+//       )}
 //     </div>
 //   );
-// }
+// };
+
+// export default CardActivity;
