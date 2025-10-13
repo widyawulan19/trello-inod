@@ -2414,7 +2414,7 @@ app.get('/api/workspaces/:workspaceId/boards', async (req, res) => {
       JOIN workspaces w ON w.id = b.workspace_id
       LEFT JOIN workspaces_users wu ON wu.workspace_id = w.id
       WHERE b.workspace_id = $1
-        AND (wu.user_id = $2 OR w.created_by = $2)
+        AND wu.user_id = $2
         AND b.is_deleted = FALSE
       ORDER BY b.position ASC
       `,
@@ -2427,6 +2427,7 @@ app.get('/api/workspaces/:workspaceId/boards', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 
 
