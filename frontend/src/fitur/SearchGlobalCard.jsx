@@ -37,6 +37,7 @@ const SearchGlobalCard = ({ userId }) => {
     console.log('Search keyword:', keyword);
     console.log('User ID:', userId);
     console.log('API response:', response);
+    console.log('Search results:', response.data);
     setResults(response.data);
   } catch (error) {
     console.error('Search failed:', error);
