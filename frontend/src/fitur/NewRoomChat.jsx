@@ -46,9 +46,12 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
     return DOMPurify.sanitize(dirty, {
       FORBID_ATTR: ['style', 'class'],
       ALLOWED_TAGS: [
-        'b', 'strong', 'i', 'em', 'u', 'br', 'p', 'a', 'ul', 'ol', 'li',
-      ],
-      ALLOWED_ATTR: ['href', 'target', 'rel'],
+      'b', 'strong', 'i', 'em', 'u', 's', 'strike',
+      'p', 'br', 'div', 'span',
+      'ul', 'ol', 'li',
+      'a', 'code', 'pre', 'blockquote'
+    ],
+    ALLOWED_ATTR: ['href', 'target', 'rel', 'style'],
     });
   };
 
@@ -124,10 +127,48 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
     }
   };
 
-  const handleFormat = (command, value = null) => {
-    document.execCommand(command, false, value);
-    editorRef.current?.focus();
+  // const handleFormat = (command, value = null) => {
+  //   document.execCommand(command, false, value);
+  //   editorRef.current?.focus();
+  // };
+
+  const handleFormat = (command, target = 'main') => {
+    const editor = target === 'main' ? editorRef.current : replyEditorRefs.current[target];
+    if (!editor) return;
+
+    // Fokuskan editor agar perintah diterapkan di posisi caret
+    editor.focus();
+
+    if (command === 'code') {
+      const selection = window.getSelection();
+      if (selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        const codeNode = document.createElement('code');
+        try {
+          range.surroundContents(codeNode);
+        } catch {
+          codeNode.textContent = selection.toString();
+          range.deleteContents();
+          range.insertNode(codeNode);
+        }
+      }
+    } else {
+      const commandMap = {
+        bold: 'bold',
+        italic: 'italic',
+        underline: 'underline',
+        strikethrough: 'strikeThrough',
+        orderedList: 'insertOrderedList',
+        unorderedList: 'insertUnorderedList',
+      };
+      const execCommand = commandMap[command];
+      if (execCommand) {
+        document.execCommand(execCommand, false, null);
+      }
+    }
   };
+
+
 
   const handleKeyDown = (e) => {
     if (!e.ctrlKey && !e.metaKey) return;
@@ -330,13 +371,14 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
       {replyTo === chat.id && (
         <div className="chat-reply-form">
           <div className="chat-toolbar-fix">
-            <button onClick={() => handleFormat('bold')}><b>B</b></button>
-            <button onClick={() => handleFormat('italic')}><i>I</i></button>
-            <button onClick={() => handleFormat('underline')}><u>U</u></button>
-            <button onClick={() => handleFormat('strikethrough')}><s>S</s></button>
-            <button onClick={() => handleFormat('orderedList')}>1.</button>
-            <button onClick={() => handleFormat('unorderedList')}>•</button>
-            <button onClick={() => handleFormat('code')}><code>{`</>`}</code></button>
+            <button onClick={() => handleFormat('bold', chat.id)}><b>B</b></button>
+            <button onClick={() => handleFormat('italic', chat.id)}><i>I</i></button>
+            <button onClick={() => handleFormat('underline', chat.id)}><u>U</u></button>
+            <button onClick={() => handleFormat('strikethrough', chat.id)}><s>S</s></button>
+            <button onClick={() => handleFormat('orderedList', chat.id)}>1.</button>
+            <button onClick={() => handleFormat('unorderedList', chat.id)}>•</button>
+            <button onClick={() => handleFormat('code', chat.id)}><code>{`</>`}</code></button>
+
             <button onClick={() => openLinkModal(chat.id)}><FaLink/></button>
             <label className="upload-btn"><ImAttachment/>
               <input type="file" hidden onChange={e => handleUploadFromEditor(e, chat.id)} />
@@ -372,6 +414,33 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
 
       <div className="chat-toolbar-container">
         <div className="chat-toolbar-fix">
+          <button onClick={() => handleFormat('bold', 'main')}><b>B</b></button>
+          <button onClick={() => handleFormat('italic', 'main')}><i>I</i></button>
+          <button onClick={() => handleFormat('underline', 'main')}><u>U</u></button>
+          <button onClick={() => handleFormat('strikethrough', 'main')}><s>S</s></button>
+          <button onClick={() => handleFormat('orderedList', 'main')}>1.</button>
+          <button onClick={() => handleFormat('unorderedList', 'main')}>•</button>
+          <button onClick={() => handleFormat('code', 'main')}><code>{`</>`}</code></button>
+
+          <button onClick={() => openLinkModal('main')}><FaLink/></button>
+          <label className="upload-btn"><ImAttachment/>
+            <input type="file" style={{ display: "none" }} onChange={e => handleUploadFromEditor(e, "main") } />
+          </label>
+          <div className="emoji-picker-wrapper">
+            <button onClick={() => setShowEmojiPicker(showEmojiPicker === 'main' ? null : 'main')}>😄</button>
+            {showEmojiPicker === 'main' && (
+              <div className="emoji-picker">
+                {emojiList.map((emoji, i) => (
+                  <span key={i} onClick={() => insertEmoji(emoji, 'main')}>
+                    {emoji}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* <div className="chat-toolbar-fix">
           <button onClick={() => handleFormat('bold')}><b>B</b></button>
           <button onClick={() => handleFormat('italic')}><i>I</i></button>
           <button onClick={() => handleFormat('underline')}><u>U</u></button>
@@ -387,7 +456,7 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
             <button onClick={() => setShowEmojiPicker(showEmojiPicker === 'main' ? null : 'main')}>😄</button>
             {showEmojiPicker === 'main' && <div className="emoji-picker">{emojiList.map((emoji, i) => <span key={i} onClick={() => insertEmoji(emoji, 'main')}>{emoji}</span>)}</div>}
           </div>
-        </div>
+        </div> */}
 
         <div className="chat-input-box">
           <div className="chat-editor" contentEditable ref={editorRef} suppressContentEditableWarning={true}/>
