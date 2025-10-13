@@ -3882,17 +3882,6 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
     try {
         await client.query('BEGIN');
 
-        // 1. Salin data card utama
-        // const result = await client.query(
-        //     `INSERT INTO public.cards (title, description, list_id, position) 
-        //      SELECT title, description, $1, 
-        //             (SELECT COALESCE(MAX(position), 0) + 1 FROM public.cards WHERE list_id = $1)
-        //      FROM public.cards 
-        //      WHERE id = $2 
-        //      RETURNING id, title, list_id`,
-        //     [listId, cardId]
-        // );
-
         // Kalau user pilih posisi, geser posisi lain dulu
         if (position) {
             await client.query(
@@ -4009,6 +3998,18 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
         const toBoardId = newListRes.rows[0]?.board_id;
         const toBoardName = newListRes.rows[0]?.board_name || "Unknown Board";
 
+        // Ambil semua card di list tujuan untuk generate pilihan posisi
+        const cardsInTargetList = await client.query(
+        `SELECT id, title, position FROM public.cards WHERE list_id = $1 ORDER BY position ASC`,
+        [listId]
+        );
+
+        const positions = cardsInTargetList.rows.map((c, index) => ({
+        value: index + 1,
+        label: `${index + 1}. ${c.title}`
+        }));
+
+
         await client.query('COMMIT');
 
         // 4. Log ke user_activity (global activity)
@@ -4060,7 +4061,8 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
                     id: userId,
                     username: userName
                 }
-            }
+            },
+            positions 
         });
 
     } catch (err) {
