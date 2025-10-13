@@ -22,6 +22,8 @@ const DuplicateCard = ({ cardId, boardId, listId, workspaceId, onClose, fetchCar
   const [showListDropdown, setShowListDropdown] = useState(false)
   const [showPositionDropdown, setShowPositionDropdown] = useState(false) // 🆕 dropdown posisi
   const [isDuplicating, setIsDuplicating] = useState(false)
+  const [targetPosition, setTargetPosition] = useState(null)
+
 
   const navigate = useNavigate()
   const { showSnackbar } = useSnackbar()
@@ -71,7 +73,12 @@ const DuplicateCard = ({ cardId, boardId, listId, workspaceId, onClose, fetchCar
 
     setIsDuplicating(true)
     try {
-      const result = await duplicateCard(cardId, selectedList.id, selectedPosition?.value)
+      // const result = await duplicateCard(cardId, selectedList.id, selectedPosition?.value)
+      const result = await duplicateCard(
+        cardId,
+        selectedList.id,
+        targetPosition ? Number(targetPosition) : undefined
+      )
       console.log('✅ Card duplicated:', result.data)
       showSnackbar('Card duplicated successfully!', 'success')
 
@@ -208,56 +215,23 @@ const DuplicateCard = ({ cardId, boardId, listId, workspaceId, onClose, fetchCar
           </div>
         )}
 
-        {/* 🎯 Select Position */}
-        {selectedList && positions.length > 0 && (
-          <div className='dcb-select-position'>
-            <label>Choose Position</label>
-            <div className='dcb-list-dropdown'>
-              <button
-                className='dcb-btn'
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setShowPositionDropdown(!showPositionDropdown)
-                }}
-              >
-                {selectedPosition ? selectedPosition.label : 'Select position'}
-                <HiOutlineChevronDown />
-              </button>
-
-              {showPositionDropdown && (
-                <div className='dcb-menu-wrapper'>
-                  <input
-                    type='text'
-                    placeholder='Search positions...'
-                    value={searchPosition}
-                    onChange={(e) => setSearchPosition(e.target.value)}
-                    className='dcb-search-input'
-                  />
-                  <ul className='dcb-menu'>
-                    {positions
-                      .filter((pos) =>
-                        pos.label.toLowerCase().includes(searchPosition.toLowerCase())
-                      )
-                      .map((pos, index) => (
-                        <li
-                          key={index}
-                          className={`dcb-item ${
-                            selectedPosition?.value === pos.value ? 'selected' : ''
-                          }`}
-                          onClick={() => {
-                            setSelectedPosition(pos)
-                            setShowPositionDropdown(false)
-                          }}
-                        >
-                          {pos.label}
-                        </li>
-                      ))}
-                  </ul>
-                </div>
-              )}
-            </div>
+        {selectedList && (
+          <div className="mc-position">
+            {/* <label>Card Position (1 - {positions.length + 1})</label> */}
+            <label>Card Position</label>
+            <input
+              type="number"
+              min="1"
+              max={positions.length + 1}
+              value={targetPosition || ''}
+              onChange={(e) => setTargetPosition(e.target.value)}
+              placeholder="Position number"
+              className="mc-position-input"
+            />
           </div>
         )}
+
+        
       </div>
 
       {/* 🚀 BUTTON */}
