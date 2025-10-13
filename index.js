@@ -1522,22 +1522,22 @@ app.get('/api/search', async (req, res) => {
 //1.Get all workspace
 // GLOBAL SEARCH CARD (termasuk archived)
 app.get('/api/search/global', async (req, res) => {
-  const { keyword, userId } = req.query;
+    const { keyword, userId } = req.query;
 
-  // Validasi input
-  if (!keyword || !userId) {
-    return res.status(400).json({ error: 'Keyword and userId are required' });
-  }
+    // Validasi input
+    if (!keyword || !userId) {
+        return res.status(400).json({ error: 'Keyword and userId are required' });
+    }
 
-  const searchKeyword = `%${keyword}%`;
-  const numericUserId = parseInt(userId);
+    const searchKeyword = `%${keyword}%`;
+    const numericUserId = parseInt(userId);
 
-  if (isNaN(numericUserId)) {
-    return res.status(400).json({ error: 'Invalid userId' });
-  }
+    if (isNaN(numericUserId)) {
+        return res.status(400).json({ error: 'Invalid userId' });
+    }
 
-  try {
-    const query = `
+    try {
+        const query = `
       -- SEARCH CARD AKTIF
       SELECT 
         c.id AS card_id,
@@ -1573,21 +1573,23 @@ app.get('/api/search/global', async (req, res) => {
         NULL AS workspace_name,
         'Archive' AS status
       FROM archive a
+      JOIN workspaces_users wu ON wu.user_id = $2 -- optional, filter sesuai user
       WHERE a.entity_type = 'card'
-        AND LOWER(a.name) ILIKE LOWER($1)
+        AND (LOWER(a.name) ILIKE LOWER($1) OR LOWER(a.description) ILIKE LOWER($1))
     `;
 
-    const result = await client.query(query, [searchKeyword, numericUserId]);
-    res.json(result.rows);
-  } catch (err) {
-    console.error('❌ Search error message:', err.message);
-    console.error('🧨 Full error:', err);
-    res.status(500).json({
-      error: 'Internal server error',
-      detail: err.message
-    });
-  }
+        const result = await client.query(query, [searchKeyword, numericUserId]);
+        res.json(result.rows);
+    } catch (err) {
+        console.error('❌ Search error message:', err.message);
+        console.error('🧨 Full error:', err);
+        res.status(500).json({
+            error: 'Internal server error',
+            detail: err.message
+        });
+    }
 });
+
 
 
 
