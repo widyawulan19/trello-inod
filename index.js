@@ -4453,13 +4453,20 @@ app.put('/api/cards/:cardId/move', async (req, res) => {
         );
         const userName = userRes.rows[0]?.username || 'Unknown';
 
-        await client.query('COMMIT');
+        // ambil semua user terkait card
+        const assignedUsersRes = await client.query(`SELECT user_id FROM card_users WHERE card_id = $1`, [cardId]);
+        const userIds = assignedUsersRes.rows.map(r => r.user_id); // gunakan langsung, tanpa nambahin actingUserId
+
+        // // pastikan minimal ada actingUserId
+        // if (!userIds.includes(actingUserId)) userIds.push(actingUserId);
+
+
 
         // activity log
         await logCardActivity({
             action: 'move',
             card_id: cardId,
-            user_id: userId,
+            user_ids: userIds,
             entity: 'list',
             entity_id: targetListId,
             details: {
@@ -4472,10 +4479,11 @@ app.put('/api/cards/:cardId/move', async (req, res) => {
                 toBoardName: newBoardName,
                 toListId: targetListId,
                 toListName: newListName,
-                movedBy: { id: userId, username: userName },
                 newPosition: finalPosition,
             },
         });
+
+        await client.query('COMMIT');
 
         res.status(200).json({
             message: 'Card berhasil dipindahkan',
