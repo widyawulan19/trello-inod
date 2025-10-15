@@ -349,21 +349,6 @@ const handleShowReplyEmoji = (chatId) => {
         )}
 
 
-      {/* <div
-        className={`chat-bubble ${chat.user_id === userId ? 'chat-bubble-own' : 'chat-bubble-other'}`}
-        onClick={(e) => {
-          const link = e.target.closest("a");
-          if (link) {
-            e.preventDefault();
-            e.stopPropagation();
-            window.open(link.href, "_blank", "noopener,noreferrer");
-          }
-        }}
-      >
-        <div dangerouslySetInnerHTML={{ __html: autoLinkHTML(chat.message) }} />
-        {renderMedia(chat.medias)}
-      </div> */}
-
       <div className="chat-actions">
         {chat.user_id === userId && (
           <button className="chat-reply-btn" onClick={() => handleEditMessage(chat)}>
