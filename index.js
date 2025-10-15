@@ -4359,12 +4359,12 @@ app.patch('/api/cards/:cardId/restore', async (req, res) => {
 app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
     const { cardId, listId } = req.params;
     const { position } = req.body;
-    const actingUserId = req.user?.id || 1;
+    const userId = req.user?.id || 1; // sementara kalau belum ada auth middleware
 
     try {
         await client.query('BEGIN');
 
-        // Kalau user pilih posisi, geser posisi lain dulu
+        // Geser posisi jika user pilih posisi
         if (position) {
             await client.query(
                 `UPDATE public.cards 
@@ -4374,13 +4374,13 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
             );
         }
 
-        // Duplicate card
+        // Duplikasi card
         const result = await client.query(
             `INSERT INTO public.cards (title, description, list_id, position) 
              SELECT title, description, $1, 
                     COALESCE($2, (SELECT COALESCE(MAX(position), 0) + 1 FROM public.cards WHERE list_id = $1))
              FROM public.cards 
-             WHERE id = $3 
+             WHERE id = $3
              RETURNING id, title, list_id`,
             [listId, position, cardId]
         );
@@ -4388,27 +4388,78 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
         const newCardId = result.rows[0].id;
         const newCardTitle = result.rows[0].title;
 
-        // Salin relasi-relasi card
-        const copyRelations = [
-            'card_checklists',
-            'card_cover',
-            'card_descriptions',
-            'card_due_dates',
-            'card_labels',
-            'card_members',
-            'card_priorities',
-            'card_status'
-        ];
+        // === Duplikasi relasi manual ===
+        await client.query(
+            `INSERT INTO public.card_checklists (card_id, checklist_id, created_at, updated_at)
+             SELECT $1, checklist_id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+             FROM public.card_checklists WHERE card_id = $2`,
+            [newCardId, cardId]
+        );
 
-        for (const table of copyRelations) {
-            const cols = table === 'card_status' ? '(card_id, status_id, assigned_at)' : table === 'card_checklists' ? '(card_id, checklist_id, created_at, updated_at)' : '(card_id, ' + table.split('_')[1] + '_id)';
-            const values = table === 'card_status' ? 'SELECT $1, status_id, CURRENT_TIMESTAMP FROM ' + table + ' WHERE card_id = $2'
-                : table === 'card_checklists' ? 'SELECT $1, checklist_id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP FROM ' + table + ' WHERE card_id = $2'
-                    : 'SELECT $1, ' + table.split('_')[1] + '_id FROM ' + table + ' WHERE card_id = $2';
-            await client.query(`INSERT INTO ${table} ${cols} ${values}`, [newCardId, cardId]);
-        }
+        await client.query(
+            `INSERT INTO public.card_cover (card_id, cover_id)
+             SELECT $1, cover_id FROM public.card_cover WHERE card_id = $2`,
+            [newCardId, cardId]
+        );
 
-        // Ambil info card lama
+        await client.query(
+            `INSERT INTO public.card_descriptions (card_id, description, created_at, updated_at)
+             SELECT $1, description, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+             FROM public.card_descriptions WHERE card_id = $2`,
+            [newCardId, cardId]
+        );
+
+        await client.query(
+            `INSERT INTO public.card_due_dates (card_id, due_date, created_at, updated_at)
+             SELECT $1, due_date, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+             FROM public.card_due_dates WHERE card_id = $2`,
+            [newCardId, cardId]
+        );
+
+        await client.query(
+            `INSERT INTO public.card_labels (card_id, label_id)
+             SELECT $1, label_id FROM public.card_labels WHERE card_id = $2`,
+            [newCardId, cardId]
+        );
+
+        await client.query(
+            `INSERT INTO public.card_members (card_id, user_id)
+             SELECT $1, user_id FROM public.card_members WHERE card_id = $2`,
+            [newCardId, cardId]
+        );
+
+        await client.query(
+            `INSERT INTO public.card_priorities (card_id, priority_id)
+             SELECT $1, priority_id FROM public.card_priorities WHERE card_id = $2`,
+            [newCardId, cardId]
+        );
+
+        await client.query(
+            `INSERT INTO public.card_status (card_id, status_id, assigned_at)
+             SELECT $1, status_id, CURRENT_TIMESTAMP
+             FROM public.card_status WHERE card_id = $2`,
+            [newCardId, cardId]
+        );
+
+        // === Ambil semua user workspace (bukan card_users) ===
+        const workspaceRes = await client.query(
+            `SELECT DISTINCT u.id AS user_id
+             FROM users u
+             JOIN workspaces_users wu ON wu.user_id = u.id
+             JOIN lists l ON l.board_id = (SELECT board_id FROM lists WHERE id = $1)
+             WHERE wu.workspace_id = l.board_id`,
+            [listId]
+        );
+        const workspaceUserIds = workspaceRes.rows.map(r => r.user_id);
+
+        // Ambil nama user yang duplicate card
+        const userRes = await client.query(
+            `SELECT username FROM users WHERE id = $1`,
+            [userId]
+        );
+        const userName = userRes.rows[0]?.username || 'Unknown';
+
+        // Ambil info list & board lama
         const oldListRes = await client.query(
             `SELECT l.id AS list_id, l.name AS list_name, b.id AS board_id, b.name AS board_name
              FROM cards c
@@ -4422,7 +4473,7 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
         const fromBoardId = oldListRes.rows[0]?.board_id;
         const fromBoardName = oldListRes.rows[0]?.board_name || "Unknown Board";
 
-        // Info list tujuan
+        // Ambil info list & board baru
         const newListRes = await client.query(
             `SELECT l.id AS list_id, l.name AS list_name, b.id AS board_id, b.name AS board_name
              FROM lists l
@@ -4434,26 +4485,11 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
         const toBoardId = newListRes.rows[0]?.board_id;
         const toBoardName = newListRes.rows[0]?.board_name || "Unknown Board";
 
-        // Ambil semua user di workspace
-        const workspaceUsersRes = await client.query(
-            `SELECT user_id FROM workspaces_users WHERE workspace_id = $1 AND is_deleted = FALSE`,
-            [fromBoardId] // asumsi workspace_id bisa didapat dari board
-        );
-        const userIds = workspaceUsersRes.rows.map(r => r.user_id);
-        if (!userIds.includes(actingUserId)) userIds.push(actingUserId);
-
-        // Ambil username acting user
-        const userRes = await client.query(
-            "SELECT username FROM users WHERE id = $1",
-            [actingUserId]
-        );
-        const userName = userRes.rows[0]?.username || 'Unknown';
-
-        // Log activity
+        // Log activity untuk semua user workspace
         await logCardActivity({
             action: 'duplicate',
             card_id: newCardId,
-            user_ids: userIds,
+            user_ids: workspaceUserIds,
             entity: 'list',
             entity_id: listId,
             details: {
@@ -4466,7 +4502,7 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
                 toListName,
                 toBoardId,
                 toBoardName,
-                duplicatedBy: { id: actingUserId, username: userName }
+                duplicatedBy: { id: userId, username: userName }
             }
         });
 
@@ -4484,17 +4520,14 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
                 title: newCardTitle,
                 listId,
                 listName: toListName,
-                duplicatedBy: {
-                    id: actingUserId,
-                    username: userName
-                }
+                duplicatedBy: { id: userId, username: userName }
             }
         });
 
     } catch (err) {
         await client.query('ROLLBACK');
         console.error('❌ Gagal duplikasi card:', err);
-        res.status(500).json({ error: 'Terjadi kesalahan saat menyalin card ke list yang baru' });
+        res.status(500).json({ error: 'Terjadi kesalahan saat menduplikasi card' });
     }
 });
 
