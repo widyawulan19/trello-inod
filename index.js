@@ -4469,6 +4469,16 @@ app.put('/api/cards/:cardId/move', async (req, res) => {
         const newBoardName = newInfo.rows[0]?.board_name || 'Unknown Board';
 
 
+        // ambil semua user workspace tetap (tanpa mengubah query lama)
+        const workspaceUsersRes = await client.query(
+            `SELECT user_id FROM workspaces_users WHERE workspace_id = $1 AND is_deleted = FALSE`,
+            [oldBoardId] // tetap pakai board_id sesuai query lama kamu
+        );
+        const userIds = workspaceUsersRes.rows.map(r => r.user_id);
+
+        // pastikan minimal actingUserId ada
+        if (!userIds.includes(actingUserId)) userIds.push(actingUserId);
+
         // ambil username acting user
         const actingUserRes = await client.query(
             'SELECT username FROM users WHERE id = $1',
@@ -4476,21 +4486,11 @@ app.put('/api/cards/:cardId/move', async (req, res) => {
         );
         const actingUserName = actingUserRes.rows[0]?.username || 'Unknown';
 
-        // ambil semua user workspace tetap
-        const workspaceUsersRes = await client.query(
-            `SELECT user_id FROM workspaces_users WHERE workspace_id = $1 AND is_deleted = FALSE`,
-            [oldBoardId]
-        );
-        const userIds = workspaceUsersRes.rows.map(r => r.user_id);
-
-        // pastikan minimal actingUserId ada
-        if (!userIds.includes(actingUserId)) userIds.push(actingUserId);
-
         // log activity
         await logCardActivity({
             action: 'move',
             card_id: cardId,
-            user_ids: userIds,   // ✅ wajib array
+            user_ids: userIds, // dicatat ke semua user workspace
             entity: 'list',
             entity_id: targetListId,
             details: {
@@ -4504,9 +4504,10 @@ app.put('/api/cards/:cardId/move', async (req, res) => {
                 toListId: targetListId,
                 toListName: newListName,
                 newPosition: finalPosition,
-                movedBy: { id: actingUserId, username: actingUserName } // ✅ tampil nama user yang pindahin
+                movedBy: { id: actingUserId, username: actingUserName } // ✅ nama user yang pindahin
             }
         });
+
 
         await client.query('COMMIT');
 
