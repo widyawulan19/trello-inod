@@ -4161,25 +4161,26 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
         );
 
         // 5. Log ke card_activities (activity di card baru)
-        await logCardActivity({
-            action: 'duplicate',
-            card_id: newCardId,
-            user_id: userId,
-            entity: 'list',
-            entity_id: listId,
-            details: {
-                cardTitle: newCardTitle,
-                fromListId,
-                fromListName,
-                fromBoardId,
-                fromBoardName,
-                toListId: listId,
-                toListName,
-                toBoardId,
-                toBoardName,
-                duplicatedBy: { id: userId, username: userName }
-            }
-        });
+       await logCardActivity({
+    action: 'duplicate',
+    card_id: newCardId,
+    user_ids: [userId], // <<< perbaikan di sini
+    entity: 'list',
+    entity_id: listId,
+    details: {
+        cardTitle: newCardTitle,
+        fromListId,
+        fromListName,
+        fromBoardId,
+        fromBoardName,
+        toListId: listId,
+        toListName,
+        toBoardId,
+        toBoardName,
+        duplicatedBy: { id: userId, username: userName }
+    }
+});
+
 
         // Response sukses
         res.status(200).json({
