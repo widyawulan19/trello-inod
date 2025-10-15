@@ -54,11 +54,11 @@ const auth = new google.auth.GoogleAuth({
 });
 
 // Middleware untuk mensimulasikan login
-const simulateLogin = (req, res, next) => {
-    req.user = { id: 3 }; // ID pengguna simulasi, misalnya 1
-    next();
-};
-app.use(simulateLogin);
+// const simulateLogin = (req, res, next) => {
+//     req.user = { id: 3 }; // ID pengguna simulasi, misalnya 1
+//     next();
+// };
+// app.use(simulateLogin);
 app.use(express.urlencoded({ extended: true }));
 
 const PORT = process.env.PORT || 8080;
