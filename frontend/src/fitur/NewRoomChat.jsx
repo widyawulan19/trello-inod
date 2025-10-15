@@ -439,6 +439,7 @@ const handleShowReplyEmoji = (chatId) => {
         )}
 
 
+<<<<<<< HEAD
       {/* <div
         className={`chat-bubble ${chat.user_id === userId ? 'chat-bubble-own' : 'chat-bubble-other'}`}
         onClick={(e) => {
@@ -454,6 +455,8 @@ const handleShowReplyEmoji = (chatId) => {
         {renderMedia(chat.medias)}
       </div> */}
 
+=======
+>>>>>>> feature
       <div className="chat-actions">
         {chat.user_id === userId && (
           <button className="chat-reply-btn" onClick={() => handleEditMessage(chat)}>
