@@ -116,18 +116,18 @@ const handleShowReplyEmoji = (chatId) => {
   }, [chats]);
 
   // fungsi bersihin HTML
-  const cleanHTML = (dirty) => {
-    return DOMPurify.sanitize(dirty, {
-      FORBID_ATTR: ['style', 'class'],
-      ALLOWED_TAGS: [
-      'b', 'strong', 'i', 'em', 'u', 's', 'strike',
-      'p', 'br', 'div', 'span',
-      'ul', 'ol', 'li',
-      'a', 'code', 'pre', 'blockquote'
-    ],
-    ALLOWED_ATTR: ['href', 'target', 'rel', 'style'],
-    });
-  };
+  // const cleanHTML = (dirty) => {
+  //   return DOMPurify.sanitize(dirty, {
+  //     FORBID_ATTR: ['style', 'class'],
+  //     ALLOWED_TAGS: [
+  //     'b', 'strong', 'i', 'em', 'u', 's', 'strike',
+  //     'p', 'br', 'div', 'span',
+  //     'ul', 'ol', 'li',
+  //     'a', 'code', 'pre', 'blockquote'
+  //   ],
+  //   ALLOWED_ATTR: ['href', 'target', 'rel', 'style'],
+  //   });
+  // };
 
   const fetchChats = async () => {
     setLoading(true);
@@ -286,73 +286,73 @@ const handleShowReplyEmoji = (chatId) => {
 
 
 
-  const handleInsertLink = (e) => {
-    e.preventDefault();
-    if (!linkUrl) { showSnackbar('Masukkan URL dulu', 'error'); return; }
+  // const handleInsertLink = (e) => {
+  //   e.preventDefault();
+  //   if (!linkUrl) { showSnackbar('Masukkan URL dulu', 'error'); return; }
 
-    // restore selection
-    const sel = window.getSelection();
-    sel.removeAllRanges();
-    if (savedRangeRef.current) sel.addRange(savedRangeRef.current);
+  //   // restore selection
+  //   const sel = window.getSelection();
+  //   sel.removeAllRanges();
+  //   if (savedRangeRef.current) sel.addRange(savedRangeRef.current);
 
-    // determine target editor
-    const target = linkModalTarget;
-    const editor = target === 'main' ? editorRef.current : replyEditorRefs.current[target];
+  //   // determine target editor
+  //   const target = linkModalTarget;
+  //   const editor = target === 'main' ? editorRef.current : replyEditorRefs.current[target];
 
-    if (!editor) {
-      showSnackbar('Editor tidak ditemukan', 'error');
-      closeLinkModal();
-      return;
-    }
+  //   if (!editor) {
+  //     showSnackbar('Editor tidak ditemukan', 'error');
+  //     closeLinkModal();
+  //     return;
+  //   }
 
-    // If there's a selection, create link around it
-    try {
-      // execCommand createLink will wrap selection. If no selection, it will create an <a> with URL as text in some browsers; we'll handle both.
-      document.execCommand('createLink', false, linkUrl);
+  //   // If there's a selection, create link around it
+  //   try {
+  //     // execCommand createLink will wrap selection. If no selection, it will create an <a> with URL as text in some browsers; we'll handle both.
+  //     document.execCommand('createLink', false, linkUrl);
 
-      // find the created/updated link inside editor at selection
-      const currentSel = window.getSelection();
-      let anchor = null;
-      if (currentSel.rangeCount > 0) {
-        const node = currentSel.anchorNode;
-        anchor = node?.nodeType === 1 ? node.closest('a') : node?.parentElement?.closest?.('a');
-      }
+  //     // find the created/updated link inside editor at selection
+  //     const currentSel = window.getSelection();
+  //     let anchor = null;
+  //     if (currentSel.rangeCount > 0) {
+  //       const node = currentSel.anchorNode;
+  //       anchor = node?.nodeType === 1 ? node.closest('a') : node?.parentElement?.closest?.('a');
+  //     }
 
-      // if we didn't get anchor, try searching for last inserted <a> inside editor with href
-      if (!anchor) {
-        anchor = Array.from(editor.querySelectorAll('a')).reverse().find(a => a.getAttribute('href') === linkUrl);
-      }
+  //     // if we didn't get anchor, try searching for last inserted <a> inside editor with href
+  //     if (!anchor) {
+  //       anchor = Array.from(editor.querySelectorAll('a')).reverse().find(a => a.getAttribute('href') === linkUrl);
+  //     }
 
-      if (anchor) {
-        // set attributes
-        anchor.setAttribute('target', '_blank');
-        anchor.setAttribute('rel', 'noopener noreferrer');
-        if (linkLabel) anchor.textContent = linkLabel;
-      } else {
-        // fallback: insert an <a> node
-        const a = document.createElement('a');
-        a.href = linkUrl;
-        a.target = '_blank';
-        a.rel = 'noopener noreferrer';
-        a.textContent = linkLabel || linkUrl;
-        // insert at caret
-        if (savedRangeRef.current) {
-          savedRangeRef.current.deleteContents();
-          savedRangeRef.current.insertNode(a);
-        } else {
-          editor.appendChild(a);
-        }
-      }
+  //     if (anchor) {
+  //       // set attributes
+  //       anchor.setAttribute('target', '_blank');
+  //       anchor.setAttribute('rel', 'noopener noreferrer');
+  //       if (linkLabel) anchor.textContent = linkLabel;
+  //     } else {
+  //       // fallback: insert an <a> node
+  //       const a = document.createElement('a');
+  //       a.href = linkUrl;
+  //       a.target = '_blank';
+  //       a.rel = 'noopener noreferrer';
+  //       a.textContent = linkLabel || linkUrl;
+  //       // insert at caret
+  //       if (savedRangeRef.current) {
+  //         savedRangeRef.current.deleteContents();
+  //         savedRangeRef.current.insertNode(a);
+  //       } else {
+  //         editor.appendChild(a);
+  //       }
+  //     }
 
-      // focus back
-      editor.focus();
-      closeLinkModal();
-    } catch (err) {
-      console.error('Insert link failed', err);
-      showSnackbar('Gagal insert link', 'error');
-      closeLinkModal();
-    }
-  };
+  //     // focus back
+  //     editor.focus();
+  //     closeLinkModal();
+  //   } catch (err) {
+  //     console.error('Insert link failed', err);
+  //     showSnackbar('Gagal insert link', 'error');
+  //     closeLinkModal();
+  //   }
+  // };
 
   // ---------------- end helpers ----------------
 
@@ -439,24 +439,6 @@ const handleShowReplyEmoji = (chatId) => {
         )}
 
 
-<<<<<<< HEAD
-      {/* <div
-        className={`chat-bubble ${chat.user_id === userId ? 'chat-bubble-own' : 'chat-bubble-other'}`}
-        onClick={(e) => {
-          const link = e.target.closest("a");
-          if (link) {
-            e.preventDefault();
-            e.stopPropagation();
-            window.open(link.href, "_blank", "noopener,noreferrer");
-          }
-        }}
-      >
-        <div dangerouslySetInnerHTML={{ __html: autoLinkHTML(cleanHTML(chat.message || '')) }} />
-        {renderMedia(chat.medias)}
-      </div> */}
-
-=======
->>>>>>> feature
       <div className="chat-actions">
         {chat.user_id === userId && (
           <button className="chat-reply-btn" onClick={() => handleEditMessage(chat)}>
