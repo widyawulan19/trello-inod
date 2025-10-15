@@ -10405,6 +10405,38 @@ app.get('/api/archive-marketing-design', async (req, res) => {
 })
 
 //TABEL WORKSPACE SUMMARY
+// app.get('/api/workspaces/:userId/summary', async (req, res) => {
+//     const { userId } = req.params;
+
+//     const query = `
+//       SELECT 
+//         w.id AS workspace_id,
+//         w.name AS workspace_name,
+//         COUNT(DISTINCT b.id) AS board_count,
+//         COUNT(DISTINCT l.id) AS list_count,
+//         COUNT(c.id) AS card_count
+//       FROM workspaces_users wu
+//       JOIN workspaces w ON wu.workspace_id = w.id
+//       LEFT JOIN boards b ON b.workspace_id = w.id
+//       LEFT JOIN lists l ON l.board_id = b.id
+//       LEFT JOIN cards c ON c.list_id = l.id
+//       WHERE wu.user_id = $1
+//       GROUP BY w.id
+//       ORDER BY w.name
+//     `;
+
+//     try {
+//         const result = await client.query(query, [userId]);
+//         if (result.rows.length === 0) {
+//             return res.status(404).json({ message: 'No workspace summary found for this user' });
+//         }
+//         res.json(result.rows);
+//     } catch (err) {
+//         console.error('Error fetching workspace summary:', err);
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+// });
+
 app.get('/api/workspaces/:userId/summary', async (req, res) => {
     const { userId } = req.params;
 
@@ -10421,6 +10453,8 @@ app.get('/api/workspaces/:userId/summary', async (req, res) => {
       LEFT JOIN lists l ON l.board_id = b.id
       LEFT JOIN cards c ON c.list_id = l.id
       WHERE wu.user_id = $1
+        AND wu.is_deleted = FALSE   -- pastikan user aktif di workspace
+        AND w.is_deleted = FALSE    -- pastikan workspace belum dihapus
       GROUP BY w.id
       ORDER BY w.name
     `;
@@ -10428,7 +10462,7 @@ app.get('/api/workspaces/:userId/summary', async (req, res) => {
     try {
         const result = await client.query(query, [userId]);
         if (result.rows.length === 0) {
-            return res.status(404).json({ message: 'No workspace summary found for this user' });
+            return res.status(200).json([]); // kirim array kosong, bukan 404
         }
         res.json(result.rows);
     } catch (err) {
@@ -10437,26 +10471,64 @@ app.get('/api/workspaces/:userId/summary', async (req, res) => {
     }
 });
 
+
 //get summary form a workspace 
+// app.get('/api/workspaces/:userId/summary/:workspaceId', async (req, res) => {
+//     const { userId, workspaceId } = req.params;
+
+//     const query = `
+//     SELECT 
+//       w.id AS workspace_id,
+//       w.name AS workspace_name,
+//       COUNT(DISTINCT b.id) AS board_count,
+//       COUNT(DISTINCT l.id) AS list_count,
+//       COUNT(c.id) AS card_count
+//     FROM workspaces_users wu
+//     JOIN workspaces w ON wu.workspace_id = w.id
+//     LEFT JOIN boards b ON b.workspace_id = w.id
+//     LEFT JOIN lists l ON l.board_id = b.id
+//     LEFT JOIN cards c ON c.list_id = l.id
+//     WHERE wu.user_id = $1 AND w.id = $2
+//     GROUP BY w.id
+//     ORDER BY w.name
+//   `;
+
+//     try {
+//         const result = await client.query(query, [userId, workspaceId]);
+
+//         if (result.rows.length === 0) {
+//             return res.status(404).json({ message: 'Workspace summary not found for this user' });
+//         }
+
+//         res.json(result.rows[0]); // hanya satu workspace
+//     } catch (err) {
+//         console.error('Error fetching workspace summary by ID:', err);
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+// });
+
+// Get summary for a specific workspace
 app.get('/api/workspaces/:userId/summary/:workspaceId', async (req, res) => {
     const { userId, workspaceId } = req.params;
 
     const query = `
-    SELECT 
-      w.id AS workspace_id,
-      w.name AS workspace_name,
-      COUNT(DISTINCT b.id) AS board_count,
-      COUNT(DISTINCT l.id) AS list_count,
-      COUNT(c.id) AS card_count
-    FROM workspaces_users wu
-    JOIN workspaces w ON wu.workspace_id = w.id
-    LEFT JOIN boards b ON b.workspace_id = w.id
-    LEFT JOIN lists l ON l.board_id = b.id
-    LEFT JOIN cards c ON c.list_id = l.id
-    WHERE wu.user_id = $1 AND w.id = $2
-    GROUP BY w.id
-    ORDER BY w.name
-  `;
+      SELECT 
+        w.id AS workspace_id,
+        w.name AS workspace_name,
+        COUNT(DISTINCT b.id) AS board_count,
+        COUNT(DISTINCT l.id) AS list_count,
+        COUNT(c.id) AS card_count
+      FROM workspaces_users wu
+      JOIN workspaces w ON wu.workspace_id = w.id
+      LEFT JOIN boards b ON b.workspace_id = w.id AND b.is_deleted = FALSE
+      LEFT JOIN lists l ON l.board_id = b.id AND l.is_deleted = FALSE
+      LEFT JOIN cards c ON c.list_id = l.id AND c.is_deleted = FALSE
+      WHERE wu.user_id = $1
+        AND w.id = $2
+        AND wu.is_deleted = FALSE
+        AND w.is_deleted = FALSE
+      GROUP BY w.id
+    `;
 
     try {
         const result = await client.query(query, [userId, workspaceId]);
@@ -10471,6 +10543,7 @@ app.get('/api/workspaces/:userId/summary/:workspaceId', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
 
 //PERSONAL NOTE
 //1. get all note
