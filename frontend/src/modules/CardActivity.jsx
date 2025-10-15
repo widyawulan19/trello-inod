@@ -72,6 +72,7 @@ const CardActivity = ({ cardId }) => {
         <ul className="space-y-3">
           {cardActivities.map((activity) => {
             const detail = activity.action_detail ? JSON.parse(activity.action_detail) : {};
+            const movedByName = detail.movedBy?.username || 'Unknown';
             const borderColor = COLOR_BORDER[activity.action_type] || '#ddd';
 
             let messageElement = null;
@@ -89,7 +90,8 @@ const CardActivity = ({ cardId }) => {
               if (detail.fromBoardName === detail.toBoardName) {
                 messageElement = (
                   <>
-                    <span className="font-semibold">{activity.username}</span> moved{" "}
+                    {/* <span className="font-semibold">{activity.username}</span> moved{" "} */}
+                     <span className="font-semibold">{movedByName}</span> moved{" "}
                     <span className="font-bold">"{detail.cardTitle}"</span> from{" "}
                     <span className="text-red-500">"{detail.fromListName}"</span> to{" "}
                     <span className="text-green-600">"{detail.toListName}"</span> on board{" "}
@@ -99,7 +101,8 @@ const CardActivity = ({ cardId }) => {
               } else {
                 messageElement = (
                   <>
-                    <span className="font-semibold">{activity.username}</span> moved{" "}
+                    {/* <span className="font-semibold">{activity.username}</span> moved{" "} */}
+                    <span className="font-semibold">{movedByName}</span> moved{" "}
                     <span className="font-bold">"{detail.cardTitle}"</span> from{" "}
                     <span className="text-red-500">"{detail.fromListName}"</span> (board{" "}
                     <span className="italic">"{detail.fromBoardName}"</span>) to{" "}
