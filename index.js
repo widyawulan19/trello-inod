@@ -4355,10 +4355,11 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
 // });
 
 // 6. Move card (antar list atau board + posisi baru)
+// 6. Move card (antar list atau board + posisi baru)
 app.put('/api/cards/:cardId/move', async (req, res) => {
     const { cardId } = req.params;
     const { targetListId, newPosition } = req.body;
-    const userId = req.user?.id || 1; // sementara kalau belum ada auth middleware
+    const actingUserId = req.user?.id || 1; // sementara kalau belum ada auth middleware
 
     try {
         await client.query('BEGIN');
@@ -4366,36 +4367,26 @@ app.put('/api/cards/:cardId/move', async (req, res) => {
         // ambil info card lama
         const oldCardRes = await client.query(
             `SELECT c.list_id, c.position, c.title, l.board_id 
-       FROM cards c 
-       JOIN lists l ON c.list_id = l.id
-       WHERE c.id = $1`,
+             FROM cards c 
+             JOIN lists l ON c.list_id = l.id
+             WHERE c.id = $1`,
             [cardId]
         );
-
         if (oldCardRes.rows.length === 0)
             return res.status(404).json({ error: 'Card tidak ditemukan' });
 
-        const {
-            list_id: oldListId,
-            board_id: oldBoardId,
-            position: oldPosition,
-            title,
-        } = oldCardRes.rows[0];
+        const { list_id: oldListId, board_id: oldBoardId, position: oldPosition, title } = oldCardRes.rows[0];
 
         // ambil board_id dari list tujuan
-        const targetListRes = await client.query(
-            `SELECT board_id FROM lists WHERE id = $1`,
-            [targetListId]
-        );
+        const targetListRes = await client.query(`SELECT board_id FROM lists WHERE id = $1`, [targetListId]);
         if (targetListRes.rows.length === 0)
             return res.status(404).json({ error: 'List tujuan tidak ditemukan' });
-
         const targetBoardId = targetListRes.rows[0].board_id;
 
         // geser posisi di list lama
         await client.query(
             `UPDATE cards SET position = position - 1
-       WHERE list_id = $1 AND position > $2`,
+             WHERE list_id = $1 AND position > $2`,
             [oldListId, oldPosition]
         );
 
@@ -4404,7 +4395,7 @@ app.put('/api/cards/:cardId/move', async (req, res) => {
         if (!finalPosition) {
             const posRes = await client.query(
                 `SELECT COALESCE(MAX(position), 0) + 1 AS pos
-         FROM cards WHERE list_id = $1`,
+                 FROM cards WHERE list_id = $1`,
                 [targetListId]
             );
             finalPosition = posRes.rows[0].pos;
@@ -4412,7 +4403,7 @@ app.put('/api/cards/:cardId/move', async (req, res) => {
             // geser posisi di list tujuan
             await client.query(
                 `UPDATE cards SET position = position + 1
-         WHERE list_id = $1 AND position >= $2`,
+                 WHERE list_id = $1 AND position >= $2`,
                 [targetListId, finalPosition]
             );
         }
@@ -4420,25 +4411,24 @@ app.put('/api/cards/:cardId/move', async (req, res) => {
         // update posisi dan list card
         await client.query(
             `UPDATE cards
-       SET list_id = $1, position = $2, update_at = CURRENT_TIMESTAMP
-       WHERE id = $3`,
+             SET list_id = $1, position = $2, update_at = CURRENT_TIMESTAMP
+             WHERE id = $3`,
             [targetListId, finalPosition, cardId]
         );
 
         // ambil info board & list lama dan baru
         const oldInfo = await client.query(
             `SELECT l.name AS list_name, b.name AS board_name
-       FROM lists l 
-       JOIN boards b ON l.board_id = b.id
-       WHERE l.id = $1`,
+             FROM lists l 
+             JOIN boards b ON l.board_id = b.id
+             WHERE l.id = $1`,
             [oldListId]
         );
-
         const newInfo = await client.query(
             `SELECT l.name AS list_name, b.name AS board_name
-       FROM lists l 
-       JOIN boards b ON l.board_id = b.id
-       WHERE l.id = $1`,
+             FROM lists l 
+             JOIN boards b ON l.board_id = b.id
+             WHERE l.id = $1`,
             [targetListId]
         );
 
@@ -4447,20 +4437,15 @@ app.put('/api/cards/:cardId/move', async (req, res) => {
         const newListName = newInfo.rows[0]?.list_name || 'Unknown List';
         const newBoardName = newInfo.rows[0]?.board_name || 'Unknown Board';
 
-        const userRes = await client.query(
-            'SELECT username FROM users WHERE id = $1',
-            [userId]
+        // ambil semua user yang ada di workspace
+        const workspaceUsersRes = await client.query(
+            `SELECT user_id FROM workspaces_users WHERE workspace_id = $1 AND is_deleted = FALSE`,
+            [oldBoardId] // gunakan workspace_id yang sesuai, bisa ambil dari board -> workspace
         );
-        const userName = userRes.rows[0]?.username || 'Unknown';
+        const userIds = workspaceUsersRes.rows.map(r => r.user_id);
 
-        // ambil semua user terkait card
-        const assignedUsersRes = await client.query(`SELECT user_id FROM card_users WHERE card_id = $1`, [cardId]);
-        const userIds = assignedUsersRes.rows.map(r => r.user_id); // gunakan langsung, tanpa nambahin actingUserId
-
-        // // pastikan minimal ada actingUserId
-        // if (!userIds.includes(actingUserId)) userIds.push(actingUserId);
-
-
+        // pastikan minimal actingUserId ada
+        if (!userIds.includes(actingUserId)) userIds.push(actingUserId);
 
         // activity log
         await logCardActivity({
@@ -4504,6 +4489,7 @@ app.put('/api/cards/:cardId/move', async (req, res) => {
         res.status(500).json({ error: 'Gagal memindahkan card' });
     }
 });
+
 
 
 
