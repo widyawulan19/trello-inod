@@ -1164,3 +1164,34 @@ const handleSendReply = async (parentId) => {
     )}
   </div>
 ) : null}
+
+
+
+const detail = activity.action_detail ? JSON.parse(activity.action_detail) : {};
+const movedByName = detail.movedBy?.username || 'Unknown';
+
+
+if (activity.action_type === 'move' && detail.cardTitle) {
+  if (detail.fromBoardName === detail.toBoardName) {
+    messageElement = (
+      <>
+        <span className="font-semibold">{movedByName}</span> moved{" "}
+        <span className="font-bold">"{detail.cardTitle}"</span> from{" "}
+        <span className="text-red-500">"{detail.fromListName}"</span> to{" "}
+        <span className="text-green-600">"{detail.toListName}"</span> on board{" "}
+        <span className="italic">"{detail.toBoardName}"</span>
+      </>
+    );
+  } else {
+    messageElement = (
+      <>
+        <span className="font-semibold">{movedByName}</span> moved{" "}
+        <span className="font-bold">"{detail.cardTitle}"</span> from{" "}
+        <span className="text-red-500">"{detail.fromListName}"</span> (board{" "}
+        <span className="italic">"{detail.fromBoardName}"</span>) to{" "}
+        <span className="text-green-600">"{detail.toListName}"</span> (board{" "}
+        <span className="italic">"{detail.toBoardName}"</span>)
+      </>
+    );
+  }
+}
