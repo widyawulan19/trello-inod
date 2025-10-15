@@ -12043,27 +12043,63 @@ app.get('/api/user-log/:userId', async (req, res) => {
 
 
 //LOG ACTIVITY CARD
+// app.get('/api/activity-card/card/:cardId', async (req, res) => {
+//     const { cardId } = req.params;
+
+//     try {
+//         const result = await client.query(`
+//       SELECT ca.*, u.username
+//       FROM card_activities ca
+//       JOIN users u ON ca.user_id = u.id
+//       WHERE ca.card_id = $1
+//       ORDER BY ca.created_at DESC
+//     `, [cardId]);
+
+//         res.json({
+//             message: `Activities for card ID ${cardId}`,
+//             activities: result.rows,
+//         });
+//     } catch (err) {
+//         console.error('Error fetching activities:', err);
+//         res.status(500).json({ error: 'Internal Server Error' });
+//     }
+// })
 app.get('/api/activity-card/card/:cardId', async (req, res) => {
     const { cardId } = req.params;
 
     try {
         const result = await client.query(`
-      SELECT ca.*, u.username
-      FROM card_activities ca
-      JOIN users u ON ca.user_id = u.id
-      WHERE ca.card_id = $1
-      ORDER BY ca.created_at DESC
-    `, [cardId]);
+            SELECT ca.*
+            FROM card_activities ca
+            WHERE ca.card_id = $1
+            ORDER BY ca.created_at DESC
+        `, [cardId]);
+
+        const activities = result.rows.map(row => {
+            let movedBy = null;
+            try {
+                const detail = JSON.parse(row.action_detail);
+                movedBy = detail.movedBy || null;
+            } catch (err) {
+                movedBy = null;
+            }
+
+            return {
+                ...row,
+                movedBy, // username + id yang melakukan action
+            };
+        });
 
         res.json({
             message: `Activities for card ID ${cardId}`,
-            activities: result.rows,
+            activities
         });
     } catch (err) {
         console.error('Error fetching activities:', err);
         res.status(500).json({ error: 'Internal Server Error' });
     }
-})
+});
+
 
 app.post('/api/activity-log', async (req, res) => {
     const { entityType, entityId, action, userId, details, parentEntity, parentEntityId } = req.body;
