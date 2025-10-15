@@ -2403,12 +2403,12 @@ app.get('/api/boards', async (req, res) => {
 // });
 // ✅ Get boards by workspace ID (hanya untuk user yang punya akses)
 app.get('/api/workspaces/:workspaceId/boards', async (req, res) => {
-  const { workspaceId } = req.params;
-  const { userId } = req.query;
+    const { workspaceId } = req.params;
+    const { userId } = req.query;
 
-  try {
-    const result = await client.query(
-      `
+    try {
+        const result = await client.query(
+            `
       SELECT b.*
       FROM boards b
       JOIN workspaces w ON w.id = b.workspace_id
@@ -2418,14 +2418,14 @@ app.get('/api/workspaces/:workspaceId/boards', async (req, res) => {
         AND b.is_deleted = FALSE
       ORDER BY b.position ASC
       `,
-      [workspaceId, userId]
-    );
+            [workspaceId, userId]
+        );
 
-    res.json(result.rows);
-  } catch (error) {
-    console.error("Error fetching boards:", error);
-    res.status(500).json({ error: error.message });
-  }
+        res.json(result.rows);
+    } catch (error) {
+        console.error("Error fetching boards:", error);
+        res.status(500).json({ error: error.message });
+    }
 });
 
 
@@ -12247,6 +12247,48 @@ app.delete('/api/notifications/:id', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 })
+
+// 8. Update chat message (hanya bisa oleh pengirimnya)
+app.put('/api/card-chats/:id', async (req, res) => {
+    const { id } = req.params; // id chat yang mau diubah
+    const { user_id, message } = req.body; // id user yang sedang login & pesan baru
+
+    if (!user_id || !message) {
+        return res.status(400).json({ error: 'user_id dan message wajib diisi' });
+    }
+
+    try {
+        // 1️⃣ Cek apakah pesan ini memang dikirim oleh user_id tersebut
+        const check = await client.query(
+            `SELECT * FROM card_chats WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL`,
+            [id, user_id]
+        );
+
+        if (check.rows.length === 0) {
+            return res.status(403).json({
+                error: 'Kamu tidak bisa mengedit pesan ini karena bukan kamu yang kirim.',
+            });
+        }
+
+        // 2️⃣ Update pesan dan waktu terakhir diubah
+        const result = await client.query(
+            `UPDATE card_chats 
+       SET message = $1, updated_at = NOW()
+       WHERE id = $2
+       RETURNING *`,
+            [message, id]
+        );
+
+        res.status(200).json({
+            message: 'Pesan berhasil diupdate',
+            data: result.rows[0],
+        });
+    } catch (err) {
+        console.error('Error updating chat:', err);
+        res.status(500).json({ error: 'Terjadi kesalahan saat update chat' });
+    }
+});
+
 
 
 // MEDIA CHATS 
