@@ -39,7 +39,7 @@
 
 const client = require('./connection');
 
-async function logCardActivityMultiple({ action, card_id, user_ids, entity = null, entity_id = null, details = null }) {
+async function logCardActivity({ action, card_id, user_ids, entity = null, entity_id = null, details = null }) {
   if (!card_id || !user_ids || !action || !Array.isArray(user_ids) || user_ids.length === 0) {
     throw new Error('card_id, user_ids (array), and action are required');
   }
@@ -58,4 +58,4 @@ async function logCardActivityMultiple({ action, card_id, user_ids, entity = nul
   console.log(`📝 Logged activity "${action}" for users: ${user_ids.join(', ')}`);
 }
 
-module.exports = { logCardActivityMultiple };
+module.exports = { logCardActivity };
