@@ -316,12 +316,12 @@
   background-color: #eee;
 }
 
-.chat-reply-form {
+/* .chat-reply-form {
   margin-top: 8px;
   display: flex;
   flex-direction: column;
   gap: 6px;
-}
+} */
 
 .chat-upload {
   /* border: 1px solid red; */
@@ -345,11 +345,53 @@
   background: #357ab8;
 }
 
+/* EDIT BUTTON  */
+.edit-chat-box .edit-actions {
+  /* border: 1px solid red; */
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 5px;
+  padding-left: 10px;
+}
+
+.edit-chat-box .save-edit {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 2px 5px;
+  font-size: 10px;
+  gap: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-chat-box .cancle-edit {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 2px 5px;
+  font-size: 10px;
+  gap: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: red;
+}
+
+.save-edit:hover,
+.cancle-edit:hover {
+  background-color: #eee;
+  border: 1px solid #eee;
+}
 
 
 /* TOOLBAR CONTAINER   */
 
-.chat-toolbar-container {
+.chat-toolbar-container,
+.chat-reply-form,
+.edit-chat-box {
   /* border: 1px solid transparent; */
   /* border: 1px solid blue !important; */
   border-radius: 8px;
@@ -360,6 +402,7 @@
   /* height: 15vh; */
   width: 98%;
   margin: 5px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.06);
 }
 
@@ -470,6 +513,7 @@
   align-items: center;
   justify-content: left;
   border-radius: 10px;
+  /* box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); */
   /* width: 100%; */
 }
 

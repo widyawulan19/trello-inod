@@ -1,121 +1,61 @@
-import React, { useState, useRef } from "react";
+import React from "react";
 import ReactQuill from "react-quill-new";
 import "quill/dist/quill.snow.css";
-import { FaLink } from "react-icons/fa";
-import { ImAttachment } from "react-icons/im";
-import '../style/fitur/ChatEditor.css'
+import '../style/fitur/NewRoomChat.css'
+import { TiAttachmentOutline } from "react-icons/ti";
 
-export default function ChatEditor() {
-  const [value, setValue] = useState("");
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const quillRef = useRef(null);
-
-  const emojiList = ["😀", "😂", "😍", "😎", "😢", "😡", "👍", "🎉"];
-
-  // === UPLOAD FILE HANDLER ===
-  const handleUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      alert(`File selected: ${file.name}`);
-    }
-  };
-
-  // === INSERT LINK ===
-  const insertLink = () => {
-    const url = prompt("Masukkan URL:");
-    if (url && quillRef.current) {
-      const quill = quillRef.current.getEditor();
-      const range = quill.getSelection();
-      if (range) {
-        quill.format("link", url);
-      }
-    }
-  };
-
-  // === INSERT EMOJI ===
-  const insertEmoji = (emoji) => {
-    const quill = quillRef.current.getEditor();
-    const range = quill.getSelection(true);
-    quill.insertText(range.index, emoji);
-    quill.setSelection(range.index + emoji.length);
-    setShowEmojiPicker(false);
-  };
-
-  // === TOOLBAR CONFIGURATION ===
+const ChatEditor = ({
+  value,
+  onChange,
+  onSend,
+  onUpload,
+  placeholder = "Tulis pesan...",
+  emojiList = [],
+  insertEmoji,
+  target = "main"
+}) => {
   const modules = {
-    toolbar: {
-      container: "#toolbar",
-      handlers: {
-        link: insertLink,
-      },
-    },
+    toolbar: [
+      ["bold", "italic", "underline", "strike", "code"],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["link", "image"],
+    ],
   };
 
   const formats = [
-    "bold",
-    "italic",
-    "underline",
-    "strike",
-    "list",
-    "bullet",
-    "code",
-    "link",
+    "bold", "italic", "underline", "strike", "code",
+    "list", "bullet", "link", "image",
   ];
 
   return (
-    <div className="chat-editor-container">
-      {/* === CUSTOM TOOLBAR === */}
-      <div id="toolbar" className="chat-toolbar-fix">
-        <button className="ql-bold"><b>B</b></button>
-        <button className="ql-italic"><i>I</i></button>
-        <button className="ql-underline"><u>U</u></button>
-        <button className="ql-strike"><s>S</s></button>
-        <button className="ql-list" value="ordered">1.</button>
-        <button className="ql-list" value="bullet">•</button>
-        <button className="ql-code-block"><code>{"</>"}</code></button>
-
-        <button onClick={insertLink}><FaLink /></button>
-
-        <label className="upload-btn">
-          <ImAttachment />
-          <input
-            type="file"
-            style={{ display: "none" }}
-            onChange={handleUpload}
-          />
-        </label>
-
-        <div className="emoji-picker-wrapper">
-          <button
-            type="button"
-            onClick={() =>
-              setShowEmojiPicker(showEmojiPicker ? false : true)
-            }
-          >
-            😄
-          </button>
-          {showEmojiPicker && (
-            <div className="emoji-picker">
-              {emojiList.map((emoji, i) => (
-                <span key={i} onClick={() => insertEmoji(emoji)}>
-                  {emoji}
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
+    <div className="chat-editor">
+      <div className="ql-container">
+        <ReactQuill
+          theme="snow"
+          value={value}
+          onChange={onChange}
+          modules={modules}
+          formats={formats}
+          placeholder={placeholder}
+          className="my-editor"
+        />
       </div>
-
-      {/* === QUILL EDITOR === */}
-      <ReactQuill
-        ref={quillRef}
-        theme="snow"
-        value={value}
-        onChange={setValue}
-        modules={modules}
-        formats={formats}
-        placeholder="Tulis pesanmu di sini..."
-      />
+      <div className="editor-actions">
+        <label className="upload-btn">
+          <TiAttachmentOutline />
+          <input type="file" hidden onChange={e => onUpload(e, target)} />
+        </label>
+        <div className="emoji-picker-mini">
+          {emojiList.map((emoji, i) => (
+            <span key={i} onClick={() => insertEmoji(emoji, target)}>{emoji}</span>
+          ))}
+        </div>
+        {onSend && (
+          <button className="btn-send" onClick={onSend}>📤</button>
+        )}
+      </div>
     </div>
   );
-}
+};
+
+export default ChatEditor;

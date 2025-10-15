@@ -750,6 +750,24 @@ export const getAllCardChat = (cardId) => axios.get(`${API_URL}/cards/${cardId}/
 export const createMessage = (cardId, data) => axios.post(`${API_URL}/cards/${cardId}/chats`, data);
 export const deleteMessage = (chatId) => axios.delete(`${API_URL}/chats/${chatId}`);
 export const getTotalMessageInCard = (cardId) => axios.get(`${API_URL}/chats-total/cards/${cardId}`);
+// ✅ Update chat message
+export const updateMessage = async (chatId, data) => {
+  try {
+    const res = await fetch(`${API_URL}/card-chats/${chatId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    return await res.json();
+  } catch (error) {
+    console.error('Error updating message:', error);
+    throw error;
+  }
+};
+
+
 
 // Upload file ke chat
 export const uploadChatMedia = async (chatId, file) => {

@@ -1,15 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ReactQuill from 'react-quill-new';
 import "quill/dist/quill.snow.css";
-import { createMessage, deleteMessage, getAllCardChat, uploadChatMedia } from '../services/ApiServices';
+import { createMessage, deleteMessage, getAllCardChat, updateMessage, uploadChatMedia } from '../services/ApiServices';
 import '../style/fitur/NewRoomChat.css';
 import { FaXmark } from 'react-icons/fa6';
-import { IoArrowUpOutline, IoReturnDownBackSharp, IoTrash } from "react-icons/io5";
+import { IoArrowUpOutline, IoClose, IoReturnDownBackSharp, IoTrash } from "react-icons/io5";
 import { useSnackbar } from '../context/Snackbar';
 import bg from '../assets/tele-wallps.png';
 import ChatEditor from './ChatEditor';
-import { IoIosSend } from "react-icons/io";
+import { IoIosSave, IoIosSend } from "react-icons/io";
 import { TiAttachmentOutline } from "react-icons/ti";
+import { BiSolidEditAlt } from "react-icons/bi";
 
 
 const NewRoomChat = ({ cardId, userId, onClose }) => {
@@ -25,11 +26,74 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
   const editorRef = useRef(null);
   const mainEditorRef = useRef(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
+  const [showReplyEmojiPicker, setShowReplyEmojiPicker] = useState(null); // khusus reply
+  // EDIT MESSAGE 
+  const [editingMessage, setEditingMessage] = useState(null);
+  const [editText, setEditText] = useState('');
+  const [showEditEmojiPicker, setShowEditEmojiPicker] = useState(null);
+
+
+  // SHOW / HIDE EMOJI EDIT
+  const handleShowEditEmoji = (chatId) => {
+    setShowEditEmojiPicker((prev) => (prev === chatId ? null : chatId));
+    setShowEmojiPicker(false);         // tutup emoji main
+    setShowReplyEmojiPicker(null);     // tutup emoji reply
+  };
+
+  // FUNGSI EDIT MESSAGE 
+  const handleEditMessage = (msg) => {
+  setEditingMessage(msg.id);
+  setEditText(msg.message);
+};
+
+  // ✅ Fungsi simpan edit
+  const handleSaveEdit = async () => {
+    if (!editText.trim()) return;
+
+    try {
+      const res = await updateMessage(editingMessage, {
+        user_id: userId,
+        message: editText,
+      });
+
+      if (res.data) {
+        setChats((prev) =>
+          prev.map((m) => (m.id === editingMessage ? res.data : m))
+        );
+        setEditingMessage(null);
+        setEditText('');
+        showSnackbar('Pesan berhasil diedit', 'success');
+        fetchChats();
+      }
+    } catch (error) {
+      console.error('Error editing message:', error);
+      showSnackbar('Gagal mengedit pesan', 'error');
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingMessage(null);
+    setEditText('');
+    setShowEditEmojiPicker(null);
+  };
 
   // fungsi show emoji 
-  const handleShowEmoji = () =>{
-    setShowEmojiPicker(prev => !prev)
-  }
+  // const handleShowEmoji = () =>{
+  //   setShowEmojiPicker(prev => !prev)
+  // }
+
+// untuk main editor
+const handleShowEmoji = () => {
+  setShowEmojiPicker(prev => !prev);        // toggle on/off
+  setShowReplyEmojiPicker(null);            // tutup semua emoji reply
+};
+
+// untuk reply editor
+const handleShowReplyEmoji = (chatId) => {
+  setShowReplyEmojiPicker(prev => (prev === chatId ? null : chatId)); // toggle on/off
+  setShowEmojiPicker(false);                // tutup emoji main
+};
+
 
   useEffect(() => {
     fetchChats();
@@ -81,9 +145,12 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
   const handleSendReply = async (parentId) => {
     const html = replyMessage[parentId] || "";
     const files = replyPendingFiles[parentId] || [];
+
+    // kalau kosong semua, jangan kirim
     if ((!html || html === "<p><br></p>") && files.length === 0) return;
 
     try {
+       // kirim ke backend
       const res = await createMessage(cardId, {
         user_id: userId,
         message: html,
@@ -91,11 +158,25 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
       });
 
       const chatId = res.data.id;
+
+       // upload file jika ada
       for (let file of files) await uploadChatMedia(chatId, file);
 
+       // reset input dan file
       setReplyMessage(prev => ({ ...prev, [parentId]: "" }));
       setReplyPendingFiles(prev => ({ ...prev, [parentId]: [] }));
+
+
+      // 🚀 Tutup editor reply dan emoji picker setelah kirim
+      setReplyTo(null);                // tutup editor reply
+      setShowReplyEmojiPicker(null);   // tutup emoji picker reply
+      setShowEmojiPicker(false);       // tutup emoji picker main (jaga-jaga)
+
+
+      // refresh chat list 
       fetchChats();
+
+      //notifikasi sukses
       showSnackbar("Reply terkirim!", "success");
     } catch (err) {
       console.error("Reply error:", err);
@@ -163,10 +244,27 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
 
 
   const emojiList = ["😀","😄","😁","😆","😅","😂","🤣","😊","😍","😎","🤩","😘","😢","😭","😡","🤔","👍","👎","🙏","👏","🔥","💯","🎉","❤️"];
+  // const insertEmoji = (emoji, target = "main") => {
+  //   if (target === "main") setMessage(prev => prev + emoji);
+  //   else setReplyMessage(prev => ({ ...prev, [target]: (prev[target] || "") + emoji }));
+  // };
   const insertEmoji = (emoji, target = "main") => {
-    if (target === "main") setMessage(prev => prev + emoji);
-    else setReplyMessage(prev => ({ ...prev, [target]: (prev[target] || "") + emoji }));
+    if (target === "main") {
+      setMessage(prev => prev + emoji);
+    } 
+    else if (target === "edit") {
+      setEditText(prev => (prev || "") + emoji);
+    } 
+    else {
+      setReplyMessage(prev => ({
+        ...prev,
+        [target]: (prev[target] || "") + emoji,
+      }));
+    }
   };
+
+
+
 
   const renderChats = (chatList, level = 0) => chatList.map(chat => (
     <div
@@ -182,7 +280,76 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
         <span className="chat-timestamp">{new Date(chat.send_time).toLocaleString()}</span>
       </div>
 
-      <div
+
+        {/* ✅ MODE EDIT */}
+        {editingMessage === chat.id ? (
+          <div className="edit-chat-box">
+            <div className="editor-wrapper">
+              <div className="ql-container">
+                <ReactQuill
+                  theme="snow"
+                  value={editText}
+                  onChange={setEditText}
+                  modules={modules}
+                  formats={formats}
+                  placeholder="Edit pesan..."
+                  className="my-editor"
+                />
+              </div>
+
+              <div className="editor-actions">
+                <div className="more-act">
+                  <label className="upload-btn"><TiAttachmentOutline/>
+                    <input type="file" hidden onChange={e => handleUploadFromEditor(e, chat.id)} />
+                  </label>
+                  <button className='btn-icon' onClick={() => handleShowEditEmoji(chat.id)}>
+                    😎
+                  </button>
+                </div>
+                <div className="act-btn">
+                  <button className="btn-send" onClick={() => handleSaveEdit(chat.id)}>
+                    <IoIosSend/>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* SHOW EMOJI */}
+            {showEditEmojiPicker === chat.id && (
+              <div className="emoji-picker-fix">
+                {emojiList.map((emoji, i) => (
+                  <span key={i} onClick={() => insertEmoji(emoji, "edit")}>{emoji}</span>
+                ))}
+              </div>
+            )}
+
+            <div className="edit-actions">
+              <button className='save-edit' onClick={() => handleSaveEdit(chat.id)}><IoIosSave/> Save</button>
+              <button className='cancle-edit' onClick={handleCancelEdit}><IoClose/> Cancel</button>
+            </div>
+          </div>
+        ) : (
+          <div
+            className={`chat-bubble ${chat.user_id === userId ? 'chat-bubble-own' : 'chat-bubble-other'}`}
+            onClick={(e) => {
+              const link = e.target.closest("a");
+              if (link) {
+                e.preventDefault();
+                e.stopPropagation();
+                window.open(link.href, "_blank", "noopener,noreferrer");
+              }
+            }}
+          >
+            <div dangerouslySetInnerHTML={{ __html: autoLinkHTML(chat.message) }} />
+            {chat.updated_at !== chat.created_at && (
+              <span className="edited-label">(edited)</span>
+            )}
+            {renderMedia(chat.medias)}
+          </div>
+        )}
+
+
+      {/* <div
         className={`chat-bubble ${chat.user_id === userId ? 'chat-bubble-own' : 'chat-bubble-other'}`}
         onClick={(e) => {
           const link = e.target.closest("a");
@@ -195,9 +362,14 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
       >
         <div dangerouslySetInnerHTML={{ __html: autoLinkHTML(chat.message) }} />
         {renderMedia(chat.medias)}
-      </div>
+      </div> */}
 
       <div className="chat-actions">
+        {chat.user_id === userId && (
+          <button className="chat-reply-btn" onClick={() => handleEditMessage(chat)}>
+            <BiSolidEditAlt /> Edit
+          </button>
+        )}
         {chat.parent_message_id === null && (
           <button className="chat-reply-btn" onClick={() => setReplyTo(chat.id)}>
             <IoReturnDownBackSharp/> Reply
@@ -210,28 +382,46 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
 
       {replyTo === chat.id && (
         <div className="chat-reply-form">
-          <ReactQuill
-            theme="snow"
-            value={replyMessage[chat.id] || ""}
-            onChange={(val) => setReplyMessage(prev => ({ ...prev, [chat.id]: val }))}
-            modules={modules}
-            formats={formats}
-            placeholder="Tulis balasan..."
-          />
-          <label className="upload-btn">📎
-            <input type="file" hidden onChange={e => handleUploadFromEditor(e, chat.id)} />
-          </label>
-          <div className="emoji-picker-wrapper">
-            {emojiList.map((emoji, i) => (
-              <span key={i} onClick={() => insertEmoji(emoji, chat.id)}>{emoji}</span>
-            ))}
+          <div className="editor-wrapper">
+            <div className="ql-container">
+              <ReactQuill
+                theme="snow"
+                value={replyMessage[chat.id] || ""}
+                onChange={(val) => setReplyMessage(prev => ({ ...prev, [chat.id]: val }))}
+                modules={modules}
+                formats={formats}
+                placeholder="Tulis balasan..."
+                className="my-editor"
+              />
+            </div>
+            <div className="editor-actions">
+              <div className="more-act">
+                <label className="upload-btn"><TiAttachmentOutline/>
+                  <input type="file" hidden onChange={e => handleUploadFromEditor(e, chat.id)} />
+                </label>
+                <button className='btn-icon' onClick={() => handleShowReplyEmoji(chat.id)}>
+                  😎
+                </button>
+
+              </div>
+              <div className="act-btn">
+                <button className="btn-send"  onClick={() => handleSendReply(chat.id)}>
+                  <IoIosSend/>
+                </button>
+              </div>
+              
+            </div>
           </div>
-          <div className="reply-send" onClick={() => handleSendReply(chat.id)}>
-            <IoArrowUpOutline/>
-          </div>
+          {/* SHOW EMOJI  */}
+              {showReplyEmojiPicker === chat.id && (
+                <div className="emoji-picker-fix">
+                  {emojiList.map((emoji, i) => (
+                    <span key={i} onClick={() => insertEmoji(emoji, chat.id)}>{emoji}</span>
+                  ))}
+                </div>
+              )}          
         </div>
       )}
-
       {chat.replies?.length > 0 && renderChats(chat.replies, level + 1)}
     </div>
   ));
@@ -288,10 +478,35 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
                   ))}
               </div>
             )}
-        
       </div>
+
     </div>
   );
 };
 
 export default NewRoomChat;
+
+
+// reply 
+{/* <div className="ql-container">
+            <ReactQuill
+              theme="snow"
+              value={replyMessage[chat.id] || ""}
+              onChange={(val) => setReplyMessage(prev => ({ ...prev, [chat.id]: val }))}
+              modules={modules}
+              formats={formats}
+              placeholder="Tulis balasan..."
+              className="my-editor"
+            />
+          </div>
+          <label className="upload-btn">📎
+            <input type="file" hidden onChange={e => handleUploadFromEditor(e, chat.id)} />
+          </label>
+          <div className="emoji-picker-wrapper">
+            {emojiList.map((emoji, i) => (
+              <span key={i} onClick={() => insertEmoji(emoji, chat.id)}>{emoji}</span>
+            ))}
+          </div>
+          <div className="reply-send" onClick={() => handleSendReply(chat.id)}>
+            <IoArrowUpOutline/>
+          </div> */}
