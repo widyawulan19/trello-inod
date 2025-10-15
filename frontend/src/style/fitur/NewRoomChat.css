@@ -130,9 +130,11 @@
   font-size: 10px;
   color: #34495e;
   white-space: pre-line;
-   pointer-events: auto;
+  pointer-events: auto;
   user-select: text;
 }
+
+
 
 .chat-bubble-own {
   /* border: 1px solid red; */
@@ -168,6 +170,54 @@
   color: #6E30DC;
   text-decoration: underline;
 }
+
+/* Paksa bullet list tampil bulat meski HTML-nya <ol> */
+.chat-bubble ol[data-list="bullet"],
+.ql-editor ol[data-list="bullet"] {
+  list-style-type: disc !important;
+  margin-left: 1.5rem !important;
+  padding-left: 1.5rem !important;
+}
+
+.chat-bubble ol[data-list="ordered"],
+.ql-editor ol[data-list="ordered"] {
+  list-style-type: decimal !important;
+  margin-left: 1.5rem !important;
+  padding-left: 1.5rem !important;
+}
+
+.chat-bubble ol,
+.chat-bubble ul {
+  margin: 0.5rem 1.2rem;
+  background: transparent;
+  padding-left: 1.4rem;
+}
+
+.chat-bubble ol {
+  list-style-type: decimal !important;
+  /* tetap tampil angka */
+  margin: 0.5rem 1.2rem;
+  padding-left: 1.5rem;
+}
+
+.chat-bubble ul {
+  list-style-type: disc !important;
+  /* tampilkan bullet hitam biasa */
+  margin: 0.5rem 1.2rem;
+  padding-left: 1.5rem;
+}
+
+.chat-bubble li {
+  display: list-item !important;
+  /* pastikan <li> berperilaku seperti item list */
+  margin-bottom: 0.3rem;
+}
+
+.chat-bubble li::marker {
+  color: #666;
+  /* warna bullet/angka */
+}
+
 
 
 
@@ -300,12 +350,14 @@
 /* TOOLBAR CONTAINER   */
 
 .chat-toolbar-container {
-  border: 1px solid transparent;
-  /* border: 1px solid red !important; */
+  /* border: 1px solid transparent; */
+  /* border: 1px solid blue !important; */
   border-radius: 8px;
   position: sticky;
   bottom: 0;
   z-index: 1;
+  height: fit-content;
+  /* height: 15vh; */
   width: 98%;
   margin: 5px;
   box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.06);
@@ -344,7 +396,7 @@
   position: relative;
 }
 
-.emoji-picker {
+/* .emoji-picker {
   position: absolute;
   bottom: 36px;
   left: 0;
@@ -358,7 +410,7 @@
   width: 40vw;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   z-index: 10;
-}
+} */
 
 .emoji-item {
   font-size: 20px;
@@ -400,6 +452,209 @@
 }
 
 /* END RENDER MEDIA  */
+
+
+/* .chat-toolbar-container {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid #ddd;
+  background: #fff;
+  padding: 0.5rem;
+} */
+
+.editor-wrapper {
+  position: relative;
+  background-color: white;
+  /* border: 1px solid red; */
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  border-radius: 10px;
+  /* width: 100%; */
+}
+
+.editor-wrapper .ql-container {
+  border-radius: 10px;
+  /* border: 1px solid #eee; */
+  width: 90%;
+}
+
+.editor-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 10%;
+  height: 16vh;
+  /* border: 1px solid red; */
+  position: relative;
+  top: 0;
+  margin-top: 0;
+  box-sizing: border-box;
+}
+
+.editor-actions .more-act {
+  border-top-right-radius: 8px;
+  border-top: 1px solid #d7d6e3;
+  border-bottom: 1px solid #d7d6e3;
+  border-right: 1px solid #d7d6e3;
+  background-color: #f2f1ff;
+  /* border: 1px solid green; */
+  height: 35%;
+  width: 100%;
+  gap: 5px;
+  padding: 7px 5px;
+  margin-top: 2px;
+  /* padding-bottom: 6px; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.more-act .upload-btn {
+  /* border: 1px solid red; */
+  padding: 2px;
+  border-radius: 4px;
+  border: 1px solid #f2f1ff;
+  background-color: #f2f1ff;
+}
+
+.more-act .btn-icon {
+  /* border: 1px solid red; */
+  padding: 2px;
+  border-radius: 4px;
+  border: 1px solid #f2f1ff;
+  background-color: #f2f1ff;
+}
+
+.upload-btn:hover,
+.btn-icon:hover {
+  border: 1px solid #fff;
+  background-color: #ffffff;
+}
+
+
+
+/* ✅ EMOJI PICKER muncul di atas tombol emoji */
+.emoji-picker-fix {
+  position: absolute;
+  /* top: 0; */
+  /* padding: 0px; */
+  bottom: calc(100% + 8px);
+  /* naik ke atas tombol emoji, tambahin jarak 8px */
+  left: 80%;
+  /* right: 0%; */
+  transform: translateX(-50%);
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: 240px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  z-index: 10000;
+  /* biar gak ketutupan */
+}
+
+.emoji-picker span {
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: transform 0.15s ease;
+}
+
+.emoji-picker span:hover {
+  transform: scale(1.25);
+}
+
+.editor-actions .act-btn {
+  /* border: 1px solid yellow; */
+  width: 100%;
+  height: 64%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.act-btn .btn-send {
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+  /* border: 1px solid red; */
+}
+
+.btn-send:hover {
+  background: #1d4ed8;
+}
+
+
+/* SNOW REACT QUILL  */
+.editor-wrapper .my-editor .ql-container.ql-snow {
+  border: 1px solid white;
+  background-color: white;
+  height: 10vh;
+  width: 100%;
+}
+
+.editor-wrapper .my-editor .ql-toolbar.ql-snow {
+  border: 1px solid #d7d6e3;
+  border-right: 1px solid #f2f1ff;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 0px;
+  background-color: #f2f1ff;
+  color: white;
+  width: 100%;
+}
+
+/* MODAL LINK  */
+/* ✅ Atur posisi popup link bawaan Quill biar muncul di atas editor */
+.ql-tooltip {
+  z-index: 9999 !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  top: -45px !important;
+  /* ubah sesuai tinggi editor kamu */
+  background: white !important;
+  border: 1px solid #ccc !important;
+  border-radius: 6px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 5px 10px !important;
+}
+
+/* 🔧 Pastikan teks input-nya enak dilihat */
+.ql-tooltip input[type="text"] {
+  width: 200px !important;
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
+  padding: 4px 6px !important;
+  font-size: 13px !important;
+}
+
+.ql-tooltip input[type="text"]:focus {
+  outline: none;
+}
+
+/* Optional: styling tombol apply/cancel biar gak kejepit */
+.ql-tooltip a.ql-action,
+.ql-tooltip a.ql-remove {
+  margin-left: 8px !important;
+  color: #fff !important;
+  font-weight: 500;
+  color: #6E30DC !important;
+  text-align: center !important;
+}
+
+
 
 /* MEDIA QUERY  */
 @media (min-width: 1401px) and (max-width: 2100px) {

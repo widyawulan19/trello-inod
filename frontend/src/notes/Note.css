@@ -1,0 +1,43 @@
+.editor-actions .more-act {
+    border: 1px solid blue;
+    /* border: 1px solid #f2f1ff; */
+    display: flex;
+    height: 50%;
+    border-top-right-radius: 8px;
+    border-top: 1px solid #d7d6e3;
+    border-bottom: 1px solid #d7d6e3;
+    border-right: 1px solid #d7d6e3;
+    background-color: #f2f1ff;
+    /* margin: 5px 0px; */
+    /* margin-bottom: 9px; */
+    padding-bottom: 10px;
+    padding-top: 2px;
+    position: relative;
+}
+
+.upload-btn {
+    cursor: pointer;
+    font-size: 12px;
+    border: 1px solid #f2f1ff;
+    background-color: #f2f1ff;
+    padding: 6px 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 50%;
+}
+
+.more-act button {
+    border: 1px solid #f2f1ff;
+    background-color: #f2f1ff;
+    padding: 5px;
+    border-radius: 4px;
+    /* margin-left: 3px; */
+    cursor: pointer;
+}
+
+.upload-btn:hover,
+.more-act button:hover {
+    border: 1px solid #fff;
+    background-color: #ffffff;
+
+}
