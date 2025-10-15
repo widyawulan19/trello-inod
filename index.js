@@ -4468,27 +4468,29 @@ app.put('/api/cards/:cardId/move', async (req, res) => {
         const newListName = newInfo.rows[0]?.list_name || 'Unknown List';
         const newBoardName = newInfo.rows[0]?.board_name || 'Unknown Board';
 
-        // ambil semua user yang ada di workspace
-        const workspaceUsersRes = await client.query(
-            `SELECT user_id FROM workspaces_users WHERE workspace_id = $1 AND is_deleted = FALSE`,
-            [oldBoardId] // gunakan workspace_id yang sesuai, bisa ambil dari board -> workspace
-        );
-        const userIds = workspaceUsersRes.rows.map(r => r.user_id);
 
+        // ambil username acting user
         const actingUserRes = await client.query(
             'SELECT username FROM users WHERE id = $1',
             [actingUserId]
         );
         const actingUserName = actingUserRes.rows[0]?.username || 'Unknown';
 
+        // ambil semua user workspace tetap
+        const workspaceUsersRes = await client.query(
+            `SELECT user_id FROM workspaces_users WHERE workspace_id = $1 AND is_deleted = FALSE`,
+            [oldBoardId]
+        );
+        const userIds = workspaceUsersRes.rows.map(r => r.user_id);
+
         // pastikan minimal actingUserId ada
         if (!userIds.includes(actingUserId)) userIds.push(actingUserId);
 
-        // activity log
+        // log activity
         await logCardActivity({
             action: 'move',
             card_id: cardId,
-            user_id: actingUserId,  // pakai actingUserId
+            user_ids: userIds,   // ✅ wajib array
             entity: 'list',
             entity_id: targetListId,
             details: {
@@ -4502,7 +4504,7 @@ app.put('/api/cards/:cardId/move', async (req, res) => {
                 toListId: targetListId,
                 toListName: newListName,
                 newPosition: finalPosition,
-                movedBy: { id: actingUserId, username: actingUserName } // ✅ ini bikin frontend tau siapa yang pindahin
+                movedBy: { id: actingUserId, username: actingUserName } // ✅ tampil nama user yang pindahin
             }
         });
 
