@@ -4387,6 +4387,7 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
 });
 
 // 6. Move card (antar list atau board + posisi baru)
+// 6. Move card (antar list atau board + posisi baru)
 app.put('/api/cards/:cardId/move', async (req, res) => {
     const { cardId } = req.params;
     const { targetListId, newPosition } = req.body;
@@ -4475,13 +4476,6 @@ app.put('/api/cards/:cardId/move', async (req, res) => {
         );
         const userIds = workspaceUsersRes.rows.map(r => r.user_id);
 
-        // ambil username user yang memindahkan
-        const actingUserRes = await client.query(
-            'SELECT username FROM users WHERE id = $1',
-            [actingUserId]
-        );
-        const actingUserName = actingUserRes.rows[0]?.username || 'Unknown';
-
         // pastikan minimal actingUserId ada
         if (!userIds.includes(actingUserId)) userIds.push(actingUserId);
 
@@ -4503,7 +4497,6 @@ app.put('/api/cards/:cardId/move', async (req, res) => {
                 toListId: targetListId,
                 toListName: newListName,
                 newPosition: finalPosition,
-                movedBy: { id: actingUserId, username: actingUserName } // ✅ tambah nama user
             },
         });
 
