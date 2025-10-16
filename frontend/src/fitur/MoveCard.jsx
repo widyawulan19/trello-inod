@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useUser } from '../context/UserContext';
 import {
   getBoards,
   moveCardToList,
-  moveCardToListTesting,
   getListByBoard,
   getCardsByList,
 } from '../services/ApiServices';
@@ -16,6 +14,7 @@ import {
 import BootstrapTooltip from '../components/Tooltip';
 import '../style/fitur/MoveCard.css';
 import { useSnackbar } from '../context/Snackbar';
+import { useUser } from '../context/UserContext';
 
 const MoveCard = ({
   cardId,
@@ -37,7 +36,8 @@ const MoveCard = ({
   const [showBoardDropdown, setShowBoardDropdown] = useState(false);
   const [showListDropdown, setShowListDropdown] = useState(false);
   const [isMoving, setIsMoving] = useState(false);
-  const {user} = useUser();
+    const { user } = useUser();
+  const userId = user?.id;
 
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
@@ -67,7 +67,7 @@ const MoveCard = ({
     }
   }, [selectedList]);
 
-   // 🔹 Fungsi pindahkan card pakai moveCardToListTesting
+  // 🔹 Fungsi pindahkan card
   const handleMoveCard = async () => {
     if (!cardId || !selectedList?.id) {
       alert('Please select both board and list!');
@@ -79,22 +79,16 @@ const MoveCard = ({
       return;
     }
 
-    if (!user?.id) {
-      alert('User not found!');
-      return;
-    }
-
     setIsMoving(true);
 
     try {
-      const result = await moveCardToListTesting(
+      const result = await moveCardToList(
         cardId,
-        user.id, // userId di URL
+        userId,
         selectedList.id,
-        Number(targetPosition)
+        targetPosition
       );
-
-      console.log('✅ Card moved successfully:', result);
+      console.log('✅ Card moved successfully:', result.data);
       showSnackbar('Card moved successfully!', 'success');
 
       // Refresh data parent
@@ -243,8 +237,7 @@ const MoveCard = ({
         {/* 🔢 Input posisi card */}
         {selectedList && (
           <div className="mc-position">
-            {/* <label>Card Position (1 - {cards.length + 1})</label> */}
-            <label>Card Position</label>
+            <label>Card Position (1 - {cards.length + 1})</label>
             <input
               type="number"
               min="1"
