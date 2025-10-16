@@ -99,7 +99,7 @@ const CardActivity = ({ cardId }) => {
                     <span className="text-green-600">"{detail.toListName}"</span> on board{' '}
                     <span className="italic">"{detail.toBoardName}"</span>
                   </>
-                );
+                )
               } else {
                 messageElement = (
                   <>
