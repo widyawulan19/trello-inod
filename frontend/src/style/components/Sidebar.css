@@ -1,10 +1,10 @@
 /* Sidebar Layout Container */
 .sidebar-layout-container {
   display: flex;
-  }
-  
-  /* Container utama sidebar */
-  .sidebar-container {
+}
+
+/* Container utama sidebar */
+.sidebar-container {
   height: 100vh;
   /* background-color: #0e111a; */
   background-image: linear-gradient(to right bottom, #051937, #00235f, #042887, #3827ab, #6a11cb);
@@ -15,126 +15,131 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  }
-  
-  /* Sidebar terlihat penuh */
-  .show-sidebar {
+}
+
+/* Sidebar terlihat penuh */
+.show-sidebar {
   width: 220px;
-  }
-  
-  /* Sidebar tertutup */
-  .close-sidebar {
+}
+
+/* Sidebar tertutup */
+.close-sidebar {
   width: 80px;
-  }
-  
-  /* Menu utama di sidebar */
-  .sidebar-menu {
+}
+
+/* Menu utama di sidebar */
+.sidebar-menu {
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding: 10px 0;
   /* border: 1px solid yellow; */
-  }
-  
-  /* Setiap item menu di sidebar */
-  .sidebar-main {
+}
+
+/* Setiap item menu di sidebar */
+.sidebar-main {
   display: flex;
   align-items: center;
-  padding: 10px 15px;
+  /* padding: 10px 15px; */
+  padding: 5px;
   cursor: pointer;
   border-radius: 8px;
   border: 2px solid transparent;
   /* transition: background 0.3s ease; */
-  }
-  
-  /* Efek hover pada item */
-  .sidebar-main:hover {
+}
+
+/* Efek hover pada item */
+.sidebar-main:hover {
   /* background-color: #2d2f36; */
   background-color: white;
   border-left: 2px solid #0CE9E9;
   color: #2d2f36 !important;
-  }
-  
-  /* Item aktif (yang sedang dipilih) */
-  .sidebar-main.active {
+}
+
+/* Item aktif (yang sedang dipilih) */
+.sidebar-main.active {
   background-color: white;
   color: #2d2f36 !important;
   border-left: 2px solid #0CE9E9;
-  }
-  
-  /* Expand/collapse style */
-  .sidebar-main.expanded {
+}
+
+/* Expand/collapse style */
+.sidebar-main.expanded {
   justify-content: flex-start;
-  }
-  
-  .sidebar-main.collapsed {
-    width: fit-content;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* border: 1px solid red; */
-  }
-  .sidebar-menu.collapsed{
-    border: 1px solid green;
-  }
-  
-  /* Gaya icon */
-  .icon {
-  font-size: 22px;
-  }
-  
-  /* Container untuk icon di sidebar */
-  .sidebar-icon {
+}
+
+.sidebar-main.collapsed {
+  width: fit-content;
   display: flex;
   align-items: center;
   justify-content: center;
-  }
-  
-  /* Label teks di sidebar */
-  .sidebar-label {
+  /* border: 1px solid red; */
+}
+
+.sidebar-menu.collapsed {
+  border: 1px solid green;
+}
+
+/* Gaya icon */
+.icon {
+  font-size: 22px;
+}
+
+/* Container untuk icon di sidebar */
+.sidebar-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* border: 1px solid red; */
+  padding: 7px;
+}
+
+/* Label teks di sidebar */
+.sidebar-label {
   margin-left: 15px;
   font-size: 15px;
   font-weight: 500;
-  }
-  
-  /* Link di sidebar (menghapus underline) */
-  .sidebar-link {
+}
+
+/* Link di sidebar (menghapus underline) */
+.sidebar-link {
   display: flex;
   align-items: center;
   /* color: red; */
   text-decoration: none;
   width: 100%;
-  }
-  
-  /* Tombol toggle sidebar */
-  .btn {
+}
+
+/* Tombol toggle sidebar */
+.btn {
   margin-top: auto;
   padding: 10px 15px;
-  }
-  
-  /* Tombol buka/tutup sidebar */
-  .toggle-btn {
-    background-color: red;
+}
+
+/* Tombol buka/tutup sidebar */
+.toggle-btn {
+  background-color: red;
   /* background-color: transparent; */
   border: none;
   color: white;
   cursor: pointer;
   font-size: 22px;
-  }
+}
 
-  /* STYLE FOR NEW BUTTON  */
-  .btn-arr{
-    /* border: 1px solid green; */
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-  }
-  .btn-arrow{
-    border: 1px solid rgba(255, 0, 0, 0);
-    padding: 5px;
-    border-radius: 50%;
-    background-color: #00235f00;
-    color: white;
-    font-size: 25px;
-  }
+/* STYLE FOR NEW BUTTON  */
+.btn-arr {
+  /* border: 1px solid green; */
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.btn-arrow {
+  border: 1px solid rgba(255, 0, 0, 0);
+  padding: 5px;
+  border-radius: 50%;
+  background-color: #00235f00;
+  color: white;
+  font-size: 25px;
+}

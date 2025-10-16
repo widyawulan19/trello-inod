@@ -63,6 +63,7 @@ const Sidebar = () => {
             // { to: 'card-list', icon: <HiAdjustmentsHorizontal className='icon' />, label: 'Development', name: 'Dev page' },
           ].map((item) => (
             <div
+            // style={{border:'1px solid red'}}
               key={item.name}
               className={`sidebar-main ${itemActive === item.name ? 'active' : ''} ${sidebarVisible ? 'expanded' : 'collapsed'}`}
               onClick={() => handleItemActive(item.name)}
