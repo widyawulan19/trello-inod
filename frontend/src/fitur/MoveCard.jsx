@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '../context/UserContext';
 import {
   getBoards,
   moveCardToList,
+  moveCardToListTesting,
   getListByBoard,
   getCardsByList,
 } from '../services/ApiServices';
@@ -35,6 +37,7 @@ const MoveCard = ({
   const [showBoardDropdown, setShowBoardDropdown] = useState(false);
   const [showListDropdown, setShowListDropdown] = useState(false);
   const [isMoving, setIsMoving] = useState(false);
+  const {user} = useUser();
 
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
@@ -64,7 +67,7 @@ const MoveCard = ({
     }
   }, [selectedList]);
 
-  // 🔹 Fungsi pindahkan card
+   // 🔹 Fungsi pindahkan card pakai moveCardToListTesting
   const handleMoveCard = async () => {
     if (!cardId || !selectedList?.id) {
       alert('Please select both board and list!');
@@ -76,11 +79,22 @@ const MoveCard = ({
       return;
     }
 
+    if (!user?.id) {
+      alert('User not found!');
+      return;
+    }
+
     setIsMoving(true);
 
     try {
-      const result = await moveCardToList(cardId, selectedList.id, targetPosition);
-      console.log('✅ Card moved successfully:', result.data);
+      const result = await moveCardToListTesting(
+        cardId,
+        user.id, // userId di URL
+        selectedList.id,
+        Number(targetPosition)
+      );
+
+      console.log('✅ Card moved successfully:', result);
       showSnackbar('Card moved successfully!', 'success');
 
       // Refresh data parent

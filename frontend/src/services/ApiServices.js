@@ -256,6 +256,19 @@ export const moveCardToList = async (cardId, userId, targetListId, newPosition =
   }
 };
 
+export const moveCardToListTesting = async (cardId, userId, targetListId, newPosition = null) => {
+  try {
+    const response = await axios.put(
+      `${API_URL}/cards/${cardId}/move/${userId}`,
+      { targetListId, newPosition }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('❌ Error moving card:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
 export const getActivityCardTesting = async (cardId) => {
   try {
     const response = await axios.get(`${API_URL}/cards/${cardId}/activities`);
