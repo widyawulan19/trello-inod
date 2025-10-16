@@ -38,6 +38,7 @@ import CardDescription from '../modals/CardDesctiption';
 import ReactQuill from 'react-quill-new';
 import "quill/dist/quill.snow.css";
 import CardDescriptionExample from '../modals/CardDescriptionExample';
+import NewCardActivity from '../modules/NewCardActivity';
 
 const NewCardDetail=()=> {
     //STATE
@@ -1126,7 +1127,8 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
                                 Recent Card Activity
                             </div>
                             <div className="ncd-activiy-content">
-                                <CardActivity cardId={cardId} fetchCardById={fetchCardById}/>
+                                <NewCardActivity cardId={cardId} fetchCardById={fetchCardById}/>
+                                {/* <CardActivity cardId={cardId} fetchCardById={fetchCardById}/> */}
                             </div>
                         </div>
                     </div>
