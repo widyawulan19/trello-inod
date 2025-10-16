@@ -3,11 +3,11 @@ import axios from 'axios';
 // const API_URL = 'http://localhost:3002/api'; //untuk development
 // const API_URL = 'https://trello-inod-production.up.railway.app/api'
 // const API_URL = 'https://trello-inod-production.up.railway.app/api';
-// const API_URL = process.env.REACT_APP_API_URL;
+const API_URL = process.env.REACT_APP_API_URL;
 
 // Ambil URL dari environment variable
-const API_URL = process.env.REACT_APP_API_URL || "https://backend-production.up.railway.app";
-console.log("✅ API_URL:", process.env.REACT_APP_API_URL)
+// const API_URL = process.env.REACT_APP_API_URL || "https://backend-production.up.railway.app";
+// console.log("✅ API_URL:", process.env.REACT_APP_API_URL)
 
 // LOGIN
 export const loginUser = (data) => axios.post(`${API_URL}/auth/login`, data);
