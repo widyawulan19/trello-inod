@@ -166,15 +166,6 @@ function NewWorkspace() {
     setAlertInfo({ ...alertInfo, showAlert: false });
   };
   //5. load all workspace user
-  // const fetchWorkspaceUser = async () => {
-  //   try {
-  //     const workspaceResult = await getAllUsersWorkspace(userId);
-  //     setWorkspaces(workspaceResult.data);
-  //     fetchAdmins(workspaceResult.data);  // Jika ada data admin yang perlu diambil
-  //   } catch (error) {
-  //     console.error("Error fetching workspace data:", error);
-  //   }
-  // };
   const fetchWorkspaceUser = async () => {
   try {
     const workspaceResult = await getWorkspacesByUserId(userId); // ✅ ganti fungsi di sini

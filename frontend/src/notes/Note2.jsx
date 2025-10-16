@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 // import React, { useEffect, useState } from 'react';
 // import { getActivityCard } from '../services/ApiServices';
@@ -1317,4 +1318,6 @@ const handleSendReply = async (parentId) => {
     )}
   </div>
 ) : null}
+>>>>>>> feature
+=======
 >>>>>>> feature
