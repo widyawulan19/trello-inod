@@ -13450,7 +13450,8 @@ app.get('/api/card/:cardId/card-location', async (req, res) => {
 
 // TESTING ENDPOIN 
 app.put('/api/cards/:cardId/move-testing', async (req, res) => {
-    const actingUserId = req.user.id;
+    // const actingUserId = req.user.id;
+    const actingUserId = 23;
     const { cardId } = req.params;
     const { targetListId, newPosition } = req.body;
 
