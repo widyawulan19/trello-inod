@@ -229,15 +229,29 @@ export const duplicateCard = (cardId, listId, position) =>
 export const archiveCard = (cardId) => axios.put(`${API_URL}/archive-card/${cardId}`, cardId);
 
 // 🔹 Move card ke list atau board lain + ubah posisi
-export const moveCardToList = async (cardId, targetListId, newPosition = null) => {
+// export const moveCardToList = async (cardId, targetListId, newPosition = null) => {
+//   try {
+//     const response = await axios.put(`${API_URL}/cards/${cardId}/move`, {
+//       targetListId,
+//       newPosition,
+//     });
+//     return response.data;
+//   } catch (error) {
+//     console.error("❌ Error moving card:", error);
+//     throw error;
+//   }
+// };
+
+// 🔹 Move card ke list atau board lain + ubah posisi
+export const moveCardToList = async (cardId, userId, targetListId, newPosition = null) => {
   try {
-    const response = await axios.put(`${API_URL}/cards/${cardId}/move`, {
-      targetListId,
-      newPosition,
-    });
+    const response = await axios.put(
+      `${API_URL}/cards/${cardId}/move-testing/${userId}`,
+      { targetListId, newPosition }
+    );
     return response.data;
   } catch (error) {
-    console.error("❌ Error moving card:", error);
+    console.error('❌ Error moving card:', error.response || error.message);
     throw error;
   }
 };
