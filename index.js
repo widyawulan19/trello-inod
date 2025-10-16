@@ -12255,6 +12255,9 @@ app.get('/api/activity-card/card/:cardId', async (req, res) => {
 });
 
 
+
+
+
 app.post('/api/activity-log', async (req, res) => {
     const { entityType, entityId, action, userId, details, parentEntity, parentEntityId } = req.body;
 
@@ -13540,6 +13543,32 @@ app.put('/api/cards/:cardId/move-testing', async (req, res) => {
         await client.query('ROLLBACK');
         console.error('❌ Gagal move card:', err);
         res.status(500).json({ error: 'Gagal memindahkan card' });
+    }
+});
+
+
+//get card activity
+app.get('/api/cards/:cardId/activities', async (req, res) => {
+    const { cardId } = req.params;
+
+    try {
+        const result = await client.query(`
+      SELECT 
+        ca.*,
+        u.name AS movedBy
+      FROM card_activities ca
+      LEFT JOIN users u ON ca.user_id = u.id
+      WHERE ca.card_id = $1
+      ORDER BY ca.created_at DESC
+    `, [cardId]);
+
+        res.json({
+            message: `Activities for card ID ${cardId}`,
+            activities: result.rows
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error fetching card activities' });
     }
 });
 
