@@ -4536,12 +4536,10 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
 //     }
 // });
 // 6. Move card (antar list atau board + posisi baru)
-// app.put('/api/cards/:cardId/move', async (req, res) => {
-app.put('/api/cards/:cardId/move', verifyToken, async (req, res) => {
+app.put('/api/cards/:cardId/move', async (req, res) => {
     const { cardId } = req.params;
     const { targetListId, newPosition } = req.body;
-    // const actingUserId = req.user?.id;
-    const actingUserId = req.user.id;
+    const actingUserId = req.user?.id;
 
     if (!actingUserId) return res.status(401).json({ error: 'Unauthorized' });
 
