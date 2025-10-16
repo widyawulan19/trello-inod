@@ -13455,11 +13455,11 @@ app.get('/api/card/:cardId/card-location', async (req, res) => {
 app.put('/api/cards/:cardId/move-testing', async (req, res) => {
     // const actingUserId = req.user.id;
     // const userId = req.user.id;
-    const actingUserId = req.user.id;
+    const userId = req.user.id;
     const { cardId } = req.params;
     const { targetListId, newPosition } = req.body;
 
-    if (!actingUserId) return res.status(401).json({ error: 'Unauthorized' });
+    if (!userId) return res.status(401).json({ error: 'Unauthorized' });
 
     try {
         await client.query('BEGIN');
@@ -13535,7 +13535,7 @@ app.put('/api/cards/:cardId/move-testing', async (req, res) => {
         await client.query(
             `INSERT INTO card_activities (card_id, user_id, action_type, entity, entity_id, action_detail)
        VALUES ($1, $2, 'moved', 'card', $3, $4)`,
-            [cardId, actingUserId, cardId, actionDetail]
+            [cardId, userId, cardId, actionDetail]
         );
 
         await client.query('COMMIT');
