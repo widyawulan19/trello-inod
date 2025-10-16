@@ -54,11 +54,11 @@ const auth = new google.auth.GoogleAuth({
 });
 
 // Middleware untuk mensimulasikan login
-const simulateLogin = (req, res, next) => {
-    req.user = { id: 3 }; // ID pengguna simulasi, misalnya 1
-    next();
-};
-app.use(simulateLogin);
+// const simulateLogin = (req, res, next) => {
+//     req.user = { id: 3 }; // ID pengguna simulasi, misalnya 1
+//     next();
+// };
+// app.use(simulateLogin);
 app.use(express.urlencoded({ extended: true }));
 
 const PORT = process.env.PORT || 8080;
@@ -4536,10 +4536,12 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
 //     }
 // });
 // 6. Move card (antar list atau board + posisi baru)
-app.put('/api/cards/:cardId/move', async (req, res) => {
+// app.put('/api/cards/:cardId/move', async (req, res) => {
+app.put('/api/cards/:cardId/move', verifyToken, async (req, res) => {
     const { cardId } = req.params;
     const { targetListId, newPosition } = req.body;
-    const actingUserId = req.user?.id;
+    // const actingUserId = req.user?.id;
+    const actingUserId = req.user.id;
 
     if (!actingUserId) return res.status(401).json({ error: 'Unauthorized' });
 
