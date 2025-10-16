@@ -13452,159 +13452,157 @@ app.get('/api/card/:cardId/card-location', async (req, res) => {
 
 
 // TESTING ENDPOIN 
-// PUT /api/cards/:cardId/move-testing/:userId
+// 6. Move card (antar list atau board + posisi baru)
 app.put('/api/cards/:cardId/move-testing/:userId', async (req, res) => {
-    const { cardId, userId } = req.params; // ambil userId dari URL
-    const { targetListId, newPosition } = req.body;
+  const { cardId, userId } = req.params;   // ambil userId dari URL
+  const { targetListId, newPosition } = req.body;
+  const actingUserId = parseInt(userId, 10); // pakai userId sebagai actingUserId
 
-    if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+  if (!actingUserId) return res.status(401).json({ error: 'Unauthorized' });
 
-    try {
-        await client.query('BEGIN');
+  try {
+    await client.query('BEGIN');
 
-        // ambil info card lama
-        const oldCardRes = await client.query(
-            `SELECT c.list_id, c.position, c.title 
+    // ambil info card lama
+    const oldCardRes = await client.query(
+      `SELECT c.list_id, c.position, c.title, l.board_id 
        FROM cards c 
+       JOIN lists l ON c.list_id = l.id
        WHERE c.id = $1`,
-            [cardId]
-        );
-        if (oldCardRes.rows.length === 0)
-            return res.status(404).json({ error: 'Card tidak ditemukan' });
+      [cardId]
+    );
+    if (oldCardRes.rows.length === 0)
+      return res.status(404).json({ error: 'Card tidak ditemukan' });
 
-        const { list_id: oldListId, position: oldPosition, title } = oldCardRes.rows[0];
+    const { list_id: oldListId, board_id: oldBoardId, position: oldPosition, title } = oldCardRes.rows[0];
 
-        // ambil board_id dan nama list tujuan
-        const targetListRes = await client.query(
-            `SELECT l.board_id, l.name AS list_name FROM lists l WHERE l.id = $1`,
-            [targetListId]
-        );
-        if (targetListRes.rows.length === 0)
-            return res.status(404).json({ error: 'List tujuan tidak ditemukan' });
+    // ambil board_id dari list tujuan
+    const targetListRes = await client.query(`SELECT board_id FROM lists WHERE id = $1`, [targetListId]);
+    if (targetListRes.rows.length === 0)
+      return res.status(404).json({ error: 'List tujuan tidak ditemukan' });
+    const targetBoardId = targetListRes.rows[0].board_id;
 
-        const { board_id: targetBoardId, list_name: targetListName } = targetListRes.rows[0];
-
-        // geser posisi di list lama
-        await client.query(
-            `UPDATE cards SET position = position - 1
+    // geser posisi di list lama
+    await client.query(
+      `UPDATE cards SET position = position - 1
        WHERE list_id = $1 AND position > $2`,
-            [oldListId, oldPosition]
-        );
+      [oldListId, oldPosition]
+    );
 
-        // hitung posisi baru
-        let finalPosition = newPosition;
-        if (!finalPosition) {
-            const posRes = await client.query(
-                `SELECT COALESCE(MAX(position), 0) + 1 AS pos
+    // hitung posisi baru
+    let finalPosition = newPosition;
+    if (!finalPosition) {
+      const posRes = await client.query(
+        `SELECT COALESCE(MAX(position), 0) + 1 AS pos
          FROM cards WHERE list_id = $1`,
-                [targetListId]
-            );
-            finalPosition = posRes.rows[0].pos;
-        } else {
-            // geser posisi di list tujuan
-            await client.query(
-                `UPDATE cards SET position = position + 1
+        [targetListId]
+      );
+      finalPosition = posRes.rows[0].pos;
+    } else {
+      // geser posisi di list tujuan
+      await client.query(
+        `UPDATE cards SET position = position + 1
          WHERE list_id = $1 AND position >= $2`,
-                [targetListId, finalPosition]
-            );
-        }
+        [targetListId, finalPosition]
+      );
+    }
 
-        // update card
-        await client.query(
-            `UPDATE cards
+    // update posisi dan list card
+    await client.query(
+      `UPDATE cards
        SET list_id = $1, position = $2, update_at = CURRENT_TIMESTAMP
        WHERE id = $3`,
-            [targetListId, finalPosition, cardId]
-        );
+      [targetListId, finalPosition, cardId]
+    );
 
-        // ambil info board & list lama
-        const oldInfoRes = await client.query(
-            `SELECT l.name AS list_name, b.name AS board_name
-       FROM lists l
+    // ambil info board & list lama dan baru
+    const oldInfo = await client.query(
+      `SELECT l.name AS list_name, b.name AS board_name
+       FROM lists l 
        JOIN boards b ON l.board_id = b.id
        WHERE l.id = $1`,
-            [oldListId]
-        );
-        const oldListName = oldInfoRes.rows[0].list_name;
-        const oldBoardName = oldInfoRes.rows[0].board_name;
+      [oldListId]
+    );
+    const newInfo = await client.query(
+      `SELECT l.name AS list_name, b.name AS board_name
+       FROM lists l 
+       JOIN boards b ON l.board_id = b.id
+       WHERE l.id = $1`,
+      [targetListId]
+    );
 
-        // catat ke card_activities
-        const actionDetail = `moved "${title}" from "${oldListName}" to "${targetListName}" on board "${oldBoardName}"`;
-        await client.query(
-        `INSERT INTO card_activities (card_id, user_id, action_type, entity, entity_id, action_detail)
-        VALUES ($1, $2, 'moved', 'card', $3, $4)`,
-        [cardId, userId, cardId, JSON.stringify({
-            cardTitle: title,
-            fromListName: oldListName,
-            toListName: targetListName,
-            fromBoardName: oldBoardName,
-            toBoardName: oldBoardName
-        })]
-        );
+    const oldListName = oldInfo.rows[0]?.list_name || 'Unknown List';
+    const oldBoardName = oldInfo.rows[0]?.board_name || 'Unknown Board';
+    const newListName = newInfo.rows[0]?.list_name || 'Unknown List';
+    const newBoardName = newInfo.rows[0]?.board_name || 'Unknown Board';
 
-        await client.query('COMMIT');
+    // ambil semua user workspace
+    const workspaceUsersRes = await client.query(
+      `SELECT user_id FROM workspaces_users WHERE workspace_id = $1 AND is_deleted = FALSE`,
+      [oldBoardId]
+    );
+    const userIds = workspaceUsersRes.rows.map(r => r.user_id);
 
-        res.json({ message: 'Card berhasil dipindahkan', actionDetail });
-    } catch (err) {
-        await client.query('ROLLBACK');
-        console.error('❌ Gagal move card:', err);
-        res.status(500).json({ error: 'Gagal memindahkan card' });
-    }
+    // pastikan actingUserId ada di userIds
+    if (!userIds.includes(actingUserId)) userIds.push(actingUserId);
+
+    // ambil username acting user
+    const actingUserRes = await client.query(
+      'SELECT username FROM users WHERE id = $1',
+      [actingUserId]
+    );
+    const actingUserName = actingUserRes.rows[0]?.username || 'Unknown';
+
+    // log activity
+    await logCardActivity({
+      action: 'move',
+      card_id: cardId,
+      user_ids: userIds,
+      entity: 'list',
+      entity_id: targetListId,
+      details: {
+        cardTitle: title,
+        fromBoardId: oldBoardId,
+        fromBoardName: oldBoardName,
+        fromListId: oldListId,
+        fromListName: oldListName,
+        toBoardId: targetBoardId,
+        toBoardName: newBoardName,
+        toListId: targetListId,
+        toListName: newListName,
+        newPosition: finalPosition,
+        movedBy: { id: actingUserId, username: actingUserName }
+      }
+    });
+
+    await client.query('COMMIT');
+
+    // response ke frontend
+    res.status(200).json({
+      message: 'Card berhasil dipindahkan',
+      cardId,
+      fromListId: oldListId,
+      fromListName: oldListName,
+      toListId: targetListId,
+      toListName: newListName,
+      fromBoardId: oldBoardId,
+      fromBoardName: oldBoardName,
+      toBoardId: targetBoardId,
+      toBoardName: newBoardName,
+      position: finalPosition,
+      movedBy: { id: actingUserId, username: actingUserName }
+    });
+
+  } catch (err) {
+    await client.query('ROLLBACK');
+    console.error('❌ Gagal move card:', err);
+    res.status(500).json({ error: 'Gagal memindahkan card' });
+  }
 });
 
+
 // Move card endpoint
-// app.put('/api/cards/:cardId/move-testing/:userId', async (req, res) => {
-//     const { cardId, userId } = req.params;
-//     const { targetListId, newPosition } = req.body;
 
-//     try {
-//         await client.query('BEGIN');
-
-//         // Ambil info card dan list lama
-//         const cardRes = await client.query('SELECT title, list_id, board_id FROM cards WHERE id = $1', [cardId]);
-//         const card = cardRes.rows[0];
-
-//         const oldListRes = await client.query('SELECT name FROM lists WHERE id = $1', [card.list_id]);
-//         const oldListName = oldListRes.rows[0].name;
-
-//         const targetListRes = await client.query('SELECT name, board_id FROM lists WHERE id = $1', [targetListId]);
-//         const targetListName = targetListRes.rows[0].name;
-//         const targetBoardId = targetListRes.rows[0].board_id;
-
-//         const oldBoardRes = await client.query('SELECT name FROM boards WHERE id = $1', [card.board_id]);
-//         const oldBoardName = oldBoardRes.rows[0].name;
-
-//         // Update posisi card dan list_id
-//         await client.query('UPDATE cards SET list_id = $1 WHERE id = $2', [targetListId, cardId]);
-//         if (newPosition) {
-//             await client.query('UPDATE cards SET position = $1 WHERE id = $2', [newPosition, cardId]);
-//         }
-
-//         // Simpan aktivitas sebagai JSON
-//         const actionDetail = JSON.stringify({
-//             cardTitle: card.title,
-//             fromListName: oldListName,
-//             toListName: targetListName,
-//             fromBoardName: oldBoardName,
-//             toBoardName: oldBoardName
-//         });
-
-//         await client.query(
-//             `INSERT INTO card_activities (card_id, user_id, action_type, entity, entity_id, action_detail)
-//        VALUES ($1, $2, 'move', 'card', $3, $4)`,
-//             [cardId, userId, cardId, actionDetail]
-//         );
-
-//         await client.query('COMMIT');
-
-//         res.json({ message: 'Card berhasil dipindahkan', actionDetail: JSON.parse(actionDetail) });
-
-//     } catch (err) {
-//         await client.query('ROLLBACK');
-//         console.error(err);
-//         res.status(500).json({ message: '❌ Gagal memindahkan card' });
-//     }
-// });
 
 
 
