@@ -13786,8 +13786,15 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (r
         res.status(200).json({
             message: 'Card berhasil diduplikasi',
             cardId: newCardId,
-            listId,
-            listName: toListName,
+            fromListId: oldListId,
+            fromListName: oldListName,
+            toListId: targetListId,
+            toListName: newListName,
+            fromBoardId: oldBoardId,
+            fromBoardName: oldBoardName,
+            toBoardId: targetBoardId,
+            toBoardName: newBoardName,
+            position: finalPosition,
             duplicatedBy: { id: actingUserId, username: userName }
         });
 
