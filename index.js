@@ -13452,11 +13452,9 @@ app.get('/api/card/:cardId/card-location', async (req, res) => {
 
 
 // TESTING ENDPOIN 
-app.put('/api/cards/:cardId/move-testing', async (req, res) => {
-    // const actingUserId = req.user.id;
-    // const userId = req.user.id;
-    const userId = req.user.id;
-    const { cardId } = req.params;
+// PUT /api/cards/:cardId/move-testing/:userId
+app.put('/api/cards/:cardId/move-testing/:userId', async (req, res) => {
+    const { cardId, userId } = req.params; // ambil userId dari URL
     const { targetListId, newPosition } = req.body;
 
     if (!userId) return res.status(401).json({ error: 'Unauthorized' });
@@ -13539,6 +13537,7 @@ app.put('/api/cards/:cardId/move-testing', async (req, res) => {
         );
 
         await client.query('COMMIT');
+
         res.json({ message: 'Card berhasil dipindahkan', actionDetail });
     } catch (err) {
         await client.query('ROLLBACK');
@@ -13546,6 +13545,7 @@ app.put('/api/cards/:cardId/move-testing', async (req, res) => {
         res.status(500).json({ error: 'Gagal memindahkan card' });
     }
 });
+
 
 
 //get card activity
