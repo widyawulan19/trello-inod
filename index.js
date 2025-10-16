@@ -13555,7 +13555,7 @@ app.get('/api/cards/:cardId/activities', async (req, res) => {
         const result = await client.query(`
       SELECT 
         ca.*,
-        u.name AS movedBy
+        u.username AS movedBy
       FROM card_activities ca
       LEFT JOIN users u ON ca.user_id = u.id
       WHERE ca.card_id = $1
