@@ -1461,3 +1461,43 @@ app.put('/api/cards/:cardId/move', async (req, res) => {
         res.status(500).json({ message: 'Error duplicating card', error: error.message });
       }
     });
+
+
+
+    cardId, // card_id
+      actingUserId, // user_id
+      'moved', // action_type
+      'list', // entity
+      targetListId, // entity_id
+      JSON.stringify({ // action_detail valid JSON
+        cardTitle: title,
+        fromBoardId: oldBoardId,
+        fromBoardName: oldBoardName,
+        fromListId: oldListId,
+        fromListName: oldListName,
+        toBoardId: targetBoardId,
+        toBoardName: newBoardName,
+        toListId: targetListId,
+        toListName: newListName,
+        newPosition: finalPosition,
+        movedBy: { id: actingUserId, username: actingUserName }
+      })
+            ]);
+
+  await client.query('COMMIT');
+
+  // ✅ Respon sukses
+  res.status(200).json({
+    message: 'Card berhasil dipindahkan',
+    cardId,
+    fromListId: oldListId,
+    fromListName: oldListName,
+    toListId: targetListId,
+    toListName: newListName,
+    fromBoardId: oldBoardId,
+    fromBoardName: oldBoardName,
+    toBoardId: targetBoardId,
+    toBoardName: newBoardName,
+    position: finalPosition,
+    movedBy: { id: actingUserId, username: actingUserName }
+  });
