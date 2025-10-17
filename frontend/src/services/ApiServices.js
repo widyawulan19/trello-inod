@@ -423,6 +423,9 @@ export const getAllStatus = () => axios.get(`${API_URL}/status`)
 export const updateStatus = (cardId, statusId) => axios.post(`${API_URL}/cards/${cardId}/status`, statusId)
 export const getStatusCard = (cardId) => axios.get(`${API_URL}/card-status/${cardId}`);
 
+export const updateCardStatusTesting = (cardId, userId, data) =>
+  axios.put(`${API_URL}/cards/${cardId}/update-status-testing/${userId}`, data);
+
 //DATA EMPLOYEE
 export const getEmployee = () => axios.get(`${API_URL}/employees`)
 export const getEmployeeById = (id) => axios.get(`${API_URL}/employees/${id}`)
