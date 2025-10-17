@@ -13633,52 +13633,67 @@ app.put('/api/cards/:cardId/move-testing/:userId', async (req, res) => {
 // });
 
 // ✅ GET card activities (termasuk aktivitas duplicate)
+// ✅ GET card activities (termasuk aktivitas duplicate)
 app.get('/api/cards/:cardId/activities-testing', async (req, res) => {
-    const { cardId } = req.params;
+  const { cardId } = req.params;
 
-    try {
-        const result = await client.query(`
-            SELECT 
-                ca.id,
-                ca.card_id,
-                ca.action_type,
-                ca.entity,
-                ca.entity_id,
-                ca.action_detail,
-                ca.created_at,
-                u.username AS performed_by
-            FROM public.card_activities ca
-            LEFT JOIN public.users u ON ca.user_id = u.id
-            WHERE ca.card_id = $1
-            ORDER BY ca.created_at DESC
-        `, [cardId]);
+  try {
+    const result = await client.query(`
+      SELECT 
+          ca.id,
+          ca.card_id,
+          ca.action_type,
+          ca.entity,
+          ca.entity_id,
+          ca.action_detail,
+          ca.created_at,
+          u.username AS movedby
+      FROM public.card_activities ca
+      LEFT JOIN public.users u ON ca.user_id = u.id
+      WHERE ca.card_id = $1
+      ORDER BY ca.created_at DESC
+    `, [cardId]);
 
-        // 🧠 Parse kolom action_detail dari JSON string ke object
-        const activities = result.rows.map(row => ({
-            id: row.id,
-            card_id: row.card_id,
-            action: row.action_type,
-            entity: row.entity,
-            entity_id: row.entity_id,
-            created_at: row.created_at,
-            performed_by: row.performed_by,
-            details: row.action_detail ? JSON.parse(row.action_detail) : null
-        }));
+    // 🧠 Parse kolom action_detail dengan aman
+    const activities = result.rows.map(row => {
+      let parsedDetail = null;
 
-        res.status(200).json({
-            message: `Activities for card ID ${cardId}`,
-            total: activities.length,
-            activities
-        });
+      try {
+        if (row.action_detail) {
+          parsedDetail = JSON.parse(row.action_detail);
+        }
+      } catch (e) {
+        // kalau bukan JSON valid, simpan sebagai teks biasa
+        parsedDetail = { rawText: row.action_detail };
+      }
 
-    } catch (err) {
-        console.error('❌ Error fetching card activities:', err);
-        res.status(500).json({
-            message: 'Error fetching card activities',
-            error: err.message
-        });
-    }
+      return {
+        id: row.id,
+        card_id: row.card_id,
+        action_type: row.action_type,
+        entity: row.entity,
+        entity_id: row.entity_id,
+        created_at: row.created_at,
+        movedby: row.movedby,
+        action_detail: parsedDetail
+      };
+    });
+
+    res.status(200).json({
+      message: `Activities for card ID ${cardId}`,
+      total: activities.length,
+      activities
+    });
+
+  } catch (err) {
+    console.error('❌ Error fetching card activities:', err);
+    res.status(500).json({
+      message: 'Error fetching card activities',
+      error: err.message
+    });
+  }
 });
+
 
 
 
