@@ -46,9 +46,15 @@ const NewCardActivity = ({ cardId }) => {
     const activitiesWithUser = response.activities.map(act => {
       const detail = act.action_detail || {};
       return {
+        // ...act,
+        // username: act.movedby || detail.movedBy?.username || 'Unknown',
+        // detail
         ...act,
-        username: act.movedby || detail.movedBy?.username || 'Unknown',
-        detail
+        username:
+          act.action_detail?.updatedBy?.username ||
+          act.movedby ||
+          'Unknown',
+        detail: act.action_detail || {},
       };
     });
 
@@ -101,14 +107,22 @@ const NewCardActivity = ({ cardId }) => {
                 </>
                 );
                 
-            } else if (activity.action_type === 'updated_status' && detail.cardTitle){
-              messageElement = (
+            } else if (activity.action_type === 'updated_status' && detail.to){
+             messageElement = (
                 <>
-                   <span className="font-semibold">{username}</span> upated card status{' '}
-                    <span className="font-bold">"{detail.from}"</span> to {' '}
-                    <span className="text-red-500">"{detail.to}"</span>
+                  <span className="font-semibold">{username}</span> updated status from{' '}
+                  <span className="text-red-500">"{detail.from || '-'}"</span> to{' '}
+                  <span className="text-green-600">"{detail.to}"</span>
+                  {detail.description && (
+                    <>
+                      <br />
+                      <span className="text-gray-500 text-[11px]">
+                        Description: {detail.description}
+                      </span>
+                    </>
+                  )}
                 </>
-              )
+              );
             }else {
                 messageElement = (
                 <>
