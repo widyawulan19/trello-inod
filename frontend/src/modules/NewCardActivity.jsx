@@ -39,25 +39,27 @@ const NewCardActivity = ({ cardId }) => {
   const [loading, setLoading] = useState(false);
 
   const fetchCardActivities = async () => {
-    try {
-      setLoading(true);
-      const response = await getActivityCardTesting(cardId);
-      // tambahkan username dari movedby
-      const activitiesWithUser = response.activities.map(act => {
-        const detail = act.action_detail ? JSON.parse(act.action_detail) : {};
-        return {
-            ...act,
-            username: act.movedby || detail.movedBy?.username || 'Unknown',
-            detail
-        };
-        });
-        setCardActivities(activitiesWithUser);
-    } catch (error) {
-      console.error('Failed to fetch card activity:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    setLoading(true);
+    const response = await getActivityCardTesting(cardId);
+
+    const activitiesWithUser = response.activities.map(act => {
+      const detail = act.action_detail || {};
+      return {
+        ...act,
+        username: act.movedby || detail.movedBy?.username || 'Unknown',
+        detail
+      };
+    });
+
+    setCardActivities(activitiesWithUser);
+  } catch (error) {
+    console.error('Failed to fetch card activity:', error);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   useEffect(() => {
     if (cardId) fetchCardActivities();
@@ -85,14 +87,17 @@ const NewCardActivity = ({ cardId }) => {
                     <span className="font-bold">"{detail.cardTitle}"</span> from{' '}
                     <span className="text-red-500">"{detail.fromListName}"</span> to{' '}
                     <span className="text-green-600">"{detail.toListName}"</span> on board{' '}
-                    <span className="italic">"{detail.toBoardName}"</span>
+                    <span className="italic text-purple-600">"{detail.toBoardName}"</span>
                 </>
                 );
             } else if (activity.action_type === 'duplicate' && detail.cardTitle) {
                 messageElement = (
                 <>
-                    <span className="font-semibold">{username}</span> duplicated{' '}
-                    <span className="font-bold">"{detail.cardTitle}"</span>
+                    <span className="font-semibold">{username}</span> duplicated card{' '}
+                    <span className="font-bold">"{detail.cardTitle}"</span> from lists{' '}
+                    <span className="text-red-500">"{detail.fromListName}"</span> to{' '}
+                    <span className="text-green-600">"{detail.toListName}"</span> on board{' '}
+                    <span className="italic text-purple-600">"{detail.toBoardName}"</span>
                 </>
                 );
             } else {
