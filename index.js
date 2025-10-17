@@ -6396,7 +6396,7 @@ app.post('/api/cards/:cardId/update-status-testing/:userId', async (req, res) =>
             oldStatusId = check.rows[0].status_id;
 
             // Ambil nama status lama
-            const oldStatusRes = await client.query(`SELECT status_name FROM status WHERE id = $1`, [oldStatusId]);
+            const oldStatusRes = await client.query(`SELECT status_name FROM status WHERE status_id = $1`, [oldStatusId]);
             oldStatusName = oldStatusRes.rows[0]?.status_name || 'Unknown';
 
             // Jika ada, update status
@@ -6415,7 +6415,7 @@ app.post('/api/cards/:cardId/update-status-testing/:userId', async (req, res) =>
         }
 
         // Ambil nama status baru
-        const newStatusRes = await client.query(`SELECT status_name FROM status WHERE id = $1`, [statusId]);
+        const newStatusRes = await client.query(`SELECT status_name FROM status WHERE status_id = $1`, [statusId]);
         newStatusName = newStatusRes.rows[0]?.status_name || 'Unknown';
 
 
