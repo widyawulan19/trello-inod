@@ -13555,7 +13555,7 @@ app.put('/api/cards/:cardId/move-testing/:userId', async (req, res) => {
 
         // log activity
         await logCardActivity({
-            action: 'move',
+            action: 'moved',
             card_id: cardId,
             user_ids: userIds,
             entity: 'list',
