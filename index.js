@@ -6383,11 +6383,22 @@ app.post('/api/cards/:cardId/update-status-testing/:userId', async (req, res) =>
 
     try {
         let message = '';
+        let oldStatusId = null;
+        let oldStatusName = null;
+        let newStatusName = null;
 
         // Cek apakah kartu sudah memiliki status
         const check = await client.query(`SELECT * FROM card_status WHERE card_id = $1`, [cardId]);
 
         if (check.rows.length > 0) {
+
+            //simpan status lama sebelum update 
+            oldStatusId = check.rows[0].status_id;
+
+            // Ambil nama status lama
+            const oldStatusRes = await client.query(`SELECT name FROM status WHERE id = $1`, [oldStatusId]);
+            oldStatusName = oldStatusRes.rows[0]?.name || 'Unknown';
+
             // Jika ada, update status
             await client.query(
                 `UPDATE card_status SET status_id = $1, update_at = CURRENT_TIMESTAMP WHERE card_id = $2`,
@@ -6402,6 +6413,11 @@ app.post('/api/cards/:cardId/update-status-testing/:userId', async (req, res) =>
             );
             message = 'Status kartu berhasil ditambahkan';
         }
+
+        // Ambil nama status baru
+        const newStatusRes = await client.query(`SELECT name FROM status WHERE id = $1`, [statusId]);
+        newStatusName = newStatusRes.rows[0]?.name || 'Unknown';
+
 
         // Cari workspace_id dari card
         const boardRes = await client.query(`
@@ -6429,6 +6445,13 @@ app.post('/api/cards/:cardId/update-status-testing/:userId', async (req, res) =>
         );
         const actingUserName = actingUserRes.rows[0]?.username || 'Unknown';
 
+
+        // Buat deskripsi aksi yang cantik ✨
+        const actionDescription = oldStatusId
+            ? `${actingUserName} updated card status dari '${oldStatusName}' menjadi '${newStatusName}'`
+            : `${actingUserName} menetapkan status kartu ke '${newStatusName}'`;
+
+
         // Simpan aktivitas ke card_activities
         const activityRes = await client.query(`
             INSERT INTO card_activities 
@@ -6442,8 +6465,10 @@ app.post('/api/cards/:cardId/update-status-testing/:userId', async (req, res) =>
             'status',
             statusId,
             JSON.stringify({
-                statusId,
+                from: oldStatusName || null,
+                to: newStatusName,
                 updatedBy: { id: actingUserId, username: actingUserName },
+                description: actionDescription,
             })
         ]);
 
@@ -13918,42 +13943,6 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (r
         const toBoardName = newListRes.rows[0]?.board_name || "Unknown Board";
 
         await client.query('COMMIT');
-
-        // Log activity card
-        // await logCardActivity({
-        //     action: 'duplicate',
-        //     card_id: newCardId,
-        //     user_ids: [actingUserId],
-        //     entity: 'list',
-        //     entity_id: listId,
-        //     details: {
-        //         cardTitle: newCardTitle,
-        //         fromListId,
-        //         fromListName,
-        //         fromBoardId,
-        //         fromBoardName,
-        //         toListId: listId,
-        //         toListName,
-        //         toBoardId,
-        //         toBoardName,
-        //         duplicatedBy: { id: actingUserId, username: userName }
-        //     }
-        // });
-
-        // res.status(200).json({
-        //     message: 'Card berhasil diduplikasi',
-        //     cardId: newCardId,
-        //     fromListId,
-        //     fromListName,
-        //     toListId: listId,
-        //     toListName,
-        //     fromBoardId,
-        //     fromBoardName,
-        //     toBoardId,
-        //     toBoardName,
-        //     position: position || null,
-        //     duplicatedBy: { id: actingUserId, username: userName }
-        // });
 
         // 🔥 Simpan activity langsung ke tabel card_activities
         await client.query(`
