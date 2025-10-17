@@ -6373,6 +6373,83 @@ app.post('/api/cards/:cardId/status', async (req, res) => {
     }
 })
 
+//3.1 add/update status card id
+app.post('/api/cards/:cardId/update-status-testing/:userId', async (req, res) => {
+    const { cardId, userId } = req.params;
+    const { statusId } = req.body;
+    const actingUserId = parseInt(userId, 10);
+
+    if (!actingUserId) return res.status(401).json({ error: 'Unauthorized' });
+
+    try {
+        // Cek apakah kartu sudah memiliki status
+        const check = await client.query(`SELECT * FROM card_status WHERE card_id = $1`, [cardId]);
+
+        if (check.rows.length > 0) {
+            // Jika ada, update status
+            await client.query(`UPDATE card_status SET status_id = $1, update_at = CURRENT_TIMESTAMP WHERE card_id = $2`, [statusId, cardId]);
+            res.json({ message: 'Status kartu berhasil diperbarui' });
+        } else {
+            // Jika belum ada, tambahkan status baru
+            await client.query(`INSERT INTO card_status (card_id, status_id, assigned_at) VALUES ($1, $2, CURRENT_TIMESTAMP)`, [cardId, statusId]);
+            res.json({ message: 'Status kartu berhasil ditambahkan' });
+        }
+
+        const boardRes = await client.query(`
+        SELECT b.workspace_id
+        FROM boards b
+        JOIN lists l ON l.board_id = b.id
+        JOIN cards c ON c.list_id = l.id
+        WHERE c.id = $1
+        `, [cardId]);
+
+        const workspaceId = boardRes.rows[0]?.workspace_id;
+
+
+        //mengambil semua user workspace
+        const workspaceUsersRes = await client.query(
+            `SELECT user_id FROM workspaces_users WHERE workspace_id = $1 AND is_deleted = FALSE`,
+            [workspaceId]
+        );
+        const userIds = workspaceUsersRes.rows.map(r => r.user_id);
+
+        // pastikan actingUserId ada di userIds
+        if (!userIds.includes(actingUserId)) userIds.push(actingUserId);
+
+        // ambil username acting user
+        const actingUserRes = await client.query(
+            'SELECT username FROM users WHERE id = $1',
+            [actingUserId]
+        );
+        const actingUserName = actingUserRes.rows[0]?.username || 'Unknown';
+
+        //menyimpan data langsung ke tabel activity_user 
+        await client.query(`
+            INSERT INTO card_activities 
+            (card_id, user_id, action_type, entity, entity_id, action_detail)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            `, [
+            cardId,
+            actingUserId,
+            'updated_status',
+            'status',
+            statusId,
+            JSON.stringify({
+                statusId,
+                updatedBy: { id: actingUserId, username: actingUserName },
+            })
+        ]);
+
+
+        res.status(200).json({
+            message: 'Status card berhasil diupdate!',
+            cardId: cardId,
+        })
+    } catch (error) {
+        res.status(500).json({ error: 'Gagal menambahkan/memperbarui status kartu' });
+    }
+})
+
 //4. delete status card id
 app.delete('/api/cards/:cardId/status', async (req, res) => {
     const { cardId } = req.params;
@@ -13553,49 +13630,49 @@ app.put('/api/cards/:cardId/move-testing/:userId', async (req, res) => {
         );
         const actingUserName = actingUserRes.rows[0]?.username || 'Unknown';
 
-       // 🔥 Simpan activity langsung ke tabel card_activities
-    await client.query(`
+        // 🔥 Simpan activity langsung ke tabel card_activities
+        await client.query(`
       INSERT INTO card_activities 
         (card_id, user_id, action_type, entity, entity_id, action_detail)
       VALUES ($1, $2, $3, $4, $5, $6)
     `, [
-      cardId, // card_id
-      actingUserId, // user_id
-      'moved', // action_type
-      'list', // entity
-      targetListId, // entity_id
-      JSON.stringify({ // action_detail valid JSON
-        cardTitle: title,
-        fromBoardId: oldBoardId,
-        fromBoardName: oldBoardName,
-        fromListId: oldListId,
-        fromListName: oldListName,
-        toBoardId: targetBoardId,
-        toBoardName: newBoardName,
-        toListId: targetListId,
-        toListName: newListName,
-        newPosition: finalPosition,
-        movedBy: { id: actingUserId, username: actingUserName }
-      })
-    ]);
+            cardId, // card_id
+            actingUserId, // user_id
+            'moved', // action_type
+            'list', // entity
+            targetListId, // entity_id
+            JSON.stringify({ // action_detail valid JSON
+                cardTitle: title,
+                fromBoardId: oldBoardId,
+                fromBoardName: oldBoardName,
+                fromListId: oldListId,
+                fromListName: oldListName,
+                toBoardId: targetBoardId,
+                toBoardName: newBoardName,
+                toListId: targetListId,
+                toListName: newListName,
+                newPosition: finalPosition,
+                movedBy: { id: actingUserId, username: actingUserName }
+            })
+        ]);
 
-    await client.query('COMMIT');
+        await client.query('COMMIT');
 
-    // ✅ Respon sukses
-    res.status(200).json({
-      message: 'Card berhasil dipindahkan',
-      cardId,
-      fromListId: oldListId,
-      fromListName: oldListName,
-      toListId: targetListId,
-      toListName: newListName,
-      fromBoardId: oldBoardId,
-      fromBoardName: oldBoardName,
-      toBoardId: targetBoardId,
-      toBoardName: newBoardName,
-      position: finalPosition,
-      movedBy: { id: actingUserId, username: actingUserName }
-    });
+        // ✅ Respon sukses
+        res.status(200).json({
+            message: 'Card berhasil dipindahkan',
+            cardId,
+            fromListId: oldListId,
+            fromListName: oldListName,
+            toListId: targetListId,
+            toListName: newListName,
+            fromBoardId: oldBoardId,
+            fromBoardName: oldBoardName,
+            toBoardId: targetBoardId,
+            toBoardName: newBoardName,
+            position: finalPosition,
+            movedBy: { id: actingUserId, username: actingUserName }
+        });
 
     } catch (err) {
         await client.query('ROLLBACK');
@@ -13603,6 +13680,7 @@ app.put('/api/cards/:cardId/move-testing/:userId', async (req, res) => {
         res.status(500).json({ error: 'Gagal memindahkan card' });
     }
 });
+
 
 
 // Move card endpoint
@@ -13639,10 +13717,10 @@ app.put('/api/cards/:cardId/move-testing/:userId', async (req, res) => {
 // ✅ GET card activities (termasuk aktivitas duplicate)
 // ✅ GET card activities (termasuk aktivitas duplicate)
 app.get('/api/cards/:cardId/activities-testing', async (req, res) => {
-  const { cardId } = req.params;
+    const { cardId } = req.params;
 
-  try {
-    const result = await client.query(`
+    try {
+        const result = await client.query(`
       SELECT 
           ca.id,
           ca.card_id,
@@ -13658,44 +13736,44 @@ app.get('/api/cards/:cardId/activities-testing', async (req, res) => {
       ORDER BY ca.created_at DESC
     `, [cardId]);
 
-    // 🧠 Parse kolom action_detail dengan aman
-    const activities = result.rows.map(row => {
-      let parsedDetail = null;
+        // 🧠 Parse kolom action_detail dengan aman
+        const activities = result.rows.map(row => {
+            let parsedDetail = null;
 
-      try {
-        if (row.action_detail) {
-          parsedDetail = JSON.parse(row.action_detail);
-        }
-      } catch (e) {
-        // kalau bukan JSON valid, simpan sebagai teks biasa
-        parsedDetail = { rawText: row.action_detail };
-      }
+            try {
+                if (row.action_detail) {
+                    parsedDetail = JSON.parse(row.action_detail);
+                }
+            } catch (e) {
+                // kalau bukan JSON valid, simpan sebagai teks biasa
+                parsedDetail = { rawText: row.action_detail };
+            }
 
-      return {
-        id: row.id,
-        card_id: row.card_id,
-        action_type: row.action_type,
-        entity: row.entity,
-        entity_id: row.entity_id,
-        created_at: row.created_at,
-        movedby: row.movedby,
-        action_detail: parsedDetail
-      };
-    });
+            return {
+                id: row.id,
+                card_id: row.card_id,
+                action_type: row.action_type,
+                entity: row.entity,
+                entity_id: row.entity_id,
+                created_at: row.created_at,
+                movedby: row.movedby,
+                action_detail: parsedDetail
+            };
+        });
 
-    res.status(200).json({
-      message: `Activities for card ID ${cardId}`,
-      total: activities.length,
-      activities
-    });
+        res.status(200).json({
+            message: `Activities for card ID ${cardId}`,
+            total: activities.length,
+            activities
+        });
 
-  } catch (err) {
-    console.error('❌ Error fetching card activities:', err);
-    res.status(500).json({
-      message: 'Error fetching card activities',
-      error: err.message
-    });
-  }
+    } catch (err) {
+        console.error('❌ Error fetching card activities:', err);
+        res.status(500).json({
+            message: 'Error fetching card activities',
+            error: err.message
+        });
+    }
 });
 
 
@@ -13865,46 +13943,46 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (r
         //     duplicatedBy: { id: actingUserId, username: userName }
         // });
 
-            // 🔥 Simpan activity langsung ke tabel card_activities
-    await client.query(`
+        // 🔥 Simpan activity langsung ke tabel card_activities
+        await client.query(`
       INSERT INTO card_activities 
         (card_id, user_id, action_type, entity, entity_id, action_detail)
       VALUES ($1, $2, $3, $4, $5, $6)
     `, [
-      newCardId,
-      actingUserId,
-      'duplicate',
-      'list',
-      listId,
-      JSON.stringify({
-        cardTitle: newCardTitle,
-        fromListId,
-        fromListName,
-        fromBoardId,
-        fromBoardName,
-        toListId: listId,
-        toListName,
-        toBoardId,
-        toBoardName,
-        position: position || null,
-        duplicatedBy: { id: actingUserId, username: userName }
-      })
-    ]);
+            newCardId,
+            actingUserId,
+            'duplicate',
+            'list',
+            listId,
+            JSON.stringify({
+                cardTitle: newCardTitle,
+                fromListId,
+                fromListName,
+                fromBoardId,
+                fromBoardName,
+                toListId: listId,
+                toListName,
+                toBoardId,
+                toBoardName,
+                position: position || null,
+                duplicatedBy: { id: actingUserId, username: userName }
+            })
+        ]);
 
-    res.status(200).json({
-      message: 'Card berhasil diduplikasi',
-      cardId: newCardId,
-      fromListId,
-      fromListName,
-      toListId: listId,
-      toListName,
-      fromBoardId,
-      fromBoardName,
-      toBoardId,
-      toBoardName,
-      position: position || null,
-      duplicatedBy: { id: actingUserId, username: userName }
-    });
+        res.status(200).json({
+            message: 'Card berhasil diduplikasi',
+            cardId: newCardId,
+            fromListId,
+            fromListName,
+            toListId: listId,
+            toListName,
+            fromBoardId,
+            fromBoardName,
+            toBoardId,
+            toBoardName,
+            position: position || null,
+            duplicatedBy: { id: actingUserId, username: userName }
+        });
 
 
     } catch (err) {
