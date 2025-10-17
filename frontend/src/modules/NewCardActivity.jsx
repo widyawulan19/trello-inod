@@ -100,7 +100,18 @@ const NewCardActivity = ({ cardId }) => {
                     <span className="italic text-purple-600">"{detail.toBoardName}"</span>
                 </>
                 );
-            } else {
+                
+            } else if (activity.action_type === 'updated_status' && detail.cardTitle){
+              messageElement = (
+                <>
+                  <span className="font-semibold">{username}</span> Updated status card{' '}
+                  {/* <span className="font-bold">"{detail.cardTitle}"</span> to{' '}
+                  <span className="text-red-500">"{detail.fromListName}"</span> to{' '}
+                  <span className="text-green-600">"{detail.toListName}"</span> on board{' '}
+                  <span className="italic text-purple-600">"{detail.toBoardName}"</span> */}
+                </>
+              )
+            }else {
                 messageElement = (
                 <>
                     <span className="font-semibold">{username}</span> {MESSAGE_ACTIVITY[activity.action_type] || 'performed an action'}
