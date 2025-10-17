@@ -6397,7 +6397,7 @@ app.post('/api/cards/:cardId/update-status-testing/:userId', async (req, res) =>
 
             // Ambil nama status lama
             const oldStatusRes = await client.query(`SELECT status_name FROM status WHERE id = $1`, [oldStatusId]);
-            oldStatusName = oldStatusRes.rows[0]?.name || 'Unknown';
+            oldStatusName = oldStatusRes.rows[0]?.status_name || 'Unknown';
 
             // Jika ada, update status
             await client.query(
@@ -6416,7 +6416,7 @@ app.post('/api/cards/:cardId/update-status-testing/:userId', async (req, res) =>
 
         // Ambil nama status baru
         const newStatusRes = await client.query(`SELECT status_name FROM status WHERE id = $1`, [statusId]);
-        newStatusName = newStatusRes.rows[0]?.name || 'Unknown';
+        newStatusName = newStatusRes.rows[0]?.status_name || 'Unknown';
 
 
         // Cari workspace_id dari card
