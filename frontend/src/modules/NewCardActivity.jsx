@@ -104,7 +104,9 @@ const NewCardActivity = ({ cardId }) => {
             } else if (activity.action_type === 'updated_status' && detail.cardTitle){
               messageElement = (
                 <>
-                  {/* <span className="font-semibold">{detail.activity}</span> */}
+                   <span className="font-semibold">{username}</span> upated card status{' '}
+                    <span className="font-bold">"{detail.from}"</span> to {' '}
+                    <span className="text-red-500">"{detail.to}"</span>
                 </>
               )
             }else {
