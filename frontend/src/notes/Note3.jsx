@@ -531,3 +531,39 @@ function autoLinkHTML(html) {
 }
 
 export default NewRoomChat;
+
+
+
+
+return (
+  <li
+    key={activity.id}
+    className="ca-li"
+    style={{
+      padding: '0.25rem',
+      borderLeftWidth: '4px',
+      borderLeftStyle: 'solid',
+      borderLeftColor: borderColor,
+      backgroundColor: '#f8fafc',
+      borderRadius: '0.25rem'
+    }}
+  >
+    <p style={{ fontSize: '12px', margin: 0 }}>{messageElement}</p>
+
+    {activity.actionDescription && (
+      <p style={{ fontSize: '11px', margin: '2px 0 0 16px', color: '#64748b' }}>
+        {activity.actionDescription}
+      </p>
+    )}
+
+    <p
+      style={{
+        fontSize: '10px',
+        textAlign: 'right',
+        margin: 0
+      }}
+    >
+      {new Date(activity.created_at).toLocaleString()}
+    </p>
+  </li>
+);
