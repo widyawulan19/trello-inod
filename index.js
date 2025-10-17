@@ -4970,6 +4970,7 @@ app.put('/api/cards/:id/title-testing/:userId', async (req, res) => {
 
         const oldTitle = oldResult.rows[0].title;
 
+        //update new title
         const result = await client.query(
             "UPDATE cards SET title = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *",
             [title, id]
@@ -5017,7 +5018,7 @@ app.put('/api/cards/:id/title-testing/:userId', async (req, res) => {
             id,
             JSON.stringify({
                 from: oldTitle || null,
-                to: result,
+                to: title,
                 updatedBy: { id: actingUserId, username: actingUserName }
             })
         ]);
