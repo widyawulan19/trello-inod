@@ -13608,30 +13608,73 @@ app.put('/api/cards/:cardId/move-testing/:userId', async (req, res) => {
 
 
 //get card activity
+// app.get('/api/cards/:cardId/activities', async (req, res) => {
+//     const { cardId } = req.params;
+
+//     try {
+//         const result = await client.query(`
+//       SELECT 
+//         ca.*,
+//         u.username AS movedBy
+//       FROM card_activities ca
+//       LEFT JOIN users u ON ca.user_id = u.id
+//       WHERE ca.card_id = $1
+//       ORDER BY ca.created_at DESC
+//     `, [cardId]);
+
+//         res.json({
+//             message: `Activities for card ID ${cardId}`,
+//             activities: result.rows
+//         });
+//     } catch (err) {
+//         console.error(err);
+//         res.status(500).json({ message: 'Error fetching card activities' });
+//     }
+// });
+
+// GET card activities (termasuk aktivitas duplicate)
 app.get('/api/cards/:cardId/activities', async (req, res) => {
     const { cardId } = req.params;
 
     try {
         const result = await client.query(`
-      SELECT 
-        ca.*,
-        u.username AS movedBy
-      FROM card_activities ca
-      LEFT JOIN users u ON ca.user_id = u.id
-      WHERE ca.card_id = $1
-      ORDER BY ca.created_at DESC
-    `, [cardId]);
+            SELECT 
+                ca.id,
+                ca.card_id,
+                ca.action,
+                ca.entity,
+                ca.entity_id,
+                ca.details,
+                ca.created_at,
+                u.username AS performed_by
+            FROM card_activities ca
+            LEFT JOIN users u ON ca.user_id = u.id
+            WHERE ca.card_id = $1
+            ORDER BY ca.created_at DESC
+        `, [cardId]);
+
+        // Parse kolom details JSON agar bisa langsung dibaca frontend
+        const activities = result.rows.map(row => ({
+            id: row.id,
+            card_id: row.card_id,
+            action: row.action,
+            entity: row.entity,
+            entity_id: row.entity_id,
+            created_at: row.created_at,
+            performed_by: row.performed_by,
+            details: row.details ? JSON.parse(row.details) : null
+        }));
 
         res.json({
             message: `Activities for card ID ${cardId}`,
-            activities: result.rows
+            total: activities.length,
+            activities
         });
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Error fetching card activities' });
+        console.error('❌ Error fetching card activities:', err);
+        res.status(500).json({ message: 'Error fetching card activities', error: err.message });
     }
 });
-
 
 
 // 5. duplicate card
