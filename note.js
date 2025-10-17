@@ -967,3 +967,439 @@ app.put('/api/workspace/restore/:id', async (req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 });
+
+app.put('/api/cards/:cardId/move', async (req, res) => {
+  const { cardId } = req.params;
+  const { targetListId, newPosition } = req.body;
+
+  if (!actingUserId) return res.status(401).json({ error: 'Unauthorized' });
+
+  try {
+    await client.query('BEGIN');
+
+    // ambil info card lama
+    const oldCardRes = await client.query(
+      `SELECT c.list_id, c.position, c.title, l.board_id 
+       FROM cards c 
+       JOIN lists l ON c.list_id = l.id
+       WHERE c.id = $1`,
+      [cardId]
+    );
+    if (oldCardRes.rows.length === 0)
+      return res.status(404).json({ error: 'Card tidak ditemukan' });
+
+    const { list_id: oldListId, board_id: oldBoardId, position: oldPosition, title } = oldCardRes.rows[0];
+
+    // ambil board_id dari list tujuan
+    const targetListRes = await client.query(`SELECT board_id FROM lists WHERE id = $1`, [targetListId]);
+    if (targetListRes.rows.length === 0)
+      return res.status(404).json({ error: 'List tujuan tidak ditemukan' });
+    const targetBoardId = targetListRes.rows[0].board_id;
+
+    // geser posisi di list lama
+    await client.query(
+      `UPDATE cards SET position = position - 1
+       WHERE list_id = $1 AND position > $2`,
+      [oldListId, oldPosition]
+    );
+
+    // hitung posisi baru
+    let finalPosition = newPosition;
+    if (!finalPosition) {
+      const posRes = await client.query(
+        `SELECT COALESCE(MAX(position), 0) + 1 AS pos
+         FROM cards WHERE list_id = $1`,
+        [targetListId]
+      );
+      finalPosition = posRes.rows[0].pos;
+    } else {
+      // geser posisi di list tujuan
+      await client.query(
+        `UPDATE cards SET position = position + 1
+         WHERE list_id = $1 AND position >= $2`,
+        [targetListId, finalPosition]
+      );
+    }
+
+    // update posisi dan list card
+    await client.query(
+      `UPDATE cards
+       SET list_id = $1, position = $2, update_at = CURRENT_TIMESTAMP
+       WHERE id = $3`,
+      [targetListId, finalPosition, cardId]
+    );
+
+    // ambil info board & list lama dan baru
+    const oldInfo = await client.query(
+      `SELECT l.name AS list_name, b.name AS board_name
+       FROM lists l 
+       JOIN boards b ON l.board_id = b.id
+       WHERE l.id = $1`,
+      [oldListId]
+    );
+    const newInfo = await client.query(
+      `SELECT l.name AS list_name, b.name AS board_name
+       FROM lists l 
+       JOIN boards b ON l.board_id = b.id
+       WHERE l.id = $1`,
+      [targetListId]
+    );
+
+
+
+  } catch (err) {
+    await client.query('ROLLBACK');
+    console.error('❌ Gagal move card:', err);
+    res.status(500).json({ error: 'Gagal memindahkan card' });
+  }
+});
+
+
+app.get('/api/cards/:cardId/activities', async (req, res) => {
+  const { cardId } = req.params;
+
+  try {
+    const result = await client.query(`
+      SELECT 
+        ca.*,
+        u.name AS movedBy
+      FROM card_activities ca
+      LEFT JOIN users u ON ca.user_id = u.id
+      WHERE ca.card_id = $1
+      ORDER BY ca.created_at DESC
+    `, [cardId]);
+
+    res.json({
+      message: `Activities for card ID ${cardId}`,
+      activities: result.rows
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error fetching card activities' });
+  }
+});
+
+const handleMoveCard = async () => {
+  if (!cardId || !selectedList?.id) {
+    alert('Please select both board and list!');
+    return;
+  }
+
+  if (!targetPosition || targetPosition < 1) {
+    alert('Please enter a valid position!');
+    return;
+  }
+
+  if (!userId) {
+    alert('User ID not found!');
+    return;
+  }
+
+  setIsMoving(true);
+
+  try {
+    const result = await moveCardToList(
+      cardId,
+      userId,            // <-- pakai userId dari props
+      selectedList.id,
+      targetPosition
+    );
+
+    console.log('✅ Card moved successfully:', result);
+    showSnackbar('Card moved successfully!', 'success');
+
+    // Refresh data parent
+    if (onCardMoved) onCardMoved();
+    if (fetchCardList) {
+      fetchCardList(listId); // list asal
+      fetchCardList(selectedList.id); // list tujuan
+    }
+
+    // Navigasi ke board tujuan
+    navigate(`/layout/workspaces/${workspaceId}/board/${selectedBoardId}`);
+
+    onClose();
+  } catch (error) {
+    console.error('❌ Error moving card:', error);
+    showSnackbar('Failed to move the card!', 'error');
+  } finally {
+    setIsMoving(false);
+  }
+};
+
+await client.query(
+  `INSERT INTO card_activities (card_id, user_id, action_type, entity, entity_id, action_detail)
+   VALUES ($1, $2, 'moved', 'card', $3, $4)`,
+  [cardId, userId, cardId, JSON.stringify({
+    cardTitle: title,
+    fromListName: oldListName,
+    toListName: targetListName,
+    fromBoardName: oldBoardName,
+    toBoardName: oldBoardName
+  })]
+);
+
+res.json({ message: 'Card berhasil dipindahkan', actionDetail: { /* sama dengan di atas */ } });
+
+
+const CardActivity = ({ cardId }) => {
+  const [cardActivities, setCardActivities] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const fetchCardActivites = async () => {
+    try {
+      setLoading(true);
+      const response = await getActivityCard(cardId);
+      setCardActivities(response.data.activities);
+    } catch (error) {
+      console.error('Failed to fetch card activity:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (cardId) fetchCardActivites();
+  }, [cardId]);
+
+  return (
+    <div className="ca-container">
+      {loading ? (
+        <p>Loading...</p>
+      ) : cardActivities.length === 0 ? (
+        <p style={{ textAlign: 'center', fontSize: '12px' }}>No activity yet.</p>
+      ) : (
+        <ul className="space-y-3">
+          {cardActivities.map((activity) => {
+            let detail = {};
+            try {
+              detail = activity.action_detail ? JSON.parse(activity.action_detail) : {};
+            } catch {
+              detail = { text: activity.action_detail }; // fallback string
+            }
+
+            let messageElement = null;
+            const borderColor = COLOR_BORDER[activity.action_type] || '#ddd';
+
+            if (activity.action_type === 'move' && detail.cardTitle) {
+              if (detail.fromBoardName === detail.toBoardName) {
+                messageElement = (
+                  <>
+                    <strong>{activity.username}</strong> moved <strong>"{detail.cardTitle}"</strong> from <span className="text-red-500">"{detail.fromListName}"</span> to <span className="text-green-600">"{detail.toListName}"</span> on board <em>"{detail.toBoardName}"</em>
+                  </>
+                );
+              } else {
+                messageElement = (
+                  <>
+                    <strong>{activity.username}</strong> moved <strong>"{detail.cardTitle}"</strong> from <span className="text-red-500">"{detail.fromListName}"</span> (board <em>"{detail.fromBoardName}"</em>) to <span className="text-green-600">"{detail.toListName}"</span> (board <em>"{detail.toBoardName}"</em>)
+                  </>
+                );
+              }
+            } else {
+              // fallback jika bukan move
+              messageElement = <>{activity.username} {detail.text || activity.action_type}</>;
+            }
+
+            return (
+              <li
+                key={activity.id}
+                className="ca-li"
+                style={{
+                  padding: '0.25rem',
+                  borderLeftWidth: '4px',
+                  borderLeftStyle: 'solid',
+                  borderLeftColor: borderColor,
+                  backgroundColor: '#f8fafc',
+                  borderRadius: '0.25rem',
+                }}
+              >
+                <p style={{ fontSize: '10px', margin: 0 }}>{messageElement}</p>
+                <p style={{ fontSize: '10px', textAlign: 'right' }}>{new Date(activity.created_at).toLocaleString()}</p>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </div>
+  );
+};
+
+
+
+
+app.put('/api/cards/:cardId/move', async (req, res) => {
+  const { cardId } = req.params;
+  const { targetListId, newPosition } = req.body;
+  const actingUserId = req.user?.id;
+
+
+  app.put('/api/cards/:cardId/move-testing/:userId', async (req, res) => {
+    const { cardId, userId } = req.params; // ambil userId dari URL
+    const { targetListId, newPosition } = req.body;
+
+    if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+
+
+
+    import { useUser } from '../context/UserContext'; // pastikan ada
+
+    const MoveCard = ({
+      cardId,
+      workspaceId,
+      onClose,
+      boardId,
+      listId,
+      onCardMoved,
+      fetchCardList,
+    }) => {
+      const { user } = useUser(); // ambil userId
+      const [boards, setBoards] = useState([]);
+      const [lists, setLists] = useState([]);
+      const [cards, setCards] = useState([]);
+      const [searchBoard, setSearchBoard] = useState('');
+      const [searchList, setSearchList] = useState('');
+      const [selectedBoardId, setSelectedBoardId] = useState(null);
+      const [selectedList, setSelectedList] = useState(null);
+      const [targetPosition, setTargetPosition] = useState('');
+      const [showBoardDropdown, setShowBoardDropdown] = useState(false);
+      const [showListDropdown, setShowListDropdown] = useState(false);
+      const [isMoving, setIsMoving] = useState(false);
+
+      const navigate = useNavigate();
+      const { showSnackbar } = useSnackbar();
+
+      // 🔹 Load semua board
+      useEffect(() => {
+        getBoards()
+          .then((res) => setBoards(res.data))
+          .catch((err) => console.error('❌ Error fetching boards:', err));
+      }, []);
+
+      // 🔹 Load lists berdasarkan board
+      useEffect(() => {
+        if (selectedBoardId) {
+          getListByBoard(selectedBoardId)
+            .then((res) => setLists(res.data))
+            .catch((err) => console.error('❌ Error fetching lists:', err));
+        }
+      }, [selectedBoardId]);
+
+      // 🔹 Load cards berdasarkan list
+      useEffect(() => {
+        if (selectedList?.id) {
+          getCardsByList(selectedList.id)
+            .then((res) => setCards(res.data))
+            .catch((err) => console.error('❌ Error fetching cards:', err));
+        }
+      }, [selectedList]);
+
+      // 🔹 Fungsi pindahkan card pakai moveCardToListTesting
+      const handleMoveCard = async () => {
+        if (!cardId || !selectedList?.id) {
+          alert('Please select both board and list!');
+          return;
+        }
+
+        if (!targetPosition || targetPosition < 1) {
+          alert('Please enter a valid position!');
+          return;
+        }
+
+        if (!user?.id) {
+          alert('User not found!');
+          return;
+        }
+
+        setIsMoving(true);
+
+        try {
+          const result = await moveCardToListTesting(
+            cardId,
+            user.id, // userId di URL
+            selectedList.id,
+            Number(targetPosition)
+          );
+
+          console.log('✅ Card moved successfully:', result);
+          showSnackbar('Card moved successfully!', 'success');
+
+          // Refresh data parent
+          if (onCardMoved) onCardMoved();
+          if (fetchCardList) {
+            fetchCardList(listId); // list asal
+            fetchCardList(selectedList.id); // list tujuan
+          }
+
+          // Navigasi ke board tujuan
+          navigate(`/layout/workspaces/${workspaceId}/board/${selectedBoardId}`);
+
+          onClose();
+        } catch (error) {
+          console.error('❌ Error moving card:', error);
+          showSnackbar('Failed to move the card!', 'error');
+        } finally {
+          setIsMoving(false);
+        }
+      };
+
+      return (
+        <div className="mc-container">
+          {/* ...UI dropdown board/list & input posisi tetap sama */}
+          <div className="div-btn">
+            <button
+              className="mcl-move-btn"
+              onClick={handleMoveCard}
+              disabled={!selectedList || isMoving}
+            >
+              <HiMiniArrowLeftStartOnRectangle className="mcl-icon" />
+              {isMoving ? 'Moving...' : 'Move Card'}
+            </button>
+          </div>
+        </div>
+      );
+    };
+
+    export default MoveCard;
+
+
+    // log activity
+    await logCardActivity({
+      action: 'move',
+      card_id: cardId,
+      user_ids: userIds,
+      entity: 'list',
+      entity_id: targetListId,
+      details: {
+        cardTitle: title,
+        fromBoardId: oldBoardId,
+        fromBoardName: oldBoardName,
+        fromListId: oldListId,
+        fromListName: oldListName,
+        toBoardId: targetBoardId,
+        toBoardName: newBoardName,
+        toListId: targetListId,
+        toListName: newListName,
+        newPosition: finalPosition,
+        movedBy: { id: actingUserId, username: actingUserName }
+      }
+    });
+
+    await client.query('COMMIT');
+
+    // response ke frontend
+    res.status(200).json({
+      message: 'Card berhasil dipindahkan',
+      cardId,
+      fromListId: oldListId,
+      fromListName: oldListName,
+      toListId: targetListId,
+      toListName: newListName,
+      fromBoardId: oldBoardId,
+      fromBoardName: oldBoardName,
+      toBoardId: targetBoardId,
+      toBoardName: newBoardName,
+      position: finalPosition,
+      movedBy: { id: actingUserId, username: actingUserName }
+    });
+
+        082286347194
