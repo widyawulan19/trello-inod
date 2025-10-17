@@ -13553,45 +13553,49 @@ app.put('/api/cards/:cardId/move-testing/:userId', async (req, res) => {
         );
         const actingUserName = actingUserRes.rows[0]?.username || 'Unknown';
 
-        // log activity
-        await logCardActivity({
-            action: 'moved',
-            card_id: cardId,
-            user_ids: userIds,
-            entity: 'list',
-            entity_id: targetListId,
-            details: {
-                cardTitle: title,
-                fromBoardId: oldBoardId,
-                fromBoardName: oldBoardName,
-                fromListId: oldListId,
-                fromListName: oldListName,
-                toBoardId: targetBoardId,
-                toBoardName: newBoardName,
-                toListId: targetListId,
-                toListName: newListName,
-                newPosition: finalPosition,
-                movedBy: { id: actingUserId, username: actingUserName }
-            }
-        });
+       // 🔥 Simpan activity langsung ke tabel card_activities
+    await client.query(`
+      INSERT INTO card_activities 
+        (card_id, user_id, action_type, entity, entity_id, action_detail)
+      VALUES ($1, $2, $3, $4, $5, $6)
+    `, [
+      cardId, // card_id
+      actingUserId, // user_id
+      'moved', // action_type
+      'list', // entity
+      targetListId, // entity_id
+      JSON.stringify({ // action_detail valid JSON
+        cardTitle: title,
+        fromBoardId: oldBoardId,
+        fromBoardName: oldBoardName,
+        fromListId: oldListId,
+        fromListName: oldListName,
+        toBoardId: targetBoardId,
+        toBoardName: newBoardName,
+        toListId: targetListId,
+        toListName: newListName,
+        newPosition: finalPosition,
+        movedBy: { id: actingUserId, username: actingUserName }
+      })
+    ]);
 
-        await client.query('COMMIT');
+    await client.query('COMMIT');
 
-        // response ke frontend
-        res.status(200).json({
-            message: 'Card berhasil dipindahkan',
-            cardId,
-            fromListId: oldListId,
-            fromListName: oldListName,
-            toListId: targetListId,
-            toListName: newListName,
-            fromBoardId: oldBoardId,
-            fromBoardName: oldBoardName,
-            toBoardId: targetBoardId,
-            toBoardName: newBoardName,
-            position: finalPosition,
-            movedBy: { id: actingUserId, username: actingUserName }
-        });
+    // ✅ Respon sukses
+    res.status(200).json({
+      message: 'Card berhasil dipindahkan',
+      cardId,
+      fromListId: oldListId,
+      fromListName: oldListName,
+      toListId: targetListId,
+      toListName: newListName,
+      fromBoardId: oldBoardId,
+      fromBoardName: oldBoardName,
+      toBoardId: targetBoardId,
+      toBoardName: newBoardName,
+      position: finalPosition,
+      movedBy: { id: actingUserId, username: actingUserName }
+    });
 
     } catch (err) {
         await client.query('ROLLBACK');
