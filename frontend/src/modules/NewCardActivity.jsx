@@ -3,8 +3,8 @@ import { getActivityCardTesting } from '../services/ApiServices';
 import '../style/modules/CardActivity.css';
 
 const COLOR_BORDER = {
-  moved: '#f59e0b',
-  duplicate: '#0ea5e9',
+  moved: '#f59e0b', //done
+  duplicate: '#0ea5e9', //done
   updated_title: '#3b82f6',
   updated_desc: '#6366f1',
   remove_label: '#ef4444',
@@ -15,7 +15,7 @@ const COLOR_BORDER = {
   add_cover: '#22c55e',
   updated_due: '#a855f7',
   updated_prio: '#ec4899',
-  updated_status: '#14b8a6'
+  updated_status: '#14b8a6' //done
 };
 
 const MESSAGE_ACTIVITY = {
@@ -113,14 +113,14 @@ const NewCardActivity = ({ cardId }) => {
                   <span className="font-semibold">{username}</span> updated status from{' '}
                   <span className="text-red-500">"{detail.from || '-'}"</span> to{' '}
                   <span className="text-green-600">"{detail.to}"</span>
-                  {detail.description && (
+                  {/* {detail.description && (
                     <>
                       <br />
                       <span className="text-gray-500 text-[11px]">
                         Description: {detail.description}
                       </span>
                     </>
-                  )}
+                  )} */}
                 </>
               );
             }else {
