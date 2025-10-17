@@ -6382,53 +6382,60 @@ app.post('/api/cards/:cardId/update-status-testing/:userId', async (req, res) =>
     if (!actingUserId) return res.status(401).json({ error: 'Unauthorized' });
 
     try {
+        let message = '';
+
         // Cek apakah kartu sudah memiliki status
         const check = await client.query(`SELECT * FROM card_status WHERE card_id = $1`, [cardId]);
 
         if (check.rows.length > 0) {
             // Jika ada, update status
-            await client.query(`UPDATE card_status SET status_id = $1, update_at = CURRENT_TIMESTAMP WHERE card_id = $2`, [statusId, cardId]);
-            res.json({ message: 'Status kartu berhasil diperbarui' });
+            await client.query(
+                `UPDATE card_status SET status_id = $1, update_at = CURRENT_TIMESTAMP WHERE card_id = $2`,
+                [statusId, cardId]
+            );
+            message = 'Status kartu berhasil diperbarui';
         } else {
             // Jika belum ada, tambahkan status baru
-            await client.query(`INSERT INTO card_status (card_id, status_id, assigned_at) VALUES ($1, $2, CURRENT_TIMESTAMP)`, [cardId, statusId]);
-            res.json({ message: 'Status kartu berhasil ditambahkan' });
+            await client.query(
+                `INSERT INTO card_status (card_id, status_id, assigned_at) VALUES ($1, $2, CURRENT_TIMESTAMP)`,
+                [cardId, statusId]
+            );
+            message = 'Status kartu berhasil ditambahkan';
         }
 
+        // Cari workspace_id dari card
         const boardRes = await client.query(`
-        SELECT b.workspace_id
-        FROM boards b
-        JOIN lists l ON l.board_id = b.id
-        JOIN cards c ON c.list_id = l.id
-        WHERE c.id = $1
+            SELECT b.workspace_id
+            FROM boards b
+            JOIN lists l ON l.board_id = b.id
+            JOIN cards c ON c.list_id = l.id
+            WHERE c.id = $1
         `, [cardId]);
 
         const workspaceId = boardRes.rows[0]?.workspace_id;
 
-
-        //mengambil semua user workspace
+        // Mengambil semua user workspace
         const workspaceUsersRes = await client.query(
             `SELECT user_id FROM workspaces_users WHERE workspace_id = $1 AND is_deleted = FALSE`,
             [workspaceId]
         );
         const userIds = workspaceUsersRes.rows.map(r => r.user_id);
-
-        // pastikan actingUserId ada di userIds
         if (!userIds.includes(actingUserId)) userIds.push(actingUserId);
 
-        // ambil username acting user
+        // Ambil username acting user
         const actingUserRes = await client.query(
             'SELECT username FROM users WHERE id = $1',
             [actingUserId]
         );
         const actingUserName = actingUserRes.rows[0]?.username || 'Unknown';
 
-        //menyimpan data langsung ke tabel activity_user 
-        await client.query(`
+        // Simpan aktivitas ke card_activities
+        const activityRes = await client.query(`
             INSERT INTO card_activities 
             (card_id, user_id, action_type, entity, entity_id, action_detail)
             VALUES ($1, $2, $3, $4, $5, $6)
-            `, [
+            RETURNING *
+        `, [
             cardId,
             actingUserId,
             'updated_status',
@@ -6440,7 +6447,6 @@ app.post('/api/cards/:cardId/update-status-testing/:userId', async (req, res) =>
             })
         ]);
 
-
         // Kirim response akhir
         res.status(200).json({
             message,
@@ -6450,9 +6456,11 @@ app.post('/api/cards/:cardId/update-status-testing/:userId', async (req, res) =>
         });
 
     } catch (error) {
+        console.error('❌ Error update status:', error);
         res.status(500).json({ error: 'Gagal menambahkan/memperbarui status kartu' });
     }
-})
+});
+
 
 //4. delete status card id
 app.delete('/api/cards/:cardId/status', async (req, res) => {
