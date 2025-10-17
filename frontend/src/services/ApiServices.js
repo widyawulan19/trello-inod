@@ -271,7 +271,7 @@ export const moveCardToListTesting = async (cardId, userId, targetListId, newPos
 
 export const getActivityCardTesting = async (cardId) => {
   try {
-    const response = await axios.get(`${API_URL}/cards/${cardId}/activities`);
+    const response = await axios.get(`${API_URL}/cards/${cardId}/activities-testing`);
     return response.data;
   } catch (error) {
     console.error('❌ Failed to fetch card activities:', error.response?.data || error.message);

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   getBoards,
   moveCardToList,
+  // moveCardToListTesting,
   getListByBoard,
   getCardsByList,
 } from '../services/ApiServices';
@@ -82,6 +83,7 @@ const MoveCard = ({
     setIsMoving(true);
 
     try {
+      // const result = await moveCardToList(
       const result = await moveCardToList(
         cardId,
         userId,
