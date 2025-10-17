@@ -4952,6 +4952,102 @@ app.put('/api/cards/:id/title', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 })
+
+//1.1 update title card (testing)
+app.put('/api/cards/:id/title-testing/:userId', async (req, res) => {
+    const { id, userId } = req.params;
+    const { title } = req.body;
+    const actingUserId = parseInt(userId, 10);
+    // const userId = req.user.id;
+
+    if (!actingUserId) return res.status(401).json({ error: "Unauthorized" });
+    console.log('Endpoin update ini menerima data userId:', userId);
+
+    try {
+        // Ambil data lama dulu buat dicatat di log
+        const oldResult = await client.query("SELECT title FROM cards WHERE id = $1", [id]);
+        if (oldResult.rows.length === 0) return res.status(404).json({ error: "Card not found" });
+
+        const oldTitle = oldResult.rows[0].title;
+
+        const result = await client.query(
+            "UPDATE cards SET title = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *",
+            [title, id]
+        );
+
+        // untuk bisa mengambil nama user harus lakukan langkah berikut:
+        // 1. mencari workspace id dari card 
+        const boardRes = await client.query(`
+            SELECT b.workspace_id
+            FROM boards b
+            JOIN lists l ON l.board_id = b.id
+            JOIN cards c ON c.list_id = l.id
+            WHERE c.id = $1
+        `, [id]);
+
+        const workspaceId = boardRes.rows[0]?.workspace_id;
+
+        // 2. mengambil Semua user workspace 
+        const workspaceUsersRes = await client.query(
+            `SELECT user_id FROM workspaces_users WHERE workspace_id = $1 AND is_deleted = FALSE`,
+            [workspaceId]
+        );
+        const userIds = workspaceUsersRes.rows.map(r => r.user_id);
+        if (!userIds.includes(actingUserId)) userIds.push(actingUserId);
+
+        //3. mengambil username acting user
+        const actingUserRes = await client.query(
+            'SELECT username FROM users WHERE id = $1',
+            [actingUserId]
+        );
+        const actingUserName = actingUserRes.rows[0]?.username || 'Unknown';
+
+
+        // menyimpan aktivitas update title ke card_activity
+        const activityRes = await client.query(`
+            INSERT INTO card_activities 
+            (card_id, user_id, action_type, entity, entity_id, action_detail)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING *
+            `, [
+            id,
+            actingUserId,
+            'updated_title',
+            'title',
+            id,
+            JSON.stringify({
+                from: oldTitle || null,
+                to: result,
+                updatedBy: { id: actingUserId, username: actingUserName }
+            })
+        ]);
+        // kirim pesan response 
+        res.status(200).json({
+            message: 'Card title berhasil di update!',
+            id,
+            workspaceId,
+            activity: activityRes.rows[0],
+        });
+
+        // ✅ Tambahkan log aktivitas
+        // await logCardActivity({
+        //     action: 'updated_title',
+        //     card_id: parseInt(id),
+        //     user_id: userId,
+        //     entity: 'title',
+        //     entity_id: null,
+        //     details: {
+        //         old_title: oldTitle,
+        //         new_title: title
+        //     }
+        // });
+        // res.json(result.rows[0]);
+    } catch (error) {
+        console.error("Error updating card title:", error);
+        res.status(500).json({ error: 'Gagal memperbarui title card' });
+    }
+})
+
 //2. update title description
 app.put("/api/cards/:id/desc", async (req, res) => {
     const { id } = req.params;
