@@ -13811,40 +13811,81 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (r
         await client.query('COMMIT');
 
         // Log activity card
-        await logCardActivity({
-            action: 'duplicate',
-            card_id: newCardId,
-            user_ids: [actingUserId],
-            entity: 'list',
-            entity_id: listId,
-            details: {
-                cardTitle: newCardTitle,
-                fromListId,
-                fromListName,
-                fromBoardId,
-                fromBoardName,
-                toListId: listId,
-                toListName,
-                toBoardId,
-                toBoardName,
-                duplicatedBy: { id: actingUserId, username: userName }
-            }
-        });
+        // await logCardActivity({
+        //     action: 'duplicate',
+        //     card_id: newCardId,
+        //     user_ids: [actingUserId],
+        //     entity: 'list',
+        //     entity_id: listId,
+        //     details: {
+        //         cardTitle: newCardTitle,
+        //         fromListId,
+        //         fromListName,
+        //         fromBoardId,
+        //         fromBoardName,
+        //         toListId: listId,
+        //         toListName,
+        //         toBoardId,
+        //         toBoardName,
+        //         duplicatedBy: { id: actingUserId, username: userName }
+        //     }
+        // });
 
-        res.status(200).json({
-            message: 'Card berhasil diduplikasi',
-            cardId: newCardId,
-            fromListId,
-            fromListName,
-            toListId: listId,
-            toListName,
-            fromBoardId,
-            fromBoardName,
-            toBoardId,
-            toBoardName,
-            position: position || null,
-            duplicatedBy: { id: actingUserId, username: userName }
-        });
+        // res.status(200).json({
+        //     message: 'Card berhasil diduplikasi',
+        //     cardId: newCardId,
+        //     fromListId,
+        //     fromListName,
+        //     toListId: listId,
+        //     toListName,
+        //     fromBoardId,
+        //     fromBoardName,
+        //     toBoardId,
+        //     toBoardName,
+        //     position: position || null,
+        //     duplicatedBy: { id: actingUserId, username: userName }
+        // });
+
+            // 🔥 Simpan activity langsung ke tabel card_activities
+    await client.query(`
+      INSERT INTO card_activities 
+        (card_id, user_id, action_type, entity, entity_id, action_detail)
+      VALUES ($1, $2, $3, $4, $5, $6)
+    `, [
+      newCardId,
+      actingUserId,
+      'duplicate',
+      'list',
+      listId,
+      JSON.stringify({
+        cardTitle: newCardTitle,
+        fromListId,
+        fromListName,
+        fromBoardId,
+        fromBoardName,
+        toListId: listId,
+        toListName,
+        toBoardId,
+        toBoardName,
+        position: position || null,
+        duplicatedBy: { id: actingUserId, username: userName }
+      })
+    ]);
+
+    res.status(200).json({
+      message: 'Card berhasil diduplikasi',
+      cardId: newCardId,
+      fromListId,
+      fromListName,
+      toListId: listId,
+      toListName,
+      fromBoardId,
+      fromBoardName,
+      toBoardId,
+      toBoardName,
+      position: position || null,
+      duplicatedBy: { id: actingUserId, username: userName }
+    });
 
 
     } catch (err) {
