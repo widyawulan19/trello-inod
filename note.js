@@ -1403,3 +1403,61 @@ app.put('/api/cards/:cardId/move', async (req, res) => {
     });
 
         082286347194
+
+
+
+
+    // Endpoint untuk duplikasi card ke list tertentu
+    app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (req, res) => {
+      const { cardId, listId, userId } = req.params;
+      const { position } = req.body;
+      const actingUserId = parseInt(userId, 10);
+
+      try {
+        // ... kode logika duplikasi card (misalnya ambil data card lama, insert card baru, dll.)
+
+        // 🔥 Simpan activity langsung ke tabel card_activities
+        await client.query(`
+      INSERT INTO card_activities 
+        (card_id, user_id, action_type, entity, entity_id, action_detail)
+      VALUES ($1, $2, $3, $4, $5, $6)
+    `, [
+          newCardId,
+          actingUserId,
+          'duplicate',
+          'list',
+          listId,
+          JSON.stringify({
+            cardTitle: newCardTitle,
+            fromListId,
+            fromListName,
+            fromBoardId,
+            fromBoardName,
+            toListId: listId,
+            toListName,
+            toBoardId,
+            toBoardName,
+            position: position || null,
+            duplicatedBy: { id: actingUserId, username: userName }
+          })
+        ]);
+
+        res.status(200).json({
+          message: 'Card berhasil diduplikasi',
+          cardId: newCardId,
+          fromListId,
+          fromListName,
+          toListId: listId,
+          toListName,
+          fromBoardId,
+          fromBoardName,
+          toBoardId,
+          toBoardName,
+          position: position || null,
+          duplicatedBy: { id: actingUserId, username: userName }
+        });
+      } catch (error) {
+        console.error('❌ Error duplicating card:', error);
+        res.status(500).json({ message: 'Error duplicating card', error: error.message });
+      }
+    });
