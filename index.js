@@ -13800,8 +13800,8 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (r
 
     } catch (err) {
         await client.query('ROLLBACK');
-        console.error(err);
-        res.status(500).json({ error: 'Terjadi kesalahan saat menyalin card ke list yang baru' });
+        console.error('❌ Duplicate card error:', err); // ini cetak ke log server
+        res.status(500).json({ error: err.message, stack: err.stack }); // tampilkan detail error di response
     }
 });
 
