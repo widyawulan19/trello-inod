@@ -6441,10 +6441,14 @@ app.post('/api/cards/:cardId/update-status-testing/:userId', async (req, res) =>
         ]);
 
 
+        // Kirim response akhir
         res.status(200).json({
-            message: 'Status card berhasil diupdate!',
-            cardId: cardId,
-        })
+            message,
+            cardId,
+            workspaceId,
+            activity: activityRes.rows[0],
+        });
+
     } catch (error) {
         res.status(500).json({ error: 'Gagal menambahkan/memperbarui status kartu' });
     }
