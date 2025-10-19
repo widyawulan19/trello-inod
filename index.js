@@ -5623,7 +5623,7 @@ app.delete('/api/delete-cover/:cardId/:userId', async (req, res) => {
             `, [
             cardId,
             actingUserId,
-            'add_cover',
+            'remove_cover',
             'card cover',
             cardId,
             JSON.stringify({
