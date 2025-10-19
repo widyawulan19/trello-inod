@@ -7,6 +7,7 @@ const COLOR_BORDER = {
   duplicate: '#0ea5e9', //done
   updated_title: '#3b82f6',
   updated_desc: '#6366f1',
+  updated_cover:'#22c55e',
   remove_label: '#ef4444',
   remove_user: '#ef4444',
   remove_cover: '#ef4444',
@@ -21,6 +22,7 @@ const COLOR_BORDER = {
 const MESSAGE_ACTIVITY = {
   updated_title: 'updated title to',
   updated_desc: 'updated description',
+  updated_cover:'updated cover',
   remove_label: 'removed label',
   remove_user: 'removed user',
   remove_cover: 'removed cover from card',
@@ -34,38 +36,8 @@ const MESSAGE_ACTIVITY = {
   duplicate: 'duplicated this card'
 };
 
-const NewCardActivity = ({ cardId }) => {
-  const [cardActivities, setCardActivities] = useState([]);
+const NewCardActivity = ({ cardId, fetchCardActivities, cardActivities, setCardActivities }) => {
   const [loading, setLoading] = useState(false);
-
-  const fetchCardActivities = async () => {
-  try {
-    setLoading(true);
-    const response = await getActivityCardTesting(cardId);
-
-    const activitiesWithUser = response.activities.map(act => {
-      const detail = act.action_detail || {};
-      return {
-        // ...act,
-        // username: act.movedby || detail.movedBy?.username || 'Unknown',
-        // detail
-        ...act,
-        username:
-          act.action_detail?.updatedBy?.username ||
-          act.movedby ||
-          'Unknown',
-        detail: act.action_detail || {},
-      };
-    });
-
-    setCardActivities(activitiesWithUser);
-  } catch (error) {
-    console.error('Failed to fetch card activity:', error);
-  } finally {
-    setLoading(false);
-  }
-};
-
 
   useEffect(() => {
     if (cardId) fetchCardActivities();

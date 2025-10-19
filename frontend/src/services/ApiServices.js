@@ -173,6 +173,7 @@ export const deletePropertyFromBoard = (boardId, priorityId) => axios.delete(`${
 
 //CARD PRIORITY
 export const addPriorityToCard = (card_id, priority_id) => axios.post(`${API_URL}/card-priorities`, { card_id, priority_id })
+export const addPriorityToCardTesting = (card_id, priority_id, userId) => axios.post(`${API_URL}/card-priorities-testing/${userId}`, { card_id, priority_id })
 export const getAllCardPriority = () => axios.get(`${API_URL}/card-priorities`)
 export const getCardPriority = (cardId) => axios.get(`${API_URL}/card-priorities/${cardId}`)
 export const deletePriorityFromCard = (card_id, priority_id) => axios.delete(`${API_URL}/card-priority`, { data: { card_id, priority_id } })
@@ -314,6 +315,7 @@ export const getAllCardUsers = (cardId) => axios.get(`${API_URL}/cards/${cardId}
 //UPDATE CARDS
 export const updateTitleCard = (id, title) => axios.put(`${API_URL}/cards/${id}/title`, title)
 export const updateDescCard = (id, description) => axios.put(`${API_URL}/cards/${id}/desc`, { description })
+export const updateDescCardTesting = (userId, id, description) => axios.put(`${API_URL}/cards/${id}/desc-testing/${userId}`, { description })
 export const updateDueDataCard = (id, due_date) => axios.put(`${API_URL}/cards/${id}/due_date`, due_date)
 export const updateCoverCard = (id, cover_id) => axios.put(`${API_URL}/cards/${id}/cover`, cover_id)
 export const updateLabelCard = (id, label_id) => axios.put(`${API_URL}/cards/${id}/label`, label_id)
@@ -324,6 +326,8 @@ export const updateAssignCard = (id, assign) => axios.put(`${API_URL}/cards/${id
 export const getCoverByCard = (id) => axios.get(`${API_URL}/card-cover/${id}`)
 export const addCoverCard = (data) => axios.post(`${API_URL}/add-cover`, data)
 export const updateCardCover = (data) => axios.put(`${API_URL}/update-cover`, data)
+export const addCoverCardTesting = (userId, data) => axios.post(`${API_URL}/add-cover/${userId}`, data)
+export const updateCardCoverTesting = (userId, data) => axios.put(`${API_URL}/update-cover-testing/${userId}`, data)
 export const deleteCoverCard = (cardId) => axios.delete(`${API_URL}/delete-cover/${cardId}`)
 
 
@@ -336,6 +340,7 @@ export const getDueDateById = (id) => axios.get(`${API_URL}/card-due-date/${id}`
 export const getAllDueDateByCardId = (cardId) => axios.get(`${API_URL}/card-due-date/card/${cardId}`)
 export const addNewDueDate = (data) => axios.post(`${API_URL}/card-due-dates`, data)
 export const updateDueDate = (id, data) => axios.put(`${API_URL}/card-due-date/${id}`, data)
+export const updateDueDateTesting = (userId, id, data) => axios.put(`${API_URL}/cards/${id}/due-testing/${userId}`, data)
 export const deleteDueDate = (id) => axios.delete(`${API_URL}/card-due-date/${id}`)
 
 //REMINDERS

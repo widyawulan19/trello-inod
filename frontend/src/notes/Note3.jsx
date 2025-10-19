@@ -594,20 +594,76 @@ const fetchCardActivities = async () => {
 };
 
 
-} else if (activity.action_type === 'updated_status' && detail.to) {
-  messageElement = (
-    <>
-      <span className="font-semibold">{username}</span> updated status from{' '}
-      <span className="text-red-500">"{detail.from || '-'}"</span> to{' '}
-      <span className="text-green-600">"{detail.to}"</span>
-      {detail.description && (
-        <>
-          <br />
-          <span className="text-gray-500 text-[11px]">
-            Description: {detail.description}
-          </span>
-        </>
-      )}
-    </>
-  );
-}
+
+// } else if (activity.action_type === 'updated_status' && detail.to) {
+//   messageElement = (
+//     <>
+//       <span className="font-semibold">{username}</span> updated status from{' '}
+//       <span className="text-red-500">"{detail.from || '-'}"</span> to{' '}
+//       <span className="text-green-600">"{detail.to}"</span>
+//       {detail.description && (
+//         <>
+//           <br />
+//           <span className="text-gray-500 text-[11px]">
+//             Description: {detail.description}
+//           </span>
+//         </>
+//       )}
+//     </>
+//   );
+// }
+
+
+import { addPriorityToCardTesting } from '../services/ApiServices';
+
+const handleAddPriority = async () => {
+  try {
+    const userId = 23; // bisa dari state, auth, atau context
+    const card_id = 583;
+    const priority_id = 4;
+
+    const response = await addPriorityToCardTesting(userId, card_id, priority_id);
+    console.log(response.data);
+  } catch (error) {
+    console.error('Gagal menambahkan prioritas:', error);
+  }
+};
+
+fetchCardDetail={fetchCardById}
+
+
+import React, { useEffect, useState } from 'react';
+import { getActivityCardTesting } from '../services/ApiServices';
+
+const CardActivityList = ({ cardId, refreshTrigger }) => {
+  const [activities, setActivities] = useState([]);
+
+  const fetchActivities = async () => {
+    try {
+      const data = await getActivityCardTesting(cardId);
+      setActivities(data);
+    } catch (err) {
+      console.error('Gagal memuat aktivitas:', err);
+    }
+  };
+
+  useEffect(() => {
+    fetchActivities();
+  }, [cardId, refreshTrigger]); // ⬅️ refreshTrigger dipakai buat re-fetch
+
+
+  const handleSelectCover = async (coverId) => {
+  try {
+    if (selectedCover) {
+      await updateCardCover(cardId, coverId, userId);
+    } else {
+      await addCoverCardTesting(cardId, coverId, userId);
+    }
+    showSnackbar('Successfully added cover', 'success');
+    await fetchCardCover();
+    fetchCardDetail();
+  } catch (error) {
+    console.error('Gagal memilih cover:', error);
+    showSnackbar('Gagal memilih cover', 'error');
+  }
+};

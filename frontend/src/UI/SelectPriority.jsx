@@ -8,7 +8,11 @@ const SelectPriority = ({
     selectedPriority,
     selectedProperties,
     setSelectedProperties,
-    refreshPriority
+    refreshPriority,
+    fetchCardDetail,
+    fetchCardActivities,
+    cardActivities,
+    setCardActivities
 }) => {
     const [showPriority, setShowPriority] = useState(false);
 
@@ -115,6 +119,10 @@ const SelectPriority = ({
                         setSelectedProperties={setSelectedProperties}
                         selectedPriority={selectedPriority}
                         refreshPriority={refreshPriority}
+                        fetchCardDetail={fetchCardDetail}
+                        fetchCardActivities={fetchCardActivities}
+                        cardActivities={cardActivities}
+                        setCardActivities={setCardActivities}
                     />
                 </div>
             )}

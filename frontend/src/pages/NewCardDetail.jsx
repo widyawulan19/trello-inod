@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import '../style/pages/NewCardDetail.css'
 import BootstrapTooltip from '../components/Tooltip';
 import { GiCloudUpload } from "react-icons/gi";
-import { archiveCard, deleteUserFromCard, getAllCardUsers, getAllDueDateByCardId, getAllStatus, getAllUploadFiles, getAllUserAssignToCard, getCardById, getCardPriority, getChecklistItemChecked, getChecklistsWithItemsByCardId, getCoverByCard, getLabelByCard, getListById, getStatusByCardId, getTotalChecklistItemByCardId, getTotalFile, updateDescCard, updateTitleCard } from '../services/ApiServices';
+import { addCoverCardTesting, archiveCard, deleteCoverCard, deleteUserFromCard, getActivityCardTesting, getAllCardUsers, getAllCovers, getAllDueDateByCardId, getAllStatus, getAllUploadFiles, getAllUserAssignToCard, getCardById, getCardPriority, getChecklistItemChecked, getChecklistsWithItemsByCardId, getCoverByCard, getLabelByCard, getListById, getStatusByCardId, getTotalChecklistItemByCardId, getTotalFile, updateCardCoverTesting, updateDescCard, updateDescCardTesting, updateTitleCard } from '../services/ApiServices';
 import SelectedLabels from '../UI/SelectedLabels';
 import CardDetailPanel from '../modules/CardDetailPanel';
 import DetailCard from '../modules/DetailCard';
@@ -83,7 +83,9 @@ const NewCardDetail=()=> {
     const [loading, setLoading] = useState(false);
     //COVER
     const [selectedCover, setSelectedCover] = useState(null)
+    const [showSelectedCover, setShowSelectCover]= useState(false);
     const [showCover, setShowCover] = useState(false)
+    const [covers, setCovers] = useState([]);
     //ASIIGMENT 
     const [assignedUsers, setAssignedUsers] = useState([]);
     const [assignableUsers, setAssignableUsers] = useState([]);
@@ -113,27 +115,6 @@ const NewCardDetail=()=> {
     const [allUploadFile, setAllUploadFile] = useState([]);
 
     const quillRef = useRef(null);
-
-    // SAVE via BLUR atau tombol
-    const handleSaveDesc = async () => {
-    if (!cards?.id) return;
-
-    try {
-        setLoading(true);
-        const res = await updateDescCard(cards.id, newDescription); // ✅ pastikan kirim string
-
-        // sync state lokal
-        setNewDescription(res.data.description);
-        setEditingDescription(null);
-        setCards((prev) => ({ ...prev, description: res.data.description }));
-    } catch (err) {
-        console.error("❌ Gagal update desc:", err);
-    } finally {
-        setLoading(false);
-    }
-    };
-
-
 
     const modules = {
     toolbar: [
@@ -293,15 +274,18 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
   setEditingDescription(cardId);
   setNewDescription(currentCardDesc || "");
 };
-
+    
     const handleSaveDescription = async (cardId) => {
         try {
-            const res = await updateDescCard(cardId, newDescription);
-
+            const res = await updateDescCardTesting(userId, cardId, newDescription);
+            fetchCardActivities(cardId); // Refresh aktivitas kalau mau
             setEditingDescription(null);
+            fetchCardById(cardId);
             setCards((prev) => ({ ...prev, description: res.data.description }));
+            showSnackbar('Description updated successfully!', 'success');
         } catch (error) {
-            console.error("❌ Error updating card description:", error);
+            console.error('Failed to update card description:', error);
+            showSnackbar('Failed to update description', 'error');
         }
     };
 
@@ -458,6 +442,8 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
         fetchPriority();
     },[cardId])
 
+
+    // COVER FUNCION 
     
     //9. fetchCardCover
     const fetchCardCover = async ()=>{
@@ -475,6 +461,54 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
      useEffect(()=>{
           fetchCardCover()
         },[cardId])
+
+    // 9.1 fungsi select vocer 
+    const handleSelectCover = async(coverId) =>{
+        try{
+            const coverData = {card_id: cardId, cover_id: coverId};
+            if(selectedCover){
+                await updateCardCoverTesting(userId, coverData);
+            }else{
+                await addCoverCardTesting(userId, coverData);
+            }
+            showSnackbar('Successfully add cover','success');
+            await fetchCardCover(); // refresh dari parent
+            fetchCardActivities(cardId)
+            fetchCardById(); // refresh detail
+        }catch(error){
+            console.error('Gagal memilih cover:', error);
+            showSnackbar('Gagal memilih cover', 'error');
+        }
+    }
+
+    //9.2 fungsi cover remove
+    const handleRemoveCover = async() =>{
+        try{
+            await deleteCoverCard(cardId);
+            setSelectedCover(null);
+            fetchCardById();
+            showSnackbar('Successfully remove cover', 'success');
+        }catch(error){
+            console.error('Gagal menghapus cover:', error);
+            showSnackbar('Gagal menghapus cover', 'error');
+        }
+    }
+
+    //9.3 Ambil semua cover saat komponen mount
+        useEffect(() => {
+            fetchCovers();
+        }, [cardId]);
+    
+        const fetchCovers = async () => {
+            try {
+                const response = await getAllCovers();
+                setCovers(response.data);
+            } catch (error) {
+                console.error('Gagal mengambil daftar cover:', error);
+            }
+        };
+
+    // END COVER FUNCTION 
 
     //10. fetch DUE DATE
     const fetchDueDates = async()=>{
@@ -661,6 +695,38 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
         setShowAction(!showAction)
     }
 
+    // fetch card activity 
+    const fetchCardActivities = async()=>{
+        try{
+            setLoading(true);
+            const response = await getActivityCardTesting(cardId);
+            const activitiesWithUser = response.activities.map(act => {
+      
+                const detail = act.action_detail || {};
+            return {
+                // ...act,
+                // username: act.movedby || detail.movedBy?.username || 'Unknown',
+                // detail
+                ...act,
+                username:
+                act.action_detail?.updatedBy?.username ||
+                act.movedby ||
+                'Unknown',
+                detail: act.action_detail || {},
+            };
+            });
+
+            setCardActivities(activitiesWithUser);
+        }catch(error){
+            console.error('Failed to fetch card activity:', error);
+        }finally{
+            setLoading(false);
+        }
+    }
+      useEffect(() => {
+        if (cardId) fetchCardActivities();
+      }, [cardId]);
+
 
     // 🔗 fungsi untuk deteksi dan convert URL ke <a>
     const linkify = (text) => {
@@ -791,12 +857,22 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
                         {showCover && (
                             <div className='cover-modal'>
                                 <CoverCard
+                                    fetchCovers={fetchCovers}
+                                    covers={covers}
+                                    setCovers={setCovers}
+                                    handleSelectCover={handleSelectCover}
+                                    userId={userId}
                                     cardId={cardId}
                                     fetchCardDetail={fetchCardById}
+                                    handleRemoveCover={handleRemoveCover}
                                     selectedCover={selectedCover}
                                     setSelectedCover={setSelectedCover}
                                     fetchCardCover={fetchCardCover}
                                     onClose={handleCloseCover}
+                                    fetchCardActivities={fetchCardActivities}
+                                    showCover={showCover}
+                                    setShowCover={setShowCover}
+                                    setShowSelectCover={setShowSelectCover}
                                 />
                             </div>
                         )}
@@ -850,6 +926,10 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
                                 setSelectedProperties={setSelectedProperties} 
                                 selectedPriority={selectedPriority}
                                 refreshPriority={fetchPriority}
+                                fetchCardDetail={fetchCardById}
+                                fetchCardActivities={fetchCardActivities}
+                                cardActivities={cardActivities} 
+                                setCardActivities={setCardActivities}
                             />
                         </div>
                         <div className="ncd-status-due">
@@ -1127,7 +1207,13 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
                                 Recent Card Activity
                             </div>
                             <div className="ncd-activiy-content">
-                                <NewCardActivity cardId={cardId} fetchCardById={fetchCardById}/>
+                                <NewCardActivity 
+                                    cardId={cardId} 
+                                    fetchCardById={fetchCardById} 
+                                    fetchCardActivities={fetchCardActivities}
+                                    cardActivities={cardActivities} 
+                                    setCardActivities={setCardActivities}
+                                />
                                 {/* <CardActivity cardId={cardId} fetchCardById={fetchCardById}/> */}
                             </div>
                         </div>
