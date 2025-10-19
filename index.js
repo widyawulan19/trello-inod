@@ -5443,6 +5443,84 @@ app.put('/api/update-cover', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 })
+//3.1 mengupdate cover pada card -> (testing)
+app.put('/api/update-cover-testing/:userId', async (req, res) => {
+    const { userId } = req.params;
+    const { card_id, cover_id } = req.body;
+    const actingUserId = parseInt(userId, 10);
+
+    if (!actingUserId) return res.status(401).json({ error: "Unauthorized" });
+
+    try {
+        const result = await client.query(
+            "UPDATE card_cover SET cover_id = $1, update_at = CURRENT_TIMESTAMP WHERE card_id = $2 RETURNING *",
+            [cover_id, card_id]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: "No cover found for this card." });
+        }
+
+        //mengambil user name
+        // 1. mencari workspace id dari card 
+        const boardRes = await client.query(`
+            SELECT b.workspace_id
+            FROM boards b
+            JOIN lists l ON l.board_id = b.id
+            JOIN cards c ON c.list_id = l.id
+            WHERE c.id = $1
+        `, [card_id]);
+
+        const workspaceId = boardRes.rows[0]?.workspace_id;
+
+        // 2. mengambil semua user 
+        const workspaceUsersRes = await client.query(
+            `SELECT user_id FROM workspaces_users WHERE workspace_id = $1 AND is_deleted = FALSE`,
+            [workspaceId]
+        );
+        const userIds = workspaceUsersRes.rows.map(r => r.user_id);
+        if (!userIds.includes(actingUserId)) userIds.push(actingUserId);
+
+        //3. mengambil username acting user
+        const actingUserRes = await client.query(
+            'SELECT username FROM users WHERE id = $1',
+            [actingUserId]
+        );
+        const actingUserName = actingUserRes.rows[0]?.username || 'Unknown';
+
+        // menyimpan aktivitas update title ke card_activity
+        const activityRes = await client.query(`
+            INSERT INTO card_activities 
+            (card_id, user_id, action_type, entity, entity_id, action_detail)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING *
+            `, [
+            card_id,
+            actingUserId,
+            'updated_cover',
+            'card cover',
+            card_id,
+            JSON.stringify({
+                // from: oldTitle || null,
+                // to: title,
+                updatedBy: { id: actingUserId, username: actingUserName },
+                coverId: cover_id
+            })
+        ]);
+
+        // kirim pesan response 
+        res.status(200).json({
+            message: 'Card cover berhasil di update!',
+            id,
+            workspaceId,
+            activity: activityRes.rows[0],
+        });
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+})
 //4. menghapus cover dari card -> works
 app.delete('/api/delete-cover/:cardId', async (req, res) => {
     const { cardId } = req.params;
@@ -5482,6 +5560,94 @@ app.delete('/api/delete-cover/:cardId', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 })
+
+//4. menghapus cover dari card -> testing
+app.delete('/api/delete-cover/:cardId/:userId', async (req, res) => {
+    const { cardId, userId } = req.params;
+    const actingUserId = parseInt(userId, 10);
+
+    if (!actingUserId) return res.status(401).json({ error: "Unauthorized" });
+
+    try {
+        // Ambil dulu data cover sebelum dihapus
+        const coverResult = await client.query(
+            "SELECT * FROM card_cover WHERE card_id = $1",
+            [cardId]
+        );
+
+        if (coverResult.rowCount === 0) {
+            return res.status(404).json({ message: "No cover found for this card." });
+        }
+
+        const cover = coverResult.rows[0]; // Data cover sebelum dihapus
+
+        // Hapus cover
+        await client.query(
+            "DELETE FROM card_cover WHERE card_id = $1",
+            [cardId]
+        );
+
+        //mengambil user name
+        // 1. mencari workspace id dari card 
+        const boardRes = await client.query(`
+            SELECT b.workspace_id
+            FROM boards b
+            JOIN lists l ON l.board_id = b.id
+            JOIN cards c ON c.list_id = l.id
+            WHERE c.id = $1
+        `, [cardId]);
+
+        const workspaceId = boardRes.rows[0]?.workspace_id;
+
+        // 2. mengambil semua user 
+        const workspaceUsersRes = await client.query(
+            `SELECT user_id FROM workspaces_users WHERE workspace_id = $1 AND is_deleted = FALSE`,
+            [workspaceId]
+        );
+        const userIds = workspaceUsersRes.rows.map(r => r.user_id);
+        if (!userIds.includes(actingUserId)) userIds.push(actingUserId);
+
+        //3. mengambil username acting user
+        const actingUserRes = await client.query(
+            'SELECT username FROM users WHERE id = $1',
+            [actingUserId]
+        );
+        const actingUserName = actingUserRes.rows[0]?.username || 'Unknown';
+
+        // menyimpan aktivitas update title ke card_activity
+        const activityRes = await client.query(`
+            INSERT INTO card_activities 
+            (card_id, user_id, action_type, entity, entity_id, action_detail)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING *
+            `, [
+            cardId,
+            actingUserId,
+            'add_cover',
+            'card cover',
+            cardId,
+            JSON.stringify({
+                // from: oldTitle || null,
+                // to: title,
+                updatedBy: { id: actingUserId, username: actingUserName },
+                coverId: cover_id
+            })
+        ]);
+
+        // kirim pesan response 
+        res.status(200).json({
+            message: 'Card cover berhasil di remove!',
+            id,
+            workspaceId,
+            activity: activityRes.rows[0],
+        });
+
+        res.json({ message: "Cover removed successfully." });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+})
+
 //5. mendapatkan semua cover yang tersedia
 app.get('/api/covers', async (req, res) => {
     try {
