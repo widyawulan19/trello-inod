@@ -567,3 +567,47 @@ return (
     </p>
   </li>
 );
+
+
+
+
+const fetchCardActivities = async () => {
+  try {
+    setLoading(true);
+    const response = await getActivityCardTesting(cardId);
+
+    const activitiesWithUser = response.activities.map(act => ({
+      ...act,
+      username:
+        act.action_detail?.updatedBy?.username ||
+        act.movedby ||
+        'Unknown',
+      detail: act.action_detail || {},
+    }));
+
+    setCardActivities(activitiesWithUser);
+  } catch (error) {
+    console.error('Failed to fetch card activity:', error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+} else if (activity.action_type === 'updated_status' && detail.to) {
+  messageElement = (
+    <>
+      <span className="font-semibold">{username}</span> updated status from{' '}
+      <span className="text-red-500">"{detail.from || '-'}"</span> to{' '}
+      <span className="text-green-600">"{detail.to}"</span>
+      {detail.description && (
+        <>
+          <br />
+          <span className="text-gray-500 text-[11px]">
+            Description: {detail.description}
+          </span>
+        </>
+      )}
+    </>
+  );
+}

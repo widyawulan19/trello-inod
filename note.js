@@ -1464,51 +1464,127 @@ app.put('/api/cards/:cardId/move', async (req, res) => {
 
 
 
-    app.post('/api/cards/:cardId/update-status-testing/:userId', async (req, res) => {
-      const { cardId, userId } = req.params;
-      const { statusId } = req.body;
-      const actingUserId = parseInt(userId, 10);
+    cardId, // card_id
+      actingUserId, // user_id
+      'moved', // action_type
+      'list', // entity
+      targetListId, // entity_id
+      JSON.stringify({ // action_detail valid JSON
+        cardTitle: title,
+        fromBoardId: oldBoardId,
+        fromBoardName: oldBoardName,
+        fromListId: oldListId,
+        fromListName: oldListName,
+        toBoardId: targetBoardId,
+        toBoardName: newBoardName,
+        toListId: targetListId,
+        toListName: newListName,
+        newPosition: finalPosition,
+        movedBy: { id: actingUserId, username: actingUserName }
+      })
+            ]);
 
-      if (!actingUserId) return res.status(401).json({ error: 'Unauthorized' });
+  await client.query('COMMIT');
 
-      try {
-        let message = '';
-        let oldStatusId = null;
-        let oldStatusName = null;
-        let newStatusName = null;
+  // ✅ Respon sukses
+  res.status(200).json({
+    message: 'Card berhasil dipindahkan',
+    cardId,
+    fromListId: oldListId,
+    fromListName: oldListName,
+    toListId: targetListId,
+    toListName: newListName,
+    fromBoardId: oldBoardId,
+    fromBoardName: oldBoardName,
+    toBoardId: targetBoardId,
+    toBoardName: newBoardName,
+    position: finalPosition,
+    movedBy: { id: actingUserId, username: actingUserName }
+  });
 
-        // Cek apakah kartu sudah memiliki status
-        const check = await client.query(`SELECT * FROM card_status WHERE card_id = $1`, [cardId]);
+  // Buat deskripsi aksi yang cantik ✨
+  const actionDescription = oldStatusId
+    ? `${actingUserName} updated card status dari '${oldStatusName}' menjadi '${newStatusName}'`
+    : `${actingUserName} menetapkan status kartu ke '${newStatusName}'`;
 
-        if (check.rows.length > 0) {
-          // Simpan status lama sebelum update
-          oldStatusId = check.rows[0].status_id;
 
-          // Ambil nama status lama
-          const oldStatusRes = await client.query(`SELECT name FROM status WHERE id = $1`, [oldStatusId]);
-          oldStatusName = oldStatusRes.rows[0]?.name || 'Unknown';
+  // Simpan aktivitas ke card_activities
+  const activityRes = await client.query(`
+            INSERT INTO card_activities 
+            (card_id, user_id, action_type, entity, entity_id, action_detail)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING *
+        `, [
+    cardId,
+    actingUserId,
+    'updated_status',
+    'status',
+    statusId,
+    JSON.stringify({
+      from: oldStatusName || null,
+      to: newStatusName,
+      updatedBy: { id: actingUserId, username: actingUserName },
+      description: actionDescription,
+    })
+  ]);
 
-          // Update status baru
-          await client.query(
-            `UPDATE card_status SET status_id = $1, update_at = CURRENT_TIMESTAMP WHERE card_id = $2`,
-            [statusId, cardId]
-          );
-          message = 'Status kartu berhasil diperbarui';
-        } else {
-          // Jika belum ada, tambahkan status baru
-          await client.query(
-            `INSERT INTO card_status (card_id, status_id, assigned_at) VALUES ($1, $2, CURRENT_TIMESTAMP)`,
-            [cardId, statusId]
-          );
-          message = 'Status kartu berhasil ditambahkan';
-        }
+  // Kirim response akhir
+  res.status(200).json({
+    message,
+    cardId,
+    workspaceId,
+    activity: activityRes.rows[0],
+  });
 
-        // Ambil nama status baru
-        const newStatusRes = await client.query(`SELECT name FROM status WHERE id = $1`, [statusId]);
-        newStatusName = newStatusRes.rows[0]?.name || 'Unknown';
 
-        // Cari workspace_id dari card
-        const boardRes = await client.query(`
+
+  app.post('/api/cards/:cardId/update-status-testing/:userId', async (req, res) => {
+    const { cardId, userId } = req.params;
+    const { statusId } = req.body;
+    const actingUserId = parseInt(userId, 10);
+
+    if (!actingUserId) return res.status(401).json({ error: 'Unauthorized' });
+
+    try {
+      let message = '';
+      let oldStatusId = null;
+      let oldStatusName = null;
+      let newStatusName = null;
+
+      // Cek apakah kartu sudah memiliki status
+      const check = await client.query(`SELECT * FROM card_status WHERE card_id = $1`, [cardId]);
+
+      if (check.rows.length > 0) {
+
+        //simpan status lama sebelum update 
+        oldStatusId = check.rows[0].status_id;
+
+        // Ambil nama status lama
+        const oldStatusRes = await client.query(`SELECT status_name FROM status WHERE status_id = $1`, [oldStatusId]);
+        oldStatusName = oldStatusRes.rows[0]?.status_name || 'Unknown';
+
+        // Jika ada, update status
+        await client.query(
+          `UPDATE card_status SET status_id = $1, update_at = CURRENT_TIMESTAMP WHERE card_id = $2`,
+          [statusId, cardId]
+        );
+        message = 'Status kartu berhasil diperbarui';
+      } else {
+        // Jika belum ada, tambahkan status baru
+        await client.query(
+          `INSERT INTO card_status (card_id, status_id, assigned_at) VALUES ($1, $2, CURRENT_TIMESTAMP)`,
+          [cardId, statusId]
+        );
+        message = 'Status kartu berhasil ditambahkan';
+      }
+
+      // Ambil nama status baru
+      const newStatusRes = await client.query(`SELECT status_name FROM status WHERE status_id = $1`, [statusId]);
+      newStatusName = newStatusRes.rows[0]?.status_name || 'Unknown';
+
+
+      // Cari workspace_id dari card
+      const boardRes = await client.query(`
             SELECT b.workspace_id
             FROM boards b
             JOIN lists l ON l.board_id = b.id
@@ -1516,75 +1592,259 @@ app.put('/api/cards/:cardId/move', async (req, res) => {
             WHERE c.id = $1
         `, [cardId]);
 
-        const workspaceId = boardRes.rows[0]?.workspace_id;
+      const workspaceId = boardRes.rows[0]?.workspace_id;
 
-        // Mengambil semua user workspace
-        const workspaceUsersRes = await client.query(
-          `SELECT user_id FROM workspaces_users WHERE workspace_id = $1 AND is_deleted = FALSE`,
-          [workspaceId]
-        );
-        const userIds = workspaceUsersRes.rows.map(r => r.user_id);
-        if (!userIds.includes(actingUserId)) userIds.push(actingUserId);
+      // Mengambil semua user workspace
+      const workspaceUsersRes = await client.query(
+        `SELECT user_id FROM workspaces_users WHERE workspace_id = $1 AND is_deleted = FALSE`,
+        [workspaceId]
+      );
+      const userIds = workspaceUsersRes.rows.map(r => r.user_id);
+      if (!userIds.includes(actingUserId)) userIds.push(actingUserId);
 
-        // Ambil username acting user
-        const actingUserRes = await client.query(
-          'SELECT username FROM users WHERE id = $1',
-          [actingUserId]
-        );
-        const actingUserName = actingUserRes.rows[0]?.username || 'Unknown';
+      // Ambil username acting user
+      const actingUserRes = await client.query(
+        'SELECT username FROM users WHERE id = $1',
+        [actingUserId]
+      );
+      const actingUserName = actingUserRes.rows[0]?.username || 'Unknown';
 
-        // Buat deskripsi aksi yang cantik ✨
-        const actionDescription = oldStatusId
-          ? `${actingUserName} updated card status dari '${oldStatusName}' menjadi '${newStatusName}'`
-          : `${actingUserName} menetapkan status kartu ke '${newStatusName}'`;
 
-        // Simpan aktivitas ke card_activities
-        const activityRes = await client.query(`
+      // Buat deskripsi aksi yang cantik ✨
+      const actionDescription = oldStatusId
+        ? `${actingUserName} updated card status dari '${oldStatusName}' menjadi '${newStatusName}'`
+        : `${actingUserName} menetapkan status kartu ke '${newStatusName}'`;
+
+
+      // Simpan aktivitas ke card_activities
+      const activityRes = await client.query(`
             INSERT INTO card_activities 
             (card_id, user_id, action_type, entity, entity_id, action_detail)
             VALUES ($1, $2, $3, $4, $5, $6)
             RETURNING *
         `, [
-          cardId,
-          actingUserId,
-          'updated_status',
-          'status',
-          statusId,
-          JSON.stringify({
-            from: oldStatusName || null,
-            to: newStatusName,
-            updatedBy: { id: actingUserId, username: actingUserName },
-            description: actionDescription,
-          })
-        ]);
+        cardId,
+        actingUserId,
+        'updated_status',
+        'status',
+        statusId,
+        JSON.stringify({
+          from: oldStatusName || null,
+          to: newStatusName,
+          updatedBy: { id: actingUserId, username: actingUserName },
+          description: actionDescription,
+        })
+      ]);
 
-        // Kirim response akhir
-        res.status(200).json({
-          message,
-          cardId,
-          workspaceId,
-          activity: activityRes.rows[0],
-        });
+      // Kirim response akhir
+      res.status(200).json({
+        message,
+        cardId,
+        workspaceId,
+        activity: activityRes.rows[0],
+      });
 
-      } catch (error) {
-        console.error('❌ Error update status:', error);
-        res.status(500).json({ error: 'Gagal menambahkan/memperbarui status kartu' });
+    } catch (error) {
+      console.error('❌ Error update status:', error);
+      res.status(500).json({ error: 'Gagal menambahkan/memperbarui status kartu' });
+    }
+  });
+
+
+
+
+
+  //3.1 add/update status card id
+  app.post('/api/cards/:cardId/update-status-testing/:userId', async (req, res) => {
+    const { cardId, userId } = req.params;
+    const { statusId } = req.body;
+    const actingUserId = parseInt(userId, 10);
+
+    if (!actingUserId) return res.status(401).json({ error: 'Unauthorized' });
+
+    try {
+      let message = '';
+      let oldStatusId = null;
+      let oldStatusName = null;
+      let newStatusName = null;
+
+      // Cek apakah kartu sudah memiliki status
+      const check = await client.query(`SELECT * FROM card_status WHERE card_id = $1`, [cardId]);
+
+      if (check.rows.length > 0) {
+
+        //simpan status lama sebelum update 
+        oldStatusId = check.rows[0].status_id;
+
+        // Ambil nama status lama
+        const oldStatusRes = await client.query(`SELECT status_name FROM status WHERE status_id = $1`, [oldStatusId]);
+        oldStatusName = oldStatusRes.rows[0]?.status_name || 'Unknown';
+
+        // Jika ada, update status
+        await client.query(
+          `UPDATE card_status SET status_id = $1, update_at = CURRENT_TIMESTAMP WHERE card_id = $2`,
+          [statusId, cardId]
+        );
+        message = 'Status kartu berhasil diperbarui';
+      } else {
+        // Jika belum ada, tambahkan status baru
+        await client.query(
+          `INSERT INTO card_status (card_id, status_id, assigned_at) VALUES ($1, $2, CURRENT_TIMESTAMP)`,
+          [cardId, statusId]
+        );
+        message = 'Status kartu berhasil ditambahkan';
       }
-    });
+
+      // Ambil nama status baru
+      const newStatusRes = await client.query(`SELECT status_name FROM status WHERE status_id = $1`, [statusId]);
+      newStatusName = newStatusRes.rows[0]?.status_name || 'Unknown';
 
 
-// {
-//     "message": "Status kartu berhasil diperbarui",
-//     "cardId": "583",
-//     "workspaceId": 146,
-//     "activity": {
-//         "id": 993,
-//         "card_id": 583,
-//         "user_id": 23,
-//         "action_type": "updated_status",
-//         "entity": "status",
-//         "entity_id": 4,
-//         "action_detail": "{\"from\":\"Hold\",\"to\":\"Hold\",\"updatedBy\":{\"id\":23,\"username\":\"developer\"},\"description\":\"developer updated card status dari 'Hold' menjadi 'Hold'\"}",
-//         "created_at": "2025-10-17T17:42:28.607Z"
-//     }
-// }
+      // Cari workspace_id dari card
+      const boardRes = await client.query(`
+            SELECT b.workspace_id
+            FROM boards b
+            JOIN lists l ON l.board_id = b.id
+            JOIN cards c ON c.list_id = l.id
+            WHERE c.id = $1
+        `, [cardId]);
+
+      const workspaceId = boardRes.rows[0]?.workspace_id;
+
+      // Mengambil semua user workspace
+      const workspaceUsersRes = await client.query(
+        `SELECT user_id FROM workspaces_users WHERE workspace_id = $1 AND is_deleted = FALSE`,
+        [workspaceId]
+      );
+      const userIds = workspaceUsersRes.rows.map(r => r.user_id);
+      if (!userIds.includes(actingUserId)) userIds.push(actingUserId);
+
+      // Ambil username acting user
+      const actingUserRes = await client.query(
+        'SELECT username FROM users WHERE id = $1',
+        [actingUserId]
+      );
+      const actingUserName = actingUserRes.rows[0]?.username || 'Unknown';
+
+
+      // Buat deskripsi aksi yang cantik ✨
+      const actionDescription = oldStatusId
+        ? `${actingUserName} updated card status dari '${oldStatusName}' menjadi '${newStatusName}'`
+        : `${actingUserName} menetapkan status kartu ke '${newStatusName}'`;
+
+
+      // Simpan aktivitas ke card_activities
+      const activityRes = await client.query(`
+            INSERT INTO card_activities 
+            (card_id, user_id, action_type, entity, entity_id, action_detail)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING *
+        `, [
+        cardId,
+        actingUserId,
+        'updated_status',
+        'status',
+        statusId,
+        JSON.stringify({
+          from: oldStatusName || null,
+          to: newStatusName,
+          updatedBy: { id: actingUserId, username: actingUserName },
+          description: actionDescription,
+        })
+      ]);
+
+      // Kirim response akhir
+      res.status(200).json({
+        message,
+        cardId,
+        workspaceId,
+        activity: activityRes.rows[0],
+      });
+
+    } catch (error) {
+      console.error('❌ Error update status:', error);
+      res.status(500).json({ error: 'Gagal menambahkan/memperbarui status kartu' });
+    }
+  });
+
+
+
+  app.put('/api/cards/:id/title-testing/:userId', async (req, res) => {
+    const { id, userId } = req.params;
+    const { title } = req.body;
+    const actingUserId = parseInt(userId, 10);
+
+    if (!actingUserId) return res.status(401).json({ error: "Unauthorized" });
+    console.log('Endpoin update ini menerima data userId:', userId);
+
+    try {
+      // 1️⃣ Ambil title lama
+      const oldResult = await client.query("SELECT title FROM cards WHERE id = $1", [id]);
+      if (oldResult.rows.length === 0) return res.status(404).json({ error: "Card not found" });
+
+      const oldTitle = oldResult.rows[0].title;
+
+      // 2️⃣ Update title
+      const result = await client.query(
+        "UPDATE cards SET title = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *",
+        [title, id]
+      );
+
+      // 3️⃣ Cari workspace ID dari card
+      const boardRes = await client.query(`
+      SELECT b.workspace_id
+      FROM boards b
+      JOIN lists l ON l.board_id = b.id
+      JOIN cards c ON c.list_id = l.id
+      WHERE c.id = $1
+    `, [id]);
+
+      const workspaceId = boardRes.rows[0]?.workspace_id;
+
+      // 4️⃣ Ambil semua user workspace
+      const workspaceUsersRes = await client.query(
+        `SELECT user_id FROM workspaces_users WHERE workspace_id = $1 AND is_deleted = FALSE`,
+        [workspaceId]
+      );
+      const userIds = workspaceUsersRes.rows.map(r => r.user_id);
+      if (!userIds.includes(actingUserId)) userIds.push(actingUserId);
+
+      // 5️⃣ Ambil username user
+      const actingUserRes = await client.query(
+        'SELECT username FROM users WHERE id = $1',
+        [actingUserId]
+      );
+      const actingUserName = actingUserRes.rows[0]?.username || 'Unknown';
+
+      // 6️⃣ Simpan aktivitas
+      const activityRes = await client.query(`
+      INSERT INTO card_activities 
+      (card_id, user_id, action_type, entity, entity_id, action_detail)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING *
+    `, [
+        id,
+        actingUserId,
+        'updated_title',
+        'title',
+        id, // tetap boleh pakai id card
+        JSON.stringify({
+          from: oldTitle || null,
+          to: title,
+          updatedBy: { id: actingUserId, username: actingUserName },
+          description: `${actingUserName} mengubah judul kartu dari '${oldTitle}' menjadi '${title}'`
+        })
+      ]);
+
+      // 7️⃣ Kirim response
+      res.status(200).json({
+        message: 'Card title berhasil di update!',
+        id,
+        workspaceId,
+        activity: activityRes.rows[0],
+      });
+    } catch (error) {
+      console.error("Error updating card title:", error);
+      res.status(500).json({ error: 'Gagal memperbarui title card' });
+    }
+  });
