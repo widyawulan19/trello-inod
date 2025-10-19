@@ -5414,7 +5414,7 @@ app.post('/api/add-cover/:userId', async (req, res) => {
         // kirim pesan response 
         res.status(200).json({
             message: 'Card cover berhasil di tambahkan!',
-            id,
+            card_id,
             workspaceId,
             activity: activityRes.rows[0],
         });
