@@ -3275,7 +3275,7 @@ app.post('/api/card-priorities-testing/:userId', async (req, res) => {
 
         // Kirim response akhir
         res.status(200).json({
-            message,
+            message: 'Priority berhasil ditambahkan ke card!',
             card_id,
             workspaceId,
             activity: activityRes.rows[0],
