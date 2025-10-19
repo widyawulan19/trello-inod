@@ -5627,22 +5627,19 @@ app.delete('/api/delete-cover-testing/:cardId/:userId', async (req, res) => {
             'card cover',
             cardId,
             JSON.stringify({
-                // from: oldTitle || null,
-                // to: title,
                 updatedBy: { id: actingUserId, username: actingUserName },
-                coverId: cover_id
+                coverId: cover.cover_id // ✅ ambil dari data hasil SELECT
             })
         ]);
 
         // kirim pesan response 
         res.status(200).json({
-            message: 'Card cover berhasil di remove!',
+            message: 'Cover removed successfully.',
             cardId,
             workspaceId,
             activity: activityRes.rows[0],
         });
 
-        res.json({ message: "Cover removed successfully." });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
