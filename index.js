@@ -5072,85 +5072,85 @@ app.put("/api/cards/:id/desc", async (req, res) => {
 });
 
 // 2.1 update card description (testing)
-// app.put("/api/cards/:id/desc-testing/:userId", async (req, res) => {
-//     const { id, userId } = req.params;
-//     const { description } = req.body;
-//     const actingUserId = parseInt(userId, 10);
+app.put("/api/cards/:id/desc-testing/:userId", async (req, res) => {
+    const { id, userId } = req.params;
+    const { description } = req.body;
+    const actingUserId = parseInt(userId, 10);
 
-//     if (!actingUserId) return res.status(401).json({ error: "Unauthorized" })
+    if (!actingUserId) return res.status(401).json({ error: "Unauthorized" })
 
-//     //CONSOLE 
-//     console.log('Endpoin update ini menerima userId:', userId);
-//     console.log("👉 Request diterima untuk update description");
-//     console.log("📦 cardId:", id);
-//     console.log("📝 description (asli):", description);
+    //CONSOLE 
+    console.log('Endpoin update ini menerima userId:', userId);
+    console.log("👉 Request diterima untuk update description");
+    console.log("📦 cardId:", id);
+    console.log("📝 description (asli):", description);
 
-//     try {
-//         await client.query(
-//             "UPDATE cards SET description = $1 WHERE id = $2",
-//             [description, id]
-//         );
+    try {
+        await client.query(
+            "UPDATE cards SET description = $1 WHERE id = $2",
+            [description, id]
+        );
 
-//         //mengambil user name
-//         // 1. mencari workspace id dari card 
-//         const boardRes = await client.query(`
-//             SELECT b.workspace_id
-//             FROM boards b
-//             JOIN lists l ON l.board_id = b.id
-//             JOIN cards c ON c.list_id = l.id
-//             WHERE c.id = $1
-//         `, [id]);
+        //mengambil user name
+        // 1. mencari workspace id dari card 
+        const boardRes = await client.query(`
+            SELECT b.workspace_id
+            FROM boards b
+            JOIN lists l ON l.board_id = b.id
+            JOIN cards c ON c.list_id = l.id
+            WHERE c.id = $1
+        `, [id]);
 
-//         const workspaceId = boardRes.rows[0]?.workspace_id;
+        const workspaceId = boardRes.rows[0]?.workspace_id;
 
-//         // 2. mengambil semua user 
-//         const workspaceUsersRes = await client.query(
-//             `SELECT user_id FROM workspaces_users WHERE workspace_id = $1 AND is_deleted = FALSE`,
-//             [workspaceId]
-//         );
-//         const userIds = workspaceUsersRes.rows.map(r => r.user_id);
-//         if (!userIds.includes(actingUserId)) userIds.push(actingUserId);
+        // 2. mengambil semua user 
+        const workspaceUsersRes = await client.query(
+            `SELECT user_id FROM workspaces_users WHERE workspace_id = $1 AND is_deleted = FALSE`,
+            [workspaceId]
+        );
+        const userIds = workspaceUsersRes.rows.map(r => r.user_id);
+        if (!userIds.includes(actingUserId)) userIds.push(actingUserId);
 
-//         //3. mengambil username acting user
-//         const actingUserRes = await client.query(
-//             'SELECT username FROM users WHERE id = $1',
-//             [actingUserId]
-//         );
-//         const actingUserName = actingUserRes.rows[0]?.username || 'Unknown';
+        //3. mengambil username acting user
+        const actingUserRes = await client.query(
+            'SELECT username FROM users WHERE id = $1',
+            [actingUserId]
+        );
+        const actingUserName = actingUserRes.rows[0]?.username || 'Unknown';
 
 
-//         // menyimpan aktivitas update title ke card_activity
-//         const activityRes = await client.query(`
-//             INSERT INTO card_activities 
-//             (card_id, user_id, action_type, entity, entity_id, action_detail)
-//             VALUES ($1, $2, $3, $4, $5, $6)
-//             RETURNING *
-//             `, [
-//             id,
-//             actingUserId,
-//             'updated_desc',
-//             'title',
-//             id,
-//             JSON.stringify({
-//                 // from: oldTitle || null,
-//                 // to: title,
-//                 updatedBy: { id: actingUserId, username: actingUserName }
-//             })
-//         ]);
+        // menyimpan aktivitas update title ke card_activity
+        const activityRes = await client.query(`
+            INSERT INTO card_activities 
+            (card_id, user_id, action_type, entity, entity_id, action_detail)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING *
+            `, [
+            id,
+            actingUserId,
+            'updated_desc',
+            'title',
+            id,
+            JSON.stringify({
+                // from: oldTitle || null,
+                // to: title,
+                updatedBy: { id: actingUserId, username: actingUserName }
+            })
+        ]);
 
-//         // kirim pesan response 
-//         res.status(200).json({
-//             message: 'Card description berhasil di update!',
-//             id,
-//             workspaceId,
-//             activity: activityRes.rows[0],
-//         });
+        // kirim pesan response 
+        res.status(200).json({
+            message: 'Card description berhasil di update!',
+            id,
+            workspaceId,
+            activity: activityRes.rows[0],
+        });
 
-//     } catch (err) {
-//         console.error("❌ Error update description:", err);
-//         res.status(500).json({ error: "Internal server error" });
-//     }
-// });
+    } catch (err) {
+        console.error("❌ Error update description:", err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
 
 
 //3. update due_date
