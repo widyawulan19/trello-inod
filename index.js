@@ -5343,7 +5343,8 @@ app.post('/api/add-cover', async (req, res) => {
 
 //2.1 menambahkan cover ke card -> (testing)
 app.post('/api/add-cover/:userId', async (req, res) => {
-    const { card_id, cover_id, userId } = req.body;
+    const { userId } = req.params;
+    const { card_id, cover_id } = req.body;
     const actingUserId = parseInt(userId, 10);
 
     if (!actingUserId) return res.status(401).json({ error: "Unauthorized" });
