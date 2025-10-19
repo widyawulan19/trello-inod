@@ -5637,7 +5637,7 @@ app.delete('/api/delete-cover/:cardId/:userId', async (req, res) => {
         // kirim pesan response 
         res.status(200).json({
             message: 'Card cover berhasil di remove!',
-            id,
+            cardId,
             workspaceId,
             activity: activityRes.rows[0],
         });
