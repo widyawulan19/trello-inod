@@ -3107,6 +3107,188 @@ app.post('/api/card-priorities', async (req, res) => {
         res.status(500).json({ error: "Terjadi kesalahan server" });
     }
 });
+//1. add priority to card
+app.post('/api/card-priorities', async (req, res) => {
+    const userId = req.user.id;
+    const { card_id, priority_id } = req.body;
+
+    if (!card_id || !priority_id) {
+        return res.status(400).json({ error: "card_id dan priority_id wajib diisi" });
+    }
+
+    try {
+        await client.query('BEGIN');
+
+        // Ambil priority lama sebelum dihapus
+        const oldPriorityResult = await client.query(
+            `SELECT cp.priority_id, p.name AS priority_name
+       FROM card_priorities cp
+       JOIN priorities p ON cp.priority_id = p.id
+       WHERE cp.card_id = $1`,
+            [card_id]
+        );
+
+        const oldPriorityId = oldPriorityResult.rows[0]?.priority_id || null;
+        const oldPriorityName = oldPriorityResult.rows[0]?.priority_name || null;
+
+        // Hapus semua prioritas lama untuk card ini
+        await client.query(
+            "DELETE FROM card_priorities WHERE card_id = $1",
+            [card_id]
+        );
+
+        // Tambahkan prioritas baru
+        const insertResult = await client.query(
+            "INSERT INTO card_priorities (card_id, priority_id) VALUES ($1, $2) RETURNING *",
+            [card_id, priority_id]
+        );
+
+        // Ambil nama prioritas baru
+        const newPriorityResult = await client.query(
+            "SELECT name FROM priorities WHERE id = $1",
+            [priority_id]
+        );
+        const newPriorityName = newPriorityResult.rows[0]?.name || null;
+
+        // Log aktivitas
+        await logCardActivity({
+            action: 'updated_prio',
+            card_id: parseInt(card_id),
+            user_id: userId,
+            entity: 'priority',
+            entity_id: priority_id,
+            details: {
+                old_priority_id: oldPriorityId,
+                old_priority_name: oldPriorityName,
+                new_priority_id: priority_id,
+                new_priority_name: newPriorityName
+            }
+        });
+
+        await client.query('COMMIT');
+
+        res.status(201).json({
+            message: "Prioritas berhasil ditambahkan",
+            data: insertResult.rows[0]
+        });
+
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error("Error adding priority to card:", error);
+        res.status(500).json({ error: "Terjadi kesalahan server" });
+    }
+});
+
+
+//1.1 add priority to card testing
+app.post('/api/card-priorities-testing/:userId', async (req, res) => {
+    const { card_id, priority_id } = req.body;
+    const { userId } = req.params;
+    const actingUserId = parseInt(userId, 10);
+
+    if (!actingUserId) return res.status(401).json({ error: Unauthorized })
+
+    if (!card_id || !priority_id) {
+        return res.status(400).json({ error: "card_id dan priority_id wajib diisi" });
+    }
+
+    try {
+        await client.query('BEGIN');
+
+        // Ambil priority lama sebelum dihapus
+        const oldPriorityResult = await client.query(
+            `SELECT cp.priority_id, p.name AS priority_name
+            FROM card_priorities cp
+            JOIN priorities p ON cp.priority_id = p.id
+            WHERE cp.card_id = $1`,
+            [card_id]
+        );
+
+        //old priority data
+        const oldPriorityId = oldPriorityResult.rows[0]?.priority_id || null;
+        const oldPriorityName = oldPriorityResult.rows[0]?.priority_name || null;
+
+        // Hapus semua prioritas lama untuk card ini
+        await client.query(
+            "DELETE FROM card_priorities WHERE card_id = $1",
+            [card_id]
+        );
+
+        // Tambahkan prioritas baru
+        const insertResult = await client.query(
+            "INSERT INTO card_priorities (card_id, priority_id) VALUES ($1, $2) RETURNING *",
+            [card_id, priority_id]
+        );
+
+        // Ambil nama prioritas baru
+        const newPriorityResult = await client.query(
+            "SELECT name FROM priorities WHERE id = $1",
+            [priority_id]
+        );
+        const newPriorityName = newPriorityResult.rows[0]?.name || null;
+
+        // mendapatkan data user yang action di card 
+        // Cari workspace_id dari card
+        const boardRes = await client.query(`
+            SELECT b.workspace_id
+            FROM boards b
+            JOIN lists l ON l.board_id = b.id
+            JOIN cards c ON c.list_id = l.id
+            WHERE c.id = $1
+        `, [card_id]);
+
+        const workspaceId = boardRes.rows[0]?.workspace_id;
+
+        // Mengambil semua user workspace
+        const workspaceUsersRes = await client.query(
+            `SELECT user_id FROM workspaces_users WHERE workspace_id = $1 AND is_deleted = FALSE`,
+            [workspaceId]
+        );
+        const userIds = workspaceUsersRes.rows.map(r => r.user_id);
+        if (!userIds.includes(actingUserId)) userIds.push(actingUserId);
+
+        // Ambil username acting user
+        const actingUserRes = await client.query(
+            'SELECT username FROM users WHERE id = $1',
+            [actingUserId]
+        );
+        const actingUserName = actingUserRes.rows[0]?.username || 'Unknown';
+
+        // Simpan aktivitas ke card_activities
+        const activityRes = await client.query(`
+            INSERT INTO card_activities 
+            (card_id, user_id, action_type, entity, entity_id, action_detail)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING *
+        `, [
+            card_id,
+            actingUserId,
+            'updated_prio',
+            'card priorites',
+            priority_id,
+            JSON.stringify({
+                from: oldPriorityName || null,
+                to: newPriorityName,
+                updatedBy: { id: actingUserId, username: actingUserName },
+            })
+        ]);
+
+        // Kirim response akhir
+        res.status(200).json({
+            message,
+            card_id,
+            workspaceId,
+            activity: activityRes.rows[0],
+        });
+
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error("Error adding priority to card:", error);
+        res.status(500).json({ error: "Terjadi kesalahan server" });
+    }
+});
+
+
 
 //2. get all card priority
 app.get('/api/card-priorities', async (req, res) => {
