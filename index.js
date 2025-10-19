@@ -5372,7 +5372,7 @@ app.post('/api/add-cover/:userId', async (req, res) => {
             JOIN lists l ON l.board_id = b.id
             JOIN cards c ON c.list_id = l.id
             WHERE c.id = $1
-        `, [id]);
+        `, [card_id]);
 
         const workspaceId = boardRes.rows[0]?.workspace_id;
 
@@ -5398,15 +5398,16 @@ app.post('/api/add-cover/:userId', async (req, res) => {
             VALUES ($1, $2, $3, $4, $5, $6)
             RETURNING *
             `, [
-            id,
+            card_id,
             actingUserId,
             'add_cover',
             'card cover',
-            id,
+            card_id,
             JSON.stringify({
                 // from: oldTitle || null,
                 // to: title,
-                updatedBy: { id: actingUserId, username: actingUserName }
+                updatedBy: { id: actingUserId, username: actingUserName },
+                coverId: cover_id
             })
         ]);
 
