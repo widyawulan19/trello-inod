@@ -5129,7 +5129,7 @@ app.put("/api/cards/:id/desc-testing/:userId", async (req, res) => {
             id,
             actingUserId,
             'updated_desc',
-            'title',
+            'description',
             id,
             JSON.stringify({
                 // from: oldTitle || null,
