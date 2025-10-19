@@ -5413,8 +5413,6 @@ app.put('/api/cards/:id/due-testing/:userId', async (req, res) => {
             workspaceId,
             activity: activityRes.rows[0],
         });
-
-        res.json(result.rows[0]);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -5600,8 +5598,6 @@ app.post('/api/add-cover/:userId', async (req, res) => {
             workspaceId,
             activity: activityRes.rows[0],
         });
-
-        res.json(result.rows[0]);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -5697,8 +5693,6 @@ app.put('/api/update-cover-testing/:userId', async (req, res) => {
             workspaceId,
             activity: activityRes.rows[0],
         });
-
-        res.json(result.rows[0]);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
