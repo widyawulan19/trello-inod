@@ -5562,7 +5562,7 @@ app.delete('/api/delete-cover/:cardId', async (req, res) => {
 })
 
 //4. menghapus cover dari card -> testing
-app.delete('/api/delete-cover/:cardId/:userId', async (req, res) => {
+app.delete('/api/delete-cover-testing/:cardId/:userId', async (req, res) => {
     const { cardId, userId } = req.params;
     const actingUserId = parseInt(userId, 10);
 
