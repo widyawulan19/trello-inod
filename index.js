@@ -5511,7 +5511,7 @@ app.put('/api/update-cover-testing/:userId', async (req, res) => {
         // kirim pesan response 
         res.status(200).json({
             message: 'Card cover berhasil di update!',
-            id,
+            card_id,
             workspaceId,
             activity: activityRes.rows[0],
         });
