@@ -5165,6 +5165,79 @@ app.put('/api/cards/:id/due_date', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 })
+
+//3.1 update due_data (testing)
+app.put('/api/cards/:id/due-testing/:userId', async (req, res) => {
+    const { id, userId } = req.params;
+    const { due_date } = req.body;
+    const actingUserId = parseInt(userId, 10);
+
+    if (!actingUserId) return res.status(401).json({ error: "Unauthorized" });
+
+    try {
+        const result = await client.query("UPDATE cards SET due_date = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *", [due_date, id]);
+        if (result.rows.length === 0) return res.status(404).json({ error: "Card not found" });
+
+        //mengambil user name
+        // 1. mencari workspace id dari card 
+        const boardRes = await client.query(`
+            SELECT b.workspace_id
+            FROM boards b
+            JOIN lists l ON l.board_id = b.id
+            JOIN cards c ON c.list_id = l.id
+            WHERE c.id = $1
+        `, [id]);
+
+        const workspaceId = boardRes.rows[0]?.workspace_id;
+
+        // 2. mengambil semua user 
+        const workspaceUsersRes = await client.query(
+            `SELECT user_id FROM workspaces_users WHERE workspace_id = $1 AND is_deleted = FALSE`,
+            [workspaceId]
+        );
+        const userIds = workspaceUsersRes.rows.map(r => r.user_id);
+        if (!userIds.includes(actingUserId)) userIds.push(actingUserId);
+
+        //3. mengambil username acting user
+        const actingUserRes = await client.query(
+            'SELECT username FROM users WHERE id = $1',
+            [actingUserId]
+        );
+        const actingUserName = actingUserRes.rows[0]?.username || 'Unknown';
+
+        //menyimpan aktivitas update due date ke card activity
+        const activityRes = await client.query(`
+            INSERT INTO card_activities 
+            (card_id, user_id, action_type, entity, entity_id, action_detail)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING *
+            `, [
+            id,
+            actingUserId,
+            'updated_due',
+            'due date',
+            id,
+            JSON.stringify({
+                // from: oldTitle || null,
+                // to: title,
+                updatedBy: { id: actingUserId, username: actingUserName }
+            })
+        ]);
+
+        // kirim pesan response 
+        res.status(200).json({
+            message: 'Card due date berhasil di update!',
+            id,
+            workspaceId,
+            activity: activityRes.rows[0],
+        });
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+})
+
 //4. update cover_id
 app.put('/api/cards/:id/cover', async (req, res) => {
     const { id } = req.params;
@@ -5267,6 +5340,89 @@ app.post('/api/add-cover', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 })
+
+//2.1 menambahkan cover ke card -> (testing)
+app.post('/api/add-cover/:userId', async (req, res) => {
+    const { card_id, cover_id, userId } = req.body;
+    const actingUserId = parseInt(userId, 10);
+
+    if (!actingUserId) return res.status(401).json({ error: "Unauthorized" });
+
+    try {
+        const checkExisting = await client.query(
+            "SELECT * FROM card_cover WHERE card_id = $1",
+            [card_id]
+        );
+
+        if (checkExisting.rows.length > 0) {
+            return res.status(400).json({ message: "Card already has a cover. Please update instead." });
+        }
+
+        const result = await client.query(
+            "INSERT INTO card_cover (card_id, cover_id, create_at) VALUES ($1, $2, CURRENT_TIMESTAMP) RETURNING *",
+            [card_id, cover_id]
+        );
+
+        //mengambil user name
+        // 1. mencari workspace id dari card 
+        const boardRes = await client.query(`
+            SELECT b.workspace_id
+            FROM boards b
+            JOIN lists l ON l.board_id = b.id
+            JOIN cards c ON c.list_id = l.id
+            WHERE c.id = $1
+        `, [id]);
+
+        const workspaceId = boardRes.rows[0]?.workspace_id;
+
+        // 2. mengambil semua user 
+        const workspaceUsersRes = await client.query(
+            `SELECT user_id FROM workspaces_users WHERE workspace_id = $1 AND is_deleted = FALSE`,
+            [workspaceId]
+        );
+        const userIds = workspaceUsersRes.rows.map(r => r.user_id);
+        if (!userIds.includes(actingUserId)) userIds.push(actingUserId);
+
+        //3. mengambil username acting user
+        const actingUserRes = await client.query(
+            'SELECT username FROM users WHERE id = $1',
+            [actingUserId]
+        );
+        const actingUserName = actingUserRes.rows[0]?.username || 'Unknown';
+
+        // menyimpan aktivitas update title ke card_activity
+        const activityRes = await client.query(`
+            INSERT INTO card_activities 
+            (card_id, user_id, action_type, entity, entity_id, action_detail)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING *
+            `, [
+            id,
+            actingUserId,
+            'add_cover',
+            'card cover',
+            id,
+            JSON.stringify({
+                // from: oldTitle || null,
+                // to: title,
+                updatedBy: { id: actingUserId, username: actingUserName }
+            })
+        ]);
+
+        // kirim pesan response 
+        res.status(200).json({
+            message: 'Card cover berhasil di tambahkan!',
+            id,
+            workspaceId,
+            activity: activityRes.rows[0],
+        });
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+})
+
 //3. mengupdate cover pada card -> works
 app.put('/api/update-cover', async (req, res) => {
     const { card_id, cover_id } = req.body;
