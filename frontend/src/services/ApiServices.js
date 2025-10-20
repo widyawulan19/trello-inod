@@ -329,6 +329,7 @@ export const updateCardCover = (data) => axios.put(`${API_URL}/update-cover`, da
 export const addCoverCardTesting = (userId, data) => axios.post(`${API_URL}/add-cover/${userId}`, data)
 export const updateCardCoverTesting = (userId, data) => axios.put(`${API_URL}/update-cover-testing/${userId}`, data)
 export const deleteCoverCard = (cardId) => axios.delete(`${API_URL}/delete-cover/${cardId}`)
+export const deleteCoverCardTesting = (cardId, userId) => axios.delete(`${API_URL}/delete-cover-testing/${cardId}/${userId}`)
 
 
 //COVER 

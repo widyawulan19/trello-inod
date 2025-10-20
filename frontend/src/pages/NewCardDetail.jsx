@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import '../style/pages/NewCardDetail.css'
 import BootstrapTooltip from '../components/Tooltip';
 import { GiCloudUpload } from "react-icons/gi";
-import { addCoverCardTesting, archiveCard, deleteCoverCard, deleteUserFromCard, getActivityCardTesting, getAllCardUsers, getAllCovers, getAllDueDateByCardId, getAllStatus, getAllUploadFiles, getAllUserAssignToCard, getCardById, getCardPriority, getChecklistItemChecked, getChecklistsWithItemsByCardId, getCoverByCard, getLabelByCard, getListById, getStatusByCardId, getTotalChecklistItemByCardId, getTotalFile, updateCardCoverTesting, updateDescCard, updateDescCardTesting, updateTitleCard } from '../services/ApiServices';
+import { addCoverCardTesting, archiveCard, deleteCoverCard, deleteCoverCardTesting, deleteUserFromCard, getActivityCardTesting, getAllCardUsers, getAllCovers, getAllDueDateByCardId, getAllStatus, getAllUploadFiles, getAllUserAssignToCard, getCardById, getCardPriority, getChecklistItemChecked, getChecklistsWithItemsByCardId, getCoverByCard, getLabelByCard, getListById, getStatusByCardId, getTotalChecklistItemByCardId, getTotalFile, updateCardCoverTesting, updateDescCard, updateDescCardTesting, updateTitleCard } from '../services/ApiServices';
 import SelectedLabels from '../UI/SelectedLabels';
 import CardDetailPanel from '../modules/CardDetailPanel';
 import DetailCard from '../modules/DetailCard';
@@ -482,17 +482,20 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
     }
 
     //9.2 fungsi cover remove
-    const handleRemoveCover = async() =>{
+     const handleRemoveCover = async() =>{
         try{
-            await deleteCoverCard(cardId);
+            await deleteCoverCardTesting(cardId, userId);
             setSelectedCover(null);
             fetchCardById();
+            getActivityCardTesting(cardId)
+            fetchCardCover();
             showSnackbar('Successfully remove cover', 'success');
         }catch(error){
             console.error('Gagal menghapus cover:', error);
             showSnackbar('Gagal menghapus cover', 'error');
         }
     }
+
 
     //9.3 Ambil semua cover saat komponen mount
         useEffect(() => {
