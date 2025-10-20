@@ -5414,6 +5414,7 @@ app.put('/api/cards/:id/due-testing/:userId', async (req, res) => {
             activity: activityRes.rows[0],
         });
     } catch (error) {
+        console.error("Error update due date", error);
         res.status(500).json({ error: error.message });
     }
 })
