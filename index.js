@@ -6933,6 +6933,7 @@ app.post('/api/labels', async (req, res) => {
     }
 })
 
+
 //5. add label to card
 app.post('/api/cards/:cardId/labels/:labelId', async (req, res) => {
     const { cardId, labelId } = req.params;
@@ -6967,6 +6968,91 @@ app.post('/api/cards/:cardId/labels/:labelId', async (req, res) => {
             message: 'Label added to card successfully',
             data: result.rows[0],
         });
+    } catch (error) {
+        console.error('Error adding label to card:', error);
+        return res.status(500).json({ message: 'Server error' });
+    }
+})
+
+
+//5.1 add label to card(testing)
+app.post('/api/cards/:cardId/labels-testing/:labelId/:userId', async (req, res) => {
+    const { cardId, labelId, userId } = req.params;
+    const actingUserId = parseInt(userId, 10);
+
+    if (!actingUserId) return res.status(401).json({ error: "Unauthorized" })
+
+    try {
+        // Check if the card and label exist
+        const cardExists = await client.query('SELECT 1 FROM cards WHERE id = $1', [cardId]);
+        const labelExists = await client.query('SELECT 1 FROM labels WHERE id = $1', [labelId]);
+
+        if (!cardExists.rows.length || !labelExists.rows.length) {
+            return res.status(400).json({ message: 'Card or Label does not exist.' });
+        }
+
+        // Insert label to card in card_labels table
+        const result = await client.query(
+            'INSERT INTO card_labels (card_id, label_id, create_at) VALUES ($1, $2, CURRENT_TIMESTAMP) RETURNING *',
+            [cardId, labelId]
+        );
+
+
+        //mengambil user name
+        // 1. mencari workspace id dari card 
+        const boardRes = await client.query(`
+            SELECT b.workspace_id
+            FROM boards b
+            JOIN lists l ON l.board_id = b.id
+            JOIN cards c ON c.list_id = l.id
+            WHERE c.id = $1
+        `, [cardId]);
+
+        const workspaceId = boardRes.rows[0]?.workspace_id;
+
+        // 2. mengambil semua user 
+        const workspaceUsersRes = await client.query(
+            `SELECT user_id FROM workspaces_users WHERE workspace_id = $1 AND is_deleted = FALSE`,
+            [workspaceId]
+        );
+        const userIds = workspaceUsersRes.rows.map(r => r.user_id);
+        if (!userIds.includes(actingUserId)) userIds.push(actingUserId);
+
+        //3. mengambil username acting user
+        const actingUserRes = await client.query(
+            'SELECT username FROM users WHERE id = $1',
+            [actingUserId]
+        );
+        const actingUserName = actingUserRes.rows[0]?.username || 'Unknown';
+
+
+        // menyimpan aktivitas update title ke card_activity
+        const activityRes = await client.query(`
+            INSERT INTO card_activities 
+            (card_id, user_id, action_type, entity, entity_id, action_detail)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING *
+            `, [
+            cardId,
+            actingUserId,
+            'add_label',
+            'label',
+            labelId,
+            JSON.stringify({
+                // from: oldTitle || null,
+                // to: title,
+                updatedBy: { id: actingUserId, username: actingUserName }
+            })
+        ]);
+
+        // kirim pesan response 
+        res.status(200).json({
+            message: 'Card description berhasil di update!',
+            cardId,
+            labelId,
+            activity: activityRes.rows[0],
+        });
+
     } catch (error) {
         console.error('Error adding label to card:', error);
         return res.status(500).json({ message: 'Server error' });
