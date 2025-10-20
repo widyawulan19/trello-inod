@@ -6821,6 +6821,102 @@ app.delete('/api/cards/:cardId/labels/:labelId', async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 })
+
+// 3.1 Menghapus label dari card id (testing)
+app.delete('/api/cards/:cardId/labels/:labelId/:userId', async (req, res) => {
+    const { cardId, labelId, userId } = req.params;
+    const actingUserId = parseInt(userId, 10);
+
+    if (!actingUserId) return res.status(401).json({ error: "Unauthorized" });
+
+    try {
+        // 🔹 Ambil nama label dulu sebelum dihapus
+        const oldLabelRes = await client.query(
+            "SELECT name, color FROM labels WHERE id = $1",
+            [labelId]
+        );
+
+        if (oldLabelRes.rowCount === 0) {
+            return res.status(404).json({ message: "Label not found." });
+        }
+
+        const oldLabel = oldLabelRes.rows[0];
+
+        // 🔹 Hapus label dari card_labels
+        const deleteRes = await client.query(
+            "DELETE FROM card_labels WHERE card_id = $1 AND label_id = $2 RETURNING *",
+            [cardId, labelId]
+        );
+
+        if (deleteRes.rowCount === 0) {
+            return res.status(404).json({ message: "Label not found on this card." });
+        }
+
+        // 🔹 Ambil workspace_id dari card
+        const boardRes = await client.query(`
+            SELECT b.workspace_id
+            FROM boards b
+            JOIN lists l ON l.board_id = b.id
+            JOIN cards c ON c.list_id = l.id
+            WHERE c.id = $1
+        `, [cardId]);
+
+        const workspaceId = boardRes.rows[0]?.workspace_id;
+
+        // 🔹 Ambil semua user workspace
+        const workspaceUsersRes = await client.query(
+            `SELECT user_id FROM workspaces_users WHERE workspace_id = $1 AND is_deleted = FALSE`,
+            [workspaceId]
+        );
+
+        const userIds = workspaceUsersRes.rows.map(r => r.user_id);
+        if (!userIds.includes(actingUserId)) userIds.push(actingUserId);
+
+        // 🔹 Ambil username user yang bertindak
+        const actingUserRes = await client.query(
+            'SELECT username FROM users WHERE id = $1',
+            [actingUserId]
+        );
+
+        const actingUserName = actingUserRes.rows[0]?.username || 'Unknown';
+
+        // 🔹 Simpan aktivitas ke card_activities
+        const activityRes = await client.query(`
+            INSERT INTO card_activities 
+            (card_id, user_id, action_type, entity, entity_id, action_detail)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING *
+        `, [
+            cardId,
+            actingUserId,
+            'remove_label',
+            'card label',
+            cardId,
+            JSON.stringify({
+                updatedBy: { id: actingUserId, username: actingUserName },
+                removedLabel: {
+                    id: labelId,
+                    name: oldLabel.name,
+                    color: oldLabel.color
+                }
+            })
+        ]);
+
+        // 🔹 Kirim response
+        res.status(200).json({
+            message: 'Label removed successfully.',
+            cardId,
+            workspaceId,
+            activity: activityRes.rows[0],
+        });
+
+    } catch (err) {
+        console.error("Error deleting label:", err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+
 //4. membuat label baru
 app.post('/api/labels', async (req, res) => {
     const { name } = req.body; // Hanya menerima nama label
