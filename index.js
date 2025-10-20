@@ -6823,7 +6823,7 @@ app.delete('/api/cards/:cardId/labels/:labelId', async (req, res) => {
 })
 
 // 3.1 Menghapus label dari card id (testing)
-app.delete('/api/cards/:cardId/labels/:labelId/:userId', async (req, res) => {
+app.delete('/api/cards/:cardId/labels-testing/:labelId/:userId', async (req, res) => {
     const { cardId, labelId, userId } = req.params;
     const actingUserId = parseInt(userId, 10);
 
