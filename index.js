@@ -7197,39 +7197,39 @@ app.get('/api/status', async (req, res) => {
 })
 
 //3. add/update status card id
-app.post('/api/cards/:cardId/status', async (req, res) => {
-    const { cardId } = req.params;
-    const { statusId } = req.body;
-    const userId = req.user.id;
+// app.post('/api/cards/:cardId/status', async (req, res) => {
+//     const { cardId } = req.params;
+//     const { statusId } = req.body;
+//     const userId = req.user.id;
 
-    try {
-        // Cek apakah kartu sudah memiliki status
-        const check = await client.query(`SELECT * FROM card_status WHERE card_id = $1`, [cardId]);
+//     try {
+//         // Cek apakah kartu sudah memiliki status
+//         const check = await client.query(`SELECT * FROM card_status WHERE card_id = $1`, [cardId]);
 
-        if (check.rows.length > 0) {
-            // Jika ada, update status
-            await client.query(`UPDATE card_status SET status_id = $1, update_at = CURRENT_TIMESTAMP WHERE card_id = $2`, [statusId, cardId]);
-            res.json({ message: 'Status kartu berhasil diperbarui' });
-        } else {
-            // Jika belum ada, tambahkan status baru
-            await client.query(`INSERT INTO card_status (card_id, status_id, assigned_at) VALUES ($1, $2, CURRENT_TIMESTAMP)`, [cardId, statusId]);
-            res.json({ message: 'Status kartu berhasil ditambahkan' });
-        }
+//         if (check.rows.length > 0) {
+//             // Jika ada, update status
+//             await client.query(`UPDATE card_status SET status_id = $1, update_at = CURRENT_TIMESTAMP WHERE card_id = $2`, [statusId, cardId]);
+//             res.json({ message: 'Status kartu berhasil diperbarui' });
+//         } else {
+//             // Jika belum ada, tambahkan status baru
+//             await client.query(`INSERT INTO card_status (card_id, status_id, assigned_at) VALUES ($1, $2, CURRENT_TIMESTAMP)`, [cardId, statusId]);
+//             res.json({ message: 'Status kartu berhasil ditambahkan' });
+//         }
 
-        //add log card activity
-        await logCardActivity({
-            action: 'updated_status',
-            card_id: cardId,
-            user_id: userId,
-            entity: 'status',
-            entity_id: statusId,
-            details: ''
-        })
+//         //add log card activity
+//         await logCardActivity({
+//             action: 'updated_status',
+//             card_id: cardId,
+//             user_id: userId,
+//             entity: 'status',
+//             entity_id: statusId,
+//             details: ''
+//         })
 
-    } catch (error) {
-        res.status(500).json({ error: 'Gagal menambahkan/memperbarui status kartu' });
-    }
-})
+//     } catch (error) {
+//         res.status(500).json({ error: 'Gagal menambahkan/memperbarui status kartu' });
+//     }
+// })
 
 //3.1 add/update status card id
 app.post('/api/cards/:cardId/update-status-testing/:userId', async (req, res) => {
