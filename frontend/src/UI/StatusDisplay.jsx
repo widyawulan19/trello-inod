@@ -3,6 +3,7 @@ import { HiArrowUturnLeft, HiCheckCircle, HiChevronRight, HiMiniEye, HiMiniXCirc
 import CardStatus from '../modules/CardStatus';
 
 const StatusDisplay = ({ 
+    userId,
     cardId,
     currentStatus,
     setCurrentStatus,
@@ -154,6 +155,7 @@ const StatusDisplay = ({
                     }}
                 >
                     <CardStatus
+                        userId={userId}
                         cardId={cardId}
                         onClose={handleCloseStatus}
                         currentStatus={currentStatus}

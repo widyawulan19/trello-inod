@@ -13,6 +13,7 @@ import { updateCardStatusTesting } from '../services/ApiServices';
 
 const CardStatus = ({
   cardId,
+  userId,
   onClose,
   currentStatus,
   allStatuses,
@@ -21,8 +22,8 @@ const CardStatus = ({
   setSelectedStatus
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { user } = useUser();
-  const userId = user?.id;
+  // const { user } = useUser();
+  // const userId = user?.id;
 
   // Icon untuk setiap status
   const ICON_STATUS = {

@@ -974,6 +974,7 @@ const NewCardDetail=({fetchBoardDetail,fetchCardList})=> {
                      <div className={`ncd-status ${!statusVisible ? 'status-hidden' : ''}`}>
                         <div className="ncd-status-container">
                             <StatusDisplay 
+                                userId={userId}
                                 cardId={cardId} 
                                 // onClose={handleCloseStatus}
                                 currentStatus={currentStatus}
