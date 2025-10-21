@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { FiUsers } from "react-icons/fi";
-import { HiChatBubbleLeftRight, HiChevronDown, HiChevronUp, HiCog8Tooth, HiMiniArrowLeftStartOnRectangle, HiMiniChatBubbleLeftRight, HiMiniListBullet, HiMiniPhoto, HiOutlineArchiveBox, HiOutlineArrowsPointingOut, HiOutlineCalendar, HiOutlineChevronRight, HiOutlineCreditCard, HiOutlineListBullet, HiOutlineSquare2Stack, HiOutlineTrash, HiPaperClip, HiPlus, HiTag, HiXMark } from 'react-icons/hi2';
+import { HiChatBubbleLeftRight, HiChevronDown, HiChevronUp, HiCog8Tooth, HiMiniArrowLeftStartOnRectangle, HiMiniChatBubbleLeftRight, HiMiniListBullet, HiMiniPhoto, HiOutlineArchiveBox, HiOutlineArrowsPointingOut, HiOutlineCalendar, HiOutlineChevronRight, HiOutlineCreditCard, HiOutlineListBullet, HiOutlineSquare2Stack, HiOutlineTrash, HiOutlineXMark, HiPaperClip, HiPlus, HiTag, HiXMark } from 'react-icons/hi2';
+import { HiDotsHorizontal } from "react-icons/hi";
 import { useNavigate, useParams } from 'react-router-dom'
 import '../style/pages/NewCardDetail.css'
 import BootstrapTooltip from '../components/Tooltip';
@@ -40,7 +41,7 @@ import "quill/dist/quill.snow.css";
 import CardDescriptionExample from '../modals/CardDescriptionExample';
 import NewCardActivity from '../modules/NewCardActivity';
 
-const NewCardDetail=()=> {
+const NewCardDetail=({fetchBoardDetail,fetchCardList})=> {
     //STATE
     const {user} = useUser();
     const userId = user?.id;
@@ -90,9 +91,7 @@ const NewCardDetail=()=> {
     const [assignedUsers, setAssignedUsers] = useState([]);
     const [assignableUsers, setAssignableUsers] = useState([]);
     const [showAssigment, setShowAssigment] = useState(false);
-    //DUPLICATE AND MOVE
-    const [showDuplicate, setShowDuplicate] = useState(false)
-    const [showMove, setShowMove] = useState(false)
+
     //SHOW ACTION/SETTING CARD
     const [showAction, setShowAction] = useState(false);
     const refShowAction = OutsideClick(()=>setShowAction(false));
@@ -111,8 +110,30 @@ const NewCardDetail=()=> {
     const [statusVisible, setStatusVisible] = useState(true); // default: visible
     //MODAL DES
     const [showModalDes, setShowModalDes] = useState(false);
+    //CARD SETTING 
+    const [showCardSetting, setShowCardSetting] = useState(false);
+    const settingRef = OutsideClick(()=>setShowCardSetting(false))
+    //DUPLICATE AND MOVE
+    const [showDuplicate, setShowDuplicate] = useState(false)
+    const [showMove, setShowMove] = useState(false);
+    
     // ATTACHMENT 
     const [allUploadFile, setAllUploadFile] = useState([]);
+
+    // fungsi show card setting 
+    const handleShowCardSetting = (e) =>{
+        e.stopPropagation();
+        setShowCardSetting((prev=>({
+            ...prev,
+            [cardId]: !prev[cardId],
+        })))
+        // setShowCardSetting(!showCardSetting);
+    }
+
+
+    const handleCloseCardSetting = () =>{
+        setShowCardSetting(false);
+    }
 
     const quillRef = useRef(null);
 
@@ -190,6 +211,7 @@ const NewCardDetail=()=> {
       setStatusVisible(!statusVisible);
     };
 
+    
 
 
 
@@ -586,19 +608,13 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
     }
 
     //14. function to move card
-    const handleMoveCard = (cardId) =>{
-        setShowMove((prevState)=>({
-            ...prevState,
-            [cardId]: !prevState[cardId],
-        }))
-    }
+    const handleMoveCard = () => {
+    setShowMove(true);
+    };
 
-    const handleCloseMove = (cardId) =>{
-        setShowMove((prevState)=>({
-          ...prevState,
-            [cardId]: false,
-        }))
-    }
+    const handleCloseMove = () => {
+    setShowMove(false);
+    };
 
     //15. function archive card
     const handleArchiveCard = async(cardId)=>{
@@ -884,12 +900,14 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
                         {showLabel && (
                             <div className="label-modals">
                                 <Label
+                                    userId={userId}
                                     cardId={cardId}
                                     labels={labels}
                                     setLabels={setLabels}
                                     fetchLabels={fetchLabels}
                                     onClose={handleCloseLabel}
                                     fetchCardDetail={fetchCardById}
+                                    fetchCardActivities={fetchCardActivities}
                                 />
                             </div>
                         )}
@@ -1120,8 +1138,57 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
                             <CoverSelect cardId={cardId} fetchCardDetail={fetchCardById} selectedCover={selectedCover}/>
                             <div className="ncd-detail">
                                 <div className="ncd-detail-header">
-                                    Card Information
+                                   <h5> Card Information</h5>
+                                   <BootstrapTooltip title='Card Setting' placement='top'>
+                                    <div className="set-card" onClick={handleShowCardSetting}>
+                                        {/* <HiDotsHorizontal /> */}
+                                        Card Action
+                                    </div>
+                                   </BootstrapTooltip>
+                                   {/* SHOW CARD SETTING  */}
+                                    {showCardSetting && (
+                                        <div className="cs-modal" ref={settingRef}>
+                                            {/* <div className="cs-header">
+                                                <h5>Card Action</h5>
+                                                <HiOutlineXMark className='cs-close' onClick={handleCloseCardSetting}/>
+                                            </div> */}
+                                            <div className="cs-button">
+                                                <button onClick={handleMoveCard}>
+                                                    <HiMiniArrowLeftStartOnRectangle/>
+                                                    Move Card
+                                                </button>
+                                                <button>
+                                                    <HiOutlineSquare2Stack/>
+                                                    Duplicate
+                                                </button>
+                                                <button>
+                                                    <HiOutlineArchiveBox/>
+                                                    Archive
+                                                </button>
+                                                <button>
+                                                    <HiOutlineTrash/>
+                                                    Delete
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
+
+                                {/* SHOW MODAL CARD SETTING  */}
+                                {showMove && (
+                                    <div className="card-move-modal">
+                                        <MoveCard
+                                            cardId={cardId}
+                                            boardId={boardId}
+                                            listId={listId}
+                                            workspaceId={workspaceId}
+                                            onClose={handleCloseMove}
+                                            fetchCardList={fetchCardList}
+                                            fetchBoardDetail={fetchBoardDetail}
+                                        />
+                                    </div>
+                                )}
+
                                 <div className="ncd-detail-con">
                                     <div className="c-create">
                                          <HiOutlineCalendar className='cc-icon'/>

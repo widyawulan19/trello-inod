@@ -870,15 +870,139 @@
 }
 
 /* CARD DETAIL  */
+
+.ncd-cover-detail .ncd-detail {
+    position: relative;
+}
+
 .ncd-detail .ncd-detail-header {
-    /* border: 1px solid #ddd; */
+    /* border: 1px solid red; */
     margin-top: 10px;
     border-left: 3px solid #28a12c;
     padding-left: 10px;
-    font-size: 12px;
+    /* font-size: 12px; */
     font-weight: bold;
     color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
 }
+
+.ncd-detail-header h5 {
+    margin: 0px;
+    padding: 0px;
+    font-size: 12px;
+}
+
+.ncd-detail-header .set-card {
+    border: 1px solid #eee;
+    border-radius: 4px;
+    padding: 2px 5px;
+    font-size: 10px;
+    font-weight: normal;
+    cursor: pointer;
+    color: #333;
+    background-color: #f2f1ff;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    /* position: relative; */
+}
+
+.set-card:hover {
+    border: 1px solid #eee;
+    background-color: #eee;
+    /* text-decoration: underline; */
+}
+
+/* CARD SETTING  */
+.cs-modal {
+    position: absolute;
+    top: 100%;
+    /* muncul tepat di bawah tombol Card Action */
+    right: 0;
+    margin-top: 6px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    padding: 0px;
+    width: 120px;
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+.cs-header {
+    width: 100%;
+    border-bottom: 1px solid #ddd;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    padding: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.cs-header h5 {
+    margin: 0px;
+    padding: 0px;
+    font-size: 10px;
+}
+
+.cs-header .cs-close {
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.cs-modal .cs-button {
+    /* border: 1px solid blue; */
+    padding: 5px;
+    gap: 5px;
+
+}
+
+.cs-modal button {
+    background: none;
+    border: 1px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
+    width: 100%;
+    text-align: left;
+    padding: 6px 10px;
+    margin: 3px 0px;
+    font-size: 10px;
+    font-weight: normal;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.cs-modal button:hover {
+    background-color: #f4f5f7;
+}
+
+
+/* MOVE CARD  */
+.card-move-modal {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 300;
+    width: 100%;
+    /* min-width: 250px; */
+    height: fit-content;
+    padding: 2px;
+    border-radius: 6px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    /* border: 1px solid blue; */
+}
+
+/* END CARD SETTING  */
 
 .ncd-detail .ncd-detail-con {
     /* border: 1px solid red; */
@@ -1798,5 +1922,19 @@
     .ncd-main-content .ncd-main-right {
         height: 65vh;
         /* border: 1px solid green; */
+    }
+}
+
+
+/* Animasi muncul lembut */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }

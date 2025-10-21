@@ -414,11 +414,14 @@ export const getChecklistItemUnchecked = (cardId) => axios.get(`${API_URL}/${car
 export const getLabelByCard = (cardId) => axios.get(`${API_URL}/cards/${cardId}/labels`)
 export const getAllLabels = () => axios.get(`${API_URL}/labels`)
 export const deleteLabels = (cardId, labelId) => axios.delete(`${API_URL}/cards/${cardId}/labels/${labelId}`)
+export const deleteLabelsTesting = (cardId, labelId, userId) => axios.delete(`${API_URL}/cards/${cardId}/labels-testing/${labelId}/${userId}`)
 export const createLabel = (data) => axios.post(`${API_URL}/labels`, data)
 export const addLabelToCard = (cardId, labelId) => axios.post(`${API_URL}/cards/${cardId}/labels/${labelId}`)
+export const addLabelToCardTesting = (cardId, labelId, userId) => axios.post(`${API_URL}/cards/${cardId}/labels-testing/${labelId}/${userId}`)
 export const deleteLabelFromLabels = (labelId) => axios.delete(`${API_URL}/delete-label/${labelId}`)
 export const updateLabelName = (id, data) => axios.put(`${API_URL}/update-label-name/${id}`, data)
 export const addColorToBgColorLabel = (labelId, data) => axios.put(`${API_URL}/label/${labelId}/bg_color`, data)
+
 
 //COLORS
 export const getAllColor = () => axios.get(`${API_URL}/colors`)
