@@ -506,6 +506,7 @@ export const getDataMarketingById = (id) => axios.get(`${API_URL}/marketing/${id
 export const updateDataMarketing = (id, data) => axios.put(`${API_URL}/marketing/${id}`, data)
 export const deleteDataMarketing = (id) => axios.delete(`${API_URL}/marketing/${id}`)
 export const addDataMarketing = (data) => axios.post(`${API_URL}/marketing`, data)
+export const addDataMarketingTesting = (data) => axios.post(`${API_URL}/marketing-testing`, data)
 export const createCardFromMarketing = (listId, marketingId) => axios.put(`${API_URL}/create-card-marketing/${listId}/${marketingId}`)
 export const checkCardIdNullOrNot = (id) => axios.get(`${API_URL}/check-card-id/${id}`)
 export const getDataMarketingWithCardId = () => axios.get(`${API_URL}/data-marketing-cardId`)
