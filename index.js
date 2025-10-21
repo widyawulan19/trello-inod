@@ -8109,65 +8109,65 @@ let currentOrderNumberTesting = 297;    // otomatis bertambah
 let currentProjectNumberTesting = 35;   // otomatis bertambah
 
 app.post("/api/marketing-testing", async (req, res) => {
-  try {
-    const {
-      input_by,
-      acc_by,
-      buyer_name,
-      code_order,
-      jumlah_track,
-      account,
-      deadline,
-      jumlah_revisi,
-      order_type,
-      offer_type,
-      jenis_track,
-      genre,
-      price_normal,
-      price_discount,
-      discount,
-      basic_price,
-      gig_link,
-      required_files,
-      project_type,
-      duration,
-      reference_link,
-      file_and_chat_link,
-      detail_project,
-    } = req.body;
+    try {
+        const {
+            input_by,
+            acc_by,
+            buyer_name,
+            code_order,
+            jumlah_track,
+            account,
+            deadline,
+            jumlah_revisi,
+            order_type,
+            offer_type,
+            jenis_track,
+            genre,
+            price_normal,
+            price_discount,
+            discount,
+            basic_price,
+            gig_link,
+            required_files,
+            project_type,
+            duration,
+            reference_link,
+            file_and_chat_link,
+            detail_project,
+        } = req.body;
 
-    // --- generate nomor otomatis ---
-    currentOrderNumberTesting += 1;
-    currentProjectNumberTesting += 1;
+        // --- generate nomor otomatis ---
+        currentOrderNumberTesting += 1;
+        currentProjectNumberTesting += 1;
 
-    const createAt = new Date();
-    const formattedOrderNumber = currentOrderNumberTesting.toString();
-    const projectNumber = `P${String(currentProjectNumberTesting).padStart(2, "0")} ${dayjs(createAt).locale("id").format("DD/MMM/YYYY")}`;
+        const createAt = new Date();
+        const formattedOrderNumber = currentOrderNumberTesting.toString();
+        const projectNumber = `P${String(currentProjectNumberTesting).padStart(2, "0")} ${dayjs(createAt).locale("id").format("DD/MMM/YYYY")}`;
 
-    // --- insert ke tabel ---
-    const insertResult = await client.query(
-      `INSERT INTO data_marketing 
+        // --- insert ke tabel ---
+        const insertResult = await client.query(
+            `INSERT INTO data_marketing 
         (input_by, acc_by, buyer_name, code_order, jumlah_track, order_number, 
         account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre, 
         price_normal, price_discount, discount, basic_price, gig_link, required_files, 
         project_type, duration, reference_link, file_and_chat_link, detail_project, 
         create_at, project_number) 
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, 
-              $16, $17, $18, $19, $20, $21, $22, $23, CURRENT_TIMESTAMP, $24) 
-      RETURNING marketing_id`,
-      [
-        input_by, acc_by, buyer_name, code_order, jumlah_track, formattedOrderNumber,
-        account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre,
-        price_normal, price_discount, discount, basic_price, gig_link, required_files,
-        project_type, duration, reference_link, file_and_chat_link, detail_project,
-        projectNumber,
-      ]
-    );
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, 
+                $16, $17, $18, $19, $20, $21, $22, $23, $24, CURRENT_TIMESTAMP, $25) 
+        RETURNING *`,
+            [
+                input_by, acc_by, buyer_name, code_order, jumlah_track, formattedOrderNumber,
+                account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre,
+                price_normal, price_discount, discount, basic_price, gig_link, required_files,
+                project_type, duration, reference_link, file_and_chat_link, detail_project,
+                projectNumber,
+            ]
+        );
 
-    const newId = insertResult.rows[0].marketing_id;
+        const newId = insertResult.rows[0].marketing_id;
 
-    // --- ambil data marketing baru beserta join ---
-    const { rows } = await client.query(`
+        // --- ambil data marketing baru beserta join ---
+        const { rows } = await client.query(`
       SELECT 
         dm.marketing_id,
         dm.card_id,
@@ -8235,12 +8235,12 @@ app.post("/api/marketing-testing", async (req, res) => {
       WHERE dm.marketing_id = $1
     `, [newId]);
 
-    res.status(201).json(rows[0]);
+        res.status(201).json(rows[0]);
 
-  } catch (err) {
-    console.error("❌ Error creating marketing data:", err.message);
-    res.status(500).send("Server error");
-  }
+    } catch (err) {
+        console.error("❌ Error creating marketing data:", err.message);
+        res.status(500).send("Server error");
+    }
 });
 
 
