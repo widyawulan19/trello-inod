@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   getBoards,
   moveCardToList,
+  // moveCardToListTesting,
   getListByBoard,
   getCardsByList,
 } from '../services/ApiServices';
@@ -14,6 +15,7 @@ import {
 import BootstrapTooltip from '../components/Tooltip';
 import '../style/fitur/MoveCard.css';
 import { useSnackbar } from '../context/Snackbar';
+import { useUser } from '../context/UserContext';
 
 const MoveCard = ({
   cardId,
@@ -35,6 +37,8 @@ const MoveCard = ({
   const [showBoardDropdown, setShowBoardDropdown] = useState(false);
   const [showListDropdown, setShowListDropdown] = useState(false);
   const [isMoving, setIsMoving] = useState(false);
+    const { user } = useUser();
+  const userId = user?.id;
 
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
@@ -79,7 +83,13 @@ const MoveCard = ({
     setIsMoving(true);
 
     try {
-      const result = await moveCardToList(cardId, selectedList.id, targetPosition);
+      // const result = await moveCardToList(
+      const result = await moveCardToList(
+        cardId,
+        userId,
+        selectedList.id,
+        targetPosition
+      );
       console.log('✅ Card moved successfully:', result.data);
       showSnackbar('Card moved successfully!', 'success');
 

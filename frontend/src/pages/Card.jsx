@@ -577,6 +577,14 @@ const Card=({
                      listName={listName}
                      checkChecklist={checkChecklist}
                      checklistTotal={checklistTotal}
+                     //confirm delete
+                     onDeleteClick={handleDeleteClick}
+                     isOpen={showDeleteConfirm}
+                     onConfirm={confirmDelete}
+                     onCancle={cancleDeleteCard}
+                     cardName ={card.title}
+                     //archive
+
                 />
             </div>
         </div>

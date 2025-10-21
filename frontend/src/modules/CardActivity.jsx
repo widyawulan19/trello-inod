@@ -97,12 +97,38 @@ const CardActivity = ({ cardId }) => {
                     <span className="font-bold">"{detail.cardTitle}"</span> from{' '}
                     <span className="text-red-500">"{detail.fromListName}"</span> to{' '}
                     <span className="text-green-600">"{detail.toListName}"</span> on board{' '}
+<<<<<<< HEAD
+=======
+                    <span className="italic">"{detail.toBoardName}"</span>
+                  </>
+                )
+              } else {
+                messageElement = (
+                  <>
+                    <span className="font-semibold">{activity.username}</span> moved{' '}
+                    <span className="font-bold">"{detail.cardTitle}"</span> from{' '}
+                    <span className="text-red-500">"{detail.fromListName}"</span> (board{' '}
+                    <span className="italic">"{detail.fromBoardName}"</span>) to{' '}
+                    <span className="text-green-600">"{detail.toListName}"</span> (board{' '}
+                    <span className="italic">"{detail.toBoardName}"</span>)
+                  </>
+                );
+              }
+            } else if (activity.action_type === 'duplicate' && detail.cardTitle) {
+              if (detail.fromBoardName === detail.toBoardName) {
+                messageElement = (
+                  <>
+                    <span className="font-semibold">{activity.username}</span> duplicated card as{' '}
+                    <span className="font-bold">"{detail.cardTitle}"</span> in list{' '}
+                    <span className="text-green-600">"{detail.toListName}"</span> on board{' '}
+>>>>>>> feature
                     <span className="italic">"{detail.toBoardName}"</span>
                   </>
                 );
               } else {
                 messageElement = (
                   <>
+<<<<<<< HEAD
                     <span className="font-semibold">{activity.username}</span> moved{' '}
                     <span className="font-bold">"{detail.cardTitle}"</span> from{' '}
                     <span className="text-red-500">"{detail.fromListName}"</span> (board{' '}
@@ -125,6 +151,8 @@ const CardActivity = ({ cardId }) => {
               } else {
                 messageElement = (
                   <>
+=======
+>>>>>>> feature
                     <span className="font-semibold">{activity.username}</span> duplicated card as{' '}
                     <span className="font-bold">"{detail.cardTitle}"</span> from list{' '}
                     <span className="text-red-500">"{detail.fromListName}"</span> (board{' '}

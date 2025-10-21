@@ -530,6 +530,7 @@
 //   );
 // }
 
+<<<<<<< HEAD
 // export default NewRoomChat;
 
 
@@ -978,3 +979,142 @@
 // };
 
 // export default NewRoomChat;
+=======
+export default NewRoomChat;
+
+
+
+
+return (
+  <li
+    key={activity.id}
+    className="ca-li"
+    style={{
+      padding: '0.25rem',
+      borderLeftWidth: '4px',
+      borderLeftStyle: 'solid',
+      borderLeftColor: borderColor,
+      backgroundColor: '#f8fafc',
+      borderRadius: '0.25rem'
+    }}
+  >
+    <p style={{ fontSize: '12px', margin: 0 }}>{messageElement}</p>
+
+    {activity.actionDescription && (
+      <p style={{ fontSize: '11px', margin: '2px 0 0 16px', color: '#64748b' }}>
+        {activity.actionDescription}
+      </p>
+    )}
+
+    <p
+      style={{
+        fontSize: '10px',
+        textAlign: 'right',
+        margin: 0
+      }}
+    >
+      {new Date(activity.created_at).toLocaleString()}
+    </p>
+  </li>
+);
+
+
+
+
+const fetchCardActivities = async () => {
+  try {
+    setLoading(true);
+    const response = await getActivityCardTesting(cardId);
+
+    const activitiesWithUser = response.activities.map(act => ({
+      ...act,
+      username:
+        act.action_detail?.updatedBy?.username ||
+        act.movedby ||
+        'Unknown',
+      detail: act.action_detail || {},
+    }));
+
+    setCardActivities(activitiesWithUser);
+  } catch (error) {
+    console.error('Failed to fetch card activity:', error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+
+// } else if (activity.action_type === 'updated_status' && detail.to) {
+//   messageElement = (
+//     <>
+//       <span className="font-semibold">{username}</span> updated status from{' '}
+//       <span className="text-red-500">"{detail.from || '-'}"</span> to{' '}
+//       <span className="text-green-600">"{detail.to}"</span>
+//       {detail.description && (
+//         <>
+//           <br />
+//           <span className="text-gray-500 text-[11px]">
+//             Description: {detail.description}
+//           </span>
+//         </>
+//       )}
+//     </>
+//   );
+// }
+
+
+import { addPriorityToCardTesting } from '../services/ApiServices';
+
+const handleAddPriority = async () => {
+  try {
+    const userId = 23; // bisa dari state, auth, atau context
+    const card_id = 583;
+    const priority_id = 4;
+
+    const response = await addPriorityToCardTesting(userId, card_id, priority_id);
+    console.log(response.data);
+  } catch (error) {
+    console.error('Gagal menambahkan prioritas:', error);
+  }
+};
+
+fetchCardDetail={fetchCardById}
+
+
+import React, { useEffect, useState } from 'react';
+import { getActivityCardTesting } from '../services/ApiServices';
+
+const CardActivityList = ({ cardId, refreshTrigger }) => {
+  const [activities, setActivities] = useState([]);
+
+  const fetchActivities = async () => {
+    try {
+      const data = await getActivityCardTesting(cardId);
+      setActivities(data);
+    } catch (err) {
+      console.error('Gagal memuat aktivitas:', err);
+    }
+  };
+
+  useEffect(() => {
+    fetchActivities();
+  }, [cardId, refreshTrigger]); // ⬅️ refreshTrigger dipakai buat re-fetch
+
+
+  const handleSelectCover = async (coverId) => {
+  try {
+    if (selectedCover) {
+      await updateCardCover(cardId, coverId, userId);
+    } else {
+      await addCoverCardTesting(cardId, coverId, userId);
+    }
+    showSnackbar('Successfully added cover', 'success');
+    await fetchCardCover();
+    fetchCardDetail();
+  } catch (error) {
+    console.error('Gagal memilih cover:', error);
+    showSnackbar('Gagal memilih cover', 'error');
+  }
+};
+>>>>>>> feature

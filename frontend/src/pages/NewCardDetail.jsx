@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { FiUsers } from "react-icons/fi";
-import { HiChatBubbleLeftRight, HiChevronDown, HiChevronUp, HiCog8Tooth, HiMiniArrowLeftStartOnRectangle, HiMiniChatBubbleLeftRight, HiMiniListBullet, HiMiniPhoto, HiOutlineArchiveBox, HiOutlineArrowsPointingOut, HiOutlineCalendar, HiOutlineChevronRight, HiOutlineCreditCard, HiOutlineListBullet, HiOutlineSquare2Stack, HiOutlineTrash, HiPaperClip, HiPlus, HiTag, HiXMark } from 'react-icons/hi2';
+import { HiChatBubbleLeftRight, HiChevronDown, HiChevronUp, HiCog8Tooth, HiMiniArrowLeftStartOnRectangle, HiMiniChatBubbleLeftRight, HiMiniListBullet, HiMiniPhoto, HiOutlineArchiveBox, HiOutlineArrowsPointingOut, HiOutlineCalendar, HiOutlineChevronRight, HiOutlineCreditCard, HiOutlineListBullet, HiOutlineSquare2Stack, HiOutlineTrash, HiOutlineXMark, HiPaperClip, HiPlus, HiTag, HiXMark } from 'react-icons/hi2';
+import { HiDotsHorizontal } from "react-icons/hi";
 import { useNavigate, useParams } from 'react-router-dom'
 import '../style/pages/NewCardDetail.css'
 import BootstrapTooltip from '../components/Tooltip';
 import { GiCloudUpload } from "react-icons/gi";
-import { archiveCard, deleteUserFromCard, getAllCardUsers, getAllDueDateByCardId, getAllStatus, getAllUploadFiles, getAllUserAssignToCard, getCardById, getCardPriority, getChecklistItemChecked, getChecklistsWithItemsByCardId, getCoverByCard, getLabelByCard, getListById, getStatusByCardId, getTotalChecklistItemByCardId, getTotalFile, updateDescCard, updateTitleCard } from '../services/ApiServices';
+import { addCoverCardTesting, archiveCard, archiveData, deleteCard, deleteCoverCard, deleteCoverCardTesting, deleteUserFromCard, getActivityCardTesting, getAllCardUsers, getAllCovers, getAllDueDateByCardId, getAllStatus, getAllUploadFiles, getAllUserAssignToCard, getCardById, getCardPriority, getChecklistItemChecked, getChecklistsWithItemsByCardId, getCoverByCard, getLabelByCard, getListById, getStatusByCardId, getTotalChecklistItemByCardId, getTotalFile, updateCardCoverTesting, updateDescCard, updateDescCardTesting, updateTitleCard } from '../services/ApiServices';
 import SelectedLabels from '../UI/SelectedLabels';
 import CardDetailPanel from '../modules/CardDetailPanel';
 import DetailCard from '../modules/DetailCard';
@@ -13,7 +14,7 @@ import Checklist from '../modules/Checklist';
 import CardActivity from '../modules/CardActivity';
 import CoverSelect from '../UI/CoverSelect';
 import CoverCard from '../modules/CoverCard';
-import { IoDocumentAttachOutline, IoShareOutline } from "react-icons/io5";
+import { IoDocumentAttachOutline, IoSettings, IoSettingsOutline, IoShareOutline } from "react-icons/io5";
 import { RiExpandDiagonalLine } from "react-icons/ri";
 import CardAssignedUsers from '../modules/CardAssignedUsers';
 import CardAssigment from '../modules/CardAssigment';
@@ -38,8 +39,12 @@ import CardDescription from '../modals/CardDesctiption';
 import ReactQuill from 'react-quill-new';
 import "quill/dist/quill.snow.css";
 import CardDescriptionExample from '../modals/CardDescriptionExample';
+import NewCardActivity from '../modules/NewCardActivity';
+import CardDeleteConfirm from '../modals/CardDeleteConfirm';
+import { handleArchive } from '../utils/handleArchive';
 
-const NewCardDetail=()=> {
+const NewCardDetail=({fetchBoardDetail,fetchCardList})=> {
+    
     //STATE
     const {user} = useUser();
     const userId = user?.id;
@@ -82,14 +87,14 @@ const NewCardDetail=()=> {
     const [loading, setLoading] = useState(false);
     //COVER
     const [selectedCover, setSelectedCover] = useState(null)
+    const [showSelectedCover, setShowSelectCover]= useState(false);
     const [showCover, setShowCover] = useState(false)
+    const [covers, setCovers] = useState([]);
     //ASIIGMENT 
     const [assignedUsers, setAssignedUsers] = useState([]);
     const [assignableUsers, setAssignableUsers] = useState([]);
     const [showAssigment, setShowAssigment] = useState(false);
-    //DUPLICATE AND MOVE
-    const [showDuplicate, setShowDuplicate] = useState(false)
-    const [showMove, setShowMove] = useState(false)
+
     //SHOW ACTION/SETTING CARD
     const [showAction, setShowAction] = useState(false);
     const refShowAction = OutsideClick(()=>setShowAction(false));
@@ -108,31 +113,35 @@ const NewCardDetail=()=> {
     const [statusVisible, setStatusVisible] = useState(true); // default: visible
     //MODAL DES
     const [showModalDes, setShowModalDes] = useState(false);
+    //CARD SETTING 
+    const [showCardSetting, setShowCardSetting] = useState(false);
+    const settingRef = OutsideClick(()=>setShowCardSetting(false))
+    //DUPLICATE AND MOVE
+    const [showDuplicate, setShowDuplicate] = useState(false)
+    const [showMove, setShowMove] = useState(false);
+    // DELETE CARD CONFIRM
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+    const [selectedCardId, setSelectedCardId] = useState(null)
+    
     // ATTACHMENT 
     const [allUploadFile, setAllUploadFile] = useState([]);
 
-    const quillRef = useRef(null);
-
-    // SAVE via BLUR atau tombol
-    const handleSaveDesc = async () => {
-    if (!cards?.id) return;
-
-    try {
-        setLoading(true);
-        const res = await updateDescCard(cards.id, newDescription); // ✅ pastikan kirim string
-
-        // sync state lokal
-        setNewDescription(res.data.description);
-        setEditingDescription(null);
-        setCards((prev) => ({ ...prev, description: res.data.description }));
-    } catch (err) {
-        console.error("❌ Gagal update desc:", err);
-    } finally {
-        setLoading(false);
+    // fungsi show card setting 
+    const handleShowCardSetting = (e) =>{
+        e.stopPropagation();
+        setShowCardSetting((prev=>({
+            ...prev,
+            [cardId]: !prev[cardId],
+        })))
+        // setShowCardSetting(!showCardSetting);
     }
-    };
 
 
+    const handleCloseCardSetting = () =>{
+        setShowCardSetting(false);
+    }
+
+    const quillRef = useRef(null);
 
     const modules = {
     toolbar: [
@@ -208,6 +217,7 @@ const NewCardDetail=()=> {
       setStatusVisible(!statusVisible);
     };
 
+    
 
 
 
@@ -282,25 +292,28 @@ const NewCardDetail=()=> {
             }
         },[cardId])
     //edit card desc
-// EDIT mode trigger
-const handleEditDescription = (e, cardId, currentCardDesc) => {
-  e.stopPropagation();
-  if (!cardId) {
-    console.warn("Card ID is invalid");
-    return;
-  }
-  setEditingDescription(cardId);
-  setNewDescription(currentCardDesc || "");
-};
-
+    // EDIT mode trigger
+    const handleEditDescription = (e, cardId, currentCardDesc) => {
+    e.stopPropagation();
+    if (!cardId) {
+        console.warn("Card ID is invalid");
+        return;
+    }
+    setEditingDescription(cardId);
+    setNewDescription(currentCardDesc || "");
+    };
+    
     const handleSaveDescription = async (cardId) => {
         try {
-            const res = await updateDescCard(cardId, newDescription);
-
+            const res = await updateDescCardTesting(userId, cardId, newDescription);
+            fetchCardActivities(cardId); // Refresh aktivitas kalau mau
             setEditingDescription(null);
+            fetchCardById(cardId);
             setCards((prev) => ({ ...prev, description: res.data.description }));
+            showSnackbar('Description updated successfully!', 'success');
         } catch (error) {
-            console.error("❌ Error updating card description:", error);
+            console.error('Failed to update card description:', error);
+            showSnackbar('Failed to update description', 'error');
         }
     };
 
@@ -457,6 +470,8 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
         fetchPriority();
     },[cardId])
 
+
+    // COVER FUNCION 
     
     //9. fetchCardCover
     const fetchCardCover = async ()=>{
@@ -474,6 +489,57 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
      useEffect(()=>{
           fetchCardCover()
         },[cardId])
+
+    // 9.1 fungsi select vocer 
+    const handleSelectCover = async(coverId) =>{
+        try{
+            const coverData = {card_id: cardId, cover_id: coverId};
+            if(selectedCover){
+                await updateCardCoverTesting(userId, coverData);
+            }else{
+                await addCoverCardTesting(userId, coverData);
+            }
+            showSnackbar('Successfully add cover','success');
+            await fetchCardCover(); // refresh dari parent
+            fetchCardActivities(cardId)
+            fetchCardById(); // refresh detail
+        }catch(error){
+            console.error('Gagal memilih cover:', error);
+            showSnackbar('Gagal memilih cover', 'error');
+        }
+    }
+
+    //9.2 fungsi cover remove
+     const handleRemoveCover = async() =>{
+        try{
+            await deleteCoverCardTesting(cardId, userId);
+            setSelectedCover(null);
+            fetchCardById();
+            getActivityCardTesting(cardId)
+            fetchCardCover();
+            showSnackbar('Successfully remove cover', 'success');
+        }catch(error){
+            console.error('Gagal menghapus cover:', error);
+            showSnackbar('Gagal menghapus cover', 'error');
+        }
+    }
+
+
+    //9.3 Ambil semua cover saat komponen mount
+        useEffect(() => {
+            fetchCovers();
+        }, [cardId]);
+    
+        const fetchCovers = async () => {
+            try {
+                const response = await getAllCovers();
+                setCovers(response.data);
+            } catch (error) {
+                console.error('Gagal mengambil daftar cover:', error);
+            }
+        };
+
+    // END COVER FUNCTION 
 
     //10. fetch DUE DATE
     const fetchDueDates = async()=>{
@@ -532,51 +598,40 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
     }
 
     //13. function duplicate card
-    const handleDuplicateCard = (cardId) =>{
-        setShowDuplicate((prevState)=>({
-            ...prevState,
-            [cardId]: !prevState[cardId],
-        }))
-        // setShowAction(false);
+    const handleDuplicateCard = () =>{
+        setShowDuplicate(true);
+        setShowCardSetting(false);
     }
 
-    const handleCloseDuplicate = (cardId) =>{
-        setShowDuplicate((prevState)=>({
-            ...prevState,
-            [cardId]: false,
-        }))
+    const handleCloseDuplicate = () =>{
+        setShowDuplicate(false)
     }
 
     //14. function to move card
-    const handleMoveCard = (cardId) =>{
-        setShowMove((prevState)=>({
-            ...prevState,
-            [cardId]: !prevState[cardId],
-        }))
-    }
+    const handleMoveCard = () => {
+        setShowMove(true);
+        setShowCardSetting(false);
+    };
 
-    const handleCloseMove = (cardId) =>{
-        setShowMove((prevState)=>({
-          ...prevState,
-            [cardId]: false,
-        }))
-    }
+    const handleCloseMove = () => {
+    setShowMove(false);
+    };
 
     //15. function archive card
-    const handleArchiveCard = async(cardId)=>{
-        console.log('Arciving card with id:', cardId)
-        try{
-            const response = await archiveCard(cardId)
-            console.log('Card archiving successfully:', response.data)
-            // fetchCardList(cardId)
-            // fetchCardList(listId)
-            // setShowSetting(false)
-            showSnackbar('Card archived successfully','success')
-        }catch(error){
-            console.error('Error archiving cards:', error)
-            showSnackbar('Failed to archive card', 'error')
-        }
-    }
+    // const handleArchiveCard = async(cardId)=>{
+    //     console.log('Arciving card with id:', cardId)
+    //     try{
+    //         const response = await archiveCard(cardId)
+    //         console.log('Card archiving successfully:', response.data)
+    //         // fetchCardList(cardId)
+    //         // fetchCardList(listId)
+    //         // setShowSetting(false)
+    //         showSnackbar('Card archived successfully','success')
+    //     }catch(error){
+    //         console.error('Error archiving cards:', error)
+    //         showSnackbar('Failed to archive card', 'error')
+    //     }
+    // }
 
     //16. fetch total file
     const fetchTotalFile = async()=>{
@@ -659,6 +714,83 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
     const handleShowAction = ()=>{
         setShowAction(!showAction)
     }
+
+
+    // DELETE LOGIC DI NEWCARDDETAIL
+    const handleDeleteClick = () => {
+    setShowDeleteConfirm(true);
+    setShowCardSetting(false);
+    };
+
+    const confirmDelete = async () => {
+    try {
+        console.log("Deleting card:", cardId);
+        const response = await deleteCard(cardId);
+        showSnackbar('Card deleted successfully', 'success');
+        console.log('Delete card success', response.data);
+        // fetchCardList(listId);
+        navigate(-1); // balik ke board/lists
+    } catch (error) {
+        console.error('Error deleting card:', error);
+        showSnackbar('Failed to delete card', 'error');
+    } finally {
+        setShowDeleteConfirm(false);
+    }
+    };
+
+    const cancleDeleteCard = () => {
+        setShowDeleteConfirm(false);
+    };
+
+    // ARCHIVE CARD
+    // ✅ Fungsi archive card
+    const handleArchiveCard = async (cardId) => {
+        try {
+        console.log('Archiving card:', cardId);
+        const response = await archiveData('cards', cardId);
+        console.log('Archive response:', response.data);
+
+        showSnackbar('Card archived successfully', 'success');
+        navigate(-1);
+        
+        } catch (error) {
+        console.error('Error archiving card:', error);
+        showSnackbar('Failed to archive card', 'error');
+        }
+    };
+
+
+    // fetch card activity 
+    const fetchCardActivities = async()=>{
+        try{
+            setLoading(true);
+            const response = await getActivityCardTesting(cardId);
+            const activitiesWithUser = response.activities.map(act => {
+      
+                const detail = act.action_detail || {};
+            return {
+                // ...act,
+                // username: act.movedby || detail.movedBy?.username || 'Unknown',
+                // detail
+                ...act,
+                username:
+                act.action_detail?.updatedBy?.username ||
+                act.movedby ||
+                'Unknown',
+                detail: act.action_detail || {},
+            };
+            });
+
+            setCardActivities(activitiesWithUser);
+        }catch(error){
+            console.error('Failed to fetch card activity:', error);
+        }finally{
+            setLoading(false);
+        }
+    }
+      useEffect(() => {
+        if (cardId) fetchCardActivities();
+      }, [cardId]);
 
 
     // 🔗 fungsi untuk deteksi dan convert URL ke <a>
@@ -790,12 +922,22 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
                         {showCover && (
                             <div className='cover-modal'>
                                 <CoverCard
+                                    fetchCovers={fetchCovers}
+                                    covers={covers}
+                                    setCovers={setCovers}
+                                    handleSelectCover={handleSelectCover}
+                                    userId={userId}
                                     cardId={cardId}
                                     fetchCardDetail={fetchCardById}
+                                    handleRemoveCover={handleRemoveCover}
                                     selectedCover={selectedCover}
                                     setSelectedCover={setSelectedCover}
                                     fetchCardCover={fetchCardCover}
                                     onClose={handleCloseCover}
+                                    fetchCardActivities={fetchCardActivities}
+                                    showCover={showCover}
+                                    setShowCover={setShowCover}
+                                    setShowSelectCover={setShowSelectCover}
                                 />
                             </div>
                         )}
@@ -804,12 +946,14 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
                         {showLabel && (
                             <div className="label-modals">
                                 <Label
+                                    userId={userId}
                                     cardId={cardId}
                                     labels={labels}
                                     setLabels={setLabels}
                                     fetchLabels={fetchLabels}
                                     onClose={handleCloseLabel}
                                     fetchCardDetail={fetchCardById}
+                                    fetchCardActivities={fetchCardActivities}
                                 />
                             </div>
                         )}
@@ -849,6 +993,10 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
                                 setSelectedProperties={setSelectedProperties} 
                                 selectedPriority={selectedPriority}
                                 refreshPriority={fetchPriority}
+                                fetchCardDetail={fetchCardById}
+                                fetchCardActivities={fetchCardActivities}
+                                cardActivities={cardActivities} 
+                                setCardActivities={setCardActivities}
                             />
                         </div>
                         <div className="ncd-status-due">
@@ -1036,8 +1184,79 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
                             <CoverSelect cardId={cardId} fetchCardDetail={fetchCardById} selectedCover={selectedCover}/>
                             <div className="ncd-detail">
                                 <div className="ncd-detail-header">
-                                    Card Information
+                                   <h5> Card Information</h5>
+                                   <BootstrapTooltip title='Card Setting' placement='top'>
+                                    <div className="set-card" onClick={handleShowCardSetting}>
+                                        <IoSettingsOutline />
+                                        Card Action
+                                    </div>
+                                   </BootstrapTooltip>
+                                   {/* SHOW CARD SETTING  */}
+                                    {showCardSetting && (
+                                        <div className="cs-modal" ref={settingRef}>
+                                            {/* <div className="cs-header">
+                                                <h5>Card Action</h5>
+                                                <HiOutlineXMark className='cs-close' onClick={handleCloseCardSetting}/>
+                                            </div> */}
+                                            <div className="cs-button">
+                                                <button onClick={handleMoveCard}>
+                                                    <HiMiniArrowLeftStartOnRectangle/>
+                                                    Move Card
+                                                </button>
+                                                <button onClick={handleDuplicateCard}>
+                                                    <HiOutlineSquare2Stack/>
+                                                    Duplicate
+                                                </button>
+                                                <button onClick={() => handleArchiveCard(cardId)}>
+                                                    <HiOutlineArchiveBox/>
+                                                    Archive
+                                                </button>
+                                                <button onClick={handleDeleteClick}>
+                                                    <HiOutlineTrash/>
+                                                    Delete
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
+
+                                {/* SHOW MODAL CARD SETTING  */}
+                                {showMove && (
+                                    <div className="card-move-modal">
+                                        <MoveCard
+                                            cardId={cardId}
+                                            boardId={boardId}
+                                            listId={listId}
+                                            workspaceId={workspaceId}
+                                            onClose={handleCloseMove}
+                                            fetchCardList={fetchCardList}
+                                            fetchBoardDetail={fetchBoardDetail}
+                                        />
+                                    </div>
+                                )}
+                                {showDuplicate && (
+                                    <div className="card-move-modal">
+                                        <DuplicateCard
+                                            cardId={cardId}
+                                            boardId={boardId}
+                                            listId={listId}
+                                            workspaceId={workspaceId}
+                                            onClose={handleCloseDuplicate}
+                                            fetchCardList={fetchCardList}
+                                            fetchBoardDetail={fetchBoardDetail}
+                                        />
+                                    </div>
+                                )}
+                                {/* DELETE  */}
+                                <CardDeleteConfirm
+                                    isOpen={showDeleteConfirm}
+                                    cardId={cardId}
+                                    onConfirm={confirmDelete}
+                                    onCancle={cancleDeleteCard}
+                                    cardName={cards.title}
+                                />
+
+
                                 <div className="ncd-detail-con">
                                     <div className="c-create">
                                          <HiOutlineCalendar className='cc-icon'/>
@@ -1126,7 +1345,14 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
                                 Recent Card Activity
                             </div>
                             <div className="ncd-activiy-content">
-                                <CardActivity cardId={cardId} fetchCardById={fetchCardById}/>
+                                <NewCardActivity 
+                                    cardId={cardId} 
+                                    fetchCardById={fetchCardById} 
+                                    fetchCardActivities={fetchCardActivities}
+                                    cardActivities={cardActivities} 
+                                    setCardActivities={setCardActivities}
+                                />
+                                {/* <CardActivity cardId={cardId} fetchCardById={fetchCardById}/> */}
                             </div>
                         </div>
                     </div>

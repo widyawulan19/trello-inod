@@ -397,7 +397,7 @@ useEffect(() => {
                   />
                 </div>
 
-                {/* Order Number */} 
+                {/* Order Number 
                 <div className="box-content">
                   <label >Order Number</label>
                   <input
@@ -405,9 +405,11 @@ useEffect(() => {
                     name="order_number"
                     value={form.order_number}
                     onChange={handleChange}
-                    placeholder="Order Number"
+                    placeholder="Order Number Otomatis Tersisi"
+                    readOnly
                   />
                 </div>
+                */} 
 
                 {/* Order type */}
                 <div className="box-content">

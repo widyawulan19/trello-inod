@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { deleteLabels, getAllLabels, getLabelByCard, createLabel, addLabelToCard, updateLabelName, deleteLabelFromLabels, getAllColor, addColorToBgColorLabel } from '../services/ApiServices';
+import { deleteLabels,deleteLabelsTesting, getAllLabels, getLabelByCard, createLabel, addLabelToCard,addLabelToCardTesting, updateLabelName, deleteLabelFromLabels, getAllColor, addColorToBgColorLabel } from '../services/ApiServices';
 import { HiEllipsisVertical, HiMiniTag, HiOutlinePencil, HiOutlineTrash, HiXMark } from "react-icons/hi2";
 import { FaTags } from "react-icons/fa";
 import '../style/modules/Labels.css'
@@ -8,7 +8,7 @@ import BootstrapTooltip from '../components/Tooltip';
 import { useSnackbar } from '../context/Snackbar';
 import { FaXmark } from 'react-icons/fa6';
 
-const Label = ({ cardId, fetchCardDetail, labels, setLabels, fetchLabels, onClose }) => {
+const Label = ({ cardId,userId, fetchCardDetail, labels, setLabels, fetchLabels, onClose,fetchCardActivities }) => {
     const [allLabels, setAllLabels] = useState([]);
     const [newLabel, setNewLabel] = useState({ name: '', color: '', bg_color: '' });
     const showLabelRef = OutsideClick(() => setShowSelectLabel(false));
@@ -59,6 +59,7 @@ const Label = ({ cardId, fetchCardDetail, labels, setLabels, fetchLabels, onClos
             setAllLabels([...allLabels, response.data]);
             setNewLabel({ name: '' });
             fetchAllLabels();
+            
             showSnackbar('successfully created label','success');
         } catch (error) {
             console.error('Error creating label:', error);
@@ -66,28 +67,42 @@ const Label = ({ cardId, fetchCardDetail, labels, setLabels, fetchLabels, onClos
         }
     };
 
-    //FUNGSI DELETE LABEL FROM CARD
+
     const handleDeleteLabel = async (cardId, labelId) => {
-        try {
-            console.log('Deleting label from card', cardId, labelId);
-            await deleteLabels(cardId, labelId);
-            setLabels(labels.filter(label => label.id !== labelId));
-            showSnackbar('Successfully delete label from card','success');
-            fetchLabels(cardId);
-        } catch (error) {
-            console.error('Error deleting label card:', error);
-            showSnackbar('Failed to deleting label to card','error');
-        }
+    try {
+        console.log('🗑️ Deleting label from card', cardId, labelId, userId);
+
+        await deleteLabelsTesting(cardId, labelId, userId);
+
+        // Update state lokal tanpa refetch (lebih cepat)
+        // setLabels(prev => prev.filter(label => label.id !== labelId));
+        setLabels(labels.filter(label => label.id !== labelId));
+
+        showSnackbar('Successfully deleted label from card', 'success');
+
+        // Opsional: kalau kamu mau selalu sinkron ke DB
+        await fetchLabels(cardId);
+        fetchCardActivities(cardId)
+        fetchCardDetail(cardId)
+    } catch (error) {
+        console.error('❌ Error deleting label from card:', error);
+        showSnackbar('Failed to delete label from card', 'error');
+    }
     };
 
+
     //FUNGSI MEMILIH LABEL UNTUK CARD
-    const handleSelectLabel = async (label) => {
+    const handleSelectLabel = async (labelId) => {
         try {
-            console.log('Fungsi handle select label mempunyai data label', label);
-            await addLabelToCard(cardId, label);
-            setLabels([...labels, label]);
+            // console.log('Fungsi handle select label mempunyai data label', label);
+            await addLabelToCardTesting(cardId, labelId, userId);
+            // setLabels([...labels, labelId]);
+            setLabels(prev => [...prev, { id: labelId }]);
+
             fetchCardDetail(cardId);
             fetchAllLabels();
+            fetchLabels();
+            fetchCardActivities(cardId);
             showSnackbar('Successfully adding label to card', 'success');
         } catch (error) {
             console.error('Error adding label to card:', error);
@@ -199,7 +214,7 @@ const Label = ({ cardId, fetchCardDetail, labels, setLabels, fetchLabels, onClos
                                     // backgroundColor: label.bg_color?.replace("rgb", "rgba").replace(")", ", 0.3)"),
                                     backgroundColor: label.bg_color,
                                     // color: label.color,
-                                    color:'#333',
+                                    color:'#fff',
                                     padding: "4px 6px",
                                     margin: "2px",
                                     borderRadius: "4px",
@@ -244,7 +259,7 @@ const Label = ({ cardId, fetchCardDetail, labels, setLabels, fetchLabels, onClos
                                 onClick={() => handleSelectLabel(label.id)}
                                 className='lb-content'
                                 style={{
-                                    backgroundColor: label.bg_color,
+                                    backgroundColor: label.bg_color
                                 }}
                             >
                                 {label.name}

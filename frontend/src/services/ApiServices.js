@@ -1,9 +1,13 @@
 import axios from 'axios';
 
-// const API_URL = 'http://localhost:3002/api'; //untuk development
 // const API_URL = 'https://trello-inod-production.up.railway.app/api'
 // const API_URL = 'https://trello-inod-production.up.railway.app/api';
+
 const API_URL = process.env.REACT_APP_API_URL;
+
+// Ambil URL dari environment variable
+// const API_URL = process.env.REACT_APP_API_URL || "https://backend-production.up.railway.app";
+// console.log("✅ API_URL:", process.env.REACT_APP_API_URL)
 
 // LOGIN
 export const loginUser = (data) => axios.post(`${API_URL}/auth/login`, data);
@@ -169,6 +173,7 @@ export const deletePropertyFromBoard = (boardId, priorityId) => axios.delete(`${
 
 //CARD PRIORITY
 export const addPriorityToCard = (card_id, priority_id) => axios.post(`${API_URL}/card-priorities`, { card_id, priority_id })
+export const addPriorityToCardTesting = (card_id, priority_id, userId) => axios.post(`${API_URL}/card-priorities-testing/${userId}`, { card_id, priority_id })
 export const getAllCardPriority = () => axios.get(`${API_URL}/card-priorities`)
 export const getCardPriority = (cardId) => axios.get(`${API_URL}/card-priorities/${cardId}`)
 export const deletePriorityFromCard = (card_id, priority_id) => axios.delete(`${API_URL}/card-priority`, { data: { card_id, priority_id } })
@@ -225,15 +230,52 @@ export const duplicateCard = (cardId, listId, position) =>
 export const archiveCard = (cardId) => axios.put(`${API_URL}/archive-card/${cardId}`, cardId);
 
 // 🔹 Move card ke list atau board lain + ubah posisi
-export const moveCardToList = async (cardId, targetListId, newPosition = null) => {
+// export const moveCardToList = async (cardId, targetListId, newPosition = null) => {
+//   try {
+//     const response = await axios.put(`${API_URL}/cards/${cardId}/move`, {
+//       targetListId,
+//       newPosition,
+//     });
+//     return response.data;
+//   } catch (error) {
+//     console.error("❌ Error moving card:", error);
+//     throw error;
+//   }
+// };
+
+// 🔹 Move card ke list atau board lain + ubah posisi
+export const moveCardToList = async (cardId, userId, targetListId, newPosition = null) => {
   try {
-    const response = await axios.put(`${API_URL}/cards/${cardId}/move`, {
-      targetListId,
-      newPosition,
-    });
+    const response = await axios.put(
+      `${API_URL}/cards/${cardId}/move-testing/${userId}`,
+      { targetListId, newPosition }
+    );
     return response.data;
   } catch (error) {
-    console.error("❌ Error moving card:", error);
+    console.error('❌ Error moving card:', error.response || error.message);
+    throw error;
+  }
+};
+
+export const moveCardToListTesting = async (cardId, userId, targetListId, newPosition = null) => {
+  try {
+    const response = await axios.put(
+      `${API_URL}/cards/${cardId}/move/${userId}`,
+      { targetListId, newPosition }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('❌ Error moving card:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const getActivityCardTesting = async (cardId) => {
+  try {
+    const response = await axios.get(`${API_URL}/cards/${cardId}/activities-testing`);
+    return response.data;
+  } catch (error) {
+    console.error('❌ Failed to fetch card activities:', error.response?.data || error.message);
     throw error;
   }
 };
@@ -273,6 +315,7 @@ export const getAllCardUsers = (cardId) => axios.get(`${API_URL}/cards/${cardId}
 //UPDATE CARDS
 export const updateTitleCard = (id, title) => axios.put(`${API_URL}/cards/${id}/title`, title)
 export const updateDescCard = (id, description) => axios.put(`${API_URL}/cards/${id}/desc`, { description })
+export const updateDescCardTesting = (userId, id, description) => axios.put(`${API_URL}/cards/${id}/desc-testing/${userId}`, { description })
 export const updateDueDataCard = (id, due_date) => axios.put(`${API_URL}/cards/${id}/due_date`, due_date)
 export const updateCoverCard = (id, cover_id) => axios.put(`${API_URL}/cards/${id}/cover`, cover_id)
 export const updateLabelCard = (id, label_id) => axios.put(`${API_URL}/cards/${id}/label`, label_id)
@@ -283,7 +326,10 @@ export const updateAssignCard = (id, assign) => axios.put(`${API_URL}/cards/${id
 export const getCoverByCard = (id) => axios.get(`${API_URL}/card-cover/${id}`)
 export const addCoverCard = (data) => axios.post(`${API_URL}/add-cover`, data)
 export const updateCardCover = (data) => axios.put(`${API_URL}/update-cover`, data)
+export const addCoverCardTesting = (userId, data) => axios.post(`${API_URL}/add-cover/${userId}`, data)
+export const updateCardCoverTesting = (userId, data) => axios.put(`${API_URL}/update-cover-testing/${userId}`, data)
 export const deleteCoverCard = (cardId) => axios.delete(`${API_URL}/delete-cover/${cardId}`)
+export const deleteCoverCardTesting = (cardId, userId) => axios.delete(`${API_URL}/delete-cover-testing/${cardId}/${userId}`)
 
 
 //COVER 
@@ -295,6 +341,7 @@ export const getDueDateById = (id) => axios.get(`${API_URL}/card-due-date/${id}`
 export const getAllDueDateByCardId = (cardId) => axios.get(`${API_URL}/card-due-date/card/${cardId}`)
 export const addNewDueDate = (data) => axios.post(`${API_URL}/card-due-dates`, data)
 export const updateDueDate = (id, data) => axios.put(`${API_URL}/card-due-date/${id}`, data)
+export const updateDueDateTesting = (userId, id, data) => axios.put(`${API_URL}/cards/${id}/due-testing/${userId}`, data)
 export const deleteDueDate = (id) => axios.delete(`${API_URL}/card-due-date/${id}`)
 
 //REMINDERS
@@ -367,11 +414,14 @@ export const getChecklistItemUnchecked = (cardId) => axios.get(`${API_URL}/${car
 export const getLabelByCard = (cardId) => axios.get(`${API_URL}/cards/${cardId}/labels`)
 export const getAllLabels = () => axios.get(`${API_URL}/labels`)
 export const deleteLabels = (cardId, labelId) => axios.delete(`${API_URL}/cards/${cardId}/labels/${labelId}`)
+export const deleteLabelsTesting = (cardId, labelId, userId) => axios.delete(`${API_URL}/cards/${cardId}/labels-testing/${labelId}/${userId}`)
 export const createLabel = (data) => axios.post(`${API_URL}/labels`, data)
 export const addLabelToCard = (cardId, labelId) => axios.post(`${API_URL}/cards/${cardId}/labels/${labelId}`)
+export const addLabelToCardTesting = (cardId, labelId, userId) => axios.post(`${API_URL}/cards/${cardId}/labels-testing/${labelId}/${userId}`)
 export const deleteLabelFromLabels = (labelId) => axios.delete(`${API_URL}/delete-label/${labelId}`)
 export const updateLabelName = (id, data) => axios.put(`${API_URL}/update-label-name/${id}`, data)
 export const addColorToBgColorLabel = (labelId, data) => axios.put(`${API_URL}/label/${labelId}/bg_color`, data)
+
 
 //COLORS
 export const getAllColor = () => axios.get(`${API_URL}/colors`)
@@ -381,6 +431,9 @@ export const getStatusByCardId = (cardId) => axios.get(`${API_URL}/cards/${cardI
 export const getAllStatus = () => axios.get(`${API_URL}/status`)
 export const updateStatus = (cardId, statusId) => axios.post(`${API_URL}/cards/${cardId}/status`, statusId)
 export const getStatusCard = (cardId) => axios.get(`${API_URL}/card-status/${cardId}`);
+
+export const updateCardStatusTesting = (cardId, userId, data) =>
+  axios.post(`${API_URL}/cards/${cardId}/update-status-testing/${userId}`, data);
 
 //DATA EMPLOYEE
 export const getEmployee = () => axios.get(`${API_URL}/employees`)
@@ -453,6 +506,7 @@ export const getDataMarketingById = (id) => axios.get(`${API_URL}/marketing/${id
 export const updateDataMarketing = (id, data) => axios.put(`${API_URL}/marketing/${id}`, data)
 export const deleteDataMarketing = (id) => axios.delete(`${API_URL}/marketing/${id}`)
 export const addDataMarketing = (data) => axios.post(`${API_URL}/marketing`, data)
+export const addDataMarketingTesting = (data) => axios.post(`${API_URL}/marketing-testing`, data)
 export const createCardFromMarketing = (listId, marketingId) => axios.put(`${API_URL}/create-card-marketing/${listId}/${marketingId}`)
 export const checkCardIdNullOrNot = (id) => axios.get(`${API_URL}/check-card-id/${id}`)
 export const getDataMarketingWithCardId = () => axios.get(`${API_URL}/data-marketing-cardId`)

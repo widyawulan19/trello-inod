@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import {
   addPriorityToCard,
+  addPriorityToCardTesting,
   deletePriorityFromCard,
-  getAllCardPriority
+  getActivityCardTesting,
+  getAllCardPriority,
 } from '../services/ApiServices';
 // import '../style/modules/BoardProperties.css';
 import {
@@ -15,11 +17,16 @@ import {
 import BootstrapTooltip from '../components/Tooltip';
 import '../style/modules/CardPriorities.css'
 import { useSnackbar } from '../context/Snackbar';
+import { useUser } from '../context/UserContext';
 
-const CardProperties = ({ cardId, selectedPriority, refreshPriority, onClose }) => {
+const CardProperties = ({ cardId, selectedPriority, refreshPriority, onClose, fetchCardDetail, fetchCardActivities  }) => {
   const [allPriorities, setAllPriorities] = useState([]);
   const [showCardProperties, setShowCardProperties] = useState(false);
   const {showSnackbar} = useSnackbar();
+  const {user} = useUser();
+  const userId = user?.id;
+  const [cardActivities, setCardActivities] = useState([]);
+
 
   useEffect(() => {
     fetchAllPriorities();
@@ -33,7 +40,6 @@ const CardProperties = ({ cardId, selectedPriority, refreshPriority, onClose }) 
       console.error('Gagal fetch semua prioritas', error);
     }
   };
-
   const handleShowProperties = () => {
     setShowCardProperties((prev) => !prev);
   };
@@ -44,8 +50,10 @@ const CardProperties = ({ cardId, selectedPriority, refreshPriority, onClose }) 
 
   const handleSelect = async (priority) => {
     try {
-      await addPriorityToCard(cardId, priority.id);
-      await refreshPriority(); // Meminta induk update data
+      await addPriorityToCardTesting(cardId, priority.id, userId);
+      refreshPriority(); // Meminta induk update data
+      fetchCardActivities(cardId);
+      fetchCardDetail();
       showSnackbar('Successfully add a new priority','success');
       setShowCardProperties(false);
     } catch (error) {
@@ -132,68 +140,3 @@ const CardProperties = ({ cardId, selectedPriority, refreshPriority, onClose }) 
 };
 
 export default CardProperties;
-
-
-// return (
-//   <div className='cp-container'>
-//     <div className="cp-select">
-//       {selectedPriority && (
-//         <div className='cps-box'>
-//           <button
-//             style={{
-//               backgroundColor: selectedPriority.color,
-//               border: `1px solid ${selectedPriority.color}`,
-//               borderRadius: '6px',
-//               color: 'white',
-//               display: 'flex',
-//               alignItems: 'center',
-//               gap: '4px',
-//               padding: '4px 10px',
-//             }}
-//           >
-//             <HiOutlineLightBulb className='cps-lamp' />
-//             {selectedPriority.name}
-//           </button>
-//           <BootstrapTooltip title='Priority Setting' placement='top'>
-//             <HiXMark className='cps-icon' onClick={onClose}/>
-//           </BootstrapTooltip>
-//         </div>
-//       )}
-//       <ul className='scp-container'>
-//         <div className="scp-header">
-//           <h4>Select Priority</h4>
-//           <BootstrapTooltip title='Close' placement='top'>
-//             {/* <HiXMark onClick={handleCloseCard} className='sbp-close' /> */}
-//           </BootstrapTooltip>
-//         </div>
-//         {allPriorities.map((priority) => (
-//           <li
-//             key={priority.id}
-//             onClick={() => handleSelect(priority)}
-//             style={{
-//               margin: '0px 5px',
-//               borderRadius: '4px',
-//               padding: '8px 10px',
-//               fontSize: '12px',
-//               cursor: 'pointer',
-//               backgroundColor:
-//                 selectedPriority?.id === priority.id ? priority.color : '#fff',
-//               color:
-//                 selectedPriority?.id === priority.id ? '#fff' : priority.color,
-//               fontWeight:
-//                 selectedPriority?.id === priority.id ? 'bold' : 'normal',
-//             }}
-//             className='sbp-li'
-//           >
-//             <HiOutlineLightBulb className='scp-icon' />
-//             {priority.name}
-//           </li>
-//         ))}
-//       </ul>
-//     </div>
-
-//     {/* {showCardProperties && ( */}
-      
-//     {/* )} */}
-//   </div>
-// );
