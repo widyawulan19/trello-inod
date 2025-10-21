@@ -39,7 +39,9 @@ const SelectedLabelCard = ({ cardId }) => {
                         style={{ 
                             // backgroundColor: label.bg_color.replace("rgb", "rgba").replace(")", ", 0.3)"),
                             backgroundColor: label.bg_color,
-                            color: label.color,
+                            color:'#fff',
+                            fontSize:'8px'
+                            // color: label.color,
                         }}
                     >
                         {label.label_name}

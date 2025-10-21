@@ -214,7 +214,7 @@ const Label = ({ cardId,userId, fetchCardDetail, labels, setLabels, fetchLabels,
                                     // backgroundColor: label.bg_color?.replace("rgb", "rgba").replace(")", ", 0.3)"),
                                     backgroundColor: label.bg_color,
                                     // color: label.color,
-                                    color:'#333',
+                                    color:'#fff',
                                     padding: "4px 6px",
                                     margin: "2px",
                                     borderRadius: "4px",
@@ -259,7 +259,7 @@ const Label = ({ cardId,userId, fetchCardDetail, labels, setLabels, fetchLabels,
                                 onClick={() => handleSelectLabel(label.id)}
                                 className='lb-content'
                                 style={{
-                                    backgroundColor: label.bg_color,
+                                    backgroundColor: label.bg_color
                                 }}
                             >
                                 {label.name}

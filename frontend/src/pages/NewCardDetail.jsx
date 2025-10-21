@@ -6,7 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import '../style/pages/NewCardDetail.css'
 import BootstrapTooltip from '../components/Tooltip';
 import { GiCloudUpload } from "react-icons/gi";
-import { addCoverCardTesting, archiveCard, deleteCard, deleteCoverCard, deleteCoverCardTesting, deleteUserFromCard, getActivityCardTesting, getAllCardUsers, getAllCovers, getAllDueDateByCardId, getAllStatus, getAllUploadFiles, getAllUserAssignToCard, getCardById, getCardPriority, getChecklistItemChecked, getChecklistsWithItemsByCardId, getCoverByCard, getLabelByCard, getListById, getStatusByCardId, getTotalChecklistItemByCardId, getTotalFile, updateCardCoverTesting, updateDescCard, updateDescCardTesting, updateTitleCard } from '../services/ApiServices';
+import { addCoverCardTesting, archiveCard, archiveData, deleteCard, deleteCoverCard, deleteCoverCardTesting, deleteUserFromCard, getActivityCardTesting, getAllCardUsers, getAllCovers, getAllDueDateByCardId, getAllStatus, getAllUploadFiles, getAllUserAssignToCard, getCardById, getCardPriority, getChecklistItemChecked, getChecklistsWithItemsByCardId, getCoverByCard, getLabelByCard, getListById, getStatusByCardId, getTotalChecklistItemByCardId, getTotalFile, updateCardCoverTesting, updateDescCard, updateDescCardTesting, updateTitleCard } from '../services/ApiServices';
 import SelectedLabels from '../UI/SelectedLabels';
 import CardDetailPanel from '../modules/CardDetailPanel';
 import DetailCard from '../modules/DetailCard';
@@ -14,7 +14,7 @@ import Checklist from '../modules/Checklist';
 import CardActivity from '../modules/CardActivity';
 import CoverSelect from '../UI/CoverSelect';
 import CoverCard from '../modules/CoverCard';
-import { IoDocumentAttachOutline, IoShareOutline } from "react-icons/io5";
+import { IoDocumentAttachOutline, IoSettings, IoSettingsOutline, IoShareOutline } from "react-icons/io5";
 import { RiExpandDiagonalLine } from "react-icons/ri";
 import CardAssignedUsers from '../modules/CardAssignedUsers';
 import CardAssigment from '../modules/CardAssigment';
@@ -41,6 +41,7 @@ import "quill/dist/quill.snow.css";
 import CardDescriptionExample from '../modals/CardDescriptionExample';
 import NewCardActivity from '../modules/NewCardActivity';
 import CardDeleteConfirm from '../modals/CardDeleteConfirm';
+import { handleArchive } from '../utils/handleArchive';
 
 const NewCardDetail=({fetchBoardDetail,fetchCardList})=> {
     
@@ -617,20 +618,20 @@ const NewCardDetail=({fetchBoardDetail,fetchCardList})=> {
     };
 
     //15. function archive card
-    const handleArchiveCard = async(cardId)=>{
-        console.log('Arciving card with id:', cardId)
-        try{
-            const response = await archiveCard(cardId)
-            console.log('Card archiving successfully:', response.data)
-            // fetchCardList(cardId)
-            // fetchCardList(listId)
-            // setShowSetting(false)
-            showSnackbar('Card archived successfully','success')
-        }catch(error){
-            console.error('Error archiving cards:', error)
-            showSnackbar('Failed to archive card', 'error')
-        }
-    }
+    // const handleArchiveCard = async(cardId)=>{
+    //     console.log('Arciving card with id:', cardId)
+    //     try{
+    //         const response = await archiveCard(cardId)
+    //         console.log('Card archiving successfully:', response.data)
+    //         // fetchCardList(cardId)
+    //         // fetchCardList(listId)
+    //         // setShowSetting(false)
+    //         showSnackbar('Card archived successfully','success')
+    //     }catch(error){
+    //         console.error('Error archiving cards:', error)
+    //         showSnackbar('Failed to archive card', 'error')
+    //     }
+    // }
 
     //16. fetch total file
     const fetchTotalFile = async()=>{
@@ -721,53 +722,41 @@ const NewCardDetail=({fetchBoardDetail,fetchCardList})=> {
     setShowCardSetting(false);
     };
 
-    // const confirmDelete = async () => {
-    // try {
-    //     console.log("Deleting card:", cardId);
-    //     const response = await deleteCard(cardId);
-    //     showSnackbar('Card deleted successfully', 'success');
-    //     console.log('Delete card success', response.data);
-    //     fetchCardList(listId);
-    //     navigate(-1); // balik ke board/lists
-    // } catch (error) {
-    //     console.error('Error deleting card:', error);
-    //     showSnackbar('Failed to delete card', 'error');
-    // } finally {
-    //     setShowDeleteConfirm(false);
-    // }
-    // };
-
     const confirmDelete = async () => {
-  try {
-    const response = await deleteCard(cardId);
-    console.log('Response delete card:', response);
-
-    if (response.status === 200 || response.status === 204) {
-      showSnackbar('Card deleted successfully', 'success');
-      console.log('Delete card success', response.data);
-      fetchCardList(listId);
-    } else {
-      showSnackbar('Unexpected response status: ' + response.status, 'warning');
+    try {
+        console.log("Deleting card:", cardId);
+        const response = await deleteCard(cardId);
+        showSnackbar('Card deleted successfully', 'success');
+        console.log('Delete card success', response.data);
+        // fetchCardList(listId);
+        navigate(-1); // balik ke board/lists
+    } catch (error) {
+        console.error('Error deleting card:', error);
+        showSnackbar('Failed to delete card', 'error');
+    } finally {
+        setShowDeleteConfirm(false);
     }
-
-  } catch (error) {
-    if (error.response?.status === 204) {
-      // axios sometimes throws on 204 even if it's success
-      showSnackbar('Card deleted successfully', 'success');
-      fetchCardList(listId);
-    } else {
-      showSnackbar('Failed to delete card', 'error');
-      console.log('Error deleting card:', error);
-    }
-  } finally {
-    setShowDeleteConfirm(false);
-    // setSelectedCardId(null);
-  }
-};
-
+    };
 
     const cancleDeleteCard = () => {
-    setShowDeleteConfirm(false);
+        setShowDeleteConfirm(false);
+    };
+
+    // ARCHIVE CARD
+    // ✅ Fungsi archive card
+    const handleArchiveCard = async (cardId) => {
+        try {
+        console.log('Archiving card:', cardId);
+        const response = await archiveData('cards', cardId);
+        console.log('Archive response:', response.data);
+
+        showSnackbar('Card archived successfully', 'success');
+        navigate(-1);
+        
+        } catch (error) {
+        console.error('Error archiving card:', error);
+        showSnackbar('Failed to archive card', 'error');
+        }
     };
 
 
@@ -1198,7 +1187,7 @@ const NewCardDetail=({fetchBoardDetail,fetchCardList})=> {
                                    <h5> Card Information</h5>
                                    <BootstrapTooltip title='Card Setting' placement='top'>
                                     <div className="set-card" onClick={handleShowCardSetting}>
-                                        {/* <HiDotsHorizontal /> */}
+                                        <IoSettingsOutline />
                                         Card Action
                                     </div>
                                    </BootstrapTooltip>
@@ -1218,7 +1207,7 @@ const NewCardDetail=({fetchBoardDetail,fetchCardList})=> {
                                                     <HiOutlineSquare2Stack/>
                                                     Duplicate
                                                 </button>
-                                                <button>
+                                                <button onClick={() => handleArchiveCard(cardId)}>
                                                     <HiOutlineArchiveBox/>
                                                     Archive
                                                 </button>

@@ -785,8 +785,44 @@
     /* ✅ ini biar mengikuti tinggi isi */
     max-height: none;
     /* atau tambahkan jika kamu sebelumnya set max-height */
-    overflow-y: visible;
+    overflow-y: auto;
+
+    /* optional: smooth scroll feel */
+    scroll-behavior: smooth;
 }
+
+/* Chrome, Safari, Opera */
+.ncd-desc .des-content::-webkit-scrollbar,
+.ncd-main-content .ncd-main-left::-webkit-scrollbar,
+.ncd-main-content .ncd-main-right::-webkit-scrollbar {
+    width: 1px;
+    /* lebar scrollbar */
+}
+
+.ncd-desc .des-content::-webkit-scrollbar-track,
+.ncd-main-content .ncd-main-left::-webkit-scrollbar-track .ncd-main-content,
+.ncd-main-right::-webkit-scrollbar-track {
+    background: transparent;
+    /* warna track */
+}
+
+.ncd-desc .des-content::-webkit-scrollbar-thumb,
+.ncd-main-content .ncd-main-left::-webkit-scrollbar-thumb,
+.ncd-main-content .ncd-main-right::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0);
+    /* warna "handle" scrollbar */
+    border-radius: 3px;
+    /* bulat sedikit */
+}
+
+/* Firefox */
+.ncd-desc .des-content {
+    scrollbar-width: thin;
+    /* buat tipis */
+    scrollbar-color: rgba(0, 0, 0, 0) transparent;
+    /* warna thumb & track */
+}
+
 
 .placeholder-desc {
     /* border: 1px dashed #5c38db; */
@@ -899,12 +935,16 @@
     border: 1px solid #eee;
     border-radius: 4px;
     padding: 2px 5px;
+    gap: 5px;
     font-size: 10px;
     font-weight: normal;
     cursor: pointer;
     color: #333;
     background-color: #f2f1ff;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     /* position: relative; */
 }
 
@@ -1183,6 +1223,7 @@
 
 /* ATTACHMENT  */
 .ncd-main-left .ncd-attach {
+    /* border: 1px solid blue; */
     border: 1px solid #E2E8F0;
     border-radius: 8px;
     padding: 15px;
