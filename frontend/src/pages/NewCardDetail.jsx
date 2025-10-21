@@ -715,34 +715,61 @@ const NewCardDetail=({fetchBoardDetail,fetchCardList})=> {
     }
 
 
-    //FUNCTION DELETE CARD
-    const handleDeleteClick = (cardId) =>{
-        // setSelectedCardId(cardId)
-        setShowDeleteConfirm(true)
-        setShowCardSetting(false)
+    // DELETE LOGIC DI NEWCARDDETAIL
+    const handleDeleteClick = () => {
+    setShowDeleteConfirm(true);
+    setShowCardSetting(false);
+    };
+
+    // const confirmDelete = async () => {
+    // try {
+    //     console.log("Deleting card:", cardId);
+    //     const response = await deleteCard(cardId);
+    //     showSnackbar('Card deleted successfully', 'success');
+    //     console.log('Delete card success', response.data);
+    //     fetchCardList(listId);
+    //     navigate(-1); // balik ke board/lists
+    // } catch (error) {
+    //     console.error('Error deleting card:', error);
+    //     showSnackbar('Failed to delete card', 'error');
+    // } finally {
+    //     setShowDeleteConfirm(false);
+    // }
+    // };
+
+    const confirmDelete = async () => {
+  try {
+    const response = await deleteCard(cardId);
+    console.log('Response delete card:', response);
+
+    if (response.status === 200 || response.status === 204) {
+      showSnackbar('Card deleted successfully', 'success');
+      console.log('Delete card success', response.data);
+      fetchCardList(listId);
+    } else {
+      showSnackbar('Unexpected response status: ' + response.status, 'warning');
     }
 
-    const confirmDelete = async ()=>{
-            try{
-                // console.log('Deleting Card with ID:', selectedCardId)
-                // const response = await deleteCard(selectedCardId);
-                const response = await deleteCard(cardId);
-                showSnackbar('Card deleted successfully','success')
-                console.log('Delete card success', response.data)
-                fetchCardList(listId)
-            }catch(error){
-                showSnackbar('Failed to delete card', 'error')
-                console.log('Error deleting card:', error)
-            }finally{
-                setShowDeleteConfirm(false)
-                setSelectedCardId(null);
-            }
-        }
-    
-        const cancleDeleteCard = () =>{
-            setShowDeleteConfirm(false)
-            setSelectedCardId(null)
-        }
+  } catch (error) {
+    if (error.response?.status === 204) {
+      // axios sometimes throws on 204 even if it's success
+      showSnackbar('Card deleted successfully', 'success');
+      fetchCardList(listId);
+    } else {
+      showSnackbar('Failed to delete card', 'error');
+      console.log('Error deleting card:', error);
+    }
+  } finally {
+    setShowDeleteConfirm(false);
+    // setSelectedCardId(null);
+  }
+};
+
+
+    const cancleDeleteCard = () => {
+    setShowDeleteConfirm(false);
+    };
+
 
     // fetch card activity 
     const fetchCardActivities = async()=>{
@@ -1195,7 +1222,7 @@ const NewCardDetail=({fetchBoardDetail,fetchCardList})=> {
                                                     <HiOutlineArchiveBox/>
                                                     Archive
                                                 </button>
-                                                <button onClick={() => handleDeleteClick(cardId)}>
+                                                <button onClick={handleDeleteClick}>
                                                     <HiOutlineTrash/>
                                                     Delete
                                                 </button>
