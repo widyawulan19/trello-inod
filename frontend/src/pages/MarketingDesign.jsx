@@ -527,8 +527,8 @@ const handleExportToSheet = async (marketingDesignId) => {
                   <tr>
                     <th className='rounded-tl-md'>NO</th>
                     <th>Project Number</th>
-                    <th>INPUT BY</th>
-                    <th>ACC BY</th>
+                    <th style={{textAlign:'center'}}>INPUT BY</th>
+                    <th style={{textAlign:'center'}}>ACC BY</th>
                     <th style={{textAlign:'center'}}>STATUS</th>
                     <th>
                       <div className='th'>
@@ -583,7 +583,7 @@ const handleExportToSheet = async (marketingDesignId) => {
                         <td className='input-container' onClick={()=> handleShowDetail(item.marketing_design_id)}>
                           {item.project_number}
                         </td>
-                        <td className='input-container'>
+                        <td className='input-container-box'>
                           {item.input_by_name || "-"}
                           {hasCardId(item) && (
                             <span style={{
@@ -618,7 +618,7 @@ const handleExportToSheet = async (marketingDesignId) => {
                           </button>
 
                         </td>
-                        <td className='acc-container'>{item.acc_by_name}</td>
+                        <td className='acc-container' style={{textAlign:'center' }}>{item.acc_by_name}</td>
                         <td className='status-container' style={{textAlign:'center' }}>
                           <span style={{
                             padding: '2px 8px',

@@ -167,6 +167,20 @@ const renderTextWithLinks = (text) => {
 };
 
 
+    // konfigurasi toolbar ReactQuill
+  const modules = {
+    toolbar: [
+      [{ header: [1, 2, 3, false] }],
+      ["bold", "italic", "underline", "strike"], 
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["link", "blockquote", "code-block"],
+      [{ align: [] }],
+      ["clean"], // hapus format
+    ],
+  };
+
+
+
   return (
     <div className='view-md-container'>
       <div className="vmd-header">
@@ -428,14 +442,23 @@ const renderTextWithLinks = (text) => {
           <div className="vmd-detail">
             <div className="box-content" style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
               {/* <p>Detail Project</p> */}
-              <div className="box-ref" >
+              {/* <div className="box-ref" >
                 <div
                   dangerouslySetInnerHTML={{
                     __html: linkify(dataMarketingDesign.detail_project || ""),
                   }}
+                  style={{fontSize:'12px'}}
                 />
-                {/* <p>{renderTextWithLinks(dataMarketingDesign?.detail_project || "-")}</p> */}
-              </div>
+              </div> */}
+              <ReactQuill
+                className="my-editor"
+                theme="snow"
+                value={dataMarketingDesign?.detail_project || ""}
+                readOnly={true}
+                modules={{ toolbar: false }} // sembunyikan toolbar
+                style={{ minHeight: "150px", backgroundColor: "#f9f9f9", borderRadius: "6px" }}
+              />
+
             </div>
           </div>
         </div>

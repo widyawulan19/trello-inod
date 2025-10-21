@@ -260,14 +260,12 @@
     max-width: 10vw;
 }
 
-.input-container {
-    cursor: pointer;
-}
 
-.input-container:hover {
+.input-container-box:hover {
     text-decoration: underline;
 }
 
+.acc-container,
 .input-container,
 .buyer-name-container,
 .status-container,
@@ -290,7 +288,7 @@
     max-width: 8vw;
 }
 
-.acc-container,
+.input-container-box,
 .style-container,
 .project-type-container {
     width: 100%;
@@ -365,7 +363,8 @@
     background-color: white;
     border: 1px solid #5D12EB;
     border-radius: 8px;
-    width: 50vw;
+    /* width: 60vw; */
+    width: 65%;
     margin-top: 2%;
     height: 90vh;
 }
