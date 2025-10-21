@@ -88,7 +88,7 @@ form h4 {
     grid-template-columns: repeat(3, 1fr);
     align-items: center;
     justify-content: center;
-    gap: 5px;
+    gap: 10px;
 }
 
 

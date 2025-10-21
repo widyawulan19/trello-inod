@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getAllMarketingUsers, addMarketingUser, addDataMarketing, getAllAccountsMusic, addAccountMusic, getAllOfferTypesMusic, addOfferTypeMusic, getAllTrackTypes, addTrackType, getAllGenresMusic, addGenreMusic, getAllProjectTypesMusic, addProjectTypeMusic, getAllOrderTypesMusic, addOrderTypeMusic, getAllKuponDiskon, addKuponDiskon,getAllAcceptStatus } from "../services/ApiServices";
+import { getAllMarketingUsers, addMarketingUser, addDataMarketing, addDataMarketingTesting, getAllAccountsMusic, addAccountMusic, getAllOfferTypesMusic, addOfferTypeMusic, getAllTrackTypes, addTrackType, getAllGenresMusic, addGenreMusic, getAllProjectTypesMusic, addProjectTypeMusic, getAllOrderTypesMusic, addOrderTypeMusic, getAllKuponDiskon, addKuponDiskon,getAllAcceptStatus } from "../services/ApiServices";
 import { getAllKepalaDivisi, addKepalaDivisi } from "../services/ApiServices";
 import CustomDropdown from "../marketing/CustomDropdown";
 import '../style/pages/FormDataMarketing.css'
@@ -210,7 +210,7 @@ useEffect(() => {
         buyer_name: "Buyer Name",
         code_order: "Code Order",
         jumlah_track: "Jumlah Track",
-        order_number: "Order Number",
+        // order_number: "Order Number",
         account: "Account",
         deadline: "Deadline",
         jumlah_revisi: "Jumlah Revisi",
@@ -236,7 +236,8 @@ useEffect(() => {
         return; // stop submit
       }
       try {
-        await addDataMarketing(form);
+        // await addDataMarketing(form);
+        await addDataMarketingTesting(form);
         showSnackbar('Data Marketing berhasil ditambahkan!', 'success');
         // alert("✅ Data marketing berhasil ditambahkan!");
 
