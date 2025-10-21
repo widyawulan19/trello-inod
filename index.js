@@ -8029,8 +8029,11 @@ app.patch("/api/marketing/:id/restore", async (req, res) => {
 });
 
 
-// 5. membuat data baru
-// app.post("/api/marketing", async (req, res) => {
+
+// let currentOrderNumberTesting = 297;
+// let currentProjectNumberTesting = 35; 
+
+// app.post("/api/marketing-testing", async (req, res) => {
 //     try {
 //         const {
 //             input_by,
@@ -8038,7 +8041,6 @@ app.patch("/api/marketing/:id/restore", async (req, res) => {
 //             buyer_name,
 //             code_order,
 //             jumlah_track,
-//             order_number,
 //             account,
 //             deadline,
 //             jumlah_revisi,
@@ -8059,37 +8061,27 @@ app.patch("/api/marketing/:id/restore", async (req, res) => {
 //             detail_project,
 //         } = req.body;
 
-//         // --- hitung project_number ---
-//         const createAt = new Date(); // default pakai waktu saat insert
-//         const monthStart = dayjs(createAt).startOf("month").toDate();
-//         const monthEnd = dayjs(createAt).endOf("month").toDate();
+//         // --- generate nomor otomatis ---
+//         currentOrderNumberTesting += 1;
+//         currentProjectNumberTesting += 1;
 
-//         const countResult = await client.query(
-//             `SELECT COUNT(*) AS count
-//        FROM data_marketing
-//        WHERE create_at BETWEEN $1 AND $2`,
-//             [monthStart, monthEnd]
-//         );
-
-//         const nextNumber = parseInt(countResult.rows[0].count) + 1;
-//         const monthName = dayjs(createAt).format("MMMM");
-//         // const projectNumber = `P${String(nextNumber).padStart(2, "0")} ${monthName}`;
-//         const projectNumber = `P${String(nextNumber).padStart(2, "0")} ${dayjs(createAt).locale("id").format("DD/MMM/YYYY")}`;
-
+//         const createAt = new Date();
+//         const formattedOrderNumber = currentOrderNumberTesting.toString();
+//         const projectNumber = `P${String(currentProjectNumberTesting).padStart(2, "0")} ${dayjs(createAt).locale("id").format("DD/MMM/YYYY")}`;
 
 //         // --- insert ke tabel ---
-//         const result = await client.query(
+//         const insertResult = await client.query(
 //             `INSERT INTO data_marketing 
-//       (input_by, acc_by, buyer_name, code_order, jumlah_track, order_number, 
-//        account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre, 
-//        price_normal, price_discount, discount, basic_price, gig_link, required_files, 
-//        project_type, duration, reference_link, file_and_chat_link, detail_project, 
-//        create_at, project_number) 
-//       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, 
-//               $16, $17, $18, $19, $20, $21, $22, $23, $24, CURRENT_TIMESTAMP, $25) 
-//       RETURNING *`,
+//         (input_by, acc_by, buyer_name, code_order, jumlah_track, order_number, 
+//         account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre, 
+//         price_normal, price_discount, discount, basic_price, gig_link, required_files, 
+//         project_type, duration, reference_link, file_and_chat_link, detail_project, 
+//         create_at, project_number) 
+//         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, 
+//                 $16, $17, $18, $19, $20, $21, $22, $23, $24, CURRENT_TIMESTAMP, $25) 
+//         RETURNING *`,
 //             [
-//                 input_by, acc_by, buyer_name, code_order, jumlah_track, order_number,
+//                 input_by, acc_by, buyer_name, code_order, jumlah_track, formattedOrderNumber,
 //                 account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre,
 //                 price_normal, price_discount, discount, basic_price, gig_link, required_files,
 //                 project_type, duration, reference_link, file_and_chat_link, detail_project,
@@ -8097,16 +8089,88 @@ app.patch("/api/marketing/:id/restore", async (req, res) => {
 //             ]
 //         );
 
-//         res.status(201).json(result.rows[0]);
+//         const newId = insertResult.rows[0].marketing_id;
+
+//         // --- ambil data marketing baru beserta join ---
+//         const { rows } = await client.query(`
+//       SELECT 
+//         dm.marketing_id,
+//         dm.card_id,
+//         dm.buyer_name,
+//         dm.code_order,
+//         dm.order_number,
+//         dm.jumlah_track,
+//         dm.duration,
+//         dm.jumlah_revisi,
+//         dm.deadline,
+//         dm.price_normal,
+//         dm.price_discount,
+//         dm.discount,
+//         dm.basic_price,
+//         dm.gig_link,
+//         dm.reference_link,
+//         dm.required_files,
+//         dm.file_and_chat_link,
+//         dm.detail_project,
+//         dm.create_at,
+//         dm.update_at,
+//         dm.project_number,
+
+//         mu.id AS input_by,
+//         mu.nama_marketing AS input_by_name,
+
+//         kd.id AS acc_by,
+//         kd.nama AS acc_by_name,
+
+//         am.id AS account,
+//         am.nama_account AS account_name,
+
+//         ot.id AS order_type,
+//         ot.order_name AS order_type_name,
+
+//         oft.id AS offer_type,
+//         oft.offer_name AS offer_type_name,
+
+//         tt.id AS jenis_track,
+//         tt.track_name AS track_type_name,
+
+//         g.id AS genre,
+//         g.genre_name AS genre_name,
+
+//         pt.id AS project_type,
+//         pt.nama_project AS project_type_name,
+
+//         k.id AS kupon_diskon_id,
+//         k.nama_kupon AS kupon_diskon_name,
+
+//         s.id AS accept_status_id,
+//         s.status_name AS accept_status_name
+
+//       FROM data_marketing dm
+//       LEFT JOIN marketing_musik_user mu ON mu.id = dm.input_by
+//       LEFT JOIN kepala_divisi kd ON kd.id = dm.acc_by
+//       LEFT JOIN account_music am ON am.id = dm.account
+//       LEFT JOIN music_order_type ot ON ot.id = dm.order_type
+//       LEFT JOIN offer_type_music oft ON oft.id = dm.offer_type
+//       LEFT JOIN track_types tt ON tt.id = dm.jenis_track
+//       LEFT JOIN genre_music g ON g.id = dm.genre
+//       LEFT JOIN project_type pt ON pt.id = dm.project_type
+//       LEFT JOIN kupon_diskon k ON k.id = dm.kupon_diskon_id
+//       LEFT JOIN accept_status s ON s.id = dm.accept_status_id
+//       WHERE dm.marketing_id = $1
+//     `, [newId]);
+
+//         res.status(201).json(rows[0]);
+
 //     } catch (err) {
-//         console.error(err.message);
+//         console.error("❌ Error creating marketing data:", err.message);
 //         res.status(500).send("Server error");
 //     }
 // });
 
 
-let currentOrderNumberTesting = 297;    // otomatis bertambah
-let currentProjectNumberTesting = 35;   // otomatis bertambah
+let currentOrderNumberTesting = 297;    // nanti otomatis jadi 298, 299, dst
+let currentProjectNumberTesting = 35;   // nanti otomatis jadi P036, P037, dst
 
 app.post("/api/marketing-testing", async (req, res) => {
     try {
@@ -8134,6 +8198,8 @@ app.post("/api/marketing-testing", async (req, res) => {
             reference_link,
             file_and_chat_link,
             detail_project,
+            kupon_diskon_id,    // optional
+            accept_status_id    // optional
         } = req.body;
 
         // --- generate nomor otomatis ---
@@ -8144,30 +8210,30 @@ app.post("/api/marketing-testing", async (req, res) => {
         const formattedOrderNumber = currentOrderNumberTesting.toString();
         const projectNumber = `P${String(currentProjectNumberTesting).padStart(2, "0")} ${dayjs(createAt).locale("id").format("DD/MMM/YYYY")}`;
 
-        // --- insert ke tabel ---
+        // --- insert ke tabel data_marketing ---
         const insertResult = await client.query(
             `INSERT INTO data_marketing 
-        (input_by, acc_by, buyer_name, code_order, jumlah_track, order_number, 
-        account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre, 
-        price_normal, price_discount, discount, basic_price, gig_link, required_files, 
-        project_type, duration, reference_link, file_and_chat_link, detail_project, 
-        create_at, project_number) 
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, 
-                $16, $17, $18, $19, $20, $21, $22, $23, $24, CURRENT_TIMESTAMP, $25) 
-        RETURNING *`,
+        (input_by, acc_by, buyer_name, code_order, jumlah_track, order_number,
+         account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre,
+         price_normal, price_discount, discount, basic_price, gig_link, required_files,
+         project_type, duration, reference_link, file_and_chat_link, detail_project,
+         kupon_diskon_id, accept_status_id, create_at, project_number)
+       VALUES
+        ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,CURRENT_TIMESTAMP,$27)
+       RETURNING *`,
             [
                 input_by, acc_by, buyer_name, code_order, jumlah_track, formattedOrderNumber,
                 account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre,
                 price_normal, price_discount, discount, basic_price, gig_link, required_files,
                 project_type, duration, reference_link, file_and_chat_link, detail_project,
-                projectNumber,
+                kupon_diskon_id || null, accept_status_id || null, projectNumber
             ]
         );
 
-        const newId = insertResult.rows[0].marketing_id;
+        const newMarketingId = insertResult.rows[0].marketing_id;
 
-        // --- ambil data marketing baru beserta join ---
-        const { rows } = await client.query(`
+        // --- ambil data hasil insert + join tabel kupon_diskon & accept_status + relasi lain ---
+        const result = await client.query(`
       SELECT 
         dm.marketing_id,
         dm.card_id,
@@ -8233,9 +8299,9 @@ app.post("/api/marketing-testing", async (req, res) => {
       LEFT JOIN kupon_diskon k ON k.id = dm.kupon_diskon_id
       LEFT JOIN accept_status s ON s.id = dm.accept_status_id
       WHERE dm.marketing_id = $1
-    `, [newId]);
+    `, [newMarketingId]);
 
-        res.status(201).json(rows[0]);
+        res.status(201).json(result.rows[0]);
 
     } catch (err) {
         console.error("❌ Error creating marketing data:", err.message);
