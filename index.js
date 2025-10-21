@@ -8030,8 +8030,8 @@ app.patch("/api/marketing/:id/restore", async (req, res) => {
 
 
 
-let currentOrderNumberTesting = 297;    // nanti otomatis jadi 298, 299, dst
-let currentProjectNumberTesting = 35;   // nanti otomatis jadi P036, P037, dst
+let currentOrderNumberTesting = 574;    // nanti otomatis jadi 298, 299, dst
+let currentProjectNumberTesting = 574;   // nanti otomatis jadi P036, P037, dst
 
 app.post("/api/marketing-testing", async (req, res) => {
     try {
