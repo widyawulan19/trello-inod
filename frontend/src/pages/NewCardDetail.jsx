@@ -6,7 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import '../style/pages/NewCardDetail.css'
 import BootstrapTooltip from '../components/Tooltip';
 import { GiCloudUpload } from "react-icons/gi";
-import { addCoverCardTesting, archiveCard, deleteCoverCard, deleteCoverCardTesting, deleteUserFromCard, getActivityCardTesting, getAllCardUsers, getAllCovers, getAllDueDateByCardId, getAllStatus, getAllUploadFiles, getAllUserAssignToCard, getCardById, getCardPriority, getChecklistItemChecked, getChecklistsWithItemsByCardId, getCoverByCard, getLabelByCard, getListById, getStatusByCardId, getTotalChecklistItemByCardId, getTotalFile, updateCardCoverTesting, updateDescCard, updateDescCardTesting, updateTitleCard } from '../services/ApiServices';
+import { addCoverCardTesting, archiveCard, deleteCard, deleteCoverCard, deleteCoverCardTesting, deleteUserFromCard, getActivityCardTesting, getAllCardUsers, getAllCovers, getAllDueDateByCardId, getAllStatus, getAllUploadFiles, getAllUserAssignToCard, getCardById, getCardPriority, getChecklistItemChecked, getChecklistsWithItemsByCardId, getCoverByCard, getLabelByCard, getListById, getStatusByCardId, getTotalChecklistItemByCardId, getTotalFile, updateCardCoverTesting, updateDescCard, updateDescCardTesting, updateTitleCard } from '../services/ApiServices';
 import SelectedLabels from '../UI/SelectedLabels';
 import CardDetailPanel from '../modules/CardDetailPanel';
 import DetailCard from '../modules/DetailCard';
@@ -40,8 +40,10 @@ import ReactQuill from 'react-quill-new';
 import "quill/dist/quill.snow.css";
 import CardDescriptionExample from '../modals/CardDescriptionExample';
 import NewCardActivity from '../modules/NewCardActivity';
+import CardDeleteConfirm from '../modals/CardDeleteConfirm';
 
 const NewCardDetail=({fetchBoardDetail,fetchCardList})=> {
+    
     //STATE
     const {user} = useUser();
     const userId = user?.id;
@@ -116,6 +118,9 @@ const NewCardDetail=({fetchBoardDetail,fetchCardList})=> {
     //DUPLICATE AND MOVE
     const [showDuplicate, setShowDuplicate] = useState(false)
     const [showMove, setShowMove] = useState(false);
+    // DELETE CARD CONFIRM
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+    const [selectedCardId, setSelectedCardId] = useState(null)
     
     // ATTACHMENT 
     const [allUploadFile, setAllUploadFile] = useState([]);
@@ -286,16 +291,16 @@ const NewCardDetail=({fetchBoardDetail,fetchCardList})=> {
             }
         },[cardId])
     //edit card desc
-// EDIT mode trigger
-const handleEditDescription = (e, cardId, currentCardDesc) => {
-  e.stopPropagation();
-  if (!cardId) {
-    console.warn("Card ID is invalid");
-    return;
-  }
-  setEditingDescription(cardId);
-  setNewDescription(currentCardDesc || "");
-};
+    // EDIT mode trigger
+    const handleEditDescription = (e, cardId, currentCardDesc) => {
+    e.stopPropagation();
+    if (!cardId) {
+        console.warn("Card ID is invalid");
+        return;
+    }
+    setEditingDescription(cardId);
+    setNewDescription(currentCardDesc || "");
+    };
     
     const handleSaveDescription = async (cardId) => {
         try {
@@ -592,24 +597,19 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
     }
 
     //13. function duplicate card
-    const handleDuplicateCard = (cardId) =>{
-        setShowDuplicate((prevState)=>({
-            ...prevState,
-            [cardId]: !prevState[cardId],
-        }))
-        // setShowAction(false);
+    const handleDuplicateCard = () =>{
+        setShowDuplicate(true);
+        setShowCardSetting(false);
     }
 
-    const handleCloseDuplicate = (cardId) =>{
-        setShowDuplicate((prevState)=>({
-            ...prevState,
-            [cardId]: false,
-        }))
+    const handleCloseDuplicate = () =>{
+        setShowDuplicate(false)
     }
 
     //14. function to move card
     const handleMoveCard = () => {
-    setShowMove(true);
+        setShowMove(true);
+        setShowCardSetting(false);
     };
 
     const handleCloseMove = () => {
@@ -713,6 +713,36 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
     const handleShowAction = ()=>{
         setShowAction(!showAction)
     }
+
+
+    //FUNCTION DELETE CARD
+    const handleDeleteClick = (cardId) =>{
+        // setSelectedCardId(cardId)
+        setShowDeleteConfirm(true)
+        setShowCardSetting(false)
+    }
+
+    const confirmDelete = async ()=>{
+            try{
+                // console.log('Deleting Card with ID:', selectedCardId)
+                // const response = await deleteCard(selectedCardId);
+                const response = await deleteCard(cardId);
+                showSnackbar('Card deleted successfully','success')
+                console.log('Delete card success', response.data)
+                fetchCardList(listId)
+            }catch(error){
+                showSnackbar('Failed to delete card', 'error')
+                console.log('Error deleting card:', error)
+            }finally{
+                setShowDeleteConfirm(false)
+                setSelectedCardId(null);
+            }
+        }
+    
+        const cancleDeleteCard = () =>{
+            setShowDeleteConfirm(false)
+            setSelectedCardId(null)
+        }
 
     // fetch card activity 
     const fetchCardActivities = async()=>{
@@ -1157,7 +1187,7 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
                                                     <HiMiniArrowLeftStartOnRectangle/>
                                                     Move Card
                                                 </button>
-                                                <button>
+                                                <button onClick={handleDuplicateCard}>
                                                     <HiOutlineSquare2Stack/>
                                                     Duplicate
                                                 </button>
@@ -1165,7 +1195,7 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
                                                     <HiOutlineArchiveBox/>
                                                     Archive
                                                 </button>
-                                                <button>
+                                                <button onClick={() => handleDeleteClick(cardId)}>
                                                     <HiOutlineTrash/>
                                                     Delete
                                                 </button>
@@ -1188,6 +1218,28 @@ const handleEditDescription = (e, cardId, currentCardDesc) => {
                                         />
                                     </div>
                                 )}
+                                {showDuplicate && (
+                                    <div className="card-move-modal">
+                                        <DuplicateCard
+                                            cardId={cardId}
+                                            boardId={boardId}
+                                            listId={listId}
+                                            workspaceId={workspaceId}
+                                            onClose={handleCloseDuplicate}
+                                            fetchCardList={fetchCardList}
+                                            fetchBoardDetail={fetchBoardDetail}
+                                        />
+                                    </div>
+                                )}
+                                {/* DELETE  */}
+                                <CardDeleteConfirm
+                                    isOpen={showDeleteConfirm}
+                                    cardId={cardId}
+                                    onConfirm={confirmDelete}
+                                    onCancle={cancleDeleteCard}
+                                    cardName={cards.title}
+                                />
+
 
                                 <div className="ncd-detail-con">
                                     <div className="c-create">
