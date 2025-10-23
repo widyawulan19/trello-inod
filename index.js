@@ -115,27 +115,52 @@ async function initializeMarketingCounters() {
 // =======================
 // 🔹 FUNGSI GENERATE NOMOR BARU
 // =======================
-function generateMarketingNumbers() {
+async function generateMarketingNumbers() {
     const now = dayjs();
     const currentMonth = now.month();
 
-    // Reset jika bulan berganti
-    if (currentMonth !== lastMarketingMonth) {
-        currentProjectNumberMarketing = 0; // reset ke P01
-        lastMarketingMonth = currentMonth;
-        console.log(`🔁 Bulan baru terdeteksi! Reset project number ke P01 (${now.format('MMM YYYY')})`);
+    // Ambil data counter dari DB
+    const result = await client.query(`
+        SELECT current_order_number, current_project_number, last_updated
+        FROM counters
+        WHERE counter_name = 'marketing'
+        FOR UPDATE
+    `);
+
+    let { current_order_number, current_project_number, last_updated } = result.rows[0];
+
+    // Reset jika bulan baru
+    const lastMonth = dayjs(last_updated).month();
+    if (currentMonth !== lastMonth) {
+        current_order_number = 0;
+        current_project_number = 0;
+        console.log(`🔁 Bulan baru! Reset nomor ke P01 (${now.format('MMM YYYY')})`);
     }
 
-    // Increment counters
-    currentOrderNumberMarketing += 1;
-    currentProjectNumberMarketing += 1;
+    // Increment
+    current_order_number += 1;
+    current_project_number += 1;
 
-    // Format nomor
-    const projectNumber = `P${String(currentProjectNumberMarketing).padStart(2, "0")} ${now.format("DD/MMM/YYYY")}`;
-    const orderNumber = `${currentOrderNumberMarketing}`;
+    // Simpan kembali ke DB
+    await client.query(
+        `
+        UPDATE counters
+        SET 
+            current_order_number = $1,
+            current_project_number = $2,
+            last_updated = CURRENT_TIMESTAMP
+        WHERE counter_name = 'marketing'
+        `,
+        [current_order_number, current_project_number]
+    );
+
+    // Format hasil
+    const projectNumber = `P${String(current_project_number).padStart(2, "0")} ${now.format("DD/MMM/YYYY")}`;
+    const orderNumber = `${current_order_number}`;
 
     return { projectNumber, orderNumber };
 }
+
 
 
 // =======================
@@ -8184,7 +8209,9 @@ app.post("/api/marketing-testing", async (req, res) => {
         } = req.body;
 
         // 🔹 Generate nomor otomatis
-        const { projectNumber, orderNumber } = generateMarketingNumbers();
+        // const { projectNumber, orderNumber } = generateMarketingNumbers();
+        const { projectNumber, orderNumber } = await generateMarketingNumbers();
+
 
         // 🔹 Ambil posisi terakhir dari tabel
         const posResult = await client.query(`
