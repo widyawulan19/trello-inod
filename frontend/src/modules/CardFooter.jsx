@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { getChecklistItemChecked, getChecklistItemUnchecked, getTotalChecklistItemByCardId, getTotalMessageInCard } from '../services/ApiServices'
+import { getCardMediaCount, getChecklistItemChecked, getChecklistItemUnchecked, getTotalChecklistItemByCardId, getTotalMessageInCard } from '../services/ApiServices'
 import { HiOutlineChatBubbleLeftRight,HiOutlineCheckCircle, HiOutlinePaperClip } from 'react-icons/hi2'
 import '../style/modules/CardFooter.css'
 import BootstrapTooltip from '../components/Tooltip'
+import { IoImagesOutline } from 'react-icons/io5'
 
 const CardFooter=({cardId, totalFile, unreadCount,hasNewChat, notifications, handleMarkAsRead, checklistTotal,checkChecklist})=> {
     //STATE
     const [stats, setStats] = useState({total:0, checked:0, unchecked:0})
+    const [totalMedia, setTotalMedia] = useState(0);
 
     //SHOW TOTAL CHATS
     const [messageCount, setMessageCount] = useState(null);
@@ -43,27 +45,42 @@ const CardFooter=({cardId, totalFile, unreadCount,hasNewChat, notifications, han
         loadStats()
     },[cardId])
 
-
     //3. FUNCTION GET TOTAL CHAT 
-useEffect(() => {
-    const fetchMessageCount = async () => {
-  try {
-    const response = await getTotalMessageInCard(cardId);
-    console.log('Fetched total chat response:', response); // 👈 tambahkan ini
-    if (response && response.data && typeof response.data.messageCount !== 'undefined') {
-      setMessageCount(response.data.messageCount);
-    } else {
-      console.warn('Unexpected response format:', response);
+    useEffect(() => {
+        const fetchMessageCount = async () => {
+    try {
+        const response = await getTotalMessageInCard(cardId);
+        console.log('Fetched total chat response:', response); // 👈 tambahkan ini
+        if (response && response.data && typeof response.data.messageCount !== 'undefined') {
+        setMessageCount(response.data.messageCount);
+        } else {
+        console.warn('Unexpected response format:', response);
+        }
+    } catch (error) {
+        console.error('Failed to fetch message count:', error);
     }
-  } catch (error) {
-    console.error('Failed to fetch message count:', error);
-  }
-};
+    };
 
-    if (cardId) {
-      fetchMessageCount();
-    }
-}, [cardId]);
+        if (cardId) {
+        fetchMessageCount();
+        }
+    }, [cardId]);
+
+//4. total media chats
+    useEffect(() => {
+        const fetchMediaCount = async () => {
+            try {
+                const response = await getCardMediaCount(cardId);
+                // Ambil data dari response.data
+                setTotalMedia(response.data.total_media_count || 0);
+            } catch (error) {
+                console.error('Error fetching media count:', error);
+                setTotalMedia(0);
+            }
+        };
+
+        fetchMediaCount();
+    }, [cardId]);
 
 //DEBUG
 //   console.log('file ini menerima total message count:', messageCount);
@@ -85,6 +102,12 @@ useEffect(() => {
             <button>
                 <HiOutlinePaperClip className='cf-icon'/>
                 {totalFile}
+            </button>
+        </BootstrapTooltip>
+        <BootstrapTooltip title='Media' placement='top'>
+            <button>
+                <IoImagesOutline className='cf-icon'/>
+                {totalMedia}
             </button>
         </BootstrapTooltip>
        

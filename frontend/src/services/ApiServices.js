@@ -839,6 +839,10 @@ export const uploadChatMedia = async (chatId, file) => {
   }
 };
 
+// media total count 
+export const getCardMediaCount = async (cardId) => axios.get(`${API_URL}/cards/${cardId}/media-count`);
+
+
 //TOTAL NOTIFICATION UNREAD (NOTIFICTION CHAT + NOTIFICATION SYSTEM)
 export const getUserTotalNotificationUnread = (userId) => axios.get(`${API_URL}/notifications/unread-count/${userId}`);
 
