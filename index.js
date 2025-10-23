@@ -1668,6 +1668,7 @@ app.get('/api/search', async (req, res) => {
 //WORKSPACE
 //1.Get all workspace
 // GLOBAL SEARCH CARD (termasuk archived)
+// GLOBAL SEARCH CARD (termasuk archived)
 app.get('/api/search/global', async (req, res) => {
     const { keyword, userId } = req.query;
 
@@ -1696,13 +1697,14 @@ app.get('/api/search/global', async (req, res) => {
         b.name AS board_name,
         w.id AS workspace_id,
         w.name AS workspace_name,
-        'Active' AS status       -- field tambahan hanya untuk response
+        'Active' AS status
         FROM cards c
         JOIN lists l ON c.list_id = l.id
         JOIN boards b ON l.board_id = b.id
         JOIN workspaces w ON b.workspace_id = w.id
         JOIN workspaces_users wu ON wu.workspace_id = w.id
         WHERE wu.user_id = $2
+        AND c.is_delete = FALSE
         AND (LOWER(c.title) ILIKE LOWER($1) OR LOWER(c.description) ILIKE LOWER($1))
 
         UNION ALL
@@ -1718,11 +1720,10 @@ app.get('/api/search/global', async (req, res) => {
         NULL AS board_name,
         NULL AS workspace_id,
         NULL AS workspace_name,
-        'Archive' AS status       -- 🔥 hanya untuk frontend, sebagai pembeda
+        'Archive' AS status
         FROM archive a
         WHERE a.entity_type = 'card'
         AND (LOWER(a.name) ILIKE LOWER($1) OR LOWER(a.description) ILIKE LOWER($1))
-
     `;
 
         const result = await client.query(query, [searchKeyword, numericUserId]);
