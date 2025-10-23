@@ -1,5 +1,5 @@
 require("dotenv").config(); // wajib paling atas sebelum import lain
-dotenv.config();
+
 const express = require("express");
 const client = require('./connection');
 const bodyParser = require('body-parser');
@@ -147,7 +147,7 @@ module.exports = { initializeMarketingCounters, generateMarketingNumbers };
 
 
 //TOP
-
+dotenv.config();
 
 const app = express();
 app.use(express.json());
