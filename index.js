@@ -3567,6 +3567,40 @@ app.patch('/api/lists/:listId/new-position', async (req, res) => {
     }
 });
 
+// GET jumlah card per list_id
+app.get('/api/lists/:listId/cards-count', async (req, res) => {
+    const { listId } = req.params;
+    const numericListId = parseInt(listId);
+
+    if (isNaN(numericListId)) {
+        return res.status(400).json({ error: 'Invalid listId' });
+    }
+
+    try {
+        const query = `
+            SELECT 
+                list_id,
+                COUNT(*) AS card_count
+            FROM cards
+            WHERE list_id = $1
+            AND is_deleted = FALSE
+            GROUP BY list_id;
+        `;
+
+        const result = await client.query(query, [numericListId]);
+
+        if (result.rows.length === 0) {
+            return res.json({ list_id: numericListId, card_count: 0 });
+        }
+
+        res.json(result.rows[0]); // { list_id, card_count }
+    } catch (err) {
+        console.error('❌ Error fetching card count:', err.message);
+        res.status(500).json({ error: 'Internal server error', detail: err.message });
+    }
+});
+
+
 // ✅ GET semua list dalam board tertentu, terurut berdasarkan posisi
 app.get('/api/lists/board/:boardId', async (req, res) => {
     const { boardId } = req.params;
