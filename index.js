@@ -13970,7 +13970,7 @@ app.post('/api/chats/:chatId/media', upload.single('file'), async (req, res) => 
     }
 });
 
-// GET jumlah media per card
+// GET all jumlah media per card
 app.get('/api/cards/media-count', async (req, res) => {
     try {
         const query = `
@@ -13990,6 +13990,40 @@ app.get('/api/cards/media-count', async (req, res) => {
         res.status(500).json({ error: 'Internal server error', detail: err.message });
     }
 });
+
+// GET jumlah media untuk 1 card tertentu
+app.get('/api/cards/:cardId/media-count', async (req, res) => {
+    const { cardId } = req.params;
+    const numericCardId = parseInt(cardId);
+
+    if (isNaN(numericCardId)) {
+        return res.status(400).json({ error: 'Invalid cardId' });
+    }
+
+    try {
+        const query = `
+            SELECT 
+                c.id AS card_id,
+                COUNT(m.id) AS media_count
+            FROM card_chats c
+            LEFT JOIN card_chats_media m ON m.chat_id = c.id
+            WHERE c.id = $1
+            GROUP BY c.id;
+        `;
+
+        const result = await client.query(query, [numericCardId]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Card not found' });
+        }
+
+        res.json(result.rows[0]); // kembalikan object, bukan array
+    } catch (err) {
+        console.error('❌ Error fetching media count:', err.message);
+        res.status(500).json({ error: 'Internal server error', detail: err.message });
+    }
+});
+
 
 
 // END MEDIA CHATS 
