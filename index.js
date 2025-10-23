@@ -13991,7 +13991,7 @@ app.get('/api/cards/media-count', async (req, res) => {
     }
 });
 
-// GET jumlah media untuk 1 card tertentu
+// GET jumlah media per media_type + total untuk card tertentu
 app.get('/api/cards/:cardId/media-count', async (req, res) => {
     const { cardId } = req.params;
     const numericCardId = parseInt(cardId);
@@ -14003,26 +14003,41 @@ app.get('/api/cards/:cardId/media-count', async (req, res) => {
     try {
         const query = `
             SELECT 
-                c.id AS card_id,
-                COUNT(m.id) AS media_count
+                m.media_type,
+                COUNT(*) AS media_count
             FROM card_chats c
-            LEFT JOIN card_chats_media m ON m.chat_id = c.id
-            WHERE c.id = $1
-            GROUP BY c.id;
+            JOIN card_chats_media m ON m.chat_id = c.id
+            WHERE c.card_id = $1
+            GROUP BY m.media_type;
         `;
 
         const result = await client.query(query, [numericCardId]);
 
         if (result.rows.length === 0) {
-            return res.status(404).json({ error: 'Card not found' });
+            return res.json({ card_id: numericCardId, media_count: {}, total_media_count: 0 });
         }
 
-        res.json(result.rows[0]); // kembalikan object, bukan array
+        // Format hasil menjadi object { media_type: count, ... }
+        const mediaCounts = {};
+        let totalMedia = 0;
+
+        result.rows.forEach(row => {
+            const count = parseInt(row.media_count, 10);
+            mediaCounts[row.media_type] = count;
+            totalMedia += count;
+        });
+
+        res.json({
+            card_id: numericCardId,
+            media_count: mediaCounts,
+            total_media_count: totalMedia
+        });
     } catch (err) {
         console.error('❌ Error fetching media count:', err.message);
         res.status(500).json({ error: 'Internal server error', detail: err.message });
     }
 });
+
 
 
 
