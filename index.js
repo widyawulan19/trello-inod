@@ -9279,6 +9279,188 @@ app.put("/api/marketing-design/joined/:id", async (req, res) => {
 });
 
 
+// ✅ UPDATE Data Marketing Design by ID
+
+let currentDesignOrderNumber = 58;     // akan bertambah otomatis
+let currentDesignProjectNumber = 58;   // akan bertambah otomatis
+
+app.put("/api/marketing-design-testing/joined/:id", async (req, res) => {
+    const { id } = req.params;
+    const {
+        buyer_name,
+        code_order,
+        jumlah_design,
+        deadline,
+        jumlah_revisi,
+        price_normal,
+        price_discount,
+        discount_percentage,
+        required_files,
+        file_and_chat,
+        detail_project,
+        input_by,
+        acc_by,
+        account,
+        offer_type,
+        order_type_id,
+        project_type_id,
+        style_id,
+        status_project_id,
+        resolution,
+        reference
+    } = req.body;
+
+    try {
+        // --- generate nomor otomatis ---
+        currentDesignOrderNumber += 1;
+        currentDesignProjectNumber += 1;
+
+        const createAt = new Date();
+        const formattedOrderNumber = currentDesignOrderNumber.toString();
+        const projectNumber = `P${String(currentDesignProjectNumber).padStart(2, "0")} ${dayjs(createAt)
+            .locale("id")
+            .format("DD/MMM/YYYY")}`;
+
+        // --- update data + simpan nomor otomatis ---
+        const result = await client.query(
+            `
+      UPDATE marketing_design
+      SET 
+        buyer_name          = $1,
+        code_order          = $2,
+        order_number        = $3,
+        jumlah_design       = $4,
+        deadline            = $5,
+        jumlah_revisi       = $6,
+        price_normal        = $7,
+        price_discount      = $8,
+        discount_percentage = $9,
+        required_files      = $10,
+        file_and_chat       = $11,
+        detail_project      = $12,
+        input_by            = $13,
+        acc_by              = $14,
+        account             = $15,
+        offer_type          = $16,
+        order_type_id       = $17,
+        project_type_id     = $18,
+        style_id            = $19,
+        status_project_id   = $20,
+        resolution          = $21,
+        reference           = $22,
+        project_number      = $23,
+        update_at           = NOW()
+      WHERE marketing_design_id = $24
+      RETURNING *;
+      `,
+            [
+                buyer_name,
+                code_order,
+                formattedOrderNumber,   // ✅ auto order_number
+                jumlah_design,
+                deadline,
+                jumlah_revisi,
+                price_normal,
+                price_discount,
+                discount_percentage,
+                required_files,
+                file_and_chat,
+                detail_project,
+                input_by,
+                acc_by,
+                account,
+                offer_type,
+                order_type_id,
+                project_type_id,
+                style_id,
+                status_project_id,
+                resolution,
+                reference,
+                projectNumber,          // ✅ auto project_number
+                id,
+            ]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "❌ Marketing design not found" });
+        }
+
+        const updatedDesignId = result.rows[0].marketing_design_id;
+
+        // --- ambil data hasil update dengan JOIN agar konsisten ---
+        const joined = await client.query(
+            `
+      SELECT 
+        md.marketing_design_id,
+        md.buyer_name,
+        md.code_order,
+        md.order_number,
+        md.jumlah_design,
+        md.deadline,
+        md.jumlah_revisi,
+        md.price_normal,
+        md.price_discount,
+        md.discount_percentage,
+        md.required_files,
+        md.file_and_chat,
+        md.detail_project,
+        md.create_at,
+        md.update_at,
+        md.resolution,
+        md.reference,
+        md.project_number,
+
+        mdu.id AS input_by,
+        mdu.nama_marketing AS input_by_name,
+        mdu.divisi AS input_by_divisi,
+
+        kdd.id AS acc_by,
+        kdd.nama AS acc_by_name,
+        kdd.divisi AS acc_by_divisi,
+
+        ad.id AS account,
+        ad.nama_account AS account_name,
+
+        ot.id AS offer_type,
+        ot.offer_name AS offer_type_name,
+
+        pt.id AS project_type,
+        pt.project_name AS project_type_name,
+
+        sd.id AS style,
+        sd.style_name AS style_name,
+
+        sp.id AS status_project,
+        sp.status_name AS status_project_name,
+
+        dot.id AS order_type_id,
+        dot.order_name AS order_type_name
+
+      FROM marketing_design md
+      LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
+      LEFT JOIN kepala_divisi_design kdd ON md.acc_by = kdd.id
+      LEFT JOIN account_design ad ON md.account = ad.id
+      LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
+      LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
+      LEFT JOIN style_design sd ON md.style_id = sd.id
+      LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
+      LEFT JOIN design_order_type dot ON md.order_type_id = dot.id
+      WHERE md.marketing_design_id = $1
+      `,
+            [updatedDesignId]
+        );
+
+        res.status(200).json({
+            message: "✅ Marketing design updated successfully with auto-generated numbers",
+            data: joined.rows[0],
+        });
+
+    } catch (err) {
+        console.error("❌ Error updating marketing_design:", err);
+        res.status(500).json({ error: "Failed to update marketing_design" });
+    }
+});
+
 // END MARKERING DESING JOINED 
 
 // ✅ Get laporan today untuk data marketing design (full join)
