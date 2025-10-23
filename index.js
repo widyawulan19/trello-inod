@@ -8180,64 +8180,97 @@ app.post("/api/marketing-testing", async (req, res) => {
             file_and_chat_link,
             detail_project,
             kupon_diskon_id,
-            accept_status_id
+            accept_status_id,
         } = req.body;
 
         // 🔹 Generate nomor otomatis
         const { projectNumber, orderNumber } = generateMarketingNumbers();
 
+        // 🔹 Ambil posisi terakhir dari tabel
+        const posResult = await client.query(`
+      SELECT COALESCE(MAX(position), 0) AS max_position
+      FROM data_marketing
+    `);
+        const nextPosition = posResult.rows[0].max_position + 1;
+
         // 🔹 Insert ke DB
         const insertResult = await client.query(
-            `INSERT INTO data_marketing 
-            (input_by, acc_by, buyer_name, code_order, jumlah_track, order_number,
-            account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre,
-            price_normal, price_discount, discount, basic_price, gig_link, required_files,
-            project_type, duration, reference_link, file_and_chat_link, detail_project,
-            kupon_diskon_id, accept_status_id, create_at, project_number)
-            VALUES
-            ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,CURRENT_TIMESTAMP,$27)
-            RETURNING *`,
+            `
+      INSERT INTO data_marketing 
+      (input_by, acc_by, buyer_name, code_order, jumlah_track, order_number,
+      account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre,
+      price_normal, price_discount, discount, basic_price, gig_link, required_files,
+      project_type, duration, reference_link, file_and_chat_link, detail_project,
+      kupon_diskon_id, accept_status_id, create_at, project_number, position)
+      VALUES
+      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,CURRENT_TIMESTAMP,$27,$28)
+      RETURNING *`,
             [
-                input_by, acc_by, buyer_name, code_order, jumlah_track, orderNumber,
-                account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre,
-                price_normal, price_discount, discount, basic_price, gig_link, required_files,
-                project_type, duration, reference_link, file_and_chat_link, detail_project,
-                kupon_diskon_id || null, accept_status_id || null, projectNumber
+                input_by,
+                acc_by,
+                buyer_name,
+                code_order,
+                jumlah_track,
+                orderNumber,
+                account,
+                deadline,
+                jumlah_revisi,
+                order_type,
+                offer_type,
+                jenis_track,
+                genre,
+                price_normal,
+                price_discount,
+                discount,
+                basic_price,
+                gig_link,
+                required_files,
+                project_type,
+                duration,
+                reference_link,
+                file_and_chat_link,
+                detail_project,
+                kupon_diskon_id || null,
+                accept_status_id || null,
+                projectNumber,
+                nextPosition,
             ]
         );
 
         const newMarketingId = insertResult.rows[0].marketing_id;
 
-        // 🔹 Ambil hasil dengan join lengkap
-        const result = await client.query(`
-            SELECT 
-                dm.*, 
-                mu.nama_marketing AS input_by_name,
-                kd.nama AS acc_by_name,
-                am.nama_account AS account_name,
-                ot.order_name AS order_type_name,
-                oft.offer_name AS offer_type_name,
-                tt.track_name AS track_type_name,
-                g.genre_name AS genre_name,
-                pt.nama_project AS project_type_name,
-                k.nama_kupon AS kupon_diskon_name,
-                s.status_name AS accept_status_name
-            FROM data_marketing dm
-            LEFT JOIN marketing_musik_user mu ON mu.id = dm.input_by
-            LEFT JOIN kepala_divisi kd ON kd.id = dm.acc_by
-            LEFT JOIN account_music am ON am.id = dm.account
-            LEFT JOIN music_order_type ot ON ot.id = dm.order_type
-            LEFT JOIN offer_type_music oft ON oft.id = dm.offer_type
-            LEFT JOIN track_types tt ON tt.id = dm.jenis_track
-            LEFT JOIN genre_music g ON g.id = dm.genre
-            LEFT JOIN project_type pt ON pt.id = dm.project_type
-            LEFT JOIN kupon_diskon k ON k.id = dm.kupon_diskon_id
-            LEFT JOIN accept_status s ON s.id = dm.accept_status_id
-            WHERE dm.marketing_id = $1
-        `, [newMarketingId]);
+        // 🔹 Ambil hasil lengkap dengan join
+        const result = await client.query(
+            `
+      SELECT 
+        dm.*, 
+        mu.nama_marketing AS input_by_name,
+        kd.nama AS acc_by_name,
+        am.nama_account AS account_name,
+        ot.order_name AS order_type_name,
+        oft.offer_name AS offer_type_name,
+        tt.track_name AS track_type_name,
+        g.genre_name AS genre_name,
+        pt.nama_project AS project_type_name,
+        k.nama_kupon AS kupon_diskon_name,
+        s.status_name AS accept_status_name
+      FROM data_marketing dm
+      LEFT JOIN marketing_musik_user mu ON mu.id = dm.input_by
+      LEFT JOIN kepala_divisi kd ON kd.id = dm.acc_by
+      LEFT JOIN account_music am ON am.id = dm.account
+      LEFT JOIN music_order_type ot ON ot.id = dm.order_type
+      LEFT JOIN offer_type_music oft ON oft.id = dm.offer_type
+      LEFT JOIN track_types tt ON tt.id = dm.jenis_track
+      LEFT JOIN genre_music g ON g.id = dm.genre
+      LEFT JOIN project_type pt ON pt.id = dm.project_type
+      LEFT JOIN kupon_diskon k ON k.id = dm.kupon_diskon_id
+      LEFT JOIN accept_status s ON s.id = dm.accept_status_id
+      WHERE dm.marketing_id = $1
+    `,
+            [newMarketingId]
+        );
 
         res.status(201).json(result.rows[0]);
-
     } catch (err) {
         console.error("❌ Error creating marketing data:", err.message);
         res.status(500).send("Server error");
