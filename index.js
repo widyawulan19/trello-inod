@@ -1704,7 +1704,7 @@ app.get('/api/search/global', async (req, res) => {
         JOIN workspaces w ON b.workspace_id = w.id
         JOIN workspaces_users wu ON wu.workspace_id = w.id
         WHERE wu.user_id = $2
-        AND c.is_delete = FALSE
+        AND c.is_deleted = FALSE
         AND (LOWER(c.title) ILIKE LOWER($1) OR LOWER(c.description) ILIKE LOWER($1))
 
         UNION ALL
