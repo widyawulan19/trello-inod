@@ -63,25 +63,40 @@ initializeCounters();
 // 🔢 COUNTER SETUP DATA MARKETING MUSIK
 // ============================
 
-// Variabel global counter
-let currentOrderNumberMarketing = 0;
-let currentProjectNumberMarketing = 0;
-let lastMarketingMonth = dayjs().month();
 
-// 🔹 Fungsi untuk ambil nomor terakhir dari tabel data_marketing
+// =======================
+// 🔹 VARIABEL GLOBAL
+// =======================
+let currentOrderNumberMarketing = 558;     // bisa kamu set manual
+let currentProjectNumberMarketing = 558;    // bisa kamu set manual
+let lastMarketingMonth = dayjs().month();  // default bulan saat ini
+
+
+// =======================
+// 🔹 INISIALISASI COUNTER
+// =======================
 async function initializeMarketingCounters() {
     try {
+        // Ambil data terakhir dari database
         const result = await client.query(`
             SELECT 
-                MAX(CAST(order_number AS INTEGER)) AS max_order_number,
-                MAX(CAST(REGEXP_REPLACE(project_number, '^P([0-9]+).*$', '\\1') AS INTEGER)) AS max_project_number,
+                MAX(CAST(REGEXP_REPLACE(order_number, '[^0-9]', '', 'g') AS INTEGER)) AS max_order_number,
+                MAX(CAST(REGEXP_REPLACE(project_number, '[^0-9]', '', 'g') AS INTEGER)) AS max_project_number,
                 MAX(create_at) AS last_created_at
             FROM data_marketing
+            WHERE project_number ~ '^P[0-9]+'  -- hanya project_number valid
         `);
 
         const row = result.rows[0];
-        currentOrderNumberMarketing = row.max_order_number || 0;
-        currentProjectNumberMarketing = row.max_project_number || 0;
+
+        // Jika ada data valid, update dari database
+        if (row.max_order_number && !isNaN(row.max_order_number)) {
+            currentOrderNumberMarketing = parseInt(row.max_order_number);
+        }
+        if (row.max_project_number && !isNaN(row.max_project_number)) {
+            currentProjectNumberMarketing = parseInt(row.max_project_number);
+        }
+
         lastMarketingMonth = row.last_created_at
             ? dayjs(row.last_created_at).month()
             : dayjs().month();
@@ -96,8 +111,36 @@ async function initializeMarketingCounters() {
 }
 
 
-// Jalankan ketika server start
-initializeMarketingCounters();
+// =======================
+// 🔹 FUNGSI GENERATE NOMOR BARU
+// =======================
+function generateMarketingNumbers() {
+    const now = dayjs();
+    const currentMonth = now.month();
+
+    // Reset jika bulan berganti
+    if (currentMonth !== lastMarketingMonth) {
+        currentProjectNumberMarketing = 0; // reset ke P01
+        lastMarketingMonth = currentMonth;
+        console.log(`🔁 Bulan baru terdeteksi! Reset project number ke P01 (${now.format('MMM YYYY')})`);
+    }
+
+    // Increment counters
+    currentOrderNumberMarketing += 1;
+    currentProjectNumberMarketing += 1;
+
+    // Format nomor
+    const projectNumber = `P${String(currentProjectNumberMarketing).padStart(2, "0")} ${now.format("DD/MMM/YYYY")}`;
+    const orderNumber = `${currentOrderNumberMarketing}`;
+
+    return { projectNumber, orderNumber };
+}
+
+
+// =======================
+// 🔹 EKSPOR UNTUK DIGUNAKAN DI ROUTE
+// =======================
+export { initializeMarketingCounters, generateMarketingNumbers };
 
 
 
@@ -8108,6 +8151,7 @@ app.patch("/api/marketing/:id/restore", async (req, res) => {
 
 
 // ADD NEW DATA MARKERING MUSIK 
+// ADD NEW DATA MARKETING MUSIK
 app.post("/api/marketing-testing", async (req, res) => {
     try {
         const {
@@ -8138,34 +8182,22 @@ app.post("/api/marketing-testing", async (req, res) => {
             accept_status_id
         } = req.body;
 
-        // 🔹 Cek bulan baru -> reset nomor project kalau ganti bulan
-        const currentMonth = dayjs().month();
-        if (currentMonth !== lastMarketingMonth) {
-            currentProjectNumberMarketing = 0;
-            lastMarketingMonth = currentMonth;
-        }
+        // 🔹 Generate nomor otomatis
+        const { projectNumber, orderNumber } = generateMarketingNumbers();
 
-        // 🔹 Naikkan counter otomatis
-        currentOrderNumberMarketing += 1;
-        currentProjectNumberMarketing += 1;
-
-        const createAt = new Date();
-        const formattedOrderNumber = currentOrderNumberMarketing.toString();
-        const projectNumber = `P${String(currentProjectNumberMarketing).padStart(2, "0")} ${dayjs(createAt).locale("id").format("DD/MMM/YYYY")}`;
-
-        // 🔹 Insert data
+        // 🔹 Insert ke DB
         const insertResult = await client.query(
             `INSERT INTO data_marketing 
-      (input_by, acc_by, buyer_name, code_order, jumlah_track, order_number,
-      account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre,
-      price_normal, price_discount, discount, basic_price, gig_link, required_files,
-      project_type, duration, reference_link, file_and_chat_link, detail_project,
-      kupon_diskon_id, accept_status_id, create_at, project_number)
-      VALUES
-      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,CURRENT_TIMESTAMP,$27)
-      RETURNING *`,
+            (input_by, acc_by, buyer_name, code_order, jumlah_track, order_number,
+            account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre,
+            price_normal, price_discount, discount, basic_price, gig_link, required_files,
+            project_type, duration, reference_link, file_and_chat_link, detail_project,
+            kupon_diskon_id, accept_status_id, create_at, project_number)
+            VALUES
+            ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,CURRENT_TIMESTAMP,$27)
+            RETURNING *`,
             [
-                input_by, acc_by, buyer_name, code_order, jumlah_track, formattedOrderNumber,
+                input_by, acc_by, buyer_name, code_order, jumlah_track, orderNumber,
                 account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre,
                 price_normal, price_discount, discount, basic_price, gig_link, required_files,
                 project_type, duration, reference_link, file_and_chat_link, detail_project,
@@ -8175,74 +8207,33 @@ app.post("/api/marketing-testing", async (req, res) => {
 
         const newMarketingId = insertResult.rows[0].marketing_id;
 
-        // 🔹 Ambil data hasil insert dengan join
+        // 🔹 Ambil hasil dengan join lengkap
         const result = await client.query(`
-      SELECT 
-        dm.marketing_id,
-        dm.card_id,
-        dm.buyer_name,
-        dm.code_order,
-        dm.order_number,
-        dm.jumlah_track,
-        dm.duration,
-        dm.jumlah_revisi,
-        dm.deadline,
-        dm.price_normal,
-        dm.price_discount,
-        dm.discount,
-        dm.basic_price,
-        dm.gig_link,
-        dm.reference_link,
-        dm.required_files,
-        dm.file_and_chat_link,
-        dm.detail_project,
-        dm.create_at,
-        dm.update_at,
-        dm.project_number,
-
-        mu.id AS input_by,
-        mu.nama_marketing AS input_by_name,
-
-        kd.id AS acc_by,
-        kd.nama AS acc_by_name,
-
-        am.id AS account,
-        am.nama_account AS account_name,
-
-        ot.id AS order_type,
-        ot.order_name AS order_type_name,
-
-        oft.id AS offer_type,
-        oft.offer_name AS offer_type_name,
-
-        tt.id AS jenis_track,
-        tt.track_name AS track_type_name,
-
-        g.id AS genre,
-        g.genre_name AS genre_name,
-
-        pt.id AS project_type,
-        pt.nama_project AS project_type_name,
-
-        k.id AS kupon_diskon_id,
-        k.nama_kupon AS kupon_diskon_name,
-
-        s.id AS accept_status_id,
-        s.status_name AS accept_status_name
-
-      FROM data_marketing dm
-      LEFT JOIN marketing_musik_user mu ON mu.id = dm.input_by
-      LEFT JOIN kepala_divisi kd ON kd.id = dm.acc_by
-      LEFT JOIN account_music am ON am.id = dm.account
-      LEFT JOIN music_order_type ot ON ot.id = dm.order_type
-      LEFT JOIN offer_type_music oft ON oft.id = dm.offer_type
-      LEFT JOIN track_types tt ON tt.id = dm.jenis_track
-      LEFT JOIN genre_music g ON g.id = dm.genre
-      LEFT JOIN project_type pt ON pt.id = dm.project_type
-      LEFT JOIN kupon_diskon k ON k.id = dm.kupon_diskon_id
-      LEFT JOIN accept_status s ON s.id = dm.accept_status_id
-      WHERE dm.marketing_id = $1
-    `, [newMarketingId]);
+            SELECT 
+                dm.*, 
+                mu.nama_marketing AS input_by_name,
+                kd.nama AS acc_by_name,
+                am.nama_account AS account_name,
+                ot.order_name AS order_type_name,
+                oft.offer_name AS offer_type_name,
+                tt.track_name AS track_type_name,
+                g.genre_name AS genre_name,
+                pt.nama_project AS project_type_name,
+                k.nama_kupon AS kupon_diskon_name,
+                s.status_name AS accept_status_name
+            FROM data_marketing dm
+            LEFT JOIN marketing_musik_user mu ON mu.id = dm.input_by
+            LEFT JOIN kepala_divisi kd ON kd.id = dm.acc_by
+            LEFT JOIN account_music am ON am.id = dm.account
+            LEFT JOIN music_order_type ot ON ot.id = dm.order_type
+            LEFT JOIN offer_type_music oft ON oft.id = dm.offer_type
+            LEFT JOIN track_types tt ON tt.id = dm.jenis_track
+            LEFT JOIN genre_music g ON g.id = dm.genre
+            LEFT JOIN project_type pt ON pt.id = dm.project_type
+            LEFT JOIN kupon_diskon k ON k.id = dm.kupon_diskon_id
+            LEFT JOIN accept_status s ON s.id = dm.accept_status_id
+            WHERE dm.marketing_id = $1
+        `, [newMarketingId]);
 
         res.status(201).json(result.rows[0]);
 
