@@ -72,12 +72,12 @@ let lastMarketingMonth = dayjs().month();
 async function initializeMarketingCounters() {
     try {
         const result = await client.query(`
-      SELECT 
-        MAX(CAST(order_number AS INTEGER)) AS max_order_number,
-        MAX(CAST(SUBSTRING(project_number FROM 2 FOR 2) AS INTEGER)) AS max_project_number,
-        MAX(create_at) AS last_created_at
-      FROM data_marketing
-    `);
+            SELECT 
+                MAX(CAST(order_number AS INTEGER)) AS max_order_number,
+                MAX(CAST(REGEXP_REPLACE(project_number, '^P([0-9]+).*$', '\\1') AS INTEGER)) AS max_project_number,
+                MAX(create_at) AS last_created_at
+            FROM data_marketing
+        `);
 
         const row = result.rows[0];
         currentOrderNumberMarketing = row.max_order_number || 0;
@@ -94,6 +94,7 @@ async function initializeMarketingCounters() {
         console.error("❌ Failed to initialize marketing counters:", error.message);
     }
 }
+
 
 // Jalankan ketika server start
 initializeMarketingCounters();
