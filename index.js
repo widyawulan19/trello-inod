@@ -22,7 +22,7 @@ dayjs.locale("id");
 
 
 // ============================
-// 🔢 COUNTER SETUP
+// 🔢 COUNTER SETUP DATA MARKETING DESIGN
 // ============================
 let currentDesignOrderNumber = 0;
 let currentDesignProjectNumber = 0;
@@ -57,6 +57,46 @@ async function initializeCounters() {
 // Jalankan saat server start
 initializeCounters();
 
+
+
+// ============================
+// 🔢 COUNTER SETUP DATA MARKETING MUSIK
+// ============================
+
+// Variabel global counter
+let currentOrderNumberMarketing = 0;
+let currentProjectNumberMarketing = 0;
+let lastMarketingMonth = dayjs().month();
+
+// 🔹 Fungsi untuk ambil nomor terakhir dari tabel data_marketing
+async function initializeMarketingCounters() {
+    try {
+        const result = await client.query(`
+      SELECT 
+        MAX(CAST(order_number AS INTEGER)) AS max_order_number,
+        MAX(CAST(SUBSTRING(project_number FROM 2 FOR 2) AS INTEGER)) AS max_project_number,
+        MAX(create_at) AS last_created_at
+      FROM data_marketing
+    `);
+
+        const row = result.rows[0];
+        currentOrderNumberMarketing = row.max_order_number || 0;
+        currentProjectNumberMarketing = row.max_project_number || 0;
+        lastMarketingMonth = row.last_created_at
+            ? dayjs(row.last_created_at).month()
+            : dayjs().month();
+
+        console.log("✅ Marketing counter initialized:");
+        console.log("   currentOrderNumberMarketing:", currentOrderNumberMarketing);
+        console.log("   currentProjectNumberMarketing:", currentProjectNumberMarketing);
+        console.log("   lastMarketingMonth:", lastMarketingMonth + 1);
+    } catch (error) {
+        console.error("❌ Failed to initialize marketing counters:", error.message);
+    }
+}
+
+// Jalankan ketika server start
+initializeMarketingCounters();
 
 
 
@@ -8066,10 +8106,7 @@ app.patch("/api/marketing/:id/restore", async (req, res) => {
 });
 
 
-
-let currentOrderNumberTesting = 574;    // nanti otomatis jadi 298, 299, dst
-let currentProjectNumberTesting = 574;   // nanti otomatis jadi P036, P037, dst
-
+// ADD NEW DATA MARKERING MUSIK 
 app.post("/api/marketing-testing", async (req, res) => {
     try {
         const {
@@ -8096,29 +8133,36 @@ app.post("/api/marketing-testing", async (req, res) => {
             reference_link,
             file_and_chat_link,
             detail_project,
-            kupon_diskon_id,    // optional
-            accept_status_id    // optional
+            kupon_diskon_id,
+            accept_status_id
         } = req.body;
 
-        // --- generate nomor otomatis ---
-        currentOrderNumberTesting += 1;
-        currentProjectNumberTesting += 1;
+        // 🔹 Cek bulan baru -> reset nomor project kalau ganti bulan
+        const currentMonth = dayjs().month();
+        if (currentMonth !== lastMarketingMonth) {
+            currentProjectNumberMarketing = 0;
+            lastMarketingMonth = currentMonth;
+        }
+
+        // 🔹 Naikkan counter otomatis
+        currentOrderNumberMarketing += 1;
+        currentProjectNumberMarketing += 1;
 
         const createAt = new Date();
-        const formattedOrderNumber = currentOrderNumberTesting.toString();
-        const projectNumber = `P${String(currentProjectNumberTesting).padStart(2, "0")} ${dayjs(createAt).locale("id").format("DD/MMM/YYYY")}`;
+        const formattedOrderNumber = currentOrderNumberMarketing.toString();
+        const projectNumber = `P${String(currentProjectNumberMarketing).padStart(2, "0")} ${dayjs(createAt).locale("id").format("DD/MMM/YYYY")}`;
 
-        // --- insert ke tabel data_marketing ---
+        // 🔹 Insert data
         const insertResult = await client.query(
             `INSERT INTO data_marketing 
-        (input_by, acc_by, buyer_name, code_order, jumlah_track, order_number,
-         account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre,
-         price_normal, price_discount, discount, basic_price, gig_link, required_files,
-         project_type, duration, reference_link, file_and_chat_link, detail_project,
-         kupon_diskon_id, accept_status_id, create_at, project_number)
-       VALUES
-        ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,CURRENT_TIMESTAMP,$27)
-       RETURNING *`,
+      (input_by, acc_by, buyer_name, code_order, jumlah_track, order_number,
+      account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre,
+      price_normal, price_discount, discount, basic_price, gig_link, required_files,
+      project_type, duration, reference_link, file_and_chat_link, detail_project,
+      kupon_diskon_id, accept_status_id, create_at, project_number)
+      VALUES
+      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,CURRENT_TIMESTAMP,$27)
+      RETURNING *`,
             [
                 input_by, acc_by, buyer_name, code_order, jumlah_track, formattedOrderNumber,
                 account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre,
@@ -8130,7 +8174,7 @@ app.post("/api/marketing-testing", async (req, res) => {
 
         const newMarketingId = insertResult.rows[0].marketing_id;
 
-        // --- ambil data hasil insert + join tabel kupon_diskon & accept_status + relasi lain ---
+        // 🔹 Ambil data hasil insert dengan join
         const result = await client.query(`
       SELECT 
         dm.marketing_id,
@@ -8206,6 +8250,7 @@ app.post("/api/marketing-testing", async (req, res) => {
         res.status(500).send("Server error");
     }
 });
+
 
 
 
