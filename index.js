@@ -21,6 +21,43 @@ require("dayjs/locale/id");  // aktifkan bahasa Indonesia
 dayjs.locale("id");
 
 
+// ============================
+// 🔢 COUNTER SETUP
+// ============================
+let currentDesignOrderNumber = 0;
+let currentDesignProjectNumber = 0;
+let lastProjectMonth = dayjs().month();
+
+async function initializeCounters() {
+    try {
+        const result = await client.query(`
+      SELECT 
+        MAX(CAST(order_number AS INTEGER)) AS max_order_number,
+        MAX(CAST(SUBSTRING(project_number FROM 2 FOR 2) AS INTEGER)) AS max_project_number,
+        MAX(create_at) AS last_created_at
+      FROM marketing_design
+    `);
+
+        const row = result.rows[0];
+        currentDesignOrderNumber = row.max_order_number || 0;
+        currentDesignProjectNumber = row.max_project_number || 0;
+        lastProjectMonth = row.last_created_at
+            ? dayjs(row.last_created_at).month()
+            : dayjs().month();
+
+        console.log("✅ Counter initialized:");
+        console.log("   currentDesignOrderNumber:", currentDesignOrderNumber);
+        console.log("   currentDesignProjectNumber:", currentDesignProjectNumber);
+        console.log("   lastProjectMonth:", lastProjectMonth + 1);
+    } catch (error) {
+        console.error("❌ Failed to initialize counters:", error.message);
+    }
+}
+
+// Jalankan saat server start
+initializeCounters();
+
+
 
 
 
@@ -9602,11 +9639,8 @@ app.post("/api/marketing-design/joined", async (req, res) => {
     }
 });
 
-// Tambah data marketing_design baru (lengkap dengan order_type + project_number) TESTING
-// Tambah data marketing_design baru (otomatis order_number + project_number) TESTING
-let currentDesignOrderNumber = 58;
-let currentDesignProjectNumber = 58;
 
+// Tambah data marketing_design baru (otomatis order_number + project_number) TESTING
 app.post("/api/marketing-design/joined-testing", async (req, res) => {
     try {
         const {
@@ -9633,7 +9667,15 @@ app.post("/api/marketing-design/joined-testing", async (req, res) => {
             status_project_id
         } = req.body;
 
-        // --- Generate nomor otomatis ---
+        // === 🔄 Reset project number jika bulan berganti ===
+        const currentMonth = dayjs().month();
+        if (currentMonth !== lastProjectMonth) {
+            console.log("📅 Bulan berganti, reset project number ke 1");
+            currentDesignProjectNumber = 0;
+            lastProjectMonth = currentMonth;
+        }
+
+        // === 🔢 Generate nomor otomatis ===
         currentDesignOrderNumber += 1;
         currentDesignProjectNumber += 1;
 
@@ -9641,17 +9683,17 @@ app.post("/api/marketing-design/joined-testing", async (req, res) => {
         const formattedOrderNumber = currentDesignOrderNumber.toString();
         const projectNumber = `P${String(currentDesignProjectNumber).padStart(2, "0")} ${dayjs(createAt).locale("id").format("DD/MMM/YYYY")}`;
 
-        // --- Insert ke tabel marketing_design ---
+        // === 🧩 Insert ke tabel marketing_design ===
         const insertResult = await client.query(
             `INSERT INTO marketing_design 
-            (buyer_name, code_order, order_number, jumlah_design, deadline, jumlah_revisi,
-             price_normal, price_discount, discount_percentage, required_files, file_and_chat,
-             detail_project, input_by, acc_by, account, offer_type, order_type_id, resolution,
-             reference, project_type_id, style_id, status_project_id, create_at, project_number)
-             VALUES
-            ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,
-             $12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,CURRENT_TIMESTAMP,$23)
-             RETURNING *`,
+      (buyer_name, code_order, order_number, jumlah_design, deadline, jumlah_revisi,
+       price_normal, price_discount, discount_percentage, required_files, file_and_chat,
+       detail_project, input_by, acc_by, account, offer_type, order_type_id, resolution,
+       reference, project_type_id, style_id, status_project_id, create_at, project_number)
+       VALUES
+      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,
+       $12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,CURRENT_TIMESTAMP,$23)
+       RETURNING *`,
             [
                 buyer_name,
                 code_order,
@@ -9681,72 +9723,75 @@ app.post("/api/marketing-design/joined-testing", async (req, res) => {
 
         const newDesignId = insertResult.rows[0].marketing_design_id;
 
-        // --- Ambil data hasil insert dengan join tabel terkait ---
+        // === 🔍 Ambil data hasil insert dengan join tabel terkait ===
         const joined = await client.query(
             `
-            SELECT 
-                md.marketing_design_id,
-                md.buyer_name,
-                md.code_order,
-                md.order_number,
-                md.jumlah_design,
-                md.deadline,
-                md.jumlah_revisi,
-                md.price_normal,
-                md.price_discount,
-                md.discount_percentage,
-                md.required_files,
-                md.file_and_chat,
-                md.detail_project,
-                md.resolution,
-                md.reference,
-                md.project_number,
-                md.create_at,
-                md.update_at,
+      SELECT 
+          md.marketing_design_id,
+          md.buyer_name,
+          md.code_order,
+          md.order_number,
+          md.jumlah_design,
+          md.deadline,
+          md.jumlah_revisi,
+          md.price_normal,
+          md.price_discount,
+          md.discount_percentage,
+          md.required_files,
+          md.file_and_chat,
+          md.detail_project,
+          md.resolution,
+          md.reference,
+          md.project_number,
+          md.create_at,
+          md.update_at,
 
-                mdu.id AS input_by,
-                mdu.nama_marketing AS input_by_name,
-                mdu.divisi AS input_by_divisi,
+          mdu.id AS input_by,
+          mdu.nama_marketing AS input_by_name,
+          mdu.divisi AS input_by_divisi,
 
-                kdd.id AS acc_by,
-                kdd.nama AS acc_by_name,
+          kdd.id AS acc_by,
+          kdd.nama AS acc_by_name,
 
-                ad.id AS account,
-                ad.nama_account AS account_name,
+          ad.id AS account,
+          ad.nama_account AS account_name,
 
-                ot.id AS offer_type,
-                ot.offer_name AS offer_type_name,
+          ot.id AS offer_type,
+          ot.offer_name AS offer_type_name,
 
-                pt.id AS project_type,
-                pt.project_name AS project_type_name,
+          pt.id AS project_type,
+          pt.project_name AS project_type_name,
 
-                sd.id AS style,
-                sd.style_name AS style_name,
+          sd.id AS style,
+          sd.style_name AS style_name,
 
-                sp.id AS status_project,
-                sp.status_name AS status_project_name,
+          sp.id AS status_project,
+          sp.status_name AS status_project_name,
 
-                dot.id AS order_type_id,
-                dot.order_name AS order_type_name
+          dot.id AS order_type_id,
+          dot.order_name AS order_type_name
 
-            FROM marketing_design md
-            LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
-            LEFT JOIN kepala_divisi_design kdd ON md.acc_by = kdd.id
-            LEFT JOIN account_design ad ON md.account = ad.id
-            LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
-            LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
-            LEFT JOIN style_design sd ON md.style_id = sd.id
-            LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
-            LEFT JOIN design_order_type dot ON md.order_type_id = dot.id
-            WHERE md.marketing_design_id = $1
-            `,
+      FROM marketing_design md
+      LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
+      LEFT JOIN kepala_divisi_design kdd ON md.acc_by = kdd.id
+      LEFT JOIN account_design ad ON md.account = ad.id
+      LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
+      LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
+      LEFT JOIN style_design sd ON md.style_id = sd.id
+      LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
+      LEFT JOIN design_order_type dot ON md.order_type_id = dot.id
+      WHERE md.marketing_design_id = $1
+      `,
             [newDesignId]
         );
+
+        console.log(`✅ Marketing design #${formattedOrderNumber} berhasil dibuat`);
 
         res.status(201).json({
             message: "✅ Marketing design created successfully",
             data: joined.rows[0],
         });
+
     } catch (err) {
         console.error("❌ Error creating marketing_design:", err.message);
         res.status(500).json({ error: "Failed to create marketing_design" });
