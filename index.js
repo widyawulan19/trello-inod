@@ -141,7 +141,7 @@ function generateMarketingNumbers() {
 // =======================
 // 🔹 EKSPOR UNTUK DIGUNAKAN DI ROUTE
 // =======================
-export { initializeMarketingCounters, generateMarketingNumbers };
+module.exports = { initializeMarketingCounters, generateMarketingNumbers };
 
 
 
