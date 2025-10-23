@@ -13970,6 +13970,28 @@ app.post('/api/chats/:chatId/media', upload.single('file'), async (req, res) => 
     }
 });
 
+// GET jumlah media per card
+app.get('/api/cards/media-count', async (req, res) => {
+    try {
+        const query = `
+            SELECT 
+                c.id AS card_id,
+                COUNT(m.id) AS media_count
+            FROM card_chats c
+            LEFT JOIN card_chats_media m ON m.chat_id = c.id
+            GROUP BY c.id
+            ORDER BY c.id;
+        `;
+
+        const result = await client.query(query);
+        res.json(result.rows);
+    } catch (err) {
+        console.error('❌ Error fetching media count:', err.message);
+        res.status(500).json({ error: 'Internal server error', detail: err.message });
+    }
+});
+
+
 // END MEDIA CHATS 
 
 
