@@ -9183,6 +9183,7 @@ app.get("/api/marketing-design/joined", async (req, res) => {
         md.resolution,
         md.reference,
         md.project_number,
+        md.position, -- ✅ tambahkan ini
 
         -- Relasi Input By
         mdu.id AS input_by_id,
@@ -9212,7 +9213,7 @@ app.get("/api/marketing-design/joined", async (req, res) => {
         sp.id AS status_project_id,
         sp.status_name AS status_project_name,
 
-        -- Relasi Design Order Type (baru ditambahkan)
+        -- Relasi Design Order Type
         dot.id AS order_type_id,
         dot.order_name AS order_type_name
 
@@ -9226,7 +9227,7 @@ app.get("/api/marketing-design/joined", async (req, res) => {
       LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
       LEFT JOIN design_order_type dot ON md.order_type_id = dot.id
       WHERE md.is_deleted = false
-      ORDER BY md.marketing_design_id DESC;
+      ORDER BY md.position ASC; -- ✅ ubah urutan pakai posisi, bukan ID
     `);
 
         res.json(result.rows);
@@ -9235,6 +9236,7 @@ app.get("/api/marketing-design/joined", async (req, res) => {
         res.status(500).json({ error: "Failed to fetch joined data" });
     }
 });
+
 
 
 
@@ -9858,8 +9860,8 @@ app.post("/api/marketing-design/joined-testing", async (req, res) => {
         const nextPosition = posResult.rows[0].max_position + 1;
 
         // === 🧩 Insert data baru ke tabel marketing_design ===
-       const result = await client.query(
-        `
+        const result = await client.query(
+            `
         INSERT INTO marketing_design (
             buyer_name,
             code_order,
@@ -9893,32 +9895,32 @@ app.post("/api/marketing-design/joined-testing", async (req, res) => {
         )
         RETURNING *;
         `,
-        [
-            buyer_name,
-            code_order,
-            orderNumber,
-            jumlah_design,
-            deadline,
-            jumlah_revisi,
-            price_normal,
-            price_discount,
-            discount_percentage,
-            required_files,
-            file_and_chat,
-            detail_project,
-            input_by,
-            acc_by,
-            account,
-            offer_type,
-            order_type_id,
-            resolution,
-            reference,
-            project_type_id,
-            style_id,
-            status_project_id,
-            projectNumber,
-            nextPosition, // ✅ posisi di parameter terakhir sebelum NOW()
-        ]
+            [
+                buyer_name,
+                code_order,
+                orderNumber,
+                jumlah_design,
+                deadline,
+                jumlah_revisi,
+                price_normal,
+                price_discount,
+                discount_percentage,
+                required_files,
+                file_and_chat,
+                detail_project,
+                input_by,
+                acc_by,
+                account,
+                offer_type,
+                order_type_id,
+                resolution,
+                reference,
+                project_type_id,
+                style_id,
+                status_project_id,
+                projectNumber,
+                nextPosition, // ✅ posisi di parameter terakhir sebelum NOW()
+            ]
         );
 
 
