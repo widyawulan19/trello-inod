@@ -9832,7 +9832,7 @@ app.post("/api/marketing-design/joined-testing", async (req, res) => {
             deadline,
             jumlah_revisi,
             order_type_id,
-            offer_type_id, // ✅ sudah disesuaikan
+            offer_type, // ✅ sudah disesuaikan
             resolution,
             reference,
             price_normal,
@@ -9876,7 +9876,7 @@ app.post("/api/marketing-design/joined-testing", async (req, res) => {
                 input_by,
                 acc_by,
                 account,
-                offer_type_id, // ✅ sudah diganti
+                offer_type, // ✅ sudah diganti
                 order_type_id,
                 resolution,
                 reference,
@@ -9890,36 +9890,61 @@ app.post("/api/marketing-design/joined-testing", async (req, res) => {
         const newDesignId = insertResult.rows[0].marketing_design_id;
 
         // === 🔍 Ambil data hasil insert dengan join tabel terkait ===
-        const joined = await client.query(`
-      SELECT 
-          md.*,
-          mdu.id AS input_by_id,
-          mdu.nama_marketing AS input_by_name,
-          kdd.id AS acc_by_id,
-          kdd.nama AS acc_by_name,
-          ad.id AS account_id,
-          ad.nama_account AS account_name,
-          ot.id AS offer_type_id,
-          ot.offer_name AS offer_type_name,
-          pt.id AS project_type_id,
-          pt.project_name AS project_type_name,
-          sd.id AS style_id,
-          sd.style_name AS style_name,
-          sp.id AS status_project_id,
-          sp.status_name AS status_project_name,
-          dot.id AS order_type_id,
-          dot.order_name AS order_type_name
-      FROM marketing_design md
-      LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
-      LEFT JOIN kepala_divisi_design kdd ON md.acc_by = kdd.id
-      LEFT JOIN account_design ad ON md.account = ad.id
-      LEFT JOIN offer_type_design ot ON md.offer_type_id = ot.id
-      LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
-      LEFT JOIN style_design sd ON md.style_id = sd.id
-      LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
-      LEFT JOIN design_order_type dot ON md.order_type_id = dot.id
-      WHERE md.marketing_design_id = $1
-    `, [newDesignId]);
+        const joined = await client.query(
+            `
+            SELECT 
+                md.marketing_design_id,
+                md.buyer_name,
+                md.code_order,
+                md.jumlah_design,
+                md.deadline,
+                md.jumlah_revisi,
+                md.price_normal,
+                md.price_discount,
+                md.discount_percentage,
+                md.required_files,
+                md.file_and_chat,
+                md.detail_project,
+                md.resolution,
+                md.reference,
+
+                mdu.id AS input_by,
+                mdu.nama_marketing AS input_by_name,
+                mdu.divisi AS input_by_divisi,
+
+                kdd.id AS acc_by,
+                kdd.nama AS acc_by_name,
+
+                ad.id AS account,
+                ad.nama_account AS account_name,
+
+                ot.id AS offer_type,
+                ot.offer_name AS offer_type_name,
+
+                pt.id AS project_type,
+                pt.project_name AS project_type_name,
+
+                sd.id AS style,
+                sd.style_name AS style_name,
+
+                sp.id AS status_project,
+                sp.status_name AS status_project_name,
+
+                dot.id AS order_type_id,
+                dot.order_name AS order_type_name
+            FROM marketing_design md
+            LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
+            LEFT JOIN kepala_divisi_design kdd ON md.acc_by = kdd.id
+            LEFT JOIN account_design ad ON md.account = ad.id
+            LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
+            LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
+            LEFT JOIN style_design sd ON md.style_id = sd.id
+            LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
+            LEFT JOIN design_order_type dot ON md.order_type_id = dot.id
+            WHERE md.marketing_design_id = $1
+            `,
+            [result.rows[0].marketing_design_id]
+        );
 
         console.log(`✅ Marketing design #${orderNumber} berhasil dibuat`);
 
