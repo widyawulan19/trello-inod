@@ -9858,65 +9858,69 @@ app.post("/api/marketing-design/joined-testing", async (req, res) => {
         const nextPosition = posResult.rows[0].max_position + 1;
 
         // === 🧩 Insert data baru ke tabel marketing_design ===
-        const result = await client.query(
-            `
-            INSERT INTO marketing_design (
-                buyer_name,
-                code_order,
-                order_number,
-                jumlah_design,
-                deadline,
-                jumlah_revisi,
-                price_normal,
-                price_discount,
-                discount_percentage,
-                required_files,
-                file_and_chat,
-                detail_project,
-                input_by,
-                acc_by,
-                account,
-                offer_type,
-                order_type_id,
-                resolution,
-                reference,
-                project_type_id,
-                style_id,
-                status_project_id,
-                project_number,
-                create_at
-            )
-            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,
-                    $12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,NOW())
-            RETURNING *;
-            `,
-            [
-                buyer_name,
-                code_order,
-                orderNumber,
-                jumlah_design,
-                deadline,
-                jumlah_revisi,
-                price_normal,
-                price_discount,
-                discount_percentage,
-                required_files,
-                file_and_chat,
-                detail_project,
-                input_by,
-                acc_by,
-                account,
-                offer_type,
-                order_type_id,
-                resolution,
-                reference,
-                project_type_id,
-                style_id,
-                status_project_id,
-                projectNumber,
-                nextPosition,
-            ]
+       const result = await client.query(
+        `
+        INSERT INTO marketing_design (
+            buyer_name,
+            code_order,
+            order_number,
+            jumlah_design,
+            deadline,
+            jumlah_revisi,
+            price_normal,
+            price_discount,
+            discount_percentage,
+            required_files,
+            file_and_chat,
+            detail_project,
+            input_by,
+            acc_by,
+            account,
+            offer_type,
+            order_type_id,
+            resolution,
+            reference,
+            project_type_id,
+            style_id,
+            status_project_id,
+            project_number,
+            position,  -- ✅ tambahin ini
+            create_at
+        )
+        VALUES (
+            $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,
+            $12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,NOW()
+        )
+        RETURNING *;
+        `,
+        [
+            buyer_name,
+            code_order,
+            orderNumber,
+            jumlah_design,
+            deadline,
+            jumlah_revisi,
+            price_normal,
+            price_discount,
+            discount_percentage,
+            required_files,
+            file_and_chat,
+            detail_project,
+            input_by,
+            acc_by,
+            account,
+            offer_type,
+            order_type_id,
+            resolution,
+            reference,
+            project_type_id,
+            style_id,
+            status_project_id,
+            projectNumber,
+            nextPosition, // ✅ posisi di parameter terakhir sebelum NOW()
+        ]
         );
+
 
         const newId = result.rows[0].marketing_design_id;
 
