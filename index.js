@@ -9227,7 +9227,7 @@ app.get("/api/marketing-design/joined", async (req, res) => {
       LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
       LEFT JOIN design_order_type dot ON md.order_type_id = dot.id
       WHERE md.is_deleted = false
-      ORDER BY md.position ASC; -- ✅ ubah urutan pakai posisi, bukan ID
+      ORDER BY md.position DESC; -- ✅ ubah urutan pakai posisi, bukan ID
     `);
 
         res.json(result.rows);
