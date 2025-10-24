@@ -180,9 +180,11 @@ const MarketingDesign=()=> {
           })
         );
 
-        // 🔽 Urutkan data berdasarkan posisi (dari kecil ke besar)
-        const sortedData = withExportStatus.sort((a, b) => a.position - b.position);
-
+       // 🔽 Urutkan dari terbaru ke lama (gunakan position atau fallback ke id)
+      const sortedData = withExportStatus.sort((a, b) => 
+        (b.position ?? b.marketing_design_id) - (a.position ?? a.marketing_design_id)
+      );
+      
         // Set hasil yang sudah diurutkan
         setDataMarketingDesign(sortedData);
         setFilteredData(sortedData);
