@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { archiveDataMarektingDesign, deleteDataMarketingDesign, getAllDataMarketingDesign, getAllMarketingDesignJoined, getDataMarketingDesignAccept, getDataMarketingDesignNotAccept, getDataWhereCardIdIsNull, getDataWhereCardIdNotNull,exportDesignToSheets, addExportMarketingDesign, getExportMarketingDesign, getAllMarketingDesignExports } from '../services/ApiServices';
+import { archiveDataMarektingDesign, deleteDataMarketingDesign, getAllDataMarketingDesign, getAllMarketingDesignJoined, getDataMarketingDesignAccept, getDataMarketingDesignNotAccept, getDataWhereCardIdIsNull, getDataWhereCardIdNotNull,exportDesignToSheets, addExportMarketingDesign, getExportMarketingDesign, getAllMarketingDesignExports, updateMarketingDesignPosition } from '../services/ApiServices';
 import '../style/pages/MarketingDesign.css'
 // import '../style/pages/AcceptDataDesign.css'
 import BootstrapTooltip from '../components/Tooltip';
 import { CgDollar } from "react-icons/cg";
 import { IoEyeSharp } from "react-icons/io5";
-import { HiArrowsUpDown, HiChevronUpDown, HiCurrencyDollar, HiHandThumbUp, HiMiniTableCells, HiOutlineArchiveBox, HiOutlineCircleStack, HiOutlinePencil, HiOutlinePlus, HiOutlineTrash } from 'react-icons/hi2';
+import { HiArrowsUpDown, HiChevronDown, HiChevronUp, HiChevronUpDown, HiCurrencyDollar, HiHandThumbUp, HiMiniTableCells, HiOutlineArchiveBox, HiOutlineCircleStack, HiOutlinePencil, HiOutlinePlus, HiOutlineTrash } from 'react-icons/hi2';
 import { HiOutlineSearch } from 'react-icons/hi';
 import ViewDataMarketingDesign from './ViewDataMarketingDesign';
 import EditMarketingDesign from './EditMarketingDesign';
@@ -179,7 +179,6 @@ const MarketingDesign=()=> {
             }
           })
         );
-
         setDataMarketingDesign(withExportStatus);
         setFilteredData(withExportStatus);
       } catch (error) {
@@ -187,15 +186,16 @@ const MarketingDesign=()=> {
       }
     };
 
-    // const fetchMarketingDesign = async()=>{
-    //     try{
-    //         const response = await getAllMarketingDesignJoined();
-    //         setDataMarketingDesign(response.data)
-    //         setFilteredData(response.data)
-    //     }catch(error){
-    //         console.error('Error fetching marketing design data:', error);
-    //     }
-    // }
+    // 1.1 FUNGSI UBAH POSISI MARKETING DESIGN
+    const handleMove = async (id,direction) =>{
+      try{
+        const res = await updateMarketingDesignPosition(id, direction);
+        console.log(res.message);
+        fetchMarketingDesign();
+      }catch(err){
+        console.error('Gagal ubah posisi data:', err);
+      }
+    }
 
     //2. filtered data
     const handleFilterData = (selectedTerm) =>{
@@ -525,7 +525,7 @@ const handleExportToSheet = async (marketingDesignId) => {
               <table cellPadding='10' cellSpacing='0'>
                 <thead>
                   <tr>
-                    <th className='rounded-tl-md'>NO</th>
+                    <th className='rounded-tl-md' style={{textAlign:'center'}} >NO</th>
                     <th>Project Number</th>
                     <th style={{textAlign:'center'}}>INPUT BY</th>
                     <th style={{textAlign:'center'}}>ACC BY</th>
@@ -579,7 +579,31 @@ const handleExportToSheet = async (marketingDesignId) => {
 
                     return(
                       <tr key={item.marketing_design_id}>
-                        <td>{index + 1}</td>
+                        {/* <td>{index + 1}</td> */}
+                        <td className='number-container'>
+                          <div className="number-box">
+                            {index + 1}
+                            <span className="icon-position">
+                              <BootstrapTooltip title='Move Up' placement='top'>
+                                <button
+                                  onClick={() => handleMove(item.marketing_design_id, "down")}
+                                  style={{ padding:'2px', fontSize:'9px'}}
+                                >
+
+                                    <HiChevronUp/>
+                                </button>
+                              </BootstrapTooltip>
+                              <BootstrapTooltip title='Move Down' placement='top'>
+                              <button
+                                onClick={() => handleMove(item.marketing_design_id, "up")}
+                                style={{ padding:'2px', fontSize:'9px'}}
+                              >
+                                  <HiChevronDown/>
+                              </button>
+                              </BootstrapTooltip>
+                            </span>
+                          </div>
+                        </td>
                         <td className='input-container' onClick={()=> handleShowDetail(item.marketing_design_id)}>
                           {item.project_number}
                         </td>

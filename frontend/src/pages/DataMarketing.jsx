@@ -206,7 +206,7 @@ const hasCardId = (item) => {
 };
 
 
-//fetch marketing design
+//fetch marketing
 const fetchDataMarketing = async()=>{
   try{
     // const response = await getAllDataMarketing()

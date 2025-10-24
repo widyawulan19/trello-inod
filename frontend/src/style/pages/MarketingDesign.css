@@ -246,7 +246,6 @@
 
 
 /* TABEL HEADER  */
-
 .code-order-container,
 .jumlah-container,
 .order-number-container,
@@ -260,6 +259,32 @@
     max-width: 10vw;
 }
 
+.number-container {
+    cursor: pointer;
+    width: 100%;
+    min-width: 5vw;
+    max-width: 5vw;
+}
+
+.number-container .number-box {
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.icon-position button {
+    border: 1px solid #fff;
+    cursor: pointer;
+    /* padding: 6px; */
+}
+
+.icon-position button:hover {
+    border: 1px solid #eee;
+    background-color: #5320be;
+    color: #fff;
+}
 
 .input-container-box:hover {
     text-decoration: underline;

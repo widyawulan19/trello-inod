@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSnackbar } from '../context/Snackbar'
 import { 
-  addMarketingDesignJoined, addKepalaDivisiDesign, addOfferTypeDesign, addStyleDesign, 
+  addMarketingDesignJoined,addMarketingDesignJoinedFix, addKepalaDivisiDesign, addOfferTypeDesign, addStyleDesign, 
   createAccountDesign, createMarketingDesainUser, getAllAccountDesign, getAllKepalaDivisiDesign, 
   getAllMarketingDesainUsers, getAllOfferTypesDesign, getAllStatusProjectDesign, 
   getAllStyleDesign, getAllProjectTypesDesign, addProjectTypeDesign , getAllDesignOrderType, addDesignOrderType
@@ -170,7 +170,7 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
         const fieldLabels = {
             buyer_name: "Nama Buyer",
             code_order: "Code Order",
-            order_number: "Order Number",
+            // order_number: "Order Number",
             jumlah_design: "Jumlah Design",
             deadline: "Deadline",
             jumlah_revisi: "Jumlah Revisi",
@@ -222,7 +222,8 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
                 resolution: form.resolution
             };
 
-            await addMarketingDesignJoined(payload);
+            // await addMarketingDesignJoined(payload);
+            await addMarketingDesignJoinedFix(payload);
             showSnackbar('Data Marketing Design berhasil ditambahkan!', 'success');
 
             setForm({
@@ -350,7 +351,7 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
                         </div>
 
                         {/* Order Number */}
-                        <div className="box-content">
+                        {/* <div className="box-content">
                             <label >Order Number</label>
                             <input
                                 type="text"
@@ -359,7 +360,7 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
                                 onChange={handleChange}
                                 placeholder="Order Number"
                             />
-                        </div>
+                        </div> */}
 
                         {/* Account */}
                         <div className="box-content">
