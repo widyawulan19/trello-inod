@@ -9850,6 +9850,13 @@ app.post("/api/marketing-design/joined-testing", async (req, res) => {
         // === 🔢 Ambil nomor otomatis dari helper ===
         const { projectNumber, orderNumber } = await generateMarketingDesignNumbers();
 
+        //ambil posisi terakhir di tabel 
+        const posResult = await client.query(`
+            SELECT COALESCE(MAX(position), 0) AS max_position
+            FROM marketing_design 
+        `);
+        const nextPosition = posResult.rows[0].max_position + 1;
+
         // === 🧩 Insert data baru ke tabel marketing_design ===
         const result = await client.query(
             `
@@ -9906,7 +9913,8 @@ app.post("/api/marketing-design/joined-testing", async (req, res) => {
                 project_type_id,
                 style_id,
                 status_project_id,
-                projectNumber
+                projectNumber,
+                nextPosition,
             ]
         );
 
