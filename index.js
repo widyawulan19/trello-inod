@@ -9850,7 +9850,7 @@ app.post("/api/marketing-design/joined-testing", async (req, res) => {
         const { projectNumber, orderNumber } = await generateMarketingDesignNumbers();
 
         // === 🧩 Insert data baru ke tabel marketing_design ===
-        const result = await pool.query(
+        const result = await client.query(
             `
             INSERT INTO marketing_design (
                 buyer_name,
@@ -9912,7 +9912,7 @@ app.post("/api/marketing-design/joined-testing", async (req, res) => {
         const newId = result.rows[0].marketing_design_id;
 
         // === 🔍 Ambil data hasil insert dengan join semua tabel terkait ===
-        const joined = await pool.query(
+        const joined = await client.query(
             `
             SELECT 
                 md.marketing_design_id,
