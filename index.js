@@ -9819,9 +9819,8 @@ app.post("/api/marketing-design/joined", async (req, res) => {
     }
 });
 
-//endpoin testing
+// Tambah data marketing_design baru (otomatis order_number + project_number)
 app.post("/api/marketing-design/joined-testing", async (req, res) => {
-
     try {
         const {
             input_by,
@@ -9833,7 +9832,7 @@ app.post("/api/marketing-design/joined-testing", async (req, res) => {
             deadline,
             jumlah_revisi,
             order_type_id,
-            offer_type,
+            offer_type_id, // ✅ sudah disesuaikan
             resolution,
             reference,
             price_normal,
@@ -9847,73 +9846,74 @@ app.post("/api/marketing-design/joined-testing", async (req, res) => {
             status_project_id
         } = req.body;
 
-        if (!buyer_name || !input_by || !account) {
-            return res.status(400).json({ error: "Missing required fields (buyer_name, input_by, account)" });
-        }
+        // === 🔢 Generate nomor otomatis dari helper ===
+        const { projectNumber, orderNumber } = await generateMarketingDesignNumbers();
 
-        await client.query('BEGIN');
-
-        // 🔢 Generate nomor otomatis
-        const { projectNumber, orderNumber } = await generateMarketingDesignNumbers(client);
-
-        // 🧩 Insert data baru
-        const insertResult = await client.query(`
-      INSERT INTO marketing_design (
-        buyer_name, code_order, order_number, jumlah_design, deadline, jumlah_revisi,
-        price_normal, price_discount, discount_percentage, required_files, file_and_chat,
-        detail_project, input_by, acc_by, account, offer_type, order_type_id, resolution,
-        reference, project_type_id, style_id, status_project_id, create_at, project_number
-      )
-      VALUES (
-        $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,
-        $12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,NOW(),$23
-      )
-      RETURNING marketing_design_id
-    `, [
-            buyer_name,
-            code_order,
-            orderNumber,
-            jumlah_design,
-            deadline,
-            jumlah_revisi,
-            price_normal,
-            price_discount,
-            discount_percentage,
-            required_files,
-            file_and_chat,
-            detail_project,
-            input_by,
-            acc_by,
-            account,
-            offer_type,
-            order_type_id,
-            resolution,
-            reference,
-            project_type_id,
-            style_id,
-            status_project_id,
-            projectNumber
-        ]);
+        // === 🧩 Insert ke tabel marketing_design ===
+        const insertResult = await client.query(
+            `INSERT INTO marketing_design 
+        (buyer_name, code_order, order_number, jumlah_design, deadline, jumlah_revisi,
+         price_normal, price_discount, discount_percentage, required_files, file_and_chat,
+         detail_project, input_by, acc_by, account, offer_type_id, order_type_id, resolution,
+         reference, project_type_id, style_id, status_project_id, create_at, project_number)
+       VALUES
+        ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,
+         $12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,CURRENT_TIMESTAMP,$23)
+       RETURNING *`,
+            [
+                buyer_name,
+                code_order,
+                orderNumber,
+                jumlah_design,
+                deadline,
+                jumlah_revisi,
+                price_normal,
+                price_discount,
+                discount_percentage,
+                required_files,
+                file_and_chat,
+                detail_project,
+                input_by,
+                acc_by,
+                account,
+                offer_type_id, // ✅ sudah diganti
+                order_type_id,
+                resolution,
+                reference,
+                project_type_id,
+                style_id,
+                status_project_id,
+                projectNumber
+            ]
+        );
 
         const newDesignId = insertResult.rows[0].marketing_design_id;
 
-        // 🔍 Ambil hasil lengkap
+        // === 🔍 Ambil data hasil insert dengan join tabel terkait ===
         const joined = await client.query(`
       SELECT 
-        md.*,
-        mdu.nama_marketing AS input_by_name,
-        kdd.nama AS acc_by_name,
-        ad.nama_account AS account_name,
-        ot.offer_name AS offer_type_name,
-        pt.project_name AS project_type_name,
-        sd.style_name AS style_name,
-        sp.status_name AS status_project_name,
-        dot.order_name AS order_type_name
+          md.*,
+          mdu.id AS input_by_id,
+          mdu.nama_marketing AS input_by_name,
+          kdd.id AS acc_by_id,
+          kdd.nama AS acc_by_name,
+          ad.id AS account_id,
+          ad.nama_account AS account_name,
+          ot.id AS offer_type_id,
+          ot.offer_name AS offer_type_name,
+          pt.id AS project_type_id,
+          pt.project_name AS project_type_name,
+          sd.id AS style_id,
+          sd.style_name AS style_name,
+          sp.id AS status_project_id,
+          sp.status_name AS status_project_name,
+          dot.id AS order_type_id,
+          dot.order_name AS order_type_name
       FROM marketing_design md
       LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
       LEFT JOIN kepala_divisi_design kdd ON md.acc_by = kdd.id
       LEFT JOIN account_design ad ON md.account = ad.id
-      LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
+      LEFT JOIN offer_type_design ot ON md.offer_type_id = ot.id
       LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
       LEFT JOIN style_design sd ON md.style_id = sd.id
       LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
@@ -9921,26 +9921,18 @@ app.post("/api/marketing-design/joined-testing", async (req, res) => {
       WHERE md.marketing_design_id = $1
     `, [newDesignId]);
 
-        await client.query('COMMIT');
-
         console.log(`✅ Marketing design #${orderNumber} berhasil dibuat`);
 
         res.status(201).json({
-            success: true,
             message: "✅ Marketing design created successfully",
-            generated: { order_number: orderNumber, project_number: projectNumber },
             data: joined.rows[0],
         });
 
     } catch (err) {
-        await client.query('ROLLBACK');
         console.error("❌ Error creating marketing_design:", err.message);
         res.status(500).json({ error: "Failed to create marketing_design" });
-    } finally {
-        client.release();
     }
 });
-
 
 
 // ENDPOIN UBAH POSISI DATA 
