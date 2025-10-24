@@ -580,7 +580,7 @@ if (!userId) {
                                         Add Card
                                     </div>
                                     <div className="card-count">
-                                       <p>{totalCard}</p> 
+                                       {/* <p>{totalCard}</p>  */}
                                        <HiOutlineCreditCard style={{marginRight:'5px'}}/>
                                     </div>
                                 </div>
