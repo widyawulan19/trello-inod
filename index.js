@@ -9821,7 +9821,6 @@ app.post("/api/marketing-design/joined", async (req, res) => {
 
 // === Tambah data marketing_design baru (otomatis PN & ON dari counters) ===
 app.post("/api/marketing-design/joined-testing", async (req, res) => {
-
     try {
         const {
             input_by,
@@ -9851,7 +9850,7 @@ app.post("/api/marketing-design/joined-testing", async (req, res) => {
         const { projectNumber, orderNumber } = await generateMarketingDesignNumbers();
 
         // === 🧩 Insert data baru ke tabel marketing_design ===
-        const result = await client.query(
+        const result = await pool.query(
             `
             INSERT INTO marketing_design (
                 buyer_name,
@@ -9913,7 +9912,7 @@ app.post("/api/marketing-design/joined-testing", async (req, res) => {
         const newId = result.rows[0].marketing_design_id;
 
         // === 🔍 Ambil data hasil insert dengan join semua tabel terkait ===
-        const joined = await client.query(
+        const joined = await pool.query(
             `
             SELECT 
                 md.marketing_design_id,
@@ -9981,8 +9980,6 @@ app.post("/api/marketing-design/joined-testing", async (req, res) => {
     } catch (err) {
         console.error("❌ Error creating marketing_design:", err.message);
         res.status(500).json({ error: err.message });
-    } finally {
-        client.release(); // ✅ selalu pastikan dilepas di akhir
     }
 });
 
