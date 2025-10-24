@@ -696,6 +696,7 @@ export const archiveDataMarektingDesign = (id) => axios.post(`${API_URL}/archive
 export const addMarketingDesignJoined = (data) =>
   axios.post(`${API_URL}/marketing-design/joined`, data);
 
+export const addMarketingDesignJoinedFix = (data) => axios.post(`${API_URL}/marketing-design/joined-testing`, data);
 
 // ✅ Get all marketing_design (joined)
 export const getAllMarketingDesignJoined = () =>
