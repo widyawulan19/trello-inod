@@ -213,7 +213,7 @@ export const reorderListPosition = async (listId, newPosition, boardId) => {
   }
 };
 export const getListPositions = (boardId) => axios.get(`${API_URL}/lists/board/${boardId}`);
-
+export const getCardListTotal = (listId) => axios.get(`${API_URL}/lists/${listId}/cards-count`);
 
 
 //CARDS
