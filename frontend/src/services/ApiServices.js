@@ -213,7 +213,7 @@ export const reorderListPosition = async (listId, newPosition, boardId) => {
   }
 };
 export const getListPositions = (boardId) => axios.get(`${API_URL}/lists/board/${boardId}`);
-
+export const getCardListTotal = (listId) => axios.get(`${API_URL}/lists/${listId}/cards-count`);
 
 
 //CARDS
@@ -838,6 +838,10 @@ export const uploadChatMedia = async (chatId, file) => {
     throw err;
   }
 };
+
+// media total count 
+export const getCardMediaCount = async (cardId) => axios.get(`${API_URL}/cards/${cardId}/media-count`);
+
 
 //TOTAL NOTIFICATION UNREAD (NOTIFICTION CHAT + NOTIFICATION SYSTEM)
 export const getUserTotalNotificationUnread = (userId) => axios.get(`${API_URL}/notifications/unread-count/${userId}`);

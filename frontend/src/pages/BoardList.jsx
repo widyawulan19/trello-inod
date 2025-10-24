@@ -14,7 +14,7 @@ import { HiMiniListBullet,
         HiOutlineChevronRight,
         HiOutlineListBullet
          } from 'react-icons/hi2'
-import { archiveList, deleteLists, duplicateBoards, getAllLists, getBoardById, getCardByList, getListByBoard, updateLists,updateCardPosition, reorderListPosition, getListPositions, updateListPositions } from '../services/ApiServices'
+import { archiveList, deleteLists, duplicateBoards, getAllLists, getBoardById, getCardByList, getListByBoard, updateLists,updateCardPosition, reorderListPosition, getListPositions, updateListPositions,getCardListTotal } from '../services/ApiServices'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import Card from './Card'
 import OutsideClick from '../hook/OutsideClick'
@@ -70,6 +70,8 @@ const BoardList=()=> {
     const [showListForm, setShowListForm] = useState(false)
     const listFormRef = OutsideClick(()=> setShowListForm(false))
 
+
+
     const handleShowListForm = (e)=>{
         e.preventDefault()
         setShowListForm((prev)=> !prev)
@@ -92,6 +94,29 @@ const BoardList=()=> {
     //Delete confirm
     const [showConfirmModal, setShowConfirmModal] = useState(false)
     const [selectedListId, setSelectedListId] = useState(null)
+
+
+
+    //total card in list
+    const [totalCard, setTotalCard] = useState(0);
+    
+    //FUNCTION TO GET TOTAL CARD IN LIST
+    useEffect(() => {
+        const fetchCardTotal = async () => {
+            try {
+                const response = await getCardListTotal(listId);
+                // Ambil card_count dari response.data
+                setTotalCard(response.data.card_count || 0);
+            } catch (error) {
+                console.error('Failed to fetch total card in list', error);
+                setTotalCard(0);
+            }
+        };
+
+        if (listId) {
+            fetchCardTotal();
+        }
+    }, [listId]);
 
     //FUNGSI POPUP MOVE DAN DUPLICATE
     const handleShowMovePopup = (listId) => {
@@ -555,7 +580,8 @@ if (!userId) {
                                         Add Card
                                     </div>
                                     <div className="card-count">
-                                        <HiOutlineCreditCard style={{marginRight:'5px'}}/>
+                                       <p>{totalCard}</p> 
+                                       <HiOutlineCreditCard style={{marginRight:'5px'}}/>
                                     </div>
                                 </div>
                                 {showForm[list.id]&&(

@@ -396,6 +396,11 @@
     background-color: none;
 }
 
+.form-card-erapper .card-count{
+    border:'1px solid red';
+    display:'flex';
+}
+
 /* .ccf-conten{
     border: 1px solid green;
 } */

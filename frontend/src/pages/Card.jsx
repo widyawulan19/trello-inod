@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { deleteCard, getCardById, getCardByList,updateTitleCard , onCardMove, archiveCard, getCardPriority, getDueDateById, getAllDueDateByCardId, getStatusByCardId, getAllStatus, getStatusCard, getTotalMessageInCard, getTotalFile, getNotifications, patchReadNotification,checkHasNewChat, getTotalChecklistItemByCardId, getChecklistItemChecked} from '../services/ApiServices';
+import { deleteCard, getCardById, getCardByList,updateTitleCard , onCardMove, archiveCard, getCardPriority, getDueDateById, getAllDueDateByCardId, getStatusByCardId, getAllStatus, getStatusCard, getTotalMessageInCard, getTotalFile, getNotifications, patchReadNotification,checkHasNewChat, getTotalChecklistItemByCardId, getChecklistItemChecked, getCardMediaCount} from '../services/ApiServices';
 import '../style/pages/Card.css'
 import '../style/modules/BoxStatus.css'
 import {    HiOutlineEllipsisHorizontal,
@@ -108,6 +108,7 @@ const Card=({
 
     // dorpwon card position 
     const [showPosition, setShowPosition] = useState(false);
+
 
     // Fetch status "new chat" untuk tiap card
     useEffect(() => {
@@ -556,6 +557,7 @@ const Card=({
                 hasNewChat={hasNewChat}
                 checkChecklist={checkChecklist}
                 checklistTotal={checklistTotal}
+                // totalMedia={totalMedia}
                 // hasNewChat={newChatMarks[card.id] || false}
             />
         </div>

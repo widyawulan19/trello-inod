@@ -11,6 +11,13 @@ import ChatEditor from './ChatEditor';
 import { IoIosSave, IoIosSend } from "react-icons/io";
 import { TiAttachmentOutline } from "react-icons/ti";
 import { BiSolidEditAlt } from "react-icons/bi";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import "dayjs/locale/id"; // biar bisa Bahasa Indonesia
+
+dayjs.extend(relativeTime);
+dayjs.locale("id"); // ubah bahasa ke Indonesia
+
 
 
 const NewRoomChat = ({ cardId, userId, onClose }) => {
@@ -365,9 +372,14 @@ const handleShowReplyEmoji = (chatId) => {
       <div className="chat-header">
         <div className="chat-image">
           <img className="chat-avatar" src={chat.photo_url || '/default-avatar.png'} alt={chat.username}/>
-          <span className="chat-username">{chat.username}</span>
+          <span className="chat-username">
+            {chat.username} 
+          </span>
         </div>
-        <span className="chat-timestamp">{new Date(chat.send_time).toLocaleString()}</span>
+        <span className="chat-timestamp">
+          {new Date(chat.send_time).toLocaleString()}
+          <p>( {dayjs(chat.send_time).fromNow()} )</p>
+        </span>
       </div>
 
 
