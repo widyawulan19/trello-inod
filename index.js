@@ -9822,6 +9822,7 @@ app.post("/api/marketing-design/joined", async (req, res) => {
 // === Tambah data marketing_design baru (otomatis PN & ON dari counters) ===
 app.post("/api/marketing-design/joined-testing", async (req, res) => {
     try {
+        await client.query("BEGIN");
         const {
             input_by,
             acc_by,
@@ -9972,12 +9973,14 @@ app.post("/api/marketing-design/joined-testing", async (req, res) => {
         );
 
         console.log(`✅ Marketing design #${orderNumber} berhasil dibuat`);
+        await client.query("COMMIT");
         res.status(201).json({
             message: "✅ Marketing design created successfully",
             data: joined.rows[0],
         });
 
     } catch (err) {
+        await client.query("ROLLBACK");
         console.error("❌ Error creating marketing_design:", err.message);
         res.status(500).json({ error: err.message });
     }
