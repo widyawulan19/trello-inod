@@ -25,52 +25,54 @@ dayjs.locale("id");
 // ============================
 // 🔢 COUNTER SETUP DATA MARKETING DESIGN
 // ============================
-let currentDesignOrderNumber = 0;
-let currentDesignProjectNumber = 0;
-let lastProjectMonth = dayjs().month();
+// let currentDesignOrderNumber = 0;
+// let currentDesignProjectNumber = 0;
+// let lastProjectMonth = dayjs().month();
 
-async function initializeCounters() {
-    try {
-        const result = await client.query(`
-      SELECT 
-        MAX(CAST(order_number AS INTEGER)) AS max_order_number,
-        MAX(CAST(SUBSTRING(project_number FROM 2 FOR 2) AS INTEGER)) AS max_project_number,
-        MAX(create_at) AS last_created_at
-      FROM marketing_design
-    `);
+// async function initializeCounters() {
+//     try {
+//         const result = await client.query(`
+//       SELECT 
+//         MAX(CAST(order_number AS INTEGER)) AS max_order_number,
+//         MAX(CAST(SUBSTRING(project_number FROM 2 FOR 2) AS INTEGER)) AS max_project_number,
+//         MAX(create_at) AS last_created_at
+//       FROM marketing_design
+//     `);
 
-        const row = result.rows[0];
-        currentDesignOrderNumber = row.max_order_number || 0;
-        currentDesignProjectNumber = row.max_project_number || 0;
-        lastProjectMonth = row.last_created_at
-            ? dayjs(row.last_created_at).month()
-            : dayjs().month();
+//         const row = result.rows[0];
+//         currentDesignOrderNumber = row.max_order_number || 0;
+//         currentDesignProjectNumber = row.max_project_number || 0;
+//         lastProjectMonth = row.last_created_at
+//             ? dayjs(row.last_created_at).month()
+//             : dayjs().month();
 
-        console.log("✅ Counter initialized:");
-        console.log("   currentDesignOrderNumber:", currentDesignOrderNumber);
-        console.log("   currentDesignProjectNumber:", currentDesignProjectNumber);
-        console.log("   lastProjectMonth:", lastProjectMonth + 1);
-    } catch (error) {
-        console.error("❌ Failed to initialize counters:", error.message);
-    }
-}
+//         console.log("✅ Counter initialized:");
+//         console.log("   currentDesignOrderNumber:", currentDesignOrderNumber);
+//         console.log("   currentDesignProjectNumber:", currentDesignProjectNumber);
+//         console.log("   lastProjectMonth:", lastProjectMonth + 1);
+//     } catch (error) {
+//         console.error("❌ Failed to initialize counters:", error.message);
+//     }
+// }
 
-// Jalankan saat server start
-initializeCounters();
-
-
-
-// ============================
-// 🔢 COUNTER SETUP DATA MARKETING MUSIK
-// ============================
+// // Jalankan saat server start
+// initializeCounters();
 
 
-// =======================
-// 🔹 VARIABEL GLOBAL
-// =======================
-let currentOrderNumberMarketing = 558;     // bisa kamu set manual
-let currentProjectNumberMarketing = 558;    // bisa kamu set manual
-let lastMarketingMonth = dayjs().month();  // default bulan saat ini
+
+// // ============================
+// // 🔢 COUNTER SETUP DATA MARKETING MUSIK
+// // ============================
+
+
+// // =======================
+// // 🔹 VARIABEL GLOBAL
+// // =======================
+// let currentOrderNumberMarketing = 558;     // bisa kamu set manual
+// let currentProjectNumberMarketing = 558;    // bisa kamu set manual
+// let lastMarketingMonth = dayjs().month();  // default bulan saat ini
+
+
 
 
 // =======================
@@ -172,58 +174,50 @@ module.exports = { initializeMarketingCounters, generateMarketingNumbers };
 // FUNGSI UNTUK MARKETING DESIGN 
 // ==========================
 
-// =======================
-// 🔹 COUNTER MARKETING DESIGN
-// =======================
-let currentOrderNumberDesign = 0;
-let currentProjectNumberDesign = 0;
-let lastDesignMonth = dayjs().month();
-
-async function initializeDesignCounters() {
-    try {
-        const result = await client.query(`
-      SELECT 
-          MAX(CAST(REGEXP_REPLACE(order_number, '[^0-9]', '', 'g') AS INTEGER)) AS max_order_number,
-          MAX(CAST(REGEXP_REPLACE(project_number, '[^0-9]', '', 'g') AS INTEGER)) AS max_project_number,
-          MAX(create_at) AS last_created_at
-      FROM marketing_design
-      WHERE project_number ~ '^P[0-9]+'
-    `);
-
-        const row = result.rows[0];
-        if (row.max_order_number) currentOrderNumberDesign = parseInt(row.max_order_number);
-        if (row.max_project_number) currentProjectNumberDesign = parseInt(row.max_project_number);
-        lastDesignMonth = row.last_created_at ? dayjs(row.last_created_at).month() : dayjs().month();
-
-        console.log("✅ Design counter initialized:", currentOrderNumberDesign, currentProjectNumberDesign);
-    } catch (error) {
-        console.error("❌ Failed to initialize counters:", error.message);
-    }
-}
-
 async function generateMarketingDesignNumbers() {
     const now = dayjs();
     const currentMonth = now.month();
 
-    if (currentMonth !== lastDesignMonth) {
-        currentOrderNumberDesign = 0;
-        currentProjectNumberDesign = 0;
-        lastDesignMonth = currentMonth;
-        console.log(`🔁 Bulan baru! Reset nomor ke P01 (${now.format("MMM YYYY")})`);
+    // Ambil data counter dari DB
+    const result = await client.query(`
+    SELECT current_order_number, current_project_number, last_updated
+    FROM counters
+    WHERE counter_name = 'marketing_design'
+    FOR UPDATE
+  `);
+
+    let { current_order_number, current_project_number, last_updated } = result.rows[0];
+
+    // Reset kalau bulan berganti
+    const lastMonth = dayjs(last_updated).month();
+    if (currentMonth !== lastMonth) {
+        current_order_number = 0;
+        current_project_number = 0;
     }
 
-    currentOrderNumberDesign += 1;
-    currentProjectNumberDesign += 1;
+    // Increment
+    current_order_number += 1;
+    current_project_number += 1;
 
-    const projectNumber = `P${String(currentProjectNumberDesign).padStart(2, "0")} ${now.format("DD/MMM/YYYY")}`;
-    const orderNumber = `${currentOrderNumberDesign}`;
+    // Update DB
+    await client.query(`
+    UPDATE counters
+    SET 
+      current_order_number = $1,
+      current_project_number = $2,
+      last_updated = CURRENT_TIMESTAMP
+    WHERE counter_name = 'marketing_design'
+  `, [current_order_number, current_project_number]);
+
+    // Format output
+    const projectNumber = `PD${String(current_project_number).padStart(2, "0")} ${now.format("DD/MMM/YYYY")}`;
+    const orderNumber = `${current_order_number}`;
+
     return { projectNumber, orderNumber };
 }
 
-// Jalankan inisialisasi saat server start
-(async () => {
-    await initializeDesignCounters();
-})();
+module.exports = { generateMarketingDesignNumbers };
+
 
 
 //TOP
@@ -9825,12 +9819,9 @@ app.post("/api/marketing-design/joined", async (req, res) => {
     }
 });
 
-
-// Tambah data marketing_design baru (otomatis order_number + project_number) TESTING
-// const { generateMarketingDesignNumbers } = require("./CounterMarketingDesign");
-
-// Tambah data marketing_design baru (otomatis order_number + project_number)
+//endpoin testing
 app.post("/api/marketing-design/joined-testing", async (req, res) => {
+    const client = await pool.connect();
     try {
         const {
             input_by,
@@ -9856,61 +9847,68 @@ app.post("/api/marketing-design/joined-testing", async (req, res) => {
             status_project_id
         } = req.body;
 
-        // === 🔢 Generate nomor otomatis dari helper ===
-        const { projectNumber, orderNumber } = await generateMarketingDesignNumbers();
+        if (!buyer_name || !input_by || !account) {
+            return res.status(400).json({ error: "Missing required fields (buyer_name, input_by, account)" });
+        }
 
-        // === 🧩 Insert ke tabel marketing_design ===
-        const insertResult = await client.query(
-            `INSERT INTO marketing_design 
-        (buyer_name, code_order, order_number, jumlah_design, deadline, jumlah_revisi,
-         price_normal, price_discount, discount_percentage, required_files, file_and_chat,
-         detail_project, input_by, acc_by, account, offer_type, order_type_id, resolution,
-         reference, project_type_id, style_id, status_project_id, create_at, project_number)
-       VALUES
-        ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,
-         $12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,CURRENT_TIMESTAMP,$23)
-       RETURNING *`,
-            [
-                buyer_name,
-                code_order,
-                orderNumber,
-                jumlah_design,
-                deadline,
-                jumlah_revisi,
-                price_normal,
-                price_discount,
-                discount_percentage,
-                required_files,
-                file_and_chat,
-                detail_project,
-                input_by,
-                acc_by,
-                account,
-                offer_type,
-                order_type_id,
-                resolution,
-                reference,
-                project_type_id,
-                style_id,
-                status_project_id,
-                projectNumber
-            ]
-        );
+        await client.query('BEGIN');
+
+        // 🔢 Generate nomor otomatis
+        const { projectNumber, orderNumber } = await generateMarketingDesignNumbers(client);
+
+        // 🧩 Insert data baru
+        const insertResult = await client.query(`
+      INSERT INTO marketing_design (
+        buyer_name, code_order, order_number, jumlah_design, deadline, jumlah_revisi,
+        price_normal, price_discount, discount_percentage, required_files, file_and_chat,
+        detail_project, input_by, acc_by, account, offer_type, order_type_id, resolution,
+        reference, project_type_id, style_id, status_project_id, create_at, project_number
+      )
+      VALUES (
+        $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,
+        $12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,NOW(),$23
+      )
+      RETURNING marketing_design_id
+    `, [
+            buyer_name,
+            code_order,
+            orderNumber,
+            jumlah_design,
+            deadline,
+            jumlah_revisi,
+            price_normal,
+            price_discount,
+            discount_percentage,
+            required_files,
+            file_and_chat,
+            detail_project,
+            input_by,
+            acc_by,
+            account,
+            offer_type,
+            order_type_id,
+            resolution,
+            reference,
+            project_type_id,
+            style_id,
+            status_project_id,
+            projectNumber
+        ]);
 
         const newDesignId = insertResult.rows[0].marketing_design_id;
 
-        // === 🔍 Ambil data hasil insert dengan join tabel terkait ===
+        // 🔍 Ambil hasil lengkap
         const joined = await client.query(`
       SELECT 
-          md.*,
-          mdu.nama_marketing AS input_by_name,
-          kdd.nama AS acc_by_name,
-          ad.nama_account AS account_name,
-          ot.offer_name AS offer_type_name,
-          pt.project_name AS project_type_name,
-          sd.style_name AS style_name,
-          sp.status_name AS status_project_name,
-          dot.order_name AS order_type_name
+        md.*,
+        mdu.nama_marketing AS input_by_name,
+        kdd.nama AS acc_by_name,
+        ad.nama_account AS account_name,
+        ot.offer_name AS offer_type_name,
+        pt.project_name AS project_type_name,
+        sd.style_name AS style_name,
+        sp.status_name AS status_project_name,
+        dot.order_name AS order_type_name
       FROM marketing_design md
       LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
       LEFT JOIN kepala_divisi_design kdd ON md.acc_by = kdd.id
@@ -9923,16 +9921,23 @@ app.post("/api/marketing-design/joined-testing", async (req, res) => {
       WHERE md.marketing_design_id = $1
     `, [newDesignId]);
 
+        await client.query('COMMIT');
+
         console.log(`✅ Marketing design #${orderNumber} berhasil dibuat`);
 
         res.status(201).json({
+            success: true,
             message: "✅ Marketing design created successfully",
+            generated: { order_number: orderNumber, project_number: projectNumber },
             data: joined.rows[0],
         });
 
     } catch (err) {
+        await client.query('ROLLBACK');
         console.error("❌ Error creating marketing_design:", err.message);
         res.status(500).json({ error: "Failed to create marketing_design" });
+    } finally {
+        client.release();
     }
 });
 
