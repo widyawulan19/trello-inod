@@ -211,7 +211,7 @@ async function generateMarketingDesignNumbers() {
 
     // Format output
     const projectNumber = `P0${String(current_project_number).padStart(2, "0")} ${now.format("DD/MMM/YYYY")}`;
-    const orderNumber = `${current_order_number}`;
+    const orderNumber = `0${current_order_number}`;
 
     return { projectNumber, orderNumber };
 }
