@@ -18,6 +18,7 @@ const crypto = require('crypto');
 const dotenv = require("dotenv");
 const { google } = require("googleapis");
 const dayjs = require("dayjs");
+const client = require("./connection");
 require("dayjs/locale/id");  // aktifkan bahasa Indonesia
 dayjs.locale("id");
 
@@ -9821,7 +9822,7 @@ app.post("/api/marketing-design/joined", async (req, res) => {
 
 //endpoin testing
 app.post("/api/marketing-design/joined-testing", async (req, res) => {
-    const client = await pool.connect();
+    const client = await client.query();
     try {
         const {
             input_by,
