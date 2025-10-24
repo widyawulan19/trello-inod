@@ -692,6 +692,20 @@ export const getDataMarketingDesignNotAccept = () => axios.get(`${API_URL}/marke
 export const getDataMarketingDesignAccept = () => axios.get(`${API_URL}/marketing-design-accepted`);
 export const archiveDataMarektingDesign = (id) => axios.post(`${API_URL}/archive-data-marketing-design/${id}`);
 
+//Update posisi data marketing design
+export const updateMarketingDesignPosition = async (id, direction) => {
+  try {
+    const response = await axios.patch(
+      `${API_URL}/marketing-design/${id}/position`,
+      { direction }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("❌ Gagal ubah posisi data marketing design:", error);
+    throw error.response?.data || { error: "Gagal ubah posisi data marketing design" };
+  }
+};
+
 // export const addMarketingDesignJoined = () => axios.post(`${API_URL}/marketing-design/joined`)
 export const addMarketingDesignJoined = (data) =>
   axios.post(`${API_URL}/marketing-design/joined`, data);
