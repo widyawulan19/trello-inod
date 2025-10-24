@@ -75,49 +75,49 @@ app.post('/api/chats/:chatId/media', upload.single('file'), async (req, res) => 
 
 
 // ENDPOIN UBAH POSISI DATA 
-app.patch("/api/marketing-design/:id/position", async (req, res) => {
-    const { id } = req.params;
-    const { direction } = req.body; // "up" atau "down"
+// app.patch("/api/marketing-design/:id/position", async (req, res) => {
+//     const { id } = req.params;
+//     const { direction } = req.body; // "up" atau "down"
 
-    try {
-        const { rows } = await client.query(
-            `SELECT marketing_design_id, position FROM marketing_design WHERE marketing_design_id = $1`,
-            [id]
-        );
+//     try {
+//         const { rows } = await client.query(
+//             `SELECT marketing_design_id, position FROM marketing_design WHERE marketing_design_id = $1`,
+//             [id]
+//         );
 
-        if (!rows.length) return res.status(404).json({ error: "Data tidak ditemukan" });
+//         if (!rows.length) return res.status(404).json({ error: "Data tidak ditemukan" });
 
-        const current = rows[0];
-        const newPosition = direction === "up" ? current.position - 1 : current.position + 1;
+//         const current = rows[0];
+//         const newPosition = direction === "up" ? current.position - 1 : current.position + 1;
 
-        // Cari item yang punya posisi target
-        const swap = await client.query(
-            `SELECT marketing_design_id FROM marketing_design WHERE position = $1`,
-            [newPosition]
-        );
+//         // Cari item yang punya posisi target
+//         const swap = await client.query(
+//             `SELECT marketing_design_id FROM marketing_design WHERE position = $1`,
+//             [newPosition]
+//         );
 
-        if (!swap.rows.length) {
-            return res.json({ message: "Sudah di posisi teratas / terbawah" });
-        }
+//         if (!swap.rows.length) {
+//             return res.json({ message: "Sudah di posisi teratas / terbawah" });
+//         }
 
-        const swapId = swap.rows[0].marketing_design_id;
+//         const swapId = swap.rows[0].marketing_design_id;
 
-        // Tukar posisi
-        await client.query("BEGIN");
-        await client.query(
-            `UPDATE marketing_design SET position = $1 WHERE marketing_design_id = $2`,
-            [newPosition, current.marketing_design_id]
-        );
-        await client.query(
-            `UPDATE marketing_design SET position = $1 WHERE marketing_design_id = $2`,
-            [current.position, swapId]
-        );
-        await client.query("COMMIT");
+//         // Tukar posisi
+//         await client.query("BEGIN");
+//         await client.query(
+//             `UPDATE marketing_design SET position = $1 WHERE marketing_design_id = $2`,
+//             [newPosition, current.marketing_design_id]
+//         );
+//         await client.query(
+//             `UPDATE marketing_design SET position = $1 WHERE marketing_design_id = $2`,
+//             [current.position, swapId]
+//         );
+//         await client.query("COMMIT");
 
-        res.json({ success: true, message: "Posisi diperbarui" });
-    } catch (err) {
-        await client.query("ROLLBACK");
-        console.error("❌ Error ubah posisi:", err);
-        res.status(500).json({ error: "Gagal ubah posisi" });
-    }
-});
+//         res.json({ success: true, message: "Posisi diperbarui" });
+//     } catch (err) {
+//         await client.query("ROLLBACK");
+//         console.error("❌ Error ubah posisi:", err);
+//         res.status(500).json({ error: "Gagal ubah posisi" });
+//     }
+// });

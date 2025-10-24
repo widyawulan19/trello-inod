@@ -179,18 +179,8 @@ const MarketingDesign=()=> {
             }
           })
         );
-
-       // 🔽 Urutkan dari terbaru ke lama (gunakan position atau fallback ke id)
-      const sortedData = withExportStatus.sort((a, b) => 
-        (b.position ?? b.marketing_design_id) - (a.position ?? a.marketing_design_id)
-      );
-      
-        // Set hasil yang sudah diurutkan
-        setDataMarketingDesign(sortedData);
-        setFilteredData(sortedData);
-
-        // setDataMarketingDesign(withExportStatus);
-        // setFilteredData(withExportStatus);
+        setDataMarketingDesign(withExportStatus);
+        setFilteredData(withExportStatus);
       } catch (error) {
         console.error("Error fetching marketing design data:", error);
       }
@@ -596,8 +586,8 @@ const handleExportToSheet = async (marketingDesignId) => {
                             <span className="icon-position">
                               <BootstrapTooltip title='Move Up' placement='top'>
                                 <button
-                                  onClick={() => handleMove(item.marketing_design_id, "up")}
-                                  style={{ padding:'2px', fontSize:'11px'}}
+                                  onClick={() => handleMove(item.marketing_design_id, "down")}
+                                  style={{ padding:'2px', fontSize:'9px'}}
                                 >
 
                                     <HiChevronUp/>
@@ -605,8 +595,8 @@ const handleExportToSheet = async (marketingDesignId) => {
                               </BootstrapTooltip>
                               <BootstrapTooltip title='Move Down' placement='top'>
                               <button
-                                onClick={() => handleMove(item.marketing_design_id, "down")}
-                                style={{ padding:'2px', fontSize:'11px'}}
+                                onClick={() => handleMove(item.marketing_design_id, "up")}
+                                style={{ padding:'2px', fontSize:'9px'}}
                               >
                                   <HiChevronDown/>
                               </button>
