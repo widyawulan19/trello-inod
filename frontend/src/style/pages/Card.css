@@ -415,6 +415,7 @@
     margin-top: 4px;
     z-index: 50;
     width: 8rem;
+    height: 100%;
     /* 32 Tailwind unit = 8rem */
     background-color: white;
     border: 1px solid #d1d5db;
@@ -436,9 +437,14 @@
 }
 
 .position-modals .pb {
-    /* border: 1px solid red; */
+    border: 1px solid #ddd;
+    background-color: white;
     padding: 5px;
-    border-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    /* border-radius: 8px; */
+    height: 10vh;
+    overflow-y: auto;
 }
 
 .position-modals ul {
