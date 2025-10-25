@@ -472,18 +472,18 @@ if (!userId) {
                                           <HiOutlineArchiveBox className='cs-icon'/>
                                           Archive
                                         </button>
-                                        {/* <button onClick={(e) => handleShowPosition(e, list.id)}>
-                                            <GiCardExchange className='cs-icon'/>
-                                            Position
-                                        </button> */}
+                                       
                                         <button
-                                            onClick={() =>
+                                            className='btn-position'
+                                            onClick={() => {
                                                 setListPositionDropdown(
-                                                    listPositionDropdown === list.id ? null : list.id
-                                                )
-                                            }
+                                                listPositionDropdown === list.id ? null : list.id
+                                                );
+                                                setShowSetting(false); // ✅ Tutup setting setelah klik
+                                            }}
                                         >
                                             <GiCardExchange className='cs-icon'/>
+                                            {/* Posisi */}
                                             Posisi: {list.position}
                                         </button>
                                        
@@ -514,33 +514,46 @@ if (!userId) {
                                 )}
                                 {/* Dropdown ubah posisi list */}
                                 {listPositionDropdown === list.id && (
-                                    <ul
-                                    style={{
-                                        listStyle: "none",
-                                        padding: "5px",
-                                        margin: "5px 0 0 0",
-                                        border: "1px solid #ccc",
-                                        borderRadius: "4px",
-                                        position: "absolute",
-                                        background: "#fff",
-                                        zIndex: 10,
-                                        minWidth: "100px",
-                                    }}
-                                    >
-                                    {lists.map((_, i) => (
-                                        <li
-                                        key={i}
-                                        style={{
-                                            padding: "5px 10px",
-                                            cursor: "pointer",
-                                            background: i === list.position ? "#eee" : "#fff",
-                                        }}
-                                        onClick={() => handleChangeListPosition(list.id, i)}
-                                        >
-                                        {i}
-                                        </li>
-                                    ))}
-                                    </ul>
+                                    <div className="new-position-list-modal">
+                                        <div className="position-box-container">
+                                            <div className="pch">
+                                                <h5>
+                                                    Select List Position
+                                                </h5>
+                                            </div>
+                                            <div className="pcm">
+                                                <ul
+                                                    // style={{
+                                                    //     listStyle: "none",
+                                                    //     padding: "5px",
+                                                    //     margin: "5px 0 0 0",
+                                                    //     border: "1px solid #ccc",
+                                                    //     borderRadius: "4px",
+                                                    //     position: "absolute",
+                                                    //     background: "#fff",
+                                                    //     zIndex: 10,
+                                                    //     minWidth: "100px",
+                                                    // }}
+                                                >
+                                                {lists.map((_, i) => (
+                                                    <li
+                                                        key={i}
+                                                        // style={{
+                                                        //     padding: "5px 10px",
+                                                        //     cursor: "pointer",
+                                                        //     background: i === list.position ? "#eee" : "#fff",
+                                                        // }}
+                                                        onClick={() => handleChangeListPosition(list.id, i)}
+                                                        >
+                                                        {i}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+
                                 )}
                                 
                                 
