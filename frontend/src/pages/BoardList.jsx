@@ -29,7 +29,7 @@ import DuplicateList from '../fitur/DuplicateList'
 import ListDeleteConfirm from '../modals/ListDeleteConfirm'
 import { useSnackbar } from '../context/Snackbar'
 import { useUser } from '../context/UserContext'
-import { FaChevronRight, FaPlus } from 'react-icons/fa6'
+import { FaChevronRight, FaPlus, FaXmark } from 'react-icons/fa6'
 import { handleArchive } from '../utils/handleArchive'
 import SearchCard from '../fitur/SearchCard'
 import PositionList from '../modules/PositionList'
@@ -387,6 +387,11 @@ const handleChangeListPosition = async (listId, newPosition) => {
     }
   };
 
+  // Fungsi untuk menutup dropdown posisi
+const closeListPositionDropdown = () => {
+  setListPositionDropdown(null);
+};
+
 
 //NAVIGATION
 // <Route path='/workspaces/:workspaceId' element={<WorkspacePage/>}/>
@@ -516,10 +521,11 @@ if (!userId) {
                                 {listPositionDropdown === list.id && (
                                     <div className="new-position-list-modal">
                                         <div className="position-box-container">
-                                            <div className="pch">
+                                            <div className="pch" style={{padding:'5px 8px',color:'#fff',display:'flex', alignItems:'center', justifyContent:'space-between'}}>
                                                 <h5>
                                                     Select List Position
                                                 </h5>
+                                                <FaXmark onClick={closeListPositionDropdown}/>
                                             </div>
                                             <div className="pcm">
                                                 <ul
