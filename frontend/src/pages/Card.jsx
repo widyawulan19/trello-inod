@@ -424,7 +424,8 @@ const Card=({
                         className="relative"
                         >
                         <GiCardExchange className='cs-icon' />
-                        Card Position <span style={{color:'red', marginLeft:'5px'}}>"{card.position}"</span>
+                        Card Position
+                        {/* Card Position <span style={{color:'red', marginLeft:'5px'}}>"{card.position}"</span> */}
 
                         {cardPositionDropdown === card.id && (
                             <div className="position-modals">
