@@ -1,5 +1,12 @@
 /* src/components/Layout.css */
 
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 0px;
+  background-image: linear-gradient(to top, #042887, #20299a, #3827ab, #5021bc, #6a11cb);
+}
 
 /* src/style/components/Layout.css */
 
@@ -14,7 +21,11 @@
   display: flex;
   height: 100vh;
   overflow: hidden;
-  background-color: #f8f8f8;
+  /* background-color: #f8f8f8; */
+}
+
+.main .sidebar {
+  background-color: red;
 }
 
 /* Button toggle di mobile */
@@ -24,7 +35,7 @@
   top: 5%;
   left: 10px;
   /* background-color: #042787; */
-  background-image: linear-gradient(to bottom, #5e1d67, #671b71, #70197b, #791585, #82108f, #84199b, #8621a8, #8629b5, #7b3ac7, #6b49d8, #5357e9, #2264f9);
+  /* background-image: linear-gradient(to bottom, #5e1d67, #671b71, #70197b, #791585, #82108f, #84199b, #8621a8, #8629b5, #7b3ac7, #6b49d8, #5357e9, #2264f9); */
   color: white;
   border: none;
   padding: 5px;

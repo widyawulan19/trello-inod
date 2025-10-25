@@ -396,12 +396,18 @@
     background-color: none;
 }
 
-.form-card-erapper .card-count {
-    border: '1px solid red';
-    display: 'flex';
+.form-card-wrapper .card-count {
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    justify-content: right;
+}
+
+.card-count p {
     padding: 0px;
     margin: 0px;
     font-size: 8px;
+    margin-right: 3px;
 }
 
 /* .ccf-conten{

@@ -1,13 +1,14 @@
 /* Sidebar Layout Container */
 .sidebar-layout-container {
   display: flex;
+  background-color: rgba(255, 255, 255, 0.032);
 }
 
 /* Container utama sidebar */
 .sidebar-container {
   height: 100vh;
-  /* background-color: #0e111a; */
-  background-image: linear-gradient(to right bottom, #051937, #00235f, #042887, #3827ab, #6a11cb);
+  background-color: rgba(255, 255, 255, 0.032);
+  /* background-image: linear-gradient(to right bottom, #051937, #00235f, #042887, #3827ab, #6a11cb); */
   /* background: linear-gradient(to bottom, #042787, #3927ab); */
   color: white;
   /* transition: width 0.3s ease; */
@@ -19,12 +20,20 @@
 
 /* Sidebar terlihat penuh */
 .show-sidebar {
-  width: 220px;
+  /* width: 220px; */
+  width: 100%;
+  padding-top: 15px;
+  /* border: 1px solid orange; */
+}
+
+.show-sidebar .sidebar-menu {
+  padding: 5px;
 }
 
 /* Sidebar tertutup */
 .close-sidebar {
   width: 80px;
+  padding-top: 15px;
 }
 
 /* Menu utama di sidebar */
@@ -42,9 +51,10 @@
   display: flex;
   align-items: center;
   /* padding: 10px 15px; */
-  padding: 5px;
+  padding: 2px;
   cursor: pointer;
   border-radius: 8px;
+  /* border: 1px solid red; */
   border: 2px solid transparent;
   /* transition: background 0.3s ease; */
 }
@@ -53,15 +63,19 @@
 .sidebar-main:hover {
   /* background-color: #2d2f36; */
   background-color: white;
-  border-left: 2px solid #0CE9E9;
-  color: #2d2f36 !important;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-left: 2px solid #9b2fad;
+  color: #9b2fad !important;
 }
 
 /* Item aktif (yang sedang dipilih) */
 .sidebar-main.active {
   background-color: white;
-  color: #2d2f36 !important;
-  border-left: 2px solid #0CE9E9;
+  color: #9b2fad !important;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-left: 2px solid #9b2fad;
 }
 
 /* Expand/collapse style */
@@ -97,9 +111,10 @@
 
 /* Label teks di sidebar */
 .sidebar-label {
-  margin-left: 15px;
-  font-size: 15px;
+  margin-left: 2px;
+  font-size: 12px;
   font-weight: 500;
+  color: whire;
 }
 
 /* Link di sidebar (menghapus underline) */

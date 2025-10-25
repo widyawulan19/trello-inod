@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { HiFolder } from "react-icons/hi2";
 import { GiMusicalScore } from "react-icons/gi";
 import { BsArrowsAngleExpand } from "react-icons/bs";
-import { FaNoteSticky } from "react-icons/fa6";
+import { FaNoteSticky, FaPlus } from "react-icons/fa6";
 import OutsideClick from '../hook/OutsideClick.jsx';
 import { createWorkspace, createWorkspaceUser, getWorkspaceSummary } from '../services/ApiServices.js';
 import { Alert } from '@mui/material';
@@ -149,7 +149,7 @@ const Home=()=> {
           </div>
 
           <div className="hh-btn" onClick={handleShowForm}>
-              <HiPlus/>
+              <FaPlus />
               CREATE WORKSPACE
           </div>
           {/* <div className="hh-btn" onClick={navigateToWorkspace}>

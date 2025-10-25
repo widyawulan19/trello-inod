@@ -68,7 +68,7 @@ const SearchGlobalCard = ({ userId }) => {
 
   return (
     <div className="search-global-container">
-      <IoSearchOutline size={18} />
+      <IoSearchOutline size={15} />
       <input
         type="text"
         value={keyword}

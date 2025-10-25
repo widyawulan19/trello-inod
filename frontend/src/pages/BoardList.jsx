@@ -580,8 +580,8 @@ if (!userId) {
                                         Add Card
                                     </div>
                                     <div className="card-count">
-                                       {/* <p>{totalCard}</p>  */}
-                                       <HiOutlineCreditCard style={{marginRight:'5px'}}/>
+                                       <p>{totalCard}</p> 
+                                       <div><HiOutlineCreditCard style={{marginRight:'5px'}}/></div>
                                     </div>
                                 </div>
                                 {showForm[list.id]&&(

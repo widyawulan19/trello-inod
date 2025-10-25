@@ -26,7 +26,7 @@ const Layout = ({ children }) => {
   }, []);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', padding: 0 }}>
+    <div className='layout-container'>
       <Navbar className="navbar" />
 
       {/* Tombol toggle di mobile */}
@@ -46,7 +46,7 @@ const Layout = ({ children }) => {
             transition: 'margin-left 0.3s',
             minWidth: '80vw',
             maxWidth: '100vw',
-            background: 'linear-gradient(to bottom, #042787, #3927ab)',
+            // background: 'linear-gradient(to bottom, #042787, #3927ab)',
           }}
         >
           {/* {children} */}
