@@ -1,123 +1,205 @@
-// Tambahkan state untuk form
-const [form, setForm] = useState({
-  detail_project: ''
-});
+// ====== DEFAULT ======
 
-// Setelah dataMarketingDesign di-fetch, sinkronkan form.detail_project
-useEffect(() => {
-  if (dataMarketingDesign?.detail_project) {
-    setForm((prev) => ({
-      ...prev,
-      detail_project: dataMarketingDesign.detail_project,
-    }));
-  }
-}, [dataMarketingDesign]);
-
-// Fungsi untuk handle perubahan dari ReactQuill
-const handleChangeQuill = (value) => {
-  setForm((prevForm) => ({
-    ...prevForm,
-    detail_project: value || '', // fallback empty string untuk keamanan
-  }));
-};
-
-
-// MEDIA CHATS 
-app.post('/api/chats/:chatId/media', upload.single('file'), async (req, res) => {
-    const { chatId } = req.params;
-
-    if (!req.file || !chatId) {
-        return res.status(400).json({ error: 'Missing file or chatId' });
-    }
-
-    try {
-        // Upload buffer ke Cloudinary
-        const result = await new Promise((resolve, reject) => {
-            cloudinary.uploader.upload_stream(
-                {
-                    resource_type: 'auto', // auto = bisa image, video, pdf, dll
-                    folder: 'trello_chat_media',
-                    public_id: `${Date.now()}-${req.file.originalname}`,
-                },
-                (error, result) => {
-                    if (error) reject(error);
-                    else resolve(result);
-                }
-            ).end(req.file.buffer);
-        });
-
-        const fileUrl = result.secure_url;
-        const fileName = req.file.originalname;
-
-        // Tentukan tipe media berdasarkan mimetype
-        const mimeType = req.file.mimetype;
-        let mediaType = 'file';
-        if (mimeType.startsWith('image/')) mediaType = 'image';
-        else if (mimeType.startsWith('video/')) mediaType = 'video';
-        else if (mimeType.startsWith('audio/')) mediaType = 'audio';
-
-        // Simpan ke tabel card_chats_media
-        const dbResult = await client.query(
-            `INSERT INTO card_chats_media (chat_id, media_url, media_type)
-             VALUES ($1, $2, $3) RETURNING *`,
-            [chatId, fileUrl, mediaType]
-        );
-
-        res.status(201).json(dbResult.rows[0]);
-    } catch (error) {
-        console.error('Upload error:', error);
-        res.status(500).json({ error: 'Upload failed', message: error.message });
-    }
-});
-
-// END MEDIA CHATS 
+const renderChats = (chatList, level = 0) => chatList.map(chat => (
+    <div
+      className={`chat-message ${level > 0 ? 'chat-reply' : ''} ${chat.user_id === userId ? 'chat-own' : ''}`}
+      key={chat.id}
+      style={{ marginLeft: `${level * 30}px` }}
+    >
+      <div className="chat-header">
+        <div className="chat-image">
+          <img className="chat-avatar" src={chat.photo_url || '/default-avatar.png'} alt={chat.username}/>
+          <span className="chat-username">
+            {chat.username} 
+          </span>
+        </div>
+        <span className="chat-timestamp">
+          {new Date(chat.send_time).toLocaleString()}
+          <p>( {dayjs(chat.send_time).fromNow()} )</p>
+        </span>
+      </div>
 
 
 
-// ENDPOIN UBAH POSISI DATA 
-// app.patch("/api/marketing-design/:id/position", async (req, res) => {
-//     const { id } = req.params;
-//     const { direction } = req.body; // "up" atau "down"
+        {/* ✅ MODE EDIT */}
+        {editingMessage === chat.id ? (
+          <div className="edit-chat-box">
+            <div className="editor-wrapper">
+              <div className="ql-container">
+                <ReactQuill
+                  theme="snow"
+                  value={editText}
+                  onChange={setEditText}
+                  modules={modules}
+                  formats={formats}
+                  placeholder="Edit pesan..."
+                  className="my-editor"
+                />
+              </div>
 
-//     try {
-//         const { rows } = await client.query(
-//             `SELECT marketing_design_id, position FROM marketing_design WHERE marketing_design_id = $1`,
-//             [id]
-//         );
+              <div className="editor-actions">
+                <div className="more-act">
+                  <label className="upload-btn"><TiAttachmentOutline/>
+                    <input type="file" hidden onChange={e => handleUploadFromEditor(e, chat.id)} />
+                  </label>
+                  <button className='btn-icon' onClick={() => handleShowEditEmoji(chat.id)}>
+                    😎
+                  </button>
+                </div>
+                <div className="act-btn">
+                  <button className="btn-send" onClick={() => handleSaveEdit(chat.id)}>
+                    <IoIosSend/>
+                  </button>
+                </div>
+              </div>
+            </div>
 
-//         if (!rows.length) return res.status(404).json({ error: "Data tidak ditemukan" });
+            {/* SHOW EMOJI */}
+            {showEditEmojiPicker === chat.id && (
+              <div className="emoji-picker-fix">
+                {emojiList.map((emoji, i) => (
+                  <span key={i} onClick={() => insertEmoji(emoji, "edit")}>{emoji}</span>
+                ))}
+              </div>
+            )}
 
-//         const current = rows[0];
-//         const newPosition = direction === "up" ? current.position - 1 : current.position + 1;
+            <div className="edit-actions">
+              <button className='save-edit' onClick={() => handleSaveEdit(chat.id)}><IoIosSave/> Save</button>
+              <button className='cancle-edit' onClick={handleCancelEdit}><IoClose/> Cancel</button>
+            </div>
+          </div>
+        ) : (
+          <div
+            className={`chat-bubble ${chat.user_id === userId ? 'chat-bubble-own' : 'chat-bubble-other'}`}
+            onClick={(e) => {
+              const link = e.target.closest("a");
+              if (link) {
+                e.preventDefault();
+                e.stopPropagation();
+                window.open(link.href, "_blank", "noopener,noreferrer");
+              }
+            }}
+          >
+            <div dangerouslySetInnerHTML={{ __html: autoLinkHTML(chat.message) }} />
+            {chat.updated_at !== chat.created_at && (
+              <span className="edited-label">(edited)</span>
+            )}
+            {renderMedia(chat.medias)}
+          </div>
+        )}
 
-//         // Cari item yang punya posisi target
-//         const swap = await client.query(
-//             `SELECT marketing_design_id FROM marketing_design WHERE position = $1`,
-//             [newPosition]
-//         );
 
-//         if (!swap.rows.length) {
-//             return res.json({ message: "Sudah di posisi teratas / terbawah" });
-//         }
+      <div className="chat-actions">
+        {chat.user_id === userId && (
+          <button className="chat-reply-btn" onClick={() => handleEditMessage(chat)}>
+            <BiSolidEditAlt /> Edit
+          </button>
+        )}
+        {chat.parent_message_id === null && (
+          <button className="chat-reply-btn" onClick={() => setReplyTo(chat.id)}>
+            <IoReturnDownBackSharp/> Reply
+          </button>
+        )}
+        <button className="chat-reply-btn" onClick={() => handleDeleteChat(chat.id)}>
+          <IoTrash/> Delete
+        </button>
+      </div>
 
-//         const swapId = swap.rows[0].marketing_design_id;
+      {replyTo === chat.id && (
+        <div className="chat-reply-form">
+          <div className="editor-wrapper">
+            <div className="ql-container">
+              <ReactQuill
+                theme="snow"
+                value={replyMessage[chat.id] || ""}
+                onChange={(val) => setReplyMessage(prev => ({ ...prev, [chat.id]: val }))}
+                modules={modules}
+                formats={formats}
+                placeholder="Tulis balasan..."
+                className="my-editor"
+              />
+            </div>
+            <div className="editor-actions">
+              <div className="more-act">
+                <label className="upload-btn"><TiAttachmentOutline/>
+                  <input type="file" hidden onChange={e => handleUploadFromEditor(e, chat.id)} />
+                </label>
+                <button className='btn-icon' onClick={() => handleShowReplyEmoji(chat.id)}>
+                  😎
+                </button>
 
-//         // Tukar posisi
-//         await client.query("BEGIN");
-//         await client.query(
-//             `UPDATE marketing_design SET position = $1 WHERE marketing_design_id = $2`,
-//             [newPosition, current.marketing_design_id]
-//         );
-//         await client.query(
-//             `UPDATE marketing_design SET position = $1 WHERE marketing_design_id = $2`,
-//             [current.position, swapId]
-//         );
-//         await client.query("COMMIT");
+              </div>
+              <div className="act-btn">
+                <button className="btn-send"  onClick={() => handleSendReply(chat.id)}>
+                  <IoIosSend/>
+                </button>
+              </div>
+              
+            </div>
+          </div>
+          {/* SHOW EMOJI  */}
+              {showReplyEmojiPicker === chat.id && (
+                <div className="emoji-picker-fix">
+                  {emojiList.map((emoji, i) => (
+                    <span key={i} onClick={() => insertEmoji(emoji, chat.id)}>{emoji}</span>
+                  ))}
+                </div>
+              )}          
+        </div>
+      )}
+      {chat.replies?.length > 0 && renderChats(chat.replies, level + 1)}
+    </div>
+  ));
 
-//         res.json({ success: true, message: "Posisi diperbarui" });
-//     } catch (err) {
-//         await client.query("ROLLBACK");
-//         console.error("❌ Error ubah posisi:", err);
-//         res.status(500).json({ error: "Gagal ubah posisi" });
-//     }
-// });
+
+// ====== END DEFAULT ======
+
+const renderChats = (chatList, level = 0) =>
+  chatList.map((chat) => (
+    <div
+      key={chat.id}
+      className={`chat-message ${level > 0 ? "chat-reply" : ""} ${
+        chat.user_id === userId ? "chat-own" : "chat-other"
+      }`}
+      style={{ marginLeft: `${level * 30}px` }}
+    >
+      <div className="chat-header">
+        {/* kalau chat own, tampilkan image di kanan */}
+        {chat.user_id !== userId && (
+          <div className="chat-image">
+            <img
+              className="chat-avatar"
+              src={chat.photo_url || "/default-avatar.png"}
+              alt={chat.username}
+            />
+          </div>
+        )}
+
+        <div className="chat-info">
+          <span className="chat-username">{chat.username}</span>
+          <span className="chat-timestamp">
+            {new Date(chat.send_time).toLocaleString()}
+            <p>({dayjs(chat.send_time).fromNow()})</p>
+          </span>
+        </div>
+
+        {chat.user_id === userId && (
+          <div className="chat-image">
+            <img
+              className="chat-avatar"
+              src={chat.photo_url || "/default-avatar.png"}
+              alt={chat.username}
+            />
+          </div>
+        )}
+      </div>
+
+      <div className="chat-content">{chat.message}</div>
+    </div>
+  ));
+
+
+  <div className="main-boc">
+    <div className="box1"></div>
+    <div className="box2"></div>
+  </div>

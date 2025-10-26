@@ -7,6 +7,7 @@ import { Tooltip, tooltipClasses } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import { MdDeveloperMode } from 'react-icons/md';
 
 // Tooltip
 const BootstrapTooltip = styled(({ className, ...props }) => (
@@ -60,6 +61,7 @@ const Sidebar = () => {
             { to: 'activity', icon: <HiOutlineCog8Tooth className='icon' />, label: 'User Activity', name: 'User Activity' },
             { to: 'faq', icon: <HiAdjustmentsHorizontal className='icon' />, label: 'FaQ', name: 'faq' },
             { to: 'data-delete', icon: <HiOutlineTrash className='icon' />, label: 'Trash', name: 'Trash' },
+            { to: 'develop', icon: <MdDeveloperMode className='icon' />, label: 'Testing Fitur', name: 'Testing Fitur' },
             // { to: 'card-list', icon: <HiAdjustmentsHorizontal className='icon' />, label: 'Development', name: 'Dev page' },
           ].map((item) => (
             <div

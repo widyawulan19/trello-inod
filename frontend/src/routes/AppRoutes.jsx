@@ -56,6 +56,7 @@ import ExportDataMarketingByIdExample from '../exports/ExportDataMarketingByIdEx
 import NewEditDataMarketing from '../pages/NewEditDataMarketing';
 import NewEditMarketingDesign from '../pages/NewEditMarketingDesign';
 import DataDelete from '../pages/DataDelete';
+import Develop from '../pages/Develop';
 
 const AppRoutes=()=> {
   return (
@@ -121,6 +122,7 @@ const AppRoutes=()=> {
         <Route path='edit-marketing-musik' element={<NewEditDataMarketing/>}/>
         <Route path='edit-marketing-desing' element={<NewEditMarketingDesign/>}/>
         <Route path='data-delete' element={<DataDelete/>}/>
+        <Route path='develop' element={<Develop/>}/>
         </Route>
     </Routes>
   )

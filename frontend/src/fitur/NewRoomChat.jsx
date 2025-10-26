@@ -14,6 +14,8 @@ import { BiSolidEditAlt } from "react-icons/bi";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/id"; // biar bisa Bahasa Indonesia
+import { HiChatBubbleLeftRight } from 'react-icons/hi2';
+import { BsFillReplyFill } from 'react-icons/bs';
 
 dayjs.extend(relativeTime);
 dayjs.locale("id"); // ubah bahasa ke Indonesia
@@ -277,23 +279,30 @@ const handleShowReplyEmoji = (chatId) => {
     <div
       className={`chat-message ${level > 0 ? 'chat-reply' : ''} ${chat.user_id === userId ? 'chat-own' : ''}`}
       key={chat.id}
-      style={{ marginLeft: `${level * 30}px` }}
+      style={{
+        marginLeft: `${level * 30}px`,
+        backgroundColor: 'white',
+        border: `1px solid ${level > 0 ? 'white' : '#eee'}`, // 🎨 merah kalau reply, biru kalau chat utama
+        boxShadow: level > 0 ? 'none' : '0 1px 3px rgba(0, 0, 0, 0.1)',
+        borderRadius: '8px',
+        padding: '10px',
+      }}
+      // style={{ marginLeft: `${level * 30}px`, backgroundColor:'white', border:'1px solid #eee', boxShadow:'0 1px 3px rgba(0, 0, 0, 0.1)' }}
     >
-      <div className="chat-header">
-        <div className="chat-image">
-          <img className="chat-avatar" src={chat.photo_url || '/default-avatar.png'} alt={chat.username}/>
-          <span className="chat-username">
-            {chat.username} 
-          </span>
-        </div>
-        <span className="chat-timestamp">
-          {new Date(chat.send_time).toLocaleString()}
-          <p>( {dayjs(chat.send_time).fromNow()} )</p>
-        </span>
-      </div>
 
+      <div className="chat-header" style={{display:'flex', alignItems:'flex-start',justifyContent: chat.user_id === userId ? 'flex-end' : 'flex-start',}}>
+        {/* kalau chat own, tampilkan image di kanan */}
+        
+        {chat.user_id !== userId && (
+          <div className="chat-image">
+            <img
+              className="chat-avatar"
+              src={chat.photo_url || "/default-avatar.png"}
+              alt={chat.username}
+            />
+          </div>
+        )}
 
-        {/* ✅ MODE EDIT */}
         {editingMessage === chat.id ? (
           <div className="edit-chat-box">
             <div className="editor-wrapper">
@@ -343,6 +352,7 @@ const handleShowReplyEmoji = (chatId) => {
         ) : (
           <div
             className={`chat-bubble ${chat.user_id === userId ? 'chat-bubble-own' : 'chat-bubble-other'}`}
+            style={{ width:'100%'}}
             onClick={(e) => {
               const link = e.target.closest("a");
               if (link) {
@@ -352,16 +362,41 @@ const handleShowReplyEmoji = (chatId) => {
               }
             }}
           >
-            <div dangerouslySetInnerHTML={{ __html: autoLinkHTML(chat.message) }} />
+            <span className="chat-username">
+              {chat.username} 
+            </span> 
+            <div dangerouslySetInnerHTML={{ __html: autoLinkHTML(chat.message) }}
+              style={{marginTop:'5px'}}
+            />
             {chat.updated_at !== chat.created_at && (
-              <span className="edited-label">(edited)</span>
+              <span  className="edited-label">(edited)</span>
             )}
             {renderMedia(chat.medias)}
           </div>
         )}
 
+        {chat.user_id === userId && (
+          <div className="chat-image">
+            <img
+              className="chat-avatar"
+              src={chat.photo_url || "/default-avatar.png"}
+              alt={chat.username}
+            />
+          </div>
+        )}
+      </div>
 
-      <div className="chat-actions">
+
+
+        {/* ✅ MODE EDIT */}
+        
+
+
+      <div className="chat-actions" style={{border:'1px solid transparent'}}>
+        <span className="chat-timestamp" style={{border:'1px solid transparent ', display:'flex', alignItems:'center', justifyContent:'flex-start'}}>
+          {new Date(chat.send_time).toLocaleString()}
+          <p>( {dayjs(chat.send_time).fromNow()} )</p>
+        </span>
         {chat.user_id === userId && (
           <button className="chat-reply-btn" onClick={() => handleEditMessage(chat)}>
             <BiSolidEditAlt /> Edit
@@ -369,10 +404,10 @@ const handleShowReplyEmoji = (chatId) => {
         )}
         {chat.parent_message_id === null && (
           <button className="chat-reply-btn" onClick={() => setReplyTo(chat.id)}>
-            <IoReturnDownBackSharp/> Reply
+            <BsFillReplyFill/> Reply
           </button>
         )}
-        <button className="chat-reply-btn" onClick={() => handleDeleteChat(chat.id)}>
+        <button className="chat-reply-btn" style={{color:'red'}} onClick={() => handleDeleteChat(chat.id)}>
           <IoTrash/> Delete
         </button>
       </div>
@@ -426,10 +461,19 @@ const handleShowReplyEmoji = (chatId) => {
   if (loading) return <p className="chat-loading">Loading chats...</p>;
 
   return (
-    <div className="chat-room-container" style={{ backgroundColor:'white', backgroundImage: `url(${bg})`, backgroundSize: "cover" }}>
+    <div className="chat-room-container" 
+      style={{ 
+        backgroundColor:'white',
+        // backgroundImage: `url(${bg})`,
+        // backgroundSize: "cover" 
+      }}>
       <div className="chat-title">
-        <h3>Chat Room</h3>
-        <FaXmark onClick={onClose} style={{cursor:'pointer'}}/>
+        <div className="ct-left">
+          <HiChatBubbleLeftRight/>
+          <h3>Chat Room (Comment)</h3>
+        </div>
+        
+        <FaXmark onClick={onClose} style={{cursor:'pointer', fontSize:'15px', color:'#2c0895'}}/>
       </div>
 
       <div className="chat-list" ref={chatListRef}>

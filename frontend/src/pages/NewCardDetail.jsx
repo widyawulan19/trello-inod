@@ -1260,8 +1260,7 @@ const NewCardDetail=({fetchBoardDetail,fetchCardList})=> {
                                          <HiOutlineCalendar className='cc-icon'/>
                                          <div className="cc-date">
                                              <p>Created</p>
-                                             <p>{cards.create_at && new Date(cards.create_at).toLocaleString()}</p>
-
+                                             <p style={{fontSize:'8px'}}>{cards.create_at && new Date(cards.create_at).toLocaleString()}</p>
                                              {/* {cards.create_at} */}
                                              {/* {cards.create_at && formatTimestamp(cards.create_at)} */}
                                          </div>
