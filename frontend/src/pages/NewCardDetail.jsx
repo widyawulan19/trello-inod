@@ -125,6 +125,7 @@ const NewCardDetail=({fetchBoardDetail,fetchCardList})=> {
     
     // ATTACHMENT 
     const [allUploadFile, setAllUploadFile] = useState([]);
+    console.log("Card data:", cards);
 
     // fungsi show card setting 
     const handleShowCardSetting = (e) =>{
@@ -402,18 +403,41 @@ const NewCardDetail=({fetchBoardDetail,fetchCardList})=> {
         },[cardId])
 
     //4. function time 
+    // const formatTimestamp = (timestamp) => {
+    //     const date = new Date(timestamp);
+      
+    //     const day = String(date.getDate()).padStart(2, '0');
+    //     const month = String(date.getMonth() + 1).padStart(2, '0');
+    //     const year = date.getFullYear();
+      
+    //     const hours = String(date.getHours()).padStart(2, '0');
+    //     const minutes = String(date.getMinutes()).padStart(2, '0');
+      
+    //     return `${day}/${month}/${year} | ${hours}.${minutes}`;
+    // };
     const formatTimestamp = (timestamp) => {
-        const date = new Date(timestamp);
-      
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = date.getFullYear();
-      
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-      
-        return `${day}/${month}/${year} | ${hours}.${minutes}`;
-    };
+  if (!timestamp) return "-";
+
+  // Kalau timestamp bukan ISO, ubah manual biar bisa dibaca oleh Date
+  let date;
+  if (typeof timestamp === "string" && !timestamp.includes("T")) {
+    // tambahkan "T" agar valid ISO
+    date = new Date(timestamp.replace(" ", "T"));
+  } else {
+    date = new Date(timestamp);
+  }
+
+  if (isNaN(date)) return "-"; // kalau tetap invalid, jangan crash
+
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+
+  return `${day}/${month}/${year} | ${hours}.${minutes}`;
+};
+
 
     //5. fetch list untuk mendapatkan list name
     useEffect(() => {
@@ -809,7 +833,7 @@ const NewCardDetail=({fetchBoardDetail,fetchCardList})=> {
         <div className="ncd-header">
             <div className="ncd-left">
                 <div className='ncd-board' onClick={handleNavigateToBoardList}>
-                    <HiOutlineListBullet size={15} className='ncd-icon'/>
+                    {/* <HiOutlineListBullet size={15} className='ncd-icon'/> */}
                     Board Lists
                 </div>
                 <HiOutlineChevronRight className='ncd-icon'/>
@@ -871,34 +895,7 @@ const NewCardDetail=({fetchBoardDetail,fetchCardList})=> {
                                     labels={labels}
                                     fetchLabels={fetchLabels}
                                 />
-                            {/* {cards?.project_type_name === "ORIGINAL" ? (
-                                // ✅ Kalau project_type ORIGINAL, paksa render label Mixing & Mastering
-                                <div className="labels">
-                                <span
-                                    className="label"
-                                    style={{
-                                    backgroundColor: "#ff5733", // sesuaikan warna label di DB
-                                    padding: "2px 6px",
-                                    borderRadius: "4px",
-                                    marginRight: "4px",
-                                    fontSize: "12px",
-                                    color: "#fff",
-                                    }}
-                                >
-                                    Mixing & Mastering
-                                </span>
-                                </div>
-                            ) : (
-                                // ✅ Kalau bukan ORIGINAL, render normal pakai SelectedLabels
-                                <SelectedLabels
-                                cardId={cardId}
-                                fetchCardDetail={fetchCardById}
-                                labels={labels}
-                                fetchLabels={fetchLabels}
-                                />
-                            )} */}
                             </div>
-
                         </div>
 
                         {/* HEADER BUTTON  */}
@@ -1263,7 +1260,10 @@ const NewCardDetail=({fetchBoardDetail,fetchCardList})=> {
                                          <HiOutlineCalendar className='cc-icon'/>
                                          <div className="cc-date">
                                              <p>Created</p>
-                                             {cards.create_at && formatTimestamp(cards.create_at)}
+                                             <p>{cards.create_at && new Date(cards.create_at).toLocaleString()}</p>
+
+                                             {/* {cards.create_at} */}
+                                             {/* {cards.create_at && formatTimestamp(cards.create_at)} */}
                                          </div>
                                     </div>
                                     <div className="c-create">

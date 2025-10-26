@@ -19,7 +19,7 @@
 }
 
 .ncd-header {
-    border-bottom: 1px solid #ddd;
+    /* border-bottom: 1px solid #ddd; */
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
     background-color: white;
@@ -27,7 +27,7 @@
     /* padding: 5px; */
     width: 100%;
     /* min-width: 650px; */
-    /* padding-right: 20px; */
+    padding-left: 60px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -42,12 +42,13 @@
     color: #333;
     cursor: pointer;
     margin-left: 10px;
-    padding: 2px;
+    padding: 0px;
     /* border: 1px solid green; */
 }
 
 .ncd-icon {
     margin-right: 5px;
+    font-size: 10px;
     /* color: #333; */
     color: #5e5e5e;
     cursor: pointer;
@@ -56,7 +57,7 @@
 .ncd-left .ncd-board {
     padding: 5px;
     font-size: 10px;
-    font-weight: bold;
+    font-weight: normal;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -78,7 +79,7 @@
 .ncd-active {
     /* color:#6a11cb; */
     font-size: 10px;
-    color: #5e5e5e;
+    color: #333;
     font-weight: bold;
     cursor: pointer;
 }
@@ -629,7 +630,7 @@
     width: 90%;
     height: 72vh;
     gap: 15px;
-    margin-top: 10px;
+    margin-top: 5px;
     display: flex;
     align-items: flex-start;
     justify-content: center;
@@ -653,16 +654,16 @@
     padding: 15px;
     min-height: 40vh;
     gap: 5px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .ncd-desc .des-header {
     /* border: 1px solid grey; */
-    border-left: 3px solid #4085F3;
+    border-left: 3px solid #692BAE;
     padding-left: 10px;
     width: 100%;
     font-weight: bold;
-    font-size: 14px;
+    font-size: 12px;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -673,13 +674,14 @@
 .des-header .des-right {
     /* border: 1px solid #ddd; */
     border-radius: 8px;
-    padding: 5px;
+    padding: 2px;
     cursor: pointer;
 }
 
 .des-icon {
-    color: #5c38db;
-    font-size: 20px;
+    /* color: #5c38db; */
+    color: #333;
+    font-size: 15px;
     /* filter: drop-shadow(0 0 1px #5320be); */
 }
 
@@ -892,7 +894,7 @@
 .ncd-main-content .ncd-main-right {
     /* border: 1px solid green; */
     width: 30%;
-    padding: 10px 0px;
+    padding: 10px 5px;
     height: 72vh;
     overflow-y: auto;
 }
@@ -902,7 +904,7 @@
     border-radius: 8px;
     margin-bottom: 10px;
     padding: 5px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* CARD DETAIL  */
@@ -1081,7 +1083,7 @@
     border: 1px solid #E2E8F0;
     border-radius: 8px;
     padding: 10px 5px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .ncd-user-assign .ncd-assign-header {
@@ -1158,7 +1160,7 @@
     border: 1px solid #E2E8F0;
     border-radius: 8px;
     padding: 10px 5px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .ncd-card-checklist .ncd-checklist-header {
@@ -1196,7 +1198,7 @@
     border: 1px solid #E2E8F0;
     border-radius: 8px;
     padding: 10px 5px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .ncd-card-activity .ncd-activity-header {
@@ -1228,7 +1230,7 @@
     border-radius: 8px;
     padding: 15px;
     margin-top: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     /* position: relative; */
 }
 
@@ -1236,25 +1238,26 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    /* border: 1px solid red; */
     border-left: 3px solid #5c38db;
     padding-left: 10px;
     width: 100%;
     font-weight: bold;
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .attach-header-btn .total-file {
-    font-size: 12px;
+    font-size: 10px;
     /* font-weight: normal; */
     color: #333;
     border: 1px solid white;
     background-color: white;
-    padding: 3px;
+    padding: 2px;
 }
 
 .attach-header-btn button {
     border: 1px solid #987df9;
-    padding: 3px 5px;
+    padding: 2px 5px;
     font-size: 10px;
     background-color: #d5cafd;
     color: #5c38db;
@@ -1455,12 +1458,12 @@
 
     .ncd-main-content .ncd-main-left {
         /* border: 1px solid grey; */
-        height: 72vh;
+        height: 75vh;
     }
 
     .ncd-main-content .ncd-main-right {
         /* border: 1px solid blue; */
-        height: 72vh;
+        height: 75vh;
     }
 
     /* STATUS BTN  */
