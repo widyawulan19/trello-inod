@@ -1628,3 +1628,68 @@ app.put('/api/cards/:cardId/move', async (req, res) => {
       res.status(500).send("Server error");
     }
   });
+
+
+
+
+//   getListsByBoard,
+//   export const getListsByBoard = (boardId) =>
+//   axios.get(`${API_URL}/testing_boards/${boardId}/lists`);
+//   // endpoin 
+//   app.get("/api/testing_boards/:boardId/lists", async (req, res) => {
+//   const { boardId } = req.params;
+//   try {
+//     const result = await client.query(
+//       `SELECT * FROM testing_list WHERE board_id = $1 ORDER BY position ASC`,
+//       [boardId]
+//     );
+//     res.json(result.rows);
+//   } catch (err) {
+//     console.error("Error fetching lists:", err);
+//     res.status(500).json({ error: "Failed to fetch lists" });
+//   }
+// });
+
+
+//   reorderLists,
+//   export const reorderLists = (lists) =>
+//   axios.patch(`${API_URL}/testing_lists/reorder`, { lists });
+//   // endpoin 
+
+//   app.patch("/api/testing_lists/reorder", async (req, res) => {
+//   const { lists } = req.body; 
+//   // contoh body: [{ id: 1, position: 1 }, { id: 2, position: 2 }]
+//   try {
+//     await Promise.all(
+//       lists.map((list) =>
+//         client.query(
+//           `UPDATE testing_list 
+//            SET position = $1, updated_at = NOW()
+//            WHERE id = $2`,
+//           [list.position, list.id]
+//         )
+//       )
+//     );
+//     res.json({ message: "List positions updated successfully" });
+//   } catch (err) {
+//     console.error("Error reordering lists:", err);
+//     res.status(500).json({ error: "Failed to reorder lists" });
+//   }
+// });
+
+  
+//   getBoards,
+//   export const getBoards = () => axios.get(`${API_URL}/testing_boards`);
+//   // endpoin 
+// app.get("/api/testing_boards", async (req, res) => {
+//   try {
+//     const result = await client.query(`
+//       SELECT * FROM testing_board
+//       ORDER BY id ASC
+//     `);
+//     res.json(result.rows);
+//   } catch (err) {
+//     console.error("Error fetching boards:", err);
+//     res.status(500).json({ error: "Failed to fetch boards" });
+//   }
+// });
