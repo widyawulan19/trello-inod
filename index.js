@@ -4234,6 +4234,7 @@ app.get('/api/cards/:id', async (req, res) => {
         c.title,
         c.description,
         c.position,
+        c.create_at, 
         c.due_date,
         json_agg(
           json_build_object(
