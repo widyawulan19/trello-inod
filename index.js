@@ -4151,6 +4151,56 @@ app.put('/api/lists/:listId/cards/reorder', async (req, res) => {
     }
 });
 
+// ✅ Reorder card, bisa antar list
+app.put('/api/cards/reorder-testing', async (req, res) => {
+    const { sourceListId, targetListId, sourceCards, targetCards } = req.body;
+
+    try {
+        await client.query('BEGIN');
+
+        // Kalau card berpindah antar list
+        if (sourceListId !== targetListId) {
+            // Update list asal (hapus card yang pindah dan reindex)
+            for (let i = 0; i < sourceCards.length; i++) {
+                await client.query(
+                    `UPDATE cards 
+           SET position = $1, updated_at = NOW() 
+           WHERE id = $2`,
+                    [i, sourceCards[i].id]
+                );
+            }
+
+            // Update list tujuan (card baru + urutan baru)
+            for (let i = 0; i < targetCards.length; i++) {
+                await client.query(
+                    `UPDATE cards 
+           SET list_id = $1, position = $2, updated_at = NOW() 
+           WHERE id = $3`,
+                    [targetListId, i, targetCards[i].id]
+                );
+            }
+        } else {
+            // Kalau masih di list yang sama, cukup update posisi
+            for (let i = 0; i < targetCards.length; i++) {
+                await client.query(
+                    `UPDATE cards 
+           SET position = $1, updated_at = NOW() 
+           WHERE id = $2 AND list_id = $3`,
+                    [i, targetCards[i].id, sourceListId]
+                );
+            }
+        }
+
+        await client.query('COMMIT');
+        res.json({ success: true, message: 'Reorder success' });
+    } catch (err) {
+        await client.query('ROLLBACK');
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
 //4. patch satu card untuk semua card dalam list
 app.patch('/api/cards/:cardId/new-position', async (req, res) => {
     const { cardId } = req.params;
