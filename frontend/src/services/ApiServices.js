@@ -1506,3 +1506,10 @@ export const updateDesignOrderType = (id, data) =>
 // ✅ Delete
 export const deleteDesignOrderType = (id) =>
   axios.delete(`${API_URL}/design-order-type/${id}`);
+
+
+
+// TESTING ENDPOIN AND API SERVICE 
+export const getListsByBoardTesting = (boardId) => axios.get(`${API_URL}/testing_boards/${boardId}/lists`);
+export const reorderListsTesting = (lists) => axios.patch(`${API_URL}/testing_lists/reorder`, { lists });
+export const getBoardsTesting = () => axios.get(`${API_URL}/testing_boards`);

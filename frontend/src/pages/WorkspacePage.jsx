@@ -18,6 +18,21 @@ import { HiViewBoards } from "react-icons/hi";
 import { useUser } from '../context/UserContext';
 import { PiAlignTopFill } from 'react-icons/pi';
 import { GiCardExchange } from 'react-icons/gi';
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragOverlay,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  horizontalListSortingStrategy,
+  arrayMove,
+} from "@dnd-kit/sortable";
+import SortableBoardItem from '../hook/SortableBoardItem';
+
 
 const WorkspacePage=()=> {
   const location = useLocation();
@@ -62,6 +77,9 @@ const WorkspacePage=()=> {
   //board position
   const [showBoardPosition, setShowBoardPosition] = useState({})
   const [boardPositionDropdown, setBoardPositionDropdown] = useState(null);
+
+  const sensors = useSensors(useSensor(PointerSensor));
+  const [activeId, setActiveId] = useState(null);
 
   const handleDeleteClick = (boardId) =>{
     setSelectedBoardId(boardId);
@@ -171,24 +189,7 @@ const WorkspacePage=()=> {
   const handleCloseProperty = () =>{
     setShowPropertiForm(false)
   }
-  //3. featch boards
-  // const fetchBoards = useCallback(async () => {
-  //   try {
-  //     const response = await getBoardsByWorkspace(workspaceId, userId);
-  //     setBoards(response.data);
-  //     if(response.data.length > 0){
-  //       setBoardId(response.data[0].id)
-  //     }
-  //   } catch (error) {
-  //     console.error('Failed to fetch boards:', error);
-  //   }
-  // }, [workspaceId]);
 
-  // useEffect(()=>{
-  //   if(workspaceId){
-  //     fetchBoards();
-  //   }
-  // },[workspaceId]);
   //3. fetch boards
   const fetchBoards = useCallback(async () => {
       try {
@@ -395,6 +396,39 @@ const handleChangeBoardPosition = async (boardId, newPosition) => {
 };
 
 
+// 🔹 Fungsi saat drag selesai
+const handleDragStart = (event) => {
+  const { active } = event;
+  setActiveId(active.id);
+};
+
+
+const handleDragEnd = async (event) => {
+  const { active, over } = event;
+  setActiveId(null); // 🩵 Reset setelah drag selesai
+
+  if (!over || active.id === over.id) return;
+
+  const oldIndex = boards.findIndex((b) => b.id === active.id);
+  const newIndex = boards.findIndex((b) => b.id === over.id);
+  const reordered = arrayMove(boards, oldIndex, newIndex);
+  setBoards(reordered);
+
+  try {
+    for (let i = 0; i < reordered.length; i++) {
+      await reorderBoardPosition(reordered[i].id, i + 1, workspaceId);
+    }
+    showSnackbar("Success reorder boards!", "success");
+    await fetchBoards();
+  } catch (error) {
+    console.error("Error changing board position:", error);
+    showSnackbar("Failed to reorder boards", "error");
+  }
+};
+
+
+
+
 //navigate to board list
 const handleNavigateToBoardList = (workspaceId, boardId) =>{
   // navigate(`/workspaces/${workspaceId}/board/${boardId}`);
@@ -482,162 +516,220 @@ const handleNavigateToWorkspace = () =>{
 
       <div className="wp-body-container" >
         <div className="wp-content">
-          {boards.length > 0 ? (
-        boards.map((board) => (
-          <div key={board.id} className='wp-card'>
-            <div className="wp-name">
-              <div className="wp-name-text">
-                <div className="name-icon">
-                  <PiAlignTopFill className='ni-mini'/>
-                </div>
-                {/* <h5>{board.name}</h5> */}
-                {editingName === board.id ? (
-                  <input 
-                    type="text"
-                    value={newName}
-                    onChange={(e) => setNewName(e.target.value)}
-                    onBlur={()=> handleSaveName(board.id)}
-                    onKeyDown={(e) => handleKeyPressName(e, board.id)}
-                    autoFocus 
-                  />
-                ):(
-                  <h5 onClick={(e)=> handleEditName(e, board.id, board.name)}>{board.name}</h5>
-                )}
-              </div>
+          {boards.length > 0 && (
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragStart={handleDragStart}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={boards.map((b) => b.id)}
+                strategy={horizontalListSortingStrategy}
+              >
+                <div className='wp-content-box'>
+                  {boards.map((board) => (
+                    <SortableBoardItem key={board.id} id={board.id}>
+                      {({dragHandleProps,isDragging }) =>(
 
-              <BootstrapTooltip title='Board setting' placement='top'>
-                <div className="wp-setting" onClick={(e) => handleShowBoardSetting(e, board.id)}>
-                  <HiOutlineEllipsisHorizontal/>
-                </div>
-              </BootstrapTooltip>
-            </div>
+                        <div className='wp-card'>
+                          <div className="wp-name">
+                            <div className="wp-name-text">
+                              {/* <div className="name-icon"><PiAlignTopFill className='ni-mini' /></div> */}
+                              {/* 🎯 hanya area ini yang bisa drag */}
+                              <div className="name-icon" {...dragHandleProps}>
+                                <PiAlignTopFill className='ni-mini' />
+                              </div>
+                              
+                              {editingName === board.id ? (
+                                <input
+                                  type="text"
+                                  value={newName}
+                                  onChange={(e) => setNewName(e.target.value)}
+                                  onBlur={() => handleSaveName(board.id)}
+                                  onKeyDown={(e) => handleKeyPressName(e, board.id)}
+                                  autoFocus
+                                />
+                              ) : (
+                                <h5 onClick={(e) => handleEditName(e, board.id, board.name)}>
+                                  {board.name}
+                                </h5>
+                              )}
+                            </div>
 
-            {/* BOARD SETTING  */}
-            {showBoardSetting[board.id] && (
-              <div className='bs-pop' ref={showBoard}>
-                <button onClick={() => handleShowMovePopup(board.id)}>
-                  <HiMiniArrowLeftStartOnRectangle className='bs-icon'/>
-                  Move
-                </button>
-                  <button  onClick={() => handleDuplicatePopup(board.id)}>
-                    <HiOutlineSquare2Stack className='bs-icon'/>
-                    Duplicate
-                  </button>
-                  <button onClick={() => handleArchiveBoard(board.id)}>
-                    <HiOutlineArchiveBox className='bs-icon'/>
-                    Archive
-                  </button>
+                            <BootstrapTooltip title='Board setting' placement='top'>
+                              <div className="wp-setting" onClick={(e) => handleShowBoardSetting(e, board.id)}>
+                                <HiOutlineEllipsisHorizontal />
+                              </div>
+                            </BootstrapTooltip>
+                          </div>
 
-                  <button
-                    onClick={() =>
-                      setBoardPositionDropdown(
-                        boardPositionDropdown === board.id ? null : board.id
-                      )
-                    }
-                  >
-                    <GiCardExchange className='bs-icon'/>
-                    Posisi : {board.position}
-                  </button>
+                          {/* BOARD SETTING */}
+                          {showBoardSetting[board.id] && (
+                            <div className='bs-pop' ref={showBoard}>
+                              <button onClick={() => handleShowMovePopup(board.id)}>
+                                <HiMiniArrowLeftStartOnRectangle className='bs-icon' />
+                                Move
+                              </button>
+                              <button onClick={() => handleDuplicatePopup(board.id)}>
+                                <HiOutlineSquare2Stack className='bs-icon' />
+                                Duplicate
+                              </button>
+                              <button onClick={() => handleArchiveBoard(board.id)}>
+                                <HiOutlineArchiveBox className='bs-icon' />
+                                Archive
+                              </button>
 
-                  <hr />
-                  <button 
-                    className='delete'
-                    onClick={() => handleDeleteClick(board.id)}
-                  >
-                    <HiOutlineTrash className='bs-delete'/>
-                    Delete
-                  </button>
-              </div>
-            )}
-            {showMovePopup[board.id] && (
-              <div className="workspace-move-modal">
-                  <MoveBoard fetchBoards={fetchBoards} boardId={board.id} userId={userId} onClose={()=>handleCloseMovePopup(board.id)}/>
-              </div>
-            )}
-            {showDuplicatePopup[board.id] && (
-              <div className="duplicate-modal">
-                  <DuplicateBoard fetchBoards={fetchBoards} boardId={board.id} userId={userId} onClose={() => handleCloseDuplicatePopup(board.id)}/>
-              </div>
-            )}
-            {boardPositionDropdown === board.id && (
-              <div className="duplocat-modal">
-                <ul
-                  style={{
-                    listStyle: "none",
-                    padding: "5px",
-                    margin: "5px 0 0 0",
-                    border: "1px solid #ccc",
-                    borderRadius: "4px",
-                    position: "absolute",
-                    background: "#fff",
-                    zIndex: 10,
-                    minWidth: "100px",
-                  }}
-                >
-                  {boards.map((_, i) => (
-                    <li
-                      key={i}
-                      style={{
-                        padding: "5px 10px",
-                        cursor: "pointer",
-                        background: i + 1 === board.position ? "#eee" : "#fff",
-                      }}
-                      onClick={() => handleChangeBoardPosition(board.id, i + 1)} // +1 biar mulai dari 1
-                    >
-                      {i + 1}
-                    </li>
+                              {/* <button
+                                onClick={() =>
+                                  setBoardPositionDropdown(
+                                    boardPositionDropdown === board.id ? null : board.id
+                                  )
+                                }
+                              >
+                                <GiCardExchange className='bs-icon' />
+                                Posisi : {board.position}
+                              </button> */}
+
+                              <hr />
+                              <button className='delete' onClick={() => handleDeleteClick(board.id)}>
+                                <HiOutlineTrash className='bs-delete' /> Delete
+                              </button>
+                            </div>
+                          )}
+
+                          {showMovePopup[board.id] && (
+                            <div className="workspace-move-modal">
+                              <MoveBoard
+                                fetchBoards={fetchBoards}
+                                boardId={board.id}
+                                userId={userId}
+                                onClose={() => handleCloseMovePopup(board.id)}
+                              />
+                            </div>
+                          )}
+                          {showDuplicatePopup[board.id] && (
+                            <div className="duplicate-modal">
+                              <DuplicateBoard
+                                fetchBoards={fetchBoards}
+                                boardId={board.id}
+                                userId={userId}
+                                onClose={() => handleCloseDuplicatePopup(board.id)}
+                              />
+                            </div>
+                          )}
+
+                          {/* MANUAL BOARD POSITION  */}
+                          {/* {boardPositionDropdown === board.id && (
+                            <div className="duplocat-modal">
+                              <ul style={{
+                                listStyle: "none",
+                                padding: "5px",
+                                margin: "5px 0 0 0",
+                                border: "1px solid #ccc",
+                                borderRadius: "4px",
+                                position: "absolute",
+                                background: "#fff",
+                                zIndex: 10,
+                                minWidth: "100px",
+                              }}>
+                                {boards.map((_, i) => (
+                                  <li
+                                    key={i}
+                                    style={{
+                                      padding: "5px 10px",
+                                      cursor: "pointer",
+                                      background: i + 1 === board.position ? "#eee" : "#fff",
+                                    }}
+                                    onClick={() => handleChangeBoardPosition(board.id, i + 1)}
+                                  >
+                                    {i + 1}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )} */}
+
+                          <BoardDeleteConfirm
+                            boardId={board.id}
+                            isOpen={showDeleteModal}
+                            onConfirm={confirmDelete}
+                            onCancle={handleCancleDelete}
+                            boardName={boards.find(b => b.id === selectedBoardId)?.name}
+                          />
+
+                          <div className="wp-body">
+                            <div className="priority">
+                              <BoardProperties boardId={board.id} />
+                            </div>
+
+                            {editingDescription === board.id ? (
+                              <textarea
+                                value={newDescription}
+                                onChange={(e) => setNewDescription(e.target.value)}
+                                onBlur={() => handleSaveDescription(board.id)}
+                                onKeyDown={(e) => handleKeyPressDescription(e, board.id)}
+                                autoFocus
+                              />
+                            ) : (
+                              <p onClick={(e) => handleEditDescription(e, board.id, board.description)}>
+                                {board.description}
+                              </p>
+                            )}
+
+                            <div className="wp-btm">
+                              <div className='wp-create'>
+                                <IoTime className='wp-icon' />
+                                {formatDate(board.create_at)}
+                              </div>
+                              <button
+                                className='view'
+                                onClick={() => handleNavigateToBoardList(workspaceId, board.id)}
+                              >
+                                View List
+                                <HiChevronRight />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      
+                    </SortableBoardItem>
                   ))}
-                </ul>
-              </div>
-            )}
-
-            <BoardDeleteConfirm boardId={board.id} isOpen={showDeleteModal} onConfirm={confirmDelete} onCancle={handleCancleDelete} boardName={boards.find(b => b.id === selectedBoardId)?.name}/>
-            
-
-            {/* END BOARD SETTING  */}
-            <div className="wp-body">
-              <div className="priority">
-                <BoardProperties boardId={board.id}/>
-              </div>
-                {/* DESCRIPTION  */}
-                {editingDescription === board.id ? (
-                  <textarea
-                    value={newDescription}
-                    onChange={(e) => setNewDescription(e.target.value)}
-                    onBlur={()=> handleSaveDescription(board.id)}
-                    onKeyDown={(e) => handleKeyPressDescription(e, board.id)}
-                    autoFocus
-                  />
-                ):(
-                  <p onClick={(e) => handleEditDescription(e, board.id, board.description)}>{board.description}</p>
-                )}
-
-                {/* <p>{board.description}</p> */}
-                {/* <p>{formatDate(board.create_at)}</p> */}
-                <div className="wp-btm">
-                  <div className='wp-create'>
-                    <IoTime className='wp-icon'/>
-                    {formatDate(board.create_at)}
-                  </div>
-                  <button 
-                    className='view'
-                    onClick={()=>handleNavigateToBoardList(workspaceId, board.id)}
-                    // onClick={handleNavigateToBoardList} 
-                  >
-                    View List
-                    <HiChevronRight/>
-                  </button>
                 </div>
-              </div>
-            </div>
-          ))
-        ):(
-          <></>
-        )}
+              </SortableContext>
+
+              {/* 🪄 Ghost (Drag Overlay) */}
+                    <DragOverlay
+                      className="dnd-kit-overlay"
+                    >
+                      {activeId ? (
+                        <div
+                          style={{
+                            width: "260px",
+                            background: "#e8f6ff",
+                            borderRadius: "8px",
+                            padding: "12px",
+                            boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
+                            transform: "rotate(1deg)",
+                          }}
+                        >
+                          <strong>
+                            {boards.find((b) => b.id === activeId)?.name || "Dragging..."}
+                          </strong>
+                          <p style={{ marginTop: "4px", fontSize: "14px", color: "#555" }}>
+                            {boards.find((b) => b.id === activeId)?.description}
+                          </p>
+                        </div>
+                      ) : null}
+                    </DragOverlay>
+
+            </DndContext>
+          )}
 
           <div className="wpf-create">
             <div className="wpf-content" onClick={handleShowForm}>
-              <HiOutlinePlus className='wpf-icon'/>
+              <HiOutlinePlus className='wpf-icon' />
               <p>CREATE A NEW BOARD</p>
             </div>
           </div>

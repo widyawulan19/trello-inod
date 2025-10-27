@@ -205,6 +205,14 @@
     /* width: fit-content; */
 }
 
+.sortable-list-item {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sortable-list-item.dragging {
+    transform: rotate(2deg);
+}
+
 .l-name h5 {
     margin: 0px;
     font-size: 12px;

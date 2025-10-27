@@ -34,6 +34,16 @@ import { handleArchive } from '../utils/handleArchive'
 import SearchCard from '../fitur/SearchCard'
 import PositionList from '../modules/PositionList'
 import { GiCardExchange } from 'react-icons/gi'
+import { DndContext, closestCenter, DragOverlay } from "@dnd-kit/core";
+import {
+  SortableContext,
+  horizontalListSortingStrategy,
+  arrayMove,
+//   verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import SortableListItem from '../hook/SortableListItem'
+// import SortableCardItem from '../hook/SortableCardItem'
+
 
 const BoardList=()=> {
     //STATE
@@ -69,6 +79,8 @@ const BoardList=()=> {
     //show list form
     const [showListForm, setShowListForm] = useState(false)
     const listFormRef = OutsideClick(()=> setShowListForm(false))
+    const [activeId, setActiveId] = useState(null);
+
 
 
 
@@ -95,6 +107,9 @@ const BoardList=()=> {
     const [showConfirmModal, setShowConfirmModal] = useState(false)
     const [selectedListId, setSelectedListId] = useState(null)
 
+    //card position 
+    const [cardsByList, setCardsByList] = useState({});
+    const [activeCard, setActiveCard] = useState(null);
 
 
     //total card in list
@@ -387,6 +402,111 @@ const handleChangeListPosition = async (listId, newPosition) => {
     }
   };
 
+  // handle drag end
+  const handleDragEnd = async (event) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = lists.findIndex((l) => l.id === active.id);
+    const newIndex = lists.findIndex((l) => l.id === over.id);
+    const newLists = arrayMove(lists, oldIndex, newIndex);
+
+    setLists(newLists);
+
+    try {
+      // update posisi di DB
+      await reorderListPosition(active.id, newIndex, boardId);
+      showSnackbar("List order updated!", "success");
+    } catch (error) {
+      console.error("Error updating list order:", error);
+      showSnackbar("Failed to update order", "error");
+      // refresh ulang kalau gagal
+      await fetchLists();
+    }
+  };
+
+
+  //CARD POSITION
+   // panggil ini tiap kali list/card di-load
+    const handleSetCards = (listId, cards) => {
+      setCardsByList((prev) => ({ ...prev, [listId]: cards }));
+    };
+  
+    const handleDragStart = (event) => {
+      const { active } = event;
+      const { id } = active;
+      // cari card aktif
+      for (const listId in cardsByList) {
+        const found = cardsByList[listId].find((c) => c.id === id);
+        if (found) {
+          setActiveCard(found);
+          break;
+        }
+      }
+    };
+  
+    const handleDragEndCard = async (event) => {
+      const { active, over } = event;
+      setActiveCard(null);
+      if (!over) return;
+  
+      const activeListId = findContainer(active.id);
+      const overListId = findContainer(over.id);
+  
+      if (!activeListId || !overListId) return;
+  
+      // kalau beda list
+      if (activeListId !== overListId) {
+        const activeCards = [...cardsByList[activeListId]];
+        const overCards = [...cardsByList[overListId]];
+  
+        const activeIndex = activeCards.findIndex((c) => c.id === active.id);
+        const newCard = { ...activeCards[activeIndex], list_id: overListId };
+  
+        // hapus dari list lama
+        activeCards.splice(activeIndex, 1);
+        // taruh ke list baru di akhir
+        overCards.push(newCard);
+  
+        const newCardsByList = {
+          ...cardsByList,
+          [activeListId]: activeCards,
+          [overListId]: overCards,
+        };
+        setCardsByList(newCardsByList);
+  
+        try {
+          await updateCardPosition(active.id, overCards.length - 1, overListId);
+          console.log("Moved to new list successfully");
+        } catch (err) {
+          console.error("Error moving card:", err);
+        }
+        return;
+      }
+  
+      // kalau di list yang sama → reorder
+      const listCards = cardsByList[activeListId];
+      const oldIndex = listCards.findIndex((c) => c.id === active.id);
+      const newIndex = listCards.findIndex((c) => c.id === over.id);
+  
+      if (oldIndex !== newIndex) {
+        const newCards = arrayMove(listCards, oldIndex, newIndex);
+        setCardsByList((prev) => ({ ...prev, [activeListId]: newCards }));
+  
+        try {
+          await updateCardPosition(active.id, newIndex, activeListId);
+        } catch (err) {
+          console.error("Error updating position:", err);
+        }
+      }
+    };
+  
+    const findContainer = (cardId) => {
+      return Object.keys(cardsByList).find((listId) =>
+        cardsByList[listId].some((card) => card.id === cardId)
+      );
+    };
+
 
 //NAVIGATION
 // <Route path='/workspaces/:workspaceId' element={<WorkspacePage/>}/>
@@ -431,199 +551,193 @@ if (!userId) {
 
         </div>
         <div className="bl-body">
-            <div className="bl-content">
-                {lists.map((list) =>(
-                    <div key={list.id} className='bl-card'>
-                        <div className="bl-box">
-                            <div className="list-title">
-                                <div className="l-name">
-                                    <HiMiniListBullet className='licon'/>
-                                    {editName === list.id ? (
-                                        <input
-                                            type='text'
-                                            value={newName}
-                                            onChange={(e) => setNewName(e.target.value)}
-                                            onBlur={()=> handleSaveName(list.id)}
-                                            onKeyDown={(e)=> handleKeyPressName(e, list.id)}
-                                            autoFocus
-                                        />
-                                    ):(
-                                        <h5 onClick={(e)=> handleEditName(e, list.id, list.name)}>{list.name}</h5>
-                                    )}
-                                    {/* <h5>{list.name}</h5> */}
-                                </div>
-                                <BootstrapTooltip title='List setting' placement='top'>
-                                    <button onClick={(e)=> handleShowSetting(e, list.id)}>
-                                        <HiOutlineEllipsisHorizontal size={20}/>
-                                    </button>
-                                </BootstrapTooltip>
-                                
-                                {showSetting[list.id] && (
-                                    <div className='list-setting' ref={settingRef}>
-                                        <button onClick={()=> handleShowMovePopup(list.id)}>
-                                          <HiMiniArrowLeftStartOnRectangle className='cs-icon'/>
-                                          Move
-                                        </button>
-                                        <button onClick={()=> handleShowDuplicate(list.id)}>
-                                          <HiOutlineSquare2Stack className='cs-icon'/>
-                                          Duplicate
-                                        </button>
-                                        <button onClick={()=> handleArchiveLists(list.id)}>
-                                          <HiOutlineArchiveBox className='cs-icon'/>
-                                          Archive
-                                        </button>
-                                       
-                                        <button
-                                            className='btn-position'
-                                            onClick={() => {
-                                                setListPositionDropdown(
-                                                listPositionDropdown === list.id ? null : list.id
-                                                );
-                                                setShowSetting(false); // ✅ Tutup setting setelah klik
-                                            }}
-                                        >
-                                            <GiCardExchange className='cs-icon'/>
-                                            {/* Posisi */}
-                                            Posisi: {list.position}
-                                        </button>
-                                       
-                                        <div className="delete">
-                                          <button onClick={()=> handleDeleteClick(list.id)} className="flex items-center gap-1 text-red-500 hover:text-red-700">
-                                            <HiOutlineTrash className='cs-delete'/>
-                                            Delete
-                                          </button>
-                                        </div>
-                                    </div>
-                                )}
-                                <ListDeleteConfirm
-                                    isOpen={showConfirmModal}
-                                    listId={list.id}
-                                    onConfirm={confirmDelete}
-                                    onCancel={cancelDelete}
-                                    listName={list.name}
-                                />
-                                {showMovePopup[list.id] && (
-                                    <div className="new-move-list-modal">
-                                        <MoveList userId={userId} currentBoardId={boardId} listId={list.id} workspaceId={workspaceId} onClose={()=> handleCloseMovePopup(list.id)} fetchLists={fetchLists}/>
-                                    </div>
-                                )}
-                                {showDuplicatePopup[list.id] && (
-                                    <div className="new-move-list-modal">
-                                        <DuplicateList userId={userId} boardId={boardId} listId={list.id} workspaceId={workspaceId} onClose={()=> handleCloseDuplicate(list.id)} fetchLists={fetchLists}/>
-                                    </div>
-                                )}
-                                {/* Dropdown ubah posisi list */}
-                                {listPositionDropdown === list.id && (
-                                    <div className="new-position-list-modal">
-                                        <div className="position-box-container">
-                                            <div className="pch">
-                                                <h5>
-                                                    Select List Position
-                                                </h5>
-                                            </div>
-                                            <div className="pcm">
-                                                <ul
-                                                    // style={{
-                                                    //     listStyle: "none",
-                                                    //     padding: "5px",
-                                                    //     margin: "5px 0 0 0",
-                                                    //     border: "1px solid #ccc",
-                                                    //     borderRadius: "4px",
-                                                    //     position: "absolute",
-                                                    //     background: "#fff",
-                                                    //     zIndex: 10,
-                                                    //     minWidth: "100px",
-                                                    // }}
-                                                >
-                                                {lists.map((_, i) => (
-                                                    <li
-                                                        key={i}
-                                                        // style={{
-                                                        //     padding: "5px 10px",
-                                                        //     cursor: "pointer",
-                                                        //     background: i === list.position ? "#eee" : "#fff",
-                                                        // }}
-                                                        onClick={() => handleChangeListPosition(list.id, i)}
-                                                        >
-                                                        {i}
-                                                        </li>
+            <DndContext
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
+                onDragStart={(e) => setActiveId(e.active.id)}
+                onDragCancel={() => setActiveId(null)}
+            >
+                <SortableContext
+                    items={lists.map((l) => l.id)}
+                    strategy={horizontalListSortingStrategy}
+                >
+                    <div className="bl-content">
+                        {lists.map((list) =>(
+                            <SortableListItem key={list.id} id={list.id}>
+                                {({dragHandleProps}) =>(
+                                    <div key={list.id} className='bl-card'>
+                                        <div className="bl-box">
+                                            <div className="list-title">
+                                                <div className="l-name">
+                                                    <div className="icon-i" {...dragHandleProps} >
+                                                        <HiMiniListBullet className='licon'/>
+                                                    </div>
+                                                    
+                                                    {editName === list.id ? (
+                                                        <input
+                                                            type='text'
+                                                            value={newName}
+                                                            onChange={(e) => setNewName(e.target.value)}
+                                                            onBlur={()=> handleSaveName(list.id)}
+                                                            onKeyDown={(e)=> handleKeyPressName(e, list.id)}
+                                                            autoFocus
+                                                        />
+                                                    ):(
+                                                        <h5 onClick={(e)=> handleEditName(e, list.id, list.name)}>{list.name}</h5>
+                                                    )}
+                                                    {/* <h5>{list.name}</h5> */}
+                                                </div>
+                                                <BootstrapTooltip title='List setting' placement='top'>
+                                                    <button onClick={(e)=> handleShowSetting(e, list.id)}>
+                                                        <HiOutlineEllipsisHorizontal size={20}/>
+                                                    </button>
+                                                </BootstrapTooltip>
+                                                
+                                                {showSetting[list.id] && (
+                                                    <div className='list-setting' ref={settingRef}>
+                                                        <button onClick={()=> handleShowMovePopup(list.id)}>
+                                                            <HiMiniArrowLeftStartOnRectangle className='cs-icon'/>
+                                                            Move
+                                                        </button>
+                                                        <button onClick={()=> handleShowDuplicate(list.id)}>
+                                                            <HiOutlineSquare2Stack className='cs-icon'/>
+                                                            Duplicate
+                                                        </button>
+                                                        <button onClick={()=> handleArchiveLists(list.id)}>
+                                                            <HiOutlineArchiveBox className='cs-icon'/>
+                                                            Archive
+                                                        </button>
+                                                        <div className="delete">
+                                                            <button onClick={()=> handleDeleteClick(list.id)} className="flex items-center gap-1 text-red-500 hover:text-red-700">
+                                                                <HiOutlineTrash className='cs-delete'/>
+                                                                Delete
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                <ListDeleteConfirm
+                                                    isOpen={showConfirmModal}
+                                                    listId={list.id}
+                                                    onConfirm={confirmDelete}
+                                                    onCancel={cancelDelete}
+                                                    listName={list.name}
+                                                />
+                                                {showMovePopup[list.id] && (
+                                                    <div className="new-move-list-modal">
+                                                        <MoveList userId={userId} currentBoardId={boardId} listId={list.id} workspaceId={workspaceId} onClose={()=> handleCloseMovePopup(list.id)} fetchLists={fetchLists}/>
+                                                    </div>
+                                                )}
+                                                {showDuplicatePopup[list.id] && (
+                                                    <div className="new-move-list-modal">
+                                                        <DuplicateList userId={userId} boardId={boardId} listId={list.id} workspaceId={workspaceId} onClose={()=> handleCloseDuplicate(list.id)} fetchLists={fetchLists}/>
+                                                    </div>
+                                                )}
+                                                
+                                                
+                                                </div>
+
+                                                <div className="list-body">
+                                                    {cards[list.id]?.map((card) => (
+                                                        <>
+                                                            <Card 
+                                                                key={card.id} 
+                                                                userId={userId}
+                                                                card={card} 
+                                                                cardId={card.id}
+                                                                listId={list.id}
+                                                                handleNavigate = {()=>handleNavigateToBoard(workspaceId, boardId)} 
+                                                                onClick={() => handleOpenPopup(card.id)}
+                                                                onRefetch={handleRefetchBoard}
+                                                                fetchBoardDetail={fetchBoardDetail}
+                                                                fetchLists={fetchLists}
+                                                                fetchCardList={fetchCardList}
+                                                                cardsInList={cards[list.id] || []}
+                                                                boards={boards}
+                                                                lists={lists}
+                                                                listName={list.name}
+                                                                cardPositionDropdown={cardPositionDropdown}
+                                                                setCardPositionDropdown={setCardPositionDropdown}
+                                                                handleChangeCardPosition={handleChangeCardPosition}
+                                                                onDragStart={handleDragStart}
+                                                                onDragEnd={handleDragEnd}
+                                                                cardsByList={cardsByList}
+                                                                activeCard={activeCard}
+                                                                
+
+                                                            />
+                                                        </>
                                                     ))}
-                                                </ul>
+                                                </div> 
+
+                                            <div className="form-card-wrapper">
+                                                <div className="form-card">
+                                                    <div className="fc-cont" onClick={(e)=> handleShowForm(e, list.id)}>
+                                                        <HiPlus/>
+                                                        Add Card
+                                                    </div>
+                                                    <div className="card-count">
+                                                    <p>{totalCard}</p> 
+                                                    <div><HiOutlineCreditCard style={{marginRight:'5px'}}/></div>
+                                                    </div>
+                                                </div>
+                                                {showForm[list.id]&&(
+                                                    <div className='cc-form-card' ref={formRef}>
+                                                        {/* <div className="ccf-conten"> */}
+                                                            <CreateCard listId={list.id} onCardCreated={handleCardCreated} onClose={handleCloseForm} />   
+                                                        {/* </div> */}
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
-                                        
+                                    
                                     </div>
 
-                                )}
-                                
-                                
-                                </div>
-                                <div className="list-body">
-                                {cards[list.id]?.map((card) => (
-                                    <>
-                                    <Card 
-                                        key={card.id} 
-                                        userId={userId}
-                                        card={card} 
-                                        cardId={card.id}
-                                        listId={list.id}
-                                        handleNavigate = {()=>handleNavigateToBoard(workspaceId, boardId)} 
-                                        onClick={() => handleOpenPopup(card.id)}
-                                        onRefetch={handleRefetchBoard}
-                                        fetchBoardDetail={fetchBoardDetail}
-                                        fetchLists={fetchLists}
-                                        fetchCardList={fetchCardList}
-                                        cardsInList={cards[list.id] || []}
-                                        boards={boards}
-                                        lists={lists}
-                                        listName={list.name}
-                                        cardPositionDropdown={cardPositionDropdown}
-                                        setCardPositionDropdown={setCardPositionDropdown}
-                                        handleChangeCardPosition={handleChangeCardPosition}
-                                    />
-                                    {/* <CardDetailPopup isOpen={showDetail} onClose={handleShowDetail} cardId={card.id} /> */}
-                                    </>
-                                ))}
-                            </div> 
-
-                            <div className="form-card-wrapper">
-                                <div className="form-card">
-                                    <div className="fc-cont" onClick={(e)=> handleShowForm(e, list.id)}>
-                                         <HiPlus/>
-                                        Add Card
-                                    </div>
-                                    <div className="card-count">
-                                       <p>{totalCard}</p> 
-                                       <div><HiOutlineCreditCard style={{marginRight:'5px'}}/></div>
-                                    </div>
-                                </div>
-                                {showForm[list.id]&&(
-                                    <div className='cc-form-card' ref={formRef}>
-                                        {/* <div className="ccf-conten"> */}
-                                            <CreateCard listId={list.id} onCardCreated={handleCardCreated} onClose={handleCloseForm} />   
-                                        {/* </div> */}
-                                    </div>
-                                )}
+                                )}                            
+                            </SortableListItem>
+                        ))}
+                        {/* <div className="list-box">
+                            <div className="list-box-content" onClick={handleShowListForm}>
+                                <HiOutlinePlus className=''/>
+                                CREATE A NEW LIST
                             </div>
-                        </div>
+                        </div> */}
+                    </div>
                     
-                    </div>
-                ))}
-                {/* <div className="list-box">
-                    <div className="list-box-content" onClick={handleShowListForm}>
-                        <HiOutlinePlus className=''/>
-                        CREATE A NEW LIST
-                    </div>
-                </div> */}
-            </div>
+
+                </SortableContext>
+
+                {/* 🪄 Ghost (Drag Overlay) */}
+                    <DragOverlay className="dnd-kit-overlay">
+                        {activeId ? (
+                        <div
+                            style={{
+                            width: "280px",
+                            background: "#f2faff",
+                            borderRadius: "8px",
+                            padding: "12px",
+                            boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
+                            transform: "rotate(1deg)",
+                            }}
+                        >
+                            <strong>
+                            {lists.find((l) => l.id === activeId)?.name || "Dragging..."}
+                            </strong>
+                            <p
+                            style={{
+                                marginTop: "4px",
+                                fontSize: "14px",
+                                color: "#666",
+                            }}
+                            >
+                            {lists.find((l) => l.id === activeId)?.description ||
+                                "No description"}
+                            </p>
+                        </div>
+                        ) : null}
+                    </DragOverlay>
+            </DndContext>
             
         </div>
-        {/* <CardDetailPopup 
-            isOpen={isPopupOpen} 
-            onClose={handleClosePopup} 
-            cardId={selectedCardId} 
-        /> */}
-
     </div>
   )
 }

@@ -45,6 +45,16 @@ import CardDueDateDisplay from '../modules/CardDueDateDisplay';
 import CardFooter from '../modules/CardFooter';
 import NewCardDetail from './NewCardDetail';
 import { handleArchive } from '../utils/handleArchive';
+import {
+  DndContext,
+  closestCorners,
+  DragOverlay,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  arrayMove,
+} from "@dnd-kit/sortable";
 
 const Card=({
     card,
@@ -61,6 +71,13 @@ const Card=({
     cardPositionDropdown,
     setCardPositionDropdown,
     handleChangeCardPosition,
+    onDragStart,
+    onDragEnd,
+    cardsByList,
+    activeCard,
+    attributes,
+  listeners,
+  setNodeRef,
 })=> {
     // console.log('cards diterima:', card)
     const { workspaceId, boardId} = useParams();
@@ -104,7 +121,7 @@ const Card=({
     //state to create mark notif
     const [notifications, setNotifications] = useState([]);
     const [unreadCount, setUnreadCount] = useState(0);
-    const [hasNewChat, setHasNewChat] = useState(false); 
+    const [hasNewChat, setHasNewChat] = useState(false);
 
     // dorpwon card position 
     const [showPosition, setShowPosition] = useState(false);
@@ -386,7 +403,16 @@ const Card=({
     <div className='card-box-container' >
      <div className='card-container'>
         <div className="cc-top-header">
-            <div className="cctop-status">
+            <div className="cctop-status" ref={setNodeRef}>
+                {/* <HiOutlineCreditCard cardName='card-icon'/> */}
+                <div
+                    className="card-icon"
+                    {...(attributes || {})}
+                    {...(listeners || {})}
+                    >
+                    <HiOutlineCreditCard />
+                </div>
+
                 <CardSelectedProperties cardId={card.id}/>
                 {currentStatus ?(
                     <div className='status-cont'>

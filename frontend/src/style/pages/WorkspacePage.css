@@ -304,6 +304,7 @@
     justify-content: center;
     border-radius: 8px;
     cursor: pointer;
+    transition: transform 0.25s ease;
 }
 
 .wpf-content p {
@@ -313,22 +314,45 @@
     color: grey;
 }
 
+.wp-content .wp-content-box {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    scroll-behavior: smooth;
+}
+
 .wp-card {
     border: 1px solid #c5cad2;
     /* border: 1px solid orangered; */
     background-color: white;
-    min-height: 15vh;
+    min-height: 18vh;
     padding: 5px;
-    width: 30%;
+    width: 100%;
     border-radius: 10px;
     position: relative;
     cursor: pointer;
+    /* transition: all 0.25s ease; */
 }
 
 .wp-card:hover {
     border: 1px solid #dad0ed;
     box-shadow: 0px 4px 8px #5e12eb46;
 }
+
+/* Saat di-drag (dari class motion di atas) */
+.sortable-board-item {
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    user-select: none;
+}
+
+.sortable-board-item:active {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
 
 .wp-name {
     display: flex;
