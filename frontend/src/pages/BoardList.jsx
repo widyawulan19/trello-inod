@@ -403,28 +403,39 @@ const handleChangeListPosition = async (listId, newPosition) => {
     }
   };
 
-  // handle drag end
-  const handleDragEnd = async (event) => {
-    const { active, over } = event;
-    if (!over || active.id === over.id) return;
+  // fungsi drag end
+const handleDragEnd = async (event) => {
+  const { active, over } = event;
 
-    const oldIndex = lists.findIndex((l) => l.id === active.id);
-    const newIndex = lists.findIndex((l) => l.id === over.id);
-    const newLists = arrayMove(lists, oldIndex, newIndex);
+  // Cegah error saat drag di area kosong atau posisi sama
+  if (!over || active.id === over.id) return;
 
-    setLists(newLists);
+  const oldIndex = lists.findIndex((l) => l.id === active.id);
+  const newIndex = lists.findIndex((l) => l.id === over.id);
 
-    try {
-      // update posisi di DB
-      await reorderListPosition(active.id, newIndex, boardId);
-      showSnackbar("List order updated!", "success");
-    } catch (error) {
-      console.error("Error updating list order:", error);
-      showSnackbar("Failed to update order", "error");
-      // refresh ulang kalau gagal
-      await fetchLists();
-    }
-  };
+  // Update urutan di UI secara langsung (optimistic update)
+  const newLists = arrayMove(lists, oldIndex, newIndex);
+  setLists(newLists);
+
+  try {
+    // Kirim posisi baru ke backend
+    await reorderListPosition(active.id, newIndex, boardId);
+
+    // Ambil ulang dari backend biar posisi sinkron 100%
+    const response = await getListByBoard(boardId);
+    const sortedLists = response.data.sort((a, b) => a.position - b.position);
+    setLists(sortedLists);
+
+    showSnackbar("List order updated!", "success");
+  } catch (error) {
+    console.error("Error updating list order:", error);
+    showSnackbar("Failed to update order", "error");
+
+    // Kembalikan urutan awal dari server kalau gagal
+    await fetchLists();
+  }
+};
+
 
 
   //CARD POSITION
