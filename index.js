@@ -3560,6 +3560,63 @@ app.put('/api/lists/reorder-list', async (req, res) => {
 
 //reorder list lebih kompleks
 // PATCH satu list untuk ubah posisi semua list dalam board
+// app.patch('/api/lists/:listId/new-position', async (req, res) => {
+//     const { listId } = req.params;
+//     const { newPosition, boardId } = req.body;
+
+//     try {
+//         await client.query('BEGIN');
+
+//         // Ambil posisi lama dari list yang dipindah
+//         const { rows } = await client.query(
+//             `SELECT position FROM lists WHERE id = $1 AND board_id = $2`,
+//             [listId, boardId]
+//         );
+
+//         if (rows.length === 0) {
+//             await client.query('ROLLBACK');
+//             return res.status(404).json({ error: 'List not found' });
+//         }
+
+//         const oldPosition = rows[0].position;
+
+//         // Kalau posisi berubah
+//         if (newPosition > oldPosition) {
+//             // Geser semua list di antara old+1..new ke atas (pos -1)
+//             await client.query(
+//                 `UPDATE lists
+//          SET position = position - 1
+//          WHERE board_id = $1 AND position > $2 AND position <= $3`,
+//                 [boardId, oldPosition, newPosition]
+//             );
+//         } else if (newPosition < oldPosition) {
+//             // Geser semua list di antara new..old-1 ke bawah (pos +1)
+//             await client.query(
+//                 `UPDATE lists
+//          SET position = position + 1
+//          WHERE board_id = $1 AND position >= $2 AND position < $3`,
+//                 [boardId, newPosition, oldPosition]
+//             );
+//         }
+
+//         // Update posisi list yang dipindah
+//         await client.query(
+//             `UPDATE lists
+//        SET position = $1, update_at = NOW()
+//        WHERE id = $2 AND board_id = $3`,
+//             [newPosition, listId, boardId]
+//         );
+
+//         await client.query('COMMIT');
+//         res.json({ success: true, listId, newPosition });
+//     } catch (err) {
+//         await client.query('ROLLBACK');
+//         console.error('Error moving list:', err);
+//         res.status(500).json({ error: err.message });
+//     }
+// });
+
+// PATCH satu list untuk ubah posisi semua list dalam board
 app.patch('/api/lists/:listId/new-position', async (req, res) => {
     const { listId } = req.params;
     const { newPosition, boardId } = req.body;
@@ -3580,41 +3637,76 @@ app.patch('/api/lists/:listId/new-position', async (req, res) => {
 
         const oldPosition = rows[0].position;
 
-        // Kalau posisi berubah
+        // Jika posisi berubah, geser list lain agar tetap urut
         if (newPosition > oldPosition) {
-            // Geser semua list di antara old+1..new ke atas (pos -1)
+            // Geser list di antara old+1..new ke atas (pos -1)
             await client.query(
-                `UPDATE lists
-         SET position = position - 1
-         WHERE board_id = $1 AND position > $2 AND position <= $3`,
+                `
+        UPDATE lists
+        SET position = position - 1
+        WHERE board_id = $1
+          AND position > $2
+          AND position <= $3
+      `,
                 [boardId, oldPosition, newPosition]
             );
         } else if (newPosition < oldPosition) {
-            // Geser semua list di antara new..old-1 ke bawah (pos +1)
+            // Geser list di antara new..old-1 ke bawah (pos +1)
             await client.query(
-                `UPDATE lists
-         SET position = position + 1
-         WHERE board_id = $1 AND position >= $2 AND position < $3`,
+                `
+        UPDATE lists
+        SET position = position + 1
+        WHERE board_id = $1
+          AND position >= $2
+          AND position < $3
+      `,
                 [boardId, newPosition, oldPosition]
             );
         }
 
-        // Update posisi list yang dipindah
+        // Update posisi list yang dipindahkan
         await client.query(
-            `UPDATE lists
-       SET position = $1, update_at = NOW()
-       WHERE id = $2 AND board_id = $3`,
+            `
+      UPDATE lists
+      SET position = $1, updated_at = NOW()
+      WHERE id = $2 AND board_id = $3
+    `,
             [newPosition, listId, boardId]
         );
 
+        // Pastikan semua posisi tetap urut dari 0..N-1
+        await client.query(
+            `
+      WITH ordered AS (
+        SELECT id, ROW_NUMBER() OVER (ORDER BY position ASC) - 1 AS new_pos
+        FROM lists
+        WHERE board_id = $1
+      )
+      UPDATE lists
+      SET position = ordered.new_pos
+      FROM ordered
+      WHERE lists.id = ordered.id
+    `,
+            [boardId]
+        );
+
         await client.query('COMMIT');
-        res.json({ success: true, listId, newPosition });
+
+        res.json({
+            success: true,
+            message: 'List position updated successfully',
+            listId,
+            newPosition,
+        });
+
+        console.log(`✅ List ${listId} moved to position ${newPosition} in board ${boardId}`);
     } catch (err) {
         await client.query('ROLLBACK');
-        console.error('Error moving list:', err);
+        console.error('❌ Error moving list:', err);
         res.status(500).json({ error: err.message });
     }
 });
+
 
 // GET jumlah card per list_id
 app.get('/api/lists/:listId/cards-count', async (req, res) => {
