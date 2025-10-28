@@ -306,6 +306,11 @@ export const reorderCardsInList = (listId, cards) =>
     cards,
   });
 
+// 🔹 Reorder cards (antar list atau dalam list)
+export const reorderCards = (payload) =>
+  axios.put(`${API_URL}/cards/reorder-testing`, payload);
+
+
 //CARD USERS
 export const getAllUserAssignToCard = (cardId) => axios.get(`${API_URL}/cards/${cardId}/assignable-users`)
 export const assignUserToCard = (cardId, userId) => axios.post(`${API_URL}/cards/${cardId}/users/${userId}`)

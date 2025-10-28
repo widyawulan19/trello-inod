@@ -47,6 +47,7 @@ import NewCardDetail from './NewCardDetail';
 import { handleArchive } from '../utils/handleArchive';
 import {
   DndContext,
+  closestCenter,
   closestCorners,
   DragOverlay,
 } from "@dnd-kit/core";
@@ -78,6 +79,7 @@ const Card=({
     attributes,
   listeners,
   setNodeRef,
+  dragHandleProps
 })=> {
     // console.log('cards diterima:', card)
     const { workspaceId, boardId} = useParams();
@@ -404,15 +406,7 @@ const Card=({
      <div className='card-container'>
         <div className="cc-top-header">
             <div className="cctop-status" ref={setNodeRef}>
-                {/* <HiOutlineCreditCard cardName='card-icon'/> */}
-                <div
-                    className="card-icon"
-                    {...(attributes || {})}
-                    {...(listeners || {})}
-                    >
-                    <HiOutlineCreditCard />
-                </div>
-
+                <HiOutlineCreditCard cardName='card-icon' {...dragHandleProps}/>
                 <CardSelectedProperties cardId={card.id}/>
                 {currentStatus ?(
                     <div className='status-cont'>

@@ -14,7 +14,7 @@ import { HiMiniListBullet,
         HiOutlineChevronRight,
         HiOutlineListBullet
          } from 'react-icons/hi2'
-import { archiveList, deleteLists, duplicateBoards, getAllLists, getBoardById, getCardByList, getListByBoard, updateLists,updateCardPosition, reorderListPosition, getListPositions, updateListPositions,getCardListTotal } from '../services/ApiServices'
+import { archiveList, deleteLists, duplicateBoards, getAllLists, getBoardById, getCardByList, getListByBoard, updateLists,updateCardPosition, reorderListPosition, getListPositions, updateListPositions,getCardListTotal, reorderCards } from '../services/ApiServices'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import Card from './Card'
 import OutsideClick from '../hook/OutsideClick'
@@ -42,6 +42,7 @@ import {
 //   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import SortableListItem from '../hook/SortableListItem'
+import SortableCardItem from '../hook/SortableCardItem'
 // import SortableCardItem from '../hook/SortableCardItem'
 
 
@@ -427,85 +428,79 @@ const handleChangeListPosition = async (listId, newPosition) => {
 
 
   //CARD POSITION
-   // panggil ini tiap kali list/card di-load
-    const handleSetCards = (listId, cards) => {
-      setCardsByList((prev) => ({ ...prev, [listId]: cards }));
-    };
-  
+//   / 🔹 Saat drag dimulai
     const handleDragStart = (event) => {
       const { active } = event;
-      const { id } = active;
-      // cari card aktif
-      for (const listId in cardsByList) {
-        const found = cardsByList[listId].find((c) => c.id === id);
-        if (found) {
-          setActiveCard(found);
-          break;
-        }
-      }
+      setActiveCard(active.id);
     };
   
-    const handleDragEndCard = async (event) => {
-      const { active, over } = event;
-      setActiveCard(null);
-      if (!over) return;
-  
-      const activeListId = findContainer(active.id);
-      const overListId = findContainer(over.id);
-  
-      if (!activeListId || !overListId) return;
-  
-      // kalau beda list
-      if (activeListId !== overListId) {
-        const activeCards = [...cardsByList[activeListId]];
-        const overCards = [...cardsByList[overListId]];
-  
-        const activeIndex = activeCards.findIndex((c) => c.id === active.id);
-        const newCard = { ...activeCards[activeIndex], list_id: overListId };
-  
-        // hapus dari list lama
-        activeCards.splice(activeIndex, 1);
-        // taruh ke list baru di akhir
-        overCards.push(newCard);
-  
-        const newCardsByList = {
-          ...cardsByList,
-          [activeListId]: activeCards,
-          [overListId]: overCards,
-        };
-        setCardsByList(newCardsByList);
-  
-        try {
-          await updateCardPosition(active.id, overCards.length - 1, overListId);
-          console.log("Moved to new list successfully");
-        } catch (err) {
-          console.error("Error moving card:", err);
-        }
-        return;
-      }
-  
-      // kalau di list yang sama → reorder
-      const listCards = cardsByList[activeListId];
-      const oldIndex = listCards.findIndex((c) => c.id === active.id);
-      const newIndex = listCards.findIndex((c) => c.id === over.id);
-  
-      if (oldIndex !== newIndex) {
-        const newCards = arrayMove(listCards, oldIndex, newIndex);
-        setCardsByList((prev) => ({ ...prev, [activeListId]: newCards }));
-  
-        try {
-          await updateCardPosition(active.id, newIndex, activeListId);
-        } catch (err) {
-          console.error("Error updating position:", err);
-        }
-      }
-    };
-  
-    const findContainer = (cardId) => {
-      return Object.keys(cardsByList).find((listId) =>
-        cardsByList[listId].some((card) => card.id === cardId)
-      );
-    };
+    const handleCardDragEnd = async (event) => {
+  const { active, over } = event;
+  if (!over || active.id === over.id) return;
+
+  // Ambil list dari data drag
+  const activeListId = active.data.current?.listId;
+  const overListId = over.data.current?.listId;
+
+  if (!activeListId || !overListId) return;
+
+  // Ambil array card di masing-masing list
+  const activeListCards = cards[activeListId] || [];
+  const overListCards = cards[overListId] || [];
+
+  // Cari index
+  const oldIndex = activeListCards.findIndex(c => c.id === active.id);
+  let newIndex = overListCards.findIndex(c => c.id === over.id);
+
+  // Kalau over card gak ada (misal drop di bawah card terakhir)
+  if (newIndex === -1) newIndex = overListCards.length;
+
+  // Update state UI dulu
+  let updatedCards = { ...cards };
+
+  if (activeListId === overListId) {
+    // Dalam list yang sama
+    const newCards = arrayMove([...activeListCards], oldIndex, newIndex);
+    updatedCards[activeListId] = newCards;
+  } else {
+    // Antar list
+    const movedCard = { ...activeListCards[oldIndex] };
+    movedCard.list_id = overListId;
+
+    const newActiveListCards = [...activeListCards];
+    newActiveListCards.splice(oldIndex, 1);
+
+    const newOverListCards = [...overListCards];
+    newOverListCards.splice(newIndex, 0, movedCard);
+
+    updatedCards[activeListId] = newActiveListCards;
+    updatedCards[overListId] = newOverListCards;
+  }
+
+  setCards(updatedCards);
+  setActiveCard(null);
+
+  // Payload untuk backend
+  const payload = {
+    card_id: active.id,
+    sourceListId: activeListId,
+    destinationListId: overListId,
+    newPosition: newIndex
+  };
+
+  try {
+    await reorderCards(payload);
+    showSnackbar("Card order updated!", "success");
+  } catch (err) {
+    console.error("❌ Failed to update card order:", err.response?.data || err.message);
+    showSnackbar("Failed to update order", "error");
+
+    // Refresh ulang data dari backend kalau gagal
+    fetchCardList(activeListId);
+    fetchCardList(overListId);
+  }
+};
+
 
 
 //NAVIGATION
@@ -638,34 +633,38 @@ if (!userId) {
 
                                                 <div className="list-body">
                                                     {cards[list.id]?.map((card) => (
-                                                        <>
-                                                            <Card 
-                                                                key={card.id} 
-                                                                userId={userId}
-                                                                card={card} 
-                                                                cardId={card.id}
-                                                                listId={list.id}
-                                                                handleNavigate = {()=>handleNavigateToBoard(workspaceId, boardId)} 
-                                                                onClick={() => handleOpenPopup(card.id)}
-                                                                onRefetch={handleRefetchBoard}
-                                                                fetchBoardDetail={fetchBoardDetail}
-                                                                fetchLists={fetchLists}
-                                                                fetchCardList={fetchCardList}
-                                                                cardsInList={cards[list.id] || []}
-                                                                boards={boards}
-                                                                lists={lists}
-                                                                listName={list.name}
-                                                                cardPositionDropdown={cardPositionDropdown}
-                                                                setCardPositionDropdown={setCardPositionDropdown}
-                                                                handleChangeCardPosition={handleChangeCardPosition}
-                                                                onDragStart={handleDragStart}
-                                                                onDragEnd={handleDragEnd}
-                                                                cardsByList={cardsByList}
-                                                                activeCard={activeCard}
-                                                                
-
-                                                            />
-                                                        </>
+                                                        <SortableCardItem 
+                                                            key={card.id}
+                                                            id={card.id}
+                                                            data={{ listId: card.list_id }}>
+                                                            {({dragHandleProps})=>(
+                                                                <Card 
+                                                                    key={card.id} 
+                                                                    userId={userId}
+                                                                    card={card} 
+                                                                    cardId={card.id}
+                                                                    listId={list.id}
+                                                                    handleNavigate = {()=>handleNavigateToBoard(workspaceId, boardId)} 
+                                                                    onClick={() => handleOpenPopup(card.id)}
+                                                                    onRefetch={handleRefetchBoard}
+                                                                    fetchBoardDetail={fetchBoardDetail}
+                                                                    fetchLists={fetchLists}
+                                                                    fetchCardList={fetchCardList}
+                                                                    cardsInList={cards[list.id] || []}
+                                                                    boards={boards}
+                                                                    lists={lists}
+                                                                    listName={list.name}
+                                                                    cardPositionDropdown={cardPositionDropdown}
+                                                                    setCardPositionDropdown={setCardPositionDropdown}
+                                                                    handleChangeCardPosition={handleChangeCardPosition}
+                                                                    onDragStart={handleDragStart}
+                                                                    onDragEnd={handleCardDragEnd}
+                                                                    cardsByList={cardsByList}
+                                                                    activeCard={activeCard}
+                                                                    dragHandleProps={dragHandleProps}
+                                                                />
+                                                            )}
+                                                        </SortableCardItem>
                                                     ))}
                                                 </div> 
 
