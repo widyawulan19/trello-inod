@@ -307,9 +307,18 @@ export const reorderCardsInList = (listId, cards) =>
   });
 
 // 🔹 Reorder cards (antar list atau dalam list)
-export const reorderCards = (payload) =>
-  axios.put(`${API_URL}/cards/reorder-testing`, payload);
+// export const reorderCards = (payload) =>
+//   axios.put(`${API_URL}/cards/reorder-testing`, payload);
 
+export const reorderCards = async (payload) => {
+  try {
+    const response = await axios.put(`${API_URL}/cards/reorder-testing`, payload);
+    return response.data;
+  } catch (error) {
+    console.error("🔥 reorderCards error:", error.response?.data || error.message);
+    throw error; // <— penting! biar error naik ke catch di handleCardDragEnd
+  }
+};
 
 //CARD USERS
 export const getAllUserAssignToCard = (cardId) => axios.get(`${API_URL}/cards/${cardId}/assignable-users`)

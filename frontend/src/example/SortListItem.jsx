@@ -4,9 +4,15 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { motion } from "framer-motion";
 
-function SortableListItem({ id, children }) {
+function SortableListItem({ id, children, data }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id });
+    useSortable({ id,data });
+    // useSortable({
+    //   id, // wajib unik
+    //   data: {
+    //     type: "list", // tandanya ini list, biar DndContext tahu
+    //   },
+    // });
 
   const style = {
     transform: CSS.Transform.toString(transform),

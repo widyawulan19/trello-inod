@@ -404,7 +404,7 @@ const handleChangeListPosition = async (listId, newPosition) => {
   };
 
   // fungsi drag end
-const handleDragEnd = async (event) => {
+const handleListDragEnd = async (event) => {
   const { active, over } = event;
 
   // Cegah error saat drag di area kosong atau posisi sama
@@ -429,7 +429,7 @@ const handleDragEnd = async (event) => {
     showSnackbar("List order updated!", "success");
   } catch (error) {
     console.error("Error updating list order:", error);
-    showSnackbar("Failed to update order", "error");
+    showSnackbar("Failed to update list position", "error");
 
     // Kembalikan urutan awal dari server kalau gagal
     await fetchLists();
@@ -441,76 +441,158 @@ const handleDragEnd = async (event) => {
   //CARD POSITION
 //   / 🔹 Saat drag dimulai
     const handleDragStart = (event) => {
+         console.log("Drag start:", active);
       const { active } = event;
       setActiveCard(active.id);
     };
-  
-    // 🔹 Saat drag selesai
     const handleCardDragEnd = async (event) => {
-        const { active, over } = event;
-        if (!over || active.id === over.id) return;
+    const { active, over } = event;
+    if (!over) return;
 
-        const activeListId = active.data.current?.listId;
-        const overListId = over.data.current?.listId;
+    // ambil id asli
+    const activeCardId = typeof active.id === "object" ? active.id.id : active.id;
+    const overCardId = typeof over.id === "object" ? over.id.id : over.id;
 
-        // kalau salah satu gak ketemu, hentikan
-        if (!activeListId || !overListId) return;
+    // ambil listId dari active & over
+    const activeListId = active.data.current?.listId ?? active.id.list_id;
+    const overListId = over.data.current?.listId ?? over.id.list_id ?? over.id;
 
-        // ambil semua card dari list asal dan list target
-        const sourceCards = cards[activeListId] || [];
-        const targetCards = cards[overListId] || [];
+    if (!activeCardId || !activeListId || !overListId) return;
 
-        // card yang di-drag
-        const movedCard = sourceCards.find((c) => c.id === active.id);
+    console.log("🧩 activeCardId:", activeCardId);
+    console.log("🧩 overCardId:", overCardId);
+    console.log("🧩 activeListId:", activeListId);
+    console.log("🧩 overListId:", overListId);
 
-        if (!movedCard) return;
+    const sourceCards = cards[activeListId] || [];
+    const targetCards = cards[overListId] || [];
 
-        let newSourceCards = [...sourceCards];
-        let newTargetCards = [...targetCards];
+    const movedCard = sourceCards.find((c) => c.id === activeCardId);
+    if (!movedCard) return;
 
-        // hapus card dari list asal
-        newSourceCards = newSourceCards.filter((c) => c.id !== active.id);
+    let newCards, newSourceCards, newTargetCards;
 
-        // cari index posisi baru di list tujuan
-        const overIndex = newTargetCards.findIndex((c) => c.id === over.id);
+    if (activeListId === overListId) {
+        // ✅ Drag di list yang sama: reorder
+        newCards = [...sourceCards];
+        const oldIndex = newCards.findIndex(c => c.id === activeCardId);
+        const newIndex = newCards.findIndex(c => c.id === overCardId);
+
+        // hapus dulu dari posisi lama
+        const [removed] = newCards.splice(oldIndex, 1);
+        // insert di posisi baru
+        newCards.splice(newIndex, 0, removed);
+
+        newSourceCards = newCards;
+        newTargetCards = newCards;
+    } else {
+        // ✅ Drag ke list berbeda: pindah card
+        newSourceCards = sourceCards.filter(c => c.id !== activeCardId);
+        newTargetCards = [...targetCards];
+
+        const overIndex = newTargetCards.findIndex(c => c.id === overCardId);
         const insertAt = overIndex >= 0 ? overIndex : newTargetCards.length;
-
-        // masukkan card ke list tujuan
         newTargetCards.splice(insertAt, 0, movedCard);
+    }
 
-        // update UI sementara
-        setCards((prev) => ({
-            ...prev,
-            [activeListId]: newSourceCards,
-            [overListId]: newTargetCards,
-        }));
+    setCards(prev => ({
+        ...prev,
+        [activeListId]: newSourceCards,
+        [overListId]: newTargetCards,
+    }));
 
-        try {
-            // kirim ke backend dengan format endpoint kamu
-            await reorderCards({
-            sourceListId: activeListId,
-            targetListId: overListId,
-            sourceCards: newSourceCards.map((c) => ({ id: c.id })),
-            targetCards: newTargetCards.map((c) => ({ id: c.id })),
-            });
-
-            showSnackbar("Card order updated!", "success");
-        } catch (err) {
-            console.error("❌ Failed to update card order:", err.response?.data || err.message);
-            showSnackbar("Failed to update order", "error");
-
-            // refresh ulang data biar sinkron
-            fetchCardList(activeListId);
-            fetchCardList(overListId);
-        }
-
-        setActiveCard(null);
+    const payload = {
+        sourceListId: Number(activeListId),
+        targetListId: Number(overListId),
+        sourceCards: newSourceCards.map(c => ({ id: Number(c.id) })),
+        targetCards: newTargetCards.map(c => ({ id: Number(c.id) })),
     };
+
+    console.log("📦 payload ke backend:", JSON.stringify(payload, null, 2));
+
+    try {
+        await reorderCards(payload);
+        showSnackbar("Card order updated!", "success");
+    } catch (err) {
+        console.error("❌ Error updating list position:", err.response?.data || err.message);
+        showSnackbar("Failed to update card position", "error");
+        fetchCardList(activeListId);
+        fetchCardList(overListId);
+    }
+
+    setActiveCard(null);
+};
+
+
+// const handleCardDragEnd = async (event) => {
+//     const { active, over } = event;
+//     if (!over) return;
+
+//     // ambil id asli
+//     const activeCardId = typeof active.id === "object" ? active.id.id : active.id;
+//     const overCardId = typeof over.id === "object" ? over.id.id : over.id;
+
+//     // ambil listId dari active & over
+//     const activeListId = active.data.current?.listId ?? active.id.list_id;
+//     const overListId = over.data.current?.listId ?? over.id.list_id ?? over.id;
+
+//     if (!activeCardId || !activeListId || !overListId) return;
+
+//     console.log("🧩 activeCardId:", activeCardId);
+//     console.log("🧩 overCardId:", overCardId);
+//     console.log("🧩 activeListId:", activeListId);
+//     console.log("🧩 overListId:", overListId);
+
+//     const sourceCards = cards[activeListId] || [];
+//     const targetCards = cards[overListId] || [];
+
+//     const movedCard = sourceCards.find((c) => c.id === activeCardId);
+//     if (!movedCard) return;
+
+//     let newSourceCards = sourceCards.filter((c) => c.id !== activeCardId);
+//     let newTargetCards = [...targetCards];
+
+//     const overIndex = newTargetCards.findIndex((c) => c.id === overCardId);
+//     const insertAt = overIndex >= 0 ? overIndex : newTargetCards.length;
+//     newTargetCards.splice(insertAt, 0, movedCard);
+
+//     setCards((prev) => ({
+//         ...prev,
+//         [activeListId]: newSourceCards,
+//         [overListId]: newTargetCards,
+//     }));
+
+//     const payload = {
+//         sourceListId: Number(activeListId),
+//         targetListId: Number(overListId),
+//         sourceCards: newSourceCards.map((c) => ({ id: Number(c.id) })),
+//         targetCards: newTargetCards.map((c) => ({ id: Number(c.id) })),
+//     };
+
+//     console.log("📦 payload ke backend:", JSON.stringify(payload, null, 2));
+
+//     try {
+//         await reorderCards(payload);
+//         showSnackbar("Card order updated!", "success");
+//     } catch (err) {
+//         console.error("❌ Error updating list position:", err.response?.data || err.message);
+//         showSnackbar("Failed to update order", "error");
+//         fetchCardList(activeListId);
+//         fetchCardList(overListId);
+//     }
+
+//     setActiveCard(null);
+// };
+
+
+
 
 
 
 
 //NAVIGATION
+
+
 // <Route path='/workspaces/:workspaceId' element={<WorkspacePage/>}/>
 const handleNavigateToWorkspace = (workspaceId) => {
     navigate(`/layout/workspaces/${workspaceId}`);
@@ -555,17 +637,35 @@ if (!userId) {
         <div className="bl-body">
             <DndContext
                 collisionDetection={closestCenter}
-                onDragEnd={handleDragEnd}
                 onDragStart={(e) => setActiveId(e.active.id)}
+                onDragEnd={(event) => {
+                    console.log("🧩 DragEnd event:", event); // ← log utama
+                    handleListDragEnd(event);
+                    handleCardDragEnd(event);                // panggil function asli
+                    
+                }}
                 onDragCancel={() => setActiveId(null)}
             >
+            {/* <DndContext
+                collisionDetection={closestCenter}
+                onDragEnd={async (event) => {
+                    const { active } = event;
+                    const type = active.data.current?.type;
+
+                    if (type === "card") {
+                    await handleCardDragEnd(event);
+                    } else if (type === "list") {
+                    await handleListDragEnd(event);
+                    }
+                }}
+                > */}
                 <SortableContext
                     items={lists.map((l) => l.id)}
                     strategy={horizontalListSortingStrategy}
                 >
                     <div className="bl-content">
                         {lists.map((list) =>(
-                            <SortableListItem key={list.id} id={list.id}>
+                            <SortableListItem key={list.id} id={list.id} data={{ type: "list" }}>
                                 {({dragHandleProps}) =>(
                                     <div key={list.id} className='bl-card'>
                                         <div className="bl-box">
@@ -638,7 +738,52 @@ if (!userId) {
                                                 
                                                 </div>
 
-                                                <div className="list-body">
+                                                {/* <DndContext
+                                                    collisionDetection={closestCenter}
+                                                    onDragStart={handleDragStart}
+                                                    onDragEnd={handleCardDragEnd}
+                                                    > */}
+                                                    {/* <SortableContext items={(cards[list.id] || []).map((c) => c.id)}> */}
+                                                    <SortableContext
+                                                        items={(cards[list.id] || []).map((card) => card.id)} // ⬅️ Hanya ID-nya aja ya
+                                                    >
+                                                        <div className="list-body">
+                                                        {cards[list.id]?.map((card) => (
+                                                            <SortableCardItem key={card.id} id={card} listId={list.id} data={{ type: "card", listId: list.id }}>
+                                                            {({ dragHandleCardProps }) => (
+                                                                <Card
+                                                                    key={card.id} 
+                                                                    userId={userId}
+                                                                    card={card} 
+                                                                    cardId={card.id}
+                                                                    listId={list.id}
+                                                                    handleNavigate = {()=>handleNavigateToBoard(workspaceId, boardId)} 
+                                                                    onClick={() => handleOpenPopup(card.id)}
+                                                                    onRefetch={handleRefetchBoard}
+                                                                    fetchBoardDetail={fetchBoardDetail}
+                                                                    fetchLists={fetchLists}
+                                                                    fetchCardList={fetchCardList}
+                                                                    cardsInList={cards[list.id] || []}
+                                                                    boards={boards}
+                                                                    lists={lists}
+                                                                    listName={list.name}
+                                                                    cardPositionDropdown={cardPositionDropdown}
+                                                                    setCardPositionDropdown={setCardPositionDropdown}
+                                                                    handleChangeCardPosition={handleChangeCardPosition}
+                                                                    onDragStart={handleDragStart}
+                                                                    onDragEnd={handleCardDragEnd}
+                                                                    cardsByList={cardsByList}
+                                                                    activeCard={activeCard}
+                                                                    dragHandleCardProps={dragHandleCardProps}
+                                                                />
+                                                            )}
+                                                            </SortableCardItem>
+                                                        ))}
+                                                        </div>
+                                                    </SortableContext>
+                                                {/* </DndContext> */}
+
+                                                {/* <div className="list-body">
                                                     {cards[list.id]?.map((card) => (
                                                         <SortableCardItem
                                                         // key={card.id} card={card} listId={list.id} 
@@ -647,7 +792,7 @@ if (!userId) {
                                                             // data={{ listId: list.id }}
                                                             data={{ listId: card.list_id }}
                                                             >
-                                                            {({dragHandleProps})=>(
+                                                            {({dragHandleCardProps})=>(
                                                                 <Card 
                                                                     key={card.id} 
                                                                     userId={userId}
@@ -671,12 +816,12 @@ if (!userId) {
                                                                     onDragEnd={handleCardDragEnd}
                                                                     cardsByList={cardsByList}
                                                                     activeCard={activeCard}
-                                                                    dragHandleProps={dragHandleProps}
+                                                                    dragHandleCardProps={dragHandleCardProps}
                                                                 />
                                                             )}
                                                         </SortableCardItem>
                                                     ))}
-                                                </div> 
+                                                </div>  */}
 
                                             <div className="form-card-wrapper">
                                                 <div className="form-card">

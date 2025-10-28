@@ -79,7 +79,7 @@ const Card=({
     attributes,
   listeners,
   setNodeRef,
-  dragHandleProps
+  dragHandleCardProps
 })=> {
     // console.log('cards diterima:', card)
     const { workspaceId, boardId} = useParams();
@@ -89,7 +89,7 @@ const Card=({
     // console.log('list id diterima:', listId);
     console.log('File card menerima userId:', userId);
     console.log('File Card menerima list name:',listName)
-    const [cardId, setCardId] = useState([]);
+    // const [cardId, setCardId] = useState([]);
     //edit card
     const [editCardName, setEditCardName] = useState(null);
     const [newCardName, setNewCardName] = useState('')
@@ -130,23 +130,43 @@ const Card=({
 
 
     // Fetch status "new chat" untuk tiap card
-    useEffect(() => {
-    const fetchNewChat = async () => {
-      try {
-        const res = await checkHasNewChat(cardId, userId);
-        setHasNewChat(res.data.hasNewChat);
-      } catch (err) {
-        console.error("Error checking new chat:", err);
-      }
-    };
+//     useEffect(() => {
+//     const fetchNewChat = async () => {
+//       try {
+//         const res = await checkHasNewChat(cardId, userId);
+//         setHasNewChat(res.data.hasNewChat);
+//       } catch (err) {
+//         console.error("Error checking new chat:", err);
+//       }
+//     };
 
-    fetchNewChat();
+//     fetchNewChat();
 
-    // auto polling tiap 10 detik
-    const interval = setInterval(fetchNewChat, 10000);
+//     // auto polling tiap 10 detik
+//     const interval = setInterval(fetchNewChat, 10000);
 
-    return () => clearInterval(interval);
-  }, [cardId, userId]);
+//     return () => clearInterval(interval);
+//   }, [cardId, userId]);
+useEffect(() => {
+  if (!card?.id || !userId) return;
+
+  const fetchNewChat = async () => {
+    try {
+      const res = await checkHasNewChat(card.id, userId);
+      setHasNewChat(res.data.hasNewChat);
+    } catch (err) {
+        if (err.response?.status !== 404) {
+            console.error("Error checking new chat:", err);
+        }
+    //   console.error("Error checking new chat:", err);
+    }
+  };
+
+  fetchNewChat();
+  const interval = setInterval(fetchNewChat, 10000);
+  return () => clearInterval(interval);
+}, [card.id, userId]);
+
 
   
 
@@ -405,8 +425,10 @@ const Card=({
     <div className='card-box-container' >
      <div className='card-container'>
         <div className="cc-top-header">
-            <div className="cctop-status" ref={setNodeRef}>
-                <HiOutlineCreditCard cardName='card-icon' {...dragHandleProps}/>
+            <div className="cctop-status">
+                <div className="card-icon" {...dragHandleCardProps}>
+                    <HiOutlineCreditCard />
+                </div>
                 <CardSelectedProperties cardId={card.id}/>
                 {currentStatus ?(
                     <div className='status-cont'>

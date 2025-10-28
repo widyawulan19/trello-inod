@@ -4,16 +4,13 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { motion } from "framer-motion";
 
-function SortableCardItem({ card, listId, children }) {
-  const id = card?.id;
-
+function SortableCardItem({ id, listId, children}) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({
       id,
       data: {
         type: "card",
-        card,
-        listId,
+         listId: Number(listId),
       },
     });
 
@@ -22,6 +19,7 @@ function SortableCardItem({ card, listId, children }) {
     transition: isDragging ? "none" : transition,
     zIndex: isDragging ? 999 : "auto",
     position: "relative",
+    cursor: isDragging ? "grabbing" : "grab",
   };
 
   return (
@@ -29,17 +27,18 @@ function SortableCardItem({ card, listId, children }) {
       ref={setNodeRef}
       style={style}
       animate={{
-        scale: isDragging ? 1.02 : 1,
-        rotate: isDragging ? 0.5 : 0,
+        scale: isDragging ? 1.03 : 1,
+        rotate: isDragging ? 1 : 0,
         boxShadow: isDragging
-          ? "0 8px 18px rgba(0,0,0,0.15)"
+          ? "0 8px 20px rgba(0,0,0,0.15)"
           : "0 2px 8px rgba(0,0,0,0.05)",
       }}
       transition={{ type: "spring", stiffness: 400, damping: 30 }}
       className="sortable-card-item"
     >
-      {/* children sebagai render function */}
-      {children({ dragHandleCardProps: { ...attributes, ...listeners } })}
+      {typeof children === "function"
+        ? children({ dragHandleCardProps: { ...attributes, ...listeners } })
+        : children}
     </motion.div>
   );
 }
