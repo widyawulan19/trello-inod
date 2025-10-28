@@ -434,72 +434,68 @@ const handleChangeListPosition = async (listId, newPosition) => {
       setActiveCard(active.id);
     };
   
+    // 🔹 Saat drag selesai
     const handleCardDragEnd = async (event) => {
-  const { active, over } = event;
-  if (!over || active.id === over.id) return;
+        const { active, over } = event;
+        if (!over || active.id === over.id) return;
 
-  // Ambil list dari data drag
-  const activeListId = active.data.current?.listId;
-  const overListId = over.data.current?.listId;
+        const activeListId = active.data.current?.listId;
+        const overListId = over.data.current?.listId;
 
-  if (!activeListId || !overListId) return;
+        // kalau salah satu gak ketemu, hentikan
+        if (!activeListId || !overListId) return;
 
-  // Ambil array card di masing-masing list
-  const activeListCards = cards[activeListId] || [];
-  const overListCards = cards[overListId] || [];
+        // ambil semua card dari list asal dan list target
+        const sourceCards = cards[activeListId] || [];
+        const targetCards = cards[overListId] || [];
 
-  // Cari index
-  const oldIndex = activeListCards.findIndex(c => c.id === active.id);
-  let newIndex = overListCards.findIndex(c => c.id === over.id);
+        // card yang di-drag
+        const movedCard = sourceCards.find((c) => c.id === active.id);
 
-  // Kalau over card gak ada (misal drop di bawah card terakhir)
-  if (newIndex === -1) newIndex = overListCards.length;
+        if (!movedCard) return;
 
-  // Update state UI dulu
-  let updatedCards = { ...cards };
+        let newSourceCards = [...sourceCards];
+        let newTargetCards = [...targetCards];
 
-  if (activeListId === overListId) {
-    // Dalam list yang sama
-    const newCards = arrayMove([...activeListCards], oldIndex, newIndex);
-    updatedCards[activeListId] = newCards;
-  } else {
-    // Antar list
-    const movedCard = { ...activeListCards[oldIndex] };
-    movedCard.list_id = overListId;
+        // hapus card dari list asal
+        newSourceCards = newSourceCards.filter((c) => c.id !== active.id);
 
-    const newActiveListCards = [...activeListCards];
-    newActiveListCards.splice(oldIndex, 1);
+        // cari index posisi baru di list tujuan
+        const overIndex = newTargetCards.findIndex((c) => c.id === over.id);
+        const insertAt = overIndex >= 0 ? overIndex : newTargetCards.length;
 
-    const newOverListCards = [...overListCards];
-    newOverListCards.splice(newIndex, 0, movedCard);
+        // masukkan card ke list tujuan
+        newTargetCards.splice(insertAt, 0, movedCard);
 
-    updatedCards[activeListId] = newActiveListCards;
-    updatedCards[overListId] = newOverListCards;
-  }
+        // update UI sementara
+        setCards((prev) => ({
+            ...prev,
+            [activeListId]: newSourceCards,
+            [overListId]: newTargetCards,
+        }));
 
-  setCards(updatedCards);
-  setActiveCard(null);
+        try {
+            // kirim ke backend dengan format endpoint kamu
+            await reorderCards({
+            sourceListId: activeListId,
+            targetListId: overListId,
+            sourceCards: newSourceCards.map((c) => ({ id: c.id })),
+            targetCards: newTargetCards.map((c) => ({ id: c.id })),
+            });
 
-  // Payload untuk backend
-  const payload = {
-    card_id: active.id,
-    sourceListId: activeListId,
-    destinationListId: overListId,
-    newPosition: newIndex
-  };
+            showSnackbar("Card order updated!", "success");
+        } catch (err) {
+            console.error("❌ Failed to update card order:", err.response?.data || err.message);
+            showSnackbar("Failed to update order", "error");
 
-  try {
-    await reorderCards(payload);
-    showSnackbar("Card order updated!", "success");
-  } catch (err) {
-    console.error("❌ Failed to update card order:", err.response?.data || err.message);
-    showSnackbar("Failed to update order", "error");
+            // refresh ulang data biar sinkron
+            fetchCardList(activeListId);
+            fetchCardList(overListId);
+        }
 
-    // Refresh ulang data dari backend kalau gagal
-    fetchCardList(activeListId);
-    fetchCardList(overListId);
-  }
-};
+        setActiveCard(null);
+    };
+
 
 
 
@@ -633,10 +629,13 @@ if (!userId) {
 
                                                 <div className="list-body">
                                                     {cards[list.id]?.map((card) => (
-                                                        <SortableCardItem 
+                                                        <SortableCardItem
+                                                        // key={card.id} card={card} listId={list.id} 
                                                             key={card.id}
                                                             id={card.id}
-                                                            data={{ listId: card.list_id }}>
+                                                            // data={{ listId: list.id }}
+                                                            data={{ listId: card.list_id }}
+                                                            >
                                                             {({dragHandleProps})=>(
                                                                 <Card 
                                                                     key={card.id} 

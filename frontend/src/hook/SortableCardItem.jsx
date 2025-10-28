@@ -4,9 +4,18 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { motion } from "framer-motion";
 
-function SortableCardItem({ id, children }) {
+function SortableCardItem({ card, listId, children }) {
+  const id = card?.id;
+
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id });
+    useSortable({
+      id,
+      data: {
+        type: "card",
+        card,
+        listId,
+      },
+    });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -29,8 +38,8 @@ function SortableCardItem({ id, children }) {
       transition={{ type: "spring", stiffness: 400, damping: 30 }}
       className="sortable-card-item"
     >
-      {/* kirim dragHandleProps ke anak */}
-      {children({ dragHandleProps: { ...attributes, ...listeners } })}
+      {/* children sebagai render function */}
+      {children({ dragHandleCardProps: { ...attributes, ...listeners } })}
     </motion.div>
   );
 }
