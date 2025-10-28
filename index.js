@@ -4164,7 +4164,7 @@ app.put('/api/cards/reorder-testing', async (req, res) => {
             for (let i = 0; i < sourceCards.length; i++) {
                 await client.query(
                     `UPDATE cards 
-           SET position = $1, updated_at = NOW() 
+           SET position = $1, update_at = NOW() 
            WHERE id = $2`,
                     [i, sourceCards[i].id]
                 );
@@ -4174,7 +4174,7 @@ app.put('/api/cards/reorder-testing', async (req, res) => {
             for (let i = 0; i < targetCards.length; i++) {
                 await client.query(
                     `UPDATE cards 
-           SET list_id = $1, position = $2, updated_at = NOW() 
+           SET list_id = $1, position = $2, update_at = NOW() 
            WHERE id = $3`,
                     [targetListId, i, targetCards[i].id]
                 );
@@ -4184,7 +4184,7 @@ app.put('/api/cards/reorder-testing', async (req, res) => {
             for (let i = 0; i < targetCards.length; i++) {
                 await client.query(
                     `UPDATE cards 
-           SET position = $1, updated_at = NOW() 
+           SET position = $1, update_at = NOW() 
            WHERE id = $2 AND list_id = $3`,
                     [i, targetCards[i].id, sourceListId]
                 );
