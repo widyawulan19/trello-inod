@@ -101,7 +101,7 @@ const MoveCard = ({
       }
 
       // Navigasi ke board tujuan
-      navigate(`/layout/workspaces/${workspaceId}/board/${selectedBoardId}`);
+      // navigate(`/layout/workspaces/${workspaceId}/board/${selectedBoardId}`);
 
       onClose();
     } catch (error) {
@@ -239,8 +239,7 @@ const MoveCard = ({
         {/* 🔢 Input posisi card */}
         {selectedList && (
           <div className="mc-position">
-            {/* <label>Card Position (1 - {cards.length + 1})</label> */}
-            <label>Card Position</label>
+            <label>Card Position (1 - {cards.length + 1})</label>
             <input
               type="number"
               min="1"
