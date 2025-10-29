@@ -101,7 +101,7 @@ const MoveCard = ({
       }
 
       // Navigasi ke board tujuan
-      navigate(`/layout/workspaces/${workspaceId}/board/${selectedBoardId}`);
+      // navigate(`/layout/workspaces/${workspaceId}/board/${selectedBoardId}`);
 
       onClose();
     } catch (error) {

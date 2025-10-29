@@ -67,7 +67,7 @@ const MoveList = ({ boardId, userId, onClose, listId ,fetchLists,fetchCardList})
             if (res?.status >= 200 && res?.status < 300) {
                 showSnackbar('List moved successfully!', 'success')
                 onClose();
-                navigate(`/layout/workspaces/${selectedWorkspaceId}/board/${selectedBoardId}`);
+                // navigate(`/layout/workspaces/${selectedWorkspaceId}/board/${selectedBoardId}`);
                 fetchCardList()
             } else {
               throw new Error('Unexpected response from server');

@@ -65,7 +65,7 @@ const DuplicateList = ({ boardId, onClose, listId }) => {
       if (res?.status >= 200 && res?.status < 300) {
         showSnackbar('List duplicated successfully!', 'success');
         onClose();
-        navigate(`/layout/workspaces/${selectedWorkspaceId}/board/${selectedBoardId}`);
+        // navigate(`/layout/workspaces/${selectedWorkspaceId}/board/${selectedBoardId}`);
       } else {
         throw new Error('Unexpected response from server');
       }
