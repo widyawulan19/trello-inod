@@ -114,25 +114,25 @@ const BoardList=()=> {
 
 
     //total card in list
-    const [totalCard, setTotalCard] = useState(0);
+    const [totalCard, setTotalCard] = useState({});
     
     //FUNCTION TO GET TOTAL CARD IN LIST
     useEffect(() => {
-        const fetchCardTotal = async () => {
-            try {
-                const response = await getCardListTotal(listId);
-                // Ambil card_count dari response.data
-                setTotalCard(response.data.card_count || 0);
-            } catch (error) {
-                console.error('Failed to fetch total card in list', error);
-                setTotalCard(0);
-            }
-        };
-
-        if (listId) {
-            fetchCardTotal();
+    const fetchTotals = async () => {
+        const totals = {};
+        for (const list of lists) {
+        try {
+            const response = await getCardListTotal(list.id);
+            totals[list.id] = response.data.card_count || 0;
+        } catch {
+            totals[list.id] = 0;
         }
-    }, [listId]);
+        }
+        setTotalCard(totals);
+    };
+
+    if (lists.length > 0) fetchTotals();
+    }, [lists]);
 
     //FUNGSI POPUP MOVE DAN DUPLICATE
     const handleShowMovePopup = (listId) => {
@@ -614,14 +614,14 @@ if (!userId) {
                 <h4 className='ellipsis-text'>{boards.name} Boards</h4>
                 <div className="blnav-sub">
                     <p className='back' onClick={()=>handleNavigateToWorkspace(workspaceId)}>{boards.name}</p>
-                    <HiOutlineChevronRight/>
+                    <HiOutlineChevronRight className='back-icon'/>
                     <p>Board List</p>
                 </div>
             </div>
             <div className="more-action">
-                <div className="search-btn">
+                {/* <div className="search-btn">
                     <SearchCard workspaceId={workspaceId}/>
-                </div>
+                </div> */}
                 <div className="btn-create-list" onClick={handleShowListForm}>
                     <FaPlus className='cl-icon'/>
                     <p>Create List</p>
@@ -749,7 +749,7 @@ if (!userId) {
                                                     >
                                                         <div className="list-body">
                                                         {cards[list.id]?.map((card) => (
-                                                            <SortableCardItem key={card.id} id={card} listId={list.id} data={{ type: "card", listId: list.id }}>
+                                                            <SortableCardItem key={card.id} id={card} listId={list.id} data={{ type: "card", listId: list.id }} style={{borderRadius:'16px'}}>
                                                             {({ dragHandleCardProps }) => (
                                                                 <Card
                                                                     key={card.id} 
@@ -783,46 +783,6 @@ if (!userId) {
                                                     </SortableContext>
                                                 {/* </DndContext> */}
 
-                                                {/* <div className="list-body">
-                                                    {cards[list.id]?.map((card) => (
-                                                        <SortableCardItem
-                                                        // key={card.id} card={card} listId={list.id} 
-                                                            key={card.id}
-                                                            id={card.id}
-                                                            // data={{ listId: list.id }}
-                                                            data={{ listId: card.list_id }}
-                                                            >
-                                                            {({dragHandleCardProps})=>(
-                                                                <Card 
-                                                                    key={card.id} 
-                                                                    userId={userId}
-                                                                    card={card} 
-                                                                    cardId={card.id}
-                                                                    listId={list.id}
-                                                                    handleNavigate = {()=>handleNavigateToBoard(workspaceId, boardId)} 
-                                                                    onClick={() => handleOpenPopup(card.id)}
-                                                                    onRefetch={handleRefetchBoard}
-                                                                    fetchBoardDetail={fetchBoardDetail}
-                                                                    fetchLists={fetchLists}
-                                                                    fetchCardList={fetchCardList}
-                                                                    cardsInList={cards[list.id] || []}
-                                                                    boards={boards}
-                                                                    lists={lists}
-                                                                    listName={list.name}
-                                                                    cardPositionDropdown={cardPositionDropdown}
-                                                                    setCardPositionDropdown={setCardPositionDropdown}
-                                                                    handleChangeCardPosition={handleChangeCardPosition}
-                                                                    onDragStart={handleDragStart}
-                                                                    onDragEnd={handleCardDragEnd}
-                                                                    cardsByList={cardsByList}
-                                                                    activeCard={activeCard}
-                                                                    dragHandleCardProps={dragHandleCardProps}
-                                                                />
-                                                            )}
-                                                        </SortableCardItem>
-                                                    ))}
-                                                </div>  */}
-
                                             <div className="form-card-wrapper">
                                                 <div className="form-card">
                                                     <div className="fc-cont" onClick={(e)=> handleShowForm(e, list.id)}>
@@ -830,7 +790,7 @@ if (!userId) {
                                                         Add Card
                                                     </div>
                                                     <div className="card-count">
-                                                    <p>{totalCard}</p> 
+                                                    <p>{totalCard[list.id] || 0}</p> 
                                                     <div><HiOutlineCreditCard style={{marginRight:'5px'}}/></div>
                                                     </div>
                                                 </div>

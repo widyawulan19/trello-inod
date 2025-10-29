@@ -56,6 +56,7 @@ import {
   verticalListSortingStrategy,
   arrayMove,
 } from "@dnd-kit/sortable";
+import { BsCreditCard2BackFill, BsCreditCard2FrontFill } from 'react-icons/bs';
 
 const Card=({
     card,
@@ -427,7 +428,8 @@ useEffect(() => {
         <div className="cc-top-header">
             <div className="cctop-status">
                 <div className="card-icon" {...dragHandleCardProps}>
-                    <HiOutlineCreditCard />
+                    {/* <HiOutlineCreditCard /> */}
+                    <BsCreditCard2FrontFill className='mini-icon'/>
                 </div>
                 <CardSelectedProperties cardId={card.id}/>
                 {currentStatus ?(
