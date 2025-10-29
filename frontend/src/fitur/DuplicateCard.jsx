@@ -82,7 +82,7 @@ const DuplicateCard = ({ cardId, boardId, listId, workspaceId, onClose, fetchCar
       console.log('✅ Card duplicated:', result.data)
       showSnackbar('Card duplicated successfully!', 'success')
 
-      navigate(`/layout/workspaces/${workspaceId}/board/${selectedBoardId}`)
+      // navigate(`/layout/workspaces/${workspaceId}/board/${selectedBoardId}`)
       fetchCardList(selectedList.id)
       onClose()
     } catch (error) {
