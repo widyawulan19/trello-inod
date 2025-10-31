@@ -227,7 +227,22 @@ export const deleteCard = (cardId) => axios.delete(`${API_URL}/cards/${cardId}`)
 export const duplicateCard = (cardId, listId, position) =>
   axios.post(`${API_URL}/duplicate-card-to-list/${cardId}/${listId}`, { position });
 
+export const duplicateCardToList = async (cardId, listId, userId, body = {}) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}/duplicate-card-to-list/${cardId}/${listId}/${userId}/testing`,
+      body
+    );
+    return response.data;
+  } catch (error) {
+    console.error("❌ Error duplicating card:", error);
+    throw error.response?.data || { message: "Server error" };
+  }
+};
+
 export const archiveCard = (cardId) => axios.put(`${API_URL}/archive-card/${cardId}`, cardId);
+
+
 
 // 🔹 Move card ke list atau board lain + ubah posisi
 // export const moveCardToList = async (cardId, targetListId, newPosition = null) => {

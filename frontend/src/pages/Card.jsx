@@ -516,6 +516,7 @@ useEffect(() => {
             {showDuplicate[card.id] && (
                 <div className="card-move-modal">
                     <DuplicateCard 
+                        userId= {userId}
                         cardId={card.id} 
                         boardId={boardId} 
                         listId={listId} 
