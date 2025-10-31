@@ -227,7 +227,22 @@ export const deleteCard = (cardId) => axios.delete(`${API_URL}/cards/${cardId}`)
 export const duplicateCard = (cardId, listId, position) =>
   axios.post(`${API_URL}/duplicate-card-to-list/${cardId}/${listId}`, { position });
 
+export const duplicateCardToList = async (cardId, listId, userId, body = {}) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}/duplicate-card-to-list/${cardId}/${listId}/${userId}/testing`,
+      body
+    );
+    return response.data;
+  } catch (error) {
+    console.error("❌ Error duplicating card:", error);
+    throw error.response?.data || { message: "Server error" };
+  }
+};
+
 export const archiveCard = (cardId) => axios.put(`${API_URL}/archive-card/${cardId}`, cardId);
+
+
 
 // 🔹 Move card ke list atau board lain + ubah posisi
 // export const moveCardToList = async (cardId, targetListId, newPosition = null) => {
@@ -305,6 +320,20 @@ export const reorderCardsInList = (listId, cards) =>
     listId,
     cards,
   });
+
+// 🔹 Reorder cards (antar list atau dalam list)
+// export const reorderCards = (payload) =>
+//   axios.put(`${API_URL}/cards/reorder-testing`, payload);
+
+export const reorderCards = async (payload) => {
+  try {
+    const response = await axios.put(`${API_URL}/cards/reorder-testing`, payload);
+    return response.data;
+  } catch (error) {
+    console.error("🔥 reorderCards error:", error.response?.data || error.message);
+    throw error; // <— penting! biar error naik ke catch di handleCardDragEnd
+  }
+};
 
 //CARD USERS
 export const getAllUserAssignToCard = (cardId) => axios.get(`${API_URL}/cards/${cardId}/assignable-users`)
@@ -1506,3 +1535,10 @@ export const updateDesignOrderType = (id, data) =>
 // ✅ Delete
 export const deleteDesignOrderType = (id) =>
   axios.delete(`${API_URL}/design-order-type/${id}`);
+
+
+
+// TESTING ENDPOIN AND API SERVICE 
+export const getListsByBoardTesting = (boardId) => axios.get(`${API_URL}/testing_boards/${boardId}/lists`);
+export const reorderListsTesting = (lists) => axios.patch(`${API_URL}/testing_lists/reorder`, { lists });
+export const getBoardsTesting = () => axios.get(`${API_URL}/testing_boards`);

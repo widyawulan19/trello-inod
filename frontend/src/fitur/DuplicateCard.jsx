@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSnackbar } from '../context/Snackbar'
-import { duplicateCard, getBoards, getListByBoard, getCardsByList } from '../services/ApiServices'
+import { duplicateCardToList,duplicateCard, getBoards, getListByBoard, getCardsByList } from '../services/ApiServices'
 import BootstrapTooltip from '../components/Tooltip'
 import { HiOutlineChevronDown, HiOutlineSquare2Stack, HiOutlineXMark } from 'react-icons/hi2'
 import '../style/fitur/DuplicateCard.css'
 
-const DuplicateCard = ({ cardId, boardId, listId, workspaceId, onClose, fetchCardList }) => {
+const DuplicateCard = ({ userId,cardId, boardId, listId, workspaceId, onClose, fetchCardList }) => {
   const [boards, setBoards] = useState([])
   const [lists, setLists] = useState([])
   const [positions, setPositions] = useState([]) // 🆕 daftar posisi card dalam list
@@ -65,33 +65,66 @@ const DuplicateCard = ({ cardId, boardId, listId, workspaceId, onClose, fetchCar
   }, [selectedList])
 
   // 4️⃣ Duplicate card
+  // const handleDuplicateCard = async () => {
+  //   if (!cardId || !selectedList?.id) {
+  //     console.error('❌ cardId or selectedListId is missing!')
+  //     return
+  //   }
+
+  //   setIsDuplicating(true)
+  //   try {
+  //     // const result = await duplicateCard(cardId, selectedList.id, selectedPosition?.value)
+  //     const result = await duplicateCard(
+  //       cardId,
+  //       selectedList.id,
+  //       targetPosition ? Number(targetPosition) : undefined
+  //     )
+  //     console.log('✅ Card duplicated:', result.data)
+  //     showSnackbar('Card duplicated successfully!', 'success')
+
+  //     // navigate(`/layout/workspaces/${workspaceId}/board/${selectedBoardId}`)
+      // fetchCardList(selectedList.id)
+  //     onClose()
+  //   } catch (error) {
+  //     console.error('❌ Error duplicating card:', error)
+  //     showSnackbar('Failed to duplicate the card!', 'error')
+  //   } finally {
+  //     setIsDuplicating(false)
+  //   }
+  // }
   const handleDuplicateCard = async () => {
-    if (!cardId || !selectedList?.id) {
-      console.error('❌ cardId or selectedListId is missing!')
-      return
+    if (!cardId || !selectedList?.id || !userId) { // pastikan userId ada
+      console.error("❌ Missing cardId, listId, or userId!");
+      return;
     }
 
-    setIsDuplicating(true)
+    setIsDuplicating(true);
     try {
-      // const result = await duplicateCard(cardId, selectedList.id, selectedPosition?.value)
-      const result = await duplicateCard(
+      const body = targetPosition
+        ? { position: Number(targetPosition) }
+        : {}; // opsional kalau user pilih posisi
+
+      // ✅ Panggil API service
+      const result = await duplicateCardToList(
         cardId,
         selectedList.id,
-        targetPosition ? Number(targetPosition) : undefined
-      )
-      console.log('✅ Card duplicated:', result.data)
-      showSnackbar('Card duplicated successfully!', 'success')
+        userId,
+        body
+      );
 
-      // navigate(`/layout/workspaces/${workspaceId}/board/${selectedBoardId}`)
-      fetchCardList(selectedList.id)
-      onClose()
+      console.log("✅ Card duplicated:", result);
+      showSnackbar("Card duplicated successfully!", "success");
+
+      // Refresh list & tutup modal
+      // fetchCardList(selectedList.id);
+      onClose();
     } catch (error) {
-      console.error('❌ Error duplicating card:', error)
-      showSnackbar('Failed to duplicate the card!', 'error')
+      console.error("❌ Error duplicating card:", error);
+      showSnackbar("Failed to duplicate the card!", "error");
     } finally {
-      setIsDuplicating(false)
+      setIsDuplicating(false);
     }
-  }
+  };
 
   return (
     <div className='dc-container'>

@@ -45,6 +45,18 @@ import CardDueDateDisplay from '../modules/CardDueDateDisplay';
 import CardFooter from '../modules/CardFooter';
 import NewCardDetail from './NewCardDetail';
 import { handleArchive } from '../utils/handleArchive';
+import {
+  DndContext,
+  closestCenter,
+  closestCorners,
+  DragOverlay,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  arrayMove,
+} from "@dnd-kit/sortable";
+import { BsCreditCard2BackFill, BsCreditCard2FrontFill } from 'react-icons/bs';
 
 const Card=({
     card,
@@ -61,6 +73,14 @@ const Card=({
     cardPositionDropdown,
     setCardPositionDropdown,
     handleChangeCardPosition,
+    onDragStart,
+    onDragEnd,
+    cardsByList,
+    activeCard,
+    attributes,
+  listeners,
+  setNodeRef,
+  dragHandleCardProps
 })=> {
     // console.log('cards diterima:', card)
     const { workspaceId, boardId} = useParams();
@@ -70,7 +90,7 @@ const Card=({
     // console.log('list id diterima:', listId);
     console.log('File card menerima userId:', userId);
     console.log('File Card menerima list name:',listName)
-    const [cardId, setCardId] = useState([]);
+    // const [cardId, setCardId] = useState([]);
     //edit card
     const [editCardName, setEditCardName] = useState(null);
     const [newCardName, setNewCardName] = useState('')
@@ -104,30 +124,50 @@ const Card=({
     //state to create mark notif
     const [notifications, setNotifications] = useState([]);
     const [unreadCount, setUnreadCount] = useState(0);
-    const [hasNewChat, setHasNewChat] = useState(false); 
+    const [hasNewChat, setHasNewChat] = useState(false);
 
     // dorpwon card position 
     const [showPosition, setShowPosition] = useState(false);
 
 
     // Fetch status "new chat" untuk tiap card
-    useEffect(() => {
-    const fetchNewChat = async () => {
-      try {
-        const res = await checkHasNewChat(cardId, userId);
-        setHasNewChat(res.data.hasNewChat);
-      } catch (err) {
-        console.error("Error checking new chat:", err);
-      }
-    };
+//     useEffect(() => {
+//     const fetchNewChat = async () => {
+//       try {
+//         const res = await checkHasNewChat(cardId, userId);
+//         setHasNewChat(res.data.hasNewChat);
+//       } catch (err) {
+//         console.error("Error checking new chat:", err);
+//       }
+//     };
 
-    fetchNewChat();
+//     fetchNewChat();
 
-    // auto polling tiap 10 detik
-    const interval = setInterval(fetchNewChat, 10000);
+//     // auto polling tiap 10 detik
+//     const interval = setInterval(fetchNewChat, 10000);
 
-    return () => clearInterval(interval);
-  }, [cardId, userId]);
+//     return () => clearInterval(interval);
+//   }, [cardId, userId]);
+useEffect(() => {
+  if (!card?.id || !userId) return;
+
+  const fetchNewChat = async () => {
+    try {
+      const res = await checkHasNewChat(card.id, userId);
+      setHasNewChat(res.data.hasNewChat);
+    } catch (err) {
+        if (err.response?.status !== 404) {
+            console.error("Error checking new chat:", err);
+        }
+    //   console.error("Error checking new chat:", err);
+    }
+  };
+
+  fetchNewChat();
+  const interval = setInterval(fetchNewChat, 10000);
+  return () => clearInterval(interval);
+}, [card.id, userId]);
+
 
   
 
@@ -387,6 +427,10 @@ const Card=({
      <div className='card-container'>
         <div className="cc-top-header">
             <div className="cctop-status">
+                <div className="card-icon" {...dragHandleCardProps}>
+                    {/* <HiOutlineCreditCard /> */}
+                    <BsCreditCard2FrontFill className='mini-icon'/>
+                </div>
                 <CardSelectedProperties cardId={card.id}/>
                 {currentStatus ?(
                     <div className='status-cont'>
@@ -472,6 +516,7 @@ const Card=({
             {showDuplicate[card.id] && (
                 <div className="card-move-modal">
                     <DuplicateCard 
+                        userId= {userId}
                         cardId={card.id} 
                         boardId={boardId} 
                         listId={listId} 
