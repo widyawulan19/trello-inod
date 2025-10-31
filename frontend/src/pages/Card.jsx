@@ -169,6 +169,8 @@ useEffect(() => {
 }, [card.id, userId]);
 
 
+
+
   
 
     //FUNCTION GET MARK NOTIFICATION

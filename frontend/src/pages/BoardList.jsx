@@ -667,7 +667,7 @@ if (!userId) {
                         {lists.map((list) =>(
                             <SortableListItem key={list.id} id={list.id} data={{ type: "list" }}>
                                 {({dragHandleProps}) =>(
-                                    <div key={list.id} className='bl-card'>
+                                    <div key={list.id} className='bl-card-card' style={{boxShadow:'none'}}>
                                         <div className="bl-box">
                                             <div className="list-title">
                                                 <div className="l-name">
