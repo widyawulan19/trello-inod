@@ -14,7 +14,7 @@ import { HiMiniListBullet,
         HiOutlineChevronRight,
         HiOutlineListBullet
          } from 'react-icons/hi2'
-import { archiveList, deleteLists, duplicateBoards, getAllLists, getBoardById, getCardByList, getListByBoard, updateLists,updateCardPosition, reorderListPosition, getListPositions, updateListPositions,getCardListTotal, reorderCards } from '../services/ApiServices'
+import { archiveList, deleteLists, duplicateBoards, getAllLists, getBoardById, getCardByList, getListByBoard, updateLists,updateCardPosition, reorderListPosition, getListPositions, updateListPositions,getCardListTotal, reorderCards, getWorkspaceById } from '../services/ApiServices'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import Card from './Card'
 import OutsideClick from '../hook/OutsideClick'
@@ -65,6 +65,8 @@ const BoardList=()=> {
     const [cardPositionDropdown, setCardPositionDropdown] = useState(null);
     const [showPosition,setShowPosition] = useState({});
     const [listPositionDropdown, setListPositionDropdown] = useState(null);
+    //workspace
+    const [workspaceName, setWorkspaceName] = useState('');
     //state show
     const [showSetting, setShowSetting] = useState({})
     const settingRef = OutsideClick(()=>setShowSetting(false))
@@ -179,7 +181,25 @@ const BoardList=()=> {
     };
 
     //FUNCTION
-    //1.fetch board 
+    //1.1 fetch workspace
+    useEffect(() => {
+    const fetchWorkspace = async () => {
+      try {
+        const workspaceData = await getWorkspaceById(workspaceId);
+        console.log("workspace data:", workspaceData);
+
+        // Misal backend kamu balikin { id: 1, name: "Design Team", ... }
+        setWorkspaceName(workspaceData.name);
+      } catch (error) {
+        console.error("Gagal ambil nama workspace:", error);
+      }
+    };
+
+    if (workspaceId) fetchWorkspace();
+  }, [workspaceId]);
+
+
+    //1.2fetch board 
     const fetchBoardDetail = async () =>{
         if(!boardId) return;
         try{
@@ -524,72 +544,6 @@ const handleListDragEnd = async (event) => {
 };
 
 
-// const handleCardDragEnd = async (event) => {
-//     const { active, over } = event;
-//     if (!over) return;
-
-//     // ambil id asli
-//     const activeCardId = typeof active.id === "object" ? active.id.id : active.id;
-//     const overCardId = typeof over.id === "object" ? over.id.id : over.id;
-
-//     // ambil listId dari active & over
-//     const activeListId = active.data.current?.listId ?? active.id.list_id;
-//     const overListId = over.data.current?.listId ?? over.id.list_id ?? over.id;
-
-//     if (!activeCardId || !activeListId || !overListId) return;
-
-//     console.log("🧩 activeCardId:", activeCardId);
-//     console.log("🧩 overCardId:", overCardId);
-//     console.log("🧩 activeListId:", activeListId);
-//     console.log("🧩 overListId:", overListId);
-
-//     const sourceCards = cards[activeListId] || [];
-//     const targetCards = cards[overListId] || [];
-
-//     const movedCard = sourceCards.find((c) => c.id === activeCardId);
-//     if (!movedCard) return;
-
-//     let newSourceCards = sourceCards.filter((c) => c.id !== activeCardId);
-//     let newTargetCards = [...targetCards];
-
-//     const overIndex = newTargetCards.findIndex((c) => c.id === overCardId);
-//     const insertAt = overIndex >= 0 ? overIndex : newTargetCards.length;
-//     newTargetCards.splice(insertAt, 0, movedCard);
-
-//     setCards((prev) => ({
-//         ...prev,
-//         [activeListId]: newSourceCards,
-//         [overListId]: newTargetCards,
-//     }));
-
-//     const payload = {
-//         sourceListId: Number(activeListId),
-//         targetListId: Number(overListId),
-//         sourceCards: newSourceCards.map((c) => ({ id: Number(c.id) })),
-//         targetCards: newTargetCards.map((c) => ({ id: Number(c.id) })),
-//     };
-
-//     console.log("📦 payload ke backend:", JSON.stringify(payload, null, 2));
-
-//     try {
-//         await reorderCards(payload);
-//         showSnackbar("Card order updated!", "success");
-//     } catch (err) {
-//         console.error("❌ Error updating list position:", err.response?.data || err.message);
-//         showSnackbar("Failed to update order", "error");
-//         fetchCardList(activeListId);
-//         fetchCardList(overListId);
-//     }
-
-//     setActiveCard(null);
-// };
-
-
-
-
-
-
-
 //NAVIGATION
 
 
@@ -611,9 +565,11 @@ if (!userId) {
     <div className='bl-container'>
         <div className="bl-header">
             <div className="blnav">
-                <h4 className='ellipsis-text'>{boards.name} Boards</h4>
+                <h4 className='ellipsis-text'>{boards.name} <span style={{color:'#6a11cb'}}>Boards</span></h4>
+                {/* <h4 className='ellipsis-text'>{workspaceName.name} Boards</h4> */}
                 <div className="blnav-sub">
-                    <p className='back' onClick={()=>handleNavigateToWorkspace(workspaceId)}>{boards.name}</p>
+                    <p className='back' onClick={()=>handleNavigateToWorkspace(workspaceId)}>All Boards</p>
+                    {/* <p className='back' onClick={()=>handleNavigateToWorkspace(workspaceId)}>{boards.name}</p> */}
                     <HiOutlineChevronRight className='back-icon'/>
                     <p>Board List</p>
                 </div>
