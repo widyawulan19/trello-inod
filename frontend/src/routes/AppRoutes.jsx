@@ -57,6 +57,8 @@ import NewEditDataMarketing from '../pages/NewEditDataMarketing';
 import NewEditMarketingDesign from '../pages/NewEditMarketingDesign';
 import DataDelete from '../pages/DataDelete';
 import Develop from '../pages/Develop';
+import MarketingChart from '../notes/MarketingChart';
+import Dummy from '../notes/Dummy';
 
 const AppRoutes=()=> {
   return (
@@ -123,6 +125,7 @@ const AppRoutes=()=> {
         <Route path='edit-marketing-desing' element={<NewEditMarketingDesign/>}/>
         <Route path='data-delete' element={<DataDelete/>}/>
         <Route path='develop' element={<Develop/>}/>
+        <Route path='marketing-chart' element={<Dummy/>}/>
         </Route>
     </Routes>
   )

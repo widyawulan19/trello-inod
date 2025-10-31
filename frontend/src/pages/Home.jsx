@@ -24,6 +24,7 @@ import PersonalNotes from '../modules/PersonalNotes.jsx';
 import PersonalAgendas from '../modules/PersonalAgendas.jsx';
 import { useUser } from '../context/UserContext.jsx';
 import { useSnackbar } from '../context/Snackbar.jsx';
+import Dummy from '../notes/Dummy.jsx';
 
 
 const Home=()=> {
@@ -251,7 +252,8 @@ const Home=()=> {
                 </div>
               </div>
               <div className="notes-body">
-                <PersonalNotes userId={userId}/>
+                <Dummy/>
+                {/* <PersonalNotes userId={userId}/> */}
               </div>
             </div>
           </div>
@@ -273,7 +275,7 @@ const Home=()=> {
                 </BootstrapTooltip>
               </div>
               <div className="agenda-body">
-                {/* <PersonalAgenda/> */}
+                {/* <PersonalAgenda/> */}a
                 <PersonalAgendas userId={userId}/>
               </div>
             </div>
