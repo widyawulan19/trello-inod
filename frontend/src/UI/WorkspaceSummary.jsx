@@ -5,6 +5,9 @@ import { HiArrowRight } from 'react-icons/hi2';
 import { useNavigate } from 'react-router-dom';
 import { getBoardsWorkspace } from '../services/ApiServices';
 import { useUser } from '../context/UserContext';
+import { HiOutlineViewBoards } from 'react-icons/hi';
+import { MdOutlineFormatListBulleted } from "react-icons/md";
+import { IoCard } from 'react-icons/io5';
 
 const WorkspaceSummary = ({ summaries, loading }) => {
   const navigate = useNavigate();
@@ -73,9 +76,9 @@ const WorkspaceSummary = ({ summaries, loading }) => {
             </div>
           </div>
           <div className="summary-body">
-            <div className="sb1">📋 Boards : {workspace.board_count}</div>
-            <div className="sb1">📝 Lists : {workspace.list_count}</div>
-            <div className="sb1">🗂️ Cards : {workspace.card_count}</div>
+            <div className="sb1"><HiOutlineViewBoards className='sb-icon'/> Boards : {workspace.board_count}</div>
+            <div className="sb1"><MdOutlineFormatListBulleted className='sb-icon'/> Lists : {workspace.list_count}</div>
+            <div className="sb1"><IoCard className='sb-icon'/> Cards : {workspace.card_count}</div>
           </div>
         </div>
       ))}

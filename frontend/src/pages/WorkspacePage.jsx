@@ -454,7 +454,7 @@ const handleNavigateToWorkspace = () =>{
           <h5> WORKSPACE {workspace.name}</h5>
           <div className="nav-title">
             <p className='nav-p' onClick={handleNavigateToWorkspace}>{workspace.name}</p>
-            <HiChevronRight/>
+            <HiChevronRight size={13}/>
             <p style={{fontWeight:'normal'}}>Boards Page</p>
           </div>
         </div>

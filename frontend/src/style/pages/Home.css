@@ -383,7 +383,7 @@
 .home-summary .body-s {
     /* margin-top: 30px; */
     /* border: 1px solid magenta; */
-    height: 38vh !important;
+    height: 40vh !important;
 }
 
 /* NOTES  */
@@ -503,9 +503,9 @@
 }
 
 .home-body-right .agenda-body {
-    /* border: 1px solid blue; */
+    border: 1px solid blue;
     padding: 5px 10px;
-    height: 50vh;
+    height: 45vh !important;
     overflow-y: auto;
 }
 
