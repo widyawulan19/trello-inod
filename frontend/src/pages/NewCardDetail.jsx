@@ -1238,13 +1238,14 @@ const NewCardDetail=({fetchBoardDetail,fetchCardList})=> {
                                 {showDuplicate && (
                                     <div className="card-move-modal">
                                         <DuplicateCard
+                                            userId={userId}
                                             cardId={cardId}
                                             boardId={boardId}
                                             listId={listId}
                                             workspaceId={workspaceId}
                                             onClose={handleCloseDuplicate}
-                                            fetchCardList={fetchCardList}
-                                            fetchBoardDetail={fetchBoardDetail}
+                                            // fetchCardList={fetchCardList}
+                                            // fetchBoardDetail={fetchBoardDetail}
                                         />
                                     </div>
                                 )}
