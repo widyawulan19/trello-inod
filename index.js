@@ -15627,7 +15627,8 @@ app.get('/api/marketing/summary/compare', async (req, res) => {
                 COALESCE(NULLIF(REPLACE(discount_percentage, '%', ''), ''), '0')::numeric / 100
               )
             )
-        ) AS total_income
+        ) AS total_income,
+        COUNT(*) AS total_orders
       FROM marketing_design
       WHERE is_deleted = false
       GROUP BY DATE(create_at)
@@ -15643,9 +15644,11 @@ app.get('/api/marketing/summary/compare', async (req, res) => {
                 COALESCE(NULLIF(REPLACE(discount, '%', ''), ''), '0')::numeric / 100
               )
             )
-        ) AS total_income
-      FROM marketing_music
-      WHERE is_deleted = false
+        ) AS total_income,
+        COUNT(*) AS total_orders
+      FROM data_marketing
+      WHERE create_at IS NOT NULL
+        AND is_deleted = false
       GROUP BY DATE(create_at)
     `;
 
@@ -15659,15 +15662,28 @@ app.get('/api/marketing/summary/compare', async (req, res) => {
 
         designResult.rows.forEach(row => {
             const date = row.date;
-            map[date] = { date, design_income: parseFloat(row.total_income) || 0, music_income: 0 };
+            map[date] = {
+                date,
+                design_income: parseFloat(row.total_income) || 0,
+                design_orders: parseInt(row.total_orders, 10) || 0,
+                music_income: 0,
+                music_orders: 0
+            };
         });
 
         musicResult.rows.forEach(row => {
             const date = row.date;
             if (!map[date]) {
-                map[date] = { date, design_income: 0, music_income: parseFloat(row.total_income) || 0 };
+                map[date] = {
+                    date,
+                    design_income: 0,
+                    design_orders: 0,
+                    music_income: parseFloat(row.total_income) || 0,
+                    music_orders: parseInt(row.total_orders, 10) || 0
+                };
             } else {
                 map[date].music_income = parseFloat(row.total_income) || 0;
+                map[date].music_orders = parseInt(row.total_orders, 10) || 0;
             }
         });
 
