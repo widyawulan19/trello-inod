@@ -1,55 +1,76 @@
-<DndContext
-  collisionDetection={closestCenter}
-  onDragEnd={handleDragEnd} // 🔹 untuk LIST drag
-  onDragStart={(e) => setActiveId(e.active.id)}
-  onDragCancel={() => setActiveId(null)}
->
-  <SortableContext items={lists.map((l) => l.id)} strategy={horizontalListSortingStrategy}>
-    <div className="bl-content">
-      {lists.map((list) => (
-        <SortableListItem key={list.id} id={list.id}>
-          {({ dragHandleProps }) => (
-            <div key={list.id} className="bl-card">
-              <div className="bl-box">
-                <div className="list-title">
-                  <div className="icon-i" {...dragHandleProps}>
-                    <HiMiniListBullet className="licon" />
-                  </div>
-                  <h5>{list.name}</h5>
-                </div>
+import React, { useEffect, useState } from "react";
+import { getDailyMarketingSummary } from "../services/ApiServices";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
 
-                {/* 🔽 Tambahkan DndContext baru untuk Card */}
-                <DndContext
-                  collisionDetection={closestCenter}
-                  onDragStart={handleDragStart}
-                  onDragEnd={handleCardDragEnd}
-                >
-                  <SortableContext items={(cards[list.id] || []).map((c) => c.id)}>
-                    <div className="list-body">
-                      {cards[list.id]?.map((card) => (
-                        <SortableCardItem key={card.id} id={card.id} data={{ listId: list.id }}>
-                          {({ dragHandleCardProps }) => (
-                            <Card
-                              key={card.id}
-                              card={card}
-                              listId={list.id}
-                              dragHandleCardProps={dragHandleCardProps}
-                              userId={userId}
-                              fetchBoardDetail={fetchBoardDetail}
-                              fetchLists={fetchLists}
-                              fetchCardList={fetchCardList}
-                            />
-                          )}
-                        </SortableCardItem>
-                      ))}
-                    </div>
-                  </SortableContext>
-                </DndContext>
-              </div>
-            </div>
-          )}
-        </SortableListItem>
-      ))}
+const MarketingChart = () => {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSummary = async () => {
+      try {
+        const result = await getDailyMarketingSummary();
+
+        // Format tanggal biar tampil 11/10
+        const formattedData = result.map((item) => ({
+          ...item,
+          date: new Date(item.date).toLocaleDateString("id-ID", {
+            day: "2-digit",
+            month: "2-digit",
+          }),
+        }));
+
+        setData(formattedData);
+      } catch (error) {
+        console.error("Failed to load marketing data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSummary();
+  }, []);
+
+  if (loading) return <p className="text-gray-500">Loading chart data...</p>;
+
+  return (
+    <div className="w-full p-4 overflow-x-auto bg-white shadow rounded-2xl">
+      <h2 className="text-[15px] mb-2">Daily Marketing Income</h2>
+      <div style={{ width: `${data.length * 80}px`, height: "320px" }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={data}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="date" tick={{ fontSize: 12 }} />
+            <YAxis tick={{ fontSize: 12 }} />
+            <Tooltip />
+            <Legend verticalAlign="top" height={36} />
+            <Line
+              type="monotone"
+              dataKey="total_income"
+              stroke="#3b82f6"
+              name="Total Income ($)"
+              strokeWidth={2}
+            />
+            <Line
+              type="monotone"
+              dataKey="total_orders"
+              stroke="#10b981"
+              name="Total Orders"
+              strokeWidth={2}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
     </div>
-  </SortableContext>
-</DndContext>
+  );
+};
+
+export default MarketingChart;

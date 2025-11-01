@@ -735,6 +735,17 @@ export const updateMarketingDesignPosition = async (id, direction) => {
   }
 };
 
+// Ambil ringkasan harian marketing design
+export const getDailyMarketingSummary = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/marketing/summary/daily`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching marketing summary:", error);
+    throw error;
+  }
+};
+
 // export const addMarketingDesignJoined = () => axios.post(`${API_URL}/marketing-design/joined`)
 export const addMarketingDesignJoined = (data) =>
   axios.post(`${API_URL}/marketing-design/joined`, data);
