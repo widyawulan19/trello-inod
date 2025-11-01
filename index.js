@@ -15584,7 +15584,7 @@ app.get('/api/marketing-music/summary/daily', async (req, res) => {
         COUNT(*) AS total_orders,
         SUM(
           (price_normal::numeric)
-          - ((price_normal::numeric) * (discount::numeric / 100))
+          - ((price_normal::numeric) * (REPLACE(discount, '%', '')::numeric / 100))
         ) AS total_income
       FROM data_marketing
       WHERE create_at IS NOT NULL
@@ -15604,6 +15604,7 @@ app.get('/api/marketing-music/summary/daily', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch marketing music summary' });
     }
 });
+
 
 
 
