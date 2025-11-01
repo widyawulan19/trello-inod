@@ -15615,6 +15615,73 @@ app.get('/api/marketing-music/summary/daily', async (req, res) => {
     }
 });
 
+app.get('/api/marketing/summary/compare', async (req, res) => {
+    try {
+        const designQuery = `
+      SELECT 
+        DATE(create_at) AS date,
+        SUM(
+          (price_normal::numeric)
+          - (
+              (price_normal::numeric) * (
+                COALESCE(NULLIF(discount_percentage, ''), '0')::numeric / 100
+              )
+            )
+        ) AS total_income
+      FROM marketing_design
+      WHERE is_deleted = false
+      GROUP BY DATE(create_at)
+    `;
+
+        const musicQuery = `
+      SELECT 
+        DATE(create_at) AS date,
+        SUM(
+          (price_normal::numeric)
+          - (
+              (price_normal::numeric) * (
+                COALESCE(NULLIF(discount_percentage, ''), '0')::numeric / 100
+              )
+            )
+        ) AS total_income
+      FROM marketing_music
+      WHERE is_deleted = false
+      GROUP BY DATE(create_at)
+    `;
+
+        const [designResult, musicResult] = await Promise.all([
+            client.query(designQuery),
+            client.query(musicQuery),
+        ]);
+
+        // Gabung berdasarkan tanggal
+        const map = {};
+
+        designResult.rows.forEach(row => {
+            const date = row.date;
+            map[date] = { date, design_income: parseFloat(row.total_income), music_income: 0 };
+        });
+
+        musicResult.rows.forEach(row => {
+            const date = row.date;
+            if (!map[date]) {
+                map[date] = { date, design_income: 0, music_income: parseFloat(row.total_income) };
+            } else {
+                map[date].music_income = parseFloat(row.total_income);
+            }
+        });
+
+        // Urutkan berdasarkan tanggal
+        const combined = Object.values(map).sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        res.status(200).json(combined);
+    } catch (error) {
+        console.error('Error fetching marketing compare summary:', error);
+        res.status(500).json({ error: 'Failed to fetch compare summary' });
+    }
+});
+
+
 
 
 
