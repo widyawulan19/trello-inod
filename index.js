@@ -15544,7 +15544,6 @@ app.get("/api/testing_boards", async (req, res) => {
         res.status(500).json({ error: "Failed to fetch boards" });
     }
 });
-
 app.get('/api/marketing/summary/daily', async (req, res) => {
     try {
         const result = await client.query(`
@@ -15553,15 +15552,20 @@ app.get('/api/marketing/summary/daily', async (req, res) => {
         COUNT(*) AS total_orders,
         SUM(
           (price_normal::numeric)
-          - ((price_normal::numeric) * (discount_percentage::numeric / 100))
+          - (
+              (price_normal::numeric) * (
+                COALESCE(NULLIF(discount_percentage, ''), '0')::numeric / 100
+              )
+            )
         ) AS total_income
       FROM marketing_design
-      WHERE is_deleted = false
+      WHERE create_at IS NOT NULL
+        AND is_deleted = false
       GROUP BY DATE(create_at)
       ORDER BY DATE(create_at);
     `);
 
-        // ubah tipe data biar frontend enak pakai
+        // Format hasil biar frontend gampang pakai
         const formatted = result.rows.map(row => ({
             date: row.date,
             total_orders: parseInt(row.total_orders, 10),
@@ -15575,6 +15579,7 @@ app.get('/api/marketing/summary/daily', async (req, res) => {
     }
 });
 
+
 // ===== server.js =====
 app.get('/api/marketing-music/summary/daily', async (req, res) => {
     try {
@@ -15584,10 +15589,15 @@ app.get('/api/marketing-music/summary/daily', async (req, res) => {
         COUNT(*) AS total_orders,
         SUM(
           (price_normal::numeric)
-          - ((price_normal::numeric) * (REPLACE(discount, '%', '')::numeric / 100))
+          - (
+              (price_normal::numeric) * (
+                COALESCE(NULLIF(REPLACE(discount, '%', ''), ''), '0')::numeric / 100
+              )
+            )
         ) AS total_income
       FROM data_marketing
       WHERE create_at IS NOT NULL
+        AND is_deleted = false
       GROUP BY DATE(create_at)
       ORDER BY DATE(create_at);
     `);
@@ -15604,6 +15614,7 @@ app.get('/api/marketing-music/summary/daily', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch marketing music summary' });
     }
 });
+
 
 
 
