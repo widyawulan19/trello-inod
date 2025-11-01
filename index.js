@@ -15624,7 +15624,7 @@ app.get('/api/marketing/summary/compare', async (req, res) => {
           (price_normal::numeric)
           - (
               (price_normal::numeric) * (
-                COALESCE(NULLIF(discount_percentage, ''), '0')::numeric / 100
+                COALESCE(NULLIF(REPLACE(discount_percentage, '%', ''), ''), '0')::numeric / 100
               )
             )
         ) AS total_income
@@ -15640,7 +15640,7 @@ app.get('/api/marketing/summary/compare', async (req, res) => {
           (price_normal::numeric)
           - (
               (price_normal::numeric) * (
-                COALESCE(NULLIF(discount_percentage, ''), '0')::numeric / 100
+                COALESCE(NULLIF(REPLACE(discount, '%', ''), ''), '0')::numeric / 100
               )
             )
         ) AS total_income
@@ -15654,24 +15654,24 @@ app.get('/api/marketing/summary/compare', async (req, res) => {
             client.query(musicQuery),
         ]);
 
-        // Gabung berdasarkan tanggal
+        // Gabungkan data berdasarkan tanggal
         const map = {};
 
         designResult.rows.forEach(row => {
             const date = row.date;
-            map[date] = { date, design_income: parseFloat(row.total_income), music_income: 0 };
+            map[date] = { date, design_income: parseFloat(row.total_income) || 0, music_income: 0 };
         });
 
         musicResult.rows.forEach(row => {
             const date = row.date;
             if (!map[date]) {
-                map[date] = { date, design_income: 0, music_income: parseFloat(row.total_income) };
+                map[date] = { date, design_income: 0, music_income: parseFloat(row.total_income) || 0 };
             } else {
-                map[date].music_income = parseFloat(row.total_income);
+                map[date].music_income = parseFloat(row.total_income) || 0;
             }
         });
 
-        // Urutkan berdasarkan tanggal
+        // Urutkan hasil berdasarkan tanggal
         const combined = Object.values(map).sort((a, b) => new Date(a.date) - new Date(b.date));
 
         res.status(200).json(combined);
