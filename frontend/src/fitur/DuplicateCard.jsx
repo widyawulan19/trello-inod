@@ -64,8 +64,6 @@ const DuplicateCard = ({ userId,cardId, boardId, listId, workspaceId, onClose, f
     }
   }, [selectedList])
 
-<<<<<<< HEAD
-=======
   // 4️⃣ Duplicate card
   // const handleDuplicateCard = async () => {
   //   if (!cardId || !selectedList?.id) {
@@ -94,7 +92,6 @@ const DuplicateCard = ({ userId,cardId, boardId, listId, workspaceId, onClose, f
   //     setIsDuplicating(false)
   //   }
   // }
->>>>>>> feature
   const handleDuplicateCard = async () => {
     if (!cardId || !selectedList?.id || !userId) { // pastikan userId ada
       console.error("❌ Missing cardId, listId, or userId!");

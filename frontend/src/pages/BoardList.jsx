@@ -423,11 +423,6 @@ const handleChangeListPosition = async (listId, newPosition) => {
     }
   };
 
-<<<<<<< HEAD
-  // Fungsi untuk menutup dropdown posisi
-const closeListPositionDropdown = () => {
-  setListPositionDropdown(null);
-=======
   // fungsi drag end
 const handleListDragEnd = async (event) => {
   const { active, over } = event;
@@ -546,7 +541,6 @@ const handleListDragEnd = async (event) => {
     }
 
     setActiveCard(null);
->>>>>>> feature
 };
 
 
@@ -597,184 +591,6 @@ if (!userId) {
 
         </div>
         <div className="bl-body">
-<<<<<<< HEAD
-            <div className="bl-content">
-                {lists.map((list) =>(
-                    <div key={list.id} className='bl-card'>
-                        <div className="bl-box">
-                            <div className="list-title">
-                                <div className="l-name">
-                                    <HiMiniListBullet className='licon'/>
-                                    {editName === list.id ? (
-                                        <input
-                                            type='text'
-                                            value={newName}
-                                            onChange={(e) => setNewName(e.target.value)}
-                                            onBlur={()=> handleSaveName(list.id)}
-                                            onKeyDown={(e)=> handleKeyPressName(e, list.id)}
-                                            autoFocus
-                                        />
-                                    ):(
-                                        <h5 onClick={(e)=> handleEditName(e, list.id, list.name)}>{list.name}</h5>
-                                    )}
-                                    {/* <h5>{list.name}</h5> */}
-                                </div>
-                                <BootstrapTooltip title='List setting' placement='top'>
-                                    <button onClick={(e)=> handleShowSetting(e, list.id)}>
-                                        <HiOutlineEllipsisHorizontal size={20}/>
-                                    </button>
-                                </BootstrapTooltip>
-                                
-                                {showSetting[list.id] && (
-                                    <div className='list-setting' ref={settingRef}>
-                                        <button onClick={()=> handleShowMovePopup(list.id)}>
-                                          <HiMiniArrowLeftStartOnRectangle className='cs-icon'/>
-                                          Move
-                                        </button>
-                                        <button onClick={()=> handleShowDuplicate(list.id)}>
-                                          <HiOutlineSquare2Stack className='cs-icon'/>
-                                          Duplicate
-                                        </button>
-                                        <button onClick={()=> handleArchiveLists(list.id)}>
-                                          <HiOutlineArchiveBox className='cs-icon'/>
-                                          Archive
-                                        </button>
-                                       
-                                        <button
-                                            className='btn-position'
-                                            onClick={() => {
-                                                setListPositionDropdown(
-                                                listPositionDropdown === list.id ? null : list.id
-                                                );
-                                                setShowSetting(false); // ✅ Tutup setting setelah klik
-                                            }}
-                                        >
-                                            <GiCardExchange className='cs-icon'/>
-                                            {/* Posisi */}
-                                            Posisi: {list.position}
-                                        </button>
-                                       
-                                        <div className="delete">
-                                          <button onClick={()=> handleDeleteClick(list.id)} className="flex items-center gap-1 text-red-500 hover:text-red-700">
-                                            <HiOutlineTrash className='cs-delete'/>
-                                            Delete
-                                          </button>
-                                        </div>
-                                    </div>
-                                )}
-                                <ListDeleteConfirm
-                                    isOpen={showConfirmModal}
-                                    listId={list.id}
-                                    onConfirm={confirmDelete}
-                                    onCancel={cancelDelete}
-                                    listName={list.name}
-                                />
-                                {showMovePopup[list.id] && (
-                                    <div className="new-move-list-modal">
-                                        <MoveList userId={userId} currentBoardId={boardId} listId={list.id} workspaceId={workspaceId} onClose={()=> handleCloseMovePopup(list.id)} fetchLists={fetchLists}/>
-                                    </div>
-                                )}
-                                {showDuplicatePopup[list.id] && (
-                                    <div className="new-move-list-modal">
-                                        <DuplicateList userId={userId} boardId={boardId} listId={list.id} workspaceId={workspaceId} onClose={()=> handleCloseDuplicate(list.id)} fetchLists={fetchLists}/>
-                                    </div>
-                                )}
-                                {/* Dropdown ubah posisi list */}
-                                {listPositionDropdown === list.id && (
-                                    <div className="new-position-list-modal">
-                                        <div className="position-box-container">
-                                            <div className="pch" style={{padding:'5px 8px',color:'#fff',display:'flex', alignItems:'center', justifyContent:'space-between'}}>
-                                                <h5>
-                                                    Select List Position
-                                                </h5>
-                                                <FaXmark onClick={closeListPositionDropdown}/>
-                                            </div>
-                                            <div className="pcm">
-                                                <ul
-                                                    // style={{
-                                                    //     listStyle: "none",
-                                                    //     padding: "5px",
-                                                    //     margin: "5px 0 0 0",
-                                                    //     border: "1px solid #ccc",
-                                                    //     borderRadius: "4px",
-                                                    //     position: "absolute",
-                                                    //     background: "#fff",
-                                                    //     zIndex: 10,
-                                                    //     minWidth: "100px",
-                                                    // }}
-                                                >
-                                                {lists.map((_, i) => (
-                                                    <li
-                                                        key={i}
-                                                        // style={{
-                                                        //     padding: "5px 10px",
-                                                        //     cursor: "pointer",
-                                                        //     background: i === list.position ? "#eee" : "#fff",
-                                                        // }}
-                                                        onClick={() => handleChangeListPosition(list.id, i)}
-                                                        >
-                                                        {i}
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        
-                                    </div>
-
-                                )}
-                                
-                                
-                                </div>
-                                <div className="list-body">
-                                {cards[list.id]?.map((card) => (
-                                    <>
-                                    <Card 
-                                        key={card.id} 
-                                        userId={userId}
-                                        card={card} 
-                                        cardId={card.id}
-                                        listId={list.id}
-                                        handleNavigate = {()=>handleNavigateToBoard(workspaceId, boardId)} 
-                                        onClick={() => handleOpenPopup(card.id)}
-                                        onRefetch={handleRefetchBoard}
-                                        fetchBoardDetail={fetchBoardDetail}
-                                        fetchLists={fetchLists}
-                                        fetchCardList={fetchCardList}
-                                        cardsInList={cards[list.id] || []}
-                                        boards={boards}
-                                        lists={lists}
-                                        listName={list.name}
-                                        cardPositionDropdown={cardPositionDropdown}
-                                        setCardPositionDropdown={setCardPositionDropdown}
-                                        handleChangeCardPosition={handleChangeCardPosition}
-                                    />
-                                    {/* <CardDetailPopup isOpen={showDetail} onClose={handleShowDetail} cardId={card.id} /> */}
-                                    </>
-                                ))}
-                            </div> 
-
-                            <div className="form-card-wrapper">
-                                <div className="form-card">
-                                    <div className="fc-cont" onClick={(e)=> handleShowForm(e, list.id)}>
-                                         <HiPlus/>
-                                        Add Card
-                                    </div>
-                                    <div className="card-count">
-                                       <p>{totalCard}</p> 
-                                       <div><HiOutlineCreditCard style={{marginRight:'5px'}}/></div>
-                                    </div>
-                                </div>
-                                {showForm[list.id]&&(
-                                    <div className='cc-form-card' ref={formRef}>
-                                        {/* <div className="ccf-conten"> */}
-                                            <CreateCard listId={list.id} onCardCreated={handleCardCreated} onClose={handleCloseForm} />   
-                                        {/* </div> */}
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-=======
             <DndContext
                 collisionDetection={closestCenter}
                 onDragStart={(e) => setActiveId(e.active.id)}
@@ -782,7 +598,6 @@ if (!userId) {
                     console.log("🧩 DragEnd event:", event); // ← log utama
                     handleListDragEnd(event);
                     handleCardDragEnd(event);                // panggil function asli
->>>>>>> feature
                     
                 }}
                 onDragCancel={() => setActiveId(null)}
