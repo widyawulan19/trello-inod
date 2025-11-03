@@ -10675,6 +10675,7 @@ app.put('/api/create-card-marketing-design/:listId/:marketingDesignId', async (r
             kdd.divisi AS acc_by_divisi,
             ad.nama_account AS account_name,
             ot.offer_name AS offer_type_name,
+            od.order_name AS order_type_name,
             pt.project_name AS project_type_name,
             sd.style_name,
             sp.status_name AS status_project_name
@@ -10683,6 +10684,7 @@ app.put('/api/create-card-marketing-design/:listId/:marketingDesignId', async (r
           LEFT JOIN kepala_divisi_design kdd ON md.acc_by = kdd.id
           LEFT JOIN account_design ad ON md.account = ad.id
           LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
+          LEFT JOIN design_order_type od ON md.order_type_id = od.id
           LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
           LEFT JOIN style_design sd ON md.style_id = sd.id
           LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
@@ -10719,6 +10721,7 @@ app.put('/api/create-card-marketing-design/:listId/:marketingDesignId', async (r
                 <p><strong>Deadline:</strong> ${marketing.deadline ? new Date(marketing.deadline).toISOString().split('T')[0] : 'N/A'}</p>
                 <p><strong>Jumlah Revisi:</strong> ${marketing.jumlah_revisi || '0'}</p>
                 <p><strong>Offer Type:</strong> ${marketing.offer_type_name || 'N/A'}</p>
+                <p><strong>Order Type:</strong> ${marketing.order_type_name || 'N/A'}</p>
                 <p><strong>Project Type:</strong> ${marketing.project_type_name || 'N/A'}</p>
                 <p><strong>Style:</strong> ${marketing.style_name || 'N/A'}</p>
                 <p><strong>Normal Price:</strong> $${marketing.price_normal ?? 'N/A'}</p>
@@ -10759,7 +10762,7 @@ app.put('/api/create-card-marketing-design/:listId/:marketingDesignId', async (r
              RETURNING id`,
             [
                 listId,
-                `'New Project' - ${marketing.buyer_name || 'Unknown'} - ${marketing.account_name || '-'} - ${marketing.project_type_name || "-"} - ${lastFiveDigits}`,
+                `'New Project' - ${marketing.buyer_name || 'Unknown'} - ${marketing.account_name || '-'} - ${marketing.project_type_name || "-"} - ${lastFiveDigits} - ${marketing.order_type_name}`,
                 // `${marketing.buyer_name} - ${marketing.order_number} (${marketing.account_name})`,
                 description,
                 nextPosition,
