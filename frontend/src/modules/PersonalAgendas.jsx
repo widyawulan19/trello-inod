@@ -46,10 +46,8 @@ const PersonalAgendas = ({ userId }) => {
 
     return (
       <div className="pnh-right">
-        <div className="right-box">
-          <h3>{day}</h3>
-          <p>{month} {year}</p>
-        </div>
+        <h3>{day}</h3>
+        <p>{month} {year}</p>
       </div>
     );
   };
@@ -90,39 +88,55 @@ const PersonalAgendas = ({ userId }) => {
   
  
   return (
-    <div className="personal-agenda-container">
+    <div className="pa-container">
+      {agendas.map((agenda) => (
+        <div key={agenda.id} className="pa-box">
+          <div className="pa-title">
+            <h4>#{agenda.title}</h4>
+            <div className="sa">
+              <p style={{color:`${agenda.color}`}}>{agenda.status_name}</p>
+            </div>
+          </div>
+
+          <div className="pa-date">
+             {renderAgendaDate(agenda.agenda_date)}
+             <div className="footer-delete" onClick={() => handleDeleteAgenda(agenda.id)}>
+                <IoTrash className='pa-delete'/>
+              </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default PersonalAgendas;
+
+
+{/* <div className="personal-agenda-container">
       {agendas.map((agenda) => (
         <div key={agenda.id} className="personal-agenda-box">
           <div className="pn-header">
             <div className="pnh-left">
-              <FaCircle className='pnh-icon' style={{ color: agenda.color}} />
               <h4 style={{ color: agenda.color}}>#{agenda.title}</h4>
-            </div>
-            {renderAgendaDate(agenda.agenda_date)}
-          </div>
-
-          <div className="pn-footer">
-            <BootstrapTooltip title="Agenda Status" placement="top">
-              <div className="agenda"
-                style={{
-                  border: `1px solid ${agenda.color}`,
-                  backgroundColor: agenda.color,
-                }}>
-                {agenda.status_name}
-              </div>
-            </BootstrapTooltip>
-            <div className="pn-footer-right">
-              <BootstrapTooltip title="Finished Status" placement="top">
-                <div 
-                className='footer-status'
-                style={{
-                  color: agenda.is_done ? '#246c12' : '#821715',
-                  backgroundColor: agenda.is_done ? '#b6f7a6' : '#f7a7a6'
-                }}>
-                  {agenda.is_done ? 'Finished' : 'Not Finished'}
+              <BootstrapTooltip title="Agenda Status" placement="top">
+                <div className="agenda">
+                    <span
+                      style={{
+                        border: `1px solid ${agenda.color}`,
+                        backgroundColor: 'white',
+                        color:'#333',
+                        borderRadius:'8px',
+                        padding:'3px 10px',
+                        fontSize:'10px',
+                      }}
+                    >{agenda.status_name}</span>
+                  
                 </div>
               </BootstrapTooltip>
-
+            </div>
+            {renderAgendaDate(agenda.agenda_date)}
+            <div className="pn-footer-right">
               <BootstrapTooltip title="Delete Agenda" placement="top">
                 <div className="footer-delete" onClick={() => handleDeleteAgenda(agenda.id)}>
                   <IoTrash />
@@ -132,8 +146,4 @@ const PersonalAgendas = ({ userId }) => {
           </div>
         </div>
       ))}
-    </div>
-  );
-};
-
-export default PersonalAgendas;
+    </div> */}

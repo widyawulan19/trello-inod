@@ -38,7 +38,7 @@ const Greeting = () => {
         <span className='greet-icon'>{greetingIcon}</span>
       </h4>
       {/* <p>🏠 Home</p> */}
-      <p style={{marginTop:'0',marginBottom:'0', fontSize:'10px', padding:'0px', color:'#333'}}>
+      <p style={{marginTop:'0',marginBottom:'0', fontSize:'10px', padding:'0px', color:'#5e5e5e'}}>
         Today is {dayName}, {date} {monthName} {year} | Hope you have a great day!
       </p>
     </div>

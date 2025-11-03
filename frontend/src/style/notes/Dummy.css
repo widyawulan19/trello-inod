@@ -1,0 +1,50 @@
+.dummy-container {
+    padding: 0px;
+    background: #fff;
+    /* box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); */
+    /* border: 1px solid red; */
+    height: fit-content;
+}
+
+.dummy-content {
+    border: 1px solid blue;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0px;
+}
+
+.dummy-box {
+    border: 1px solid green;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+/* DROPDOWN  */
+.dummy-drop {
+    /* border: 1px solid orange; */
+    position: relative;
+}
+
+.dummy-drop button {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    width: 100%;
+    padding: 2px 7px;
+    font-size: 12px;
+    background-color: white;
+    border: 1px solid #eee;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* MARKETING COMPARE  */
+.compare-container {
+    width: 100%;
+    padding: 5px;
+    background-color: white;
+    /* box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); */
+    border: 1px solid #fff;
+    /* border-radius: 8px; */
+}

@@ -2,7 +2,7 @@
     border: 1px solid #ddd;
     width: 100%;
     gap: 5px;
-    border-radius: 16px;
+    border-radius: 8px;
     padding: 3px 5px;
     display: flex;
     align-items: center;
@@ -114,24 +114,24 @@ mark {
     width: 100%;
     gap: 5px;
     color: white;
-    border-radius: 16px;
-    padding: 3px 8px;
+    border-radius: 8px;
+    padding: 3px 4px;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     cursor: pointer;
 }
 
 .search-global-container:hover {
-    border: 1px solid #5D12EB;
+    /* border: 1px solid #5D12EB; */
     background: rgba(255, 255, 255, 0.15);
     box-shadow: 0px 4px 8px #5e12eb46;
 }
 
 .search-global-container input {
     border: 1px solid rgba(255, 255, 255, 0);
-    border-radius: 8px;
-    padding: 5px;
+    /* border-radius: 8px; */
+    padding: 0px 3px;
     font-size: 10px;
     color: #5e5e5e;
     width: 15vw;
@@ -140,9 +140,6 @@ mark {
 
 .search-global-container input:hover {
     border: 1px solid rgba(255, 255, 255, 0);
-    border-radius: 8px;
-    padding: 5px;
-    font-size: 10px;
     background-color: rgba(255, 255, 255, 0);
 }
 
@@ -229,21 +226,22 @@ mark {
 
 
 .archive-card {
-  background-color: #fff0f0; /* soft red background untuk archive */
+    background-color: #fff0f0;
+    /* soft red background untuk archive */
 }
 
 .archive-badge {
-  background-color: #ff4d4f;
-  color: white;
-  font-size: 10px;
-  padding: 2px 6px;
-  margin-left: 8px;
-  border-radius: 4px;
+    background-color: #ff4d4f;
+    color: white;
+    font-size: 10px;
+    padding: 2px 6px;
+    margin-left: 8px;
+    border-radius: 4px;
 }
 
 .na-text {
-  color: #888888;
-  font-style: italic;
+    color: #888888;
+    font-style: italic;
 }
 
 

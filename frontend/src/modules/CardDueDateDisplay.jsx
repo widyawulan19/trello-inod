@@ -63,7 +63,7 @@ if (!dueDate) return <p></p>;
 return (
   <div className={`due-date-badge ${getDueDateClass(dueDate)}`}>
     <HiOutlineCalendar
-      size={13}
+      size={10}
       style={{
         color: getDueDateColor(dueDate),
         marginRight: '5px',

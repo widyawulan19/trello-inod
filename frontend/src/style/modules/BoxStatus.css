@@ -1,16 +1,17 @@
 .selected-priorities-container {
     /* border: 1px solid red; */
     gap: 3px;
+    margin: 0px 2px;
 }
 
 .selected-priorities-container .sp-box {
-    padding: 4px;
-    margin: 2px;
+    padding: 2px 3px;
+    margin: 0px;
     border-radius: 4px;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    font-size: 10px;
+    font-size: 8px;
     font-weight: bold;
     border: 1px solid transparent;
 }
@@ -20,15 +21,16 @@
 /* STATUS  CARD */
 .status-cont {
     /* border: 1px solid red; */
+    margin: 0px;
 }
 
 .status-cont h5 {
     border: 1px solid transparent;
     border-radius: 4px;
     font-weight: bold;
-    font-size: 10px;
+    font-size: 8px;
     margin: 0px;
-    padding: 5px 8px;
+    padding: 2px 3px;
     gap: 3px;
     display: flex;
     align-items: center;
@@ -39,7 +41,8 @@
 /* COVER CARD  */
 .card-cover-display {
     /* border: 1px solid blue; */
-    padding: 5px;
+    padding: 3px 5px;
+    padding-bottom: 0px;
     /* height: auto; */
 }
 

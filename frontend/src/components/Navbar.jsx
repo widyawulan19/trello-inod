@@ -282,9 +282,9 @@ const Navbar=()=> {
                         src={profilUser?.photo_url || defaultPic}
                         alt={profilUser?.username || user?.username || 'User'}
                         style={{
-                        width: '50px',
+                        width: '60px',
                         height: '30px',
-                        borderRadius: '50%',
+                        borderRadius: '60%',
                         objectFit: 'cover',
                         backgroundColor:'white'                        
                         }}

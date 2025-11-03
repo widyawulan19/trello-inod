@@ -64,6 +64,37 @@ const DuplicateCard = ({ userId,cardId, boardId, listId, workspaceId, onClose, f
     }
   }, [selectedList])
 
+<<<<<<< HEAD
+=======
+  // 4️⃣ Duplicate card
+  // const handleDuplicateCard = async () => {
+  //   if (!cardId || !selectedList?.id) {
+  //     console.error('❌ cardId or selectedListId is missing!')
+  //     return
+  //   }
+
+  //   setIsDuplicating(true)
+  //   try {
+  //     // const result = await duplicateCard(cardId, selectedList.id, selectedPosition?.value)
+  //     const result = await duplicateCard(
+  //       cardId,
+  //       selectedList.id,
+  //       targetPosition ? Number(targetPosition) : undefined
+  //     )
+  //     console.log('✅ Card duplicated:', result.data)
+  //     showSnackbar('Card duplicated successfully!', 'success')
+
+  //     // navigate(`/layout/workspaces/${workspaceId}/board/${selectedBoardId}`)
+      // fetchCardList(selectedList.id)
+  //     onClose()
+  //   } catch (error) {
+  //     console.error('❌ Error duplicating card:', error)
+  //     showSnackbar('Failed to duplicate the card!', 'error')
+  //   } finally {
+  //     setIsDuplicating(false)
+  //   }
+  // }
+>>>>>>> feature
   const handleDuplicateCard = async () => {
     if (!cardId || !selectedList?.id || !userId) { // pastikan userId ada
       console.error("❌ Missing cardId, listId, or userId!");

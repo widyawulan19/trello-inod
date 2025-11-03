@@ -1,12 +1,14 @@
-.cfoot-container{
+.cfoot-container {
     border-top: 1px solid #ddd;
-    padding: 3px 5px;
+    margin: 2px 0px;
+    padding: 0px 5px;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    font-size: 12px;
+    font-size: 10px;
 }
-.cfoot-container button{
+
+.cfoot-container button {
     border: 1px solid white;
     /* border: 1px solid #ddd; */
     display: flex;

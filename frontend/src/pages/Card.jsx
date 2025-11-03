@@ -140,6 +140,7 @@ const Card=({
 //         console.error("Error checking new chat:", err);
 //       }
 //     };
+<<<<<<< HEAD
 
 //     fetchNewChat();
 
@@ -167,6 +168,37 @@ useEffect(() => {
   const interval = setInterval(fetchNewChat, 10000);
   return () => clearInterval(interval);
 }, [card.id, userId]);
+=======
+
+//     fetchNewChat();
+
+//     // auto polling tiap 10 detik
+//     const interval = setInterval(fetchNewChat, 10000);
+
+//     return () => clearInterval(interval);
+//   }, [cardId, userId]);
+useEffect(() => {
+  if (!card?.id || !userId) return;
+
+  const fetchNewChat = async () => {
+    try {
+      const res = await checkHasNewChat(card.id, userId);
+      setHasNewChat(res.data.hasNewChat);
+    } catch (err) {
+        if (err.response?.status !== 404) {
+            console.error("Error checking new chat:", err);
+        }
+    //   console.error("Error checking new chat:", err);
+    }
+  };
+
+  fetchNewChat();
+  const interval = setInterval(fetchNewChat, 10000);
+  return () => clearInterval(interval);
+}, [card.id, userId]);
+
+
+>>>>>>> feature
 
 
   
