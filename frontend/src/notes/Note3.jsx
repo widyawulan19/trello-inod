@@ -1,76 +1,82 @@
-import React, { useEffect, useState } from "react";
-import { getDailyMarketingSummary } from "../services/ApiServices";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-  ResponsiveContainer,
-  Legend,
-} from "recharts";
+import React, { useState } from "react";
+import DataMarketingCompare from "./DataMarketingCompare";
+import MarketingChart from "./MarketingChart";
+import MarketingMusicChart from "./MarketingMusicChart";
+import { ChevronDown } from "lucide-react";
 
-const MarketingChart = () => {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+const HomeNotes = () => {
+  const [selectedChart, setSelectedChart] = useState("both");
+  const [openDropdown, setOpenDropdown] = useState(false);
 
-  useEffect(() => {
-    const fetchSummary = async () => {
-      try {
-        const result = await getDailyMarketingSummary();
-
-        // Format tanggal biar tampil 11/10
-        const formattedData = result.map((item) => ({
-          ...item,
-          date: new Date(item.date).toLocaleDateString("id-ID", {
-            day: "2-digit",
-            month: "2-digit",
-          }),
-        }));
-
-        setData(formattedData);
-      } catch (error) {
-        console.error("Failed to load marketing data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchSummary();
-  }, []);
-
-  if (loading) return <p className="text-gray-500">Loading chart data...</p>;
+  const handleSelect = (value) => {
+    setSelectedChart(value);
+    setOpenDropdown(false);
+  };
 
   return (
-    <div className="w-full p-4 overflow-x-auto bg-white shadow rounded-2xl">
-      <h2 className="text-[15px] mb-2">Daily Marketing Income</h2>
-      <div style={{ width: `${data.length * 80}px`, height: "320px" }}>
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" tick={{ fontSize: 12 }} />
-            <YAxis tick={{ fontSize: 12 }} />
-            <Tooltip />
-            <Legend verticalAlign="top" height={36} />
-            <Line
-              type="monotone"
-              dataKey="total_income"
-              stroke="#3b82f6"
-              name="Total Income ($)"
-              strokeWidth={2}
-            />
-            <Line
-              type="monotone"
-              dataKey="total_orders"
-              stroke="#10b981"
-              name="Total Orders"
-              strokeWidth={2}
-            />
-          </LineChart>
-        </ResponsiveContainer>
+    <div className="relative p-4 bg-white shadow home-notes rounded-2xl">
+      {/* ===== Header ===== */}
+      <div className="flex items-center justify-between mb-3 notes-header">
+        <div className="relative flex items-center gap-3 nh-right">
+          {/* === Custom Dropdown === */}
+          <div className="relative">
+            <button
+              onClick={() => setOpenDropdown(!openDropdown)}
+              className="flex items-center gap-2 px-3 py-1 text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none"
+            >
+              {selectedChart === "both"
+                ? "Both"
+                : selectedChart === "design"
+                ? "Design Only"
+                : "Music Only"}
+              <ChevronDown
+                size={16}
+                className={`transition-transform ${
+                  openDropdown ? "rotate-180" : "rotate-0"
+                }`}
+              />
+            </button>
+
+            {openDropdown && (
+              <ul className="absolute right-0 z-20 w-40 mt-2 bg-white border border-gray-200 rounded-md shadow-lg">
+                <li
+                  className={`px-3 py-2 text-sm cursor-pointer hover:bg-purple-50 ${
+                    selectedChart === "both" ? "bg-purple-100" : ""
+                  }`}
+                  onClick={() => handleSelect("both")}
+                >
+                  Both
+                </li>
+                <li
+                  className={`px-3 py-2 text-sm cursor-pointer hover:bg-purple-50 ${
+                    selectedChart === "design" ? "bg-purple-100" : ""
+                  }`}
+                  onClick={() => handleSelect("design")}
+                >
+                  Design Only
+                </li>
+                <li
+                  className={`px-3 py-2 text-sm cursor-pointer hover:bg-purple-50 ${
+                    selectedChart === "music" ? "bg-purple-100" : ""
+                  }`}
+                  onClick={() => handleSelect("music")}
+                >
+                  Music Only
+                </li>
+              </ul>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* ===== Body ===== */}
+      <div className="mt-2 notes-body">
+        {selectedChart === "both" && <DataMarketingCompare />}
+        {selectedChart === "design" && <MarketingChart />}
+        {selectedChart === "music" && <MarketingMusicChart />}
       </div>
     </div>
   );
 };
 
-export default MarketingChart;
+export default HomeNotes;

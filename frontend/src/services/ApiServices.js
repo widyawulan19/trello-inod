@@ -746,6 +746,28 @@ export const getDailyMarketingSummary = async () => {
   }
 };
 
+// 🔹 1. Ambil summary daily marketing musik
+export const getMarketingMusicSummary = async () => {
+  try {
+    const res = await axios.get(`${API_URL}/marketing-music/summary/daily`);
+    return res.data;
+  } catch (error) {
+    console.error('Error fetching marketing music summary:', error);
+    throw error;
+  }
+};
+
+// 🔹 2. Ambil data perbandingan marketing design vs marketing musik
+export const getMarketingCompareSummary = async () => {
+  try {
+    const res = await axios.get(`${API_URL}/marketing/summary/compare`);
+    return res.data;
+  } catch (error) {
+    console.error('Error fetching marketing compare summary:', error);
+    throw error;
+  }
+};
+
 // export const addMarketingDesignJoined = () => axios.post(`${API_URL}/marketing-design/joined`)
 export const addMarketingDesignJoined = (data) =>
   axios.post(`${API_URL}/marketing-design/joined`, data);

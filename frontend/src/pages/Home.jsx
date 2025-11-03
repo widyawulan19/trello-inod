@@ -1,5 +1,6 @@
 import React,{useRef, useState, useEffect} from 'react'
 import '../style/pages/Home.css'
+import '../style/notes/Dummy.css'
 import Greeting from '../utils/Greeting.jsx'
 import BootstrapTooltip from '../components/Tooltip.jsx'
 import { RxDragHandleDots2 } from "react-icons/rx";
@@ -8,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { HiFolder } from "react-icons/hi2";
 import { GiMusicalScore } from "react-icons/gi";
 import { BsArrowsAngleExpand } from "react-icons/bs";
-import { FaNoteSticky, FaPlus } from "react-icons/fa6";
+import { FaChartLine, FaNoteSticky, FaPlus } from "react-icons/fa6";
 import OutsideClick from '../hook/OutsideClick.jsx';
 import { createWorkspace, createWorkspaceUser, getWorkspaceSummary } from '../services/ApiServices.js';
 import { Alert } from '@mui/material';
@@ -18,7 +19,7 @@ import { HiOutlinePlus } from 'react-icons/hi';
 import { MdAddChart } from 'react-icons/md';
 import WorkspaceSummary from '../UI/WorkspaceSummary.jsx';
 import AgendaUser from '../UI/AgendaUser.jsx';
-import { IoCalendar, IoFlash } from 'react-icons/io5';
+import { IoCalendar, IoChevronDown, IoFlash } from 'react-icons/io5';
 import AksesCepat from '../modules/AksesCepat.jsx';
 import PersonalNotes from '../modules/PersonalNotes.jsx';
 import PersonalAgendas from '../modules/PersonalAgendas.jsx';
@@ -41,6 +42,9 @@ const Home=()=> {
   const showRef = OutsideClick(()=> setShowForm(false));
   const navigate = useNavigate();
   const {showSnackbar} = useSnackbar();
+  // DROPDWN 
+  const [openDropdown, setOpenDropdown] = useState(false);
+  const [selectedChart, setSelectedChart] = useState("both");
   //create workspace
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -142,6 +146,12 @@ const Home=()=> {
     navigate('note-page')
   }
 
+  //11. dropdown select grafic
+    const handleSelect = (value) =>{
+    setSelectedChart(value);
+    setOpenDropdown(false);
+  }
+
   return (
     <div className="home-container">
         <div className="home-header">
@@ -213,6 +223,66 @@ const Home=()=> {
         <div className="home-body">
           {/* RECENT SECTION  */}
           <div className="home-body-left">
+            {/* CHART  */}
+            <div className="home-notes">
+              <div className="notes-header">
+                <div className="nh-left">
+                  <div className="nhl-icon">
+                    <FaChartLine/>
+                  </div>
+                  <h4><span className='nhl-gradient'>Chart Daily Income</span></h4>
+                </div>
+                <div className="nh-right">
+                  <div className="dummy-drop">
+                    <button
+                      onClick={() => setOpenDropdown(!openDropdown)}
+                    >
+                      {selectedChart === "both"
+                        ? "Both"
+                        : selectedChart === "design"
+                        ? "Design Only"
+                        : "Music Only"}
+                      <IoChevronDown
+                        size={12}
+                        className={`transition-transform ${
+                          openDropdown ? "rotate-180" : "rotate-0"
+                        }`}
+                      />
+                    </button>
+                    {/* DROPDOWN  */}
+                    {openDropdown && (
+                      <ul className="absolute right-0 z-20 w-40 mt-2 bg-white border border-gray-200 rounded-md shadow-lg">
+                        <li
+                          className={`px-3 py-2 text-sm cursor-pointer hover:bg-purple-50 ${
+                            selectedChart === "both" ? "bg-purple-100" : ""
+                          }`}
+                          onClick={() => handleSelect("both")}
+                        >
+                          Both
+                        </li>
+                        <li
+                          className={`px-3 py-2 text-sm cursor-pointer hover:bg-purple-50 ${
+                            selectedChart === "design" ? "bg-purple-100" : ""
+                          }`}
+                          onClick={() => handleSelect("design")}
+                        >
+                          Design Only
+                        </li>
+                        <li
+                          className={`px-3 py-2 text-sm cursor-pointer hover:bg-purple-50 ${
+                            selectedChart === "music" ? "bg-purple-100" : ""
+                          }`}
+                          onClick={() => handleSelect("music")}
+                        >
+                          Music Only
+                        </li>
+                      </ul>
+                    )}
+                  </div>
+                </div>
+              </div>
+                <Dummy selectedChart={selectedChart} setSelectedChart={setSelectedChart} handleSelect={handleSelect}/>
+            </div>
             {/* SUMMARY  */}
             <div className="home-summary">
               <div className="summary-header">
@@ -234,28 +304,6 @@ const Home=()=> {
                 <WorkspaceSummary userId={userId} summaries={summaries}/>
               </div>
             </div>
-            
-            <div className="home-notes">
-              <div className="notes-header">
-                <div className="nh-left">
-                  <div className="nhl-icon">
-                    <FaNoteSticky/>
-                  </div>
-                  <h4><span className='nhl-gradient'>Personal Notes</span></h4>
-                </div>
-                <div className="nh-right">
-                  <BootstrapTooltip title='Open Note Page' placement='top'>
-                  <div className="ah-right">
-                    <BsArrowsAngleExpand className='sh-expand' onClick={navigateToNotePage}/>
-                  </div>
-                  </BootstrapTooltip>
-                </div>
-              </div>
-              <div className="notes-body">
-                <Dummy/>
-                {/* <PersonalNotes userId={userId}/> */}
-              </div>
-            </div>
           </div>
 
           <div className="home-body-right">
@@ -275,7 +323,7 @@ const Home=()=> {
                 </BootstrapTooltip>
               </div>
               <div className="agenda-body">
-                {/* <PersonalAgenda/> */}a
+                {/* <PersonalAgenda/> */}
                 <PersonalAgendas userId={userId}/>
               </div>
             </div>

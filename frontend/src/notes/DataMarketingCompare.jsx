@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from "react";
-import { getDailyMarketingSummary } from "../services/ApiServices";
 import {
   AreaChart,
   Area,
@@ -10,8 +9,10 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import { getMarketingCompareSummary } from "../services/ApiServices";
+import '../style/notes/Dummy.css'
 
-const MarketingChart = () => {
+const DataMarketingCompare = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const scrollRef = useRef(null);
@@ -19,9 +20,8 @@ const MarketingChart = () => {
   useEffect(() => {
     const fetchSummary = async () => {
       try {
-        const result = await getDailyMarketingSummary();
+        const result = await getMarketingCompareSummary();
 
-        // Format tanggal jadi 20/10 dst
         const formattedData = result.map((item) => ({
           ...item,
           date: new Date(item.date).toLocaleDateString("id-ID", {
@@ -32,7 +32,7 @@ const MarketingChart = () => {
 
         setData(formattedData);
       } catch (error) {
-        console.error("Failed to load marketing data:", error);
+        console.error("Failed to load compare data:", error);
       } finally {
         setLoading(false);
       }
@@ -41,7 +41,7 @@ const MarketingChart = () => {
     fetchSummary();
   }, []);
 
-  // 🔥 Auto scroll ke kanan (tanggal terbaru) setelah data dimuat
+  // 🔥 Auto scroll ke kanan ke tanggal terbaru
   useEffect(() => {
     if (!loading && scrollRef.current) {
       const scrollContainer = scrollRef.current;
@@ -49,11 +49,11 @@ const MarketingChart = () => {
     }
   }, [loading, data]);
 
-  if (loading) return <p className="text-gray-500">Loading chart data...</p>;
+  if (loading) return <p className="text-gray-500">Loading compare chart...</p>;
 
   return (
-    <div className="w-full p-4 bg-white shadow rounded-2xl">
-      <h2 className="text-[15px] mb-2 font-semibold">Daily Marketing Income</h2>
+    <div className="compare-container">
+      <h2 className="text-[15px] font-semibold">Compare: Design vs Music Income</h2>
 
       {/* Kontainer scroll horizontal */}
       <div
@@ -61,7 +61,6 @@ const MarketingChart = () => {
         className="overflow-x-auto"
         style={{ width: "100%", height: "230px" }}
       >
-        {/* Lebar fleksibel tergantung jumlah data */}
         <div style={{ width: `${data.length * 80}px`, height: "100%" }}>
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart
@@ -69,13 +68,15 @@ const MarketingChart = () => {
               margin={{ top: 30, right: 30, left: 0, bottom: 10 }}
             >
               <defs>
-                <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
+                {/* 🎨 Gradient lembut untuk Design */}
+                <linearGradient id="colorDesign" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.4} />
                   <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
                 </linearGradient>
-                <linearGradient id="colorOrders" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.4} />
-                  <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                {/* 🎵 Gradient lembut untuk Music */}
+                <linearGradient id="colorMusic" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#a855f7" stopOpacity={0.4} />
+                  <stop offset="95%" stopColor="#a855f7" stopOpacity={0} />
                 </linearGradient>
               </defs>
 
@@ -91,21 +92,30 @@ const MarketingChart = () => {
                 wrapperStyle={{ paddingTop: "10px" }}
               />
 
+              {/* Area untuk Design */}
               <Area
                 type="monotone"
-                dataKey="total_income"
+                dataKey="design_income"
                 stroke="#3b82f6"
-                fill="url(#colorIncome)"
-                name="Total Income ($)"
+                fill="url(#colorDesign)"
+                name="Design Income ($)"
                 strokeWidth={2}
+                dot={{ r: 4 }}
+                activeDot={{ r: 6 }}
+                animationDuration={800}
               />
+
+              {/* Area untuk Music */}
               <Area
                 type="monotone"
-                dataKey="total_orders"
-                stroke="#10b981"
-                fill="url(#colorOrders)"
-                name="Total Orders"
+                dataKey="music_income"
+                stroke="#a855f7"
+                fill="url(#colorMusic)"
+                name="Music Income ($)"
                 strokeWidth={2}
+                dot={{ r: 4 }}
+                activeDot={{ r: 6 }}
+                animationDuration={800}
               />
             </AreaChart>
           </ResponsiveContainer>
@@ -115,4 +125,4 @@ const MarketingChart = () => {
   );
 };
 
-export default MarketingChart;
+export default DataMarketingCompare;
