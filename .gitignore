@@ -4,3 +4,4 @@ backend/.env
 .DS_Store
 backend/.envservice-account.json
 
+.DS_Store
