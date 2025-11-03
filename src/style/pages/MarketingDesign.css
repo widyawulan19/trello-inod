@@ -1,0 +1,1065 @@
+.md-container {
+    height: 97%;
+    /* width: 93vw; */
+    min-width: 80vw;
+    /* border: 1px solid blue; */
+    position: relative;
+    background-color: white;
+    /* background-color: #e9deff; */
+    margin-left: 10px;
+    margin-top: 10px;
+    border-radius: 8px;
+}
+
+.md-header {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background-color: white;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.mdh-left {
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    justify-content: space-between;
+    gap: 5px;
+    width: 60%;
+    /* border: 1px solid red; */
+}
+
+.mdh-title {
+    /* border: 1px solid green; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.mdh-left p {
+    margin: 0px;
+    font-size: 10px;
+    gap: 5px;
+    /* border: 1px solid green; */
+}
+
+.mdh-title .mdh-icon {
+    border: 1px solid white;
+    border-radius: 8px;
+    padding: 5px;
+    color: white;
+    background: linear-gradient(90deg, #7246eb, #532189);
+}
+
+.dm-mini {
+    font-size: 20px;
+}
+
+.mdh-title h3 {
+    margin: 0px;
+    font-weight: bold;
+    width: 100%;
+    color: #5320be;
+}
+
+.mdh-right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    /* border: 1px solid blue; */
+    position: relative;
+    gap: 5px;
+    width: 40%;
+}
+
+.mdhr-btn {
+    /* border: 1px solid red; */
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    position: relative;
+}
+
+.mdh-header-icon {
+    margin-right: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.mdh-icon {
+    margin-right: 5px;
+    font-weight: bold;
+    color: white;
+    background-color: none;
+}
+
+/* FORM  */
+.mdhr-btn button {
+    /* background: linear-gradient(to bottom, #6E30DC, #5D12EB); */
+    background-color: #532189;
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border: 0.5px solid #6E30DC;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-left: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mdhr-btn button:hover {
+    background: linear-gradient(to bottom, #5D12EB, #6E30DC);
+    box-shadow: 0px 4px 8px #6f30dc7c;
+}
+
+/* SEARCH  */
+.mdh-search-container {
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    gap: 5px;
+}
+
+.mdh-search {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 60% !important;
+    width: fit-content;
+    padding: 2px;
+}
+
+.export-btn {
+    width: 30%;
+    /* border: 1px solid red; */
+}
+
+.btn-export {
+    font-size: 12px;
+    border: 1px solid white;
+    border-radius: 6px;
+    cursor: pointer;
+    color: white;
+    padding: 5px 10px;
+    background-color: rgb(18, 120, 18);
+    width: 100%;
+    height: fit-content;
+}
+
+.mdh-search:hover {
+    border: 1px solid #6E30DC;
+}
+
+.mdh-search input {
+    padding: 4px 5px;
+    font-size: 10px;
+    border: 1px solid white;
+    background-color: white;
+    border-radius: 8px;
+    color: #6E30DC;
+    width: 100%;
+}
+
+.mdh-search input:focus {
+    outline: none;
+}
+
+.mdh-search-icon {
+    background-color: white;
+    padding: 4px;
+    font-size: 25px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+/* BODY TABLE */
+.new-data {
+    /* padding: 1rem; */
+    font-family: Arial, sans-serif;
+    height: 85%;
+    width: 100%;
+    /* border: 1px solid orange; */
+    position: relative !important;
+    padding: 10px;
+}
+
+.data-accept-design {
+    overflow-y: auto;
+    border-radius: 8px;
+    width: 100%;
+    height: 100%;
+    /* border: 1px solid red; */
+    position: relative !important;
+}
+
+.data-accept-design table {
+    width: 100%;
+    position: relative;
+}
+
+.data-accept-design thead {
+    /* background-color: #f1f1f1; */
+    background: linear-gradient(to bottom, #6E30DC, #5D12EB);
+    color: white;
+    position: sticky;
+    z-index: 10;
+    top: 0;
+}
+
+.data-accept-design th,
+.data-accept-design td {
+    /* padding: 0.75rem; */
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    font-size: 12px;
+}
+
+.data-accept-design th {
+    font-weight: bold;
+    color: white;
+}
+
+.th {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.data-accept-design tbody tr:hover {
+    background-color: #f5f5f5;
+}
+
+
+/* TABEL HEADER  */
+.code-order-container,
+.jumlah-container,
+.order-number-container,
+.account-container,
+.deadline-container,
+.jumlah-revisi-container,
+.order-type-container,
+.offer-type-container {
+    width: 100%;
+    min-width: 10vw;
+    max-width: 10vw;
+}
+
+.number-container {
+    cursor: pointer;
+    width: 100%;
+    min-width: 5vw;
+    max-width: 5vw;
+}
+
+.number-container .number-box {
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.icon-position button {
+    border: 1px solid #fff;
+    cursor: pointer;
+    /* padding: 6px; */
+}
+
+.icon-position button:hover {
+    border: 1px solid #eee;
+    background-color: #5320be;
+    color: #fff;
+}
+
+.input-container-box:hover {
+    text-decoration: underline;
+}
+
+.acc-container,
+.input-container,
+.buyer-name-container,
+.status-container,
+.resolution-container,
+.action-container {
+    width: 100%;
+    min-width: 13vw;
+    max-width: 13vw;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* border: 1px solid blue; */
+}
+
+.price-normal-container,
+.price-discount-container,
+.discount_percentage-container {
+    width: 100%;
+    min-width: 8vw;
+    max-width: 8vw;
+}
+
+.input-container-box,
+.style-container,
+.project-type-container {
+    width: 100%;
+    min-width: 15vw;
+    max-width: 15vw;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+
+/* .action-table */
+.action-table button {
+    border: 1px solid #5D12EB;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+    background: linear-gradient(to bottom, #6E30DC, #5D12EB);
+    cursor: pointer;
+}
+
+.action-table button:hover {
+    color: white !important;
+}
+
+/* DETAIL DATA  */
+.detail-data-design {
+    position: fixed;
+    top: 0%;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 99;
+    padding: 0px;
+    /* padding-top: 20px; */
+    background-color: rgba(0, 0, 0, 0.5);
+    /* transparan hitam */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.detail-data-design .detail-cont {
+    background-color: white;
+    border: 1px solid #5D12EB;
+    border-radius: 8px;
+    width: 65% !important;
+    margin-top: 2%;
+    height: 90vh;
+    /* height: 100%; */
+}
+
+/* Edit tabel  */
+.edit-data-design {
+    position: fixed;
+    top: 0%;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 99;
+    padding: 0px;
+    /* padding-top: 20px; */
+    background-color: rgba(0, 0, 0, 0.5);
+    /* transparan hitam */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.edit-data-design .edit-cont {
+    background-color: white;
+    border: 1px solid #5D12EB;
+    border-radius: 8px;
+    /* width: 60vw; */
+    width: 65%;
+    margin-top: 2%;
+    height: 90vh;
+}
+
+
+/* FORM CREATE DESIGN MARKETING */
+.md-form {
+    position: absolute;
+    top: 0%;
+    right: 0%;
+    z-index: 100;
+    padding: 0px;
+    background-color: rgba(0, 0, 0, 0.206);
+    /* border: 1px solid #5D12EB; */
+    width: 100%;
+    height: 100%;
+    display: flex;
+    /* align-items: center; */
+    justify-content: end;
+}
+
+.md-content {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    /* padding: 10px; */
+    width: 50%;
+    height: 90vh;
+    position: relative;
+    /* margin-right: 8px; */
+}
+
+.tr-body {
+    /* border: 1px solid red; */
+}
+
+/* DROPDOWN SHOW DATA  */
+.sd-cont {
+    border: 1px solid #ddd;
+    /* border: 1px solid red; */
+    border-radius: 6px;
+    background-color: white;
+    box-shadow: 0px 4px 8px #5e12eb46;
+    position: absolute;
+    top: 5%;
+    right: 10%;
+    z-index: 100;
+    /* padding: 10px; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.sd-cont .sd-header {
+    border: 1px solid #ddd;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    color: white;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 10px;
+    background: linear-gradient(90deg, #7246eb, #532189)
+}
+
+.sd-header h5 {
+    gap: 5px;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.h5-icon {
+    font-size: 15px;
+}
+
+.sd-cont .sd-box {
+    /* border: 1px solid red; */
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start !important;
+}
+
+.sd-box button {
+    width: 100%;
+    display: flex;
+    /* align-items: center; */
+    justify-content: flex-start;
+    font-size: 12px;
+    padding-left: 10px;
+    border: 1px solid white;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.sd-box button:hover {
+    background-color: #5e12eb46;
+    border: 1px solid #5e12eb46;
+}
+
+.sd-box h5 {
+    /* border: 1px solid green; */
+    width: 100%;
+    font-size: 12px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+/* FILTER DATA  */
+.ft-cont {
+    /* border: 1px solid green; */
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: white;
+    box-shadow: 0px 4px 8px #5e12eb46;
+    position: absolute;
+    top: 5%;
+    right: 1%;
+    z-index: 100;
+    padding: 5px 10px;
+    width: 25vw;
+}
+
+.ft-cont h5 {
+    font-size: 12px;
+    color: #333;
+}
+
+.ftc-content {
+    width: 100%;
+}
+
+.ftc-box {
+    position: relative;
+}
+
+.ftc-box .ft-btn {
+    border: 1px solid #5D12EB;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
+    width: 100%;
+    font-size: 13px;
+    padding: 4px 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
+    background-color: #5D12EB;
+}
+
+.ft-icon {
+    color: white;
+}
+
+
+/* DROPDOWN SHORT  */
+.ul-ftc {
+    border: 1px solid #ddd;
+    background-color: white;
+    box-shadow: 0px 4px 8px #5e12eb46;
+    position: absolute;
+    top: 100% !important;
+    right: 0%;
+    z-index: 100;
+    padding: 10px;
+    width: 100%;
+}
+
+.ftc-input {
+    font-size: 12px;
+}
+
+
+/* MEDIA QUERY  */
+
+/* Large devices (desktops, ≥992px) */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+
+    /* button header  */
+    .mdh-right {
+        /* border: 1px solid red; */
+        width: 50%;
+        gap: 5px;
+    }
+
+    .mdhr-btn {
+        justify-content: flex-end;
+    }
+
+    .mdhr-btn button {
+        font-size: 10px;
+        padding: 5px 8px;
+    }
+
+    /* FILTER CONTAINER  */
+    .ft-cont {
+        /* border: 1px solid blue; */
+        width: 35vw;
+        top: 6%;
+    }
+
+    /* TABEL HEADER  */
+    .action-container {
+        width: 100%;
+        min-width: 18vw;
+        max-width: 18vw;
+    }
+
+    .acc-container,
+    .input-container,
+    .buyer-name-container,
+    .status-container,
+    .price-normal-container,
+    .price-discount-container,
+    .discount_percentage-container {
+        width: 100%;
+        min-width: 20vw;
+        max-width: 20vw;
+    }
+
+    /* FORM ADD DATA  */
+    .md-content {
+        width: 60%;
+    }
+
+    /* VIEW DETAIL DATA  */
+    .detail-data-design .detail-cont {
+        width: 65vw;
+    }
+
+    /* FORM EDIT DATA  */
+    .edit-data-design .edit-cont {
+        width: 70vw;
+    }
+
+}
+
+/* Medium devices (tablets, ≥768px) */
+@media (min-width: 767px) and (max-width: 991.98px) {
+
+    /* button header  */
+    .mdh-right {
+        /* border: 1px solid red; */
+        width: 100%;
+        /* gap: 5px; */
+    }
+
+    .mdhr-btn {
+        justify-content: flex-end;
+        /* border: 1px solid red; */
+        /* gap: 2px; */
+    }
+
+    .mdhr-btn button {
+        font-size: 10px;
+        padding: 5px;
+        margin-left: 0px;
+    }
+
+    /* //BODY TABEL  */
+    .new-data {
+        height: 80%;
+    }
+
+    /* END BODY TABEL  */
+
+    /* TABEL HEADER  */
+
+    .code-order-container,
+    .jumlah-container,
+    .order-number-container,
+    .account-container,
+    .deadline-container,
+    .jumlah-revisi-container,
+    .order-type-container,
+    .offer-type-container {
+        width: 100%;
+        min-width: 15vw;
+        max-width: 15vw;
+    }
+
+    .acc-container,
+    .input-container,
+    .buyer-name-container,
+    .status-container,
+    .price-normal-container,
+    .price-discount-container,
+    .discount_percentage-container {
+        width: 100%;
+        min-width: 20vw;
+        max-width: 20vw;
+    }
+
+    .project-type-container,
+    .resolution-container,
+    .style-container,
+    .action-container {
+        width: 100%;
+        min-width: 23vw;
+        max-width: 23vw;
+    }
+
+    .data-accept-design {
+        height: 100%;
+    }
+
+    /* FILTER CONTAINER  */
+    .ft-cont {
+        width: 40vw;
+        top: 8%;
+    }
+
+    /* DROPDOWN SHOW DATA  */
+    .sd-cont {
+        top: 7%;
+        padding: 2px;
+    }
+
+    /* FORM ADD DATA  */
+    .md-content {
+        width: 65%;
+    }
+
+    /* VIEW DETAIL DATA  */
+    .detail-data-design .detail-cont {
+        width: 80vw;
+    }
+
+    /* FORM EDIT DATA  */
+    .edit-data-design .edit-cont {
+        width: 80vw;
+    }
+
+}
+
+/* ukuran handpone besar */
+@media (min-width: 576px) and (max-width: 767.98px) {
+
+    /* button header  */
+    .mdh-left {
+        /* border: 1px solid red; */
+        width: 90%;
+    }
+
+    .mdh-des strong {
+        display: none;
+    }
+
+    .mdh-right {
+        /* border: 1px solid red; */
+        width: 100%;
+        /* gap: 5px; */
+    }
+
+    .mdhr-btn {
+        justify-content: flex-end;
+        /* border: 1px solid red; */
+        /* gap: 2px; */
+    }
+
+    .mdhr-btn button {
+        font-size: 9px;
+        padding: 5px;
+        margin-left: 0px;
+    }
+
+    /* BODY TABEL  */
+
+    /* END BODY TABEL  */
+
+    /* TABEL HEADER  */
+    .acc-container,
+    .code-order-container,
+    .jumlah-container,
+    .order-number-container,
+    .account-container,
+    .deadline-container,
+    .jumlah-revisi-container,
+    .order-type-container,
+    .offer-type-container {
+        width: 100%;
+        min-width: 15vw;
+        max-width: 15vw;
+    }
+
+    .input-container,
+    .buyer-name-container,
+    .status-container,
+    .price-normal-container,
+    .price-discount-container,
+    .discount_percentage-container {
+        width: 100%;
+        min-width: 20vw;
+        max-width: 20vw;
+    }
+
+    .project-type-container,
+    .resolution-container,
+    .style-container,
+    .action-container {
+        width: 100%;
+        min-width: 30vw;
+        max-width: 30vw;
+    }
+
+    .data-accept-design {
+        height: 100%;
+    }
+
+    /* FILTER CONTAINER  */
+    .ft-cont {
+        width: 55vw;
+        top: 8%;
+    }
+
+    /* DROPDOWN SHOW DATA  */
+    .sd-cont {
+        top: 7%;
+        padding: 2px;
+    }
+
+    /* FORM ADD DATA  */
+    .md-content {
+        width: 80%;
+    }
+
+    /* SEARCH  */
+    .mdh-search-container {
+        /* border: 1px solid green; */
+    }
+
+    .mdh-search {
+        width: 60% !important;
+    }
+
+    .export-btn {
+        width: 40% !important;
+    }
+
+    /* VIEW DETAIL DATA  */
+    .detail-data-design .detail-cont {
+        width: 90vw;
+    }
+
+    /* FORM EDIT DATA  */
+    .edit-data-design .edit-cont {
+        width: 90vw;
+    }
+
+}
+
+/* ukuran handpone kecil */
+@media (max-width: 575.98px) {
+
+    /* @media (min-width:375px) and (max-width:575px)  { */
+    .md-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .mdh-left {
+        width: 100%;
+    }
+
+    .mdh-des {
+        display: none;
+    }
+
+    .mdh-right {
+        width: 100%;
+    }
+
+    .mdhr-btn {
+        /* border: 1px solid red; */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 5px;
+    }
+
+    .mdhr-btn button {
+        font-size: 12px;
+        padding: 5px 7px;
+        margin-left: 0px;
+    }
+
+    /* SEARCH CONTENT  */
+    .mdh-search-container {
+        justify-content: center;
+        /* border: 1px solid red; */
+    }
+
+    .mdh-search {
+        width: 60%;
+        /* border: 1px solid blue; */
+    }
+
+    .export-btn {
+        width: 40%;
+    }
+
+    .mdh-search input {
+        width: 80%;
+    }
+
+
+    /* BODY TABEL  */
+    .new-data {
+        height: 82%;
+    }
+
+    /* END BODY TABEL  */
+
+
+    /* TABEL HEADER  */
+    .acc-container,
+    .code-order-container,
+    .jumlah-container,
+    .order-number-container,
+    .account-container,
+    .deadline-container,
+    .jumlah-revisi-container,
+    .order-type-container,
+    .offer-type-container {
+        width: 100%;
+        min-width: 30vw;
+        max-width: 30vw;
+    }
+
+    .input-container,
+    .buyer-name-container,
+    .price-normal-container,
+    .price-discount-container,
+    .discount_percentage-container {
+        width: 100%;
+        min-width: 38vw;
+        max-width: 38vw;
+    }
+
+    .project-type-container,
+    .resolution-container,
+    .style-container,
+    .status-container
+
+    /* .action-container */
+        {
+        width: 100%;
+        min-width: 43vw;
+        max-width: 43vw;
+    }
+
+    .action-container {
+        width: 100%;
+        min-width: 50vw;
+        max-width: 50vw;
+    }
+
+    /* FILTER CONTAINER  */
+    .ft-cont {
+        width: 90%;
+        top: 11%;
+        right: 5%;
+    }
+
+    /* DROPDOWN SHOW DATA  */
+    .sd-cont {
+        top: 7%;
+        right: 15%;
+        padding: 2px;
+    }
+
+    /* FORM ADD DATA  */
+    .md-content {
+        width: 100%;
+    }
+
+    /* VIEW DETAIL DATA  */
+    .detail-data-design .detail-cont {
+        width: 98%;
+    }
+
+    /* FORM EDIT DATA  */
+    .edit-data-design .edit-cont {
+        width: 95vw;
+    }
+
+}
+
+/* HEIGHT BREAKPOIN  */
+@media screen and (max-height: 600px) {
+    .md-header {
+        padding: 5px 10px;
+    }
+
+    .dm-mini,
+    .mdh-icon h3 {
+        font-size: 12px;
+    }
+
+    .mdh-des p {
+        font-size: 8px;
+    }
+
+    /* PANEL KANAN  */
+    .mdh-right {
+        /* border: 1px solid red; */
+        gap: 2px;
+    }
+
+    .mdhr-btn {
+        /* border: 1px solid blue; */
+    }
+
+    .mdhr-btn button {
+        font-size: 9px;
+        padding: 5px 15px;
+        margin-left: 0px;
+    }
+
+    /* SEARCH MENU  */
+    .mdh-search input {
+        padding: 3px;
+    }
+
+    .mdh-search-container .mdh-search {
+        width: 40% !important;
+    }
+
+    .mdh-search input {
+        /* border: 1px solid red; */
+        padding: 3px;
+        width: 100%;
+    }
+
+    /* btn export  */
+    .export-btn {
+        font-size: 11px;
+        font-weight: bold;
+    }
+
+    /* FORM  */
+    .md-content {
+        width: 70%;
+    }
+
+    /* TABEL  */
+    .data-accept-design th,
+    .data-accept-design td {
+        font-size: 10px;
+    }
+
+    .detail-data-design,
+    .edit-data-design {
+        height: 90%;
+        margin-top: 5%;
+    }
+
+    .detail-data-design .detail-cont,
+    .edit-data-design .edit-cont {
+        margin-top: 0%;
+    }
+}

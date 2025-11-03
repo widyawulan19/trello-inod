@@ -1,0 +1,94 @@
+/* =====================
+   FADE ANIMATION KEYFRAMES
+===================== */
+
+/* Fade Up */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Fade Down */
+@keyframes fadeDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Fade Left */
+@keyframes fadeLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Fade Right */
+@keyframes fadeRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Fade In (tanpa arah) */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+
+/* Fade Classes */
+.animate-fade-up {
+  animation: fadeUp 0.8s ease forwards;
+}
+
+.animate-fade-down {
+  animation: fadeDown 0.8s ease forwards;
+}
+
+.animate-fade-left {
+  animation: fadeLeft 0.8s ease forwards;
+}
+
+.animate-fade-right {
+  animation: fadeRight 0.8s ease forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease forwards;
+}
+
+/* Default hidden state */
+.animate-on-scroll {
+  opacity: 0;
+}
+
+
+/* //cara pakai  */
+/* <h2 className="animate-on-scroll animate-fade-down">Teks Muncul Turun</h2>
+<p className="animate-on-scroll animate-fade-left">Teks Muncul dari Kiri</p>
+<div className="hero-right animate-on-scroll animate-fade-in">...</div> */

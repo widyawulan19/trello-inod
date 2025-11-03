@@ -1,0 +1,1221 @@
+.dmc-container {
+  position: relative;
+  background-color: white;
+  margin-left: 10px;
+  margin-top: 10px;
+  border-radius: 8px;
+  height: 97%;
+}
+
+.dm-panel {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background-color: white;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dm-left {
+  /* border: 1px solid red; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 5px;
+  width: 60%;
+}
+
+.dml-title {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  gap: 5px;
+  /* border: 1px solid blue; */
+}
+
+.dm-icon {
+  border: 1px solid white;
+  border-radius: 8px;
+  padding: 5px;
+  color: white;
+  background: linear-gradient(90deg, #7246eb, #532189);
+}
+
+.dm-mini {
+  font-size: 20px;
+}
+
+.dml-title h3 {
+  margin: 0px;
+  font-weight: bold;
+  width: 100%;
+  color: #5320be;
+}
+
+.dml-desc {
+  font-size: 10px;
+  width: 100%;
+  /* border: 1px solid blue; */
+}
+
+/* PANEL KANAN  */
+.dmc-right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  /* border: 1px solid blue; */
+  gap: 5px;
+  position: relative;
+  width: 40%;
+}
+
+.dmcr-btn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.dmcr-btn button {
+  background-color: #532189;
+  /* background: linear-gradient(90deg, #7246eb, #532189); */
+  color: white;
+  font-weight: bold;
+  font-size: 12px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  border: 0.5px solid #6E30DC;
+  border-radius: 4px;
+  padding: 5px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dmcr-btn button:hover {
+  background: linear-gradient(90deg, #532189, #7246eb);
+  box-shadow: 0px 4px 8px #6f30dc7c;
+}
+
+/* .dm-icon {
+  margin-right: 5px;
+  font-weight: bold; */
+/* } */
+
+/* SEARCH  */
+.mdc-search-container {
+  /* border: 1px solid red; */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end !important;
+  width: 100%;
+  gap: 5px;
+}
+
+.mdc-search-container .dm-search-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* border: 1px solid red; */
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  /* width: auto; */
+  width: 70% !important;
+  padding: 1px;
+  padding-right: 3px;
+  background-color: white !important;
+}
+
+.dm-search-box:hover {
+  border: 1px solid #6E30DC;
+
+}
+
+.dm-search-box input {
+  padding: 5px;
+  font-size: 10px;
+  /* border: 1px solid red; */
+  border: 1px solid white;
+  background-color: white !important;
+  color: #6E30DC;
+  border-radius: 8px;
+  width: 100%;
+}
+
+.dm-search-box input:focus {
+  outline: none;
+}
+
+
+
+/* STYLE EXPORT  */
+.mdc-search-container .dm-search-export {
+  width: 30%;
+  /* border: 1px solid red; */
+}
+
+.btn-export {
+  font-size: 12px;
+  border: 1px solid white;
+  border-radius: 6px;
+  cursor: pointer;
+  color: white;
+  padding: 5px 10px;
+  background-color: rgb(18, 120, 18);
+  width: 100%;
+  height: fit-content;
+}
+
+/* END STYLE EXPORT  */
+
+.dm-search-box .dms-icon {
+  background-color: white;
+  /* border: 1px solid red; */
+  padding: 4px;
+  font-size: 25px;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+/* FORM  */
+
+
+/* SEARCH  */
+.dm-search {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  border: 0.5px solid #ddd;
+  border-radius: 4px;
+  /* padding: 2px; */
+}
+
+.dm-search:hover {
+  border: 0.5px solid #6E30DC;
+}
+
+.dm-search input {
+  padding: 2px 5px;
+  font-size: 10px;
+  border: 1px solid #eee;
+  background-color: #eee;
+  border-radius: 4px;
+  color: #6E30DC;
+}
+
+.dm-search input:focus {
+  outline: none;
+}
+
+.dms-icon {
+  background-color: #eee;
+}
+
+/* FOrm create  */
+.dmf-cont {
+  position: absolute;
+  top: 0%;
+  right: 0;
+  z-index: 100;
+  padding: 2px;
+  background-color: rgba(0, 0, 0, 0.206);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  /* align-items: center; */
+  justify-content: end;
+}
+
+.dmf-content {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  /* padding: 10px; */
+  width: 50%;
+  height: 90vh;
+  position: relative;
+  /* margin-right: 8px; */
+}
+
+/* end form create  */
+
+/* TABEL  */
+.data-marketing-form {
+  /* border: 1px solid blue; */
+  font-family: Arial, sans-serif;
+  height: 86%;
+  padding: 10px;
+}
+
+.dm-container {
+  /* border: 1px solid #ddd; */
+  /* border: 1px solid red; */
+  border-radius: 8px;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  position: relative;
+}
+
+.dm-container table {
+  /* margin-top: 20px; */
+  width: 100%;
+  position: relative;
+}
+
+.dm-container th {
+  /* padding: 12px; */
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+.dm-container td {
+  /* padding: 12px; */
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.dm-container th {
+  background: linear-gradient(to bottom, #6E30DC, #5D12EB);
+  color: white;
+  padding: 8px;
+  font-size: 12px;
+  font-weight: bold;
+  position: sticky;
+  z-index: 10;
+  top: 0;
+}
+
+.dm-container th:hover {
+  color: white !important;
+}
+
+.dm-th {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dm-container td {
+  color: #333;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: normal;
+}
+
+/* .dm-container td:hover{
+    color: #5D12EB;
+} */
+
+/* ============== TABEL HEAD STYLE ========== */
+.number-container {
+  cursor: pointer;
+  width: 100%;
+  min-width: 5vw;
+  max-width: 5vw;
+}
+
+.number-container .number-box {
+  /* border: 1px solid red; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.icon-position button {
+  border: 1px solid #fff;
+  cursor: pointer;
+  /* padding: 6px; */
+}
+
+.icon-position button:hover {
+  border: 1px solid #eee;
+  background-color: #5320be;
+  color: #fff;
+}
+
+.input-container {
+  cursor: pointer;
+  width: 100%;
+  min-width: 30vw;
+  max-width: 30vw;
+}
+
+.input-container:hover {
+  text-decoration: underline;
+  color: #5320be;
+}
+
+.buyer-name-container,
+.code-order-container,
+.project-type-container,
+.duration-container {
+  width: 100%;
+  min-width: 13vw;
+  max-width: 13vw;
+}
+
+.acc-container,
+.price-normal-container,
+.order-number-container,
+.account-container,
+.deadline-container,
+.order-type-container,
+.offer-type-container,
+.jenis-track-container,
+.genre-container,
+.price-discount-container,
+.discount-container,
+.basic-price-container {
+  width: 100%;
+  min-width: 10vw;
+  max-width: 10vw;
+}
+
+/* STATUS HEAD TABEL  */
+.status-container {
+  width: 100%;
+  min-width: 10vw;
+  max-width: 10vw;
+  text-align: left;
+}
+
+
+/* ACTION HEAD TABEL  */
+.action-container {
+  width: 100%;
+  min-width: 16vw;
+  max-width: 16vw;
+  /* border: 1px solid blue; */
+}
+
+/* ============== TABEL HEAD STYLE ========== */
+
+/* ACTION HEAD TABEL  */
+.action-data-marketing {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+}
+
+.action-data-marketing button {
+  border: 1px solid #5D12EB;
+  border-radius: 4px;
+  color: white;
+  font-weight: bold;
+  background: linear-gradient(to bottom, #6E30DC, #5D12EB);
+  cursor: pointer;
+}
+
+.action-data-marketing button:hover {
+  color: 'white'
+}
+
+.dm-container tr:nth-child(even) {
+  background-color: white;
+}
+
+.dm-container tr:hover {
+  background-color: #5e12eb1a;
+  /* color: #5D12EB; */
+}
+
+/* END TABEL  */
+
+/* MODAL ACTION  */
+/* DETAIL DATA  */
+.detail-data-marketing {
+  position: fixed;
+  top: 0%;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 99;
+  padding: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  /* transparan hitam */
+}
+
+.detail-data-marketing .detail-data-box {
+  background-color: white;
+  border: 1px solid #5D12EB;
+  border-radius: 8px;
+  width: 65% !important;
+  margin-top: 2%;
+  height: 90vh;
+  /* height: 100%; */
+}
+
+/* END DETAIL DATA  */
+
+
+/* EDIT DATA MAREKTING  */
+.edit-data-marketing {
+  position: fixed;
+  top: 0%;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99;
+  padding: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  /* transparan hitam */
+}
+
+.edit-data-marketing .edit-data-box {
+  background-color: white;
+  border: 1px solid #5D12EB;
+  border-radius: 8px;
+  width: 70vw !important;
+  margin-top: 2%;
+  height: 90vh;
+  /* height: 100%; */
+}
+
+/* END EDIT DATA MAREKTING  */
+
+
+/* DROPDOWN  */
+.show-data-container {
+  border: 1px solid white;
+  /* border: 1px solid green; */
+  border-radius: 8px;
+  background-color: white;
+  box-shadow: 0px 4px 8px #5e12eb46;
+  position: absolute;
+  top: 5%;
+  right: 10%;
+  z-index: 100;
+  /* padding: 10px; */
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  justify-content: flex-start;
+}
+
+.show-data-container .sdc-header {
+  border: 1px solid #ddd;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 10px;
+  background: linear-gradient(90deg, #7246eb, #532189)
+}
+
+.sdc-header h5 {
+  gap: 5px;
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.sdc-header .h5-icons {
+  /* border: 1px solid red; */
+  font-size: 15px;
+}
+
+.show-data-container .sdc-container {
+  padding: 5px 10px;
+  border-radius: 8px;
+}
+
+.show-data-container button {
+  font-size: 12px;
+  border: 1px solid white;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.show-data-container button:hover {
+  border: 1px solid #eee;
+  background-color: #eee;
+}
+
+/* FILTER DATA  */
+.filter-container {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: white;
+  box-shadow: 0px 4px 8px #5e12eb46;
+  position: absolute;
+  top: 5%;
+  right: 0%;
+  gap: 5px;
+  z-index: 100;
+  width: 25vw;
+  /* padding: 10px; */
+}
+
+.filter-container .filter-header {
+  color: white;
+  padding: 5px 10px;
+  background: linear-gradient(90deg, #7246eb, #532189);
+  border: 1px solid white;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.filter-header h5 {
+  gap: 5px;
+  font-size: 12px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.filter-content {
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 5px 10px;
+  /* border: 1px solid blue; */
+}
+
+.filter-box {
+  position: relative;
+  /* border: 1px solid red; */
+}
+
+.filter-box .filter-btn {
+  border: 1px solid #5D12EB;
+  background-color: #5D12EB;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: bold;
+  padding: 5px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 5px;
+  width: 100%;
+}
+
+.filter-box .filter-btn:hover {
+  box-shadow: 0px 4px 8px #5e12eb46;
+}
+
+/* dropdown sub  */
+.ul-filter {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  /* border: 1px solid red; */
+  background-color: white;
+  box-shadow: 0px 4px 8px #5e12eb46;
+  position: absolute;
+  top: 100%;
+  left: 0%;
+  z-index: 100;
+  padding: 10px;
+  width: 100%;
+  font-size: 12px;
+}
+
+.li-filter {
+  border: 1px solid white;
+  border-radius: 6px;
+  padding: 5px;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.li-filter:hover {
+  border: 1px solid #eee;
+  background-color: #eee;
+}
+
+/* INPUT FILTER  */
+
+.filter-input input {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  width: 100%;
+  font-size: 12px;
+  color: #5e5e5e;
+  margin-left: 5px;
+  padding: 6px;
+}
+
+.filter-input input:hover {
+  border: 1px solid #5D12EB;
+}
+
+.filter-input input:focus {
+  outline: none;
+  border: 1px solid #5D12EB;
+}
+
+/* .filt */
+
+/* BREAKPOINT MEDIA QUERY  */
+
+/* Extra large devices (large desktops, ≥1200px) */
+@media (min-width: 1200px) and (max-width:1400px) {
+
+  /* CSS monitor besar */
+  .wf-create {
+    /* border: 1px solid orangered; */
+    width: 20%;
+  }
+}
+
+/* Large devices (desktops, ≥992px) */
+/* @media (min-width: 992px) and (max-width: 1199.98px) and (min-height:600px) and (max-height:800px) { */
+@media (min-width: 992px) {
+  .dmc-right {
+    /* border: 1px solid orange; */
+  }
+
+  .dmcr-btn {
+    justify-content: flex-end;
+  }
+
+  /* FORM ADD DATA  */
+  .dmf-content {
+    width: 60%;
+    /* border: 1px solid blue; */
+  }
+
+
+  /* STATUS HEAD TABLE  */
+  .status-container {
+    min-width: 15vw;
+    max-width: 15vw;
+    /* border: 1px solid red; */
+  }
+
+  /* VIEW DATA MODAL  */
+  .detail-data-marketing .detail-data-box {
+    width: 70%;
+  }
+
+  /* EDIT DATA MODAL  */
+  .edit-data-marketing .edit-data-box {
+    width: 60%;
+  }
+
+  /* FILTER CONTAINER  */
+  .filter-container {
+    width: 35vw;
+  }
+}
+
+/* Medium devices (tablets, ≥768px) */
+/* @media (min-width: 768px) and (max-width: 991.98px) and (min-height:500px) and (max-height:700px) { */
+@media (min-width: 768px) and (max-width: 991.98px) {
+
+  /* FORM ADD DATA  */
+  .dmf-content {
+    width: 90% !important;
+    /* border: 1px solid blue; */
+  }
+
+  /* button panel  */
+  .dmc-right {
+    /* border: 1px solid red; */
+    width: 50%;
+  }
+
+  .dmcr-btn {
+    /* border: 1px solid blue; */
+    justify-content: flex-end;
+    gap: 0px;
+  }
+
+  .dmcr-btn button {
+    font-size: 10px;
+    padding: 5px;
+  }
+
+  /* TABEL  */
+
+  .input-container,
+  .buyer-name-container,
+  .code-order-container,
+  .project-type-container,
+  .duration-container {
+    width: 100%;
+    min-width: 20vw;
+    max-width: 20vw;
+  }
+
+  .acc-container,
+  .price-normal-container,
+  .order-number-container,
+  .account-container,
+  .deadline-container,
+  .order-type-container,
+  .offer-type-container,
+  .jenis-track-container,
+  .genre-container,
+  .price-discount-container,
+  .discount-container,
+  .basic-price-container {
+    width: 100%;
+    min-width: 18vw;
+    max-width: 18vw;
+  }
+
+  /* STATUS HEAD TABLE  */
+  .status-container {
+    min-width: 20vw;
+    max-width: 20vw;
+    /* border: 1px solid red; */
+  }
+
+
+  /* ACTION HEAD TABLE  */
+  .action-container {
+    min-width: 20vw;
+    max-width: 20vw;
+    /* border: 1px solid orangered; */
+  }
+
+  /* TABEL END  */
+
+  /* VIEW DATA MODAL  */
+  .detail-data-marketing .detail-data-box {
+    width: 80%;
+  }
+
+  /* EDIT MODAL  */
+  .edit-data-marketing .edit-data-box {
+    width: 80%;
+  }
+
+  /* FILTER CONTAINER  */
+  .filter-container {
+    width: 40vw;
+  }
+
+  /* .show-data-container{
+    right: 5%;
+    top: 8%;
+  } */
+}
+
+/* ukuran handpone besar */
+/* @media (min-width: 576px) and (max-width: 767.98px) and (min-height:400px) and (max-height:700px) { */
+@media (min-width: 576px) and (max-width: 767.98px) {
+
+  /* FORM ADD DATA  */
+  .dmf-content {
+    width: 100% !important;
+    /* border: 1px solid blue; */
+  }
+
+  /* button panel  */
+  .dmc-right {
+    /* border: 1px solid red; */
+    width: 55%;
+  }
+
+  .dmcr-btn {
+    /* border: 1px solid blue; */
+    justify-content: flex-end;
+    gap: 0px;
+  }
+
+  .dmcr-btn button {
+    font-size: 10px;
+    padding: 5px 3px;
+  }
+
+  /* SHOW DATA DROPDOWN  */
+  .show-data-container {
+    right: 5%;
+    top: 5%;
+  }
+
+  /* FILTER CONTAINER  */
+  .filter-container {
+    width: 55vw;
+  }
+
+
+  /* TABEL DATA MARKETING  */
+
+
+  .dm-search-box input {
+    /* border: 1px solid blue; */
+    width: 100%;
+  }
+
+
+  .mdc-search-container .dm-search-box {
+    width: 60% !important;
+    /* border: 1px solid red; */
+  }
+
+  .mdc-search-container .dm-search-export {
+    width: 40%;
+    /* border: 1px solid blue; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  /* TABEL  */
+
+  .input-container,
+  .buyer-name-container,
+  .code-order-container,
+  .project-type-container,
+  .duration-container {
+    width: 100%;
+    min-width: 25vw;
+    max-width: 25vw;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .acc-container,
+  .price-normal-container,
+  .order-number-container,
+  .account-container,
+  .deadline-container,
+  .order-type-container,
+  .offer-type-container,
+  .jenis-track-container,
+  .genre-container,
+  .price-discount-container,
+  .discount-container,
+  .basic-price-container {
+    width: 100%;
+    min-width: 20vw;
+    max-width: 20vw;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* STATUS HEAD TABLE  */
+  .status-container {
+    min-width: 20vw;
+    max-width: 20vw;
+    /* border: 1px solid red; */
+  }
+
+
+  /* ACTION HEAD TABLE  */
+  .action-container {
+    min-width: 30vw;
+    max-width: 30vw;
+    /* border: 1px solid orangered; */
+  }
+
+  /* END TABEL  */
+
+  /* VIEW DATA MODAL  */
+  .detail-data-marketing .detail-data-box {
+    width: 90%;
+  }
+
+  /* EDIT MODAL  */
+  .edit-data-marketing .edit-data-box {
+    width: 90%;
+  }
+}
+
+/* ukuran handpone kecil */
+/* @media (min-width:375px) and (max-width:575px) and (min-height:300px) and (max-height:600px) { */
+@media (max-width: 575.98px) {
+
+  /* PANEL/ HEADER  */
+  .dm-panel {
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .dml-desc {
+    display: none;
+  }
+
+  .dm-left {
+    width: 100%;
+  }
+
+  .dmc-right {
+    width: 100%;
+    gap: 3px;
+    margin-top: 5px;
+  }
+
+  .dmcr-btn {
+    /* border: 1px solid green; */
+    justify-content: center;
+  }
+
+  .dmcr-btn button {
+    font-size: 12px;
+    padding: 5px 6px;
+  }
+
+  .mdc-search-container {
+    /* border: 1px solid blue; */
+    width: 100% !important;
+  }
+
+  .mdc-search-container .dm-search-box {
+    width: 100% !important;
+    /* border: 1px solid red; */
+  }
+
+  .dm-search-box input {
+    width: 100%;
+  }
+
+  /* END PANEL / HEADER  */
+
+  /* SEARCH BAR DATA  */
+  .mdc-search-container {
+    /* border: 1px solid orangered; */
+    display: flex;
+    align-items: center;
+    justify-content: center !important;
+    width: 100%;
+  }
+
+
+  .mdc-search-container .dm-search-box {
+    width: 60%;
+    /* border: 1px solid red; */
+  }
+
+  .mdc-search-container .dm-search-export {
+    width: 40%;
+    /* border: 1px solid blue; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  /* FORM ADD DATA  */
+  .dmf-content {
+    width: 100%;
+    /* border: 1px solid blue; */
+    border-radius: 8px;
+  }
+
+  .show-data-container {
+    right: 5%;
+    top: 8%;
+  }
+
+  /* FILTER CONTAINER  */
+  .filter-container {
+    width: 85vw;
+    top: 10%;
+  }
+
+  /* END FILTER CONTAINER  */
+
+  /* TABEL DATA MARKETING  */
+  .data-marketing-form {}
+
+  /* TABEL  */
+
+  .dm-container {
+    height: 95% !important;
+    /* border: 1px solid red; */
+  }
+
+  .input-container,
+  .buyer-name-container,
+  .code-order-container,
+  .project-type-container,
+  .duration-container {
+    width: 100%;
+    min-width: 38vw;
+    max-width: 38vw;
+  }
+
+  .acc-container,
+  .price-normal-container,
+  .order-number-container,
+  .account-container,
+  .deadline-container,
+  .order-type-container,
+  .offer-type-container,
+  .jenis-track-container,
+  .genre-container,
+  .price-discount-container,
+  .discount-container,
+  .basic-price-container {
+    width: 100%;
+    min-width: 35vw;
+    max-width: 35vw;
+  }
+
+  /* STATUS HEAD TABLE  */
+  .status-container {
+    min-width: 35vw;
+    max-width: 35vw;
+    /* border: 1px solid red; */
+  }
+
+
+  /* ACTION HEAD TABLE  */
+  .action-container {
+    min-width: 40vw;
+    max-width: 40vw;
+    /* border: 1px solid orangered; */
+  }
+
+  /* END TABEL  */
+
+  /* VIEW DATA MODAL  */
+  .detail-data-marketing .detail-data-box {
+    width: 90%;
+    /* border: 1px solid red; */
+  }
+
+  /* EDIT MODAL  */
+  .edit-data-marketing .edit-data-box {
+    width: 80%;
+  }
+}
+
+/* HEIGHT BREAKPOIN  */
+/* HEIGHT BREAKPOIN  */
+/* @media (min-height:375px) and (max-height:1400px) {
+
+  .mdc-search-container .dm-search-box {
+    width: 50%;
+  }
+
+  .mdc-search-container .dm-search-export {
+    width: 50%;
+  }
+
+} */
+
+@media screen and (max-height: 600px) {
+  .dm-panel {
+    /* border: 1px solid blue; */
+    padding: 5px 10px;
+  }
+
+  .dm-left {
+    /* border: 1px solid red; */
+
+  }
+
+  .dml-title {
+
+    /* border: 1px solid blue; */
+  }
+
+  .dm-mini,
+  .dml-title h3 {
+    font-size: 15px;
+  }
+
+  .dml-desc {
+    font-size: 8px;
+    /* border: 1px solid blue; */
+  }
+
+  /* PANEL KANAN  */
+  .dmc-right {
+    /* border: 1px solid red; */
+  }
+
+  .dmcr-btn button {
+    font-size: 9px;
+    padding: 5px 15px;
+  }
+
+  /* SEARCH FITUR  */
+  .mdc-search-container {
+    /* border: 1px solid red; */
+  }
+
+  .mdc-search-container .dm-search-box {
+    /* border: 1px solid blue; */
+    width: 50% !important;
+  }
+
+  .dm-search-box input {
+    padding: 3px;
+  }
+
+  /* btn export  */
+  .btn-export {
+    font-size: 10px !important;
+    font-weight: bold;
+  }
+
+
+  /* FILTER CONTAINER  */
+  .filter-box .filter-btn {
+    font-size: 10px;
+    padding: 5px 15px;
+  }
+
+  .ul-filter,
+  .filter-input input {
+    font-size: 10px;
+  }
+
+
+  /* FORM CREATE  */
+  .dmf-content {
+    width: 70%;
+    /* border: 1px solid orange; */
+  }
+
+
+  /* TABEL  */
+  .dm-container {
+    /* border: 1px solid red; */
+    height: 98%;
+  }
+
+  .dm-container th,
+  .dm-container td {
+    font-size: 10px;
+  }
+
+  /* ACTION  */
+  .detail-data-marketing .detail-data-box,
+  .edit-data-marketing .edit-data-box {
+    height: 90%;
+    margin-top: 5%;
+  }
+
+
+
+  /* END ACTION  */
+}

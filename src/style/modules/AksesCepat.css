@@ -1,0 +1,92 @@
+.akses-container {
+    /* border: 1px solid grey; */
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.akses-box {
+    background-color: white;
+    border: 1px solid #fff;
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.akses-box:hover {
+    border: 1px solid #6a11cb;
+    box-shadow: 0px 4px 8px #6b11cb40;
+}
+
+.akses-box h4 {
+    font-size: 12px;
+    /* border: 1px solid grey; */
+    text-align: center;
+    font-weight: bold;
+}
+
+.akses-icon {
+    border: 1px solid #6b11cb0e;
+    border-radius: 8px;
+    color: white;
+    font-size: 15px;
+    padding: 10px;
+    background: linear-gradient(90deg, #6a11cb, #ba81f7);
+    box-shadow: 0px 4px 8px #6b11cb40;
+}
+
+.akses-icon2 {
+    border: 1px solid #6b11cb0e;
+    border-radius: 8px;
+    color: white;
+    font-size: 15px;
+    padding: 10px;
+    background: linear-gradient(90deg, #1158cb, #81bcf7);
+    box-shadow: 0px 4px 8px #6b11cb40;
+}
+
+.akses-icon3 {
+    border: 1px solid #6b11cb0e;
+    border-radius: 8px;
+    color: white;
+    font-size: 15px;
+    padding: 10px;
+    background: linear-gradient(90deg, #098a1f, #81f7aa);
+    box-shadow: 0px 4px 8px #6b11cb40;
+}
+
+.akses-icon4 {
+    border: 1px solid #6b11cb0e;
+    border-radius: 8px;
+    color: white;
+    font-size: 15px;
+    padding: 10px;
+    background: linear-gradient(90deg, #cb8411, #f7e381);
+    box-shadow: 0px 4px 8px #6b11cb40;
+}
+
+
+/* MEDIA QUERY  */
+/* Large devices (desktops, ≥992px) */
+@media (min-width: 992px) and (max-width: 1199.98px) {}
+
+/* Medium devices (tablets, ≥768px) */
+@media (min-width: 768px) and (max-width: 991.98px) {}
+
+/* ukuran handpone besar  */
+@media (min-width: 576px) and (max-width: 767.98px) {}
+
+/* ukuran handpone kecil  */
+@media (min-width:375px) and (max-width:575px) {}
+
+@media screen and (max-height: 600px) {
+    .akses-container {
+        /* border: 1px solid red; */
+        gap: 5px;
+    }
+}

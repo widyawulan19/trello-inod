@@ -1,0 +1,37 @@
+/* Modal container */
+.detail-con {
+    position: absolute; /* Menggunakan fixed untuk membuat popup tetap berada di atas layar */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5); /* Transparansi untuk latar belakang */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Pastikan popup berada di atas elemen lainnya */
+  }
+  
+  /* Card detail container */
+  .card-detail-container {
+    position: relative;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%; /* Ukuran modal */
+    max-width: 700px; /* Maksimal lebar modal */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Menambahkan bayangan untuk modal */
+    z-index: 10000;
+  }
+  
+  /* Tombol Close */
+  .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  

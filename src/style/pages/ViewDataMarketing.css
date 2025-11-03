@@ -1,0 +1,379 @@
+.view-dm-container {
+    position: relative;
+}
+
+.view-dm-container .vdm-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #5D12EB;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    padding: 10px;
+    font-size: 12px;
+    position: sticky;
+    color: white;
+    background: linear-gradient(to bottom, #6E30DC, #5D12EB);
+}
+
+.vdm-header .vdm-left {
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    justify-content: flex-start;
+    border: 1px solid red;
+}
+
+.vdm-left h4 {
+    margin: 0px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.vdm-center .cc-btn {
+    border: 1px solid #6E30DC;
+    background: linear-gradient(to bottom, #042887, #051937);
+    color: white;
+    font-weight: bold;
+    padding: 7px;
+    gap: 5px;
+    font-size: 10px;
+    border-radius: 6px;
+    position: relative;
+    cursor: pointer;
+    /* margin: 0px 5px; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vdm-header .cc-btn:hover {
+    background: linear-gradient(to bottom, #051937, #5D12EB);
+    box-shadow: 0px 4px 8px #5e12eb46;
+}
+
+.vdm-center {
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0px;
+}
+
+.vdm-center .export {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vdm-right {
+    /* border: 1px solid red; */
+    display: flex;
+    /* flex-direction: column; */
+    align-items: center;
+    justify-content: center;
+}
+
+.export .card-status-musik {
+    /* border: 1px solid red; */
+}
+
+
+.card-status-musik .created {
+    border: 1px solid #1454ea;
+    border-radius: 6px;
+    padding: 5px 8px;
+    color: #fff;
+    font-weight: bold;
+    background-color: #1454ea;
+}
+
+.card-status-musik .uncreated {
+    border: 1px solid #e21a13;
+    padding: 5px 8px;
+    font-weight: normal;
+    border-radius: 6px;
+    color: #fff;
+    font-weight: bold;
+    background-color: #e21a13;
+}
+
+.vdm-form {
+    padding: 2px;
+    border-radius: 4px;
+    /* background-color: #333; */
+    position: absolute;
+    z-index: 100;
+    right: 0;
+    top: 80%;
+    width: 400px;
+    height: 500px;
+    /* background-color: red; */
+}
+
+.vdm-icon {
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.vdm-icon:hover {
+    color: #042887;
+}
+
+/* BODY  */
+.view-dm-container .vdm-body {
+    /* border: 1px solid red; */
+    height: 80vh;
+    min-height: 50vh;
+    max-height: 90vh;
+    padding: 10px;
+    padding-top: 5px;
+    overflow-y: auto;
+}
+
+.vdm-body .sec {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 15px 10px;
+}
+
+.sec .h5 {
+    font-weight: bold !important;
+    margin: 0px;
+    font-size: 12px;
+}
+
+.sec .sec-content-link {
+    /* border: 1px solid blue; */
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    gap: 5px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.sec-content-link .box {
+    /* border: 1px solid red; */
+    width: 100%;
+    margin: 5px 0px;
+}
+
+.box .box1-ref {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 5px;
+    margin-top: 3px;
+    font-size: 12px;
+    width: 100%;
+    max-width: 100%;
+    /* biar ga lebih dari container */
+    overflow-wrap: break-word;
+    /* pecah kata panjang */
+    word-wrap: break-word;
+    /* support lama */
+    word-break: break-word;
+    /* biar paksa turun */
+    white-space: normal;
+}
+
+.box1-ref a {
+    color: #1a73e8;
+    /* biru khas link */
+    text-decoration: underline;
+    /* kasih underline */
+    font-weight: 500;
+    /* opsional biar lebih jelas */
+}
+
+.box1-ref a:hover {
+    color: #0c47a1;
+    /* warna saat hover */
+}
+
+
+.sec .sec-content {
+    border: 1px solid white;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    gap: 5px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    /* grid-column: 10px; */
+    /* margin-bottom: 10px; */
+    height: 100%;
+}
+
+
+.sec-content .box {
+    /* border: 1px solid yellow; */
+    margin: 5px;
+    width: 100%;
+}
+
+.box p {
+    font-size: 10px;
+    color: #333;
+}
+
+.box .box1 {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 5px;
+    margin-top: 3px;
+    width: 100%;
+    max-width: 100%;
+    /* biar ga lebih dari container */
+    overflow-wrap: break-word;
+    /* pecah kata panjang */
+    word-wrap: break-word;
+    /* support lama */
+    word-break: break-word;
+    /* biar paksa turun */
+    white-space: normal;
+}
+
+.box .box1-des {
+    /* border: 1px solid red; */
+    padding: 5px;
+    width: 100%;
+}
+
+.box1 p {
+    color: #333;
+    font-size: 12px;
+}
+
+.box1 a {
+    color: #1a73e8;
+    /* biru khas link */
+    text-decoration: underline;
+    /* kasih underline */
+    font-weight: 500;
+    /* opsional biar lebih jelas */
+}
+
+.box1 a:hover {
+    color: #0c47a1;
+    /* warna saat hover */
+}
+
+.box1:hover {
+    border: 1px solid #6f30dc47;
+    box-shadow: 0px 4px 8px #6f30dc54;
+}
+
+.sec-desc-content {
+    /* border: 1px solid red; */
+    border-radius: 4px;
+    padding: 5px;
+    padding-left: 0px;
+}
+
+/* FORM CREATE CARD MARKERING */
+
+
+/* MEDIA QUERY  */
+/* Extra large devices (large desktops, ≥1200px) */
+@media (min-width: 1200px) and (max-width:1400px) {
+    .wf-create {
+        width: 20%;
+    }
+}
+
+/* Large devices (desktops, ≥992px) */
+@media (min-width: 992px) {
+    .wf-create {
+        width: 30%;
+    }
+
+    .box1 {
+        padding: 10px;
+    }
+}
+
+/* Medium devices (tablets, ≥768px) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .wf-create {
+        width: 40%;
+    }
+
+    .box1 {
+        padding: 10px;
+    }
+}
+
+/* ukuran handpone besar */
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .sec .sec-content {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 5px;
+    }
+
+    .box1 {
+        padding: 10px;
+    }
+}
+
+/* ukuran handpone kecil */
+@media (max-width: 575.98px) {
+
+    /* HEADER  */
+    .vdm-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* FORM CREATE  */
+    .vdm-form {
+        width: 330px;
+    }
+
+    .vdm-header .vdm-left {
+        width: 100%;
+        /* border: 1px solid red; */
+        display: flex;
+        /* align-items: center; */
+        justify-content: flex-start;
+        margin-bottom: 5px;
+    }
+
+    .sec .sec-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        /* border: 1px solid blue; */
+    }
+
+    .vdm-body {
+        height: 74vh;
+        /* border: 1px solid red; */
+    }
+
+    .box1 {
+        padding: 10px;
+    }
+}
+
+@media screen and (max-height: 600px) {
+    .vdm-header {
+        padding: 5px 10px;
+    }
+
+    .box1 {
+        padding: 6px;
+    }
+
+    .box1 p {
+        font-size: 10px;
+    }
+}

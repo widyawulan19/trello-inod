@@ -1,0 +1,47 @@
+.cfoot-container {
+    border-top: 1px solid #ddd;
+    margin: 2px 0px;
+    padding: 0px 5px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: 10px;
+}
+
+.cfoot-container button {
+    border: 1px solid white;
+    /* border: 1px solid #ddd; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 2px;
+    padding: 2px;
+    font-size: 10px;
+    color: #5e5e5e;
+}
+
+/* .cf-chat{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: 10px;
+    padding: 0px;
+}
+.cf-attach{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: 10px;
+    padding: 0px;
+}
+.btn-checklist{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: 10px;
+    padding: 0px;
+}
+
+.cf-icon{
+    margin-right: 2px;
+} */

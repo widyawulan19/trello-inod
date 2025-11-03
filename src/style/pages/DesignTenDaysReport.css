@@ -1,0 +1,64 @@
+.design-period-container {
+    /* border: 1px solid red; */
+    width: 80vw;
+    height: 100%;
+    overflow-x: auto;
+}
+
+.design-period-container .dp-title {
+    /* border: 1px solid blue; */
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dp-title h2 {
+    font-size: 15px;
+    color: #5320be;
+    font-weight: bold;
+}
+
+.design-period-container .dp-select {
+    /* border: 1px solid green; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.design-period-container .data-report {
+    /* border: 1px solid blue; */
+    height: 68vh;
+    overflow-x: auto;
+}
+
+.data-report .table-report-content {
+    margin: 15px 0px;
+    /* border: 1px solid red; */
+    width: 100%;
+    overflow-y: auto;
+}
+
+.table-report-content table {
+    width: 100%;
+    position: relative;
+}
+
+.table-report-content th {
+    background: linear-gradient(to bottom, #6E30DC, #5D12EB);
+    color: white;
+    padding: 8px;
+    font-size: 12px;
+    font-weight: bold;
+    position: sticky;
+    z-index: 10;
+    top: 0;
+}
+
+.table-report-content td {
+    color: #333;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: normal;
+}

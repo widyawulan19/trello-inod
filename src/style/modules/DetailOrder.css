@@ -1,0 +1,80 @@
+.detail-order-container{
+    border: 1px slid green;
+    width: 100%;
+}
+.design-container{
+    /* border:1px solid blue; */
+    width: 100%;
+}
+
+.design-container .design-header{
+    gap: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+.dh-icon{
+    color: #5D12EB;
+}
+.design-header .dh-title{
+    /* border: 1px solid red; */
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    justify-content: flex-start;
+}
+.dh-title h4{
+    font-weight: bold;
+    color :#333;
+    margin: 0px;
+}
+.dh-title p{
+    margin: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: 12px;
+    color: #5e5e5e;
+}
+
+
+/* DESIGN body  */
+.design-body{
+    /* border: 1px solid green; */
+    width: 100%;
+    margin: 10px 0px;
+    margin-top: 20px;
+}
+.detail-client{
+    /* border: 1px solid red; */
+    width: 30%;
+}
+.detail-client h4{
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    font-size: 15px;
+    margin-bottom: 10px;
+}
+
+.box-detail{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+.box-title p{
+    /* border: 1px solid green; */
+        display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: 13px;
+    color:grey;
+    gap: 5px;
+    font-weight:normal;
+    margin-right: 10px;
+}
+
+.box-conten p{
+    color: #333;
+    font-size: 13px;
+    font-weight: bold;
+}

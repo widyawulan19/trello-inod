@@ -1,0 +1,29 @@
+.card-detail-container {
+    display: flex;
+    width: 100%;
+    transition: all 0.3s ease;
+  }
+  
+  .card-detail-left {
+    flex: 1;
+    padding: 20px;
+    border: 1px solid red;
+  }
+  
+  .card-detail-right {
+    width: 40%;
+    border-left: 1px solid #ccc;
+    padding: 20px;
+    background-color: #f9f9f9;
+  }
+  
+  .chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .split-view .card-detail-left {
+    width: 60%;
+  }
+  

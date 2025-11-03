@@ -1,0 +1,238 @@
+.summary-container {
+  /* border: 1px solid blue; */
+  padding: 10px 15px;
+  width: 100%;
+  height: 100%;
+  gap: 10px;
+  overflow-y: auto;
+  display: grid;
+  /* flex-direction: column; */
+  grid-template-columns: repeat(2, 1fr);
+  align-items: baseline;
+  /* justify-content: center; */
+}
+
+.summary-content {
+  /* border: 1px solid red; */
+  border: 1px solid #eee;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.summary-content:hover {
+  border: 1px solid #6a11cb;
+  box-shadow: 0px 4px 8px #6b11cb40;
+}
+
+.summary-content .summary-header {
+  /* border-left: 3px solid green; */
+  border-bottom: 1px solid white;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.summary-header .sh-left {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0px;
+}
+
+.shl-icon {
+  font-size: 20px;
+  color: #6a11cb;
+}
+
+.sh-left h4 {
+  margin: 0px;
+  font-size: 15px;
+  font-weight: bold;
+  color: #6a11cb;
+  /* text-decoration: underline; */
+}
+
+.summary-header .view {
+  gap: 2px;
+  color: #532189;
+  font-size: 12px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  border: 1px solid white;
+  padding: 3px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  /* background: linear-gradient(90deg, #7246eb, #532189) */
+}
+
+.summary-header .view:hover {
+  /* border: 1px solid #371e53; */
+  box-shadow: 0px 4px 8px #6b11cb40;
+}
+
+
+
+/* BODY  */
+.summary-content .summary-body {
+  /* margin-top: 15px; */
+  /* border: 1px solid grey; */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.summary-body .sb1 {
+  font-size: 12px;
+  cursor: pointer;
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  /* border: 1px solid red; */
+  margin-right: 10px;
+}
+
+.summary-body .sb1:hover {
+  text-decoration: underline;
+  color: #532189;
+}
+
+.summary-body .sb-icon {
+  color: #6a11cb;
+  font-size: 12px;
+  margin-right: 2px;
+}
+
+/* NO SUMMARY  */
+.no-workspace {
+  /* border: 1px solid red; */
+  display: flex;
+  padding: 30px;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.no-workspace .no-icon {
+  border-radius: 16px;
+  border: 1px solid white;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  font-size: 25px;
+  color: #b597d5;
+}
+
+.no-workspace h2 {
+  width: 100%;
+  font-size: 15px;
+  font-weight: bold;
+  text-align: center;
+  margin: 0px;
+  color: #333;
+  /* color: white; */
+}
+
+.no-workspace p {
+  padding: 0px;
+  font-size: 10px;
+  text-align: center;
+  width: 100%;
+  /* color: white; */
+  color: #5e5e5e;
+  margin-bottom: 15px;
+}
+
+.no-workspace .btn-create-workspace {
+  background-color: #6a11cb;
+  border: 1px solid #6a11cb;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 10px;
+  font-size: 12px;
+  /* font-weight: bold; */
+  color: white;
+  cursor: pointer;
+}
+
+.no-workspace .btn-create-workspace:hover {
+  box-shadow: 0px 4px 8px #6b11cba2;
+}
+
+.create-icon {
+  font-size: 15px;
+}
+
+/* END NO SUMMARY  */
+
+/* MEDIA QUERY  */
+/* Large devices (desktops, ≥992px) */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+
+  /* CSS laptop biasa */
+  .summary-container {
+    padding: 5px;
+  }
+}
+
+/* Medium devices (tablets, ≥768px) */
+@media (min-width: 768px) and (max-width: 991.98px) {}
+
+/* ukuran handpone besar  */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .summary-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .summary-content {
+    width: 100%;
+  }
+}
+
+/* ukuran handpone kecil  */
+@media (min-width:375px) and (max-width:575px) {
+  .summary-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    /* border: 1px solid red; */
+    height: 95%;
+  }
+
+  .summary-content {
+    width: 100%;
+  }
+}
+
+@media screen and (max-height: 600px) {
+  .sh-left h4 {
+    font-size: 12px;
+  }
+
+  .summary-body .sb1 {
+    font-size: 10px;
+  }
+}
+
+/* margin-right: 5px;
+    font-size: 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 5px;
+    color: white;
+    background: linear-gradient(90deg, #7246eb, #532189) */

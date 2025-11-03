@@ -1,0 +1,145 @@
+/* MAKETING DESIGN REPORT  */
+.design-report-container {
+    height: 97%;
+    min-width: 80vw;
+    position: relative;
+    background-color: white;
+    margin-left: 10px;
+    margin-top: 10px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.design-report-container .design-report-content {
+    /* border: 1px solid red; */
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.design-report-content .report-header {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 10px;
+    width: 100%;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.report-header .report-title {
+    /* border: 1px solid red; */
+    gap: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.report-title .report-icon {
+    border: 1px solid white;
+    border-radius: 8px;
+    padding: 5px;
+    color: white;
+    background: linear-gradient(90deg, #7246eb, #532189);
+}
+
+.report-title h2 {
+    margin: 0px;
+    font-weight: bold;
+    width: 100%;
+    font-size: 15px;
+    color: #5320be;
+}
+
+.report-header p {
+    font-size: 10px;
+}
+
+/* button  */
+.design-report-content .report-button {
+    /* border: 1px solid blue; */
+    width: 100%;
+    padding: 5px 10px;
+}
+
+.report-button button {
+    background-color: #532189;
+    color: white;
+    font-size: 12px;
+}
+
+.report-button button.active {
+    background: linear-gradient(90deg, #532189, #7246eb);
+    box-shadow: 0px 4px 8px #6f30dc7c;
+}
+
+.report-button button:hover {
+    background: linear-gradient(90deg, #532189, #7246eb);
+    box-shadow: 0px 4px 8px #6f30dc7c;
+}
+
+/* body  */
+.design-report-content .report-body {
+    /* border: 1px solid red; */
+    height: 80vh;
+    overflow-y: auto;
+}
+
+
+
+/* DESIGN TEN DAYS REPORT STYLE  */
+.daily-container {
+    /* border: 1px solid red; */
+    height: 75vh;
+    width: 80vw;
+}
+
+.daily-container .dayli-title {
+    /* border: 1px solid blue; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.dayli-title h2 {
+    font-size: 15px;
+    color: #5320be;
+    font-weight: bold;
+}
+
+.daily-container .dayli-table {
+    /* border: 1px solid green; */
+    height: 50vh;
+    width: 100%;
+    overflow-x: auto;
+}
+
+.dayli-table table {
+    width: 100%;
+    position: relative;
+}
+
+.dayli-table th {
+    background: linear-gradient(to bottom, #6E30DC, #5D12EB);
+    color: white;
+    padding: 8px;
+    font-size: 12px;
+    font-weight: bold;
+    position: sticky;
+    z-index: 10;
+    top: 0;
+    text-align: center;
+}
+
+.dayli-table td {
+    color: #333;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: normal;
+    border-bottom: 1px solid #ddd;
+}

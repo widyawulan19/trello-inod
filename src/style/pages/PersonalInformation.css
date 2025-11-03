@@ -1,0 +1,294 @@
+.personal-container {
+    /* border: 1px solid red; */
+    padding: 10px;
+    width: 50vw;
+    height: 70vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.personal-container .pc-title {
+    /* border: 1px solid blue; */
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.personal-container .pch-body {
+    /* border: 1px solid red; */
+    margin-top: 20px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    padding: 5px 10px;
+}
+
+.pc-title h3 {
+    margin: 0px;
+    color: #5D12EB;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.pc-title p {
+    margin: 0px;
+    font-size: 12px;
+    /* border: 1px solid red; */
+}
+
+/* BODY  */
+.personal-container .form-pc {
+    /* border: 1px solid green; */
+    padding: 0px;
+    width: 100%;
+    margin: 5px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.form-pc .box-form {
+    /* border: 1px solid red; */
+    /* gap: 5px; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.box-form label {
+    /* border: 1px solid blue; */
+    margin: 0px;
+    width: 100%;
+    font-size: 12px;
+    font-weight: bold;
+    color: #333;
+}
+
+.box-form input {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 8px;
+    font-size: 12px;
+    color: #333;
+    margin: 8px;
+    margin-top: 5px;
+    width: 100%;
+}
+
+.box-form input:hover,
+.box-form input:focus {
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #5D12EB;
+}
+
+.form-pc .pc-btn {
+    /* border: 1px solid blue; */
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pc-btn button {
+    border: 1px solid white;
+    border-radius: 16px;
+    padding: 10px 15px;
+    color: white;
+    background-color: #5D12EB;
+    cursor: pointer;
+}
+
+.pc-btn button:hover {
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+
+/* MEDIA QUERY  */
+/* Medium devices (tablets, ≥768px) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+
+    .personal-container {
+        /* border: 1px solid orange; */
+        height: 65vh;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 5px;
+    }
+}
+
+/* ukuran handpone besar  */
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .personal-container {
+        /* border: 1px solid orange; */
+        overflow-y: auto;
+        /* height: 80vh; */
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 5px;
+    }
+
+    .personal-container .pc-title {
+        /* border: 1px solid green; */
+        width: 100%;
+        margin-bottom: 5px;
+    }
+
+    .pc-title h3 {
+        font-size: 15px;
+    }
+
+    .pc-title p {
+        font-size: 10px;
+    }
+
+    .personal-container .form-pc {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        overflow-y: auto;
+        gap: 0px;
+    }
+
+    .personal-container .pch-body {
+        /* border: 1px solid blue; */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        margin-top: 0px;
+        gap: 0px;
+    }
+
+
+
+
+    .pc-body .pi,
+    .pc-body .pi-job {
+        width: 100%;
+    }
+
+    .personal-container .form-pc {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        /* border: 1px solid blue; */
+        gap: 0px;
+    }
+
+    .form-pc .box-form {
+        /* border: 1px solid red; */
+        gap: 3px;
+    }
+
+    .box-form label {
+        font-size: 10px;
+    }
+
+    .box-form input {
+        margin-top: 0px;
+        font-size: 10px;
+        padding: 5px;
+    }
+
+    .form-pc .pc-btn {
+        /* border: 1px solid blue; */
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .pc-btn button {
+        border: 1px solid white;
+        border-radius: 16px;
+        padding: 5px 15px;
+        color: white;
+        font-size: 12px;
+        background-color: #5D12EB;
+        cursor: pointer;
+    }
+}
+
+/* ukuran handpone kecil  */
+@media (max-width: 575.98px) {
+    .personal-container {
+        /* border: 1px solid red; */
+        width: 100%;
+        height: fit-content;
+        padding: 0px 10px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+    .personal-container .pc-title {
+        /* border: 1px solid green; */
+        margin-bottom: 5px;
+        width: 100%;
+    }
+
+    .personal-container .form-pc {
+        /* border: 1px solid blue; */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        height: 36vh;
+        overflow-y: auto;
+        gap: 0px;
+    }
+
+    .pc-title p {
+        font-size: 8px;
+    }
+
+    .form-pc .box-form {
+        /* border: 1px solid orange; */
+    }
+
+    .box-form label,
+    .box-form input {
+        font-size: 10px;
+        margin: 0px;
+    }
+
+    .pc-btn button {
+        font-size: 12px;
+        padding: 5px 15px;
+        width: 100%;
+    }
+
+    .save-btn-container .save-btn {
+        /* border: 1px solid red; */
+        width: 100%;
+    }
+
+}
+
+@media screen and (max-height: 600px) {
+    .personal-container {
+        /* border: 1px solid green; */
+        /* width: 60vw; */
+    }
+
+    .personal-container .pc-title {
+        margin-bottom: 10px;
+    }
+
+    .pc-title {
+        /* border: 1px solid blue; */
+    }
+
+    .pc-title h3 {
+        font-size: 15px;
+    }
+}

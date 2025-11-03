@@ -1,0 +1,139 @@
+.form-edit-cont {
+    /* border: 1px solid red; */
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+/* HEADER  */
+.form-edit-cont .fec-header {
+    border: 1px solid #6E30DC;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    color: white;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background: linear-gradient(to bottom, #6E30DC, #5D12EB);
+}
+
+.fec-header .fec-title {
+    /* border: 1px solid yellow; */
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    justify-content: flex-start;
+}
+
+.fec-title h4 {
+    margin: 0px;
+}
+
+.fec-title p {
+    margin: 0px;
+    font-weight: normal;
+}
+
+.fec-header .fec-close {
+    cursor: pointer;
+}
+
+/* END HEADER  */
+
+
+/* FORM  */
+.form-edit-cont form {
+    /* border: 1px solid blue; */
+    display: flex;
+    gap: 10px;
+    /* flex-direction: column; */
+    justify-content: center;
+    padding: 20px 0px;
+}
+
+.form-cont {
+    /* border: 1px solid green; */
+    width: 100%;
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-edit-content {
+    /* border: 1px solid red; */
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    justify-content: flex-start;
+    gap: 5px;
+    width: 80%;
+}
+
+.form-edit-content label {
+    font-weight: bold;
+    font-size: 12px;
+    color: #333;
+}
+
+.form-edit-content input {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #5e5e5e;
+    padding: 5px;
+    font-size: 12px;
+    width: 100%;
+}
+
+.form-edit-content input:focus {
+    border: 1px solid #5D12EB;
+}
+
+.form-edit-content input:hover {
+    border: 1px solid #5D12EB;
+    background: linear-gradient(to bottom, #6f30dc44, #5e12eb47);
+}
+
+/* BUTTON FORM  */
+.btn-form-submit {
+    /* border: 1px solid red; */
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-form-submit button {
+    background: linear-gradient(to bottom, #6E30DC, #5D12EB);
+    border: 1px solid #5D12EB;
+    border-radius: 8px;
+    color: white;
+    font-weight: normal;
+    padding: 5px 8px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.btn-form-submit button:hover {
+    background: linear-gradient(to bottom, #5D12EB, #6E30DC);
+}
+
+/* MEDIA QUERY  */
+
+/* ukuran handpone besar */
+@media (min-width: 576px) and (max-width: 767.98px) and (min-height:400px) and (max-height:700px) {}
+
+/* ukuran handpone kecil */
+@media (min-width:375px) and (max-width:575px) and (min-height:300px) and (max-height:600px) {}
+
+@media screen and (max-height: 600px) {
+    .fec-title h4 {
+        font-size: 12px;
+    }
+}

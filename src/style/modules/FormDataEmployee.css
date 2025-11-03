@@ -1,0 +1,130 @@
+.form-data-container {
+  /* border: 1px solid green; */
+  border-radius: 16px;
+  height: 100%;
+  /* display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; */
+}
+
+.fdc-header {
+  /* border:1px solid red; */
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  /* background: linear-gradient(to bottom, #6E30DC, #5D12EB); */
+  background: linear-gradient(90deg, #7246eb, #532189)
+}
+
+.fdc-header .fcd-left {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 5px;
+}
+
+.fcd-left .fcd-icon {
+  padding: 5px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.484);
+  background-color: rgba(255, 255, 255, 0.484);
+  color: white;
+}
+
+.fdc-header h2 {
+  font-weight: bold;
+  color: white;
+}
+
+.fdc-icon {
+  color: white;
+  cursor: pointer;
+}
+
+.form-data-container .form-content {
+  /* border: 1px solid red; */
+  border-radius: 8px;
+  background-color: white;
+  height: 100%;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.form-content .form-box {
+  /* border: 1px solid green; */
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  justify-content: flex-start;
+  gap: 5px;
+  margin: 5px 0px;
+}
+
+.form-box button {
+  background-color: #6E30DC;
+  border: 1px solid #6E30DC;
+  border-radius: 16px;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  width: 100%;
+  cursor: pointer;
+}
+
+.form-box button:hover {
+  box-shadow: 0px 4px 8px #5e12eb46;
+}
+
+.form-box label {
+  color: #5e5e5e;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.form-box input {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 12px;
+}
+
+.form-box input:hover {
+  border: 1px solid #5D12EB;
+  background: linear-gradient(to bottom, #6f30dc45, #5e12eb45);
+}
+
+
+/* MEDIA QUERY  */
+
+/* ukuran handpone kecil */
+@media (min-width:375px) and (max-width:575px) and (min-height:300px) and (max-height:600px) {
+  .form-data-container .form-content {
+    padding: 5px 3px;
+  }
+
+  .form-content .form-box {
+    width: 90%;
+  }
+}
+
+/* ukuran handpone besar */
+@media (min-width: 576px) and (max-width: 767.98px) and (min-height:400px) and (max-height:700px) {
+  .form-data-container .form-content {
+    padding: 5px 3px;
+  }
+
+  .form-content .form-box {
+    width: 90%;
+  }
+}
+
+/* END MEDIA QUERY  */

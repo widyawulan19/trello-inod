@@ -1,0 +1,205 @@
+.setting-container {
+    /* border: 1px solid green; */
+    /* height: 100vh; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0px;
+}
+
+/* HEADER  */
+.setting-container .sc-header {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom: 1px solid #ddd;
+    background: linear-gradient(90deg, #7246eb, #532189);
+    /* background-color: #5D12EB; */
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px;
+}
+
+.sc-header h4 {
+    margin: 0px;
+    font-size: 12px;
+    font-weight: bold;
+    gap: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    /* border: 1px solid green; */
+}
+
+.sc-header .sch-left {
+    /* border: 1px solid green; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.sch-left .sch-icon {
+    border: 1px solid #ffffff72;
+    background: linear-gradient(90deg, #7246eb, #532189);
+    border-radius: 8px;
+    padding: 5px;
+    color: #fff;
+}
+
+
+/* END HEADER  */
+
+/* BODY  */
+.sc-body {
+    /* border: 1px solid red; */
+    width: 95%;
+    height: 78vh;
+    overflow-y: auto;
+    margin-top: 20px;
+}
+
+.sc-body .sc-main-container {
+    /* border: 1px solid blue; */
+    /* border-radius: 8px; */
+    gap: 5px;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    justify-content: flex-start;
+}
+
+.sc-main-container h4 {
+    font-weight: bold;
+    width: 100%;
+}
+
+.sc-main-container .sc-main-box {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    /* width: 100%; */
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.sc-main-box .main-box {
+    /* border: 1px solid red; */
+    gap: 3px;
+    display: flex;
+    flex-direction: column;
+    /* align-items: le; */
+    justify-content: flex-start;
+}
+
+.sc-main-box .main-box-detail {
+    /* border: 1px solid red; */
+    width: 100% !important;
+    gap: 3px;
+    display: flex;
+    flex-direction: column;
+    /* align-items: le; */
+    justify-content: flex-start;
+}
+
+.main-box-detail label,
+.main-box label {
+    font-size: 11px;
+    color: grey;
+}
+
+.main-box-detail textarea {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    font-size: 12px;
+    color: #333;
+    width: 59vw;
+    /* width: 100% !important; */
+    min-height: 5px;
+    height: 10vh;
+    overflow-y: auto;
+}
+
+
+.main-box input {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    font-size: 12px;
+    color: #333;
+}
+
+.main-box-detail textarea:hover,
+.main-box input:hover {
+    border: 1px solid #5D12EB;
+    box-shadow: 0px 4px 8px #6f30dc54;
+    background: linear-gradient(to bottom, #6f30dc43, #5e12eb45);
+}
+
+.main-box-detail textarea:focus,
+.main-box input:focus {
+    outline: none;
+    border: 1px solid #5D12EB;
+    box-shadow: 0px 4px 8px #6f30dc54;
+    background: linear-gradient(to bottom, #6f30dc43, #5e12eb45);
+}
+
+/* button  submit */
+
+.btn-form {
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+}
+
+.btn-form button {
+    color: white;
+    border: 1px solid white;
+    border-radius: 8px;
+    padding: 5px 20px;
+    background-color: #5D12EB;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.btn-form button:hover {
+    box-shadow: 0px 4px 8px #6f30dc54;
+}
+
+@media screen and (max-height: 600px) {
+    .setting-container .sc-header {
+        padding: 5px 10px;
+    }
+
+    .sch-left .sch-icon {
+        font-size: 12px;
+        color: white;
+    }
+
+    /* FORM  */
+    .sc-main-container h4 {
+        font-size: 10px;
+        font-weight: bold;
+    }
+
+    /* BODY  */
+    .sc-body {
+        /* border: 1px solid red; */
+        width: 98%;
+        height: 81vh;
+        margin-top: 0px;
+    }
+
+    .main-box-detail label,
+    .main-box label {
+        font-size: 9px;
+    }
+}

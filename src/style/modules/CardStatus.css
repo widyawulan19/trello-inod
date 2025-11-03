@@ -1,0 +1,80 @@
+.card-status-container{
+    /* border: 1px solid blue; */
+    width: 100% !important;
+    padding: 5px; 
+
+}
+
+.status-header{
+    /* border: 1px solid red; */
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #5e5e5e;
+}
+.status-header h5{
+   margin: 0px;
+   font-size: 10px;
+   font-weight: bold;
+   color: #5e5e5e;
+}
+.sch-icon{
+    margin-right: 5px;
+}
+.sc-content{
+    /* border: 1px solid grey; */
+    /* margin: 5px 0px; */
+    padding: 5px 0px;
+}
+.sc-content p{
+    border: 1px solid white;
+    border-radius: 4px;
+    color: red;
+    background-color: rgb(253, 225, 225);
+    text-align: center;
+    margin: 0px;
+    padding: 5px;
+    font-size: 10px;
+}
+
+.sc-content h5{
+    font-weight: normal;
+    font-size: 12px !important;
+}
+.dropdown-status{
+    position: relative;
+    display: inline-block;
+    margin-top: 5px;
+    width: 100%;
+    /* border: 1px solid red; */
+}
+.dropdown-status button{
+    /* min-width: 200px; */
+    width: 100%;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    /* background: linear-gradient(to right, #6a11cb, #2575fc); */
+    /* background-color: white; */
+    background: linear-gradient(to right, #6a11cb, #2575fc);
+    border: 1px solid #6a11cb !important;
+    box-shadow: 0px 4px 8px #5e12eb1e !important;
+    border-radius: 4px !important;
+    color: white !important;
+    font-size: 12px;
+}
+
+.ds-box{
+    list-style: none;
+    padding: 5px;
+    margin: 0;
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    min-width: 180px;
+    width: 95%;
+    z-index: 100;
+    box-shadow: 0px 4px 8px #5e12eb46;
+}

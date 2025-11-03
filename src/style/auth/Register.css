@@ -1,0 +1,545 @@
+.register-container {
+    background-image: linear-gradient(to right, #5211cb, #5711cb, #5b11cb, #6011cb, #6411cb, #6a18ce, #6f1ed0, #7523d3, #7d2dd9, #8637df, #8e40e5, #9649eb);
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* border: 1px solid red; */
+}
+
+/* LEFT  */
+.register-content-left {
+    /* border: 1px solid red; */
+    width: 50%;
+    height: 100vh;
+    padding: 30px;
+    padding-left: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.register-content-left .h1 {
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    justify-content: flex-start;
+    color: white;
+    font-size: 38px;
+    font-weight: bold;
+    gap: 10px;
+    /* border: 1px solid red; */
+    margin-bottom: 20px;
+}
+
+.h1 .h1-icon {
+    font-size: 70px;
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.500);
+    border-radius: 16px;
+    background-color: rgba(255, 255, 255, 0.500);
+    width: fit-content;
+}
+
+.register-content-left h4 {
+    font-size: 20px;
+    color: rgba(245, 245, 245, 0.871);
+    margin-bottom: 20px;
+}
+
+.register-content-left p {
+    font-size: 15px;
+    color: rgba(245, 245, 245, 0.62);
+}
+
+/* btn lp  */
+.register-content-left .btn-lp {
+    /* border: 1px solid red; */
+    margin-top: 20px;
+    width: 100%;
+    gap: 10px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    cursor: pointer;
+}
+
+.btn-lp h3 {
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+}
+
+.btn-lp h3:hover {
+    text-decoration: underline;
+}
+
+
+/* RIGHT  */
+.register-content-right {
+    /* border: 1px solid blue; */
+    width: 50%;
+    height: 100%;
+    padding: 30px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.register-content-right .content-box {
+    box-shadow: 0px 4px 8px #ffffff78;
+    background-color: white;
+    border: 1px solid white;
+    border-radius: 20px;
+    padding: 20px 40px;
+    width: 80%;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* justify-content: center; */
+}
+
+.content-box .box-right {
+    /* border: 1px solid orange; */
+    height: 100%;
+    width: 100%;
+}
+
+.box-right .box-title {
+    margin: 0px;
+    gap: 0px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* Tambahkan di sini supaya semua anaknya default align center */
+}
+
+.box-title .title-logo {
+    background: linear-gradient(90deg, #7246eb, #532189);
+    padding: 8px;
+    border-radius: 16px;
+}
+
+.title-logo .logo-icon {
+    color: white;
+    font-size: 25px;
+}
+
+.box-title h2 {
+    color: #333;
+    width: 100%;
+    font-size: 25px;
+    font-weight: bold;
+    margin: 0px;
+    /* border: 1px solid red; */
+    /* margin-bottom: 5px; */
+}
+
+.box-title p {
+    font-size: 12px;
+    color: #5e5e5e;
+    margin: 0 auto;
+    padding: 0px;
+    display: block;
+    /* border: 1px solid red; */
+}
+
+/* BOX REGIS INPUT  */
+.regis-box-input {
+    /* border: 1px solid red; */
+    width: 100%;
+    height: 60%;
+    padding: 5px;
+    margin: 0px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.regis-box-input .regis-input {
+    /* border: 1px solid green; */
+    width: 100%;
+    margin: 5px 0px;
+    margin-bottom: 0px;
+}
+
+.regis-input label {
+    font-size: 11px;
+    color: grey;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.regis-input input {
+    border: 1px solid #eee;
+    border-radius: 16px;
+    padding: 8px 12px;
+    width: 100%;
+    font-size: 12px;
+    margin: 0px;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.regis-input input:hover {
+    border: 1px solid #9649eb;
+    box-shadow: 0px 4px 8px #6b11cb40;
+}
+
+.regis-input input:focus {
+    outline: none;
+    box-shadow: 0px 4px 8px #6b11cb40;
+}
+
+/* regis input password  */
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-wrapper input {
+    width: 100%;
+    padding-right: 40px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    cursor: pointer;
+    font-size: 18px;
+    color: #888;
+    transition: 0.2s ease;
+}
+
+.toggle-password:hover {
+    color: #6a11cb;
+}
+
+
+.box-input p {
+    font-size: 12px;
+    color: #6a11cb;
+    margin: 15px 0px;
+    cursor: pointer;
+}
+
+/* END REGIS INPUT  */
+
+/* REGIS & CHECK  */
+
+.regis-check-btn {
+    /* border: 1px solid red; */
+    padding: 10px;
+    width: 100%;
+    gap: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.regis-check-btn .check-box {
+    width: 100%;
+    gap: 10px;
+    /* border: 1px solid blue; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.check-box input:checked+.check-icon::after {
+    content: '✔';
+    position: absolute;
+    top: -2px;
+    left: 3px;
+    font-size: 16px;
+    color: #4caf50;
+}
+
+.check-box p {
+    font-size: 11px;
+    color: #333;
+}
+
+.regis-check-btn .regs-btn {
+    border: 1px solid #6a11cb;
+    border-radius: 16px;
+    background-color: #6a11cb;
+    color: white;
+    text-align: center;
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.regis-check-btn .regs-btn:hover {
+    box-shadow: 4px 4px 8px #6b11cb87;
+}
+
+/* END REGIS & CHECK  */
+
+/* ANOTHER LOGIN  */
+.another-login {
+    /* border: 1px solid magenta; */
+    width: 100%;
+    padding: 10px;
+    gap: 10px;
+    margin: 10px 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.another-login .google {
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #eee;
+    border-radius: 16px;
+    padding: 5px 8px;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.another-login .ios {
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #eee;
+    padding: 5px 8px;
+    border-radius: 16px;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.another-login .google:hover,
+.another-login .ios:hover {
+    box-shadow: 4px 4px 8px #6b11cb87;
+}
+
+/* FOOTER BOX  */
+.box-footer {
+    width: 100%;
+    text-align: center;
+    margin-top: 15px;
+}
+
+.box-footer h5 {
+    font-size: 13px;
+    font-weight: bold;
+    color: #333;
+}
+
+.box-footer span {
+    color: #6a11cb;
+    cursor: pointer;
+}
+
+.box-footer span:hover {
+    text-decoration: underline;
+}
+
+/* Extra large devices (large desktops, ≥1200px) */
+@media (min-width: 992px) and (max-width:1400px) {
+    .register-content-right {
+        padding: 10px;
+    }
+
+    .register-content-right .content-box {
+        height: 100%;
+    }
+}
+
+/* Desktop (≥ 992px) */
+@media (min-width: 992px) {
+    .register-content-left {
+        width: 50%;
+    }
+
+    .register-content-right {
+        width: 50%;
+        padding: 10px;
+        height: 100%;
+    }
+
+    .register-content-right .content-box {
+        width: 90%;
+        height: 90vh;
+        padding: 20px !important;
+        align-items: center;
+    }
+}
+
+/* Medium devices (tablets, ≥768px) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .register-content-left {
+        width: 40%;
+        padding: 10px;
+        padding-left: 20px;
+        /* border: 1px solid red; */
+        margin-left: 20px !important;
+    }
+
+    .register-content-right {
+        /* border: 1px solid blue; */
+        width: 60%;
+        padding: 15px;
+    }
+
+    .register-content-left h4 {
+        font-size: 15px;
+    }
+
+    .register-content-left p {
+        display: none;
+    }
+
+    .register-content-right {
+        width: 60%;
+        padding: 10px;
+    }
+
+    .register-content-right .content-box {
+        width: 90%;
+        /* height: fit-content; */
+        padding: 20px;
+        /* border: 1px solid red; */
+    }
+}
+
+/* ukuran handpone besar  */
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .register-content-left {
+        display: none;
+    }
+
+    .register-content-right {
+        /* border: 1px solid blue; */
+        width: 80% !important;
+        height: 100%;
+        padding: 5px !important;
+    }
+
+    .register-content-right .content-box {
+        padding: 10px !important;
+        width: 70% !important;
+        height: 100% !important;
+        gap: 20px;
+        /* border: 1px solid red; */
+        align-items: center;
+        overflow-y: auto;
+    }
+
+    .box-input {
+        /* border: 1px solid red; */
+        padding: 0px 10px;
+    }
+
+    .regis-check-btn {
+        /* border: 1px solid red; */
+        padding: 10px 30px;
+    }
+
+    .box-footer {
+        margin-top: 0px;
+    }
+
+    .box-footer h5 {
+        font-size: 10px;
+    }
+
+}
+
+/* Mobile ( < 576px) */
+@media (max-width: 575.98px) {
+    .register-content-left {
+        display: none;
+    }
+
+    .register-content-right {
+        /* border: 1px solid blue; */
+        width: 100% !important;
+        height: 100%;
+        padding: 5px !important;
+    }
+
+    .register-content-right .content-box {
+        padding: 10px !important;
+        width: 100% !important;
+        height: 100% !important;
+        gap: 20px;
+        /* border: 1px solid red; */
+        align-items: center;
+        overflow-y: auto;
+    }
+
+    .box-input {
+        /* border: 1px solid red; */
+        padding: 0px 10px;
+    }
+
+    .regis-check-btn {
+        /* border: 1px solid red; */
+        padding: 10px 30px;
+    }
+
+    .box-footer {
+        margin-top: 0px;
+    }
+
+    .box-footer h5 {
+        font-size: 10px;
+    }
+}
+
+/* HEIGHT BREAKPOIN  */
+@media screen and (max-height: 600px) {
+
+    .register-content-right {
+        /* border: 1px solid blue; */
+        width: 60%;
+        padding: 5px !important;
+    }
+
+    .register-content-right .content-box {
+        /* border: 1px solid red; */
+        width: 90% !important;
+        height: 95% !important;
+    }
+
+    .box-title h2 {
+        font-size: 20px;
+    }
+
+    .box-title p {
+        font-size: 10px;
+    }
+
+    .box-footer {
+        width: 100%;
+        text-align: center;
+        margin-top: 5px;
+    }
+
+    .title-logo .logo-icon {
+        font-size: 20px;
+    }
+
+    .regis-input label,
+    .regis-input input {
+        font-size: 10px !important;
+    }
+}

@@ -1,0 +1,294 @@
+/* ================ NEW COVER CARD ================  */
+.card-cover-container {
+    width: 35vw;
+    padding: 0px;
+    background-color: white;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-cover-header {
+    /* border: 1px solid red; */
+    border-radius: 8px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+    padding: 5px 10px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: white;
+    background-color: #3863e7;
+    /* background-image: linear-gradient(to right, #2d66e7, #3863e7, #425fe8, #4c5be7, #5557e7, #5d54e7, #6551e7, #6d4de7, #764ae7, #7e47e7, #8743e7, #8f3fe6); */
+}
+
+.card-cover-header .cch-title {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
+}
+
+.cch-title h5 {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.card-cover-header .cch-btn {}
+
+.cch-btn button {
+    border: 1px solid rgba(255, 255, 255, 0);
+    border-radius: 6px;
+    cursor: pointer;
+    background-color: #4c5ce700;
+    color: white;
+    padding: 3px;
+}
+
+.cch-btn button:hover {
+    border: 1px solid #ddd;
+    background-color: #dddddd60;
+}
+
+
+.card-cover-body {
+    top: 100%;
+    left: 0;
+    border-radius: 8px;
+    background-color: #fff;
+    padding: 10px;
+    /* border: 1px solid red; */
+    width: 100%;
+}
+
+.image-cover {
+    /* border: 1px solid blue; */
+}
+
+.image-cover .ci {
+    margin-bottom: 10px;
+    padding: 2px 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.image-cover h5 {
+    font-weight: normal;
+    font-size: 13px;
+    color: #333;
+    /* border: 1px solid red; */
+}
+
+.image-cover h4 {
+    margin: 0px;
+}
+
+.image-content {
+    /* border: 1px solid green; */
+    min-width: 25vw;
+    width: 97%;
+    height: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-x: auto;
+    /* Memungkinkan scroll horizontal */
+    gap: 10px;
+    /* Jarak antar elemen */
+    padding: 5px;
+    /* Tambahkan padding agar lebih rapi */
+}
+
+/* ================ END COVER CARD ================  */
+
+
+.cover-container {
+    /* border: 1px solid green; */
+}
+
+.cover-container button {
+    padding: 5px;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.cover-container button:hover {
+    border: 1px solid #eee;
+    background-color: #eee;
+}
+
+.cover-icon {
+    margin-right: 5px;
+}
+
+.show-cover {
+    border-radius: 4px;
+    /* border: 1px solid #eee; */
+    /* border: 1px solid red; */
+    /* background-color: #fff; */
+    padding: 10px;
+    width: 500px;
+}
+
+.cover {
+    width: 100%;
+    position: relative;
+}
+
+.selected-cover {
+    /* border: 1px solid red; */
+}
+
+.button-cover {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-left: 5px;
+    border: 1px solid red;
+    padding: 5px 0px;
+    height: fit-content;
+    cursor: pointer;
+}
+
+.bc-left {
+    /* border: 1px solid blue; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
+}
+
+.bc-left h5 {
+    margin: 0px;
+    font-size: 12px;
+    color: #333;
+    letter-spacing: 1px;
+    font-weight: bold;
+}
+
+.button-cover .bc-rigth {
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bc-rigth .bc-delete {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: white;
+    gap: 5px;
+    color: red;
+    font-size: 10px;
+    /* letter-spacing: 0.5px; */
+    cursor: pointer;
+    font-weight: normal;
+}
+
+.bc-delete:hover {
+    background-color: #ddd;
+}
+
+.bc-rigth .btn-close {
+    border: 1px solid white;
+    cursor: pointer;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.btn-close:hover {
+    border: 1px solid #ddd;
+    background-color: #ddd;
+}
+
+
+/* background: linear-gradient(to bottom, #6E30DC, #5D12EB); */
+
+
+
+.check-icon {
+    color: #9b2fad;
+}
+
+
+.default-color .cw {
+    margin-bottom: 10px;
+    padding: 2px 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.default-color h5 {
+    font-weight: normal;
+    font-size: 13px;
+    color: #333;
+}
+
+.default-content {
+    /* border: 1px solid green; */
+    min-width: 25vw;
+    width: 100%;
+    height: 20vh;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+    /* height: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-x: auto;
+    gap: 10px;
+    padding: 5px; */
+}
+
+.default-content div {
+    flex-shrink: 0;
+    /* Mencegah item mengecil saat overflow */
+    transition: transform 0.2s ease-in-out, border 0.2s;
+}
+
+/* COVER SELECT  -> FILE COVER SELECT*/
+/* .card-cover-display{
+    border: 1px solid blue;
+} */
+/* END COVER SELECT  */
+
+
+
+/* MEDIA QUERY  */
+/* Medium devices (tablets, ≥768px) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .card-cover-container {
+        width: 45vw;
+        /* border: 1px solid red; */
+    }
+
+    /* CSS tablet atau iPad */
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .card-cover-container {
+        width: 50vw;
+        /* border: 1px solid blue; */
+    }
+}
+
+/* ukuran handpone kecil  */
+@media (min-width:375px) and (max-width:575px) {
+    .card-cover-container {
+        width: 70vw;
+        /* border: 1px solid green; */
+    }
+}

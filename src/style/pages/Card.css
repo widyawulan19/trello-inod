@@ -1,0 +1,530 @@
+.card-box-container {
+    position: relative;
+    border-radius: 16px;
+    /* border: 1px solid red; */
+    background-color: #fff;
+}
+
+.card-container {
+    border-radius: 16px;
+    border: 1px solid #E5E7EB;
+    background-color: #fff;
+    padding: 5px;
+    overflow: visible;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-container:hover {
+    border-radius: 16px;
+    border: 1px solid #6a11cb;
+    box-shadow: 0px 4px 8px #5e12eb46;
+}
+
+.cc-top-header {
+    border-bottom: 1px solid #eee;
+    /* border: 1px solid blue; */
+    /* margin-bottom: 3px; */
+    padding: 0px 2px;
+    padding-bottom: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.cctop-status {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.mini-icon {
+    font-size: 12px;
+    color: #6a11cb;
+}
+
+.cc-cover {
+    /* border: 1px solid red; */
+    margin: 0px;
+}
+
+.cc-label {
+    margin: 0px;
+    /* margin-top: 5px; */
+    /* border: 1px solid blue; */
+}
+
+/* setting list  */
+.card-setting {
+    position: absolute;
+    top: 10%;
+    right: 0;
+    z-index: 101;
+    width: 150px;
+    background-color: #fff;
+    padding: 10px 7px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    justify-content: flex-start;
+    gap: 3px;
+    font-size: 15px;
+    box-shadow: 0px 4px 8px #5e12eb46;
+}
+
+.card-setting button {
+    padding: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: 13px;
+    border: 1px solid #fff;
+    background-color: #fff;
+    border-radius: 8px;
+    color: #333;
+}
+
+.card-setting button:hover {
+    background-color: #eee;
+}
+
+.delete button {
+    color: red;
+    border-top: 1px solid #ddd;
+}
+
+.cs-icon {
+    margin-right: 5px;
+    font-size: 13px;
+    color: #333;
+}
+
+.cs-delete {
+    margin-right: 5px;
+    font-size: 13px;
+    color: red;
+}
+
+/* end setting list  */
+
+.cc-cover p {
+    margin: 0px;
+    /* padding: 5px; */
+    width: 100%;
+    height: 5vh;
+    border: 1px solid #eee;
+    background-color: rgb(26, 59, 26);
+    border-radius: 8px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cc-header-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 3px;
+    margin: 0px !important;
+    width: 100%;
+}
+
+.cc-title {
+    /* border: 1px solid blue; */
+    width: 100%;
+}
+
+.cc-title input {
+    background-color: white;
+    /* border: 1px solid red; */
+    border: 1px solid white;
+    border-radius: 4px;
+    padding: 0px;
+    /* padding: 3px 5px; */
+    outline: none;
+    width: 100%;
+    font-size: 10px;
+}
+
+.cc-title input:hover {
+    border: 1px solid white;
+}
+
+.cc-title input:focus {
+    outline: none;
+    border: 1px solid white;
+}
+
+.cc-title h5 {
+    margin: 0px;
+    font-size: 10px;
+    font-weight: bold;
+    /* border: 1px solid #eee; */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    color: #4F5966;
+}
+
+.cc-setting {
+    cursor: pointer;
+    border: 1px solid #fff;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cc-setting:hover {
+    border: 1px solid #eee;
+    background-color: #eee;
+}
+
+
+/* BODY  */
+.cc-body {
+    /* border: 1px solid red; */
+    border-radius: 4px;
+    min-height: 5vh;
+    height: 100%;
+    /* overflow-y: auto; */
+    padding: 2px 5px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    margin: 5px 0px;
+    margin-bottom: 0px;
+}
+
+.cc-body p {
+    margin: 0px;
+    font-size: 8px;
+    padding: 5px;
+    color: #4F5966;
+}
+
+.cc-body .p-full {
+    height: 5vh;
+    overflow-y: auto;
+    font-size: 8px;
+    overflow: hidden;
+    transition: height 0.3s ease;
+    /* border: 1px solid red; */
+}
+
+.cc-body .p-empty {
+    height: 0px;
+    /* overflow: hidden; */
+    transition: height 0.3s ease;
+    /* border: 1px solid blue; */
+    margin-bottom: 0px;
+}
+
+/* END BODY  */
+
+/* FOOTER  */
+.cc-footer {
+    /* border: 1px solid #eee; */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0px;
+    /* margin-top: 0px; */
+}
+
+.ficon {
+    /* margin-right: 2px; */
+    font-size: 12px;
+}
+
+.left button {
+    padding: 3px;
+    margin: 2px;
+    border: 1px solid #fff;
+    background-color: #fff;
+    border-radius: 4px;
+}
+
+.left button:hover {
+    border: 1px solid #eee;
+    background-color: #eee;
+}
+
+.member button {
+    padding: 3px 8px;
+    color: white;
+    /* color: #6a11cb; */
+    /* font-weight: bold; */
+    font-size: 10px;
+    text-align: center;
+    margin: 0px;
+    border: 1px solid #6a11cb;
+    /* color: #6a11cb; */
+    border-radius: 6px;
+    /* background-color: white; */
+    cursor: pointer;
+    background-color: #6a11cb;
+    /* background: linear-gradient(to right, #6a11cb, #2575fc); */
+}
+
+.member button:hover {
+    box-shadow: 0px 4px 8px #6b11cb3c;
+    /* background: linear-gradient(to right,#2575fc, #6a11cb ); */
+}
+
+/* CFOOTER  */
+.cfooter {
+    /* border: 1px solid #ddd; */
+}
+
+/* END CFOOTER  */
+
+
+/* Modal container */
+.detail-con {
+    position: fixed;
+    /* Menggunakan fixed untuk membuat popup tetap berada di atas layar */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Transparansi untuk latar belakang */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    /* Pastikan popup berada di atas elemen lainnya */
+}
+
+/* Card detail container */
+.card-detail-container {
+    position: relative;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    /* Ukuran modal */
+    max-width: 600px;
+    /* Maksimal lebar modal */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    /* Menambahkan bayangan untuk modal */
+    z-index: 10000;
+}
+
+/* Modal overlay (background) */
+.cc-detail {
+    position: fixed;
+    /* Fix it to the screen */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: right;
+    align-items: end;
+    z-index: 100;
+    /* Make sure it appears above everything else */
+}
+
+/* Background overlay (darkens the rest of the content) */
+.cc-detail .modal-overlay {
+    position: absolute;
+    top: 0%;
+    left: 5%;
+    right: 0;
+    bottom: 0;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.145);
+    z-index: 1;
+}
+
+.cc-detail .modal-content {
+    position: relative;
+    border-radius: 8px;
+    max-width: 700px;
+    width: 100%;
+    height: 95vh;
+    /* background-color: #6a11cb; */
+    z-index: 2;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.3s ease;
+}
+
+/* Optional: Animation for modal appearance */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* move modal  */
+
+.card-move-modal {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 100;
+    width: 100%;
+    /* min-width: 250px; */
+    height: fit-content;
+    padding: 2px;
+    border-radius: 6px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    /* border: 1px solid blue; */
+}
+
+.dc-modal {
+    position: fixed;
+    /* Fix it to the screen */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin-top: 3vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 10vh;
+    z-index: 99;
+    /* Ensure modal is on top */
+    background: rgba(0, 0, 0, 0.5);
+    /* Add a background overlay */
+}
+
+.dcm-conten {
+    width: 80%;
+    /* Adjust width to suit your needs */
+    max-width: 600px;
+    /* Max width to avoid too wide */
+    padding: 20px;
+    /* Space inside the modal */
+    border-radius: 8px;
+    /* Rounded corners */
+    /* border: 1px solid blue; */
+    display: flex;
+    flex-direction: column;
+    /* Adjust if you have inner elements */
+    align-items: center;
+    justify-content: center;
+}
+
+.position-modals {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    padding: 0;
+    margin-top: 4px;
+    z-index: 50;
+    width: 8rem;
+    height: 100%;
+    /* 32 Tailwind unit = 8rem */
+    background-color: white;
+    border: 1px solid #d1d5db;
+    /* gray-300 */
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.position-modals .ph {
+    background-color: #6a11cb;
+    padding: 5px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.ph p {
+    font-size: 12px;
+    color: white;
+}
+
+.position-modals .pb {
+    border: 1px solid #ddd;
+    background-color: white;
+    padding: 5px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    /* border-radius: 8px; */
+    height: 10vh;
+    overflow-y: auto;
+}
+
+.position-modals ul {
+    list-style: none;
+    padding: 0.25rem 0;
+    /* 1 unit */
+    margin: 0;
+    font-size: 10px;
+}
+
+.position-modals li {
+    padding: 0.25rem 0.5rem;
+    /* 1 y 2 unit */
+    cursor: pointer;
+    border-radius: 0.125rem;
+}
+
+.position-modals li:hover {
+    background-color: #f3f4f6;
+    /* gray-100 */
+}
+
+
+/* MEDIA QUERY  */
+@media (min-width: 768px) and (max-width: 991.98px) {}
+
+
+@media screen and (max-height: 600px) {
+
+    .card-setting {
+        width: 100px;
+    }
+
+    .card-setting button {
+        font-size: 10px;
+        padding: 4px;
+    }
+
+    .cc-header-card {
+        /* border: 1px solid green; */
+    }
+
+    .cc-title input {
+        font-size: 10px;
+        padding: 5px;
+        width: 100% !important;
+    }
+
+    .cc-title input:focus {
+        outline: none;
+        /* border: 1px solid blue; */
+    }
+
+    .cc-title h5 {
+        font-size: 10px;
+    }
+
+    /* LABEL  */
+    .cc-label {
+        /* border: 1px solid red; */
+        width: 100%;
+    }
+
+    .cc-body p {
+        font-size: 8px;
+    }
+
+    /* VIEW BUTTON  */
+    .member button {
+        font-size: 9px;
+    }
+}

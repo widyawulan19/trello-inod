@@ -1,0 +1,42 @@
+.roomchat-container{
+    border: 1px solid #ddd;
+    background-color: #e9e2f3;
+    border-radius: 8px;
+    height: 100%;
+}
+.roomchat-container .chat-header{
+    border-bottom: 1px solid #ddd;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.chat-header h4{
+    font-weight: bold;;
+}
+
+/* BODY  */
+.roomchat-container .chat-container{
+    border: 1px solid blue;
+    padding: 5px 10px;
+    height: 80vh;
+    overflow-y: auto;
+}
+
+
+/* RENDER CHAT  */
+.rc-container{
+    display: flex;
+    border: 1px solid blue; 
+    margin-bottom: 5px;
+    width: 100%;
+    height: 100%;
+}
+
+.rc-text-title img{
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;  
+    border: 1px solid green;
+}

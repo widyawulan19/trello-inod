@@ -1,0 +1,668 @@
+.profile-container {
+    border: 1px solid blue;
+    background-color: #f8f8f8;
+    height: 100%;
+    padding: 30px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-container .header-profile {
+    /* border: 1px solid blue; */
+    padding: 10px;
+    width: 100%;
+    height: 10%;
+}
+
+.header-profile .header-title {
+    /* border: 1px solid green; */
+    gap: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.header-title .pchl-icon {
+    color: #6a11cb;
+    font-size: 20px;
+}
+
+.header-title h2 {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+.header-profile p {
+    color: grey;
+    font-size: 12px;
+}
+
+/* MAIN PROFILE  */
+.profile-page-main {
+    /* border: 1px solid green; */
+    width: 100%;
+    height: 90%;
+    gap: 10px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+/* PROFIL LEFT  */
+.profile-page-main .profile-left {
+    /* border: 1px solid red; */
+    border-radius: 16px;
+    background-color: white;
+    padding: 10px;
+    width: 30%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profile-left .profile-photo {
+    /* border: 1px solid blue; */
+    height: 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.profile-photo img {
+    /* border: 1px solid red; */
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+
+.profile-photo h3 {
+    color: #333;
+    font-weight: bold;
+}
+
+.profile-photo p {
+    font-size: 12px;
+    color: grey;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.profile-photo button {
+    border: 1px solid #6a11cb;
+    border-radius: 8px;
+    background-color: #6a11cb;
+    color: white;
+    font-size: 12px;
+    padding: 5px 15px;
+    cursor: pointer;
+}
+
+.profile-photo button:hover {
+    box-shadow: 4px 4px 8px #6b11cb87;
+}
+
+
+
+/* PROFILE SETTING  */
+.profile-left .profile-setting {
+    border-top: 1px solid #ddd;
+    /* border: 1px solid red; */
+    height: 60%;
+    width: 80%;
+    gap: 5px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-setting button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: none;
+    border: none;
+    padding: 10px;
+    width: 80%;
+    text-align: left;
+    cursor: pointer;
+    font-size: 12px;
+    color: #555;
+    transition: background 0.3s, color 0.3s;
+    border-radius: 8px;
+}
+
+.fade .personal-info {
+    border: 1px solid #ddd;
+    height: 75vh;
+    width: 100%;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+.fade .activity {
+    /* border: 1px solid red; */
+    height: 50vh;
+    font-size: 15px;
+    padding: 10px;
+    overflow-y: auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    color: #5e5e5e;
+}
+
+.fade .security {
+    height: 50vh;
+    font-size: 15px;
+    padding: 10px;
+    overflow-y: auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    color: #5e5e5e;
+}
+
+.fade .notif {
+    /* border: 1px solid #ddd; */
+    border-radius: 6px;
+    height: 75vh;
+    width: 58vw;
+    padding: 10px;
+    /* overflow-y: auto; */
+}
+
+.fade .out {
+    height: 50vh;
+    font-size: 15px;
+    padding: 10px;
+    overflow-y: auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.fade .logout-button {
+    color: red;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: 1px solid red;
+    background-color: #f7bfbf;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-setting button:hover {
+    background: linear-gradient(to right, #6b11cb41, #2574fc41);
+}
+
+.profile-setting button.active {
+    background: linear-gradient(to right, #6b11cb41, #2574fc41);
+}
+
+/* Animasi halus untuk bagian kanan */
+.pcb-right .fade {
+    animation: fadeIn 0.5s ease;
+    /* border: 1px solid red; */
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* END PROFIL LEFT  */
+
+/* PROFIL RIGHT  */
+.profile-page-main .profile-right {
+    /* border: 1px solid red; */
+    border-radius: 16px;
+    background-color: white;
+    padding: 10px;
+    width: 70%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+
+}
+
+.profile-right .profil-content {
+    /* border: 1px solid red; */
+    height: 80vh;
+    /* overflow-y: auto; */
+    padding: 0;
+}
+
+/* END PROFIL RIGHT  */
+
+/* END MAIN PROFILE  */
+
+
+/* AVATAR USER  */
+
+/* AVATAR MODAL  */
+.ava-container {
+    position: absolute;
+    /* border: 1px solid red; */
+    border: 1px solid #e1d5ed;
+    border-radius: 16px;
+    background-color: white;
+    padding: 5px;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    width: 20vw;
+    height: fit-content;
+    box-shadow: 0px 4px 8px #4e089941;
+}
+
+.all-profile-cont .apc-header {
+    border-bottom: 1px solid #ddd;
+    padding: 5px 10px;
+    /* padding-bottom: 0px; */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.apc-header .apch-left {
+    /* border: 1px solid green; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
+}
+
+.apch-left .ava-icon {
+    background: linear-gradient(to right, #6a11cb, #2575fc);
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 5px;
+    color: white;
+}
+
+.apc-icon {
+    border: 1px solid white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 20px;
+    padding: 0px;
+}
+
+.apc-icon:hover {
+    border: 1px solid #eee;
+    background-color: #eee;
+}
+
+.apc-header h5 {
+    margin: 5px;
+    /* border: 1px solid blue; */
+    font-weight: bold;
+    font-size: 12px;
+    color: #333;
+}
+
+.apc-body {
+    /* border: 1px solid red; */
+    gap: 10px;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    align-items: center;
+    justify-content: center;
+    /* margin: 15px 0px; */
+}
+
+.apc-body .img-box {
+    /* border: 1px solid green; */
+    width: 100%;
+    height: 100%;
+}
+
+.img-box img {
+    width: 40px;
+    height: 35px;
+    border-radius: 50%;
+    border: 3px solid green;
+    cursor: pointer;
+}
+
+.img-box img:hover {
+    box-shadow: 0px 4px 8px #4e089941;
+    border: 1px solid #5D12EB;
+}
+
+.apc-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.apc-btn button {
+    background: linear-gradient(to right, #6a11cb, #2575fc);
+    cursor: pointer;
+    border: 1px solid #5D12EB;
+    color: white;
+    font-weight: bold;
+}
+
+.apc-btn button:hover {
+    background: linear-gradient(to right, #2575fc, #6a11cb);
+}
+
+/* END AVATAR USER  */
+@media (min-width: 992px) {
+    .all-profile-cont .apc-header {
+        /* border: 1px solid blue; */
+    }
+}
+
+/* Medium devices (tablets, ≥768px) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .profile-container {
+        padding: 10px;
+    }
+
+    /* PROFILE SETTING  */
+    .profile-left .profile-setting {
+        /* border: 1px solid blue; */
+        padding: 10px 0px;
+        width: 90%;
+    }
+
+    .profile-setting button {
+        font-size: 10px;
+        /* border: 1px solid red; */
+        width: 90%;
+    }
+
+    /* AVATAR  */
+    .ava-container {
+        /* border: 1px solid red; */
+        width: 30vw;
+    }
+
+    .apc-body {
+        gap: 5px;
+        /* border: 1px solid orange; */
+        grid-template-columns: repeat(5, 1fr);
+    }
+
+    .apc-body .img-box {
+        width: 100%;
+    }
+
+    .img-box img {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* ukuran handpone besar  */
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .profile-container {
+        padding: 5px;
+    }
+
+    .profile-photo img {
+        width: 70px;
+        height: 70px;
+    }
+
+    .profile-photo p {
+        font-size: 10px;
+    }
+
+    .profile-page-main .profile-left {
+        /* border: 1px solid red; */
+        /* align-items: none; */
+    }
+
+    .profile-left .profile-photo {
+        /* border: 1px solid green; */
+    }
+
+    .profile-left .profile-setting {
+        /* border: 1px solid blue; */
+        padding: 10px 0px;
+        width: 100%;
+        height: 60%;
+        display: flex;
+        /* align-items: ; */
+        justify-content: flex-start;
+    }
+
+    .profile-setting button {
+        font-size: 10px;
+        /* border: 1px solid red; */
+        width: 90%;
+        padding: 5px;
+    }
+
+    .profile-right {
+        /* border: 1px solid blue; */
+        padding: 5px;
+    }
+
+    .profile-right .profil-content {
+        /* border: 1px solid red; */
+        height: 100%;
+    }
+
+    /* AVATAR  */
+    .ava-container {
+        /* border: 1px solid red; */
+        width: 40vw;
+    }
+
+    .apc-body {
+        gap: 2px;
+    }
+
+    .apc-body .img-box {
+        width: 100%;
+    }
+
+    .img-box img {
+        width: 40px;
+        height: 40px;
+    }
+
+}
+
+@media (max-width: 575.98px) {
+    .profile-container {
+        /* border: 1px solid red; */
+        padding: 10px;
+        justify-content: flex-start;
+    }
+
+    /* MAIN PROFILE  */
+    .profile-page-main {
+        /* border: 1px solid blue; */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        overflow-y: auto;
+        /* padding: 0px; */
+
+    }
+
+    .profile-left .profile-photo {
+        /* border: 1px solid orange; */
+        padding: 5px;
+        height: fit-content;
+    }
+
+    .profile-photo img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .profile-page-main .profile-left {
+        /* border: 1px solid red; */
+        justify-content: flex-start;
+    }
+
+
+    .profile-page-main .profile-left {
+        /* border: 1px solid red; */
+        border-radius: 4px;
+        gap: 10px;
+        height: fit-content;
+        width: 100%;
+        padding: 5px;
+    }
+
+    .profile-left .profile-photo {
+        /* border: 1px solid red; */
+    }
+
+    /* PROFILE SETTING  */
+    .profile-left .profile-setting {
+        /* border: 1px solid blue; */
+        width: 100%;
+        margin-bottom: 0px !important;
+        height: fit-content;
+        padding: 10px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .profile-setting button {
+        justify-content: center;
+        text-align: center;
+    }
+
+
+    .profile-setting span {
+        display: none;
+    }
+
+    .fade .notif {
+        width: 100%;
+    }
+
+    /* PROFIL RIGHT  */
+    .profile-page-main .profile-right {
+        /* border: 1px solid green; */
+        border-radius: 4px;
+        width: 100%;
+        padding: 5px;
+        height: 60%;
+    }
+
+    .profile-right .profil-content {
+        /* height: 100vh; */
+        width: 100%;
+        overflow-y: auto;
+    }
+
+
+    /* AVATAR  */
+    .ava-container {
+        /* border: 1px solid red; */
+        width: 60vw;
+    }
+
+    .apc-body {
+        gap: 2px;
+    }
+
+    .apc-body .img-box {
+        width: 100%;
+    }
+
+    .img-box img {
+        width: 40px;
+        height: 40px;
+    }
+
+}
+
+@media screen and (max-height: 600px) {
+    .profile-container {
+        padding: 15px 20px;
+    }
+
+    /* PROFIL LEFT  */
+    .profile-page-main {
+        /* border: 1px solid red; */
+    }
+
+    .profile-left .profile-photo {
+        /* border: 1px solid blue; */
+    }
+
+    .profile-photo img {
+        width: 70px;
+        height: 70px;
+    }
+
+    .profile-photo p {
+        font-size: 10px;
+    }
+
+    /* PROFILE SETTING  */
+    .profile-left .profile-setting {
+        /* border: 1px solid blue; */
+        padding: 10px 0px;
+        width: 90%;
+    }
+
+    .profile-setting button {
+        font-size: 10px;
+    }
+
+    /* AVATAR  */
+    .ava-container {
+        /* border: 1px solid red; */
+        width: 25vw;
+    }
+
+    .apc-body {
+        gap: 2px;
+        /* border: 1px solid orange; */
+        grid-template-columns: repeat(5, 1fr);
+    }
+
+    .apc-body .img-box {
+        width: 100%;
+    }
+
+    .img-box img {
+        width: 40px;
+        height: 40px;
+    }
+
+}

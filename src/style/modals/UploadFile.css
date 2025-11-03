@@ -1,0 +1,237 @@
+.upload-file-container {
+    /* border:1px solid blue; */
+    width: 100%;
+    gap: 5px;
+    padding: 10px;
+    overflow-x: auto;
+    display: flex;
+    /* align-items: center; */
+    justify-content: flex-start;
+}
+
+.upload-cont {
+    cursor: pointer;
+    /* border: 1px solid red; */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: fit-content;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.upload-cont:hover {
+    border: 1px solid #6a11cb;
+    box-shadow: 0px 4px 8px #5e12eb46;
+}
+
+.upload-cont .upload-cont-prev {
+    /* border: 1px solid red; */
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* padding: 20px 10px; */
+    cursor: pointer;
+    position: relative;
+}
+
+.upload-cont-prev:hover {
+    /* background-color: #ddd; */
+}
+
+.upload-cont-header {
+    /* border: 1px solid blue; */
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-end;
+    width: 100%;
+    padding: 5px;
+}
+
+.upload-cont-header button {
+    cursor: pointer;
+    color: #6a11cb;
+}
+
+/* setting modal  */
+.file-set {
+    border: 1px solid #ccc;
+    background-color: white;
+    border-radius: 6px;
+    position: absolute;
+    top: 30%;
+    /* tampil tepat di bawah upload-cont-header */
+    right: 0;
+    /* sejajar kanan dengan tombol setting */
+    z-index: 100;
+    padding: 5px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    /* biar lebih rapi */
+}
+
+.file-set .del-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    padding: 5px;
+    border-radius: 1px solid 8px;
+    cursor: pointer;
+}
+
+.del-btn:hover {
+    background-color: #eee;
+}
+
+/* end setting modal  */
+
+.upload-cont-prev button {
+    border: 1px solid white;
+    width: fit-content;
+    margin: 0px;
+}
+
+.upload-icon {
+    font-size: 50px;
+    /* border: 1px solid red; */
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.upload-cont-body {
+    /* border: 1px solid blue; */
+    border-top: 1px solid #ddd;
+    padding: 10px;
+    width: 15vw;
+    display: flex;
+    /* align-items: center; */
+    justify-content: space-between;
+}
+
+.upload-desc h5 {
+    margin: 0px;
+    font-size: 12px;
+    color: #333;
+    font-weight: bold;
+    /* border: 1px solid red; */
+    width: 13vw;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.upload-desc p {
+    margin: 0px;
+    font-size: 10px;
+}
+
+.upload-desc a {
+    border: 1px solid #8688fa;
+    background: linear-gradient(to right, #6a11cb, #2575fc);
+    color: white;
+    /* font-weight: bold; */
+    border-radius: 6px;
+    padding: 3px 5px;
+    font-size: 12px;
+    margin: 5px 0px;
+}
+
+.upload-desc a:hover {
+    background: linear-gradient(to right, #2575fc, #6a11cb);
+}
+
+
+.upload-user {
+    /* border: 1px solid red; */
+}
+
+.upload-user img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+
+}
+
+
+/* MEDIA QUERY  */
+@media screen and (max-height: 600px) {
+    .upload-cont-body {
+        /* border: 1px solid magenta; */
+        width: 20vw;
+        padding: 7px;
+    }
+
+    .upload-desc h5 {
+        font-size: 10px;
+    }
+
+    .upload-desc p {
+        font-size: 8px;
+    }
+
+    .upload-desc a {
+        font-size: 10px;
+        padding: 3px 10px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .upload-cont {
+        /* border: 1px solid green; */
+        width: 20vw;
+    }
+
+    .upload-cont-body {
+        /* border: 1px solid magenta; */
+        width: 20vw;
+        padding: 7px;
+    }
+
+    .upload-icon {
+        padding: 10px;
+        font-size: 70px;
+    }
+
+}
+
+/* Medium devices (tablets, ≥768px) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .upload-cont {
+        /* border: 1px solid green; */
+        width: 30vw;
+    }
+
+    .upload-cont-body {
+        /* border: 1px solid red; */
+        width: 30vw;
+        padding: 7px;
+    }
+
+    .upload-icon {
+        padding: 10px;
+        font-size: 70px;
+    }
+}
+
+/* ukuran handpone kecil */
+@media (min-width:375px) and (max-width:575px) {
+    .upload-cont {
+        /* border: 1px solid green; */
+        width: 45vw;
+    }
+
+    .upload-cont-body {
+        /* border: 1px solid red; */
+        width: 45vw;
+        padding: 10px;
+    }
+
+    .upload-icon {
+        padding: 10px;
+        font-size: 70px;
+    }
+}
+
+@media screen and (max-height: 600px) {}

@@ -1,0 +1,38 @@
+.due-date-badge {
+  padding: 3px;
+  border-radius: 4px;
+  font-weight: nomal;
+  font-size: 8px;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  /* border: 1px solid red; */
+}
+
+.due-red {
+  background-color: #ffe5e5;
+  color: #c62828;
+}
+
+.due-orange {
+  background-color: #fff3e0;
+  color: #ef6c00;
+}
+
+.due-blue {
+  background-color: #e3f2fd;
+  color: #1565c0;
+}
+
+.due-normal {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+/* MEDIA QUERY  */
+@media screen and (max-height: 600px) {
+  .due-date-badge {
+    font-size: 8px;
+  }
+}

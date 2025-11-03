@@ -1,0 +1,198 @@
+.cf-container {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 0px 4px 8px #5e12eb46;
+}
+
+.cf-header {
+    padding: 7px 10px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.cfh-left {
+    /* border: 1px solid yellow; */
+    gap: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.cfh-icon {
+    border-radius: 8px;
+    border: 1px solid #7e3ec2;
+    background-color: #7e3ec2;
+    color: white;
+    padding: 3px;
+}
+
+.cfh-left h5 {
+    margin: 0px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.cfh-right {
+    border: 1px solid white;
+    padding: 1px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.cfh-right:hover {
+    border: 1px solid #eee;
+    background-color: #eee;
+}
+
+
+.create-card-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    /* border: 1px solid red; */
+}
+
+.create-card-form .title-card,
+.create-card-form .desc {
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    justify-content: flex-start;
+    /* border: 1px solid green; */
+    margin: 5px 0px;
+    width: 90%;
+    font-size: 12px;
+}
+
+.title-card label,
+.desc label {
+    font-size: 12px;
+    margin-bottom: 2px;
+    color: #333;
+    font-weight: normal;
+}
+
+.title-card input,
+.desc textarea {
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+    background-color: white;
+}
+
+.title-card input:hover,
+.desc textarea:hover {
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+    background: linear-gradient(to right, #6b11cb41, #2574fc41);
+}
+
+.title-card input:focus,
+.desc textarea:focus {
+    border: 1px solid #d1bde6;
+    background-color: white;
+}
+
+.btn-btn {
+    /* border: 1px solid grey; */
+    width: 90%;
+    /* padding: 0px 5px; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.btn-btn button {
+    background: linear-gradient(to bottom, #6E30DC, #5D12EB);
+    border: 1px solid transparent !important;
+    border-radius: 8px !important;
+    color: white;
+    font-weight: normal;
+    font-size: 12px;
+    padding: 3px 10px !important;
+    gap: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.btn-btn button:hover {
+    background: linear-gradient(to bottom, #6E30DC, #5D12EB);
+}
+
+
+.create-card-form button {
+    padding: 5px;
+    background-color: #9b2fad;
+    border: 1px solid #491553;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+}
+
+.create-card-form button:hover {
+    background-color: #491553;
+    border: 1px solid #491553;
+
+}
+
+/* MEDIA QUERY */
+@media screen and (max-height: 600px) {
+    .cf-header {}
+
+    .cfh-icon {
+        border-radius: 8px;
+        border: 1px solid #7e3ec2;
+        background-color: #7e3ec2;
+        color: white;
+        padding: 3px;
+    }
+
+    .cfh-icon .icon-icon {
+        font-size: 10px;
+    }
+
+    .cfh-left h5 {
+        font-size: 10px;
+    }
+
+    .close-right {
+        font-size: 12px;
+    }
+
+    /* MAIN FORM  */
+    .title label,
+    .desc label {
+        font-size: 10px;
+        /* font-weight: bold; */
+    }
+
+    .title input,
+    .desc textarea {
+        padding: 3px 5px;
+        font-size: 10px;
+    }
+
+    .title input:hover,
+    .desc textarea:hover {
+
+        padding: 3px 5px;
+        font-size: 10px;
+    }
+
+
+    /* BUTTON  */
+    .btn-btn button {
+        font-size: 10px;
+    }
+
+}
