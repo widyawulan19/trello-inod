@@ -5,3 +5,4 @@ node_modules/
 service-account.json
 frontend/node_modules/
 frontend/.DS_Store
+.DS_Store
