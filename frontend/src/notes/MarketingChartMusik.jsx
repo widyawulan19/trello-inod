@@ -10,6 +10,7 @@ import {
   Legend,
 } from "recharts";
 import { getMarketingMusicSummary } from "../services/ApiServices";
+import '../style/notes/Dummy.css'
 
 const MarketingMusicChart = () => {
   const [data, setData] = useState([]);
@@ -53,16 +54,16 @@ const MarketingMusicChart = () => {
   if (loading) return <p className="text-gray-500">Loading chart data...</p>;
 
   return (
-    <div className="w-full p-4 bg-white shadow rounded-2xl">
-      <h2 className="text-[15px] mb-2 font-semibold">Daily Music Marketing Income</h2>
+    <div className="music-chart-container">
+      <h2>Daily Music Marketing Income</h2>
 
-      <div ref={scrollRef} className="overflow-x-auto" style={{ width: "100%", height: "230px" }}>
+      <div ref={scrollRef} className="overflow-x-auto music-chart-content">
         <div style={{ width: `${data.length * 80}px`, height: "100%" }}>
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart
               key={data.length} // memaksa rerender saat data berubah
               data={data.length > 0 ? data : [{ date: "N/A", total_income: 0, total_orders: 0 }]}
-              margin={{ top: 30, right: 30, left: 0, bottom: 10 }}
+              margin={{ top: 10, right: 30, left: 0, bottom: 10 }}
             >
               <defs>
                 <linearGradient id="colorIncomeMusic" x1="0" y1="0" x2="0" y2="1">
@@ -84,7 +85,7 @@ const MarketingMusicChart = () => {
                 align="center"
                 iconType="circle"
                 iconSize={10}
-                wrapperStyle={{ paddingTop: "10px" }}
+                wrapperStyle={{ paddingTop: "10px", fontSize: "12px" }}
               />
 
               <Area

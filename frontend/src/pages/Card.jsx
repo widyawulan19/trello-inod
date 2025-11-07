@@ -129,44 +129,25 @@ const Card=({
     // dorpwon card position 
     const [showPosition, setShowPosition] = useState(false);
 
+    useEffect(() => {
+    if (!card?.id || !userId) return;
 
-    // Fetch status "new chat" untuk tiap card
-//     useEffect(() => {
-//     const fetchNewChat = async () => {
-//       try {
-//         const res = await checkHasNewChat(cardId, userId);
-//         setHasNewChat(res.data.hasNewChat);
-//       } catch (err) {
-//         console.error("Error checking new chat:", err);
-//       }
-//     };
-
-//     fetchNewChat();
-
-//     // auto polling tiap 10 detik
-//     const interval = setInterval(fetchNewChat, 10000);
-
-//     return () => clearInterval(interval);
-//   }, [cardId, userId]);
-useEffect(() => {
-  if (!card?.id || !userId) return;
-
-  const fetchNewChat = async () => {
-    try {
-      const res = await checkHasNewChat(card.id, userId);
-      setHasNewChat(res.data.hasNewChat);
-    } catch (err) {
-        if (err.response?.status !== 404) {
-            console.error("Error checking new chat:", err);
+    const fetchNewChat = async () => {
+        try {
+        const res = await checkHasNewChat(card.id, userId);
+        setHasNewChat(res.data.hasNewChat);
+        } catch (err) {
+            if (err.response?.status !== 404) {
+                console.error("Error checking new chat:", err);
+            }
+        //   console.error("Error checking new chat:", err);
         }
-    //   console.error("Error checking new chat:", err);
-    }
-  };
+    };
 
-  fetchNewChat();
-  const interval = setInterval(fetchNewChat, 10000);
-  return () => clearInterval(interval);
-}, [card.id, userId]);
+    fetchNewChat();
+    const interval = setInterval(fetchNewChat, 10000);
+    return () => clearInterval(interval);
+    }, [card.id, userId]);
 
 
 

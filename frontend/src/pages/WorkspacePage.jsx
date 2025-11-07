@@ -579,18 +579,6 @@ const handleNavigateToWorkspace = () =>{
                                 <HiOutlineArchiveBox className='bs-icon' />
                                 Archive
                               </button>
-
-                              {/* <button
-                                onClick={() =>
-                                  setBoardPositionDropdown(
-                                    boardPositionDropdown === board.id ? null : board.id
-                                  )
-                                }
-                              >
-                                <GiCardExchange className='bs-icon' />
-                                Posisi : {board.position}
-                              </button> */}
-
                               <hr />
                               <button className='delete' onClick={() => handleDeleteClick(board.id)}>
                                 <HiOutlineTrash className='bs-delete' /> Delete
@@ -618,37 +606,6 @@ const handleNavigateToWorkspace = () =>{
                               />
                             </div>
                           )}
-
-                          {/* MANUAL BOARD POSITION  */}
-                          {/* {boardPositionDropdown === board.id && (
-                            <div className="duplocat-modal">
-                              <ul style={{
-                                listStyle: "none",
-                                padding: "5px",
-                                margin: "5px 0 0 0",
-                                border: "1px solid #ccc",
-                                borderRadius: "4px",
-                                position: "absolute",
-                                background: "#fff",
-                                zIndex: 10,
-                                minWidth: "100px",
-                              }}>
-                                {boards.map((_, i) => (
-                                  <li
-                                    key={i}
-                                    style={{
-                                      padding: "5px 10px",
-                                      cursor: "pointer",
-                                      background: i + 1 === board.position ? "#eee" : "#fff",
-                                    }}
-                                    onClick={() => handleChangeBoardPosition(board.id, i + 1)}
-                                  >
-                                    {i + 1}
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          )} */}
 
                           <BoardDeleteConfirm
                             boardId={board.id}
