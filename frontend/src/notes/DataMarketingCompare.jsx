@@ -53,19 +53,18 @@ const DataMarketingCompare = () => {
 
   return (
     <div className="compare-container">
-      <h2 className="text-[15px] font-semibold">Compare: Design vs Music Income</h2>
+      <h2>Compare: Design vs Music Income</h2>
 
       {/* Kontainer scroll horizontal */}
       <div
         ref={scrollRef}
-        className="overflow-x-auto"
-        style={{ width: "100%", height: "230px" }}
+        className="compare-content"
       >
         <div style={{ width: `${data.length * 80}px`, height: "100%" }}>
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart
               data={data}
-              margin={{ top: 30, right: 30, left: 0, bottom: 10 }}
+              margin={{ top: 10, right: 30, left: 0, bottom: 10 }}
             >
               <defs>
                 {/* 🎨 Gradient lembut untuk Design */}
@@ -89,7 +88,7 @@ const DataMarketingCompare = () => {
                 align="center"
                 iconType="circle"
                 iconSize={10}
-                wrapperStyle={{ paddingTop: "10px" }}
+                wrapperStyle={{ paddingTop: "10px", fontSize: "12px" }}
               />
 
               {/* Area untuk Design */}

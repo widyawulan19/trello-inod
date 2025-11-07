@@ -6,7 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import '../style/pages/NewCardDetail.css'
 import BootstrapTooltip from '../components/Tooltip';
 import { GiCloudUpload } from "react-icons/gi";
-import { addCoverCardTesting, archiveCard, archiveData, deleteCard, deleteCoverCard, deleteCoverCardTesting, deleteUserFromCard, getActivityCardTesting, getAllCardUsers, getAllCovers, getAllDueDateByCardId, getAllStatus, getAllUploadFiles, getAllUserAssignToCard, getCardById, getCardPriority, getChecklistItemChecked, getChecklistsWithItemsByCardId, getCoverByCard, getLabelByCard, getListById, getStatusByCardId, getTotalChecklistItemByCardId, getTotalFile, updateCardCoverTesting, updateDescCard, updateDescCardTesting, updateTitleCard } from '../services/ApiServices';
+import { addCoverCardTesting, archiveCard, archiveData, deleteCard, deleteCoverCard, deleteCoverCardTesting, deleteUserFromCard, getActivityCardTesting, getAllCardUsers, getAllCovers, getAllDueDateByCardId, getAllStatus, getAllUploadFiles, getAllUserAssignToCard, getCardById, getCardByList, getCardPriority, getChecklistItemChecked, getChecklistsWithItemsByCardId, getCoverByCard, getLabelByCard, getListById, getStatusByCardId, getTotalChecklistItemByCardId, getTotalFile, updateCardCoverTesting, updateDescCard, updateDescCardTesting, updateTitleCard } from '../services/ApiServices';
 import SelectedLabels from '../UI/SelectedLabels';
 import CardDetailPanel from '../modules/CardDetailPanel';
 import DetailCard from '../modules/DetailCard';
@@ -43,7 +43,7 @@ import NewCardActivity from '../modules/NewCardActivity';
 import CardDeleteConfirm from '../modals/CardDeleteConfirm';
 import { handleArchive } from '../utils/handleArchive';
 
-const NewCardDetail=({fetchBoardDetail,fetchCardList})=> {
+const NewCardDetail=({fetchBoardDetail})=> {
     
     //STATE
     const {user} = useUser();
@@ -641,21 +641,16 @@ const NewCardDetail=({fetchBoardDetail,fetchCardList})=> {
     setShowMove(false);
     };
 
-    //15. function archive card
-    // const handleArchiveCard = async(cardId)=>{
-    //     console.log('Arciving card with id:', cardId)
-    //     try{
-    //         const response = await archiveCard(cardId)
-    //         console.log('Card archiving successfully:', response.data)
-    //         // fetchCardList(cardId)
-    //         // fetchCardList(listId)
-    //         // setShowSetting(false)
-    //         showSnackbar('Card archived successfully','success')
-    //     }catch(error){
-    //         console.error('Error archiving cards:', error)
-    //         showSnackbar('Failed to archive card', 'error')
-    //     }
-    // }
+    //15. function fetch list card
+    const fetchCardList = async(listId) => {
+        try{
+            const res = await getCardByList(listId);
+            console.log("✅ Cards fetched:", res.data);
+            setCards(res.data);
+        }catch(error){
+            console.error("❌ Error fetching cards:", error);
+        }
+    }
 
     //16. fetch total file
     const fetchTotalFile = async()=>{
@@ -1241,7 +1236,7 @@ const NewCardDetail=({fetchBoardDetail,fetchCardList})=> {
                                             listId={listId}
                                             workspaceId={workspaceId}
                                             onClose={handleCloseDuplicate}
-                                            // fetchCardList={fetchCardList}
+                                            fetchCardList={fetchCardList}
                                             // fetchBoardDetail={fetchBoardDetail}
                                         />
                                     </div>

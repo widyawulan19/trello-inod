@@ -160,8 +160,8 @@ const Home=()=> {
           </div>
 
           <div className="hh-btn" onClick={handleShowForm}>
-              <FaPlus />
-              CREATE WORKSPACE
+              <FaPlus className='btn-create'/>
+              <span>CREATE WORKSPACE</span>
           </div>
           {/* <div className="hh-btn" onClick={navigateToWorkspace}>
             <HiPlus/>
@@ -281,7 +281,9 @@ const Home=()=> {
                   </div>
                 </div>
               </div>
+              <div className="notes-body">
                 <Dummy selectedChart={selectedChart} setSelectedChart={setSelectedChart} handleSelect={handleSelect}/>
+              </div>
             </div>
             {/* SUMMARY  */}
             <div className="home-summary">

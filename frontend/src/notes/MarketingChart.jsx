@@ -10,6 +10,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import '../style/notes/Dummy.css'
 
 const MarketingChart = () => {
   const [data, setData] = useState([]);
@@ -52,21 +53,20 @@ const MarketingChart = () => {
   if (loading) return <p className="text-gray-500">Loading chart data...</p>;
 
   return (
-    <div className="w-full p-4 bg-white shadow rounded-2xl">
-      <h2 className="text-[15px] mb-2 font-semibold">Daily Marketing Income</h2>
+    <div className="design-chart-container">
+      <h2>Daily Marketing Income</h2>
 
       {/* Kontainer scroll horizontal */}
       <div
         ref={scrollRef}
-        className="overflow-x-auto"
-        style={{ width: "100%", height: "230px" }}
+        className="overflow-x-auto design-chart-content"
       >
         {/* Lebar fleksibel tergantung jumlah data */}
         <div style={{ width: `${data.length * 80}px`, height: "100%" }}>
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart
               data={data}
-              margin={{ top: 30, right: 30, left: 0, bottom: 10 }}
+              margin={{ top: 20, right: 30, left: 0, bottom: 10 }}
             >
               <defs>
                 <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
@@ -88,7 +88,7 @@ const MarketingChart = () => {
                 align="center"
                 iconType="circle"
                 iconSize={10}
-                wrapperStyle={{ paddingTop: "10px" }}
+                wrapperStyle={{ paddingTop: "10px", fontSize: "12px"}}
               />
 
               <Area

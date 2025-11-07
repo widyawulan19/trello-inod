@@ -116,7 +116,7 @@ const DuplicateCard = ({ userId,cardId, boardId, listId, workspaceId, onClose, f
       showSnackbar("Card duplicated successfully!", "success");
 
       // Refresh list & tutup modal
-      // fetchCardList(selectedList.id);
+      fetchCardList(selectedList.id);
       onClose();
     } catch (error) {
       console.error("❌ Error duplicating card:", error);
