@@ -8718,7 +8718,7 @@ app.put('/api/create-card-marketing/:listId/:marketingId', async (req, res) => {
         RETURNING id`,
             [
                 listId,
-                `'New Project' - ${marketing.buyer_name || 'Unknown'} - (${marketing.account_name || '-'}) - ${marketing.order_type_name || 'N/A'} - ${lastFiveDigits}`,
+                `'New Project' - ${marketing.buyer_name || ''} - (${marketing.account_name || ''}) - ${lastFiveDigits} - ${marketing.order_type_name || ''}`,
                 description,
                 nextPosition, // posisi terakhir
                 marketing.deadline
