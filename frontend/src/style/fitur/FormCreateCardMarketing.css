@@ -6,7 +6,7 @@
   width: 100%;
   margin: auto;
   background-color: #fff;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
 }
 
 /* Styling untuk header */
@@ -31,12 +31,12 @@
   border: 1px solid white;
   border-radius: 8px;
   padding: 5px;
-  color: white;
   background: linear-gradient(90deg, #7246eb, #532189);
 }
 
 .mini-icon {
   font-size: 15px;
+  color: white;
 }
 
 .cc-header p {
@@ -118,7 +118,7 @@
   border: 1px solid #5D12EB;
 }
 
-/* SEARCH DROPDOWN  */
+/* BOARD SEARCH DROPDOWN  */
 .form-create-card {
   border-radius: 6px;
   /* background-color: white; */
@@ -190,6 +190,10 @@
   color: #333;
 }
 
+.cc-select-list .cc-lists-dropdown {
+  position: relative;
+}
+
 .cc-lists-dropdown .cc-lists-btn {
   border: 1px solid #ddd;
   padding: 5px;
@@ -198,6 +202,7 @@
   justify-content: space-between;
   width: 100%;
   font-size: 10px;
+  /* position: relative; */
 }
 
 .cc-lists-btn:hover {
@@ -281,6 +286,66 @@
 
 .cc-search-input:focus {
   border-color: #007bff;
+}
+
+/* DROPDOWN SEARCH  LIST  */
+.form-list-dropdown {
+  /* border: 1px solid red; */
+  border-radius: 6px;
+  height: 50vh;
+  position: absolute;
+  z-index: 99;
+  top: 100%;
+  width: 100%;
+}
+
+.form-list-dropdown input {
+  /* border: 1px solid #ddd; */
+  border: 1px solid #5D12EB;
+  border-radius: 4px;
+  background-color: white;
+  font-size: 11px;
+  padding: 5px;
+  width: 100%;
+  color: #333;
+}
+
+.form-list-dropdown input:hover {
+  background-color: white;
+  border: 1px solid #5D12EB;
+}
+
+.form-list-dropdown input:focus {
+  outline: none;
+  border: 1px solid #5D12EB;
+}
+
+.form-list-dropdown .ccl-menu {
+  border: 1px solid #5D12EB;
+  /* border: 1px solid orange; */
+  border-radius: 4px;
+  position: absolute;
+  background-color: white;
+  margin-top: 0px;
+  box-shadow: 0px 4px 8px #6f30dc54;
+  height: 30vh;
+  width: 100%;
+  /* width: 200px; */
+  overflow-y: auto;
+  list-style: none;
+  padding: 5px 0px;
+}
+
+.form-list-dropdown .ccl-item {
+  /* border: 1px solid green; */
+  border-radius: 4px;
+  padding: 5px;
+  font-size: 12px;
+}
+
+.form-list-dropdown .ccl-item:hover {
+  background-color: #ede6fb;
+  color: #5D12EB;
 }
 
 /* MEDIA QUERY  */
