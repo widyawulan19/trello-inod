@@ -378,16 +378,16 @@ const handleExportToSheets = async (marketingId) => {
             {/* <h4>DASHBOARD DATA MARKETING</h4> */}
           </div>
           <div className="dml-desc">
-            <strong>Selamat datang di pusat informasi Data Marketing !</strong>
+            {/* <strong>Selamat datang di pusat informasi Data Marketing !</strong> */}
             <p>
-              Halaman ini dirancang untuk meningkatkan transparansi dan efisiensi dalam proses pemasaran—dari awal order hingga proyek selesai.
+             Selamat datang di pusat informasi Data Marketing ! <br /> Halaman ini dirancang untuk meningkatkan transparansi dan efisiensi dalam proses pemasaran—dari awal order hingga proyek selesai.
             </p>
           </div>
          
         </div>
         <div className="dmc-right">
           <div className="dmcr-btn">
-            <button onClick={handleToReportPage}>REPORT</button>
+            <button onClick={handleToReportPage}>REPORT DATA</button>
             <button onClick={handleShowForm}>
                 {/* <HiOutlinePlus className="dm-icon"/> */}
                 NEW DATA
@@ -403,129 +403,116 @@ const handleExportToSheets = async (marketingId) => {
           </div>
           <div className="mdc-search-container">
             <div className="dm-search-box">
+              <HiOutlineSearch className="dms-icon"/>
                 <input
                 type="search"
                 placeholder="Search here ..."
                 onChange={(e) => handleFilterData(e.target.value)}
                 />
-                <HiOutlineSearch className="dms-icon"/>
             </div>
-            {/* <div className="dm-search-export">
-              <ExportDataMarketing/>
-            </div>    */}
           </div>
-        </div>
 
-      {/* SHOW FORM  */}
-        {showFormCreate && (
-            <div className="dmf-cont">
-                <div className="dmf-content">
-                    {/* <FormDataMarketing onClose={handleCloseForm} fetchData={fetchData}/> */}
-                    <FormMarketingExample onClose={handleCloseForm} fetchData={fetchDataMarketing}/>
-                </div>
-            </div>
-        )}
-      </div>
-
-      {/* SHOW DATA */}
-      {showData && (
-        <div className="show-data-container">
-          <div className="sdc-header">
-            <h5><HiMiniTableCells className="h5-icons"/> Show Data By:</h5>
-            <FaXmark onClick={handleCloseShowData} style={{cursor:'pointer'}}/>
-          </div>
-          <div className="sdc-container">
-            <button onClick={() => { setFilterType("SEMUA DATA MARKETING"); setShowData(false); }}>
-              All Data
-            </button>
-            <button onClick={() => { setFilterType("DATA MARKETING DENGAN CARD"); setShowData(false); }}>
-              Data Marketing Dengan Card
-            </button>
-            <button onClick={() => { setFilterType("DATA MARKETING TANPA CARD"); setShowData(false); }}>
-              Data Marketing Tanpa Card
-            </button>
-            <button onClick={() => { setFilterType("DATA MARKETING ACCEPTED"); setShowData(false); }}>
-              Data Marketing Accepted
-            </button>
-            <button onClick={() => { setFilterType("DATA MARKETING NOT ACCEPTED"); setShowData(false); }}>
-              Data Marketing Not Accepted
-            </button>
-          </div>
-        </div>
-      )}
-
-
-
-      {/* SHOW DATA FILTER  */}
-      {showFilter && (
-        <div className="filter-container">
-          <div className="filter-header">
-            <h5><HiChevronUpDown className="h5-icons"/>Filter Data By:</h5>
-            <FaXmark onClick={handleCloseFilterButton} style={{cursor:'pointer'}}/>
-          </div>
-          <div className="filter-content">
-            <div className="filter-box">
-              <button onClick={()=> setDropdownOpen(!dropdownOpen)} className="filter-btn">
-                <HiChevronUpDown/>
-                {shortType ? shortType.replace('_', ' ') : 'Filter Type'}
-              </button>
-              {dropdownOpen && (
-                  <ul className='ul-filter'>
-                    <li
-                      className="li-filter"
-                      onClick={() => {
-                        setShortType('buyer_name');
-                        setDropdownOpen(false);
-                      }}
-                    >
-                      Buyer Name
-                    </li>
-                    {/* <li
-                      className="li-filter"
-                      onClick={() => {
-                        setShortType('order_number');
-                        setDropdownOpen(false);
-                      }}
-                    >
-                      Order Number
-                    </li> */}
-                    <li
-                      className="li-filter"
-                      onClick={() => {
-                        setShortType('account_name');
-                        setDropdownOpen(false);
-                      }}
-                    >
-                      Account
-                    </li>
-                    <li
-                      className="li-filter"
-                      onClick={() => {
-                        setShortType('input_by_name');
-                        setDropdownOpen(false);
-                      }}
-                    >
-                      Marketing Name
-                    </li>
-                  </ul>
-                )}
-            </div>
-            {/* Input Field */}
-              <div className="filter-input">
-                {shortType && (
-                  <input
-                    type="text"
-                    name={shortType}
-                    value={filters[shortType]}
-                    onChange={handleFilterChange}
-                    placeholder={`Filter by ${shortType.replace('_', ' ')}`}
-                    className="w-full p-2 border rounded"
-                  />
-                )}
+          {/* SHOW DATA */}
+          {showData && (
+            <div className="show-data-container">
+              <div className="sdc-header">
+                <h5><HiMiniTableCells className="h5-icons"/> Show Data By</h5>
+                <FaXmark onClick={handleCloseShowData} style={{cursor:'pointer'}}/>
               </div>
-          </div>
+              <div className="sdc-container">
+                <button onClick={() => { setFilterType("SEMUA DATA MARKETING"); setShowData(false); }}>
+                  All Data
+                </button>
+                <button onClick={() => { setFilterType("DATA MARKETING DENGAN CARD"); setShowData(false); }}>
+                  Data Marketing Dengan Card
+                </button>
+                <button onClick={() => { setFilterType("DATA MARKETING TANPA CARD"); setShowData(false); }}>
+                  Data Marketing Tanpa Card
+                </button>
+                <button onClick={() => { setFilterType("DATA MARKETING ACCEPTED"); setShowData(false); }}>
+                  Data Marketing Accepted
+                </button>
+                <button onClick={() => { setFilterType("DATA MARKETING NOT ACCEPTED"); setShowData(false); }}>
+                  Data Marketing Not Accepted
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* SHOW FORM  */}
+          {showFormCreate && (
+              <div className="dmf-cont">
+                  <div className="dmf-content">
+                      {/* <FormDataMarketing onClose={handleCloseForm} fetchData={fetchData}/> */}
+                      <FormMarketingExample onClose={handleCloseForm} fetchData={fetchDataMarketing}/>
+                  </div>
+              </div>
+          )}
+
+          {/* SHOW DATA FILTER  */}
+          {showFilter && (
+            <div className="filter-container">
+              <div className="filter-header">
+                <h5><HiChevronUpDown className="h5-icons"/>Filter Data By</h5>
+                <FaXmark onClick={handleCloseFilterButton} style={{cursor:'pointer'}}/>
+              </div>
+              <div className="filter-content">
+                <div className="filter-box">
+                  <button onClick={()=> setDropdownOpen(!dropdownOpen)} className="filter-btn">
+                    <HiChevronUpDown/>
+                    {shortType ? shortType.replace('_', ' ') : 'Filter Type'}
+                  </button>
+                  {dropdownOpen && (
+                      <ul className='ul-filter'>
+                        <li
+                          className="li-filter"
+                          onClick={() => {
+                            setShortType('buyer_name');
+                            setDropdownOpen(false);
+                          }}
+                        >
+                          Buyer Name
+                        </li>
+                        <li
+                          className="li-filter"
+                          onClick={() => {
+                            setShortType('account_name');
+                            setDropdownOpen(false);
+                          }}
+                        >
+                          Account
+                        </li>
+                        <li
+                          className="li-filter"
+                          onClick={() => {
+                            setShortType('input_by_name');
+                            setDropdownOpen(false);
+                          }}
+                        >
+                          Marketing Name
+                        </li>
+                      </ul>
+                    )}
+                </div>
+                {/* Input Field */}
+                  <div className="filter-input">
+                    {shortType && (
+                      <input
+                        type="text"
+                        name={shortType}
+                        value={filters[shortType]}
+                        onChange={handleFilterChange}
+                        placeholder={`Filter by ${shortType.replace('_', ' ')}`}
+                        className="w-full p-2 border rounded"
+                      />
+                    )}
+                  </div>
+              </div>
+            </div>
+          )}
         </div>
-      )}
+      </div>
+      
 
       <div className="data-marketing-form">
         {loading ? (
@@ -535,44 +522,44 @@ const handleExportToSheets = async (marketingId) => {
             <table cellPadding="10" cellSpacing="0">
               <thead>
                 <tr>
-                  <th style={{ borderTopLeftRadius: '8px'}}>No</th>
-                  <th>Project Number</th>
-                  <th>Input By</th>
-                  <th>Accepted By</th>
+                  <th style={{ borderTopLeftRadius: '8px'}}>NO</th>
+                  <th>PROJECT NUMBER</th>
+                  <th>INPUT BY</th>
+                  <th>ACCEPTED BY</th>
                   <th>STATUS</th>
-                  <th>
+                  <th  style={{ textAlign:'left'}}>
                     <div className="dm-th">
-                      Buyer Name 
+                      BUYER NAME 
                       <HiArrowsUpDown/>
                     </div>
                   </th>
                   <th>
                     <div className="dm-th">
-                      Order Number
+                      ORDER NUMBER
                       <HiArrowsUpDown/>
                     </div>
                   </th>
-                  <th>
+                  <th style={{ textAlign:'left'}}>
                     <div className="dm-th">
-                      Account
+                      ACCOUNT
                       <HiArrowsUpDown/>
                     </div>
                   </th>
-                  <th>Deadline</th>
-                  <th>Code Order</th>
-                  <th>Jumlah Track</th>
-                  <th>Order Type</th>
-                  <th>Offer Type</th>
-                  <th>Jenis Track</th>
-                  <th>Genre</th>
-                  <th>Price Normal $</th>
-                  <th>Price Discount $</th>
-                  <th>Discount</th>
-                  <th>Kupon Diskon</th>
-                  <th>Total Price $</th>
-                  <th>Project Type</th>
-                  <th>Duration</th>
-                  <th style={{ borderTopRightRadius: '8px', textAlign:'center' }}>Action</th>
+                  <th>DEADLINE</th>
+                  <th>CODE ORDER</th>
+                  <th>JUMLAH TRACK</th>
+                  <th>ORDER TYPE</th>
+                  <th>OFFER TYPE</th>
+                  <th style={{ textAlign:'left'}}>JENIS TRACK</th>
+                  <th>GENRE</th>
+                  <th>PRICE NORMAL</th>
+                  <th>PRICE DISCOUNT</th>
+                  <th>DISCOUNT</th>
+                  <th>KUPON DISKON</th>
+                  <th>TOTAL PRICE </th>
+                  <th>PROJECT TYPE</th>
+                  <th>DURATION</th>
+                  <th style={{ borderTopRightRadius: '8px', textAlign:'center' }}>ACTION</th>
                 </tr>
               </thead>
               <tbody>
@@ -584,15 +571,15 @@ const handleExportToSheets = async (marketingId) => {
 
                   return (
                   <tr key={item.marketing_id}>
-                    <td className="number-container">
-                      {/* {index + 1} */}
+                    <td className="nomor-box">
                       <div className="number-box">
                         {index + 1}
-                        <span className="icon-position">
+                        <div className="icon-position">
                           <BootstrapTooltip title='Move Up' placement='top'>
                             <button
                               onClick={() => handleMove(item.marketing_id, "up")}
-                              style={{ padding:'2px', fontSize:'11px'}}
+                              className="position-btn"
+                              style={{ padding:'0px', fontSize:'11px'}}
                             >
 
                                 <HiChevronUp/>
@@ -601,20 +588,23 @@ const handleExportToSheets = async (marketingId) => {
                           <BootstrapTooltip title='Move Down' placement='top'>
                           <button
                             onClick={() => handleMove(item.marketing_id, "down")}
-                            style={{ padding:'2px', fontSize:'11px'}}
+                            className="position-btn"
+                            style={{ padding:'0px', fontSize:'11px'}}
                           >
                               <HiChevronDown/>
                           </button>
                           </BootstrapTooltip>
-                        </span>
+                        </div>
+                      <div className="number-box">
+                      </div>
                       </div>
                     </td>
-                    <td className="input-container" 
+                    <td className="project-number-box" 
                       onClick={()=> handleShowDetail(item.marketing_id)}
                       >
                       {item.project_number}
                       </td>
-                    <td className="input-container" >
+                    <td className="input-box-container" >
                       {item.input_by_name || "-"}
                       {hasCardId(item) && (
                         <span
@@ -650,8 +640,8 @@ const handleExportToSheets = async (marketingId) => {
                       </button>
                     </td>
 
-                    <td className="acc-container">{item.acc_by_name}</td>
-                    <td className="status-container">
+                    <td className="acc-box-container">{item.acc_by_name}</td>
+                    <td className="status-box-container" style={{textAlign:'center' }}>
                         <span style={{
                           padding: "2px 8px",
                           borderRadius: "12px",
@@ -662,32 +652,32 @@ const handleExportToSheets = async (marketingId) => {
                           {item.accept_status_name}
                         </span>
                       </td>
-                    <td className="buyer-name-container">{item.buyer_name}</td>
-                    <td className="order-number-container" >{item.order_number}</td>
-                    <td className="account-container">{item.account_name}</td>
-                    <td className="deadline-container" style={{textAlign:'center' }}>{new Date(item.deadline).toLocaleDateString()}</td>
-                    <td className="code-order-container">{item.code_order}</td>
-                    <td style={{textAlign:'center'}}>{item.jumlah_track}</td>
-                    <td className="order-type-container">{item.order_type_name}</td>
-                    <td className="offer-type-container">{item.offer_type_name}</td>
-                    <td className="jenis-track-container" >{item.track_type_name}</td>
-                    <td className="genre-container">{item.genre_name}</td>
-                    <td className="price-normal-container" style={{textAlign:'center', color:'#1E1E1E'}}>{item.price_normal}</td>
-                    <td className="price-discount-container" style={{textAlign:'center', color:'#E53935'}}>
+                    <td className="buyer-box">{item.buyer_name}</td>
+                    <td className="order-number-box" style={{textAlign:'center' }} >{item.order_number}</td>
+                    <td className="account-box" style={{textAlign:'center' }}>{item.account_name}</td>
+                    <td className="deadline-box" style={{textAlign:'center' }}>{new Date(item.deadline).toLocaleDateString()}</td>
+                    <td className="code-order-box">{item.code_order}</td>
+                    <td className="jumlah-track-box" style={{textAlign:'center'}}>{item.jumlah_track}</td>
+                    <td className="order-type-box">{item.order_type_name}</td>
+                    <td className="offer-type-box">{item.offer_type_name}</td>
+                    <td className="jenis-track-box" >{item.track_type_name}</td>
+                    <td className="genre-box">{item.genre_name}</td>
+                    <td className="price-normal-box" style={{textAlign:'center', color:'#1E1E1E'}}>{item.price_normal}</td>
+                    <td className="price-discount-box" style={{textAlign:'center', color:'#E53935'}}>
                       {getPriceDiscount(item.price_normal, item.discount)
                             ? ` ${getPriceDiscount(item.price_normal, item.discount)}`
                             : "-"}
                     </td>
-                    <td className="discount-container" style={{textAlign:'center', color:'#388E3C'}}>{item.discount}</td>
-                    <td className="discount-container" style={{textAlign:'center', color:'#388E3C'}}>{item.kupon_diskon_name}</td>
-                    <td className="basic-price-container" style={{color:'#388E3C',textAlign:'center'}}> 
+                    <td className="discount-box" style={{textAlign:'center', color:'#388E3C'}}>{item.discount}</td>
+                    <td className="coupon-box" style={{textAlign:'center', color:'#388E3C'}}>{item.kupon_diskon_name}</td>
+                    <td className="basic-price-box" style={{color:'#388E3C',textAlign:'center'}}> 
                       {getBasicPrice(item.price_normal, item.discount)
                             ? ` ${getBasicPrice(item.price_normal, item.discount)}`
                             : "-"}
                     </td>
-                    <td className="project-type-container" >{item.project_type_name}</td>
-                    <td className="duration-container">{item.duration}</td>
-                    <td className="action-container">
+                    <td className="project-type-box" >{item.project_type_name}</td>
+                    <td className="duration-box">{item.duration}</td>
+                    <td className="action-box">
                       <div className="action-data-marketing">
                         <BootstrapTooltip title='View Data' placement='top'>
                             <button onClick={()=> handleShowDetail(item.marketing_id)}>
