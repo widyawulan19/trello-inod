@@ -80,3 +80,31 @@ const HomeNotes = () => {
 };
 
 export default HomeNotes;
+
+
+<td className="number-container">
+                      {index + 1}
+                      <div className="icon-position">
+                          <BootstrapTooltip title='Move Up' placement='top'>
+                            <button
+                              onClick={() => handleMove(item.marketing_id, "up")}
+                              className="position-btn"
+                              style={{ padding:'0px', fontSize:'11px'}}
+                            >
+
+                                <HiChevronUp/>
+                            </button>
+                          </BootstrapTooltip>
+                          <BootstrapTooltip title='Move Down' placement='top'>
+                          <button
+                            onClick={() => handleMove(item.marketing_id, "down")}
+                            className="position-btn"
+                            style={{ padding:'0px', fontSize:'11px'}}
+                          >
+                              <HiChevronDown/>
+                          </button>
+                          </BootstrapTooltip>
+                        </div>
+                      <div className="number-box">
+                      </div>
+                    </td>

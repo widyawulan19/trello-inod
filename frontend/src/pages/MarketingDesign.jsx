@@ -526,7 +526,7 @@ const handleExportToSheet = async (marketingDesignId) => {
                 <thead>
                   <tr>
                     <th className='rounded-tl-md' style={{textAlign:'center'}} >NO</th>
-                    <th>Project Number</th>
+                    <th>PROJECT NUMBER</th>
                     <th style={{textAlign:'center'}}>INPUT BY</th>
                     <th style={{textAlign:'center'}}>ACC BY</th>
                     <th style={{textAlign:'center'}}>STATUS</th>
