@@ -291,7 +291,8 @@ const transporter = nodemailer.createTransport({
     }
 })
 
-// COUNTERS 
+// COUNTERS
+//1. DESIGN COUNTERS
 // ✅ GET endpoint — ambil data counter untuk "marketing_design"
 app.get('/api/counters-design', async (req, res) => {
     try {
@@ -340,6 +341,54 @@ app.put('/api/counters-design', async (req, res) => {
     }
 });
 
+//2. MARKETING MUSIC COUNTERS
+// ✅ GET endpoint — ambil data counter untuk "marketing_design"
+app.get('/api/counters-musik', async (req, res) => {
+    try {
+        const result = await client.query(
+            'SELECT * FROM counters WHERE counter_name = $1',
+            ['marketing']
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Counter marketing not found' });
+        }
+
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error('Error fetching marketing counter:', err);
+        res.status(500).json({ error: 'Failed to fetch marketing counter' });
+    }
+});
+
+// ✅ PUT endpoint — update project & order number untuk "marketing_design"
+app.put('/api/counters-musik', async (req, res) => {
+    const { current_order_number, current_project_number } = req.body;
+
+    try {
+        const result = await client.query(
+            `UPDATE counters
+       SET current_order_number = $1,
+           current_project_number = $2,
+           last_updated = CURRENT_TIMESTAMP
+       WHERE counter_name = 'marketing'
+       RETURNING *`,
+            [current_order_number, current_project_number]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Counter marketing not found' });
+        }
+
+        res.json({
+            message: 'Counter marketing updated successfully',
+            data: result.rows[0],
+        });
+    } catch (err) {
+        console.error('Error updating marketing counter:', err);
+        res.status(500).json({ error: 'Failed to update marketing counter' });
+    }
+});
 // END COUNTERS 
 
 
