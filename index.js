@@ -291,8 +291,59 @@ const transporter = nodemailer.createTransport({
     }
 })
 
+// COUNTERS 
+// ✅ GET endpoint — ambil data counter untuk "marketing_design"
+app.get('/api/counters-design', async (req, res) => {
+    try {
+        const result = await client.query(
+            'SELECT * FROM counters WHERE counter_name = $1',
+            ['marketing_design']
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Counter marketing_design not found' });
+        }
+
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error('Error fetching marketing_design counter:', err);
+        res.status(500).json({ error: 'Failed to fetch marketing_design counter' });
+    }
+});
+
+// ✅ PUT endpoint — update project & order number untuk "marketing_design"
+app.put('/api/counters-design', async (req, res) => {
+    const { current_order_number, current_project_number } = req.body;
+
+    try {
+        const result = await client.query(
+            `UPDATE counters
+       SET current_order_number = $1,
+           current_project_number = $2,
+           last_updated = CURRENT_TIMESTAMP
+       WHERE counter_name = 'marketing_design'
+       RETURNING *`,
+            [current_order_number, current_project_number]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Counter marketing_design not found' });
+        }
+
+        res.json({
+            message: 'Counter marketing_design updated successfully',
+            data: result.rows[0],
+        });
+    } catch (err) {
+        console.error('Error updating marketing_design counter:', err);
+        res.status(500).json({ error: 'Failed to update marketing_design counter' });
+    }
+});
+
+// END COUNTERS 
+
+
 // DATA MARKETING DESIGN 
-// Endpoint untuk export data Marketing Design ke Google Sheets
 // Endpoint untuk export data Design ke Google Sheets
 app.post("/api/export-design-to-sheet", async (req, res) => {
     try {
