@@ -80,7 +80,8 @@ const Card=({
     attributes,
   listeners,
   setNodeRef,
-  dragHandleCardProps
+  dragHandleCardProps,
+  onNavigateToCard,
 })=> {
     // console.log('cards diterima:', card)
     const { workspaceId, boardId} = useParams();
@@ -240,9 +241,10 @@ const Card=({
     }
 
     //navigate to newCardDetail
-    const handleNavigateToCardDetail = () =>{
-        navigate(`/layout/workspaces/${workspaceId}/board/${boardId}/lists/${listId}/cards/${card.id} `)
-    }
+    // const handleNavigateToCardDetail = () =>{
+    //     navigate(`/layout/workspaces/${workspaceId}/board/${boardId}/lists/${listId}/cards/${card.id} `)
+    // }
+    
 
     const handleShowModal = () =>{
         setShowModal(!showModal)
@@ -410,9 +412,9 @@ const Card=({
      <div className='card-container'>
         <div className="cc-top-header">
             <div className="cctop-status">
-                <div className="card-icon" {...dragHandleCardProps}>
+                <div className="cctop-icon" {...dragHandleCardProps}>
                     {/* <HiOutlineCreditCard /> */}
-                    <BsCreditCard2FrontFill className='mini-icon'/>
+                    <BsCreditCard2FrontFill className='mini-cctop'/>
                 </div>
                 <CardSelectedProperties cardId={card.id}/>
                 {currentStatus ?(
@@ -573,7 +575,12 @@ const Card=({
                 </div>
             </div>
             <div className="member">
-                <button onClick={handleNavigateToCardDetail}>View Detail</button>
+                <button 
+                    // onClick={handleNavigateToCardDetail}
+                    onClick={() => onNavigateToCard(listId, card.id)}
+                    >
+                    View Detail
+                </button>
             </div>
         </div>
         <div className="cfooter">

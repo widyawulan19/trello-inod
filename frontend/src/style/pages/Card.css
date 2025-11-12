@@ -37,8 +37,13 @@
     justify-content: flex-start;
 }
 
-.mini-icon {
-    font-size: 12px;
+.cctop-status .cctop-icon {
+    /* font-size: 12px; */
+
+}
+
+.cctop-icon .mini-cctop {
+    font-size: 15px;
     color: #6a11cb;
 }
 

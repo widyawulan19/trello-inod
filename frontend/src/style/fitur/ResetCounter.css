@@ -1,0 +1,122 @@
+.counter-card {
+    /* max-width: 600px; */
+    width: 40%;
+    height: fit-content;
+    margin: 40px auto;
+    background: linear-gradient(135deg, #5f2eea, #7c83fd);
+    /* background: linear-gradient(to bottom, #6E30DC, #5D12EB); */
+    padding: 10px;
+    border-radius: 16px;
+    border: 1px solid #5f2eea;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.counter-card-musik {
+    /* max-width: 600px; */
+    width: 70%;
+    height: fit-content;
+    margin: 40px auto;
+    background: linear-gradient(135deg, #5f2eea, #7c83fd);
+    /* background: linear-gradient(to bottom, #6E30DC, #5D12EB); */
+    padding: 10px;
+    border-radius: 16px;
+    border: 1px solid #5f2eea;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.counter-card .counter-header,
+.counter-card-musik .counter-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* border: 1px solid red; */
+    margin-bottom: 16px;
+}
+
+.counter-header .title {
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    margin: 0px;
+    padding: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.counter-info {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.counter-info p {
+    margin: 4px 0;
+    font-size: 12px;
+}
+
+.updated {
+    color: #ddd;
+    font-size: 0.9rem;
+}
+
+.counter-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 2px 10px;
+    /* border: 1px solid red; */
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+input {
+    padding: 5px 10px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    color: #333;
+    font-size: 12px;
+    border: 1px solid white;
+    background-color: white;
+}
+
+input:hover {
+    border: 1px solid #5f2eea;
+    background-color: transparent;
+    color: white;
+}
+
+.update-btn {
+    background: #00c9a7;
+    color: white;
+    font-weight: bold;
+    font-size: 13px;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 10px;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.2s ease;
+}
+
+.update-btn:hover {
+    background: #00b08f;
+}
+
+.update-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}

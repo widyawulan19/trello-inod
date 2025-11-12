@@ -22,6 +22,8 @@ import { FaXmark } from 'react-icons/fa6';
 import FormMarketingDesignExample from '../example/FormMarketingDesignExample';
 import NewEditMarketingDesign from './NewEditMarketingDesign';
 import { AiFillCheckCircle } from 'react-icons/ai';
+import { MdLockReset } from 'react-icons/md';
+import ResetCounterDesign from '../fitur/ResetCounterDesgin';
 
 const MarketingDesign=()=> {
     //STATE
@@ -48,6 +50,7 @@ const MarketingDesign=()=> {
     const [shortType, setShortType] = useState('');
     const [isExported, setIsExported] = useState(false);
     const [designTransfile,setDesignTransfile] = useState([]);
+    const [showFormCounter, setShowFormCounter] = useState(false);
 
     //STATE FETCH DATA MARKETING
     const [filters, setFilters] = useState({
@@ -266,6 +269,13 @@ const MarketingDesign=()=> {
       return item.card_id !== null && item.card_id !== undefined && item.card_id !== "";
     };
 
+    //SHOW form counter 
+    const handleShowCounter = async () =>{
+      setShowFormCounter(!showFormCounter)
+    }
+    const handleCloseCounter = async() =>{
+      setShowFormCounter(false);
+    }
 
     //fungsi data marketinf design export
     const fetchDataTransfile = async () =>{
@@ -404,10 +414,18 @@ const handleExportToSheet = async (marketingDesignId) => {
                     />
                     <HiOutlineSearch className='mdh-search-icon'/>
                 </div>
-                {/* <div className="export-btn">
-                  <ExportMarketingDesign/>
-                </div> */}
+                <div className="reset-btn" onClick={handleShowCounter}>
+                  <MdLockReset className='reset-icon'/> Reset Counter
+                </div>
+               
               </div>
+
+              {/* SHOW FORM RESET COUNTER  */}
+              {showFormCounter && (
+                <div className="reset-form">
+                  <ResetCounterDesign onClose={handleCloseCounter}/>
+                </div>
+              )}
             </div>
             {/* SHOW COMPONENT  */}
             {showFormCreate && (
