@@ -50,6 +50,52 @@ export const searchCardsByUser = (keyword, userId) => {
   });
 };
 
+// COUNTERS MUSIK
+// ✅ Ambil data counter marketing_design
+export const getMarketingMusicCounter = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/counters-musik`);
+    return response.data;
+  } catch (error) {
+    console.error('❌ Gagal ambil data counter:', error);
+    throw error;
+  }
+};
+
+// ✅ Update counter marketing_design
+export const updateMarketingMusicCounter = async (data) => {
+  try {
+    const response = await axios.put(`${API_URL}/counters-musik`, data);
+    return response.data;
+  } catch (error) {
+    console.error('❌ Gagal update counter:', error);
+    throw error;
+  }
+};
+
+//COUNTERS DESIGN
+// ✅ Ambil data counter marketing_design
+export const getMarketingDesignCounter = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/counters-design`);
+    return response.data;
+  } catch (error) {
+    console.error('❌ Gagal ambil data counter design:', error);
+    throw error;
+  }
+};
+
+// ✅ Update counter marketing_design
+export const updateMarketingDesignCounter = async (data) => {
+  try {
+    const response = await axios.put(`${API_URL}/counters-design`, data);
+    return response.data;
+  } catch (error) {
+    console.error('❌ Gagal update counter design:', error);
+    throw error;
+  }
+};
+
 // PERSONAL NOTES 
 export const getAllPersonalNotes = () => axios.get(`${API_URL}/all-note`);
 export const getNotesByUserId = (userId) => axios.get(`${API_URL}/personal-note/user/${userId}`);
