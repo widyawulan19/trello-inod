@@ -59,6 +59,8 @@ import DataDelete from '../pages/DataDelete';
 import Develop from '../pages/Develop';
 import MarketingChart from '../notes/MarketingChart';
 import Dummy from '../notes/Dummy';
+import ResetCounter from '../fitur/ResetCounter';
+import MasterDataMusik from '../pages/MasterDataMusik';
 
 const AppRoutes=()=> {
   return (
@@ -126,6 +128,8 @@ const AppRoutes=()=> {
         <Route path='data-delete' element={<DataDelete/>}/>
         <Route path='develop' element={<Develop/>}/>
         <Route path='marketing-chart' element={<Dummy/>}/>
+        <Route path='counter-music' element={<ResetCounter/>}/>
+        <Route path='data-master-musik' element={<MasterDataMusik/>}/>
         </Route>
     </Routes>
   )

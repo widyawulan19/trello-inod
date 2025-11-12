@@ -18,6 +18,8 @@ import ExportDataMarketing from "../exports/ExportDataMarketing";
 import { FaXmark } from "react-icons/fa6";
 import { AiFillCheckCircle } from "react-icons/ai";
 import FormMarketingExample from "../example/FormMarketingExample";
+import { MdLockReset } from "react-icons/md";
+import ResetCounter from "../fitur/ResetCounter";
 
 const DataMarketing = () => {
   const location = useLocation();
@@ -64,7 +66,15 @@ const DataMarketing = () => {
   const showFilterRef = OutsideClick(()=> setShowFilter(false))
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [shortType, setShortType] = useState('');
+  const [showCounterReset, setShowCounterReset] = useState(false);
 
+  // FUNGSI SHOW FORM RESET COUNTER 
+  const handleShowCounterReset = () =>{
+    setShowCounterReset(!showCounterReset)
+  }
+  const handleCloseCounterReset = () =>{
+    setShowCounterReset(false)
+  }
 
 //   FUNGSI SHOW DETAIL 
   const handleShowDetail = (marketingId)=>{
@@ -171,6 +181,10 @@ const handleCloseForm = () =>{
     navigate(`/layout/data-marketing/${marketinId}`)
   }
 
+  const handleToDataMaster = () =>{
+    navigate(`/layout/data-master-musik`)
+  }
+
   
 
 //FUNGSI DELETE CONFIRM
@@ -186,6 +200,7 @@ const confirmDelete = async()=>{
     showSnackbar('Data Marketing deleted successfully', 'success')
     console.log('Berhasil menghapus data marketing', response.data)
     fetchData() 
+    fetchDataMarketing()
   }catch(error){
     showSnackbar('Failed to delete Data Marketing','error')
     console.log('Error deleting data marketing', error)
@@ -383,8 +398,18 @@ const handleExportToSheets = async (marketingId) => {
              Selamat datang di pusat informasi Data Marketing ! <br /> Halaman ini dirancang untuk meningkatkan transparansi dan efisiensi dalam proses pemasaran—dari awal order hingga proyek selesai.
             </p>
           </div>
-         
         </div>
+
+        {/* SHOW FORM  */}
+          {showFormCreate && (
+              <div className="dmf-cont">
+                  <div className="dmf-content">
+                      {/* <FormDataMarketing onClose={handleCloseForm} fetchData={fetchData}/> */}
+                      <FormMarketingExample onClose={handleCloseForm} fetchData={fetchDataMarketing}/>
+                  </div>
+              </div>
+          )}
+
         <div className="dmc-right">
           <div className="dmcr-btn">
             <button onClick={handleToReportPage}>REPORT DATA</button>
@@ -410,7 +435,21 @@ const handleExportToSheets = async (marketingId) => {
                 onChange={(e) => handleFilterData(e.target.value)}
                 />
             </div>
+            <button className="reset-btn" onClick={handleShowCounterReset}>
+              <MdLockReset className="reset-icon"/> Reset Counter
+            </button>
+            <button className="reset-btn" onClick={handleToDataMaster}>
+              Data Master
+            </button>
+            
           </div>
+
+          {/* SHOW FORM RESET COUNTER  */}
+          {showCounterReset && (
+              <div className="dmf-cont">
+                <ResetCounter onClose={handleCloseCounterReset} />
+              </div>
+          )}
 
           {/* SHOW DATA */}
           {showData && (
@@ -440,14 +479,13 @@ const handleExportToSheets = async (marketingId) => {
           )}
 
           {/* SHOW FORM  */}
-          {showFormCreate && (
+          {/* {showFormCreate && (
               <div className="dmf-cont">
                   <div className="dmf-content">
-                      {/* <FormDataMarketing onClose={handleCloseForm} fetchData={fetchData}/> */}
                       <FormMarketingExample onClose={handleCloseForm} fetchData={fetchDataMarketing}/>
                   </div>
               </div>
-          )}
+          )} */}
 
           {/* SHOW DATA FILTER  */}
           {showFilter && (
@@ -734,6 +772,7 @@ const handleExportToSheets = async (marketingId) => {
                   marketingId={selectedMarketingId}
                   onConfirm={confirmDelete}
                   onCancle={cancleDeleteDataMarketing}
+                  fetchDataMarketing={fetchDataMarketing}
                 />
             </table>
           </div>

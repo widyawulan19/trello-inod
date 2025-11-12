@@ -667,9 +667,21 @@ const NewCardDetail=({fetchBoardDetail})=> {
       
 
     //FUNCTION NAVIGATE
-    const handleNavigateToBoardList = () =>{
-        navigate(`/layout/workspaces/${workspaceId}/board/${boardId}`)
-    }
+    // const handleNavigateToBoardList = () =>{
+    //     navigate(`/layout/workspaces/${workspaceId}/board/${boardId}`)
+    // }
+    // const handleNavigateToBoardList = () => {
+    //     // biarkan sessionStorage masih menyimpan scrollLeft
+    //     setTimeout(() => {
+    //         navigate(`/layout/workspaces/${workspaceId}/board/${boardId}`);
+    //     }, 0);
+    // };
+// ⬅️ balik ke BoardList TANPA reset scroll
+  const handleNavigateToBoardList = () => {
+    navigate(`/layout/workspaces/${workspaceId}/board/${boardId}`);
+    // ❗ jangan hapus sessionStorage di sini!
+  };
+
 
     //function checklist
     const fetchTotalChecklist = async()=>{
@@ -828,7 +840,6 @@ const NewCardDetail=({fetchBoardDetail})=> {
         <div className="ncd-header">
             <div className="ncd-left">
                 <div className='ncd-board' onClick={handleNavigateToBoardList}>
-                    {/* <HiOutlineListBullet size={15} className='ncd-icon'/> */}
                     Board Lists
                 </div>
                 <HiOutlineChevronRight className='ncd-icon'/>

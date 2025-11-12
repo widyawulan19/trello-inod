@@ -457,6 +457,34 @@ const handleListDragEnd = async (event) => {
 };
 
 
+// 🔥 Simpan posisi scroll sebelum pindah ke Card Detail
+  const handleNavigateToCard = (listId, cardId) => {
+    const container = document.querySelector('.bl-body');
+    if (container) {
+      sessionStorage.setItem(`boardScroll-${boardId}`, container.scrollLeft);
+    }
+    navigate(`/layout/workspaces/${workspaceId}/board/${boardId}/lists/${listId}/cards/${cardId}`);
+  };
+
+  // 🧠 Restore posisi scroll setelah data list siap
+useEffect(() => {
+  if (!lists || lists.length === 0) return;
+
+  const savedScroll = sessionStorage.getItem(`boardScroll-${boardId}`);
+  if (!savedScroll) return;
+
+  // delay agak lama dikit buat pastiin DOM udah ready
+  const timeout = setTimeout(() => {
+    const container = document.querySelector('.bl-body');
+    if (container) {
+      container.scrollLeft = parseInt(savedScroll, 10);
+    }
+  }, 300); // bisa disesuaikan
+
+  return () => clearTimeout(timeout);
+}, [lists, boardId]);
+
+
 
   //CARD POSITION
 //   / 🔹 Saat drag dimulai
@@ -731,6 +759,7 @@ if (!userId) {
                                                                     cardsByList={cardsByList}
                                                                     activeCard={activeCard}
                                                                     dragHandleCardProps={dragHandleCardProps}
+                                                                    onNavigateToCard={handleNavigateToCard}
                                                                 />
                                                             )}
                                                             </SortableCardItem>
