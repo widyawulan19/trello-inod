@@ -229,7 +229,7 @@ app.use(express.json());
 app.use(cors({
     // origin: "*",
     // origin: ["http://localhost:3000", "https://inodstudiomanagement.vercel.app"],
-    origin: ["http://localhost:3000", "https://trello-inod.vercel.app"],
+    origin: ["http://localhost:3000", "https://trello-inod.vercel.app", "https://lightcyan-rhinoceros-611327.hostingersite.com"],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
