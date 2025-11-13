@@ -35,6 +35,7 @@ import { IoHome, IoLayers, IoTimeSharp } from 'react-icons/io5';
 import { HiViewBoards } from 'react-icons/hi';
 import { PiCardsFill } from 'react-icons/pi';
 import { handleArchive } from '../utils/handleArchive';
+import { generateSlug } from '../utils/Slug';
 
 function NewWorkspace() {
   const {user} = useUser();
@@ -135,46 +136,46 @@ function NewWorkspace() {
 
   //3. fungsi create workspace
   const handleSubmit = async(e) =>{
-    e.preventDefault();
-    try{
-      const response = await createWorkspace({name, description});
-      setName('');
-      setDescription('');
-      setAlertInfo({
-        severity: 'success',
-        title: 'Success',
-        message: 'successfully create a new workspace!',
-        showAlert: true,
-      });
-      // Re-fetch workspaces setelah berhasil create
-      const workspaceResult = await getWorkspacesByUserId(userId);
-      console.log("Response workspaceResult.data:", workspaceResult.data);
-      setWorkspaces(workspaceResult.data);
-      console.log('cworkspace successfully:', response.data); 
-    }catch(error){
-      setAlertInfo({
-        severity: 'error',
-        title: 'error',
-        message: 'Error to create a new workspace!',
-        showAlert: true,
-      });
-      console.error('Error create workspace:', error);
+      e.preventDefault();
+      try{
+        const response = await createWorkspace({name, description});
+        setName('');
+        setDescription('');
+        setAlertInfo({
+          severity: 'success',
+          title: 'Success',
+          message: 'successfully create a new workspace!',
+          showAlert: true,
+        });
+        // Re-fetch workspaces setelah berhasil create
+        const workspaceResult = await getWorkspacesByUserId(userId);
+        console.log("Response workspaceResult.data:", workspaceResult.data);
+        setWorkspaces(workspaceResult.data);
+        console.log('cworkspace successfully:', response.data); 
+      }catch(error){
+        setAlertInfo({
+          severity: 'error',
+          title: 'error',
+          message: 'Error to create a new workspace!',
+          showAlert: true,
+        });
+        console.error('Error create workspace:', error);
+      }
     }
-  }
-  //4.close alert
-  const handleCloseAlert = () => {
-    setAlertInfo({ ...alertInfo, showAlert: false });
+    //4.close alert
+    const handleCloseAlert = () => {
+      setAlertInfo({ ...alertInfo, showAlert: false });
+    };
+    //5. load all workspace user
+    const fetchWorkspaceUser = async () => {
+    try {
+      const workspaceResult = await getWorkspacesByUserId(userId); // ✅ ganti fungsi di sini
+      setWorkspaces(workspaceResult.data);
+      fetchAdmins(workspaceResult.data);  // opsional, kalau perlu
+    } catch (error) {
+      console.error("Error fetching workspace data:", error);
+    }
   };
-  //5. load all workspace user
-  const fetchWorkspaceUser = async () => {
-  try {
-    const workspaceResult = await getWorkspacesByUserId(userId); // ✅ ganti fungsi di sini
-    setWorkspaces(workspaceResult.data);
-    fetchAdmins(workspaceResult.data);  // opsional, kalau perlu
-  } catch (error) {
-    console.error("Error fetching workspace data:", error);
-  }
-};
 
   useEffect(() => {
     if (userId) {
@@ -207,10 +208,13 @@ function NewWorkspace() {
     
     return date.toLocaleDateString('id-ID', options); // Format tanggal Indonesia
   };
+  
   //8. navigate to workspace id
   const handleWorkspaceClick = (workspaceId, userId) =>{
     navigate(`/layout/workspaces/${workspaceId}`,{ state: { userId } })
   }
+
+
   //9.fetch data admin
   const fetchAdmins = async (workspaces) => {
     const adminData = {};
@@ -435,23 +439,23 @@ function NewWorkspace() {
 
 
     useEffect(() => {
-  if (userId && workspaces.length > 0) {
-    fetchSummaries(workspaces);
-    fetchAdmins(workspaces); // bisa jalan barengan
+      if (userId && workspaces.length > 0) {
+        fetchSummaries(workspaces);
+        fetchAdmins(workspaces); // bisa jalan barengan
+      }
+    }, [userId, workspaces]);
+
+  // SHOW DETAIL WORKSPACE 
+  const handleShowWorkspace = (workspaceId) => {
+    setDetailWorkspace((prev) => ({
+      ...prev,
+      [workspaceId]: !prev[workspaceId]  // toggle show/hide
+    }));
+  };
+
+  const handleCloseDetail = () =>{
+    setDetailWorkspace(false)
   }
-}, [userId, workspaces]);
-
-// SHOW DETAIL WORKSPACE 
-const handleShowWorkspace = (workspaceId) => {
-  setDetailWorkspace((prev) => ({
-    ...prev,
-    [workspaceId]: !prev[workspaceId]  // toggle show/hide
-  }));
-};
-
-const handleCloseDetail = () =>{
-  setDetailWorkspace(false)
-}
 
 
  if (!userId) {
