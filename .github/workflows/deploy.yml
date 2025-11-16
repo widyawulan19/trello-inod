@@ -33,6 +33,7 @@ jobs:
           port: ${{ secrets.FTP_PORT }}
           protocol: ftp
           local-dir: ./frontend/build/
-          server-dir: test/
+          # server-dir: test/
+          server-dir: ./public_html/
           # server-dir: ${{ secrets.FTP_DIRECTORY }}
           dangerous-clean-slate: true
