@@ -33,5 +33,6 @@ jobs:
           port: ${{ secrets.FTP_PORT }}
           protocol: ftp
           local-dir: ./frontend/build/
-          server-dir: ${{ secrets.FTP_DIRECTORY }}
+          server-dir: domains/inodstudiomanager.com/public_html/test/
+          # server-dir: ${{ secrets.FTP_DIRECTORY }}
           dangerous-clean-slate: true
