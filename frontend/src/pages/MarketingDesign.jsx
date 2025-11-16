@@ -3,7 +3,7 @@ import { archiveDataMarektingDesign, deleteDataMarketingDesign, getAllDataMarket
 import '../style/pages/MarketingDesign.css'
 // import '../style/pages/AcceptDataDesign.css'
 import BootstrapTooltip from '../components/Tooltip';
-import { CgDollar } from "react-icons/cg";
+import { CgDatabase, CgDollar } from "react-icons/cg";
 import { IoEyeSharp } from "react-icons/io5";
 import { HiArrowsUpDown, HiChevronDown, HiChevronUp, HiChevronUpDown, HiCurrencyDollar, HiHandThumbUp, HiMiniTableCells, HiOutlineArchiveBox, HiOutlineCircleStack, HiOutlinePencil, HiOutlinePlus, HiOutlineTrash } from 'react-icons/hi2';
 import { HiOutlineSearch } from 'react-icons/hi';
@@ -387,6 +387,18 @@ const handleExportToSheet = async (marketingDesignId) => {
                 <p>Di halaman ini, Anda dapat melihat seluruh rangkuman aktivitas dan progres proyek desain yang sedang berlangsung maupun yang telah selesai.</p>
               </div>
             </div>
+
+            {/* SHOW COMPONENT  */}
+            {showFormCreate && (
+                <div className="md-form">
+                    <div className="md-content">
+                        {/* <Setting onClose={handleCloseForm}/> */}
+                        {/* <NewFormMarketingDesign onClose={handleCloseForm} fetchMarketingDesign={fetchMarketingDesign}/> */}
+                        <FormMarketingDesignExample onClose={handleCloseForm} fetchMarketingDesign={fetchMarketingDesign}/>
+                    </div>
+                </div>
+            )}
+
             <div className="mdh-right">
               <div className="mdhr-btn">
                 <button onClick={handleReportPage}>REPORT</button>
@@ -407,15 +419,19 @@ const handleExportToSheet = async (marketingDesignId) => {
               </div>
               <div className="mdh-search-container">
                 <div className="mdh-search">
+                    <HiOutlineSearch className='mdh-search-icon'/>
                     <input 
                         type="search"
                         placeholder='Search here ...' 
                         onChange={(e)=> handleFilterData(e.target.value)}
                     />
-                    <HiOutlineSearch className='mdh-search-icon'/>
                 </div>
                 <div className="reset-btn" onClick={handleShowCounter}>
-                  <MdLockReset className='reset-icon'/> Reset Counter
+                  <MdLockReset className='reset-icon'/> <span>Reset Counter</span>
+                </div>
+                <div className="data-master-btn">
+                  <CgDatabase className='master-icon'/>
+                  <span>Data Master</span>
                 </div>
                
               </div>
@@ -426,113 +442,106 @@ const handleExportToSheet = async (marketingDesignId) => {
                   <ResetCounterDesign onClose={handleCloseCounter}/>
                 </div>
               )}
-            </div>
-            {/* SHOW COMPONENT  */}
-            {showFormCreate && (
-                <div className="md-form">
-                    <div className="md-content">
-                        {/* <Setting onClose={handleCloseForm}/> */}
-                        {/* <NewFormMarketingDesign onClose={handleCloseForm} fetchMarketingDesign={fetchMarketingDesign}/> */}
-                        <FormMarketingDesignExample onClose={handleCloseForm} fetchMarketingDesign={fetchMarketingDesign}/>
+
+              
+
+              {/* SHOW DATA  */}
+              {showData && (
+              <div className='sd-cont' ref={showDataRef}>
+                <div className="sd-header">
+                  <h5><HiMiniTableCells className='h5-icon'/>Show Data By </h5>
+                  <FaXmark onClick={handleShowData} style={{cursor:'pointer'}}/>
+                </div>
+                  <div className="sd-box">
+                    <h5>Show Data By:</h5>
+                    <button onClick={() => {setFilterType('DATA MARKETING DESIGN'); {setShowData(!showData)}}} >
+                      All Data
+                    </button>
+                    <button onClick={() => {setFilterType('DATA DENGAN CARD');; {setShowData(!showData)}}}>
+                      Data Dengan Card
+                    </button>
+                    <button onClick={() => {setFilterType('DATA TANPA CARD');; {setShowData(!showData)}}}>
+                      Data Tanpa Card
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* FILTER BY TYPE DATA  */}
+              {showFilter && (
+                <div className="ft-cont" ref={showFilterRef}>
+                  <div className="ftc-header">
+                    <h5>Filter By:</h5>
+                  </div>
+                  <div className="ftc-content">
+                    <div className="ftc-box">
+                      <div className='ft-btn' onClick={() => setDropdownOpen(!dropdownOpen)}>
+                        <HiChevronUpDown className='ft-icon'/>
+                        {shortType ? shortType.replace('_', ' ') : 'Filter Type'}
+                      </div>
+                      {dropdownOpen && (
+                        <ul className='ul-ftc'>
+                          <li
+                            className="li-ftc"
+                            onClick={() => {
+                              setShortType('buyer_name');
+                              setDropdownOpen(false);
+                            }}
+                          >
+                            Buyer Name
+                          </li>
+                          <li
+                            className="li-ftc"
+                            onClick={() => {
+                              setShortType('order_number');
+                              setDropdownOpen(false);
+                            }}
+                          >
+                            Order Number
+                          </li>
+                          <li
+                            className="li-ftc"
+                            onClick={() => {
+                              setShortType('account');
+                              setDropdownOpen(false);
+                            }}
+                          >
+                            Account
+                          </li>
+                          <li
+                            className="li-ftc"
+                            onClick={() => {
+                              setShortType('input_by_name');
+                              setDropdownOpen(false);
+                            }}
+                          >
+                            Marketing Name
+                          </li>
+                        </ul>
+                      )}
                     </div>
+                    {/* Input Field */}
+                    <div className="ftc-input">
+                      {shortType && (
+                        <input
+                          type="text"
+                          name={shortType}
+                          value={filters[shortType]}
+                          onChange={handleFilterChange}
+                          placeholder={`Filter by ${shortType.replace('_', ' ')}`}
+                          className="w-full p-2 border rounded"
+                        />
+                      )}
+                    </div>
+                  </div>
                 </div>
-            )}
-
-
-            {/* SHOW DATA  */}
-            {showData && (
-            <div className='sd-cont' ref={showDataRef}>
-              <div className="sd-header">
-                <h5><HiMiniTableCells className='h5-icon'/>Show Data By </h5>
-                <FaXmark onClick={handleShowData} style={{cursor:'pointer'}}/>
-              </div>
-                <div className="sd-box">
-                  <h5>Show Data By:</h5>
-                  <button onClick={() => {setFilterType('DATA MARKETING DESIGN'); {setShowData(!showData)}}} >
-                    All Data
-                  </button>
-                  <button onClick={() => {setFilterType('DATA DENGAN CARD');; {setShowData(!showData)}}}>
-                    Data Dengan Card
-                  </button>
-                  <button onClick={() => {setFilterType('DATA TANPA CARD');; {setShowData(!showData)}}}>
-                    Data Tanpa Card
-                  </button>
-                </div>
-              </div>
-            )}
+              )}
+            </div>
         </div>
         
         {/* show  */}
 
-        {/* FILTER BY TYPE DATA  */}
-        {showFilter && (
-          <div className="ft-cont" ref={showFilterRef}>
-            <div className="ftc-header">
-              <h5>Filter By:</h5>
-            </div>
-            <div className="ftc-content">
-              <div className="ftc-box">
-                <div className='ft-btn' onClick={() => setDropdownOpen(!dropdownOpen)}>
-                  <HiChevronUpDown className='ft-icon'/>
-                  {shortType ? shortType.replace('_', ' ') : 'Filter Type'}
-                </div>
-                {dropdownOpen && (
-                  <ul className='ul-ftc'>
-                    <li
-                      className="li-ftc"
-                      onClick={() => {
-                        setShortType('buyer_name');
-                        setDropdownOpen(false);
-                      }}
-                    >
-                      Buyer Name
-                    </li>
-                    <li
-                      className="li-ftc"
-                      onClick={() => {
-                        setShortType('order_number');
-                        setDropdownOpen(false);
-                      }}
-                    >
-                      Order Number
-                    </li>
-                    <li
-                      className="li-ftc"
-                      onClick={() => {
-                        setShortType('account');
-                        setDropdownOpen(false);
-                      }}
-                    >
-                      Account
-                    </li>
-                     <li
-                      className="li-ftc"
-                      onClick={() => {
-                        setShortType('input_by_name');
-                        setDropdownOpen(false);
-                      }}
-                    >
-                      Marketing Name
-                    </li>
-                  </ul>
-                )}
-              </div>
-              {/* Input Field */}
-              <div className="ftc-input">
-                {shortType && (
-                  <input
-                    type="text"
-                    name={shortType}
-                    value={filters[shortType]}
-                    onChange={handleFilterChange}
-                    placeholder={`Filter by ${shortType.replace('_', ' ')}`}
-                    className="w-full p-2 border rounded"
-                  />
-                )}
-              </div>
-            </div>
-          </div>
-        )}
+        
 
         {/* END SHOW COMPONENT  */}
         <div className="new-data">
@@ -558,15 +567,15 @@ const handleExportToSheet = async (marketingDesignId) => {
                         CODE ORDER <HiArrowsUpDown/>
                       </div>
                     </th>
-                    <th>JUMLAH DESIGN</th>
-                    <th>ORDER NUMBER</th>
+                    <th style={{textAlign:'center'}}>JUMLAH DESIGN</th>
+                    <th style={{textAlign:'center'}}>ORDER NUMBER</th>
                     <th>
                       <div className="th">
                         ACCOUNT <HiArrowsUpDown/>
                       </div>
                     </th>
                     <th style={{textAlign:'center'}}>DEADLINE</th>
-                    <th>JUMLAH REVISI</th>
+                    <th style={{textAlign:'center'}}>JUMLAH REVISI</th>
                     <th>ORDER TYPE</th>
                     <th>OFFER TYPE</th>
                     <th style={{textAlign:'center'}}>STYLE</th>
@@ -574,16 +583,16 @@ const handleExportToSheet = async (marketingDesignId) => {
                     {/* <th>REFERENCE</th> */}
                     <th>
                       <div className="th">
-                        PRICE NORMAL $
+                        PRICE NORMAL
                       </div>
                     </th>
                     <th>
                       <div className="th">
-                        PRICE DISCOUNT $
+                        PRICE DISCOUNT
                       </div>
                     </th>
                     <th style={{textAlign:'center'}}>
-                        DISCOUNT PRESENTAGE
+                        DISCOUNT
                     </th>
                     <th style={{textAlign:'center'}}>PROJECT TYPE</th>
                     <th style={{textAlign:'center'}}>ACTION</th>
@@ -622,7 +631,7 @@ const handleExportToSheet = async (marketingDesignId) => {
                             </span>
                           </div>
                         </td>
-                        <td className='input-container' onClick={()=> handleShowDetail(item.marketing_design_id)}>
+                        <td className='project-number-container' onClick={()=> handleShowDetail(item.marketing_design_id)}>
                           {item.project_number}
                         </td>
                         <td className='input-container-box'>
@@ -675,7 +684,7 @@ const handleExportToSheet = async (marketingDesignId) => {
                         <td className='buyer-name-container'>{item.buyer_name}</td>
                         <td className='code-order-container'>{item.code_order}</td>
                         <td className='jumlah-container' style={{textAlign:'center' }}>{item.jumlah_design}</td>
-                        <td className='order-number-container'>{item.order_number}</td>
+                        <td className='order-number-container' style={{textAlign:'center' }}>{item.order_number}</td>
                         <td className='account-container'>{item.account_name}</td>
                         <td className='deadline-container' style={{ textAlign:'center' }}>{new Date(item.deadline).toLocaleDateString()}</td>
                         <td className='jumlah-revisi-container' style={{textAlign:'center' }}>{item.jumlah_revisi}</td>
@@ -687,7 +696,7 @@ const handleExportToSheet = async (marketingDesignId) => {
                         <td className='price-normal-container' style={{textAlign:'center', color:'#1E1E1E'}}>{item.price_normal}</td>
                         <td className='price-discount-container' style={{textAlign:'center', color:'#E53935'}}>{item.price_discount}</td>
                         <td className='discount_percentage-container' style={{textAlign:'center', color:'#388E3C'}}>{item.discount_percentage}%</td>
-                        <td className='project-type-container' style={{textAlign:'center' }}>{item.project_type_name}</td>
+                        <td className='project-box-container' style={{textAlign:'center' }}>{item.project_type_name}</td>
                         <td className='action-container' style={{textAlign:'center' }}>
                           <div className="action-table">
                             <BootstrapTooltip title='View Data' placement='top'>
