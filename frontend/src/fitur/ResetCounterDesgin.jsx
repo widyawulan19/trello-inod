@@ -56,7 +56,7 @@ const ResetCounterDesign=({onClose})=> {
     }
 
   return (
-    <div className='counter-card-musik'>
+    <div className='counter-card'>
         <div className="counter-header">
             <h2 className='title'><MdLockReset style={{marginRight:'5px'}} className='close-icon'/> Reset Counter Marketing Music</h2>
             <FaXmark className='close-icon' onClick={onClose}/>

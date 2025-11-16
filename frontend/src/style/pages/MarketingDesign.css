@@ -12,16 +12,17 @@
 }
 
 .md-header {
-    border: 1px solid #ddd;
+    /* border: 1px solid #ddd; */
     /* border: 1px solid red; */
     border-radius: 8px;
     padding: 10px;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: space-between;
     width: 100%;
     background-color: white;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    /* box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); */
 }
 
 .mdh-left {
@@ -30,8 +31,8 @@
     /* align-items: center; */
     justify-content: space-between;
     gap: 5px;
-    width: 60%;
-    /* border: 1px solid red; */
+    width: 100%;
+    /* border: 1px solid blue; */
 }
 
 .mdh-title {
@@ -62,6 +63,7 @@
 
 .mdh-title h3 {
     margin: 0px;
+    font-size: 22px;
     font-weight: bold;
     width: 100%;
     color: #5320be;
@@ -69,13 +71,12 @@
 
 .mdh-right {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: flex-end;
-    /* border: 1px solid blue; */
+    justify-content: space-between;
+    /* border: 1px solid green; */
     position: relative;
     gap: 5px;
-    width: 40%;
+    width: 100%;
 }
 
 .mdhr-btn {
@@ -83,7 +84,7 @@
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: flex-start;
     position: relative;
 }
 
@@ -102,24 +103,23 @@
 
 /* FORM  */
 .mdhr-btn button {
-    /* background: linear-gradient(to bottom, #6E30DC, #5D12EB); */
-    background-color: #532189;
+    background: linear-gradient(to bottom, #6E30DC, #5D12EB);
+    /* background-color: #532189; */
     color: white;
     font-weight: bold;
-    font-size: 12px;
+    font-size: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     border: 0.5px solid #6E30DC;
     border-radius: 4px;
-    padding: 5px 10px;
+    padding: 4px 8px;
     cursor: pointer;
-    margin-left: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .mdhr-btn button:hover {
-    background: linear-gradient(to bottom, #5D12EB, #6E30DC);
+    background: linear-gradient(90deg, #532189, #7246eb);
     box-shadow: 0px 4px 8px #6f30dc7c;
 }
 
@@ -139,10 +139,12 @@
     align-items: center;
     justify-content: flex-start;
     border: 1px solid #ddd;
-    border-radius: 8px;
-    width: 60% !important;
-    width: fit-content;
-    padding: 2px;
+    /* border: 1px solid red; */
+    border-radius: 4px;
+    width: 40%;
+    /* width: fit-content; */
+    padding: 1px;
+    padding-left: 3px;
 }
 
 .export-btn {
@@ -167,11 +169,11 @@
 }
 
 .mdh-search input {
-    padding: 4px 5px;
-    font-size: 10px;
+    padding: 4px;
+    font-size: 12px;
     border: 1px solid white;
     background-color: white;
-    border-radius: 8px;
+    border-radius: 4px;
     color: #6E30DC;
     width: 100%;
 }
@@ -190,10 +192,11 @@
 
 /* RESET COUNTER BTN */
 .md-reset {
-    border: 1px solid red;
+    /* border: 1px solid red; */
 }
 
-.mdh-search-container .reset-btn {
+.mdh-search-container .reset-btn,
+.mdh-search-container .data-master-btn {
     border-radius: 6px;
     border: 1px solid transparent;
     display: flex;
@@ -207,11 +210,13 @@
     background: linear-gradient(to bottom, #6E30DC, #5D12EB);
 }
 
-.reset-btn:hover {
+.reset-btn:hover,
+.data-master-btn:hover {
     background: linear-gradient(90deg, #532189, #7246eb);
 }
 
-.reset-icon {
+.reset-icon,
+.master-icon {
     font-size: 15px;
     color: white;
 }
@@ -221,11 +226,12 @@
 .new-data {
     /* padding: 1rem; */
     font-family: Arial, sans-serif;
-    height: 85%;
+    height: 83%;
     width: 100%;
     /* border: 1px solid orange; */
     position: relative !important;
     padding: 10px;
+    padding-top: 0px;
 }
 
 .data-accept-design {
@@ -245,24 +251,50 @@
 .data-accept-design thead {
     /* background-color: #f1f1f1; */
     background: linear-gradient(to bottom, #6E30DC, #5D12EB);
-    font-size: 12px;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 0px;
     color: white;
     position: sticky;
     z-index: 10;
     top: 0;
+    width: 100%;
+    position: sticky;
 }
 
-.data-accept-design th,
+.data-accept-design th {
+    padding: 0.75rem;
+    text-align: left;
+    /* border-bottom: 2px solid #ddd; */
+    font-size: 10px;
+    font-weight: bold;
+    padding: 10px;
+}
+
 .data-accept-design td {
     /* padding: 0.75rem; */
     text-align: left;
     border-bottom: 1px solid #ddd;
     font-size: 12px;
+    padding: 5px;
 }
 
 .data-accept-design th {
     font-weight: bold;
     color: white;
+}
+
+.data-accept-design tr:nth-child(odd) td {
+    background-color: #f9f9f9;
+}
+
+.data-accept-design tr:nth-child(even) td {
+    background-color: #ffffff;
+}
+
+.data-accept-design tr:hover td {
+    background-color: #f1f1f1;
+    cursor: pointer;
 }
 
 .th {
@@ -299,7 +331,7 @@
 }
 
 .number-container .number-box {
-    /* border: 1px solid red; */
+    /* border: 1px solid blue; */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -426,7 +458,7 @@
     height: 90vh;
 }
 
-.mdh-right .reset-form {
+.reset-form {
     position: absolute;
     top: 0%;
     right: 0%;
@@ -464,7 +496,7 @@
     border: 1px solid #ddd;
     border-radius: 8px;
     /* padding: 10px; */
-    width: 50%;
+    width: 60%;
     height: 90vh;
     position: relative;
     /* margin-right: 8px; */
@@ -482,8 +514,8 @@
     background-color: white;
     box-shadow: 0px 4px 8px #5e12eb46;
     position: absolute;
-    top: 5%;
-    right: 10%;
+    top: 100%;
+    left: 10%;
     z-index: 100;
     /* padding: 10px; */
     display: flex;
@@ -562,8 +594,9 @@
     background-color: white;
     box-shadow: 0px 4px 8px #5e12eb46;
     position: absolute;
-    top: 5%;
-    right: 1%;
+    top: 100%;
+    left: 0%;
+    /* right: 1%; */
     z-index: 100;
     padding: 5px 10px;
     width: 25vw;
@@ -621,25 +654,158 @@
 
 
 /* MEDIA QUERY  */
-
-/* Large devices (desktops, ≥992px) */
-@media (min-width: 992px) and (max-width: 1199.98px) {
-
-    /* button header  */
-    .mdh-right {
+@media (min-width: 1401px) and (max-width:2000px) {
+    .number-container {
         /* border: 1px solid red; */
-        width: 50%;
+        width: 100%;
+        min-width: 3vw;
+        max-width: 3vw;
+        padding: 0;
+    }
+
+    .number-container .number-box {
+        gap: 3px;
+    }
+
+    .acc-container,
+    .project-number-container,
+    .buyer-name-container,
+    .status-container,
+    .code-order-container,
+    .style-container,
+    .project-box-container,
+    .account-container,
+    .deadline-container {
+        width: 100%;
+        min-width: 9vw;
+        max-width: 9vw;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /* border: 1px solid orange; */
+    }
+
+    .input-container-box {
+        width: 100%;
+        min-width: 11vw;
+        max-width: 11vw;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .resolution-container {
+        width: 100%;
+        min-width: 13vw;
+        max-width: 13vw;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .price-normal-container,
+    .price-discount-container,
+    .discount_percentage-container,
+    .jumlah-revisi-container,
+    .order-number-container,
+    .jumlah-container {
+        width: 100%;
+        min-width: 7vw;
+        max-width: 7vw;
+        /* border: 1px solid green; */
+    }
+
+    .action-container,
+    .project-type-container {
+        width: 100%;
+        min-width: 15vw;
+        max-width: 15vw;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /* border: 1px solid blue; */
+    }
+}
+
+/* Extra large devices (large desktops, ≥1200px) */
+@media (min-width: 1200px) and (max-width:1400px) {
+    .number-container {
+        /* border: 1px solid red; */
+        width: 100%;
+        min-width: 4vw;
+        max-width: 4vw;
+        padding: 0;
+    }
+
+    .number-container .number-box {
         gap: 5px;
     }
 
-    .mdhr-btn {
-        justify-content: flex-end;
+    .acc-container,
+    .project-number-container,
+    .buyer-name-container,
+    .status-container,
+    .code-order-container,
+    .project-box-container,
+    .account-container,
+    .deadline-container {
+        width: 100%;
+        min-width: 11vw;
+        max-width: 11vw;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /* border: 1px solid orange; */
     }
 
-    .mdhr-btn button {
-        font-size: 10px;
-        padding: 5px 8px;
+    .input-container-box {
+        width: 100%;
+        min-width: 14vw;
+        max-width: 14vw;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
+
+    .resolution-container,
+    .style-container,
+    .order-type-container,
+    .offer-type-container {
+        width: 100%;
+        min-width: 13vw;
+        max-width: 13vw;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /* border: 1px solid purple; */
+    }
+
+    .price-normal-container,
+    .price-discount-container,
+    .discount_percentage-container,
+    .jumlah-revisi-container,
+    .order-number-container,
+    .jumlah-container {
+        width: 100%;
+        min-width: 6vw;
+        max-width: 6vw;
+        /* border: 1px solid green; */
+    }
+
+    .action-container,
+    .project-type-container {
+        width: 100%;
+        min-width: 15vw;
+        max-width: 15vw;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /* border: 1px solid blue; */
+    }
+}
+
+/* Large devices (desktops, ≥992px) */
+@media (min-width: 992px) and (max-width: 1199.98px) {
 
     /* FILTER CONTAINER  */
     .ft-cont {
@@ -648,28 +814,94 @@
         top: 6%;
     }
 
-    /* TABEL HEADER  */
-    .action-container {
+    /* COLUMN CONTAINER  */
+    .number-container {
+        /* border: 1px solid red; */
         width: 100%;
-        min-width: 18vw;
-        max-width: 18vw;
+        min-width: 5vw;
+        max-width: 5vw;
+        padding: 0;
+    }
+
+    .number-container .number-box {
+        gap: 7px;
     }
 
     .acc-container,
-    .input-container,
+    .project-number-container,
     .buyer-name-container,
     .status-container,
-    .price-normal-container,
-    .price-discount-container,
-    .discount_percentage-container {
+    .code-order-container,
+    .project-box-container,
+    .account-container,
+    .deadline-container {
         width: 100%;
-        min-width: 20vw;
-        max-width: 20vw;
+        min-width: 13vw;
+        max-width: 13vw;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /* border: 1px solid orange; */
     }
 
+    .input-container-box {
+        width: 100%;
+        min-width: 17vw;
+        max-width: 17vw;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .resolution-container,
+    .style-container {
+        width: 100%;
+        min-width: 17vw;
+        max-width: 17vw;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /* border: 1px solid purple; */
+    }
+
+    .order-type-container,
+    .offer-type-container {
+        width: 100%;
+        min-width: 16vw;
+        max-width: 16vw;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /* border: 1px solid sienna; */
+    }
+
+    .price-normal-container,
+    .price-discount-container,
+    .discount_percentage-container,
+    .jumlah-revisi-container,
+    .order-number-container,
+    .jumlah-container {
+        width: 100%;
+        min-width: 6vw;
+        max-width: 6vw;
+        /* border: 1px solid green; */
+    }
+
+    .action-container,
+    .project-type-container {
+        width: 100%;
+        min-width: 17vw;
+        max-width: 17vw;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /* border: 1px solid blue; */
+    }
+
+    /* END COLUMN CONTAINER  */
     /* FORM ADD DATA  */
     .md-content {
-        width: 60%;
+        width: 70%;
     }
 
     /* VIEW DETAIL DATA  */
@@ -687,67 +919,112 @@
 /* Medium devices (tablets, ≥768px) */
 @media (min-width: 767px) and (max-width: 991.98px) {
 
-    /* button header  */
-    .mdh-right {
-        /* border: 1px solid red; */
-        width: 100%;
-        /* gap: 5px; */
-    }
-
-    .mdhr-btn {
-        justify-content: flex-end;
-        /* border: 1px solid red; */
-        /* gap: 2px; */
-    }
-
-    .mdhr-btn button {
-        font-size: 10px;
-        padding: 5px;
-        margin-left: 0px;
-    }
-
     /* //BODY TABEL  */
     .new-data {
         height: 80%;
     }
 
-    /* END BODY TABEL  */
-
-    /* TABEL HEADER  */
-
-    .code-order-container,
-    .jumlah-container,
-    .order-number-container,
-    .account-container,
-    .deadline-container,
-    .jumlah-revisi-container,
-    .order-type-container,
-    .offer-type-container {
+    .mdh-search {
+        /* border: 1px solid green; */
         width: 100%;
-        min-width: 15vw;
-        max-width: 15vw;
+    }
+
+    .mdh-search input {
+        padding: 3px;
+        font-size: 10px;
+    }
+
+    /* BTN HEADER  */
+    .reset-btn span,
+    .data-master-btn span {
+        display: none;
+    }
+
+    /* END BODY TABEL  */
+    /* COLUMN CONTAINER  */
+    .number-container {
+        /* border: 1px solid red; */
+        width: 100%;
+        min-width: 6vw;
+        max-width: 6vw;
+        padding: 0;
+    }
+
+    .number-container .number-box {
+        gap: 5px;
     }
 
     .acc-container,
-    .input-container,
+    .project-number-container,
     .buyer-name-container,
     .status-container,
-    .price-normal-container,
-    .price-discount-container,
-    .discount_percentage-container {
+    .code-order-container,
+    .project-box-container,
+    .account-container,
+    .deadline-container {
+        width: 100%;
+        min-width: 16vw;
+        max-width: 16vw;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /* border: 1px solid orange; */
+    }
+
+    .input-container-box {
         width: 100%;
         min-width: 20vw;
         max-width: 20vw;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
-    .project-type-container,
     .resolution-container,
-    .style-container,
-    .action-container {
+    .style-container {
         width: 100%;
-        min-width: 23vw;
-        max-width: 23vw;
+        min-width: 21vw;
+        max-width: 21vw;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /* border: 1px solid purple; */
     }
+
+    .order-type-container,
+    .offer-type-container {
+        width: 100%;
+        min-width: 19vw;
+        max-width: 19vw;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /* border: 1px solid sienna; */
+    }
+
+    .price-normal-container,
+    .price-discount-container,
+    .discount_percentage-container,
+    .jumlah-revisi-container,
+    .order-number-container,
+    .jumlah-container {
+        width: 100%;
+        min-width: 8vw;
+        max-width: 8vw;
+        /* border: 1px solid green; */
+    }
+
+    .action-container,
+    .project-type-container {
+        width: 100%;
+        min-width: 20vw;
+        max-width: 20vw;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /* border: 1px solid blue; */
+    }
+
 
     .data-accept-design {
         height: 100%;
@@ -767,7 +1044,7 @@
 
     /* FORM ADD DATA  */
     .md-content {
-        width: 65%;
+        width: 90%;
     }
 
     /* VIEW DETAIL DATA  */
@@ -785,75 +1062,142 @@
 /* ukuran handpone besar */
 @media (min-width: 576px) and (max-width: 767.98px) {
 
-    /* button header  */
-    .mdh-left {
-        /* border: 1px solid red; */
-        width: 90%;
-    }
-
-    .mdh-des strong {
+    /* header text  */
+    .mdh-des p {
         display: none;
     }
 
-    .mdh-right {
-        /* border: 1px solid red; */
-        width: 100%;
-        /* gap: 5px; */
-    }
-
     .mdhr-btn {
-        justify-content: flex-end;
-        /* border: 1px solid red; */
-        /* gap: 2px; */
+        position: relative;
     }
 
     .mdhr-btn button {
+        padding: 6px;
         font-size: 9px;
-        padding: 5px;
-        margin-left: 0px;
     }
 
-    /* BODY TABEL  */
+    .reset-icon,
+    .master-icon {
+        font-size: 12px;
+    }
+
+    .mdh-search {
+        /* border: 1px solid green; */
+        width: 100%;
+    }
+
+    .mdh-search input {
+        padding: 3px;
+        font-size: 10px;
+    }
+
+    /* BTN HEADER  */
+    .reset-btn span,
+    .data-master-btn span {
+        display: none;
+    }
 
     /* END BODY TABEL  */
+    /* COLUMN CONTAINER  */
+    .number-container {
+        /* border: 1px solid red; */
+        width: 100%;
+        min-width: 8vw;
+        max-width: 8vw;
+        padding: 0;
+    }
 
-    /* TABEL HEADER  */
+    .number-container .number-box {
+        gap: 5px;
+    }
+
     .acc-container,
+    .project-number-container,
+    .buyer-name-container,
+    .status-container,
     .code-order-container,
-    .jumlah-container,
-    .order-number-container,
+    .project-box-container,
     .account-container,
-    .deadline-container,
-    .jumlah-revisi-container,
+    .deadline-container {
+        width: 100%;
+        min-width: 21vw;
+        max-width: 21vw;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /* border: 1px solid orange; */
+    }
+
+    .input-container-box {
+        width: 100%;
+        min-width: 28vw;
+        max-width: 28vw;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .resolution-container,
+    .style-container {
+        width: 100%;
+        min-width: 24vw;
+        max-width: 24vw;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /* border: 1px solid purple; */
+    }
+
     .order-type-container,
     .offer-type-container {
         width: 100%;
-        min-width: 15vw;
-        max-width: 15vw;
+        min-width: 22vw;
+        max-width: 22vw;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /* border: 1px solid sienna; */
     }
 
-    .input-container,
-    .buyer-name-container,
-    .status-container,
     .price-normal-container,
     .price-discount-container,
-    .discount_percentage-container {
+    .discount_percentage-container,
+    .jumlah-revisi-container,
+    .order-number-container,
+    .jumlah-container {
         width: 100%;
-        min-width: 20vw;
-        max-width: 20vw;
+        min-width: 11vw;
+        max-width: 11vw;
+        /* border: 1px solid green; */
     }
 
-    .project-type-container,
-    .resolution-container,
-    .style-container,
     .action-container {
         width: 100%;
         min-width: 30vw;
         max-width: 30vw;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /* border: 1px solid blue; */
+    }
+
+    .project-type-container {
+        width: 100%;
+        min-width: 23vw;
+        max-width: 23vw;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /* border: 1px solid blue; */
+    }
+
+    .new-data {
+        height: 87%;
     }
 
     .data-accept-design {
         height: 100%;
+        /* border: 1px solid blue; */
     }
 
     /* FILTER CONTAINER  */
@@ -864,26 +1208,17 @@
 
     /* DROPDOWN SHOW DATA  */
     .sd-cont {
-        top: 7%;
+        top: 10%;
+        right: 0;
+        left: 10%;
+        /* left: 0px; */
         padding: 2px;
+        border: 1px solid blue;
     }
 
     /* FORM ADD DATA  */
     .md-content {
-        width: 80%;
-    }
-
-    /* SEARCH  */
-    .mdh-search-container {
-        /* border: 1px solid green; */
-    }
-
-    .mdh-search {
-        width: 60% !important;
-    }
-
-    .export-btn {
-        width: 40% !important;
+        width: 100%;
     }
 
     /* VIEW DETAIL DATA  */
@@ -919,6 +1254,11 @@
 
     .mdh-right {
         width: 100%;
+        /* border: 1px solid red; */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
     }
 
     .mdhr-btn {
@@ -927,6 +1267,7 @@
         align-items: center;
         justify-content: center;
         margin-top: 5px;
+        width: 100%;
     }
 
     .mdhr-btn button {
@@ -939,20 +1280,25 @@
     .mdh-search-container {
         justify-content: center;
         /* border: 1px solid red; */
+        width: 100%;
     }
 
     .mdh-search {
-        width: 60%;
+        width: 100%;
         /* border: 1px solid blue; */
     }
 
-    .export-btn {
-        width: 40%;
-    }
 
     .mdh-search input {
-        width: 80%;
+        width: 100%;
     }
+
+    /* BTN HEADER  */
+    .reset-btn span,
+    .data-master-btn span {
+        display: none;
+    }
+
 
 
     /* BODY TABEL  */
@@ -963,47 +1309,97 @@
     /* END BODY TABEL  */
 
 
-    /* TABEL HEADER  */
+    /* COLUMN CONTAINER  */
+    .number-container {
+        /* border: 1px solid red; */
+        width: 100%;
+        min-width: 11vw;
+        max-width: 11vw;
+        padding: 0;
+    }
+
+    .number-container .number-box {
+        gap: 5px;
+    }
+
     .acc-container,
+    .project-number-container,
+    .buyer-name-container,
+    .status-container,
     .code-order-container,
-    .jumlah-container,
-    .order-number-container,
+    .project-box-container,
     .account-container,
-    .deadline-container,
-    .jumlah-revisi-container,
+    .deadline-container {
+        width: 100%;
+        min-width: 29vw;
+        max-width: 29vw;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /* border: 1px solid orange; */
+    }
+
+    .input-container-box {
+        width: 100%;
+        min-width: 40vw;
+        max-width: 40vw;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .resolution-container,
+    .style-container {
+        width: 100%;
+        min-width: 35vw;
+        max-width: 35vw;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /* border: 1px solid purple; */
+    }
+
     .order-type-container,
     .offer-type-container {
         width: 100%;
-        min-width: 30vw;
-        max-width: 30vw;
+        min-width: 35vw;
+        max-width: 35vw;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /* border: 1px solid sienna; */
     }
 
-    .input-container,
-    .buyer-name-container,
     .price-normal-container,
     .price-discount-container,
-    .discount_percentage-container {
+    .discount_percentage-container,
+    .jumlah-revisi-container,
+    .order-number-container,
+    .jumlah-container {
         width: 100%;
-        min-width: 38vw;
-        max-width: 38vw;
-    }
-
-    .project-type-container,
-    .resolution-container,
-    .style-container,
-    .status-container
-
-    /* .action-container */
-        {
-        width: 100%;
-        min-width: 43vw;
-        max-width: 43vw;
+        min-width: 14vw;
+        max-width: 14vw;
+        /* border: 1px solid green; */
     }
 
     .action-container {
         width: 100%;
-        min-width: 50vw;
-        max-width: 50vw;
+        min-width: 40vw;
+        max-width: 40vw;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /* border: 1px solid blue; */
+    }
+
+    .project-type-container {
+        width: 100%;
+        min-width: 26vw;
+        max-width: 26vw;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /* border: 1px solid blue; */
     }
 
     /* FILTER CONTAINER  */
@@ -1056,10 +1452,7 @@
     .mdh-right {
         /* border: 1px solid red; */
         gap: 2px;
-    }
-
-    .mdhr-btn {
-        /* border: 1px solid blue; */
+        width: 100%;
     }
 
     .mdhr-btn button {
@@ -1071,10 +1464,6 @@
     /* SEARCH MENU  */
     .mdh-search input {
         padding: 3px;
-    }
-
-    .mdh-search-container .mdh-search {
-        width: 40% !important;
     }
 
     .mdh-search input {
