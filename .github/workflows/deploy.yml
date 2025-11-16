@@ -21,7 +21,7 @@ jobs:
       # Build project React di folder frontend
       - name: Build Project
         working-directory: ./frontend
-        run: npm run build
+        run: CI=false npm run build
 
       # Upload hasil build ke Hostinger via FTP
       - name: Deploy via FTP
