@@ -106,7 +106,7 @@ const MainLp = () => {
         >
           <div className='hero-left'>
             <h1 className='headline'>
-              Streamline Your Team's <span className='gradient-text'>Productivity</span>
+              Streamline Your Team's <span className='gradient-text'>Productivitys</span>
             </h1>
             <p className='subheading'>
               Transform chaos into clarity with TaskFlow's intuitive task management platform. Collaborate seamlessly, track progress effortlessly, and achieve more together.
