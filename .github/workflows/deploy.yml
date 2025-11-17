@@ -34,6 +34,6 @@ jobs:
           protocol: ftp
           local-dir: ./frontend/build/
           # server-dir: test/
-          server-dir: ./
+          server-dir: .
           # server-dir: ${{ secrets.FTP_DIRECTORY }}
           dangerous-clean-slate: true
