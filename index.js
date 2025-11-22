@@ -125,7 +125,8 @@ async function initializeMarketingCounters() {
 // 🔹 FUNGSI GENERATE NOMOR BARU
 // =======================
 async function generateMarketingNumbers() {
-    const now = dayjs();
+    // const now = dayjs();
+    const now = dayjs().tz("Asia/Jakarta");
     const currentMonth = now.month();
 
     // Ambil data counter dari DB
@@ -139,28 +140,43 @@ async function generateMarketingNumbers() {
     let { current_order_number, current_project_number, last_updated } = result.rows[0];
 
     // Reset jika bulan baru
-    const lastMonth = dayjs(last_updated).month();
-    if (currentMonth !== lastMonth) {
+    // const lastMonth = dayjs(last_updated).month();
+    // if (currentMonth !== lastMonth) {
+    //     current_order_number = 0;
+    //     current_project_number = 0;
+    //     console.log(`🔁 Bulan baru! Reset nomor ke P01 (${now.format('MMM YYYY')})`);
+    // }
+
+    // Convert last_updated ke WIB juga (jika ada)
+    const lastUpdatedWIB = last_updated ? dayjs(last_updated).tz("Asia/Jakarta") : null;
+    const lastMonth = lastUpdatedWIB ? lastUpdatedWIB.month() : null;
+
+    // Reset jika bulan baru
+    if (lastMonth !== null && currentMonth !== lastMonth) {
         current_order_number = 0;
         current_project_number = 0;
-        console.log(`🔁 Bulan baru! Reset nomor ke P01 (${now.format('MMM YYYY')})`);
+        console.log(`🔁 Bulan baru! Reset nomor ke P01 (${now.format('MMM YYYY')} WIB)`);
     }
 
     // Increment
     current_order_number += 1;
     current_project_number += 1;
 
-    // Simpan kembali ke DB
+    // Simpan kembali ke DB dengan WIB
     await client.query(
         `
         UPDATE counters
         SET 
             current_order_number = $1,
             current_project_number = $2,
-            last_updated = CURRENT_TIMESTAMP
+            last_updated = $3
         WHERE counter_name = 'marketing'
         `,
-        [current_order_number, current_project_number]
+        [
+            current_order_number,
+            current_project_number,
+            now.format("YYYY-MM-DD HH:mm:ss")  // simpan WIB real
+        ]
     );
 
     // Format hasil
