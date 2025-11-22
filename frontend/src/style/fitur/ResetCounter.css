@@ -82,7 +82,7 @@ label {
     margin-bottom: 4px;
 }
 
-input {
+.form-group input {
     padding: 5px 10px;
     border-radius: 8px;
     border: none;
@@ -93,9 +93,15 @@ input {
     background-color: white;
 }
 
-input:hover {
+.form-group input:hover {
     border: 1px solid #5f2eea;
-    background-color: transparent;
+    background-color: #ffffff4b;
+    color: white;
+}
+
+.form-group input:focus {
+    border: 1px solid #5f2eea;
+    background-color: #ffffff4b;
     color: white;
 }
 
