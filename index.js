@@ -20,6 +20,13 @@ const { google } = require("googleapis");
 const dayjs = require("dayjs");
 require("dayjs/locale/id");  // aktifkan bahasa Indonesia
 dayjs.locale("id");
+const utc = require("dayjs/plugin/utc");
+const timezone = require("dayjs/plugin/timezone");
+
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.locale("id");
 
 
 // ============================
@@ -8540,10 +8547,12 @@ app.post("/api/marketing-testing", async (req, res) => {
 
         // 🔹 Ambil posisi terakhir dari tabel
         const posResult = await client.query(`
-      SELECT COALESCE(MAX(position), 0) AS max_position
-      FROM data_marketing
-    `);
+            SELECT COALESCE(MAX(position), 0) AS max_position
+            FROM data_marketing
+        `);
         const nextPosition = posResult.rows[0].max_position + 1;
+        const createAtWIB = dayjs().tz("Asia/Jakarta").format("YYYY-MM-DD HH:mm:ss");
+
 
         // 🔹 Insert ke DB
         const insertResult = await client.query(
@@ -8555,7 +8564,7 @@ app.post("/api/marketing-testing", async (req, res) => {
       project_type, duration, reference_link, file_and_chat_link, detail_project,
       kupon_diskon_id, accept_status_id, create_at, project_number, position)
       VALUES
-      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,CURRENT_TIMESTAMP,$27,$28)
+      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28)
       RETURNING *`,
             [
                 input_by,
@@ -8584,6 +8593,7 @@ app.post("/api/marketing-testing", async (req, res) => {
                 detail_project,
                 kupon_diskon_id || null,
                 accept_status_id || null,
+                createAtWIB,
                 projectNumber,
                 nextPosition,
             ]
