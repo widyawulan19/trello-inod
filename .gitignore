@@ -4,5 +4,6 @@ node_modules/
 *.DS_Store
 service-account.json
 frontend/node_modules/
+frontend/build/
 frontend/.DS_Store
 .DS_Store
