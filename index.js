@@ -8593,7 +8593,7 @@ app.post("/api/marketing-testing", async (req, res) => {
                 detail_project,
                 kupon_diskon_id || null,
                 accept_status_id || null,
-                createAtWIB,
+                // createAtWIB,
                 projectNumber,
                 nextPosition,
             ]
