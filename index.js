@@ -8559,43 +8559,47 @@ app.post("/api/marketing-testing", async (req, res) => {
             `
       INSERT INTO data_marketing 
       (input_by, acc_by, buyer_name, code_order, jumlah_track, order_number,
-      account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre,
-      price_normal, price_discount, discount, basic_price, gig_link, required_files,
-      project_type, duration, reference_link, file_and_chat_link, detail_project,
-      kupon_diskon_id, accept_status_id, create_at, project_number, position)
+       account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre,
+       price_normal, price_discount, discount, basic_price, gig_link, required_files,
+       project_type, duration, reference_link, file_and_chat_link, detail_project,
+       kupon_diskon_id, accept_status_id, create_at, project_number, position)
       VALUES
-      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28)
+      ($1, $2, $3, $4, $5, $6,
+       $7, $8, $9, $10, $11, $12, $13,
+       $14, $15, $16, $17, $18, $19,
+       $20, $21, $22, $23, $24,
+       $25, $26, $27, $28, $29)
       RETURNING *`,
             [
-                input_by,
-                acc_by,
-                buyer_name,
-                code_order,
-                jumlah_track,
-                orderNumber,
-                account,
-                deadline,
-                jumlah_revisi,
-                order_type,
-                offer_type,
-                jenis_track,
-                genre,
-                price_normal,
-                price_discount,
-                discount,
-                basic_price,
-                gig_link,
-                required_files,
-                project_type,
-                duration,
-                reference_link,
-                file_and_chat_link,
-                detail_project,
-                kupon_diskon_id || null,
-                accept_status_id || null,
-                // createAtWIB,
-                projectNumber,
-                nextPosition,
+                input_by,                 // $1
+                acc_by,                   // $2
+                buyer_name,               // $3
+                code_order,               // $4
+                jumlah_track,             // $5
+                orderNumber,              // $6
+                account,                  // $7
+                deadline,                 // $8
+                jumlah_revisi,            // $9
+                order_type,               // $10
+                offer_type,               // $11
+                jenis_track,              // $12
+                genre,                    // $13
+                price_normal,             // $14
+                price_discount,           // $15
+                discount,                 // $16
+                basic_price,              // $17
+                gig_link,                 // $18
+                required_files,           // $19
+                project_type,             // $20
+                duration,                 // $21
+                reference_link,           // $22
+                file_and_chat_link,       // $23
+                detail_project,           // $24
+                kupon_diskon_id || null,  // $25
+                accept_status_id || null, // $26
+                createAtWIB,              // $27  <-- create_at WIB
+                projectNumber,            // $28
+                nextPosition              // $29  <-- position
             ]
         );
 
