@@ -16,7 +16,7 @@
     "body-parser": "^2.2.0",
     "cloudinary": "^1.41.3",
     "cors": "^2.8.5",
-    "dayjs": "^1.11.18",
+    "dayjs": "^1.11.19",
     "dotenv": "^16.6.1",
     "express": "^4.21.2",
     "googleapis": "^159.0.0",
@@ -28,6 +28,8 @@
     "nodemailer": "^7.0.5",
     "pg": "^8.13.3",
     "streamifier": "^0.1.1",
+    "timezone": "^1.0.23",
+    "utc": "^0.1.0",
     "xtend": "^4.0.2"
   },
   "devDependencies": {
