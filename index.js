@@ -198,7 +198,8 @@ module.exports = { initializeMarketingCounters, generateMarketingNumbers };
 // ==========================
 
 async function generateMarketingDesignNumbers() {
-    const now = dayjs();
+    // const now = dayjs();
+    const now = dayjs().tz("Asia/Jakarta");
     const currentMonth = now.month();
 
     // Ambil data counter dari DB
@@ -212,25 +213,42 @@ async function generateMarketingDesignNumbers() {
     let { current_order_number, current_project_number, last_updated } = result.rows[0];
 
     // Reset kalau bulan berganti
-    const lastMonth = dayjs(last_updated).month();
-    if (currentMonth !== lastMonth) {
+    // const lastMonth = dayjs(last_updated).month();
+    // if (currentMonth !== lastMonth) {
+    //     current_order_number = 0;
+    //     current_project_number = 0;
+    // }
+    // Convert last_updated ke WIB
+    const lastUpdatedWIB = last_updated ? dayjs(last_updated).tz("Asia/Jakarta") : null;
+    const lastMonth = lastUpdatedWIB ? lastUpdatedWIB.month() : null;
+
+    // Reset jika bulan baru
+    if (lastMonth !== null && currentMonth !== lastMonth) {
         current_order_number = 0;
         current_project_number = 0;
+        console.log(`🔁 Reset nomor DESIGN ke awal bulan (${now.format('MMM YYYY')} WIB)`);
     }
 
     // Increment
     current_order_number += 1;
     current_project_number += 1;
 
-    // Update DB
-    await client.query(`
-    UPDATE counters
-    SET 
-      current_order_number = $1,
-      current_project_number = $2,
-      last_updated = CURRENT_TIMESTAMP
-    WHERE counter_name = 'marketing_design'
-  `, [current_order_number, current_project_number]);
+    // Update DB: simpan timestamp WIB
+    await client.query(
+        `
+            UPDATE counters
+            SET 
+                current_order_number = $1,
+                current_project_number = $2,
+                last_updated = $3
+            WHERE counter_name = 'marketing_design'
+            `,
+        [
+            current_order_number,
+            current_project_number,
+            now.format("YYYY-MM-DD HH:mm:ss") // SIMPAN WIB
+        ]
+    );
 
     // Format output
     const projectNumber = `P0${String(current_project_number).padStart(2, "0")} ${now.format("DD/MMM/YYYY")}`;
@@ -10131,6 +10149,7 @@ app.post("/api/marketing-design/joined-testing", async (req, res) => {
             FROM marketing_design 
         `);
         const nextPosition = posResult.rows[0].max_position + 1;
+        const createAtWIB = dayjs().tz("Asia/Jakarta").format("YYYY-MM-DD HH:mm:ss");
 
         // === 🧩 Insert data baru ke tabel marketing_design ===
         const result = await client.query(
@@ -10164,7 +10183,7 @@ app.post("/api/marketing-design/joined-testing", async (req, res) => {
         )
         VALUES (
             $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,
-            $12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,NOW()
+            $12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25
         )
         RETURNING *;
         `,
@@ -10193,6 +10212,7 @@ app.post("/api/marketing-design/joined-testing", async (req, res) => {
                 status_project_id,
                 projectNumber,
                 nextPosition, // ✅ posisi di parameter terakhir sebelum NOW()
+                createAtWIB
             ]
         );
 
