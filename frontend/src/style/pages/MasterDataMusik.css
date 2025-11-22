@@ -2,4 +2,115 @@
     width: 100%;
     height: 100%;
     background-color: white;
+    padding: 15px;
+    gap: 10px;
+    border: 1px solid red;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mp-sidebar {
+    border: 1px solid blue;
+    height: 100%;
+    width: 20%;
+    padding: 10px 5px;
+    gap: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.main-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.main-sidebar button {
+    width: 100%;
+    text-align: left;
+    padding: 7px 14px;
+    border: none;
+    background-color: #f5f6fa;
+    color: #333;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 12px;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Hover effect */
+.main-sidebar button:hover {
+    background-color: #eceef5;
+}
+
+/* ACTIVE STATE */
+.main-sidebar button.active {
+    background-color: #6c63ff;
+    /* warna utama */
+    color: #fff;
+    font-weight: 600;
+    transform: translateX(4px);
+    /* efek bergerak supaya terasa aktif */
+}
+
+/* Optional: Tambahin shadow dikit */
+.main-sidebar button.active {
+    box-shadow: 0 2px 6px rgba(108, 99, 255, 0.3);
+}
+
+.main-sidebar button.active {
+    border-left: 4px solid #ffffff;
+    padding-left: 10px;
+}
+
+
+
+.mp-title {
+    /* border: 1px solid red; */
+    width: 100%;
+    gap: 10px;
+}
+
+.mp-title h4 {
+    margin: 0px;
+    margin-bottom: 10px;
+    padding: 0px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.mp-search {
+    background-color: #eee;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
+    padding: 3px 8px;
+}
+
+.mps-icon {
+    color: #333;
+}
+
+.mp-search input {
+    background-color: #eee;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    font-size: 12px;
+    padding: 2px 6px;
+    width: 100%;
+    color: #333;
+}
+
+.mp-body {
+    border: 1px solid green;
+    height: 100%;
+    width: 80%;
 }
