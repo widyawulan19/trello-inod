@@ -13149,7 +13149,7 @@ app.put("/api/marketing-users/:id", async (req, res) => {
         const result = await client.query(
             `UPDATE marketing_musik_user 
        SET nama_marketing=$1, divisi=$2, update_at=NOW() 
-       WHERE id=$5 RETURNING *`,
+       WHERE id=$3 RETURNING *`,
             [nama_marketing, divisi, id]
         );
         if (result.rows.length === 0) {
