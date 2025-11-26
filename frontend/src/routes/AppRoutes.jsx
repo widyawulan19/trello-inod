@@ -61,6 +61,7 @@ import MarketingChart from '../notes/MarketingChart';
 import Dummy from '../notes/Dummy';
 import ResetCounter from '../fitur/ResetCounter';
 import MasterDataMusik from '../pages/MasterDataMusik';
+import MasterDataDesign from '../pages/MasterDataDesign';
 
 const AppRoutes=()=> {
   return (
@@ -130,6 +131,7 @@ const AppRoutes=()=> {
         <Route path='marketing-chart' element={<Dummy/>}/>
         <Route path='counter-music' element={<ResetCounter/>}/>
         <Route path='data-master-musik' element={<MasterDataMusik/>}/>
+        <Route path='data-master-design' element={<MasterDataDesign/>}/>
         </Route>
     </Routes>
   )

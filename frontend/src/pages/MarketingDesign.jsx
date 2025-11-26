@@ -370,6 +370,10 @@ const handleExportToSheet = async (marketingDesignId) => {
     navigate('/layout/marketing-design-report')
   }
 
+  const handleNavigateToMaster = () =>{
+    navigate('/layout/data-master-design');
+  }
+
   console.log('Data marketing design:', dataMarketingDesign);
 
   return (
@@ -429,7 +433,7 @@ const handleExportToSheet = async (marketingDesignId) => {
                 <div className="reset-btn" onClick={handleShowCounter}>
                   <MdLockReset className='reset-icon'/> <span>Reset Counter</span>
                 </div>
-                <div className="data-master-btn">
+                <div className="data-master-btn" onClick={handleNavigateToMaster}>
                   <CgDatabase className='master-icon'/>
                   <span>Data Master</span>
                 </div>
