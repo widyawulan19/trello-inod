@@ -2,7 +2,7 @@ import React, { useState, useMemo } from "react";
 import '../style/fitur/TabelDataMaster.css'
 import { FiSearch } from "react-icons/fi";
 
-const TabelDataMaster = ({
+const TabelDataMasterDesign = ({
   title,
   data,
   columns,
@@ -42,6 +42,7 @@ const TabelDataMaster = ({
             />
           </div>
           
+          {/* <button>+ Add New</button> */}
           {onAdd && <button className="add" onClick={onAdd}>+ Add New {btnName}</button>}
           <button>Export Data</button>
         </div>
@@ -63,6 +64,8 @@ const TabelDataMaster = ({
                 <td>{i + 1}</td>
                 {columns.map(col => <td key={col.key}>{row[col.key]}</td>)}
                 <td>
+                    {/* <button>Edit</button>
+                    <button>Delete</button> */}
                   {onEdit && <button onClick={() => onEdit(row)}>Edit</button>}
                   {onDelete && <button onClick={() => onDelete(row)}>Delete</button>}
                 </td>
@@ -83,4 +86,4 @@ const TabelDataMaster = ({
   );
 };
 
-export default TabelDataMaster;
+export default TabelDataMasterDesign;
