@@ -4519,6 +4519,8 @@ app.get('/api/cards/:id', async (req, res) => {
         c.position,
         c.create_at, 
         c.due_date,
+        c.is_active,
+        c.show_toggle,
         json_agg(
           json_build_object(
             'id', l.id,
@@ -4543,6 +4545,44 @@ app.get('/api/cards/:id', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+// app.get('/api/cards/:id', async (req, res) => {
+//     const { id } = req.params;
+
+//     try {
+//         const result = await client.query(`
+//       SELECT 
+//         c.id AS card_id,
+//         c.list_id,
+//         c.title,
+//         c.description,
+//         c.position,
+//         c.create_at, 
+//         c.due_date,
+//         json_agg(
+//           json_build_object(
+//             'id', l.id,
+//             'name', l.name,
+//             'color', l.color
+//           )
+//         ) FILTER (WHERE l.id IS NOT NULL) AS labels
+//       FROM cards c
+//       LEFT JOIN card_labels cl ON cl.card_id = c.id
+//       LEFT JOIN labels l ON l.id = cl.label_id
+//       WHERE c.id = $1
+//       GROUP BY c.id
+//     `, [id]);
+
+//         if (result.rows.length > 0) {
+//             res.json(result.rows[0]);
+//         } else {
+//             res.status(404).json({ message: 'Card not found' });
+//         }
+//     } catch (error) {
+//         console.error('Error fetching card:', error);
+//         res.status(500).json({ error: error.message });
+//     }
+// });
 
 //2. get card by list id
 app.get('/api/cards/list/:listId', async (req, res) => {
