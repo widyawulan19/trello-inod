@@ -5507,6 +5507,23 @@ app.patch('/api/cards/:cardId/active', async (req, res) => {
     }
 });
 
+//9. show toogle
+app.patch('/api/cards/:id/show-toggle', async (req, res) => {
+  const { id } = req.params;
+  const { show_toggle } = req.body;
+
+  try {
+    const result = await client.query(
+      `UPDATE cards SET show_toggle = $1 WHERE id = $2 RETURNING *`,
+      [show_toggle, id]
+    );
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
 
 //END CARD
 
