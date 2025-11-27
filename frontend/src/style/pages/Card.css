@@ -172,6 +172,13 @@
     color: #4F5966;
 }
 
+.toogle-cont {
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
 .cc-setting {
     cursor: pointer;
     border: 1px solid #fff;

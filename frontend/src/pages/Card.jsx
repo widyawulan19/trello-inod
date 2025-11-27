@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { deleteCard, getCardById, getCardByList,updateTitleCard , onCardMove, archiveCard, getCardPriority, getDueDateById, getAllDueDateByCardId, getStatusByCardId, getAllStatus, getStatusCard, getTotalMessageInCard, getTotalFile, getNotifications, patchReadNotification,checkHasNewChat, getTotalChecklistItemByCardId, getChecklistItemChecked, getCardMediaCount} from '../services/ApiServices';
+import { deleteCard, getCardById, getCardByList,updateTitleCard , onCardMove, archiveCard, getCardPriority, getDueDateById, getAllDueDateByCardId, getStatusByCardId, getAllStatus, getStatusCard, getTotalMessageInCard, getTotalFile, getNotifications, patchReadNotification,checkHasNewChat, getTotalChecklistItemByCardId, getChecklistItemChecked, getCardMediaCount, updateCardActive} from '../services/ApiServices';
 import '../style/pages/Card.css'
 import '../style/modules/BoxStatus.css'
 import {    HiOutlineEllipsisHorizontal,
@@ -57,6 +57,7 @@ import {
   arrayMove,
 } from "@dnd-kit/sortable";
 import { BsCreditCard2BackFill, BsCreditCard2FrontFill } from 'react-icons/bs';
+import ToggleSwitch from '../fitur/ToggleSwitch';
 
 const Card=({
     card,
@@ -151,9 +152,13 @@ const Card=({
     }, [card.id, userId]);
 
 
+    // FUNGSI ON OFF CARDS 
+    const toggleActive = async () => {
+        await updateCardActive(card.id, !card.is_active);
+        // fetchBoardDetail()
+        fetchCardList(listId);
+    };
 
-
-  
 
     //FUNCTION GET MARK NOTIFICATION
       const fetchNotifications = async () => {
@@ -432,11 +437,19 @@ const Card=({
                     <div></div>
                 )}
             </div>
-            <BootstrapTooltip title='Card setting' placement='top'>
-                <div className="cc-setting" onClick={(e)=> handleShowSetting(e, card.id)}>
-                    <HiOutlineEllipsisHorizontal/> 
-                </div>
-            </BootstrapTooltip>
+            <div className="toogle-cont">
+                <ToggleSwitch
+                    active={card.is_active} 
+                    onToggle={() => toggleActive(card.id, !card.is_active)}
+                />
+
+                <BootstrapTooltip title='Card setting' placement='top'>
+                    <div className="cc-setting" onClick={(e)=> handleShowSetting(e, card.id)}>
+                        <HiOutlineEllipsisHorizontal/> 
+                    </div>
+                </BootstrapTooltip>
+            </div>
+            
 
             {showSetting[card.id] && (
                 <div className="card-setting" ref={settingRef}>
