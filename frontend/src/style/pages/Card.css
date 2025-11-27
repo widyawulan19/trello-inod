@@ -18,6 +18,7 @@
     border-radius: 16px;
     border: 1px solid #6a11cb;
     box-shadow: 0px 4px 8px #5e12eb46;
+    /* color:#1c982a */
 }
 
 .cc-top-header {
@@ -170,6 +171,13 @@
     overflow-wrap: break-word;
     white-space: normal;
     color: #4F5966;
+}
+
+.toogle-cont {
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
 }
 
 .cc-setting {

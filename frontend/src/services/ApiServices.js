@@ -288,6 +288,17 @@ export const duplicateCardToList = async (cardId, listId, userId, body = {}) => 
 
 export const archiveCard = (cardId) => axios.put(`${API_URL}/archive-card/${cardId}`, cardId);
 
+export const updateCardActive = (id, status) => {
+  return axios.patch(`${API_URL}/cards/${id}/active`, {
+    is_active: status
+  });
+};
+
+export const updateToggleShow = (id, show) => {
+  return axios.patch(`${API_URL}/cards/${id}/show-toggle`,{
+    show_toggle : show
+  });
+}
 
 
 // 🔹 Move card ke list atau board lain + ubah posisi
