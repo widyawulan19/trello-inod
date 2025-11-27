@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { deleteCard, getCardById, getCardByList,updateTitleCard , onCardMove, archiveCard, getCardPriority, getDueDateById, getAllDueDateByCardId, getStatusByCardId, getAllStatus, getStatusCard, getTotalMessageInCard, getTotalFile, getNotifications, patchReadNotification,checkHasNewChat, getTotalChecklistItemByCardId, getChecklistItemChecked, getCardMediaCount, updateCardActive} from '../services/ApiServices';
+import { RxSwitch } from "react-icons/rx";
+import { deleteCard, getCardById, getCardByList,updateTitleCard , onCardMove, archiveCard, getCardPriority, getDueDateById, getAllDueDateByCardId, getStatusByCardId, getAllStatus, getStatusCard, getTotalMessageInCard, getTotalFile, getNotifications, patchReadNotification,checkHasNewChat, getTotalChecklistItemByCardId, getChecklistItemChecked, getCardMediaCount, updateCardActive, updateToggleShow} from '../services/ApiServices';
 import '../style/pages/Card.css'
 import '../style/modules/BoxStatus.css'
 import {    HiOutlineEllipsisHorizontal,
@@ -365,6 +366,14 @@ const Card=({
         })
     }
 
+    // fungsi show toggle on off card 
+    const toggleShowToggle = async (cardId, value, listId) => {
+        await updateToggleShow(cardId, value); 
+        fetchCardList(listId);
+        setShowSetting(false)
+    };
+
+
 
     //fungsi menampilkan icon 
     const ICON_STATUS = {
@@ -438,10 +447,13 @@ const Card=({
                 )}
             </div>
             <div className="toogle-cont">
-                <ToggleSwitch
-                    active={card.is_active} 
+                {/* ToggleSwitch hanya muncul ketika show_toggle = true */}
+                {card.show_toggle && (
+                    <ToggleSwitch
+                    active={card.is_active}
                     onToggle={() => toggleActive(card.id, !card.is_active)}
-                />
+                    />
+                )}
 
                 <BootstrapTooltip title='Card setting' placement='top'>
                     <div className="cc-setting" onClick={(e)=> handleShowSetting(e, card.id)}>
@@ -497,13 +509,14 @@ const Card=({
                         <HiOutlineArchiveBox className='cs-icon'/>
                         Archive
                     </button>
+                    <button onClick={() => toggleShowToggle(card.id, !card.show_toggle, card.list_id)}>
+                        <RxSwitch className='cs-icon'/>
+                        {card.show_toggle ? "Hide On/Off" : "Show On/Off"}
+                    </button>
                     <button onClick={()=> handleDeleteClick(card.id)} className="flex items-center gap-1 text-red-500 hover:text-red-700">
                         <HiOutlineTrash className='cs-delete'/>
                         Delete
                     </button>
-                    {/* <button onClick={() => toggleShowToggle(card.id, !card.show_toggle)}>
-                          {card.show_toggle ? "Hide Toggle" : "Show Toggle"}
-                    </button> */}
                 </div>
             )}
         </div>

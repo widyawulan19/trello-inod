@@ -294,6 +294,11 @@ export const updateCardActive = (id, status) => {
   });
 };
 
+export const updateToggleShow = (id, show) => {
+  return axios.patch(`${API_URL}/cards/${id}/show-toggle`,{
+    show_toggle : show
+  });
+}
 
 
 // 🔹 Move card ke list atau board lain + ubah posisi

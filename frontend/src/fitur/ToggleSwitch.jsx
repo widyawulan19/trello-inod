@@ -3,16 +3,17 @@ const ToggleSwitch = ({ active, onToggle }) => {
     <div
       onClick={onToggle}
       style={{
-        width: "60px",
-        height: "26px",
+        width: "43px",
+        height: "20px",
         borderRadius: "20px",
-        backgroundColor: active ? "#26d63b" : "#e5e5e5",
+        backgroundColor: active ? "#1c982a" : "#eee",
         display: "flex",
         alignItems: "center",
         padding: "3px",
         cursor: "pointer",
         position: "relative",
         transition: "background-color 0.25s ease",
+        // boxShadow:"0px 4px 8px rgba(0, 0, 0, 0.1)"
       }}
     >
 
@@ -20,28 +21,28 @@ const ToggleSwitch = ({ active, onToggle }) => {
       <span
         style={{
           position: "absolute",
-          left: active ? "6px" : "auto",
-          right: active ? "auto" : "6px",
+          left: active ? "3px" : "auto",
+          right: active ? "auto" : "3px",
           color: active ? "#ffffff" : "#555",
-          fontSize: "9px",
+          fontSize: "8px",
           fontWeight: "600",
           userSelect: "none",
           transition: "0.25s ease",
         }}
       >
-        {active ? "ON" : "OFF"}
+        {active ? "" : "OFF"}
       </span>
 
       {/* CIRCLE */}
       <div
         style={{
-          width: "20px",
-          height: "20px",
+          width: "15px",
+          height: "15px",
           borderRadius: "50%",
           backgroundColor: "#fff",
-          transform: active ? "translateX(32px)" : "translateX(0px)",
+          transform: active ? "translateX(22px)" : "translateX(0px)",
           transition: "transform 0.25s ease",
-          boxShadow: "0px 2px 4px rgba(0,0,0,0.3)",
+          boxShadow: "0px 2px 4px rgba(0,0,0,0.5)",
         }}
       ></div>
     </div>
