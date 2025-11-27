@@ -501,6 +501,9 @@ const Card=({
                         <HiOutlineTrash className='cs-delete'/>
                         Delete
                     </button>
+                    {/* <button onClick={() => toggleShowToggle(card.id, !card.show_toggle)}>
+                          {card.show_toggle ? "Hide Toggle" : "Show Toggle"}
+                    </button> */}
                 </div>
             )}
         </div>
