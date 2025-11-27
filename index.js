@@ -5447,7 +5447,7 @@ app.put('/api/archive-card/:cardId', async (req, res) => {
 });
 
 // 8. on off card 
-app.patch('/cards/:cardId/active', async (req, res) => {
+app.patch('/api/cards/:cardId/active', async (req, res) => {
     const { cardId } = req.params;
     const { is_active } = req.body;
 
