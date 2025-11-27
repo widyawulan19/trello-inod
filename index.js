@@ -5446,6 +5446,28 @@ app.put('/api/archive-card/:cardId', async (req, res) => {
     }
 });
 
+// 8. on off card 
+app.patch('/cards/:cardId/active', async (req, res) => {
+    const { cardId } = req.params;
+    const { is_active } = req.body;
+
+    try {
+        const update = await client.query(
+            `UPDATE cards SET is_active = $1 WHERE id = $2 RETURNING *`,
+            [is_active, cardId]
+        );
+
+        res.json({
+            message: "Card status updated",
+            data: update.rows[0]
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to update status" });
+    }
+});
+
+
 //END CARD
 
 //CARD USER
