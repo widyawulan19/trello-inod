@@ -2762,18 +2762,6 @@ app.get('/api/boards', async (req, res) => {
 });
 
 //1. get all board by workspace id
-// app.get('/api/workspaces/:workspaceId/boards', async (req, res) => {
-//     const { workspaceId } = req.params;
-//     try {
-//         const result = await client.query(
-//             'SELECT * FROM boards WHERE workspace_id = $1 AND is_deleted = FALSE ORDER BY position ASC',
-//             [workspaceId]
-//         );
-//         res.json(result.rows);
-//     } catch (error) {
-//         res.status(500).json({ error: error.message });
-//     }
-// });
 // ✅ Get boards by workspace ID (hanya untuk user yang punya akses)
 app.get('/api/workspaces/:workspaceId/boards', async (req, res) => {
     const { workspaceId } = req.params;
@@ -2800,6 +2788,30 @@ app.get('/api/workspaces/:workspaceId/boards', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+
+app.get('/api/workspaces/:workspaceId/workspace-board', async (req, res) => {
+    const { workspaceId } = req.params;
+
+    try {
+        const result = await client.query(
+            `
+            SELECT *
+            FROM boards
+            WHERE workspace_id = $1
+              AND is_deleted = FALSE
+            ORDER BY position ASC
+            `,
+            [workspaceId]
+        );
+
+        res.json(result.rows);
+    } catch (error) {
+        console.error("Error fetching boards:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 
 
 
@@ -5509,18 +5521,18 @@ app.patch('/api/cards/:cardId/active', async (req, res) => {
 
 //9. show toogle
 app.patch('/api/cards/:id/show-toggle', async (req, res) => {
-  const { id } = req.params;
-  const { show_toggle } = req.body;
+    const { id } = req.params;
+    const { show_toggle } = req.body;
 
-  try {
-    const result = await client.query(
-      `UPDATE cards SET show_toggle = $1 WHERE id = $2 RETURNING *`,
-      [show_toggle, id]
-    );
-    res.json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    try {
+        const result = await client.query(
+            `UPDATE cards SET show_toggle = $1 WHERE id = $2 RETURNING *`,
+            [show_toggle, id]
+        );
+        res.json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
 
 
