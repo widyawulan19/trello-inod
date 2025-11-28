@@ -33,6 +33,8 @@ const DataMarketing = () => {
 
   const [marketingTransfile, setMarketingTransfile] = useState([]);
   const [isExported, setIsExported] = useState(false);
+  const [stickyCount, setStickyCount] = useState(3); // default 3 kolom
+
 
   const [data, setData] = useState([]);
   const [dataMarketing, setDataMarketing] = useState([]);
@@ -186,6 +188,53 @@ const handleCloseForm = () =>{
   }
 
   
+// FUNGSI STYCKY COLUMN 
+useEffect(() => {
+  const table = document.querySelector(".dm-table");
+  if (!table) return;
+
+  const ths = table.querySelectorAll("thead th");
+  const tds = table.querySelectorAll("tbody td");
+
+  let leftPositions = [];
+
+  // hitung posisi kiri setiap kolom sticky
+  for (let i = 0; i < stickyCount; i++) {
+    const width = ths[i].offsetWidth;
+    leftPositions[i] = (leftPositions[i - 1] || 0) + (i === 0 ? 0 : ths[i - 1].offsetWidth);
+  }
+
+  // apply sticky ke TH
+  ths.forEach((th, index) => {
+    if (index < stickyCount) {
+      th.style.position = "sticky";
+      th.style.left = `${leftPositions[index]}px`;
+      th.style.zIndex = 9;
+      th.style.background = "white";
+    } else {
+      th.style.position = "";
+      th.style.left = "";
+    }
+  });
+
+  // apply sticky ke TD
+  const rows = table.querySelectorAll("tbody tr");
+  rows.forEach((row) => {
+    const cells = row.querySelectorAll("td");
+    cells.forEach((td, index) => {
+      if (index < stickyCount) {
+        td.style.position = "sticky";
+        td.style.left = `${leftPositions[index]}px`;
+        td.style.zIndex = 8;
+        td.style.background = "white";
+      } else {
+        td.style.position = "";
+        td.style.left = "";
+      }
+    });
+  });
+}, [stickyCount]);
+
 
 //FUNGSI DELETE CONFIRM
 const handleDeleteClick = (marketingId) =>{
@@ -557,7 +606,7 @@ const handleExportToSheets = async (marketingId) => {
           <p>Loading data...</p>
         ):(
           <div className="dm-container">
-            <table cellPadding="10" cellSpacing="0">
+            <table cellPadding="10" cellSpacing="0" className="dm-table">
               <thead>
                 <tr>
                   <th style={{ borderTopLeftRadius: '8px'}}>NO</th>
