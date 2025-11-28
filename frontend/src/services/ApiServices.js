@@ -187,6 +187,16 @@ export const getBoardsWorkspace = async (workspaceId, userId) => {
   }
 };
 
+export const getBoardsWorkspaces = async (workspaceId) => {
+  try {
+    const response = await axios.get(`${API_URL}/workspaces/${workspaceId}/workspace-board`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching boards:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
 
 export const getBoardById = (id) => axios.get(`${API_URL}/boards/${id}`)
 export const createBoard = (data) => axios.post(`${API_URL}/boards`, data)
