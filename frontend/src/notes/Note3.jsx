@@ -1,3 +1,6 @@
+// REACT_APP_API_URL=https://inod-backend.up.railway.app/api
+// REACT_APP_API_URL=https://inod-backend.up.railway.app/api
+
 // import React, { useEffect, useState } from 'react'
 // import '../style/pages/MasterDataMusik.css'
 // import { HiOutlineSearch } from 'react-icons/hi'
