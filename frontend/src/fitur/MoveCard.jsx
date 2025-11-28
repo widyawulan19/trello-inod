@@ -6,6 +6,7 @@ import {
   // moveCardToListTesting,
   getListByBoard,
   getCardsByList,
+  getBoardsWorkspaces,
 } from '../services/ApiServices';
 import {
   HiMiniArrowLeftStartOnRectangle,
@@ -45,10 +46,17 @@ const MoveCard = ({
 
   // 🔹 Load semua board
   useEffect(() => {
-    getBoards()
-      .then((res) => setBoards(res.data))
-      .catch((err) => console.error('❌ Error fetching boards:', err));
-  }, []);
+    if (!workspaceId) return;
+
+    getBoardsWorkspaces(workspaceId)
+      .then((res) => setBoards(res))
+      .catch((err) => console.error('❌ Error fetching workspace boards:', err));
+  }, [workspaceId]);
+  // useEffect(() => {
+  //   getBoards()
+  //     .then((res) => setBoards(res.data))
+  //     .catch((err) => console.error('❌ Error fetching boards:', err));
+  // }, []);
 
   // 🔹 Load lists berdasarkan board
   useEffect(() => {
