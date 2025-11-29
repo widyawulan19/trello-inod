@@ -63,7 +63,7 @@ const Sidebar = () => {
             { to: 'data-delete', icon: <HiOutlineTrash className='icon' />, label: 'Trash', name: 'Trash' },
             // { to: 'marketing-chart', icon: <MdDeveloperMode className='icon' />, label: 'Testing Fitur', name: 'Testing Fitur' },
 
-            { to: 'develop', icon: <MdDeveloperMode className='icon' />, label: 'Testing Fitur', name: 'Testing Fitur' },
+            { to: 'counter-music', icon: <MdDeveloperMode className='icon' />, label: 'Testing Fitur', name: 'Testing Fitur' },
             // { to: 'card-list', icon: <HiAdjustmentsHorizontal className='icon' />, label: 'Development', name: 'Dev page' },
           ].map((item) => (
             <div

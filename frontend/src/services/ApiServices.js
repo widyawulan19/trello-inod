@@ -45,7 +45,7 @@ export const searchCards = (keyword, workspaceId) => axios.get(`${API_URL}/searc
 //SEARCH CARD BY WORKSPACE USER
 // export const searchCardsByUser = (keyword, userId) => axios.get(`${API_URL}/search/global`, { params: { keyword, userId } });
 export const searchCardsByUser = (keyword, userId) => {
-  return axios.get(`${API_URL}/search/global`, {
+  return axios.get(`${API_URL}/search/global-testing`, {
     params: { keyword, userId }
   });
 };
@@ -296,7 +296,10 @@ export const duplicateCardToList = async (cardId, listId, userId, body = {}) => 
   }
 };
 
-export const archiveCard = (cardId) => axios.put(`${API_URL}/archive-card/${cardId}`, cardId);
+export const archiveCard = (cardId, userId) =>
+  axios.put(`${API_URL}/archive-card-testing/${cardId}/${userId}`);
+
+// export const archiveCard = (cardId) => axios.put(`${API_URL}/archive-card/${cardId}`, cardId);
 
 export const updateCardActive = (id, status) => {
   return axios.patch(`${API_URL}/cards/${id}/active`, {
@@ -305,8 +308,8 @@ export const updateCardActive = (id, status) => {
 };
 
 export const updateToggleShow = (id, show) => {
-  return axios.patch(`${API_URL}/cards/${id}/show-toggle`,{
-    show_toggle : show
+  return axios.patch(`${API_URL}/cards/${id}/show-toggle`, {
+    show_toggle: show
   });
 }
 
@@ -905,7 +908,10 @@ export const getWorkspaceIdAndBoardId = (data) => axios.post(`${API_URL}/get-wor
 export const createCardFromDataMarketing = (listId, marketingDesignId) => axios.put(`${API_URL}/create-card-marketing/${listId}/${marketingDesignId}`)
 
 //ARCHIVE UNIVERSAL
-export const archiveData = (entity, id) => axios.post(`${API_URL}/archive/${entity}/${id}`);
+// export const archiveData = (entity, id) => axios.post(`${API_URL}/archive/${entity}/${id}`);
+export const archiveData = (entity, id, userId) => {
+  return axios.post(`${API_URL}/archive/${entity}/${id}/${userId}`);
+};
 export const getAllDataArchive = () => axios.get(`${API_URL}/archive-data`);
 export const deleteArchiveDataUniversalById = (id) => axios.delete(`${API_URL}/archive-data/${id}`);
 export const restoreDataArchive = (entity, id) => axios.post(`${API_URL}/restore/${entity}/${id}`)

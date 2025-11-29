@@ -293,6 +293,12 @@
   padding: 10px;
 }
 
+.dm-table th,
+.dm-table td {
+  white-space: nowrap;
+}
+
+
 .dm-container {
   border: 1px solid #ddd;
   /* border: 1px solid red; */
@@ -300,6 +306,7 @@
   width: 100%;
   height: 95%;
   overflow-y: auto;
+  overflow-x: auto;
   position: relative;
 }
 

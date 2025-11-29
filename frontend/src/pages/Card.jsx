@@ -357,14 +357,15 @@ const Card=({
     }
 
     //archive card
-    const handleArchiveCard = (cardId)=>{
+    const handleArchiveCard = (cardId) => {
         handleArchive({
-            entity:'cards',
+            entity: 'cards',
             id: cardId,
+            userId: userId,
             refetch: fetchCardList,
-            showSnackbar: showSnackbar,
-        })
-    }
+            showSnackbar,
+    });
+    };
 
     // fungsi show toggle on off card 
     const toggleShowToggle = async (cardId, value, listId) => {
