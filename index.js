@@ -1933,17 +1933,17 @@ app.get('/api/search/global-testing', async (req, res) => {
             a.archived_at AS create_at,
             a.archived_at AS update_at
         FROM archive_universal a
-        JOIN cards c ON c.id = a.entity_id
-        JOIN lists l ON c.list_id = l.id
-        JOIN boards b ON l.board_id = b.id
-        JOIN workspaces w ON b.workspace_id = w.id
-        JOIN workspaces_users wu ON wu.workspace_id = w.id
+        LEFT JOIN lists l ON l.id = (a.data ->> 'list_id')::int
+        LEFT JOIN boards b ON b.id = l.board_id
+        LEFT JOIN workspaces w ON w.id = b.workspace_id
+        LEFT JOIN workspaces_users wu ON wu.workspace_id = w.id
         WHERE a.entity_type = 'cards'
         AND wu.user_id = $2
         AND (
             LOWER(a.data ->> 'title') ILIKE $1
             OR LOWER(a.data ->> 'description') ILIKE $1
         )
+
 
         ORDER BY create_at DESC;
         `;
