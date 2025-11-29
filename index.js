@@ -1915,17 +1915,17 @@ app.get('/api/search/global-testing', async (req, res) => {
 
         UNION ALL
 
-       -- SEARCH ARCHIVE UNIVERSAL
+        -- 🔍 2. SEARCH ARCHIVED CARDS (WORKSPACE BASED)
         SELECT
             a.entity_id AS card_id,
             a.data ->> 'title' AS title,
             a.data ->> 'description' AS description,
-            NULL AS list_id,
-            NULL AS list_name,
-            NULL AS board_id,
-            NULL AS board_name,
-            NULL AS workspace_id,
-            NULL AS workspace_name,
+            l.id AS list_id,
+            l.name AS list_name,
+            b.id AS board_id,
+            b.name AS board_name,
+            w.id AS workspace_id,
+            w.name AS workspace_name,
             'Archive' AS status,
             NULL AS is_active,
             NULL AS show_toggle,
@@ -1933,13 +1933,17 @@ app.get('/api/search/global-testing', async (req, res) => {
             a.archived_at AS create_at,
             a.archived_at AS update_at
         FROM archive_universal a
+        JOIN cards c ON c.id = a.entity_id
+        JOIN lists l ON c.list_id = l.id
+        JOIN boards b ON l.board_id = b.id
+        JOIN workspaces w ON b.workspace_id = w.id
+        JOIN workspaces_users wu ON wu.workspace_id = w.id
         WHERE a.entity_type = 'cards'
-        AND (a.user_id = $2 OR a.user_id IS NULL)
+        AND wu.user_id = $2
         AND (
             LOWER(a.data ->> 'title') ILIKE $1
             OR LOWER(a.data ->> 'description') ILIKE $1
         )
-
 
         ORDER BY create_at DESC;
         `;
@@ -1948,8 +1952,7 @@ app.get('/api/search/global-testing', async (req, res) => {
         res.json(result.rows);
 
     } catch (err) {
-        console.error('❌ Search error message:', err.message);
-        console.error('🧨 Full error:', err);
+        console.error('❌ Search error:', err.message);
         res.status(500).json({
             error: 'Internal server error',
             detail: err.message
