@@ -1930,8 +1930,8 @@ app.get('/api/search/global-testing', async (req, res) => {
             NULL AS is_active,
             NULL AS show_toggle,
             NULL AS position,
-            a.archived_at AS created_at,
-            a.archived_at AS updated_at
+            a.archived_at AS create_at,
+            a.archived_at AS update_at
         FROM archive_universal a
         WHERE a.entity_type = 'cards'
         AND a.user_id = $2
@@ -1940,7 +1940,7 @@ app.get('/api/search/global-testing', async (req, res) => {
             LOWER(a.data ->> 'description') ILIKE $1
         )
 
-        ORDER BY created_at DESC;
+        ORDER BY create_at DESC;
         `;
 
         const result = await client.query(query, [searchKeyword, numericUserId]);
