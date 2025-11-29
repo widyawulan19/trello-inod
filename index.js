@@ -15583,15 +15583,31 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (r
             );
         }
 
+        // const result = await client.query(
+        //     `INSERT INTO public.cards (title, description, list_id, position) 
+        //      SELECT title, description, $1, 
+        //             COALESCE($2, (SELECT COALESCE(MAX(position), 0) + 1 FROM public.cards WHERE list_id = $1))
+        //      FROM public.cards 
+        //      WHERE id = $3 
+        //      RETURNING id, title, list_id`,
+        //     [listId, position, cardId]
+        // );
         const result = await client.query(
-            `INSERT INTO public.cards (title, description, list_id, position) 
-             SELECT title, description, $1, 
-                    COALESCE($2, (SELECT COALESCE(MAX(position), 0) + 1 FROM public.cards WHERE list_id = $1))
-             FROM public.cards 
-             WHERE id = $3 
-             RETURNING id, title, list_id`,
+            `INSERT INTO public.cards 
+                (title, description, list_id, position, is_active, show_toggle) 
+            SELECT 
+                title, 
+                description, 
+                $1, 
+                COALESCE($2, (SELECT COALESCE(MAX(position), 0) + 1 FROM public.cards WHERE list_id = $1)),
+                is_active,
+                show_toggle
+            FROM public.cards 
+            WHERE id = $3 
+            RETURNING id, title, list_id, is_active, show_toggle`,
             [listId, position, cardId]
         );
+
 
         const newCardId = result.rows[0].id;
         const newCardTitle = result.rows[0].title;
@@ -15654,7 +15670,7 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (r
              SELECT $1, user_id FROM public.card_users WHERE card_id = $2`,
             [newCardId, cardId]
         );
-        
+
         await client.query(
             `INSERT INTO public.card_chats 
                 (card_id, user_id, message, parent_message_id, mentions, send_time, created_at, updated_at, deleted_at)
