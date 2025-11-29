@@ -1900,10 +1900,7 @@ app.get('/api/search/global-testing', async (req, res) => {
             c.show_toggle,
             c.position,
             c.create_at,
-            c.update_at,
-            c.is_active,
-            c.show_toggle,
-            c.position
+            c.update_at
         FROM cards c
         JOIN lists l ON c.list_id = l.id
         JOIN boards b ON l.board_id = b.id
