@@ -5498,6 +5498,66 @@ app.put('/api/archive-card/:cardId', async (req, res) => {
     }
 });
 
+app.put('/api/archive-card-testing/:cardId/:userId', async (req, res) => {
+    const { cardId, userId } = req.params;
+
+    try {
+        // 1. Ambil data card
+        const cardResult = await client.query(
+            'SELECT list_id, position, title, description FROM public.cards WHERE id = $1',
+            [cardId]
+        );
+
+        if (cardResult.rows.length === 0) {
+            return res.status(404).json({ error: 'Card not found' });
+        }
+
+        const { list_id, position, title, description } = cardResult.rows[0];
+
+        // 2. Insert card ke archive
+        const archiveResult = await client.query(
+            `INSERT INTO public.archive (entity_type, entity_id, name, description, parent_id, parent_type)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING *`,
+            ['card', cardId, title, description, list_id, 'list']
+        );
+
+        const archivedData = archiveResult.rows[0];
+
+        // 3. Hapus card dari table cards
+        await client.query('DELETE FROM public.cards WHERE id = $1', [cardId]);
+
+        // 4. Reorder posisi card lain di list
+        await client.query(
+            `UPDATE public.cards
+             SET position = position - 1
+             WHERE list_id = $1 AND position > $2`,
+            [list_id, position]
+        );
+
+        // 5. Log activity
+        await logActivity(
+            'card',
+            cardId,
+            'archive',
+            userId, // dari URL
+            `Card dengan ID ${cardId} berhasil di archive`,
+            'list',
+            cardId
+        );
+
+        return res.status(200).json({
+            message: 'Card archived successfully',
+            archivedData,
+        });
+
+    } catch (error) {
+        console.error('Error archiving card:', error);
+        return res.status(500).json({ error: 'An error occurred while archiving the card' });
+    }
+});
+
+
 // 8. on off card 
 app.patch('/api/cards/:cardId/active', async (req, res) => {
     const { cardId } = req.params;
