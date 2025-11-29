@@ -1794,70 +1794,9 @@ app.get('/api/search', async (req, res) => {
     }
 });
 
-//GLOBAL SEARCH CARD (berdasarkan user)
-// app.get('/api/search/global', async (req, res) => {
-//     const { keyword, userId } = req.query;
-
-//     // Validasi input
-//     if (!keyword || !userId) {
-//         return res.status(400).json({ error: 'Keyword and userId are required' });
-//     }
-
-//     const searchKeyword = `%${keyword}%`;
-//     const numericUserId = parseInt(userId);
-
-//     if (isNaN(numericUserId)) {
-//         return res.status(400).json({ error: 'Invalid userId' });
-//     }
-
-//     // Logging input
-//     console.log('🔍 keyword:', keyword);
-//     console.log('🔍 userId:', numericUserId);
-//     console.log('🔍 searchKeyword:', searchKeyword);
-
-//     try {
-//         const query = `
-//       SELECT 
-//         cards.id AS card_id,
-//         cards.title,
-//         cards.description,
-//         cards.list_id,
-//         lists.name AS list_name,
-//         lists.board_id,
-//         boards.name AS board_name,
-//         boards.workspace_id,
-//         workspaces.name AS workspace_name,
-//         workspaces.id AS workspace_id
-//       FROM 
-//         cards
-//       JOIN lists ON cards.list_id = lists.id
-//       JOIN boards ON lists.board_id = boards.id
-//       JOIN workspaces ON boards.workspace_id = workspaces.id
-//       JOIN workspaces_users ON workspaces_users.workspace_id = workspaces.id
-//       WHERE 
-//         workspaces_users.user_id = $2
-//         AND (
-//           LOWER(cards.title) ILIKE LOWER($1)
-//           OR LOWER(cards.description) ILIKE LOWER($1)
-//         )
-//     `;
-
-//         const result = await client.query(query, [searchKeyword, numericUserId]);
-//         res.json(result.rows);
-//     } catch (err) {
-//         console.error('❌ Search error message:', err.message);
-//         console.error('🧨 Full error:', err);
-//         res.status(500).json({
-//             error: 'Internal server error',
-//             detail: err.message
-//         });
-//     }
-// });
-
 
 //WORKSPACE
 //1.Get all workspace
-// GLOBAL SEARCH CARD (termasuk archived)
 // GLOBAL SEARCH CARD (termasuk archived)
 app.get('/api/search/global', async (req, res) => {
     const { keyword, userId } = req.query;
@@ -1960,8 +1899,11 @@ app.get('/api/search/global-testing', async (req, res) => {
             c.is_active,
             c.show_toggle,
             c.position,
-            c.created_at,
-            c.updated_at
+            c.create_at,
+            c.update_at,
+            c.is_active,
+            c.show_toggle,
+            c.position
         FROM cards c
         JOIN lists l ON c.list_id = l.id
         JOIN boards b ON l.board_id = b.id
