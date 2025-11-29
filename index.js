@@ -15654,6 +15654,17 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (r
              SELECT $1, user_id FROM public.card_users WHERE card_id = $2`,
             [newCardId, cardId]
         );
+        
+        await client.query(
+            `INSERT INTO public.card_chats 
+                (card_id, user_id, message, parent_message_id, mentions, send_time, created_at, updated_at, deleted_at)
+            SELECT 
+                $1, user_id, message, parent_message_id, mentions, 
+                NOW(), NOW(), NOW(), NULL
+            FROM public.card_chats 
+            WHERE card_id = $2`,
+            [newCardId, cardId]
+        );
 
         // Ambil username userId
         const userRes = await client.query(
