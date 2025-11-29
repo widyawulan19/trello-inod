@@ -359,7 +359,7 @@ const Card=({
     //archive card
     const handleArchiveCard = (cardId) => {
         handleArchive({
-            entity: 'card',
+            entity: 'cards',
             id: cardId,
             userId: userId,
             refetch: fetchCardList,
