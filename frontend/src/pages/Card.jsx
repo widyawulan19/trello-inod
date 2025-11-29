@@ -361,20 +361,11 @@ const Card=({
         handleArchive({
             entity: 'card',
             id: cardId,
-            userId,
+            userId: userId,
             refetch: fetchCardList,
             showSnackbar,
     });
     };
-    // const handleArchiveCard = (cardId)=>{
-    //     handleArchive({
-    //         entity:'cards',
-    //         cardId: cardId,
-    //         userId: userId,
-    //         refetch: fetchCardList,
-    //         showSnackbar: showSnackbar,
-    //     })
-    // }
 
     // fungsi show toggle on off card 
     const toggleShowToggle = async (cardId, value, listId) => {

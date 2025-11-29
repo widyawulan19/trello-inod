@@ -908,7 +908,10 @@ export const getWorkspaceIdAndBoardId = (data) => axios.post(`${API_URL}/get-wor
 export const createCardFromDataMarketing = (listId, marketingDesignId) => axios.put(`${API_URL}/create-card-marketing/${listId}/${marketingDesignId}`)
 
 //ARCHIVE UNIVERSAL
-export const archiveData = (entity, id) => axios.post(`${API_URL}/archive/${entity}/${id}`);
+// export const archiveData = (entity, id) => axios.post(`${API_URL}/archive/${entity}/${id}`);
+export const archiveData = (entity, id, userId) => {
+  return axios.post(`${API_URL}/archive/${entity}/${id}/${userId}`);
+};
 export const getAllDataArchive = () => axios.get(`${API_URL}/archive-data`);
 export const deleteArchiveDataUniversalById = (id) => axios.delete(`${API_URL}/archive-data/${id}`);
 export const restoreDataArchive = (entity, id) => axios.post(`${API_URL}/restore/${entity}/${id}`)
