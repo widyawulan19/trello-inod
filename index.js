@@ -1915,7 +1915,7 @@ app.get('/api/search/global-testing', async (req, res) => {
 
         UNION ALL
 
-        -- 🔍 2. SEARCH ARCHIVED CARDS FROM archive_universal
+       -- SEARCH ARCHIVE UNIVERSAL
         SELECT
             a.entity_id AS card_id,
             a.data ->> 'title' AS title,
@@ -1934,11 +1934,12 @@ app.get('/api/search/global-testing', async (req, res) => {
             a.archived_at AS update_at
         FROM archive_universal a
         WHERE a.entity_type = 'cards'
-        AND a.user_id = $2
+        AND (a.user_id = $2 OR a.user_id IS NULL)
         AND (
-            LOWER(a.data ->> 'title') ILIKE $1 OR 
-            LOWER(a.data ->> 'description') ILIKE $1
+            LOWER(a.data ->> 'title') ILIKE $1
+            OR LOWER(a.data ->> 'description') ILIKE $1
         )
+
 
         ORDER BY create_at DESC;
         `;
