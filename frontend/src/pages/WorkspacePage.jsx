@@ -377,6 +377,7 @@ const handleArchiveBoard = (boardId) =>{
   handleArchive({
     entity:'boards',
     id: boardId,
+    userId: userId,
     refetch:fetchBoards,
     showSnackbar: showSnackbar,
   })

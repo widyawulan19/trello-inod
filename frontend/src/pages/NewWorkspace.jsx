@@ -293,6 +293,7 @@ function NewWorkspace() {
     handleArchive({
       entity:'workspaces',
       id: workspaceId,
+      userId: userId,
       refetch: fetchWorkspaceUser,
       showSnackbar:showSnackbar,
     })
