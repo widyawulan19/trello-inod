@@ -377,6 +377,7 @@ const handleArchiveLists = (listId) =>{
     handleArchive({
         entity:'lists',
         id: listId,
+        userId: userId,
         refetch:fetchLists,
         showSnackbar: showSnackbar,
     })
