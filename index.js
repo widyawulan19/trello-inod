@@ -15922,7 +15922,7 @@ app.get("/api/archive/detail-cards/:cardId", async (req, res) => {
 
         // 3️⃣ Ambil info board asal
         const boardResult = await client.query(
-            `SELECT id, workspace_id, title FROM boards WHERE id = $1`,
+            `SELECT id, workspace_id, name FROM boards WHERE id = $1`,
             [boardId]
         );
 
@@ -15934,7 +15934,7 @@ app.get("/api/archive/detail-cards/:cardId", async (req, res) => {
 
             // 4️⃣ Ambil workspace asal
             const workspaceResult = await client.query(
-                `SELECT id, title FROM workspaces WHERE id = $1`,
+                `SELECT id, name FROM workspaces WHERE id = $1`,
                 [boardData.workspace_id]
             );
 
