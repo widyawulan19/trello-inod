@@ -15859,106 +15859,44 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (r
     }
 });
 
-//get detail card setelah di archive
-app.get("/api/:cardId/detail-card-archive", async (req, res) => {
+
+// get data card archive 
+app.get("/api/archive/detail-cards/:cardId", async (req, res) => {
     const { cardId } = req.params;
 
     try {
-        // 1. Ambil data utama card
-        const cardResult = await client.query(
-            `SELECT * FROM cards WHERE id = $1`,
+        const result = await client.query(
+            `
+            SELECT data, archived_at, user_id
+            FROM archive_universal
+            WHERE entity_type = 'cards'
+              AND entity_id = $1
+            LIMIT 1
+            `,
             [cardId]
         );
 
-        if (cardResult.rows.length === 0) {
-            return res.status(404).json({ message: "Card not found" });
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                message: "Archived card not found",
+                cardId
+            });
         }
 
-        const card = cardResult.rows[0];
+        const archivedData = result.rows[0];
 
-        // 2. Ambil seluruh data lain yang berelasi
-        const [
-            description,
-            labels,
-            members,
-            cover,
-            priorities,
-            checklists,
-            checklistItems,
-            dueDates,
-            chats,
-            status,
-            users,
-            activities
-        ] = await Promise.all([
-            client.query(`SELECT * FROM card_descriptions WHERE card_id=$1`, [cardId]),
-            client.query(
-                `SELECT cl.*, l.name, l.color 
-                 FROM card_labels cl
-                 JOIN labels l ON cl.label_id = l.id
-                 WHERE cl.card_id=$1`,
-                [cardId]
-            ),
-            client.query(
-                `SELECT cm.*, u.fullname, u.email 
-                 FROM card_members cm
-                 JOIN users u ON cm.user_id = u.id
-                 WHERE cm.card_id=$1`,
-                [cardId]
-            ),
-            client.query(`SELECT * FROM card_cover WHERE card_id=$1`, [cardId]),
-            client.query(
-                `SELECT cp.*, p.name 
-                 FROM card_priorities cp
-                 JOIN priorities p ON cp.priority_id = p.id
-                 WHERE cp.card_id=$1`,
-                [cardId]
-            ),
-            client.query(`SELECT * FROM card_checklists WHERE card_id=$1`, [cardId]),
-            client.query(`SELECT * FROM checklist_items WHERE card_id=$1`, [cardId]),
-            client.query(`SELECT * FROM card_due_dates WHERE card_id=$1`, [cardId]),
-            client.query(
-                `SELECT cc.*, u.fullname 
-                 FROM card_chats cc
-                 JOIN users u ON cc.user_id = u.id
-                 WHERE cc.card_id=$1
-                 ORDER BY cc.created_at ASC`,
-                [cardId]
-            ),
-            client.query(`SELECT * FROM card_status WHERE card_id=$1`, [cardId]),
-            client.query(`SELECT * FROM card_users WHERE card_id=$1`, [cardId]),
-            client.query(
-                `SELECT * FROM card_activity 
-                 WHERE card_id=$1 
-                 ORDER BY created_at DESC`,
-                [cardId]
-            ),
-        ]);
-
-        // 3. Gabungkan ke 1 object JSON
-        const data = {
-            card,
-            description: description.rows[0] || null,
-            labels: labels.rows,
-            members: members.rows,
-            cover: cover.rows[0] || null,
-            priorities: priorities.rows,
-            checklists: checklists.rows,
-            checklist_items: checklistItems.rows,
-            due_dates: dueDates.rows[0] || null,
-            chats: chats.rows,
-            status: status.rows[0] || null,
-            users: users.rows,
-            activity: activities.rows,
-        };
-
-        res.json(data);
-    } catch (err) {
-        console.error("Error fetching card detail:", err);
-        res.status(500).json({ message: "Server error", error: err.message });
+        return res.status(200).json({
+            message: "Archived card detail retrieved successfully",
+            cardId,
+            archived_by: archivedData.user_id,
+            archived_at: archivedData.archived_at,
+            data: archivedData.data   // 👉 INI FULL DETAIL CARD
+        });
+    } catch (error) {
+        console.error("❌ Error fetching archived card:", error);
+        return res.status(500).json({ error: error.message });
     }
 });
-
 
 
 
