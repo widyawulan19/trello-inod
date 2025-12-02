@@ -15860,12 +15860,13 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (r
 });
 
 
-// get data card archive 
+// get data card archive + origin info
 app.get("/api/archive/detail-cards/:cardId", async (req, res) => {
     const { cardId } = req.params;
 
     try {
-        const result = await client.query(
+        // 1️⃣ Ambil data archive
+        const archiveResult = await client.query(
             `
             SELECT data, archived_at, user_id
             FROM archive_universal
@@ -15876,27 +15877,96 @@ app.get("/api/archive/detail-cards/:cardId", async (req, res) => {
             [cardId]
         );
 
-        if (result.rows.length === 0) {
+        if (archiveResult.rows.length === 0) {
             return res.status(404).json({
                 message: "Archived card not found",
                 cardId
             });
         }
 
-        const archivedData = result.rows[0];
+        const archivedData = archiveResult.rows[0];
+        const cardData = archivedData.data;
+        const listId = cardData.list_id;
 
+        // Jika list_id tidak ada, bisa saja data lama
+        if (!listId) {
+            return res.status(200).json({
+                message: "Archived card detail retrieved successfully (no list origin)",
+                cardId,
+                archived_by: archivedData.user_id,
+                archived_at: archivedData.archived_at,
+                origin: null,
+                data: cardData
+            });
+        }
+
+        // 2️⃣ Ambil info list asal
+        const listResult = await client.query(
+            `SELECT id, board_id, title FROM lists WHERE id = $1`,
+            [listId]
+        );
+
+        if (listResult.rows.length === 0) {
+            return res.status(200).json({
+                message: "Archived card detail retrieved successfully (list not found)",
+                cardId,
+                archived_by: archivedData.user_id,
+                archived_at: archivedData.archived_at,
+                origin: null,
+                data: cardData
+            });
+        }
+
+        const listData = listResult.rows[0];
+        const boardId = listData.board_id;
+
+        // 3️⃣ Ambil info board asal
+        const boardResult = await client.query(
+            `SELECT id, workspace_id, title FROM boards WHERE id = $1`,
+            [boardId]
+        );
+
+        let boardData = null;
+        let workspaceData = null;
+
+        if (boardResult.rows.length > 0) {
+            boardData = boardResult.rows[0];
+
+            // 4️⃣ Ambil workspace asal
+            const workspaceResult = await client.query(
+                `SELECT id, title FROM workspaces WHERE id = $1`,
+                [boardData.workspace_id]
+            );
+
+            if (workspaceResult.rows.length > 0) {
+                workspaceData = workspaceResult.rows[0];
+            }
+        }
+
+        // 5️⃣ Kembalikan data lengkap
         return res.status(200).json({
             message: "Archived card detail retrieved successfully",
             cardId,
             archived_by: archivedData.user_id,
             archived_at: archivedData.archived_at,
-            data: archivedData.data   // 👉 INI FULL DETAIL CARD
+
+            origin: {
+                list: listData || null,
+                board: boardData || null,
+                workspace: workspaceData || null
+            },
+
+            data: cardData
         });
+
     } catch (error) {
         console.error("❌ Error fetching archived card:", error);
         return res.status(500).json({ error: error.message });
     }
 });
+
+
+
 
 
 
