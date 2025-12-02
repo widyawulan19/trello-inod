@@ -1794,70 +1794,9 @@ app.get('/api/search', async (req, res) => {
     }
 });
 
-//GLOBAL SEARCH CARD (berdasarkan user)
-// app.get('/api/search/global', async (req, res) => {
-//     const { keyword, userId } = req.query;
-
-//     // Validasi input
-//     if (!keyword || !userId) {
-//         return res.status(400).json({ error: 'Keyword and userId are required' });
-//     }
-
-//     const searchKeyword = `%${keyword}%`;
-//     const numericUserId = parseInt(userId);
-
-//     if (isNaN(numericUserId)) {
-//         return res.status(400).json({ error: 'Invalid userId' });
-//     }
-
-//     // Logging input
-//     console.log('🔍 keyword:', keyword);
-//     console.log('🔍 userId:', numericUserId);
-//     console.log('🔍 searchKeyword:', searchKeyword);
-
-//     try {
-//         const query = `
-//       SELECT 
-//         cards.id AS card_id,
-//         cards.title,
-//         cards.description,
-//         cards.list_id,
-//         lists.name AS list_name,
-//         lists.board_id,
-//         boards.name AS board_name,
-//         boards.workspace_id,
-//         workspaces.name AS workspace_name,
-//         workspaces.id AS workspace_id
-//       FROM 
-//         cards
-//       JOIN lists ON cards.list_id = lists.id
-//       JOIN boards ON lists.board_id = boards.id
-//       JOIN workspaces ON boards.workspace_id = workspaces.id
-//       JOIN workspaces_users ON workspaces_users.workspace_id = workspaces.id
-//       WHERE 
-//         workspaces_users.user_id = $2
-//         AND (
-//           LOWER(cards.title) ILIKE LOWER($1)
-//           OR LOWER(cards.description) ILIKE LOWER($1)
-//         )
-//     `;
-
-//         const result = await client.query(query, [searchKeyword, numericUserId]);
-//         res.json(result.rows);
-//     } catch (err) {
-//         console.error('❌ Search error message:', err.message);
-//         console.error('🧨 Full error:', err);
-//         res.status(500).json({
-//             error: 'Internal server error',
-//             detail: err.message
-//         });
-//     }
-// });
-
 
 //WORKSPACE
 //1.Get all workspace
-// GLOBAL SEARCH CARD (termasuk archived)
 // GLOBAL SEARCH CARD (termasuk archived)
 app.get('/api/search/global', async (req, res) => {
     const { keyword, userId } = req.query;
@@ -1921,6 +1860,99 @@ app.get('/api/search/global', async (req, res) => {
     } catch (err) {
         console.error('❌ Search error message:', err.message);
         console.error('🧨 Full error:', err);
+        res.status(500).json({
+            error: 'Internal server error',
+            detail: err.message
+        });
+    }
+});
+
+
+app.get('/api/search/global-testing', async (req, res) => {
+    const { keyword, userId } = req.query;
+
+    if (!keyword || !userId) {
+        return res.status(400).json({ error: 'Keyword and userId are required' });
+    }
+
+    const searchKeyword = `%${keyword.toLowerCase()}%`;
+    const numericUserId = parseInt(userId);
+
+    if (isNaN(numericUserId)) {
+        return res.status(400).json({ error: 'Invalid userId' });
+    }
+
+    try {
+        const query = `
+        -- 🔍 1. SEARCH ACTIVE CARDS
+        SELECT 
+            c.id AS card_id,
+            c.title,
+            c.description,
+            l.id AS list_id,
+            l.name AS list_name,
+            b.id AS board_id,
+            b.name AS board_name,
+            w.id AS workspace_id,
+            w.name AS workspace_name,
+            'Active' AS status,
+            c.is_active,
+            c.show_toggle,
+            c.position,
+            c.create_at,
+            c.update_at
+        FROM cards c
+        JOIN lists l ON c.list_id = l.id
+        JOIN boards b ON l.board_id = b.id
+        JOIN workspaces w ON b.workspace_id = w.id
+        JOIN workspaces_users wu ON wu.workspace_id = w.id
+        WHERE wu.user_id = $2
+        AND c.is_deleted = FALSE
+        AND (
+            LOWER(c.title) ILIKE $1 OR 
+            LOWER(c.description) ILIKE $1
+        )
+
+        UNION ALL
+
+        -- 🔍 2. SEARCH ARCHIVED CARDS (WORKSPACE BASED)
+        SELECT
+            a.entity_id AS card_id,
+            a.data ->> 'title' AS title,
+            a.data ->> 'description' AS description,
+            l.id AS list_id,
+            l.name AS list_name,
+            b.id AS board_id,
+            b.name AS board_name,
+            w.id AS workspace_id,
+            w.name AS workspace_name,
+            'Archive' AS status,
+            NULL AS is_active,
+            NULL AS show_toggle,
+            NULL AS position,
+            a.archived_at AS create_at,
+            a.archived_at AS update_at
+        FROM archive_universal a
+        LEFT JOIN lists l ON l.id = (a.data ->> 'list_id')::int
+        LEFT JOIN boards b ON b.id = l.board_id
+        LEFT JOIN workspaces w ON w.id = b.workspace_id
+        LEFT JOIN workspaces_users wu ON wu.workspace_id = w.id
+        WHERE a.entity_type = 'cards'
+        AND wu.user_id = $2
+        AND (
+            LOWER(a.data ->> 'title') ILIKE $1
+            OR LOWER(a.data ->> 'description') ILIKE $1
+        )
+
+
+        ORDER BY create_at DESC;
+        `;
+
+        const result = await client.query(query, [searchKeyword, numericUserId]);
+        res.json(result.rows);
+
+    } catch (err) {
+        console.error('❌ Search error:', err.message);
         res.status(500).json({
             error: 'Internal server error',
             detail: err.message
@@ -5497,6 +5529,66 @@ app.put('/api/archive-card/:cardId', async (req, res) => {
         return res.status(500).json({ error: 'An error occurred while archiving the card' });
     }
 });
+
+app.put('/api/archive-card-testing/:cardId/:userId', async (req, res) => {
+    const { cardId, userId } = req.params;
+
+    try {
+        // 1. Ambil data card
+        const cardResult = await client.query(
+            'SELECT list_id, position, title, description FROM public.cards WHERE id = $1',
+            [cardId]
+        );
+
+        if (cardResult.rows.length === 0) {
+            return res.status(404).json({ error: 'Card not found' });
+        }
+
+        const { list_id, position, title, description } = cardResult.rows[0];
+
+        // 2. Insert card ke archive
+        const archiveResult = await client.query(
+            `INSERT INTO public.archive (entity_type, entity_id, name, description, parent_id, parent_type)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING *`,
+            ['card', cardId, title, description, list_id, 'list']
+        );
+
+        const archivedData = archiveResult.rows[0];
+
+        // 3. Hapus card dari table cards
+        await client.query('DELETE FROM public.cards WHERE id = $1', [cardId]);
+
+        // 4. Reorder posisi card lain di list
+        await client.query(
+            `UPDATE public.cards
+             SET position = position - 1
+             WHERE list_id = $1 AND position > $2`,
+            [list_id, position]
+        );
+
+        // 5. Log activity
+        await logActivity(
+            'card',
+            cardId,
+            'archive',
+            userId, // dari URL
+            `Card dengan ID ${cardId} berhasil di archive`,
+            'list',
+            cardId
+        );
+
+        return res.status(200).json({
+            message: 'Card archived successfully',
+            archivedData,
+        });
+
+    } catch (error) {
+        console.error('Error archiving card:', error);
+        return res.status(500).json({ error: 'An error occurred while archiving the card' });
+    }
+});
+
 
 // 8. on off card 
 app.patch('/api/cards/:cardId/active', async (req, res) => {
@@ -12147,7 +12239,10 @@ app.get('/api/archive-data', async (req, res) => {
     }
 });
 //2. archive data berdasarkan entity
-app.post('/api/archive/:entity/:id', async (req, res) => {
+// app.post('/api/archive/:entity/:id', async (req, res) => {
+//     const { entity, id } = req.params;
+//     const userId = req.user.id;
+app.post('/api/archive/:entity/:id/:userId', async (req, res) => {
     const { entity, id, userId } = req.params;
 
     const entityMap = {
@@ -15583,14 +15678,21 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (r
         }
 
         const result = await client.query(
-            `INSERT INTO public.cards (title, description, list_id, position) 
-             SELECT title, description, $1, 
-                    COALESCE($2, (SELECT COALESCE(MAX(position), 0) + 1 FROM public.cards WHERE list_id = $1))
-             FROM public.cards 
-             WHERE id = $3 
-             RETURNING id, title, list_id`,
+            `INSERT INTO public.cards 
+                (title, description, list_id, position, is_active, show_toggle) 
+            SELECT 
+                title, 
+                description, 
+                $1, 
+                COALESCE($2, (SELECT COALESCE(MAX(position), 0) + 1 FROM public.cards WHERE list_id = $1)),
+                is_active,
+                show_toggle
+            FROM public.cards 
+            WHERE id = $3 
+            RETURNING id, title, list_id, is_active, show_toggle`,
             [listId, position, cardId]
         );
+
 
         const newCardId = result.rows[0].id;
         const newCardTitle = result.rows[0].title;
@@ -15651,6 +15753,17 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (r
         await client.query(
             `INSERT INTO public.card_users (card_id, user_id)
              SELECT $1, user_id FROM public.card_users WHERE card_id = $2`,
+            [newCardId, cardId]
+        );
+
+        await client.query(
+            `INSERT INTO public.card_chats 
+                (card_id, user_id, message, parent_message_id, mentions, send_time, created_at, updated_at, deleted_at)
+            SELECT 
+                $1, user_id, message, parent_message_id, mentions, 
+                NOW(), NOW(), NOW(), NULL
+            FROM public.card_chats 
+            WHERE card_id = $2`,
             [newCardId, cardId]
         );
 
@@ -15736,6 +15849,7 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (r
         res.status(500).json({ error: err.message, stack: err.stack }); // tampilkan detail error di response
     }
 });
+
 
 
 // END TESTING ENDPOIN 
