@@ -367,6 +367,7 @@ const Card=({
     });
     };
 
+
     // fungsi show toggle on off card 
     const toggleShowToggle = async (cardId, value, listId) => {
         await updateToggleShow(cardId, value); 
@@ -510,6 +511,7 @@ const Card=({
                         <HiOutlineArchiveBox className='cs-icon'/>
                         Archive
                     </button>
+                    
                     <button onClick={() => toggleShowToggle(card.id, !card.show_toggle, card.list_id)}>
                         <RxSwitch className='cs-icon'/>
                         {card.show_toggle ? "Hide On/Off" : "Show On/Off"}

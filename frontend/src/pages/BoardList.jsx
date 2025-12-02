@@ -43,6 +43,7 @@ import {
 } from "@dnd-kit/sortable";
 import SortableListItem from '../hook/SortableListItem'
 import SortableCardItem from '../hook/SortableCardItem'
+import { RiArchiveStackLine } from 'react-icons/ri'
 // import SortableCardItem from '../hook/SortableCardItem'
 
 
@@ -242,6 +243,9 @@ const BoardList=()=> {
                 ...prevCards,
                 [listId]: response.data // Simpan kartu berdasarkan listId
             }));
+            
+            // RETURN agar bisa dipakai di tempat lain
+            return response.data;
         }catch(error){
             console.error('failed fatch cards:', error)
         }
@@ -382,6 +386,40 @@ const handleArchiveLists = (listId) =>{
         showSnackbar: showSnackbar,
     })
 }
+
+
+    //ARCHIVE ALL CARD DALAM LIST
+    const handleArchiveAllCards = async (listId) => {
+        try {
+            // 1. Ambil semua card di list ini
+            const cards = await fetchCardList(listId);
+
+            if (!cards || cards.length === 0) {
+            showSnackbar("No cards to archive in this list", "info");
+            return;
+            }
+
+            // 2. Archive satu-satu
+            for (const card of cards) {
+            await handleArchive({
+                entity: 'cards',
+                id: card.id,
+                userId,
+                showSnackbar: () => {}, // supaya snackbar ga spam
+            });
+            }
+
+            // 3. Setelah selesai → refresh
+            fetchCardList(listId);
+            showSnackbar("All cards in this list have been archived", "success");
+
+        } catch (error) {
+            console.error("Error archiving all cards:", error);
+            showSnackbar("Failed to archive cards in this list", "error");
+        }
+    };
+
+
 
 // FUNCTION CARD POSITION 
 const handleChangeCardPosition = async (cardId, newPosition) => {
@@ -693,6 +731,10 @@ if (!userId) {
                                                         <button onClick={()=> handleArchiveLists(list.id)}>
                                                             <HiOutlineArchiveBox className='cs-icon'/>
                                                             Archive
+                                                        </button>
+                                                        <button onClick={() => handleArchiveAllCards(list.id)}>
+                                                            <RiArchiveStackLine className='cs-icon'/>
+                                                            Archive all cards
                                                         </button>
                                                         <div className="delete">
                                                             <button onClick={()=> handleDeleteClick(list.id)} className="flex items-center gap-1 text-red-500 hover:text-red-700">
