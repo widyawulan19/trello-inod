@@ -15902,7 +15902,7 @@ app.get("/api/archive/detail-cards/:cardId", async (req, res) => {
 
         // 2️⃣ Ambil info list asal
         const listResult = await client.query(
-            `SELECT id, board_id, title FROM lists WHERE id = $1`,
+            `SELECT id, board_id, name FROM lists WHERE id = $1`,
             [listId]
         );
 
