@@ -14658,15 +14658,15 @@ app.put('/api/card-chats/:id', async (req, res) => {
 
 
 // MEDIA CHATS 
-app.use(express.json({ limit: '200mb' }));
-app.use(express.urlencoded({ extended: true, limit: '200mb' }));
+// app.use(express.json({ limit: '200mb' }));
+// app.use(express.urlencoded({ extended: true, limit: '200mb' }));
 
 
-// batas besar di multer (WAJIB)
-const upload = multer({
-    storage: multer.memoryStorage(),
-    limits: { fileSize: 200 * 1024 * 1024 } // 200 MB
-});
+// // batas besar di multer (WAJIB)
+// const upload = multer({
+//     storage: multer.memoryStorage(),
+//     limits: { fileSize: 200 * 1024 * 1024 } // 200 MB
+// });
 
 app.post('/api/chats/:chatId/media', upload.single('file'), async (req, res) => {
     const { chatId } = req.params;
