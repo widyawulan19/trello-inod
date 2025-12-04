@@ -12482,10 +12482,12 @@ app.post('/api/restore-testing/:entity/:id', async (req, res) => {
             "list_id",
             "position",
             "due_date",
-            "order",
             "is_active",
             "create_at",
             "update_at",
+            "show_toggle",
+            "is_deleted",
+            "description"
 
         ],
         workspaces: ["id", "name", "created_at", "updated_at"],
