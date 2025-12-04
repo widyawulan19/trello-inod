@@ -29,57 +29,6 @@ dayjs.extend(timezone);
 dayjs.locale("id");
 
 
-// ============================
-// 🔢 COUNTER SETUP DATA MARKETING DESIGN
-// ============================
-// let currentDesignOrderNumber = 0;
-// let currentDesignProjectNumber = 0;
-// let lastProjectMonth = dayjs().month();
-
-// async function initializeCounters() {
-//     try {
-//         const result = await client.query(`
-//       SELECT 
-//         MAX(CAST(order_number AS INTEGER)) AS max_order_number,
-//         MAX(CAST(SUBSTRING(project_number FROM 2 FOR 2) AS INTEGER)) AS max_project_number,
-//         MAX(create_at) AS last_created_at
-//       FROM marketing_design
-//     `);
-
-//         const row = result.rows[0];
-//         currentDesignOrderNumber = row.max_order_number || 0;
-//         currentDesignProjectNumber = row.max_project_number || 0;
-//         lastProjectMonth = row.last_created_at
-//             ? dayjs(row.last_created_at).month()
-//             : dayjs().month();
-
-//         console.log("✅ Counter initialized:");
-//         console.log("   currentDesignOrderNumber:", currentDesignOrderNumber);
-//         console.log("   currentDesignProjectNumber:", currentDesignProjectNumber);
-//         console.log("   lastProjectMonth:", lastProjectMonth + 1);
-//     } catch (error) {
-//         console.error("❌ Failed to initialize counters:", error.message);
-//     }
-// }
-
-// // Jalankan saat server start
-// initializeCounters();
-
-
-
-// // ============================
-// // 🔢 COUNTER SETUP DATA MARKETING MUSIK
-// // ============================
-
-
-// // =======================
-// // 🔹 VARIABEL GLOBAL
-// // =======================
-// let currentOrderNumberMarketing = 558;     // bisa kamu set manual
-// let currentProjectNumberMarketing = 558;    // bisa kamu set manual
-// let lastMarketingMonth = dayjs().month();  // default bulan saat ini
-
-
 
 
 // =======================
@@ -14709,6 +14658,16 @@ app.put('/api/card-chats/:id', async (req, res) => {
 
 
 // MEDIA CHATS 
+app.use(express.json({ limit: '200mb' }));
+app.use(express.urlencoded({ extended: true, limit: '200mb' }));
+
+
+// batas besar di multer (WAJIB)
+const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 200 * 1024 * 1024 } // 200 MB
+});
+
 app.post('/api/chats/:chatId/media', upload.single('file'), async (req, res) => {
     const { chatId } = req.params;
 
