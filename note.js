@@ -346,3 +346,128 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId', async (req, res) => {
     res.status(500).json({ error: 'Terjadi kesalahan saat menyalin card ke list yang baru' });
   }
 });
+
+
+
+app.post('/api/restore/:entity/:id', async (req, res) => {
+  const { entity, id } = req.params;
+
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+
+    // 1. Cek apakah entity valid
+    const allowedEntities = ["workspaces", "boards", "lists", "cards"];
+    if (!allowedEntities.includes(entity)) {
+      return res.status(400).json({ error: "Invalid entity." });
+    }
+
+    // 2. Ambil data archive berdasarkan entity
+    const archiveQuery = `
+            SELECT * FROM archives
+            WHERE entity = $1 AND entity_id = $2
+        `;
+    const archiveResult = await client.query(archiveQuery, [entity, id]);
+
+    if (archiveResult.rows.length === 0) {
+      return res.status(404).json({ error: "Archived data not found." });
+    }
+
+    const archivedData = archiveResult.rows[0].data;
+
+    // 3. Restore main entity
+    let mainTable = entity;
+    let primaryKey = "id";
+
+    let restoredData = { ...archivedData };
+
+    await client.query(
+      `UPDATE ${mainTable} SET is_archived = false WHERE ${primaryKey} = $1`,
+      [id]
+    );
+
+    // -------------------------------------------------------
+    // 4. Jika entity adalah CARD → restore semua relasinya
+    // -------------------------------------------------------
+    if (entity === "cards") {
+
+      // Restore card_descriptions
+      if (archivedData.card_descriptions?.length > 0) {
+        for (const desc of archivedData.card_descriptions) {
+          await client.query(`
+                        UPDATE card_descriptions 
+                        SET is_archived = false
+                        WHERE id = $1
+                    `, [desc.id]);
+        }
+      }
+
+      // Restore card_labels
+      if (archivedData.card_labels?.length > 0) {
+        for (const lbl of archivedData.card_labels) {
+          await client.query(`
+                        UPDATE card_labels
+                        SET is_archived = false
+                        WHERE id = $1
+                    `, [lbl.id]);
+        }
+      }
+
+      // Restore card_chats
+      if (archivedData.card_chats?.length > 0) {
+        for (const chat of archivedData.card_chats) {
+          await client.query(`
+                        UPDATE card_chats
+                        SET is_archived = false
+                        WHERE id = $1
+                    `, [chat.id]);
+        }
+      }
+
+      // Restore card_files
+      if (archivedData.card_files?.length > 0) {
+        for (const file of archivedData.card_files) {
+          await client.query(`
+                        UPDATE card_files
+                        SET is_archived = false
+                        WHERE id = $1
+                    `, [file.id]);
+        }
+      }
+
+      // Restore card_activities
+      if (archivedData.card_activities?.length > 0) {
+        for (const act of archivedData.card_activities) {
+          await client.query(`
+                        UPDATE card_activities
+                        SET is_archived = false
+                        WHERE id = $1
+                    `, [act.id]);
+        }
+      }
+
+    }
+
+    // 5. Hapus archive record setelah restore
+    await client.query(
+      `DELETE FROM archives WHERE entity = $1 AND entity_id = $2`,
+      [entity, id]
+    );
+
+    await client.query("COMMIT");
+
+    res.json({
+      message: "Restore successful.",
+      restored: restoredData
+    });
+
+  } catch (err) {
+    await client.query("ROLLBACK");
+    console.error("Restore error:", err);
+    res.status(500).json({ error: "Failed to restore entity." });
+
+  } finally {
+    client.release();
+  }
+});
