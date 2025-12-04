@@ -12457,6 +12457,10 @@ app.post('/api/restore/:entity/:id', async (req, res) => {
 // ===========================================
 // FULL RESTORE UNIVERSAL (SUPPORT ALL ENTITY)
 // ===========================================
+
+// ===========================================
+// FULL RESTORE UNIVERSAL (SUPPORT ALL ENTITY)
+// ===========================================
 app.post('/api/restore-testing/:entity/:id', async (req, res) => {
     const { entity, id } = req.params;
 
@@ -12478,7 +12482,7 @@ app.post('/api/restore-testing/:entity/:id', async (req, res) => {
     try {
         await client.query("BEGIN");
 
-        // 1. AMBIL DATA DARI ARCHIVE
+        // 1. Ambil data archive
         const archiveRes = await client.query(
             `SELECT data FROM archive_universal WHERE entity_type = $1 AND entity_id = $2`,
             [entity, id]
@@ -12493,7 +12497,7 @@ app.post('/api/restore-testing/:entity/:id', async (req, res) => {
         const raw = archiveRes.rows[0].data;
 
         // =======================================================
-        // STEP 1 — RESTORE DATA UTAMA (UTAMA DULU)
+        // STEP 1 — RESTORE DATA UTAMA (PAKAI ID YANG SAMA)
         // =======================================================
         const keys = Object.keys(raw);
         const vals = Object.values(raw);
@@ -12507,41 +12511,51 @@ app.post('/api/restore-testing/:entity/:id', async (req, res) => {
         );
 
         const restoredMain = insertMain.rows[0];
+        const restoredId = restoredMain.id;
 
         // =======================================================
-        // STEP 2 — RESTORE RELASI HANYA JIKA ENTITY = cards
+        // STEP 2 — RESTORE RELASI KHUSUS ENTITY=cards
         // =======================================================
-        const restoreRelation = async (tableName, arr) => {
-            if (!arr || arr.length === 0) return;
-
-            for (const row of arr) {
-                const rKeys = Object.keys(row);
-                const rVals = Object.values(row);
-                const rPh = rVals.map((_, i) => `$${i + 1}`).join(", ");
-
-                await client.query(
-                    `INSERT INTO ${tableName} (${rKeys.join(", ")})
-                     VALUES (${rPh})`,
-                    rVals
-                );
-            }
-        };
-
         if (entity === "cards") {
-            await restoreRelation("card_checklists", raw.checklists);
-            await restoreRelation("card_cover", raw.cover);
-            await restoreRelation("card_descriptions", raw.descriptions);
-            await restoreRelation("card_due_dates", raw.due_dates);
-            await restoreRelation("card_labels", raw.labels);
-            await restoreRelation("card_members", raw.members);
-            await restoreRelation("card_priorities", raw.priorities);
-            await restoreRelation("card_status", raw.status);
-            await restoreRelation("card_users", raw.users);
-            await restoreRelation("card_chats", raw.chats);
+
+            // Function auto copy
+            const copyRelation = async (table, columns, extra = "") => {
+                await client.query(
+                    `INSERT INTO ${table} (card_id, ${columns})
+                     SELECT $1, ${columns}
+                     FROM ${table} WHERE card_id = $2 ${extra}`,
+                    [restoredId, id]
+                );
+            };
+
+            await copyRelation("card_checklists", "checklist_id, created_at, updated_at",
+                ", CURRENT_TIMESTAMP, CURRENT_TIMESTAMP");
+
+            await copyRelation("card_cover", "cover_id");
+
+            await copyRelation("card_descriptions", "description, created_at, updated_at",
+                ", CURRENT_TIMESTAMP, CURRENT_TIMESTAMP");
+
+            await copyRelation("card_due_dates", "due_date, created_at, updated_at",
+                ", CURRENT_TIMESTAMP, CURRENT_TIMESTAMP");
+
+            await copyRelation("card_labels", "label_id");
+
+            await copyRelation("card_members", "user_id");
+
+            await copyRelation("card_priorities", "priority_id");
+
+            await copyRelation("card_status", "status_id, assigned_at",
+                ", CURRENT_TIMESTAMP");
+
+            await copyRelation("card_users", "user_id");
+
+            await copyRelation("card_chats", "user_id, message, created_at, updated_at",
+                ", CURRENT_TIMESTAMP, CURRENT_TIMESTAMP");
         }
 
         // =======================================================
-        // STEP 3 — HAPUS DARI ARCHIVE
+        // STEP 3 — DELETE DARI ARCHIVE
         // =======================================================
         await client.query(
             `DELETE FROM archive_universal WHERE entity_type = $1 AND entity_id = $2`,
@@ -12563,6 +12577,110 @@ app.post('/api/restore-testing/:entity/:id', async (req, res) => {
 });
 
 
+// app.post('/api/restore-testing/:entity/:id', async (req, res) => {
+//     const { entity, id } = req.params;
+
+//     const entityMap = {
+//         workspaces_users: { table: 'workspaces_users' },
+//         workspaces: { table: 'workspaces' },
+//         boards: { table: 'boards' },
+//         lists: { table: 'lists' },
+//         cards: { table: 'cards' },
+//         data_marketing: { table: 'data_marketing' },
+//         marketing_design: { table: 'marketing_design' }
+//     };
+
+//     const config = entityMap[entity];
+//     if (!config) {
+//         return res.status(400).json({ error: `Entity '${entity}' tidak dikenali` });
+//     }
+
+//     try {
+//         await client.query("BEGIN");
+
+//         // 1. AMBIL DATA DARI ARCHIVE
+//         const archiveRes = await client.query(
+//             `SELECT data FROM archive_universal WHERE entity_type = $1 AND entity_id = $2`,
+//             [entity, id]
+//         );
+
+//         if (archiveRes.rows.length === 0) {
+//             return res.status(404).json({
+//                 error: `Data ${entity} id ${id} tidak ditemukan di archive`
+//             });
+//         }
+
+//         const raw = archiveRes.rows[0].data;
+
+//         // =======================================================
+//         // STEP 1 — RESTORE DATA UTAMA (UTAMA DULU)
+//         // =======================================================
+//         const keys = Object.keys(raw);
+//         const vals = Object.values(raw);
+//         const ph = keys.map((_, i) => `$${i + 1}`).join(", ");
+
+//         const insertMain = await client.query(
+//             `INSERT INTO ${config.table} (${keys.join(", ")})
+//              VALUES (${ph})
+//              RETURNING *`,
+//             vals
+//         );
+
+//         const restoredMain = insertMain.rows[0];
+
+//         // =======================================================
+//         // STEP 2 — RESTORE RELASI HANYA JIKA ENTITY = cards
+//         // =======================================================
+//         const restoreRelation = async (tableName, arr) => {
+//             if (!arr || arr.length === 0) return;
+
+//             for (const row of arr) {
+//                 const rKeys = Object.keys(row);
+//                 const rVals = Object.values(row);
+//                 const rPh = rVals.map((_, i) => `$${i + 1}`).join(", ");
+
+//                 await client.query(
+//                     `INSERT INTO ${tableName} (${rKeys.join(", ")})
+//                      VALUES (${rPh})`,
+//                     rVals
+//                 );
+//             }
+//         };
+
+//         if (entity === "cards") {
+//             await restoreRelation("card_checklists", raw.checklists);
+//             await restoreRelation("card_cover", raw.cover);
+//             await restoreRelation("card_descriptions", raw.descriptions);
+//             await restoreRelation("card_due_dates", raw.due_dates);
+//             await restoreRelation("card_labels", raw.labels);
+//             await restoreRelation("card_members", raw.members);
+//             await restoreRelation("card_priorities", raw.priorities);
+//             await restoreRelation("card_status", raw.status);
+//             await restoreRelation("card_users", raw.users);
+//             await restoreRelation("card_chats", raw.chats);
+//         }
+
+//         // =======================================================
+//         // STEP 3 — HAPUS DARI ARCHIVE
+//         // =======================================================
+//         await client.query(
+//             `DELETE FROM archive_universal WHERE entity_type = $1 AND entity_id = $2`,
+//             [entity, id]
+//         );
+
+//         await client.query("COMMIT");
+
+//         return res.status(200).json({
+//             message: `${entity} restored successfully`,
+//             restored: restoredMain
+//         });
+
+//     } catch (err) {
+//         await client.query("ROLLBACK");
+//         console.error("❌ Restore Error:", err);
+//         return res.status(500).json({ error: err.message });
+//     }
+// });
 
 //END ARCHIVE UNIVERSAL
 
