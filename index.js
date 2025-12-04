@@ -12474,6 +12474,25 @@ app.post('/api/restore-testing/:entity/:id', async (req, res) => {
         marketing_design: { table: 'marketing_design' }
     };
 
+    // 🔥 Kolom valid untuk setiap entity (wajib)
+    const allowedColumns = {
+        cards: [
+            "id",
+            "title",
+            "list_id",
+            "order",
+            "is_active",
+            "created_at",
+            "updated_at"
+        ],
+        workspaces: ["id", "name", "created_at", "updated_at"],
+        boards: ["id", "workspace_id", "title", "order", "created_at", "updated_at"],
+        lists: ["id", "board_id", "title", "order", "created_at", "updated_at"],
+        workspaces_users: ["id", "workspace_id", "user_id", "role"],
+        data_marketing: ["id", "name", "value", "created_at", "updated_at"],
+        marketing_design: ["id", "design_name", "created_at", "updated_at"]
+    };
+
     const config = entityMap[entity];
     if (!config) {
         return res.status(400).json({ error: `Entity '${entity}' tidak dikenali` });
@@ -12497,10 +12516,12 @@ app.post('/api/restore-testing/:entity/:id', async (req, res) => {
         const raw = archiveRes.rows[0].data;
 
         // =======================================================
-        // STEP 1 — RESTORE DATA UTAMA (PAKAI ID YANG SAMA)
+        // STEP 1 — FILTER KOLOM UTAMA (menghindari chats/labels dll)
         // =======================================================
-        const keys = Object.keys(raw);
-        const vals = Object.values(raw);
+        const allowed = allowedColumns[entity];
+
+        const keys = allowed.filter(col => raw[col] !== undefined);
+        const vals = keys.map(col => raw[col]);
         const ph = keys.map((_, i) => `$${i + 1}`).join(", ");
 
         const insertMain = await client.query(
@@ -12514,44 +12535,64 @@ app.post('/api/restore-testing/:entity/:id', async (req, res) => {
         const restoredId = restoredMain.id;
 
         // =======================================================
-        // STEP 2 — RESTORE RELASI KHUSUS ENTITY=cards
+        // STEP 2 — RESTORE RELASI cards
         // =======================================================
         if (entity === "cards") {
 
             // Function auto copy
-            const copyRelation = async (table, columns, extra = "") => {
+            const copyRelation = async (table, selectCols, insertCols, extraSet = "") => {
                 await client.query(
-                    `INSERT INTO ${table} (card_id, ${columns})
-                     SELECT $1, ${columns}
-                     FROM ${table} WHERE card_id = $2 ${extra}`,
+                    `INSERT INTO ${table} (card_id, ${insertCols})
+                     SELECT $1, ${selectCols}
+                     FROM ${table} WHERE card_id = $2 ${extraSet}`,
                     [restoredId, id]
                 );
             };
 
-            await copyRelation("card_checklists", "checklist_id, created_at, updated_at",
-                ", CURRENT_TIMESTAMP, CURRENT_TIMESTAMP");
+            await copyRelation(
+                "card_checklists",
+                "checklist_id",
+                "checklist_id, created_at, updated_at",
+                ", CURRENT_TIMESTAMP, CURRENT_TIMESTAMP"
+            );
 
-            await copyRelation("card_cover", "cover_id");
+            await copyRelation("card_cover", "cover_id", "cover_id");
 
-            await copyRelation("card_descriptions", "description, created_at, updated_at",
-                ", CURRENT_TIMESTAMP, CURRENT_TIMESTAMP");
+            await copyRelation(
+                "card_descriptions",
+                "description",
+                "description, created_at, updated_at",
+                ", CURRENT_TIMESTAMP, CURRENT_TIMESTAMP"
+            );
 
-            await copyRelation("card_due_dates", "due_date, created_at, updated_at",
-                ", CURRENT_TIMESTAMP, CURRENT_TIMESTAMP");
+            await copyRelation(
+                "card_due_dates",
+                "due_date",
+                "due_date, created_at, updated_at",
+                ", CURRENT_TIMESTAMP, CURRENT_TIMESTAMP"
+            );
 
-            await copyRelation("card_labels", "label_id");
+            await copyRelation("card_labels", "label_id", "label_id");
 
-            await copyRelation("card_members", "user_id");
+            await copyRelation("card_members", "user_id", "user_id");
 
-            await copyRelation("card_priorities", "priority_id");
+            await copyRelation("card_priorities", "priority_id", "priority_id");
 
-            await copyRelation("card_status", "status_id, assigned_at",
-                ", CURRENT_TIMESTAMP");
+            await copyRelation(
+                "card_status",
+                "status_id",
+                "status_id, assigned_at",
+                ", CURRENT_TIMESTAMP"
+            );
 
-            await copyRelation("card_users", "user_id");
+            await copyRelation("card_users", "user_id", "user_id");
 
-            await copyRelation("card_chats", "user_id, message, created_at, updated_at",
-                ", CURRENT_TIMESTAMP, CURRENT_TIMESTAMP");
+            await copyRelation(
+                "card_chats",
+                "user_id, message",
+                "user_id, message, created_at, updated_at",
+                ", CURRENT_TIMESTAMP, CURRENT_TIMESTAMP"
+            );
         }
 
         // =======================================================
@@ -12575,6 +12616,7 @@ app.post('/api/restore-testing/:entity/:id', async (req, res) => {
         return res.status(500).json({ error: err.message });
     }
 });
+
 
 
 // app.post('/api/restore-testing/:entity/:id', async (req, res) => {
