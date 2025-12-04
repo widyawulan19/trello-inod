@@ -8,7 +8,22 @@ import { HiAdjustmentsHorizontal, HiArrowLeftCircle, HiArrowRightCircle } from '
 const Layout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  //theme
+  const [theme, setTheme] = useState(
+    localStorage.getItem("theme") || "light"
+  );
 
+  //FUNCTION THEME
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => (prev === "light" ? "dark" : "light"));
+  };
+
+  //FUNCTION RESPONSIVE SIDEBAR
   useEffect(() => {
     const handleResize = () => {
       // Cek apakah layar masuk ke ukuran mobile
@@ -27,7 +42,7 @@ const Layout = ({ children }) => {
 
   return (
     <div className='layout-container'>
-      <Navbar className="navbar" />
+      {/* <Navbar className="navbar" onToggleTheme={toggleTheme} theme={theme}/> */}
 
       {/* Tombol toggle di mobile */}
       {isMobile && (
@@ -46,10 +61,12 @@ const Layout = ({ children }) => {
             transition: 'margin-left 0.3s',
             minWidth: '80vw',
             maxWidth: '100vw',
+            // border:'1px solid red',
             // background: 'linear-gradient(to bottom, #042787, #3927ab)',
           }}
         >
           {/* {children} */}
+          <Navbar className="navbar" onToggleTheme={toggleTheme} theme={theme}/>
           <Outlet/>
         </div>
       </div>

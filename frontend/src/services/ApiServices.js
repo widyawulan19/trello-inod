@@ -914,7 +914,16 @@ export const archiveData = (entity, id, userId) => {
 };
 export const getAllDataArchive = () => axios.get(`${API_URL}/archive-data`);
 export const deleteArchiveDataUniversalById = (id) => axios.delete(`${API_URL}/archive-data/${id}`);
-export const restoreDataArchive = (entity, id) => axios.post(`${API_URL}/restore/${entity}/${id}`)
+export const restoreDataArchive = (entity, id) => axios.post(`${API_URL}/restore/${entity}/${id}`);
+export const getArchivedCardDetail = async (cardId) => {
+  try {
+    const response = await axios.get(`${API_URL}/archive/detail-cards/${cardId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching archived card detail:", error.response?.data || error.message);
+    throw error;
+  }
+};
 
 //ARCHIVE
 export const getArchiveWorkspace = () => axios.get(`${API_URL}/archive-workspace`)

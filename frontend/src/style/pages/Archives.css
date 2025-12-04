@@ -181,6 +181,48 @@
   /* hover:bg-gray-50 */
 }
 
+/* MODAL DETAIL CARD  */
+.archive-container .detail-card-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.detail-card-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.detail-card-content h3 {
+  margin-top: 0;
+}
+
+.close-button {
+  margin-top: 15px;
+  padding: 8px 12px;
+  background-color: #5D12EB;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.close-button:hover {
+  background-color: #410ca5;
+}
+
+
 /* MEDIA QUERY  */
 /* Large devices (desktops, ≥992px) */
 @media (min-width: 992px) and (max-width: 1199.98px) {

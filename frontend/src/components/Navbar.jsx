@@ -16,7 +16,7 @@ import SearchGlobalCard from '../fitur/SearchGlobalCard';
 import PersonalNotes from '../modules/PersonalNotes';
 import PersonalAgendas from '../modules/PersonalAgendas';
 import AgendaUser from '../UI/AgendaUser';
-import { IoCalendar } from 'react-icons/io5';
+import { IoCalendar, IoColorPalette, IoColorPaletteSharp } from 'react-icons/io5';
 
 //tooltip
 const BootstrapTooltip = styled(({className, ...props}) =>(
@@ -30,7 +30,7 @@ const BootstrapTooltip = styled(({className, ...props}) =>(
       },
 }));
 
-const Navbar=()=> {
+const Navbar=({onToggleTheme,theme})=> {
     //state
     // const navigate = useNavigate();
     const [active, setActive] = useState(false);
@@ -216,11 +216,16 @@ const Navbar=()=> {
                         <HiOutlineClipboardDocumentList className='icon-icon' />
                     </div>
                 </BootstrapTooltip>
-                <div className="translate">
-                    <BootstrapTooltip title="Translate">
-                        <HiMiniLanguage  className='icon-icon' />
+                <div className={`translate ${theme}`} onClick={onToggleTheme}>
+                    <BootstrapTooltip title={theme === "light" ? "Switch to Dark Mode" : "Switch to Light Mode"}>
+                        {theme === "light" ? (
+                            <IoColorPaletteSharp className='icon-icon' />
+                            ) : (
+                            <IoColorPalette className='icon-icon' />  // versi lain jika mau beda
+                        )}
                     </BootstrapTooltip>
                 </div>
+
                 
                 <BootstrapTooltip title="Notify">
                     <div 

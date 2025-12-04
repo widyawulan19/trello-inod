@@ -12,6 +12,29 @@ code {
     monospace;
 }
 
+/* Default: Light Theme */
+:root {
+  --bg: #ffffff;
+  --bg-sidebar: #EFEDFD;
+  --border: #E5E9EE;
+  --text: #1A1A1A;
+  --sub-text: #5F5F5F;
+  --primary: #6D5FEA;
+  --card-bg: #f7f7f7;
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+  --bg: #171A1F;
+  --bg-sidebar: #242424;
+  --border: #323743;
+  --text: #BBBEC2;
+  --sub-text: #7A7D81;
+  --primary: #3C31A3;
+  --card-bg: #1E2128;
+}
+
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
