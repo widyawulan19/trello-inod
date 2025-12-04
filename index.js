@@ -12268,7 +12268,7 @@ app.post('/api/archive/:entity/:id/:userId', async (req, res) => {
             return res.status(404).json({ error: `Data ${entity} dengan ID ${id} tidak ditemukan` });
         }
 
-        const data = result.rows[0];
+        let data = result.rows[0];
 
         // ======================================================
         // 2. Jika entity = cards → ambil seluruh relasi lengkap
