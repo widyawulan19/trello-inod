@@ -12273,6 +12273,40 @@ app.post('/api/archive/:entity/:id/:userId', async (req, res) => {
 
         const data = result.rows[0];
 
+        // ======================================================
+        // 2. Jika entity = cards → ambil seluruh relasi lengkap
+        // ======================================================
+        if (entity === "cards") {
+            const relations = {};
+
+            const tables = {
+                checklists: "card_checklists",
+                cover: "card_cover",
+                descriptions: "card_descriptions",
+                due_dates: "card_due_dates",
+                labels: "card_labels",
+                members: "card_members",
+                priorities: "card_priorities",
+                status: "card_status",
+                users: "card_users",
+                chats: "card_chats"
+            };
+
+            for (const [key, tableName] of Object.entries(tables)) {
+                const q = await client.query(
+                    `SELECT * FROM ${tableName} WHERE card_id = $1`,
+                    [id]
+                );
+                relations[key] = q.rows;
+            }
+
+            // Gabungkan data utama + relasi
+            data = {
+                ...data,
+                ...relations
+            };
+        }
+
         // 2. Masukkan ke archive_universal
         await client.query(`
         INSERT INTO archive_universal (entity_type, entity_id, data, user_id)
