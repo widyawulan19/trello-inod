@@ -750,3 +750,58 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (r
     client.release();
   }
 });
+
+
+// batas besar di express (WAJIB)
+app.use(express.json({ limit: '200mb' }));
+app.use(express.urlencoded({ extended: true, limit: '200mb' }));
+
+// batas besar di multer (WAJIB)
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 200 * 1024 * 1024 } // 200 MB
+});
+
+// MEDIA CHATS 
+app.post('/api/chats/:chatId/media', upload.single('file'), async (req, res) => {
+  const { chatId } = req.params;
+
+  if (!req.file || !chatId) {
+    return res.status(400).json({ error: 'Missing file or chatId' });
+  }
+
+  try {
+    const result = await new Promise((resolve, reject) => {
+      cloudinary.uploader.upload_stream(
+        {
+          resource_type: 'auto',
+          folder: 'trello_chat_media',
+          public_id: `${Date.now()}-${req.file.originalname}`,
+        },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      ).end(req.file.buffer);
+    });
+
+    const fileUrl = result.secure_url;
+    const mimeType = req.file.mimetype;
+
+    let mediaType = 'file';
+    if (mimeType.startsWith('image/')) mediaType = 'image';
+    else if (mimeType.startsWith('video/')) mediaType = 'video';
+    else if (mimeType.startsWith('audio/')) mediaType = 'audio';
+
+    const dbResult = await client.query(
+      `INSERT INTO card_chats_media (chat_id, media_url, media_type)
+             VALUES ($1, $2, $3) RETURNING *`,
+      [chatId, fileUrl, mediaType]
+    );
+
+    res.status(201).json(dbResult.rows[0]);
+  } catch (error) {
+    console.error('Upload error:', error);
+    res.status(500).json({ error: 'Upload failed', message: error.message });
+  }
+});
