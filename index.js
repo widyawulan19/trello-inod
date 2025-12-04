@@ -12239,9 +12239,6 @@ app.get('/api/archive-data', async (req, res) => {
     }
 });
 //2. archive data berdasarkan entity
-// app.post('/api/archive/:entity/:id', async (req, res) => {
-//     const { entity, id } = req.params;
-//     const userId = req.user.id;
 app.post('/api/archive/:entity/:id/:userId', async (req, res) => {
     const { entity, id, userId } = req.params;
 
