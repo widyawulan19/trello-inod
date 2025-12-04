@@ -12362,6 +12362,102 @@ app.post('/api/restore/:entity/:id', async (req, res) => {
     }
 });
 
+// ===========================================
+// FULL RESTORE CARD (MATCH DUPLICATE STRUCT)
+// ===========================================
+app.post('/api/restore-testing/cards/:cardId', async (req, res) => {
+    const { cardId } = req.params;
+
+    try {
+        await client.query('BEGIN');
+
+        // 1. Ambil data dari archive_universal
+        const archiveResult = await client.query(
+            `SELECT data FROM archive_universal 
+             WHERE entity_type = 'cards' AND entity_id = $1`,
+            [cardId]
+        );
+
+        if (archiveResult.rows.length === 0) {
+            return res.status(404).json({ error: 'Archived card not found' });
+        }
+
+        const raw = archiveResult.rows[0].data;
+        const card = raw.card;
+
+        if (!card) {
+            return res.status(400).json({ error: 'Invalid archive structure: missing card data' });
+        }
+
+        // ============================================
+        // STEP 1 — RESTORE ROW INTI CARD
+        // ============================================
+
+        const cardKeys = Object.keys(card);
+        const cardVals = Object.values(card);
+        const placeholders = cardVals.map((_, i) => `$${i + 1}`).join(', ');
+
+        await client.query(
+            `INSERT INTO public.cards (${cardKeys.join(', ')}) 
+             VALUES (${placeholders})`,
+            cardVals
+        );
+
+        // ============================================
+        // STEP 2 — RESTORE SEMUA RELASI (LIKE DUPLICATE)
+        // ============================================
+
+        const restoreRelation = async (tableName, arr) => {
+            if (!arr || arr.length === 0) return;
+
+            for (const row of arr) {
+                const keys = Object.keys(row);
+                const vals = Object.values(row);
+                const ph = vals.map((_, i) => `$${i + 1}`).join(', ');
+
+                await client.query(
+                    `INSERT INTO public.${tableName} (${keys.join(', ')})
+                     VALUES (${ph})`,
+                    vals
+                );
+            }
+        };
+
+        await restoreRelation("card_checklists", raw.checklists);
+        await restoreRelation("card_cover", raw.cover);
+        await restoreRelation("card_descriptions", raw.descriptions);
+        await restoreRelation("card_due_dates", raw.due_dates);
+        await restoreRelation("card_labels", raw.labels);
+        await restoreRelation("card_members", raw.members);
+        await restoreRelation("card_priorities", raw.priorities);
+        await restoreRelation("card_status", raw.status);
+        await restoreRelation("card_users", raw.users);
+        await restoreRelation("card_chats", raw.chats);
+
+        // ============================================
+        // STEP 3 — HAPUS DARI ARCHIVE UNIVERSAL
+        // ============================================
+        await client.query(
+            `DELETE FROM archive_universal 
+             WHERE entity_type = 'cards' AND entity_id = $1`,
+            [cardId]
+        );
+
+        await client.query('COMMIT');
+
+        res.status(200).json({
+            message: "Card restored successfully",
+            restoredCard: card
+        });
+
+    } catch (err) {
+        await client.query('ROLLBACK');
+        console.error("❌ Restore Error:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
 //END ARCHIVE UNIVERSAL
 
 
