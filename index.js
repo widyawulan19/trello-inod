@@ -15856,7 +15856,7 @@ app.get('/api/cards/:cardId/activities-testing', async (req, res) => {
 
 // 5. duplicate card
 // Endpoint untuk duplikasi card ke list tertentu
-app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (req, res) => {
+app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/oldtesting', async (req, res) => {
     const { cardId, listId, userId } = req.params; // 🎯 userId dari URL
     const { position } = req.body; // ambil posisi dari body
     const actingUserId = parseInt(userId, 10);
@@ -16058,7 +16058,7 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (r
     }
 });
 
-app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/another-testing', async (req, res) => {
+app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (req, res) => {
     const { cardId, listId, userId } = req.params; // 🎯 userId dari URL
     const { position } = req.body; // ambil posisi dari body
     const actingUserId = parseInt(userId, 10);

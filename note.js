@@ -471,3 +471,282 @@ app.post('/api/restore/:entity/:id', async (req, res) => {
     client.release();
   }
 });
+
+
+
+// Duplicate card endpoint (lengkap: relasi + chat replies + chat media)
+app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (req, res) => {
+  const { cardId, listId, userId } = req.params;
+  const { position } = req.body;
+  const actingUserId = parseInt(userId, 10);
+
+  if (!actingUserId) return res.status(401).json({ error: 'Unauthorized: userId missing' });
+
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    // 0. Get original card
+    const cardRes = await client.query(`SELECT * FROM public.cards WHERE id = $1`, [cardId]);
+    if (cardRes.rows.length === 0) {
+      await client.query('ROLLBACK');
+      return res.status(404).json({ error: 'Card not found' });
+    }
+    const oldCard = cardRes.rows[0];
+
+    // 1. Handle position if provided (shift)
+    if (position) {
+      await client.query(
+        `UPDATE public.cards 
+         SET position = position + 1 
+         WHERE list_id = $1 AND position >= $2`,
+        [listId, position]
+      );
+    }
+
+    // 2. Insert new card (duplicate main fields)
+    const newCardInsert = await client.query(
+      `INSERT INTO public.cards 
+         (title, description, list_id, position, is_active, show_toggle, create_at, update_at)
+       VALUES
+         ($1, $2, $3, COALESCE($4, (SELECT COALESCE(MAX(position), 0) + 1 FROM public.cards WHERE list_id = $3)), $5, $6, NOW(), NOW())
+       RETURNING id, title, list_id, is_active, show_toggle`,
+      [
+        oldCard.title + ' (Copy)',
+        oldCard.description,
+        listId,
+        position,
+        oldCard.is_active,
+        oldCard.show_toggle
+      ]
+    );
+
+    const newCardId = newCardInsert.rows[0].id;
+    const newCardTitle = newCardInsert.rows[0].title;
+
+    // 3. Duplicate simple relation tables via INSERT ... SELECT
+    // card_checklists
+    await client.query(
+      `INSERT INTO public.card_checklists (card_id, checklist_id, created_at, updated_at)
+       SELECT $1, checklist_id, NOW(), NOW()
+       FROM public.card_checklists WHERE card_id = $2`,
+      [newCardId, cardId]
+    );
+
+    // card_cover
+    await client.query(
+      `INSERT INTO public.card_cover (card_id, cover_id, create_at, update_at)
+       SELECT $1, cover_id, NOW(), NOW()
+       FROM public.card_cover WHERE card_id = $2`,
+      [newCardId, cardId]
+    );
+
+    // card_descriptions
+    await client.query(
+      `INSERT INTO public.card_descriptions (card_id, description, created_at, updated_at, nomer_active_order, input_by, buyer_name, code_order, jumlah_track, order_number, account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre, price, required_file, project_type, duration, reference, file_and_chat, detail_project, cdesc_id)
+       SELECT $1, description, NOW(), NOW(), nomer_active_order, input_by, buyer_name, code_order, jumlah_track, order_number, account, deadline, jumlah_revisi, order_type, offer_type, jenis_track, genre, price, required_file, project_type, duration, reference, file_and_chat, detail_project, cdesc_id
+       FROM public.card_descriptions WHERE card_id = $2`,
+      [newCardId, cardId]
+    );
+
+    // card_due_dates
+    await client.query(
+      `INSERT INTO public.card_due_dates (card_id, due_date, created_at, updated_at)
+       SELECT $1, due_date, NOW(), NOW()
+       FROM public.card_due_dates WHERE card_id = $2`,
+      [newCardId, cardId]
+    );
+
+    // card_labels
+    await client.query(
+      `INSERT INTO public.card_labels (card_id, label_id, create_at, update_at)
+       SELECT $1, label_id, NOW(), NOW()
+       FROM public.card_labels WHERE card_id = $2`,
+      [newCardId, cardId]
+    );
+
+    // card_members
+    await client.query(
+      `INSERT INTO public.card_members (card_id, user_id, created_at, updated_at)
+       SELECT $1, user_id, NOW(), NOW()
+       FROM public.card_members WHERE card_id = $2`,
+      [newCardId, cardId]
+    );
+
+    // card_priorities
+    await client.query(
+      `INSERT INTO public.card_priorities (card_id, priority_id, created_at, updated_at)
+       SELECT $1, priority_id, NOW(), NOW()
+       FROM public.card_priorities WHERE card_id = $2`,
+      [newCardId, cardId]
+    );
+
+    // card_status
+    await client.query(
+      `INSERT INTO public.card_status (card_id, status_id, assigned_at, update_at)
+       SELECT $1, status_id, NOW(), NOW()
+       FROM public.card_status WHERE card_id = $2`,
+      [newCardId, cardId]
+    );
+
+    // card_users
+    await client.query(
+      `INSERT INTO public.card_users (card_id, user_id, created_at, updated_at)
+       SELECT $1, user_id, NOW(), NOW()
+       FROM public.card_users WHERE card_id = $2`,
+      [newCardId, cardId]
+    );
+
+    // ========== 4. DUPLICATE CARD CHATS (WITH PARENT MAPPING) ==========
+    // 4a. Ambil semua chat lama (urut berdasarkan id agar mapping deterministic)
+    const oldChatsRes = await client.query(
+      `SELECT * FROM public.card_chats WHERE card_id = $1 ORDER BY id ASC`,
+      [cardId]
+    );
+    const oldChats = oldChatsRes.rows;
+
+    // chatIdMap: oldChatId -> newChatId
+    const chatIdMap = {};
+
+    // 4b. Insert chats satu per satu, set parent_message_id = NULL dulu (atau tetap NULL kalau tidak ada)
+    for (const chat of oldChats) {
+      const insertChat = await client.query(
+        `INSERT INTO public.card_chats 
+          (card_id, user_id, message, parent_message_id, mentions, send_time, created_at, updated_at, deleted_at)
+         VALUES ($1, $2, $3, $4, $5, COALESCE($6, NOW()), NOW(), NOW(), $7)
+         RETURNING id`,
+        [
+          newCardId,
+          chat.user_id,
+          chat.message,
+          null,           // parent_message_id sementara null; akan diupdate nanti jika perlu
+          chat.mentions,
+          chat.send_time,
+          chat.deleted_at
+        ]
+      );
+
+      const newChatId = insertChat.rows[0].id;
+      chatIdMap[chat.id] = newChatId;
+    }
+
+    // 4c. Update parent_message_id pada chat baru sesuai mapping (jika parent exists)
+    for (const chat of oldChats) {
+      if (chat.parent_message_id) {
+        const oldParent = chat.parent_message_id;
+        const newParent = chatIdMap[oldParent] || null;
+        const newChat = chatIdMap[chat.id];
+
+        // Jika parent tidak ditemukan dalam map (edge case), biarkan null
+        await client.query(
+          `UPDATE public.card_chats SET parent_message_id = $1 WHERE id = $2`,
+          [newParent, newChat]
+        );
+      }
+    }
+
+    // ========== 5. DUPLICATE CARD_CHATS_MEDIA berdasarkan mapping ==========
+    // Ambil semua media untuk semua old chat id
+    const oldChatIds = oldChats.map(c => c.id);
+    if (oldChatIds.length > 0) {
+      const oldMediaRes = await client.query(
+        `SELECT * FROM public.card_chats_media WHERE chat_id = ANY($1::int[]) ORDER BY id ASC`,
+        [oldChatIds]
+      );
+
+      for (const media of oldMediaRes.rows) {
+        const newChatIdForMedia = chatIdMap[media.chat_id];
+        if (!newChatIdForMedia) continue; // safety
+        await client.query(
+          `INSERT INTO public.card_chats_media (chat_id, media_url, media_type, created_at)
+           VALUES ($1, $2, $3, NOW())`,
+          [newChatIdForMedia, media.media_url, media.media_type]
+        );
+      }
+    }
+
+    // ========== 6. (OPTIONAL) Duplicate any other relations referencing chats (notifications, etc.) if needed ==========
+    // Example: jika ada notifications yang punya chat_id FK dan perlu digandakan, tambahkan logic mapping di sini.
+    // NOTE: jangan duplikasi FK yang seharusnya menunjuk ke original (tergantung business rule).
+
+    // ========== 7. Commit transaction ==========
+    await client.query('COMMIT');
+
+    // Ambil info user & lists untuk response (optional, sama seperti versi lama)
+    const userRes = await client.query("SELECT username FROM users WHERE id = $1", [actingUserId]);
+    const userName = userRes.rows[0]?.username || 'Unknown';
+
+    const oldListRes = await client.query(
+      `SELECT l.id AS list_id, l.name AS list_name, b.id AS board_id, b.name AS board_name
+       FROM cards c
+       JOIN lists l ON c.list_id = l.id
+       JOIN boards b ON l.board_id = b.id
+       WHERE c.id = $1`,
+      [cardId]
+    );
+    const fromListId = oldListRes.rows[0]?.list_id;
+    const fromListName = oldListRes.rows[0]?.list_name || "Unknown List";
+    const fromBoardId = oldListRes.rows[0]?.board_id;
+    const fromBoardName = oldListRes.rows[0]?.board_name || "Unknown Board";
+
+    const newListRes = await client.query(
+      `SELECT l.id AS list_id, l.name AS list_name, b.id AS board_id, b.name AS board_name
+       FROM lists l
+       JOIN boards b ON l.board_id = b.id
+       WHERE l.id = $1`,
+      [listId]
+    );
+    const toListName = newListRes.rows[0]?.list_name || "Unknown List";
+    const toBoardId = newListRes.rows[0]?.board_id;
+    const toBoardName = newListRes.rows[0]?.board_name || "Unknown Board";
+
+    // Simpan activity (sama seperti implementasimu sebelumnya)
+    await client.query(`
+      INSERT INTO card_activities 
+        (card_id, user_id, action_type, entity, entity_id, action_detail)
+      VALUES ($1, $2, $3, $4, $5, $6)
+    `, [
+      newCardId,
+      actingUserId,
+      'duplicate',
+      'list',
+      listId,
+      JSON.stringify({
+        cardTitle: newCardTitle,
+        fromListId,
+        fromListName,
+        fromBoardId,
+        fromBoardName,
+        toListId: listId,
+        toListName,
+        toBoardId,
+        toBoardName,
+        position: position || null,
+        duplicatedBy: { id: actingUserId, username: userName }
+      })
+    ]);
+
+    // Response success
+    res.status(200).json({
+      message: 'Card berhasil diduplikasi beserta relasi, chat (reply) dan chat media',
+      cardId: newCardId,
+      fromListId,
+      fromListName,
+      toListId: listId,
+      toListName,
+      fromBoardId,
+      fromBoardName,
+      toBoardId,
+      toBoardName,
+      position: position || null,
+      duplicatedBy: { id: actingUserId, username: userName }
+    });
+
+  } catch (err) {
+    await client.query('ROLLBACK');
+    console.error('❌ Duplicate card error:', err);
+    res.status(500).json({ error: err.message, stack: err.stack });
+  } finally {
+    client.release();
+  }
+});
