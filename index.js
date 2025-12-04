@@ -12250,7 +12250,6 @@ app.post('/api/archive/:entity/:id/:userId', async (req, res) => {
         cards: { table: 'cards', idField: 'id' },
         data_marketing: { table: 'data_marketing', idField: 'marketing_id' },
         marketing_design: { table: 'marketing_design', idField: 'marketing_design_id' }
-        // tambahkan entitas lainnya jika perlu
     };
 
     const config = entityMap[entity];
@@ -12259,9 +12258,10 @@ app.post('/api/archive/:entity/:id/:userId', async (req, res) => {
     try {
         const { table, idField } = config;
 
-        // 1. Ambil data dari tabel asli
+        // 1. Ambil data utama
         const result = await client.query(
-            `SELECT * FROM ${table} WHERE ${idField} = $1`, [id]
+            `SELECT * FROM ${table} WHERE ${idField} = $1`,
+            [id]
         );
 
         if (result.rows.length === 0) {
@@ -12271,12 +12271,12 @@ app.post('/api/archive/:entity/:id/:userId', async (req, res) => {
         let data = result.rows[0];
 
         // ======================================================
-        // 2. Jika entity = cards → ambil seluruh relasi lengkap
+        // 2. Jika entity = cards → ambil seluruh relasi
         // ======================================================
         if (entity === "cards") {
             const relations = {};
 
-            const tables = {
+            const relationTables = {
                 checklists: "card_checklists",
                 cover: "card_cover",
                 descriptions: "card_descriptions",
@@ -12289,7 +12289,8 @@ app.post('/api/archive/:entity/:id/:userId', async (req, res) => {
                 chats: "card_chats"
             };
 
-            for (const [key, tableName] of Object.entries(tables)) {
+            // 2a. Ambil relasi-relasi card
+            for (const [key, tableName] of Object.entries(relationTables)) {
                 const q = await client.query(
                     `SELECT * FROM ${tableName} WHERE card_id = $1`,
                     [id]
@@ -12297,35 +12298,41 @@ app.post('/api/archive/:entity/:id/:userId', async (req, res) => {
                 relations[key] = q.rows;
             }
 
-            // Gabungkan data utama + relasi
+            // 2b. Gabungkan ke object data
             data = {
                 ...data,
                 ...relations
             };
         }
 
-        // 2. Masukkan ke archive_universal
-        await client.query(`
-        INSERT INTO archive_universal (entity_type, entity_id, data, user_id)
-        VALUES ($1, $2, $3, $4)
-        `, [entity, id, data, userId]); // <-- pastikan req.user.id diset
-
-
-        // 3. Hapus dari tabel aslinya
+        // ======================================================
+        // 3. SIMPAN SEMUA DATA KE ARCHIVE
+        // ======================================================
         await client.query(
-            `DELETE FROM ${table} WHERE ${idField} = $1`, [id]
+            `INSERT INTO archive_universal (entity_type, entity_id, data, user_id)
+             VALUES ($1, $2, $3, $4)`,
+            [entity, id, data, userId]
+        );
+
+        // ======================================================
+        // 4. HAPUS HANYA DATA UTAMANYA (bukan relasi)
+        // ======================================================
+        await client.query(
+            `DELETE FROM ${table} WHERE ${idField} = $1`,
+            [id]
         );
 
         res.status(200).json({
-            message: `Data ${entity} ID ${id} berhasil diarsipkan`,
+            message: `Data ${entity} ID ${id} berhasil diarsipkan BESERTA relasinya (tanpa menghapus relasi dari tabel asli)`,
             archived_data: data
         });
-        // res.status(200).json({ message: `Data ${entity} ID ${id} berhasil diarsipkan` });
+
     } catch (err) {
         console.error('Archive error:', err);
         res.status(500).json({ error: err.message });
     }
 });
+
 // app.post('/api/archive/:entity/:id/:userId', async (req, res) => {
 //     const { entity, id, userId } = req.params;
 
