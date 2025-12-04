@@ -12480,10 +12480,13 @@ app.post('/api/restore-testing/:entity/:id', async (req, res) => {
             "id",
             "title",
             "list_id",
+            "position",
+            "due_date",
             "order",
             "is_active",
-            "created_at",
-            "updated_at"
+            "create_at",
+            "update_at",
+
         ],
         workspaces: ["id", "name", "created_at", "updated_at"],
         boards: ["id", "workspace_id", "title", "order", "created_at", "updated_at"],
