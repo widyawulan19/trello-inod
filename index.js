@@ -12316,7 +12316,11 @@ app.post('/api/archive/:entity/:id/:userId', async (req, res) => {
             `DELETE FROM ${table} WHERE ${idField} = $1`, [id]
         );
 
-        res.status(200).json({ message: `Data ${entity} ID ${id} berhasil diarsipkan` });
+        res.status(200).json({
+            message: `Data ${entity} ID ${id} berhasil diarsipkan`,
+            archived_data: data
+        });
+        // res.status(200).json({ message: `Data ${entity} ID ${id} berhasil diarsipkan` });
     } catch (err) {
         console.error('Archive error:', err);
         res.status(500).json({ error: err.message });
