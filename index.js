@@ -12618,6 +12618,109 @@ app.post('/api/restore-testing/:entity/:id', async (req, res) => {
     }
 });
 
+// RESTORE UNIVERSAL
+app.post('/api/restore-data/:entity/:id', async (req, res) => {
+    const { entity, id } = req.params;
+
+    const entityMap = {
+        workspaces_user: { table: 'workspaces_users', idField: 'workspace_id' },
+        workspaces: { table: 'workspaces', idField: 'id' },
+        boards: { table: 'boards', idField: 'id' },
+        lists: { table: 'lists', idField: 'id' },
+        cards: { table: 'cards', idField: 'id' },
+        data_marketing: { table: 'data_marketing', idField: 'marketing_id' },
+        marketing_design: { table: 'marketing_design', idField: 'marketing_design_id' }
+    };
+
+    const config = entityMap[entity];
+    if (!config) return res.status(400).json({ error: 'Entity tidak dikenali' });
+
+    try {
+        const { table, idField } = config;
+
+        // 1. AMBIL DATA DARI ARCHIVE
+        const archive = await client.query(
+            `SELECT * FROM archive_universal WHERE entity_type=$1 AND entity_id=$2`,
+            [entity, id]
+        );
+
+        if (archive.rows.length === 0) {
+            return res.status(404).json({ error: 'Data archive tidak ditemukan' });
+        }
+
+        const archivedData = archive.rows[0].data;
+
+        // 2. RESTORE DATA UTAMA (INSERT ULANG)
+        const dataKeys = Object.keys(archivedData).filter(k =>
+            !Array.isArray(archivedData[k]) && typeof archivedData[k] !== "object"
+        );
+
+        const columns = dataKeys.join(", ");
+        const placeholders = dataKeys.map((_, i) => `$${i + 1}`).join(", ");
+        const values = dataKeys.map(k => archivedData[k]);
+
+        await client.query(
+            `INSERT INTO ${table} (${columns}) VALUES (${placeholders})`,
+            values
+        );
+
+        // ===========================================================
+        // 3. KHUSUS entity = cards → RESTORE SEMUA RELASI
+        // ===========================================================
+
+        if (entity === "cards") {
+            const relationTables = {
+                checklists: "card_checklists",
+                cover: "card_cover",
+                descriptions: "card_descriptions",
+                due_dates: "card_due_dates",
+                labels: "card_labels",
+                members: "card_members",
+                priorities: "card_priorities",
+                status: "card_status",
+                users: "card_users",
+                chats: "card_chats"
+            };
+
+            for (const [key, tableName] of Object.entries(relationTables)) {
+                const rows = archivedData[key];
+
+                if (!rows || rows.length === 0) continue;
+
+                for (const row of rows) {
+
+                    const rKeys = Object.keys(row);
+                    const rCols = rKeys.join(", ");
+                    const rPh = rKeys.map((_, i) => `$${i + 1}`).join(", ");
+                    const rVals = rKeys.map(k => row[k]);
+
+                    await client.query(
+                        `INSERT INTO ${tableName} (${rCols}) VALUES (${rPh})
+                         ON CONFLICT DO NOTHING`,
+                        rVals
+                    );
+                }
+            }
+        }
+
+        // 4. HAPUS DATA DARI ARCHIVE SETELAH RESTORE BERHASIL
+        await client.query(
+            `DELETE FROM archive_universal WHERE entity_type=$1 AND entity_id=$2`,
+            [entity, id]
+        );
+
+        res.status(200).json({
+            message: `Data ${entity} dengan ID ${id} berhasil direstore BESERTA seluruh relasinya`,
+            restored_data: archivedData
+        });
+
+    } catch (err) {
+        console.error("Restore error:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
 
 
 // app.post('/api/restore-testing/:entity/:id', async (req, res) => {
