@@ -12239,9 +12239,6 @@ app.get('/api/archive-data', async (req, res) => {
     }
 });
 //2. archive data berdasarkan entity
-// app.post('/api/archive/:entity/:id', async (req, res) => {
-//     const { entity, id } = req.params;
-//     const userId = req.user.id;
 app.post('/api/archive/:entity/:id/:userId', async (req, res) => {
     const { entity, id, userId } = req.params;
 
@@ -12253,7 +12250,6 @@ app.post('/api/archive/:entity/:id/:userId', async (req, res) => {
         cards: { table: 'cards', idField: 'id' },
         data_marketing: { table: 'data_marketing', idField: 'marketing_id' },
         marketing_design: { table: 'marketing_design', idField: 'marketing_design_id' }
-        // tambahkan entitas lainnya jika perlu
     };
 
     const config = entityMap[entity];
@@ -12262,24 +12258,25 @@ app.post('/api/archive/:entity/:id/:userId', async (req, res) => {
     try {
         const { table, idField } = config;
 
-        // 1. Ambil data dari tabel asli
+        // 1. Ambil data utama
         const result = await client.query(
-            `SELECT * FROM ${table} WHERE ${idField} = $1`, [id]
+            `SELECT * FROM ${table} WHERE ${idField} = $1`,
+            [id]
         );
 
         if (result.rows.length === 0) {
             return res.status(404).json({ error: `Data ${entity} dengan ID ${id} tidak ditemukan` });
         }
 
-        const data = result.rows[0];
+        let data = result.rows[0];
 
         // ======================================================
-        // 2. Jika entity = cards → ambil seluruh relasi lengkap
+        // 2. Jika entity = cards → ambil seluruh relasi
         // ======================================================
         if (entity === "cards") {
             const relations = {};
 
-            const tables = {
+            const relationTables = {
                 checklists: "card_checklists",
                 cover: "card_cover",
                 descriptions: "card_descriptions",
@@ -12292,7 +12289,8 @@ app.post('/api/archive/:entity/:id/:userId', async (req, res) => {
                 chats: "card_chats"
             };
 
-            for (const [key, tableName] of Object.entries(tables)) {
+            // 2a. Ambil relasi-relasi card
+            for (const [key, tableName] of Object.entries(relationTables)) {
                 const q = await client.query(
                     `SELECT * FROM ${tableName} WHERE card_id = $1`,
                     [id]
@@ -12300,31 +12298,41 @@ app.post('/api/archive/:entity/:id/:userId', async (req, res) => {
                 relations[key] = q.rows;
             }
 
-            // Gabungkan data utama + relasi
+            // 2b. Gabungkan ke object data
             data = {
                 ...data,
                 ...relations
             };
         }
 
-        // 2. Masukkan ke archive_universal
-        await client.query(`
-        INSERT INTO archive_universal (entity_type, entity_id, data, user_id)
-        VALUES ($1, $2, $3, $4)
-        `, [entity, id, data, userId]); // <-- pastikan req.user.id diset
-
-
-        // 3. Hapus dari tabel aslinya
+        // ======================================================
+        // 3. SIMPAN SEMUA DATA KE ARCHIVE
+        // ======================================================
         await client.query(
-            `DELETE FROM ${table} WHERE ${idField} = $1`, [id]
+            `INSERT INTO archive_universal (entity_type, entity_id, data, user_id)
+             VALUES ($1, $2, $3, $4)`,
+            [entity, id, data, userId]
         );
 
-        res.status(200).json({ message: `Data ${entity} ID ${id} berhasil diarsipkan` });
+        // ======================================================
+        // 4. HAPUS HANYA DATA UTAMANYA (bukan relasi)
+        // ======================================================
+        await client.query(
+            `DELETE FROM ${table} WHERE ${idField} = $1`,
+            [id]
+        );
+
+        res.status(200).json({
+            message: `Data ${entity} ID ${id} berhasil diarsipkan BESERTA relasinya (tanpa menghapus relasi dari tabel asli)`,
+            archived_data: data
+        });
+
     } catch (err) {
         console.error('Archive error:', err);
         res.status(500).json({ error: err.message });
     }
 });
+
 
 //3. delete data archive by id
 app.delete('/api/archive-data/:id', async (req, res) => {
@@ -12342,59 +12350,216 @@ app.delete('/api/archive-data/:id', async (req, res) => {
     }
 });
 
-//4. restore data archive 
+
+//4. RESTORE UNIVERSAL
 app.post('/api/restore/:entity/:id', async (req, res) => {
     const { entity, id } = req.params;
 
     const entityMap = {
-        workspaces_users: { table: 'workspaces_users' },
-        workspaces: { table: 'workspaces' },
-        boards: { table: 'boards' },
-        lists: { table: 'lists' },
-        cards: { table: 'cards' },
-        data_marketing: { table: 'data_marketing' },
-        marketing_design: { table: 'marketing_design' }
-        // tambah sesuai entity kamu
+        workspaces_user: { table: 'workspaces_users', idField: 'workspace_id' },
+        workspaces: { table: 'workspaces', idField: 'id' },
+        boards: { table: 'boards', idField: 'id' },
+        lists: { table: 'lists', idField: 'id' },
+        cards: { table: 'cards', idField: 'id' },
+        data_marketing: { table: 'data_marketing', idField: 'marketing_id' },
+        marketing_design: { table: 'marketing_design', idField: 'marketing_design_id' }
     };
 
     const config = entityMap[entity];
     if (!config) return res.status(400).json({ error: 'Entity tidak dikenali' });
 
     try {
-        // 1. Ambil data dari archive_universal
-        const archiveResult = await client.query(
-            `SELECT data FROM archive_universal WHERE entity_type = $1 AND entity_id = $2`,
+        const { table, idField } = config;
+
+        // 1. AMBIL DATA DARI ARCHIVE
+        const archive = await client.query(
+            `SELECT * FROM archive_universal WHERE entity_type=$1 AND entity_id=$2`,
             [entity, id]
         );
 
-        if (archiveResult.rows.length === 0) {
-            return res.status(404).json({ error: `Data ${entity} dengan id ${id} tidak ditemukan di archive` });
+        if (archive.rows.length === 0) {
+            return res.status(404).json({ error: 'Data archive tidak ditemukan' });
         }
 
-        const data = archiveResult.rows[0].data;
-        const keys = Object.keys(data);
-        const values = Object.values(data);
-        const placeholders = values.map((_, i) => `$${i + 1}`).join(', ');
+        const archivedData = archive.rows[0].data;
 
-        // 2. Insert kembali ke tabel aslinya
-        const insertQuery = `
-      INSERT INTO ${config.table} (${keys.join(', ')})
-      VALUES (${placeholders})
-    `;
-        await client.query(insertQuery, values);
+        // 2. RESTORE DATA UTAMA (INSERT ULANG)
+        const dataKeys = Object.keys(archivedData).filter(k =>
+            !Array.isArray(archivedData[k]) && typeof archivedData[k] !== "object"
+        );
 
-        // 3. Hapus dari archive_universal
+        const columns = dataKeys.join(", ");
+        const placeholders = dataKeys.map((_, i) => `$${i + 1}`).join(", ");
+        const values = dataKeys.map(k => archivedData[k]);
+
         await client.query(
-            `DELETE FROM archive_universal WHERE entity_type = $1 AND entity_id = $2`,
+            `INSERT INTO ${table} (${columns}) VALUES (${placeholders})`,
+            values
+        );
+
+        // ===========================================================
+        // 3. KHUSUS entity = cards → RESTORE SEMUA RELASI
+        // ===========================================================
+
+        if (entity === "cards") {
+            const relationTables = {
+                checklists: "card_checklists",
+                cover: "card_cover",
+                descriptions: "card_descriptions",
+                due_dates: "card_due_dates",
+                labels: "card_labels",
+                members: "card_members",
+                priorities: "card_priorities",
+                status: "card_status",
+                users: "card_users",
+                chats: "card_chats"
+            };
+
+            for (const [key, tableName] of Object.entries(relationTables)) {
+                const rows = archivedData[key];
+
+                if (!rows || rows.length === 0) continue;
+
+                for (const row of rows) {
+
+                    const rKeys = Object.keys(row);
+                    const rCols = rKeys.join(", ");
+                    const rPh = rKeys.map((_, i) => `$${i + 1}`).join(", ");
+                    const rVals = rKeys.map(k => row[k]);
+
+                    await client.query(
+                        `INSERT INTO ${tableName} (${rCols}) VALUES (${rPh})
+                         ON CONFLICT DO NOTHING`,
+                        rVals
+                    );
+                }
+            }
+        }
+
+        // 4. HAPUS DATA DARI ARCHIVE SETELAH RESTORE BERHASIL
+        await client.query(
+            `DELETE FROM archive_universal WHERE entity_type=$1 AND entity_id=$2`,
             [entity, id]
         );
 
-        res.status(200).json({ message: `Data ${entity} berhasil direstore.` });
+        res.status(200).json({
+            message: `Data ${entity} dengan ID ${id} berhasil direstore BESERTA seluruh relasinya`,
+            restored_data: archivedData
+        });
+
     } catch (err) {
-        console.error('Restore error:', err);
+        console.error("Restore error:", err);
         res.status(500).json({ error: err.message });
     }
 });
+
+
+
+
+// app.post('/api/restore-testing/:entity/:id', async (req, res) => {
+//     const { entity, id } = req.params;
+
+//     const entityMap = {
+//         workspaces_users: { table: 'workspaces_users' },
+//         workspaces: { table: 'workspaces' },
+//         boards: { table: 'boards' },
+//         lists: { table: 'lists' },
+//         cards: { table: 'cards' },
+//         data_marketing: { table: 'data_marketing' },
+//         marketing_design: { table: 'marketing_design' }
+//     };
+
+//     const config = entityMap[entity];
+//     if (!config) {
+//         return res.status(400).json({ error: `Entity '${entity}' tidak dikenali` });
+//     }
+
+//     try {
+//         await client.query("BEGIN");
+
+//         // 1. AMBIL DATA DARI ARCHIVE
+//         const archiveRes = await client.query(
+//             `SELECT data FROM archive_universal WHERE entity_type = $1 AND entity_id = $2`,
+//             [entity, id]
+//         );
+
+//         if (archiveRes.rows.length === 0) {
+//             return res.status(404).json({
+//                 error: `Data ${entity} id ${id} tidak ditemukan di archive`
+//             });
+//         }
+
+//         const raw = archiveRes.rows[0].data;
+
+//         // =======================================================
+//         // STEP 1 — RESTORE DATA UTAMA (UTAMA DULU)
+//         // =======================================================
+//         const keys = Object.keys(raw);
+//         const vals = Object.values(raw);
+//         const ph = keys.map((_, i) => `$${i + 1}`).join(", ");
+
+//         const insertMain = await client.query(
+//             `INSERT INTO ${config.table} (${keys.join(", ")})
+//              VALUES (${ph})
+//              RETURNING *`,
+//             vals
+//         );
+
+//         const restoredMain = insertMain.rows[0];
+
+//         // =======================================================
+//         // STEP 2 — RESTORE RELASI HANYA JIKA ENTITY = cards
+//         // =======================================================
+//         const restoreRelation = async (tableName, arr) => {
+//             if (!arr || arr.length === 0) return;
+
+//             for (const row of arr) {
+//                 const rKeys = Object.keys(row);
+//                 const rVals = Object.values(row);
+//                 const rPh = rVals.map((_, i) => `$${i + 1}`).join(", ");
+
+//                 await client.query(
+//                     `INSERT INTO ${tableName} (${rKeys.join(", ")})
+//                      VALUES (${rPh})`,
+//                     rVals
+//                 );
+//             }
+//         };
+
+//         if (entity === "cards") {
+//             await restoreRelation("card_checklists", raw.checklists);
+//             await restoreRelation("card_cover", raw.cover);
+//             await restoreRelation("card_descriptions", raw.descriptions);
+//             await restoreRelation("card_due_dates", raw.due_dates);
+//             await restoreRelation("card_labels", raw.labels);
+//             await restoreRelation("card_members", raw.members);
+//             await restoreRelation("card_priorities", raw.priorities);
+//             await restoreRelation("card_status", raw.status);
+//             await restoreRelation("card_users", raw.users);
+//             await restoreRelation("card_chats", raw.chats);
+//         }
+
+//         // =======================================================
+//         // STEP 3 — HAPUS DARI ARCHIVE
+//         // =======================================================
+//         await client.query(
+//             `DELETE FROM archive_universal WHERE entity_type = $1 AND entity_id = $2`,
+//             [entity, id]
+//         );
+
+//         await client.query("COMMIT");
+
+//         return res.status(200).json({
+//             message: `${entity} restored successfully`,
+//             restored: restoredMain
+//         });
+
+//     } catch (err) {
+//         await client.query("ROLLBACK");
+//         console.error("❌ Restore Error:", err);
+//         return res.status(500).json({ error: err.message });
+//     }
+// });
 
 //END ARCHIVE UNIVERSAL
 
@@ -15710,7 +15875,6 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (r
                 [listId, position]
             );
         }
-
         const result = await client.query(
             `INSERT INTO public.cards 
                 (title, description, list_id, position, is_active, show_toggle) 
@@ -15732,6 +15896,7 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (r
         const newCardTitle = result.rows[0].title;
 
         // Salin relasi-relasi card
+        //card checklist
         await client.query(
             `INSERT INTO public.card_checklists (card_id, checklist_id, created_at, updated_at)
              SELECT $1, checklist_id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -15739,12 +15904,14 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (r
             [newCardId, cardId]
         );
 
+        //cover card
         await client.query(
             `INSERT INTO public.card_cover (card_id, cover_id)
              SELECT $1, cover_id FROM public.card_cover WHERE card_id = $2`,
             [newCardId, cardId]
         );
 
+        //card description
         await client.query(
             `INSERT INTO public.card_descriptions (card_id, description, created_at, updated_at)
              SELECT $1, description, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -15752,6 +15919,7 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (r
             [newCardId, cardId]
         );
 
+        //card due date
         await client.query(
             `INSERT INTO public.card_due_dates (card_id, due_date, created_at, updated_at)
              SELECT $1, due_date, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -15759,24 +15927,28 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (r
             [newCardId, cardId]
         );
 
+        //card labels
         await client.query(
             `INSERT INTO public.card_labels (card_id, label_id)
              SELECT $1, label_id FROM public.card_labels WHERE card_id = $2`,
             [newCardId, cardId]
         );
 
+        //card members
         await client.query(
             `INSERT INTO public.card_members (card_id, user_id)
              SELECT $1, user_id FROM public.card_members WHERE card_id = $2`,
             [newCardId, cardId]
         );
 
+        //card priorities
         await client.query(
             `INSERT INTO public.card_priorities (card_id, priority_id)
              SELECT $1, priority_id FROM public.card_priorities WHERE card_id = $2`,
             [newCardId, cardId]
         );
 
+        //card status
         await client.query(
             `INSERT INTO public.card_status (card_id, status_id, assigned_at)
              SELECT $1, status_id, CURRENT_TIMESTAMP
@@ -15784,12 +15956,14 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (r
             [newCardId, cardId]
         );
 
+        //card users
         await client.query(
             `INSERT INTO public.card_users (card_id, user_id)
              SELECT $1, user_id FROM public.card_users WHERE card_id = $2`,
             [newCardId, cardId]
         );
 
+        //card chats
         await client.query(
             `INSERT INTO public.card_chats 
                 (card_id, user_id, message, parent_message_id, mentions, send_time, created_at, updated_at, deleted_at)
@@ -15883,6 +16057,115 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (r
         res.status(500).json({ error: err.message, stack: err.stack }); // tampilkan detail error di response
     }
 });
+
+
+// get data card archive + origin info
+app.get("/api/archive/detail-cards/:cardId", async (req, res) => {
+    const { cardId } = req.params;
+
+    try {
+        // 1️⃣ Ambil data archive
+        const archiveResult = await client.query(
+            `
+            SELECT data, archived_at, user_id
+            FROM archive_universal
+            WHERE entity_type = 'cards'
+              AND entity_id = $1
+            LIMIT 1
+            `,
+            [cardId]
+        );
+
+        if (archiveResult.rows.length === 0) {
+            return res.status(404).json({
+                message: "Archived card not found",
+                cardId
+            });
+        }
+
+        const archivedData = archiveResult.rows[0];
+        const cardData = archivedData.data;
+        const listId = cardData.list_id;
+
+        // Jika list_id tidak ada, bisa saja data lama
+        if (!listId) {
+            return res.status(200).json({
+                message: "Archived card detail retrieved successfully (no list origin)",
+                cardId,
+                archived_by: archivedData.user_id,
+                archived_at: archivedData.archived_at,
+                origin: null,
+                data: cardData
+            });
+        }
+
+        // 2️⃣ Ambil info list asal
+        const listResult = await client.query(
+            `SELECT id, board_id, name FROM lists WHERE id = $1`,
+            [listId]
+        );
+
+        if (listResult.rows.length === 0) {
+            return res.status(200).json({
+                message: "Archived card detail retrieved successfully (list not found)",
+                cardId,
+                archived_by: archivedData.user_id,
+                archived_at: archivedData.archived_at,
+                origin: null,
+                data: cardData
+            });
+        }
+
+        const listData = listResult.rows[0];
+        const boardId = listData.board_id;
+
+        // 3️⃣ Ambil info board asal
+        const boardResult = await client.query(
+            `SELECT id, workspace_id, name FROM boards WHERE id = $1`,
+            [boardId]
+        );
+
+        let boardData = null;
+        let workspaceData = null;
+
+        if (boardResult.rows.length > 0) {
+            boardData = boardResult.rows[0];
+
+            // 4️⃣ Ambil workspace asal
+            const workspaceResult = await client.query(
+                `SELECT id, name FROM workspaces WHERE id = $1`,
+                [boardData.workspace_id]
+            );
+
+            if (workspaceResult.rows.length > 0) {
+                workspaceData = workspaceResult.rows[0];
+            }
+        }
+
+        // 5️⃣ Kembalikan data lengkap
+        return res.status(200).json({
+            message: "Archived card detail retrieved successfully",
+            cardId,
+            archived_by: archivedData.user_id,
+            archived_at: archivedData.archived_at,
+
+            origin: {
+                list: listData || null,
+                board: boardData || null,
+                workspace: workspaceData || null
+            },
+
+            data: cardData
+        });
+
+    } catch (error) {
+        console.error("❌ Error fetching archived card:", error);
+        return res.status(500).json({ error: error.message });
+    }
+});
+
+
+
 
 
 
