@@ -4,7 +4,7 @@ const multer = require('multer');
 // const upload = multer({ storage: multer.memoryStorage() });
 
 // Gunakan memoryStorage supaya file bisa langsung di-buffer untuk upload ke Cloudinary
-const multer = require('multer');
+// const multer = require('multer');
 
 const upload = multer({
     storage: multer.memoryStorage(),
