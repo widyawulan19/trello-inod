@@ -14727,53 +14727,6 @@ app.post('/api/chats/:chatId/media', upload.single('file'), async (req, res) => 
     }
 });
 
-//upload media chat testing
-app.post('/api/chats/:chatId/media-testing', upload.single('file'), async (req, res) => {
-    const { chatId } = req.params;
-
-    if (!req.file || !chatId) {
-        return res.status(400).json({ error: 'Missing file or chatId' });
-    }
-
-    try {
-        // Correct upload stream
-        const result = await new Promise((resolve, reject) => {
-            const uploadStream = cloudinary.uploader.upload_stream(
-                {
-                    resource_type: 'auto',
-                    folder: 'trello_chat_media',
-                    public_id: `${Date.now()}-${req.file.originalname}`
-                },
-                (error, result) => {
-                    if (error) reject(error);
-                    else resolve(result);
-                }
-            );
-
-            uploadStream.end(req.file.buffer);
-        });
-
-        const fileUrl = result.secure_url;
-        const mimeType = req.file.mimetype;
-
-        let mediaType = 'file';
-        if (mimeType.startsWith('image/')) mediaType = 'image';
-        else if (mimeType.startsWith('video/')) mediaType = 'video';
-        else if (mimeType.startsWith('audio/')) mediaType = 'audio';
-
-        // Save to DB
-        const dbResult = await client.query(
-            `INSERT INTO card_chats_media (chat_id, media_url, media_type)
-             VALUES ($1, $2, $3) RETURNING *`,
-            [chatId, fileUrl, mediaType]
-        );
-
-        res.status(201).json(dbResult.rows[0]);
-    } catch (error) {
-        console.error("Upload error:", error);
-        res.status(500).json({ error: "Upload failed", message: error.message });
-    }
-});
 
 
 // media chats langsung ke cloudinary
@@ -14823,22 +14776,27 @@ app.get('/api/cards/media-count', async (req, res) => {
 });
 
 
-app.get('/api/cards/:cardId/media-count-testing', async (req, res) => {
+app.get('/api/cards/:cardId/media/count-testing', async (req, res) => {
     const { cardId } = req.params;
 
     try {
         const result = await client.query(
-            `SELECT COUNT(cm.id) AS total_media
-       FROM card_chats_media cm
-       JOIN card_chats c ON c.id = cm.chat_id
-       WHERE c.card_id = $1`,
+            `SELECT COUNT(*) AS total_media
+             FROM card_chats_media
+             WHERE chat_id IN (
+                 SELECT id FROM card_chats WHERE card_id = $1
+             )`,
             [cardId]
         );
 
-        res.json({ media_count: Number(result.rows[0].total_media) });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to count media' });
+        res.json({
+            card_id: cardId,
+            total_media: Number(result.rows[0].total_media)
+        });
+
+    } catch (error) {
+        console.error("Count media error:", error);
+        res.status(500).json({ error: "Failed to count media" });
     }
 });
 
