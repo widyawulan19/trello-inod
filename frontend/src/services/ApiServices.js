@@ -1082,3 +1082,21 @@ export const updateKepalaDivisiDesign = (id, data) =>
 // Delete
 export const deleteKepalaDivisiDesign = (id) =>
   axios.delete(`${API_URL}/kepala-divisi-design/${id}`);
+
+
+
+// Upload file ke chat
+export const uploadChatMedia = async (chatId, file) => {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  try {
+    const res = await axios.post(`${API_URL}/chats/${chatId}/media`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return res.data;
+  } catch (err) {
+    console.error("Error uploading media:", err);
+    throw err;
+  }
+};
