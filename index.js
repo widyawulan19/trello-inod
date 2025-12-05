@@ -11002,7 +11002,7 @@ app.put('/api/create-card-marketing-design/:listId/:marketingDesignId', async (r
                 <p><strong>Buyer:</strong> ${marketing.buyer_name || 'N/A'}</p>
                 <p><strong>Order Number:</strong> ${marketing.order_number || 'N/A'}</p>
                 <p><strong>Account:</strong> ${marketing.account_name || 'N/A'}</p>
-                <p><strong>Design Count:</strong> ${marketing.jumlah_design || '0'}</p>
+                <p><strong>Jumlah Image:</strong> ${marketing.jumlah_design || '0'}</p>
                 <p><strong>Deadline:</strong> ${marketing.deadline ? new Date(marketing.deadline).toISOString().split('T')[0] : 'N/A'}</p>
                 <p><strong>Jumlah Revisi:</strong> ${marketing.jumlah_revisi || '0'}</p>
                 <p><strong>Offer Type:</strong> ${marketing.offer_type_name || 'N/A'}</p>
