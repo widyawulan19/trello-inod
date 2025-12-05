@@ -14691,7 +14691,8 @@ app.post('/api/chats/:chatId/media', upload.single('file'), async (req, res) => 
                     if (error) reject(error);
                     else resolve(result);
                 }
-            ).end(req.file.buffer);
+            );
+            // ).end(req.file.buffer);
 
             // langsung stream, BUKAN buffer
             uploadStream.end(req.file.buffer);
