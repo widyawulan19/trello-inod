@@ -14670,26 +14670,41 @@ app.post('/api/chats/:chatId/media', upload.single('file'), async (req, res) => 
 
     try {
         // Upload buffer ke Cloudinary
+        // const result = await new Promise((resolve, reject) => {
+        //     cloudinary.uploader.upload_stream(
+        //         {
+        //             resource_type: 'auto', 
+        //             folder: 'trello_chat_media',
+        //             public_id: `${Date.now()}-${req.file.originalname}`,
+        //         },
+        //         (error, result) => {
+        //             if (error) reject(error);
+        //             else resolve(result);
+        //         }
+        //     );
+
+        //     uploadStream.end(req.file.buffer);
+        // });
+
         const result = await new Promise((resolve, reject) => {
-            cloudinary.uploader.upload_stream(
+            const uploadStream = cloudinary.uploader.upload_stream(
                 {
-                    resource_type: 'auto', // auto = bisa image, video, pdf, dll
+                    resource_type: 'auto',
                     folder: 'trello_chat_media',
-                    public_id: `${Date.now()}-${req.file.originalname}`,
+                    public_id: `${Date.now()}-${req.file.originalname}`
                 },
                 (error, result) => {
                     if (error) reject(error);
                     else resolve(result);
                 }
             );
-            // ).end(req.file.buffer);
 
-            // langsung stream, BUKAN buffer
             uploadStream.end(req.file.buffer);
         });
 
         const fileUrl = result.secure_url;
         const fileName = req.file.originalname;
+
 
         // Tentukan tipe media berdasarkan mimetype
         const mimeType = req.file.mimetype;
