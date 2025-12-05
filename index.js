@@ -14661,16 +14661,6 @@ app.put('/api/card-chats/:id', async (req, res) => {
 
 
 // MEDIA CHATS 
-// app.use(express.json({ limit: '200mb' }));
-// app.use(express.urlencoded({ extended: true, limit: '200mb' }));
-
-
-// // batas besar di multer (WAJIB)
-// const upload = multer({
-//     storage: multer.memoryStorage(),
-//     limits: { fileSize: 200 * 1024 * 1024 } // 200 MB
-// });
-
 app.post('/api/chats/:chatId/media', upload.single('file'), async (req, res) => {
     const { chatId } = req.params;
 
@@ -14767,6 +14757,27 @@ app.get('/api/cards/media-count', async (req, res) => {
         res.status(500).json({ error: 'Internal server error', detail: err.message });
     }
 });
+
+
+app.get('/api/cards/:cardId/media-count-testing', async (req, res) => {
+    const { cardId } = req.params;
+
+    try {
+        const result = await client.query(
+            `SELECT COUNT(cm.id) AS total_media
+       FROM card_chats_media cm
+       JOIN card_chats c ON c.id = cm.chat_id
+       WHERE c.card_id = $1`,
+            [cardId]
+        );
+
+        res.json({ media_count: Number(result.rows[0].total_media) });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to count media' });
+    }
+});
+
 
 // GET jumlah media per media_type + total untuk card tertentu
 app.get('/api/cards/:cardId/media-count', async (req, res) => {
