@@ -805,3 +805,50 @@ app.post('/api/chats/:chatId/media', upload.single('file'), async (req, res) => 
     res.status(500).json({ error: 'Upload failed', message: error.message });
   }
 });
+
+
+
+app.post('/api/chats/:chatId/media', upload.single('file'), async (req, res) => {
+  const { chatId } = req.params;
+
+  if (!req.file) {
+    return res.status(400).json({ error: "No file uploaded" });
+  }
+
+  try {
+    const result = await new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          resource_type: "auto",
+          folder: "trello_chat_media",
+          public_id: `${Date.now()}-${req.file.originalname}`,
+        },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      );
+
+      // langsung stream, BUKAN buffer
+      uploadStream.end(req.file.buffer);
+    });
+
+    const mimeType = req.file.mimetype;
+    let mediaType = "file";
+    if (mimeType.startsWith("image/")) mediaType = "image";
+    else if (mimeType.startsWith("video/")) mediaType = "video";
+    else if (mimeType.startsWith("audio/")) mediaType = "audio";
+
+    const db = await client.query(
+      `INSERT INTO card_chats_media (chat_id, media_url, media_type)
+             VALUES ($1, $2, $3) RETURNING *`,
+      [chatId, result.secure_url, mediaType]
+    );
+
+    res.status(201).json(db.rows[0]);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Upload failed", details: err.message });
+  }
+});

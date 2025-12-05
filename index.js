@@ -14722,6 +14722,31 @@ app.post('/api/chats/:chatId/media', upload.single('file'), async (req, res) => 
     }
 });
 
+// media chats langsung ke cloudinary
+app.post('/api/chats/:chatId/media-testing', async (req, res) => {
+    const { chatId } = req.params;
+    const { media_url, media_type } = req.body;
+
+    if (!media_url) {
+        return res.status(400).json({ error: 'Missing media_url' });
+    }
+
+    try {
+        const result = await client.query(
+            `INSERT INTO card_chats_media (chat_id, media_url, media_type)
+       VALUES ($1, $2, $3)
+       RETURNING *`,
+            [chatId, media_url, media_type]
+        );
+
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to save media' });
+    }
+});
+
+
 // GET all jumlah media per card
 app.get('/api/cards/media-count', async (req, res) => {
     try {
