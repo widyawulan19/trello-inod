@@ -14777,6 +14777,26 @@ app.get('/api/cards/media-count', async (req, res) => {
     }
 });
 
+app.get('/api/cards/:cardId/media-count-testing', async (req, res) => {
+    const { cardId } = req.params;
+
+    try {
+        const result = await client.query(
+            `SELECT COUNT(cm.id) AS total_media
+       FROM card_chats_media cm
+       JOIN card_chats c ON c.id = cm.chat_id
+       WHERE c.card_id = $1`,
+            [cardId]
+        );
+
+        res.json({ media_count: Number(result.rows[0].total_media) });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to count media' });
+    }
+});
+
+
 // GET jumlah media per media_type + total untuk card tertentu
 app.get('/api/cards/:cardId/media-count', async (req, res) => {
     const { cardId } = req.params;
