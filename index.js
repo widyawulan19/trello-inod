@@ -14848,6 +14848,29 @@ app.get('/api/cards/:cardId/media-count', async (req, res) => {
     }
 });
 
+app.get('/api/chats/:chatId/has-image', async (req, res) => {
+    const { chatId } = req.params;
+
+    try {
+        const result = await client.query(
+            `SELECT * 
+             FROM card_chats_media 
+             WHERE chat_id = $1 
+               AND media_type = 'image'`,
+            [chatId]
+        );
+
+        res.json({
+            chatId,
+            hasImage: result.rows.length > 0,
+            medias: result.rows,  // Optional: bisa dihapus kalau hanya ingin boolean
+        });
+    } catch (error) {
+        console.error("Error checking image media:", error);
+        res.status(500).json({ error: "Failed to check image media" });
+    }
+});
+
 
 
 
