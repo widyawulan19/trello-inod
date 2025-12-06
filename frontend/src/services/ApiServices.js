@@ -983,9 +983,36 @@ export const updateMessage = async (chatId, data) => {
 
 
 // Upload file ke chat
+// export const uploadChatMedia = async (chatId, file) => {
+//   const formData = new FormData();
+//   formData.append("file", file);
+
+//   try {
+//     const res = await axios.post(`${API_URL}/chats/${chatId}/media`, formData, {
+//       headers: { "Content-Type": "multipart/form-data" },
+//     });
+//     return res.data;
+//   } catch (err) {
+//     console.error("Error uploading media:", err);
+//     throw err;
+//   }
+// };
+// Upload file ke chat
 export const uploadChatMedia = async (chatId, file) => {
   const formData = new FormData();
+
+  // tetap pakai "file" untuk nama field
   formData.append("file", file);
+
+  // deteksi jenis media
+  const detectType = () => {
+    if (file.type.startsWith("image/")) return "image";
+    if (file.type.startsWith("video/")) return "video";
+    if (file.type.startsWith("audio/")) return "audio";
+    return "file";
+  };
+
+  formData.append("media_type", detectType());
 
   try {
     const res = await axios.post(`${API_URL}/chats/${chatId}/media`, formData, {
@@ -997,6 +1024,7 @@ export const uploadChatMedia = async (chatId, file) => {
     throw err;
   }
 };
+
 
 // media total count 
 export const getCardMediaCount = async (cardId) => axios.get(`${API_URL}/cards/${cardId}/media-count`);

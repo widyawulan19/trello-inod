@@ -162,3 +162,116 @@ app.get('/api/cards/:cardId/media-count', async (req, res) => {
     res.status(500).json({ error: 'Failed to count media' });
   }
 });
+
+
+
+app.post('/api/chats/:chatId/media', upload.single('file'), async (req, res) => {
+  const { chatId } = req.params;
+
+  if (!req.file || !chatId) {
+    return res.status(400).json({ error: 'Missing file or chatId' });
+  }
+
+  try {
+
+    const result = await new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          resource_type: 'auto',
+          folder: 'trello_chat_media',
+          public_id: `${Date.now()}-${req.file.originalname}`
+        },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      );
+
+      uploadStream.end(req.file.buffer);
+    });
+
+    const fileUrl = result.secure_url;
+    const fileName = req.file.originalname;
+
+
+    // Tentukan tipe media berdasarkan mimetype
+    const mimeType = req.file.mimetype;
+    let mediaType = 'file';
+    if (mimeType.startsWith('image/')) mediaType = 'image';
+    else if (mimeType.startsWith('video/')) mediaType = 'video';
+    else if (mimeType.startsWith('audio/')) mediaType = 'audio';
+
+    // Simpan ke tabel card_chats_media
+    const dbResult = await client.query(
+      `INSERT INTO card_chats_media (chat_id, media_url, media_type)
+             VALUES ($1, $2, $3) RETURNING *`,
+      [chatId, fileUrl, mediaType]
+    );
+
+    res.status(201).json(dbResult.rows[0]);
+  } catch (error) {
+    console.error('Upload error:', error);
+    res.status(500).json({ error: 'Upload failed', message: error.message });
+  }
+});
+
+
+app.get('/api/cards/:cardId/chat-media-summary', async (req, res) => {
+  const { cardId } = req.params;
+
+  try {
+    // 1. Ambil semua chat ID dari card_chats
+    const chatResult = await client.query(
+      `SELECT id 
+             FROM card_chats
+             WHERE card_id = $1`,
+      [cardId]
+    );
+
+    const chatIds = chatResult.rows.map(r => r.id);
+
+    if (chatIds.length === 0) {
+      return res.json({
+        cardId,
+        chats: [],
+        message: "No chats found for this card."
+      });
+    }
+
+    // 2. Ambil semua media berdasarkan chat_id
+    const mediaResult = await client.query(
+      `SELECT chat_id, media_type, media_url
+             FROM card_chats_media
+             WHERE chat_id = ANY($1::int[])`,
+      [chatIds]
+    );
+
+    // 3. Buat map media per chat_id
+    const mediaMap = {};
+    mediaResult.rows.forEach(m => {
+      if (!mediaMap[m.chat_id]) mediaMap[m.chat_id] = [];
+      mediaMap[m.chat_id].push(m);
+    });
+
+    // 4. Buat summary per chat_id
+    const summary = chatIds.map(chatId => {
+      const mediaList = mediaMap[chatId] || [];
+
+      return {
+        chat_id: chatId,
+        hasMedia: mediaList.length > 0,
+        hasImage: mediaList.some(m => m.media_type === "image"),
+        hasVideo: mediaList.some(m => m.media_type === "video"),
+        hasFile: mediaList.some(m => m.media_type === "audio"),
+        mediaTypes: [...new Set(mediaList.map(m => m.media_type))],
+        medias: mediaList // bisa dihapus kalau tidak mau
+      };
+    });
+
+    res.json({ cardId, chats: summary });
+
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Failed to process media summary" });
+  }
+});
