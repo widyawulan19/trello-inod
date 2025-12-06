@@ -42,6 +42,17 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
   const [showEditEmojiPicker, setShowEditEmojiPicker] = useState(null);
 
 
+  function getMediaType(file) {
+    if (!file) return "file";
+
+    if (file.type.startsWith("image/")) return "image";
+    if (file.type.startsWith("video/")) return "video";
+    if (file.type.startsWith("audio/")) return "audio";
+
+    return "file";
+  }
+
+
   // SHOW / HIDE EMOJI EDIT
   const handleShowEditEmoji = (chatId) => {
     setShowEditEmojiPicker((prev) => (prev === chatId ? null : chatId));
@@ -129,27 +140,55 @@ const handleShowReplyEmoji = (chatId) => {
     }
   };
 
+  // const handleSendMessage = async () => {
+  //   if ((!message || message === "<p><br></p>") && pendingFiles.length === 0) return;
+
+  //   try {
+  //     const res = await createMessage(cardId, {
+  //       user_id: userId,
+  //       message,
+  //       parent_message_id: null,
+  //     });
+
+  //     const chatId = res.data.id;
+  //     for (let file of pendingFiles) await uploadChatMedia(chatId, file);
+
+  //     setMessage('');
+  //     setPendingFiles([]);
+  //     fetchChats();
+  //     showSnackbar("Pesan terkirim!", "success");
+  //   } catch (err) {
+  //     console.error("Send error:", err);
+  //     showSnackbar("Gagal kirim pesan", "error");
+  //   }
+  // };
   const handleSendMessage = async () => {
-    if ((!message || message === "<p><br></p>") && pendingFiles.length === 0) return;
-    try {
-      const res = await createMessage(cardId, {
-        user_id: userId,
-        message,
-        parent_message_id: null,
-      });
+  if ((!message || message === "<p><br></p>") && pendingFiles.length === 0) return;
 
-      const chatId = res.data.id;
-      for (let file of pendingFiles) await uploadChatMedia(chatId, file);
+  try {
+    const res = await createMessage(cardId, {
+      user_id: userId,
+      message,
+      parent_message_id: null,
+    });
 
-      setMessage('');
-      setPendingFiles([]);
-      fetchChats();
-      showSnackbar("Pesan terkirim!", "success");
-    } catch (err) {
-      console.error("Send error:", err);
-      showSnackbar("Gagal kirim pesan", "error");
+    const chatId = res.data.id;
+
+    for (let file of pendingFiles) {
+      const mediaType = getMediaType(file); // fungsi deteksi tipe
+      await uploadChatMedia(chatId, file, mediaType); // pakai service langsung
     }
-  };
+
+    setMessage('');
+    setPendingFiles([]);
+    fetchChats();
+    showSnackbar("Pesan terkirim!", "success");
+  } catch (err) {
+    console.error("Send error:", err);
+    showSnackbar("Gagal kirim pesan", "error");
+  }
+};
+
 
   const handleSendReply = async (parentId) => {
     const html = replyMessage[parentId] || "";

@@ -997,22 +997,12 @@ export const updateMessage = async (chatId, data) => {
 //     throw err;
 //   }
 // };
+
 // Upload file ke chat
-export const uploadChatMedia = async (chatId, file) => {
+export const uploadChatMedia = async (chatId, file, mediaType) => {
   const formData = new FormData();
-
-  // tetap pakai "file" untuk nama field
   formData.append("file", file);
-
-  // deteksi jenis media
-  const detectType = () => {
-    if (file.type.startsWith("image/")) return "image";
-    if (file.type.startsWith("video/")) return "video";
-    if (file.type.startsWith("audio/")) return "audio";
-    return "file";
-  };
-
-  formData.append("media_type", detectType());
+  formData.append("mediaType", mediaType); // ⬅️ kirim type
 
   try {
     const res = await axios.post(`${API_URL}/chats/${chatId}/media`, formData, {
@@ -1024,6 +1014,7 @@ export const uploadChatMedia = async (chatId, file) => {
     throw err;
   }
 };
+
 
 
 // media total count 

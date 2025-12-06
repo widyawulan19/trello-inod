@@ -29,59 +29,6 @@ dayjs.extend(timezone);
 dayjs.locale("id");
 
 
-// ============================
-// 🔢 COUNTER SETUP DATA MARKETING DESIGN
-// ============================
-// let currentDesignOrderNumber = 0;
-// let currentDesignProjectNumber = 0;
-// let lastProjectMonth = dayjs().month();
-
-// async function initializeCounters() {
-//     try {
-//         const result = await client.query(`
-//       SELECT 
-//         MAX(CAST(order_number AS INTEGER)) AS max_order_number,
-//         MAX(CAST(SUBSTRING(project_number FROM 2 FOR 2) AS INTEGER)) AS max_project_number,
-//         MAX(create_at) AS last_created_at
-//       FROM marketing_design
-//     `);
-
-//         const row = result.rows[0];
-//         currentDesignOrderNumber = row.max_order_number || 0;
-//         currentDesignProjectNumber = row.max_project_number || 0;
-//         lastProjectMonth = row.last_created_at
-//             ? dayjs(row.last_created_at).month()
-//             : dayjs().month();
-
-//         console.log("✅ Counter initialized:");
-//         console.log("   currentDesignOrderNumber:", currentDesignOrderNumber);
-//         console.log("   currentDesignProjectNumber:", currentDesignProjectNumber);
-//         console.log("   lastProjectMonth:", lastProjectMonth + 1);
-//     } catch (error) {
-//         console.error("❌ Failed to initialize counters:", error.message);
-//     }
-// }
-
-// // Jalankan saat server start
-// initializeCounters();
-
-
-
-// // ============================
-// // 🔢 COUNTER SETUP DATA MARKETING MUSIK
-// // ============================
-
-
-// // =======================
-// // 🔹 VARIABEL GLOBAL
-// // =======================
-// let currentOrderNumberMarketing = 558;     // bisa kamu set manual
-// let currentProjectNumberMarketing = 558;    // bisa kamu set manual
-// let lastMarketingMonth = dayjs().month();  // default bulan saat ini
-
-
-
-
 // =======================
 // 🔹 INISIALISASI COUNTER
 // =======================
@@ -264,8 +211,13 @@ module.exports = { generateMarketingDesignNumbers };
 //TOP
 dotenv.config();
 
+
 const app = express();
 app.use(express.json());
+
+app.use(express.json({ limit: '200mb' }));
+app.use(express.urlencoded({ limit: '200mb', extended: true }));
+
 
 app.use(cors({
     // origin: "*",
@@ -11050,7 +11002,7 @@ app.put('/api/create-card-marketing-design/:listId/:marketingDesignId', async (r
                 <p><strong>Buyer:</strong> ${marketing.buyer_name || 'N/A'}</p>
                 <p><strong>Order Number:</strong> ${marketing.order_number || 'N/A'}</p>
                 <p><strong>Account:</strong> ${marketing.account_name || 'N/A'}</p>
-                <p><strong>Design Count:</strong> ${marketing.jumlah_design || '0'}</p>
+                <p><strong>Jumlah Image:</strong> ${marketing.jumlah_design || '0'}</p>
                 <p><strong>Deadline:</strong> ${marketing.deadline ? new Date(marketing.deadline).toISOString().split('T')[0] : 'N/A'}</p>
                 <p><strong>Jumlah Revisi:</strong> ${marketing.jumlah_revisi || '0'}</p>
                 <p><strong>Offer Type:</strong> ${marketing.offer_type_name || 'N/A'}</p>
@@ -14717,23 +14669,26 @@ app.post('/api/chats/:chatId/media', upload.single('file'), async (req, res) => 
     }
 
     try {
-        // Upload buffer ke Cloudinary
+
         const result = await new Promise((resolve, reject) => {
-            cloudinary.uploader.upload_stream(
+            const uploadStream = cloudinary.uploader.upload_stream(
                 {
-                    resource_type: 'auto', // auto = bisa image, video, pdf, dll
+                    resource_type: 'auto',
                     folder: 'trello_chat_media',
-                    public_id: `${Date.now()}-${req.file.originalname}`,
+                    public_id: `${Date.now()}-${req.file.originalname}`
                 },
                 (error, result) => {
                     if (error) reject(error);
                     else resolve(result);
                 }
-            ).end(req.file.buffer);
+            );
+
+            uploadStream.end(req.file.buffer);
         });
 
         const fileUrl = result.secure_url;
         const fileName = req.file.originalname;
+
 
         // Tentukan tipe media berdasarkan mimetype
         const mimeType = req.file.mimetype;
@@ -14756,6 +14711,33 @@ app.post('/api/chats/:chatId/media', upload.single('file'), async (req, res) => 
     }
 });
 
+
+
+// media chats langsung ke cloudinary
+app.post('/api/chats/:chatId/media-testing', async (req, res) => {
+    const { chatId } = req.params;
+    const { media_url, media_type } = req.body;
+
+    if (!media_url) {
+        return res.status(400).json({ error: 'Missing media_url' });
+    }
+
+    try {
+        const result = await client.query(
+            `INSERT INTO card_chats_media (chat_id, media_url, media_type)
+       VALUES ($1, $2, $3)
+       RETURNING *`,
+            [chatId, media_url, media_type]
+        );
+
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to save media' });
+    }
+});
+
+
 // GET all jumlah media per card
 app.get('/api/cards/media-count', async (req, res) => {
     try {
@@ -14777,22 +14759,90 @@ app.get('/api/cards/media-count', async (req, res) => {
     }
 });
 
-app.get('/api/cards/:cardId/media-count-testing', async (req, res) => {
+
+app.get('/api/cards/:cardId/media/count-testing', async (req, res) => {
     const { cardId } = req.params;
 
     try {
         const result = await client.query(
-            `SELECT COUNT(cm.id) AS total_media
-       FROM card_chats_media cm
-       JOIN card_chats c ON c.id = cm.chat_id
-       WHERE c.card_id = $1`,
+            `SELECT COUNT(*) AS total_media
+             FROM card_chats_media
+             WHERE chat_id IN (
+                 SELECT id FROM card_chats WHERE card_id = $1
+             )`,
             [cardId]
         );
 
-        res.json({ media_count: Number(result.rows[0].total_media) });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to count media' });
+        res.json({
+            card_id: cardId,
+            total_media: Number(result.rows[0].total_media)
+        });
+
+    } catch (error) {
+        console.error("Count media error:", error);
+        res.status(500).json({ error: "Failed to count media" });
+    }
+});
+
+
+
+app.get('/api/cards/:cardId/chat-media-summary', async (req, res) => {
+    const { cardId } = req.params;
+
+    try {
+        // 1. Ambil semua chat ID dari card_chats
+        const chatResult = await client.query(
+            `SELECT id 
+             FROM card_chats
+             WHERE card_id = $1`,
+            [cardId]
+        );
+
+        const chatIds = chatResult.rows.map(r => r.id);
+
+        if (chatIds.length === 0) {
+            return res.json({
+                cardId,
+                chats: [],
+                message: "No chats found for this card."
+            });
+        }
+
+        // 2. Ambil semua media berdasarkan chat_id
+        const mediaResult = await client.query(
+            `SELECT chat_id, media_type, media_url
+             FROM card_chats_media
+             WHERE chat_id = ANY($1::int[])`,
+            [chatIds]
+        );
+
+        // 3. Buat map media per chat_id
+        const mediaMap = {};
+        mediaResult.rows.forEach(m => {
+            if (!mediaMap[m.chat_id]) mediaMap[m.chat_id] = [];
+            mediaMap[m.chat_id].push(m);
+        });
+
+        // 4. Buat summary per chat_id
+        const summary = chatIds.map(chatId => {
+            const mediaList = mediaMap[chatId] || [];
+
+            return {
+                chat_id: chatId,
+                hasMedia: mediaList.length > 0,
+                hasImage: mediaList.some(m => m.media_type === "image"),
+                hasVideo: mediaList.some(m => m.media_type === "video"),
+                hasFile: mediaList.some(m => m.media_type === "audio"),
+                mediaTypes: [...new Set(mediaList.map(m => m.media_type))],
+                medias: mediaList // bisa dihapus kalau tidak mau
+            };
+        });
+
+        res.json({ cardId, chats: summary });
+
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({ error: "Failed to process media summary" });
     }
 });
 
@@ -14841,6 +14891,29 @@ app.get('/api/cards/:cardId/media-count', async (req, res) => {
     } catch (err) {
         console.error('❌ Error fetching media count:', err.message);
         res.status(500).json({ error: 'Internal server error', detail: err.message });
+    }
+});
+
+app.get('/api/chats/:chatId/has-image', async (req, res) => {
+    const { chatId } = req.params;
+
+    try {
+        const result = await client.query(
+            `SELECT * 
+             FROM card_chats_media 
+             WHERE chat_id = $1 
+               AND media_type = 'image'`,
+            [chatId]
+        );
+
+        res.json({
+            chatId,
+            hasImage: result.rows.length > 0,
+            medias: result.rows,  // Optional: bisa dihapus kalau hanya ingin boolean
+        });
+    } catch (error) {
+        console.error("Error checking image media:", error);
+        res.status(500).json({ error: "Failed to check image media" });
     }
 });
 
@@ -15876,7 +15949,7 @@ app.get('/api/cards/:cardId/activities-testing', async (req, res) => {
 
 // 5. duplicate card
 // Endpoint untuk duplikasi card ke list tertentu
-app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (req, res) => {
+app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/oldtesting', async (req, res) => {
     const { cardId, listId, userId } = req.params; // 🎯 userId dari URL
     const { position } = req.body; // ambil posisi dari body
     const actingUserId = parseInt(userId, 10);
@@ -15895,6 +15968,16 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (r
                 [listId, position]
             );
         }
+
+        // const result = await client.query(
+        //     `INSERT INTO public.cards (title, description, list_id, position) 
+        //      SELECT title, description, $1, 
+        //             COALESCE($2, (SELECT COALESCE(MAX(position), 0) + 1 FROM public.cards WHERE list_id = $1))
+        //      FROM public.cards 
+        //      WHERE id = $3 
+        //      RETURNING id, title, list_id`,
+        //     [listId, position, cardId]
+        // );
         const result = await client.query(
             `INSERT INTO public.cards 
                 (title, description, list_id, position, is_active, show_toggle) 
@@ -15916,7 +15999,6 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (r
         const newCardTitle = result.rows[0].title;
 
         // Salin relasi-relasi card
-        //card checklist
         await client.query(
             `INSERT INTO public.card_checklists (card_id, checklist_id, created_at, updated_at)
              SELECT $1, checklist_id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -15924,14 +16006,12 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (r
             [newCardId, cardId]
         );
 
-        //cover card
         await client.query(
             `INSERT INTO public.card_cover (card_id, cover_id)
              SELECT $1, cover_id FROM public.card_cover WHERE card_id = $2`,
             [newCardId, cardId]
         );
 
-        //card description
         await client.query(
             `INSERT INTO public.card_descriptions (card_id, description, created_at, updated_at)
              SELECT $1, description, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -15939,7 +16019,6 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (r
             [newCardId, cardId]
         );
 
-        //card due date
         await client.query(
             `INSERT INTO public.card_due_dates (card_id, due_date, created_at, updated_at)
              SELECT $1, due_date, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -15947,28 +16026,24 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (r
             [newCardId, cardId]
         );
 
-        //card labels
         await client.query(
             `INSERT INTO public.card_labels (card_id, label_id)
              SELECT $1, label_id FROM public.card_labels WHERE card_id = $2`,
             [newCardId, cardId]
         );
 
-        //card members
         await client.query(
             `INSERT INTO public.card_members (card_id, user_id)
              SELECT $1, user_id FROM public.card_members WHERE card_id = $2`,
             [newCardId, cardId]
         );
 
-        //card priorities
         await client.query(
             `INSERT INTO public.card_priorities (card_id, priority_id)
              SELECT $1, priority_id FROM public.card_priorities WHERE card_id = $2`,
             [newCardId, cardId]
         );
 
-        //card status
         await client.query(
             `INSERT INTO public.card_status (card_id, status_id, assigned_at)
              SELECT $1, status_id, CURRENT_TIMESTAMP
@@ -15976,14 +16051,12 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (r
             [newCardId, cardId]
         );
 
-        //card users
         await client.query(
             `INSERT INTO public.card_users (card_id, user_id)
              SELECT $1, user_id FROM public.card_users WHERE card_id = $2`,
             [newCardId, cardId]
         );
 
-        //card chats
         await client.query(
             `INSERT INTO public.card_chats 
                 (card_id, user_id, message, parent_message_id, mentions, send_time, created_at, updated_at, deleted_at)
@@ -16077,6 +16150,276 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (r
         res.status(500).json({ error: err.message, stack: err.stack }); // tampilkan detail error di response
     }
 });
+
+app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (req, res) => {
+    const { cardId, listId, userId } = req.params; // 🎯 userId dari URL
+    const { position } = req.body; // ambil posisi dari body
+    const actingUserId = parseInt(userId, 10);
+
+    if (!actingUserId) return res.status(401).json({ error: 'Unauthorized: userId missing' });
+
+    try {
+        await client.query('BEGIN');
+
+        // Kalau user pilih posisi, geser posisi lain dulu
+        if (position) {
+            await client.query(
+                `UPDATE public.cards 
+                 SET position = position + 1 
+                 WHERE list_id = $1 AND position >= $2`,
+                [listId, position]
+            );
+        }
+
+        // const result = await client.query(
+        //     `INSERT INTO public.cards (title, description, list_id, position) 
+        //      SELECT title, description, $1, 
+        //             COALESCE($2, (SELECT COALESCE(MAX(position), 0) + 1 FROM public.cards WHERE list_id = $1))
+        //      FROM public.cards 
+        //      WHERE id = $3 
+        //      RETURNING id, title, list_id`,
+        //     [listId, position, cardId]
+        // );
+        const result = await client.query(
+            `INSERT INTO public.cards 
+                (title, description, list_id, position, is_active, show_toggle) 
+            SELECT 
+                title, 
+                description, 
+                $1, 
+                COALESCE($2, (SELECT COALESCE(MAX(position), 0) + 1 FROM public.cards WHERE list_id = $1)),
+                is_active,
+                show_toggle
+            FROM public.cards 
+            WHERE id = $3 
+            RETURNING id, title, list_id, is_active, show_toggle`,
+            [listId, position, cardId]
+        );
+
+
+        const newCardId = result.rows[0].id;
+        const newCardTitle = result.rows[0].title;
+
+        // Salin relasi-relasi card
+        await client.query(
+            `INSERT INTO public.card_checklists (card_id, checklist_id, created_at, updated_at)
+             SELECT $1, checklist_id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+             FROM public.card_checklists WHERE card_id = $2`,
+            [newCardId, cardId]
+        );
+
+        await client.query(
+            `INSERT INTO public.card_cover (card_id, cover_id)
+             SELECT $1, cover_id FROM public.card_cover WHERE card_id = $2`,
+            [newCardId, cardId]
+        );
+
+        await client.query(
+            `INSERT INTO public.card_descriptions (card_id, description, created_at, updated_at)
+             SELECT $1, description, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+             FROM public.card_descriptions WHERE card_id = $2`,
+            [newCardId, cardId]
+        );
+
+        await client.query(
+            `INSERT INTO public.card_due_dates (card_id, due_date, created_at, updated_at)
+             SELECT $1, due_date, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+             FROM public.card_due_dates WHERE card_id = $2`,
+            [newCardId, cardId]
+        );
+
+        await client.query(
+            `INSERT INTO public.card_labels (card_id, label_id)
+             SELECT $1, label_id FROM public.card_labels WHERE card_id = $2`,
+            [newCardId, cardId]
+        );
+
+        await client.query(
+            `INSERT INTO public.card_members (card_id, user_id)
+             SELECT $1, user_id FROM public.card_members WHERE card_id = $2`,
+            [newCardId, cardId]
+        );
+
+        await client.query(
+            `INSERT INTO public.card_priorities (card_id, priority_id)
+             SELECT $1, priority_id FROM public.card_priorities WHERE card_id = $2`,
+            [newCardId, cardId]
+        );
+
+        await client.query(
+            `INSERT INTO public.card_status (card_id, status_id, assigned_at)
+             SELECT $1, status_id, CURRENT_TIMESTAMP
+             FROM public.card_status WHERE card_id = $2`,
+            [newCardId, cardId]
+        );
+
+        await client.query(
+            `INSERT INTO public.card_users (card_id, user_id)
+             SELECT $1, user_id FROM public.card_users WHERE card_id = $2`,
+            [newCardId, cardId]
+        );
+
+        // ========== 4. DUPLICATE CARD CHATS (WITH PARENT MAPPING) ==========
+        // 4a. Ambil semua chat lama (urut berdasarkan id agar mapping deterministic)
+        const oldChatsRes = await client.query(
+            `SELECT * FROM public.card_chats WHERE card_id = $1 ORDER BY id ASC`,
+            [cardId]
+        );
+        const oldChats = oldChatsRes.rows;
+
+        // chatIdMap: oldChatId -> newChatId
+        const chatIdMap = {};
+
+        // 4b. Insert chats satu per satu, set parent_message_id = NULL dulu (atau tetap NULL kalau tidak ada)
+        for (const chat of oldChats) {
+            const insertChat = await client.query(
+                `INSERT INTO public.card_chats 
+            (card_id, user_id, message, parent_message_id, mentions, send_time, created_at, updated_at, deleted_at)
+            VALUES ($1, $2, $3, $4, $5, COALESCE($6, NOW()), NOW(), NOW(), $7)
+            RETURNING id`,
+                [
+                    newCardId,
+                    chat.user_id,
+                    chat.message,
+                    null,           // parent_message_id sementara null; akan diupdate nanti jika perlu
+                    chat.mentions,
+                    chat.send_time,
+                    chat.deleted_at
+                ]
+            );
+
+            const newChatId = insertChat.rows[0].id;
+            chatIdMap[chat.id] = newChatId;
+        }
+
+        // 4c. Update parent_message_id pada chat baru sesuai mapping (jika parent exists)
+        for (const chat of oldChats) {
+            if (chat.parent_message_id) {
+                const oldParent = chat.parent_message_id;
+                const newParent = chatIdMap[oldParent] || null;
+                const newChat = chatIdMap[chat.id];
+
+                // Jika parent tidak ditemukan dalam map (edge case), biarkan null
+                await client.query(
+                    `UPDATE public.card_chats SET parent_message_id = $1 WHERE id = $2`,
+                    [newParent, newChat]
+                );
+            }
+        }
+
+        // ========== 5. DUPLICATE CARD_CHATS_MEDIA berdasarkan mapping ==========
+        // Ambil semua media untuk semua old chat id
+        const oldChatIds = oldChats.map(c => c.id);
+        if (oldChatIds.length > 0) {
+            const oldMediaRes = await client.query(
+                `SELECT * FROM public.card_chats_media WHERE chat_id = ANY($1::int[]) ORDER BY id ASC`,
+                [oldChatIds]
+            );
+
+            for (const media of oldMediaRes.rows) {
+                const newChatIdForMedia = chatIdMap[media.chat_id];
+                if (!newChatIdForMedia) continue; // safety
+                await client.query(
+                    `INSERT INTO public.card_chats_media (chat_id, media_url, media_type, created_at)
+            VALUES ($1, $2, $3, NOW())`,
+                    [newChatIdForMedia, media.media_url, media.media_type]
+                );
+            }
+        }
+        // await client.query(
+        //     `INSERT INTO public.card_chats 
+        //         (card_id, user_id, message, parent_message_id, mentions, send_time, created_at, updated_at, deleted_at)
+        //     SELECT 
+        //         $1, user_id, message, parent_message_id, mentions, 
+        //         NOW(), NOW(), NOW(), NULL
+        //     FROM public.card_chats 
+        //     WHERE card_id = $2`,
+        //     [newCardId, cardId]
+        // );
+
+        // Ambil username userId
+        const userRes = await client.query(
+            "SELECT username FROM users WHERE id = $1",
+            [actingUserId]
+        );
+        const userName = userRes.rows[0]?.username || 'Unknown';
+
+        // Ambil info list + board asal dan tujuan
+        const oldListRes = await client.query(
+            `SELECT l.id AS list_id, l.name AS list_name, b.id AS board_id, b.name AS board_name
+             FROM cards c
+             JOIN lists l ON c.list_id = l.id
+             JOIN boards b ON l.board_id = b.id
+             WHERE c.id = $1`,
+            [cardId]
+        );
+        const fromListId = oldListRes.rows[0]?.list_id;
+        const fromListName = oldListRes.rows[0]?.list_name || "Unknown List";
+        const fromBoardId = oldListRes.rows[0]?.board_id;
+        const fromBoardName = oldListRes.rows[0]?.board_name || "Unknown Board";
+
+        const newListRes = await client.query(
+            `SELECT l.id AS list_id, l.name AS list_name, b.id AS board_id, b.name AS board_name
+             FROM lists l
+             JOIN boards b ON l.board_id = b.id
+             WHERE l.id = $1`,
+            [listId]
+        );
+        const toListName = newListRes.rows[0]?.list_name || "Unknown List";
+        const toBoardId = newListRes.rows[0]?.board_id;
+        const toBoardName = newListRes.rows[0]?.board_name || "Unknown Board";
+
+        await client.query('COMMIT');
+
+        // 🔥 Simpan activity langsung ke tabel card_activities
+        await client.query(`
+      INSERT INTO card_activities 
+        (card_id, user_id, action_type, entity, entity_id, action_detail)
+      VALUES ($1, $2, $3, $4, $5, $6)
+    `, [
+            newCardId,
+            actingUserId,
+            'duplicate',
+            'list',
+            listId,
+            JSON.stringify({
+                cardTitle: newCardTitle,
+                fromListId,
+                fromListName,
+                fromBoardId,
+                fromBoardName,
+                toListId: listId,
+                toListName,
+                toBoardId,
+                toBoardName,
+                position: position || null,
+                duplicatedBy: { id: actingUserId, username: userName }
+            })
+        ]);
+
+        res.status(200).json({
+            message: 'Card berhasil diduplikasi',
+            cardId: newCardId,
+            fromListId,
+            fromListName,
+            toListId: listId,
+            toListName,
+            fromBoardId,
+            fromBoardName,
+            toBoardId,
+            toBoardName,
+            position: position || null,
+            duplicatedBy: { id: actingUserId, username: userName }
+        });
+
+
+    } catch (err) {
+        await client.query('ROLLBACK');
+        console.error('❌ Duplicate card error:', err); // ini cetak ke log server
+        res.status(500).json({ error: err.message, stack: err.stack }); // tampilkan detail error di response
+    }
+});
+
 
 
 // get data card archive + origin info
