@@ -14801,6 +14801,67 @@ app.get('/api/cards/:cardId/media/count-testing', async (req, res) => {
 });
 
 
+app.get('/api/cards/:cardId/chat-media-summary', async (req, res) => {
+    const { cardId } = req.params;
+
+    try {
+        // 1. Ambil semua chat ID dari card_chats
+        const chatResult = await client.query(
+            `SELECT id 
+             FROM card_chats
+             WHERE card_id = $1`,
+            [cardId]
+        );
+
+        const chatIds = chatResult.rows.map(r => r.id);
+
+        if (chatIds.length === 0) {
+            return res.json({
+                cardId,
+                chats: [],
+                message: "No chats found for this card."
+            });
+        }
+
+        // 2. Ambil semua media berdasarkan chat_id
+        const mediaResult = await client.query(
+            `SELECT chat_id, media_type, media_url
+             FROM card_chats_media
+             WHERE chat_id = ANY($1::int[])`,
+            [chatIds]
+        );
+
+        // 3. Buat map media per chat_id
+        const mediaMap = {};
+        mediaResult.rows.forEach(m => {
+            if (!mediaMap[m.chat_id]) mediaMap[m.chat_id] = [];
+            mediaMap[m.chat_id].push(m);
+        });
+
+        // 4. Buat summary per chat_id
+        const summary = chatIds.map(chatId => {
+            const mediaList = mediaMap[chatId] || [];
+
+            return {
+                chat_id: chatId,
+                hasMedia: mediaList.length > 0,
+                hasImage: mediaList.some(m => m.media_type === "image"),
+                hasVideo: mediaList.some(m => m.media_type === "video"),
+                hasFile: mediaList.some(m => m.media_type === "audio"),
+                mediaTypes: [...new Set(mediaList.map(m => m.media_type))],
+                medias: mediaList // bisa dihapus kalau tidak mau
+            };
+        });
+
+        res.json({ cardId, chats: summary });
+
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({ error: "Failed to process media summary" });
+    }
+});
+
+
 // GET jumlah media per media_type + total untuk card tertentu
 app.get('/api/cards/:cardId/media-count', async (req, res) => {
     const { cardId } = req.params;
