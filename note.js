@@ -901,3 +901,28 @@ app.post('/api/chats/:chatId/media-testing', upload.single('file'), async (req, 
     res.status(500).json({ error: "Upload failed", message: error.message });
   }
 });
+
+
+app.get('/api/cards/:cardId/media/count', async (req, res) => {
+  const { cardId } = req.params;
+
+  try {
+    const result = await client.query(
+      `SELECT COUNT(*) AS total_media
+             FROM card_chats_media
+             WHERE chat_id IN (
+                 SELECT id FROM card_chats WHERE card_id = $1
+             )`,
+      [cardId]
+    );
+
+    res.json({
+      card_id: cardId,
+      total_media: Number(result.rows[0].total_media)
+    });
+
+  } catch (error) {
+    console.error("Count media error:", error);
+    res.status(500).json({ error: "Failed to count media" });
+  }
+});
