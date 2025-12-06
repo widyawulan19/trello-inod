@@ -14669,22 +14669,6 @@ app.post('/api/chats/:chatId/media', upload.single('file'), async (req, res) => 
     }
 
     try {
-        // Upload buffer ke Cloudinary
-        // const result = await new Promise((resolve, reject) => {
-        //     cloudinary.uploader.upload_stream(
-        //         {
-        //             resource_type: 'auto', 
-        //             folder: 'trello_chat_media',
-        //             public_id: `${Date.now()}-${req.file.originalname}`,
-        //         },
-        //         (error, result) => {
-        //             if (error) reject(error);
-        //             else resolve(result);
-        //         }
-        //     );
-
-        //     uploadStream.end(req.file.buffer);
-        // });
 
         const result = await new Promise((resolve, reject) => {
             const uploadStream = cloudinary.uploader.upload_stream(
@@ -14799,6 +14783,7 @@ app.get('/api/cards/:cardId/media/count-testing', async (req, res) => {
         res.status(500).json({ error: "Failed to count media" });
     }
 });
+
 
 
 app.get('/api/cards/:cardId/chat-media-summary', async (req, res) => {
