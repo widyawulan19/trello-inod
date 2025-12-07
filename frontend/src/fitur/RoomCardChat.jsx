@@ -279,7 +279,7 @@ const RoomCardChat = ({cards, userId, cardId,onClose,assignedUsers,assignableUse
   return(
     <div className='roomchat-container'>
         <div className="chat-header">
-          <h4>Room Chat</h4>
+          <h4>Room Chat example</h4>
           <HiXMark onClick={onClose}/>
         </div>
         <div className="chat-container">

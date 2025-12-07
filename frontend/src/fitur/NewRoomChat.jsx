@@ -20,8 +20,6 @@ import { BsFillReplyFill } from 'react-icons/bs';
 dayjs.extend(relativeTime);
 dayjs.locale("id"); // ubah bahasa ke Indonesia
 
-
-
 const NewRoomChat = ({ cardId, userId, onClose }) => {
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,23 +32,27 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
   const { showSnackbar } = useSnackbar();
   const editorRef = useRef(null);
   const mainEditorRef = useRef(null);
+  const quillRef = useRef(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const [showReplyEmojiPicker, setShowReplyEmojiPicker] = useState(null); // khusus reply
   // EDIT MESSAGE 
   const [editingMessage, setEditingMessage] = useState(null);
   const [editText, setEditText] = useState('');
   const [showEditEmojiPicker, setShowEditEmojiPicker] = useState(null);
+  //preview (optional UI preview outside editor)
+  const [previewImage, setPreviewImage] = useState(null);
 
+  const handleImagePreview = (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
 
-  function getMediaType(file) {
-    if (!file) return "file";
+  const previewURL = URL.createObjectURL(file);
 
-    if (file.type.startsWith("image/")) return "image";
-    if (file.type.startsWith("video/")) return "video";
-    if (file.type.startsWith("audio/")) return "audio";
+  const editor = quillRef.current.getEditor();
+  const range = editor.getSelection();
 
-    return "file";
-  }
+  editor.insertEmbed(range.index, "image", previewURL);
+};
 
 
   // SHOW / HIDE EMOJI EDIT
@@ -62,9 +64,9 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
 
   // FUNGSI EDIT MESSAGE 
   const handleEditMessage = (msg) => {
-  setEditingMessage(msg.id);
-  setEditText(msg.message);
-};
+    setEditingMessage(msg.id);
+    setEditText(msg.message);
+  };
 
   // ✅ Fungsi simpan edit
   const handleSaveEdit = async () => {
@@ -98,22 +100,23 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
   };
 
   // fungsi show emoji 
-  // const handleShowEmoji = () =>{
-  //   setShowEmojiPicker(prev => !prev)
-  // }
+  const handleShowEmoji = () => {
+    setShowEmojiPicker(prev => !prev);        // toggle on/off
+    setShowReplyEmojiPicker(null);            // tutup semua emoji reply
+  };
 
-// untuk main editor
-const handleShowEmoji = () => {
-  setShowEmojiPicker(prev => !prev);        // toggle on/off
-  setShowReplyEmojiPicker(null);            // tutup semua emoji reply
-};
+  // untuk reply editor
+  const handleShowReplyEmoji = (chatId) => {
+    setShowReplyEmojiPicker(prev => (prev === chatId ? null : chatId)); // toggle on/off
+    setShowEmojiPicker(false);                // tutup emoji main
+  };
 
-// untuk reply editor
-const handleShowReplyEmoji = (chatId) => {
-  setShowReplyEmojiPicker(prev => (prev === chatId ? null : chatId)); // toggle on/off
-  setShowEmojiPicker(false);                // tutup emoji main
-};
-
+  // Insert Link modal state
+  const [linkModalOpen, setLinkModalOpen] = useState(false);
+  const [linkModalTarget, setLinkModalTarget] = useState('main'); // 'main' or replyId
+  const [linkLabel, setLinkLabel] = useState('');
+  const [linkUrl, setLinkUrl] = useState('');
+  const savedRangeRef = useRef(null);
 
   useEffect(() => {
     fetchChats();
@@ -140,65 +143,59 @@ const handleShowReplyEmoji = (chatId) => {
     }
   };
 
-  // const handleSendMessage = async () => {
-  //   if ((!message || message === "<p><br></p>") && pendingFiles.length === 0) return;
-
-  //   try {
-  //     const res = await createMessage(cardId, {
-  //       user_id: userId,
-  //       message,
-  //       parent_message_id: null,
-  //     });
-
-  //     const chatId = res.data.id;
-  //     for (let file of pendingFiles) await uploadChatMedia(chatId, file);
-
-  //     setMessage('');
-  //     setPendingFiles([]);
-  //     fetchChats();
-  //     showSnackbar("Pesan terkirim!", "success");
-  //   } catch (err) {
-  //     console.error("Send error:", err);
-  //     showSnackbar("Gagal kirim pesan", "error");
-  //   }
-  // };
   const handleSendMessage = async () => {
-  if ((!message || message === "<p><br></p>") && pendingFiles.length === 0) return;
+    if ((!message || message === "<p><br></p>") && pendingFiles.length === 0) return;
 
-  try {
-    const res = await createMessage(cardId, {
-      user_id: userId,
-      message,
-      parent_message_id: null,
-    });
+    try {
+      console.log('-> creating message for cardId', cardId);
+      const res = await createMessage(cardId, {
+        user_id: userId,
+        message,
+        parent_message_id: null,
+      });
 
-    const chatId = res.data.id;
+      const chatId = res?.data?.id;
+      console.log('CHAT ID FE (from createMessage):', chatId);
+      console.log('Pending files length:', pendingFiles.length, pendingFiles);
 
-    for (let file of pendingFiles) {
-      const mediaType = getMediaType(file); // fungsi deteksi tipe
-      await uploadChatMedia(chatId, file, mediaType); // pakai service langsung
+      // If no files, just finish early
+      if (!pendingFiles || pendingFiles.length === 0) {
+        setMessage('');
+        fetchChats();
+        showSnackbar('Pesan terkirim!', 'success');
+        return;
+      }
+
+      // Upload each file and log response / errors separately
+      for (let i = 0; i < pendingFiles.length; i++) {
+        const file = pendingFiles[i];
+        try {
+          console.log(`Uploading file ${i}`, file.name, file.type, file.size);
+          const uploadRes = await uploadChatMedia(chatId, file);
+          console.log('uploadRes for file', i, uploadRes);
+        } catch (uploadErr) {
+          console.error('Upload failed for file', i, uploadErr);
+          showSnackbar(`Gagal upload file ${file.name}`, 'error');
+        }
+      }
+
+      setMessage('');
+      setPendingFiles([]);
+      await fetchChats();
+      showSnackbar('Pesan + media terkirim!', 'success');
+    } catch (err) {
+      console.error('Send error:', err);
+      showSnackbar('Gagal kirim pesan', 'error');
     }
-
-    setMessage('');
-    setPendingFiles([]);
-    fetchChats();
-    showSnackbar("Pesan terkirim!", "success");
-  } catch (err) {
-    console.error("Send error:", err);
-    showSnackbar("Gagal kirim pesan", "error");
-  }
-};
-
+  };
 
   const handleSendReply = async (parentId) => {
     const html = replyMessage[parentId] || "";
     const files = replyPendingFiles[parentId] || [];
 
-    // kalau kosong semua, jangan kirim
     if ((!html || html === "<p><br></p>") && files.length === 0) return;
 
     try {
-       // kirim ke backend
       const res = await createMessage(cardId, {
         user_id: userId,
         message: html,
@@ -207,24 +204,16 @@ const handleShowReplyEmoji = (chatId) => {
 
       const chatId = res.data.id;
 
-       // upload file jika ada
       for (let file of files) await uploadChatMedia(chatId, file);
 
-       // reset input dan file
       setReplyMessage(prev => ({ ...prev, [parentId]: "" }));
       setReplyPendingFiles(prev => ({ ...prev, [parentId]: [] }));
 
+      setReplyTo(null);
+      setShowReplyEmojiPicker(null);
+      setShowEmojiPicker(false);
 
-      // 🚀 Tutup editor reply dan emoji picker setelah kirim
-      setReplyTo(null);                // tutup editor reply
-      setShowReplyEmojiPicker(null);   // tutup emoji picker reply
-      setShowEmojiPicker(false);       // tutup emoji picker main (jaga-jaga)
-
-
-      // refresh chat list 
       fetchChats();
-
-      //notifikasi sukses
       showSnackbar("Reply terkirim!", "success");
     } catch (err) {
       console.error("Reply error:", err);
@@ -243,15 +232,181 @@ const handleShowReplyEmoji = (chatId) => {
     }
   };
 
-  const handleUploadFromEditor = async (e, target = "main") => {
-    const file = e.target.files[0];
-    if (!file) return;
+  // === FIXED: handleUploadFromEditor (ensures preview shows reliably in main editor) ===
+  // const handleUploadFromEditor = (e, target = "main") => {
+  //   console.log("=== handleUploadFromEditor TERPANGGIL ===", { target });
 
-    if (target === "main") setPendingFiles((prev) => [...prev, file]);
-    else setReplyPendingFiles((prev) => ({ ...prev, [target]: [...(prev[target] || []), file] }));
+  //   // CASE 1: DIPANGGIL DARI TOOLBAR QUILL → e = undefined
+  //   if (!e || !e.target) {
+  //     console.log("Dipanggil dari toolbar Quill → buka file picker manual");
+  //     const input = document.createElement("input");
+  //     input.type = "file";
+  //     input.accept = "image/*"; // only images for preview embed
+  //     input.onchange = (ev) => handleUploadFromEditor(ev, target);
+  //     input.click();
+  //     return;
+  //   }
 
-    showSnackbar("File ditambahkan, akan dikirim saat klik kirim", "info");
+  //   // CASE 2: DIPANGGIL DARI <input type="file">
+  //   const file = e.target.files?.[0];
+  //   console.log("FILE DARI INPUT:", file);
+
+  //   if (!file) return;
+
+  //   // only images are supported for image embed preview
+  //   if (!file.type.startsWith("image/")) {
+  //     showSnackbar("Hanya file gambar yang bisa dipreview", "error");
+  //     // still add to pendingFiles if you want, but no embed
+  //     if (target === "main") {
+  //       setPendingFiles(prev => [...prev, file]);
+  //     } else {
+  //       setReplyPendingFiles(prev => ({ ...prev, [target]: [...(prev[target] || []), file] }));
+  //     }
+  //     e.target.value = "";
+  //     return;
+  //   }
+
+  //   // Safely get Quill instance for main editor
+  //   const quill = mainEditorRef.current?.getEditor?.();
+  //   if (!quill) {
+  //     console.error("Quill belum siap (mainEditorRef null)");
+  //     showSnackbar("Editor belum siap", "error");
+  //     e.target.value = "";
+  //     return;
+  //   }
+
+  //   try {
+  //     // ensure selection; if null, insert at end
+  //     let range = quill.getSelection();
+  //     if (!range) {
+  //       range = { index: quill.getLength(), length: 0 };
+  //     }
+
+  //     // insert preview image using object URL
+  //     const previewUrl = URL.createObjectURL(file);
+  //     quill.insertEmbed(range.index, "image", previewUrl);
+  //     quill.setSelection(range.index + 1);
+
+  //     // sync controlled value so ReactQuill doesn't overwrite our embed
+  //     // (grab current editor html)
+  //     const html = quill.root.innerHTML;
+  //     setMessage(html);
+
+  //     // save file for later upload
+  //     if (target === "main") {
+  //       setPendingFiles(prev => {
+  //         const next = [...prev, file];
+  //         console.log("pendingFiles set ->", next);
+  //         return next;
+  //       });
+  //     } else {
+  //       setReplyPendingFiles(prev => {
+  //         const next = { ...prev, [target]: [...(prev[target] || []), file] };
+  //         console.log("replyPendingFiles set ->", next);
+  //         return next;
+  //       });
+  //     }
+  //   } catch (err) {
+  //     console.error("Insert embed failed:", err);
+  //     showSnackbar("Gagal menampilkan preview gambar", "error");
+  //   } finally {
+  //     // reset input agar bisa pilih file lagi
+  //     setTimeout(() => {
+  //       e.target.value = "";
+  //     }, 50);
+  //   }
+  // };
+
+  const handleUploadFromEditor = (e, target = "main", fromToolbar = false) => {
+  console.log("=== handleUploadFromEditor TERPANGGIL ===", { target });
+
+  // CASE 1: Dipanggil dari toolbar Quill → buka file picker manual
+  // if (!e || !e.target) {
+  //   const input = document.createElement("input");
+  //   input.type = "file";
+  //   input.accept = "image/*"; // hanya images
+  //   input.onchange = (ev) => handleUploadFromEditor(ev, target);
+  //   input.click();
+  //   return;
+  // }
+  if (fromToolbar) {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.onchange = (ev) => handleUploadFromEditor(ev, target, false); // dari toolbar sudah selesai
+    input.click();
+    return;
+  }
+
+  // CASE 2: Dipanggil dari <input type="file">
+  const file = e.target.files?.[0];
+  if (!file) return;
+
+  if (!file.type.startsWith("image/")) {
+    showSnackbar("Hanya file gambar yang bisa dipreview", "error");
+    // simpan tetap di pendingFiles jika mau
+    if (target === "main") {
+      setPendingFiles(prev => [...prev, file]);
+    } else {
+      setReplyPendingFiles(prev => ({
+        ...prev,
+        [target]: [...(prev[target] || []), file]
+      }));
+    }
+    e.target.value = "";
+    return;
+  }
+
+  // Ambil Quill instance
+  const quill = mainEditorRef.current?.getEditor?.();
+  if (!quill) {
+    console.error("Quill belum siap (mainEditorRef null)");
+    showSnackbar("Editor belum siap", "error");
+    e.target.value = "";
+    return;
+  }
+
+  // pastikan posisi cursor; jika null insert di akhir
+  let range = quill.getSelection();
+  if (!range) range = { index: quill.getLength(), length: 0 };
+
+  // Gunakan FileReader → base64 → pasti muncul di preview
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      quill.insertEmbed(range.index, "image", reader.result);
+      quill.setSelection(range.index + 1);
+
+      // sinkron dengan controlled value
+      setMessage(quill.root.innerHTML);
+
+      // simpan file untuk nanti diupload
+      if (target === "main") {
+        setPendingFiles(prev => [...prev, file]);
+      } else {
+        setReplyPendingFiles(prev => ({
+          ...prev,
+          [target]: [...(prev[target] || []), file]
+        }));
+      }
+
+      console.log("Preview berhasil ditampilkan dan file disimpan.");
+    } catch (err) {
+      console.error("Insert embed gagal:", err);
+      showSnackbar("Gagal menampilkan preview gambar", "error");
+    } finally {
+      e.target.value = ""; // reset input
+    }
   };
+
+  reader.readAsDataURL(file);
+};
+
+
+
+  useEffect(() => {
+    console.log('PENDING FILES UPDATED:', pendingFiles);
+  }, [pendingFiles]);
 
   function autoLinkHTML(html) {
     if (!html) return "";
@@ -276,26 +431,52 @@ const handleShowReplyEmoji = (chatId) => {
     );
   };
 
+  const removeImages = (html) => {
+    if (!html) return "";
+    return html.replace(/<img[^>]*>/g, ""); // hapus SEMUA tag <img>
+  };
+
+//   const renderMedia = (medias) => {
+//   if (!medias || medias.length === 0) return null;
+
+//   return (
+//     <div className="chat-media">
+//       {medias.map((m) => {
+//         if (m.media_type === "image")
+//           return <img key={m.id} src={m.media_url} alt="chat" className="chat-media-img" />;
+//         if (m.media_type === "video")
+//           return <video key={m.id} src={m.media_url} controls className="chat-media-video" />;
+//         if (m.media_type === "audio")
+//           return <audio key={m.id} src={m.media_url} controls className='chat-media-audio'/>;
+//         return <a key={m.id} href={m.media_url} target="_blank" rel="noopener noreferrer" className="chat-media-file">📎 File</a>;
+//       })}
+//     </div>
+//   );
+// };
+
+
+
   const modules = {
-    toolbar: [
-      ['bold', 'italic', 'underline', 'strike', 'code'],
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      ['link', 'image'],
-    ],
+    toolbar: {
+      container: [
+        ['bold', 'italic', 'underline', 'strike', 'code'],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+        ['link', 'image'],
+      ],
+      handlers: {
+        // image: () => handleUploadFromEditor()
+        image: () => handleUploadFromEditor(null, "main", true)
+      }
+    }
   };
 
   const formats = [
-  'bold', 'italic', 'underline', 'strike', 'code',
-  'list', 'bullet',
-  'link', 'image'
-];
-
+    'bold', 'italic', 'underline', 'strike', 'code',
+    'list',
+    'link', 'image'
+  ];
 
   const emojiList = ["😀","😄","😁","😆","😅","😂","🤣","😊","😍","😎","🤩","😘","😢","😭","😡","🤔","👍","👎","🙏","👏","🔥","💯","🎉","❤️"];
-  // const insertEmoji = (emoji, target = "main") => {
-  //   if (target === "main") setMessage(prev => prev + emoji);
-  //   else setReplyMessage(prev => ({ ...prev, [target]: (prev[target] || "") + emoji }));
-  // };
   const insertEmoji = (emoji, target = "main") => {
     if (target === "main") {
       setMessage(prev => prev + emoji);
@@ -311,9 +492,6 @@ const handleShowReplyEmoji = (chatId) => {
     }
   };
 
-
-
-
   const renderChats = (chatList, level = 0) => chatList.map(chat => (
     <div
       className={`chat-message ${level > 0 ? 'chat-reply' : ''} ${chat.user_id === userId ? 'chat-own' : ''}`}
@@ -321,17 +499,13 @@ const handleShowReplyEmoji = (chatId) => {
       style={{
         marginLeft: `${level * 30}px`,
         backgroundColor: 'white',
-        border: `1px solid ${level > 0 ? 'white' : '#eee'}`, // 🎨 merah kalau reply, biru kalau chat utama
+        border: `1px solid ${level > 0 ? 'white' : '#eee'}`,
         boxShadow: level > 0 ? 'none' : '0 1px 3px rgba(0, 0, 0, 0.1)',
         borderRadius: '8px',
         padding: '10px',
       }}
-      // style={{ marginLeft: `${level * 30}px`, backgroundColor:'white', border:'1px solid #eee', boxShadow:'0 1px 3px rgba(0, 0, 0, 0.1)' }}
     >
-
       <div className="chat-header" style={{display:'flex', alignItems:'flex-start',justifyContent: chat.user_id === userId ? 'flex-end' : 'flex-start',}}>
-        {/* kalau chat own, tampilkan image di kanan */}
-        
         {chat.user_id !== userId && (
           <div className="chat-image">
             <img
@@ -359,9 +533,19 @@ const handleShowReplyEmoji = (chatId) => {
 
               <div className="editor-actions">
                 <div className="more-act">
-                  <label className="upload-btn"><TiAttachmentOutline/>
-                    <input type="file" hidden onChange={e => handleUploadFromEditor(e, chat.id)} />
+                  {/* <label className="upload-btn"><TiAttachmentOutline/>
+                    <input type="file" accept="image/*" hidden onChange={e => handleUploadFromEditor(e, chat.id)} />
+                  </label> */}
+                  <label htmlFor="file-upload" className="upload-btn" style={{ cursor: "pointer" }}>
+                    <TiAttachmentOutline />
                   </label>
+                  <input
+                    id="file-upload"
+                    type="file"
+                    accept="image/*"
+                    style={{ display: "none" }}
+                    onChange={(e) => handleUploadFromEditor(e, "main")}
+                  />
                   <button className='btn-icon' onClick={() => handleShowEditEmoji(chat.id)}>
                     😎
                   </button>
@@ -374,7 +558,6 @@ const handleShowReplyEmoji = (chatId) => {
               </div>
             </div>
 
-            {/* SHOW EMOJI */}
             {showEditEmojiPicker === chat.id && (
               <div className="emoji-picker-fix">
                 {emojiList.map((emoji, i) => (
@@ -407,10 +590,16 @@ const handleShowReplyEmoji = (chatId) => {
             <div dangerouslySetInnerHTML={{ __html: autoLinkHTML(chat.message) }}
               style={{marginTop:'5px'}}
             />
+            {/* <div
+              dangerouslySetInnerHTML={{ __html: autoLinkHTML(removeImages(chat.message)) }}
+              style={{marginTop:'5px'}}
+            /> */}
+
             {chat.updated_at !== chat.created_at && (
               <span  className="edited-label">(edited)</span>
             )}
-            {renderMedia(chat.medias)}
+            {/* {renderMedia(chat.medias)} */}
+            {/* {renderMedia(chat.medias, chat.message)} */}
           </div>
         )}
 
@@ -424,12 +613,6 @@ const handleShowReplyEmoji = (chatId) => {
           </div>
         )}
       </div>
-
-
-
-        {/* ✅ MODE EDIT */}
-        
-
 
       <div className="chat-actions" style={{border:'1px solid transparent'}}>
         <span className="chat-timestamp" style={{border:'1px solid transparent ', display:'flex', alignItems:'center', justifyContent:'flex-start'}}>
@@ -468,7 +651,7 @@ const handleShowReplyEmoji = (chatId) => {
             <div className="editor-actions">
               <div className="more-act">
                 <label className="upload-btn"><TiAttachmentOutline/>
-                  <input type="file" hidden onChange={e => handleUploadFromEditor(e, chat.id)} />
+                  <input type="file" accept="image/*" hidden onChange={e => handleUploadFromEditor(e, chat.id)} />
                 </label>
                 <button className='btn-icon' onClick={() => handleShowReplyEmoji(chat.id)}>
                   😎
@@ -483,14 +666,13 @@ const handleShowReplyEmoji = (chatId) => {
               
             </div>
           </div>
-          {/* SHOW EMOJI  */}
-              {showReplyEmojiPicker === chat.id && (
-                <div className="emoji-picker-fix">
-                  {emojiList.map((emoji, i) => (
-                    <span key={i} onClick={() => insertEmoji(emoji, chat.id)}>{emoji}</span>
-                  ))}
-                </div>
-              )}          
+          {showReplyEmojiPicker === chat.id && (
+            <div className="emoji-picker-fix">
+              {emojiList.map((emoji, i) => (
+                <span key={i} onClick={() => insertEmoji(emoji, chat.id)}>{emoji}</span>
+              ))}
+            </div>
+          )}          
         </div>
       )}
       {chat.replies?.length > 0 && renderChats(chat.replies, level + 1)}
@@ -503,8 +685,6 @@ const handleShowReplyEmoji = (chatId) => {
     <div className="chat-room-container" 
       style={{ 
         backgroundColor:'white',
-        // backgroundImage: `url(${bg})`,
-        // backgroundSize: "cover" 
       }}>
       <div className="chat-title">
         <div className="ct-left">
@@ -519,11 +699,12 @@ const handleShowReplyEmoji = (chatId) => {
         {chats.length === 0 ? <p className="chat-empty">No chats yet.</p> : renderChats(chats)}
       </div>
 
-    {/* ✅ Toolbar & Editor gabung */}
+      {/* ✅ Toolbar & Editor gabung */}
       <div className="chat-toolbar-container">
         <div className="editor-wrapper">
           <div className="ql-container">
             <ReactQuill
+              ref={mainEditorRef}
               theme="snow"
               value={message}
               onChange={setMessage}
@@ -535,8 +716,14 @@ const handleShowReplyEmoji = (chatId) => {
           </div>
           <div className="editor-actions">
             <div className="more-act">
-              <label className="upload-btn"><TiAttachmentOutline/>
-                <input type="file" hidden onChange={e => handleUploadFromEditor(e, "main")} />
+              <label className="upload-btn" style={{ cursor: "pointer"}}>
+                <TiAttachmentOutline />
+                <input
+                  type="file"
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  onChange={(e) => handleUploadFromEditor(e, "main")}
+                />
               </label>
               <button className='btn-icon' onClick={handleShowEmoji}>
                 😎
@@ -565,28 +752,3 @@ const handleShowReplyEmoji = (chatId) => {
 };
 
 export default NewRoomChat;
-
-
-// reply 
-{/* <div className="ql-container">
-            <ReactQuill
-              theme="snow"
-              value={replyMessage[chat.id] || ""}
-              onChange={(val) => setReplyMessage(prev => ({ ...prev, [chat.id]: val }))}
-              modules={modules}
-              formats={formats}
-              placeholder="Tulis balasan..."
-              className="my-editor"
-            />
-          </div>
-          <label className="upload-btn">📎
-            <input type="file" hidden onChange={e => handleUploadFromEditor(e, chat.id)} />
-          </label>
-          <div className="emoji-picker-wrapper">
-            {emojiList.map((emoji, i) => (
-              <span key={i} onClick={() => insertEmoji(emoji, chat.id)}>{emoji}</span>
-            ))}
-          </div>
-          <div className="reply-send" onClick={() => handleSendReply(chat.id)}>
-            <IoArrowUpOutline/>
-          </div> */}

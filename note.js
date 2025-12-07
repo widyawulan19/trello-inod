@@ -275,3 +275,16 @@ app.get('/api/cards/:cardId/chat-media-summary', async (req, res) => {
     res.status(500).json({ error: "Failed to process media summary" });
   }
 });
+
+
+
+export const uploadChatMedia = async (chatId, file) => {
+  const formData = new FormData();
+  formData.append("file", file); // FIELD HARUS 'file'
+
+  return axios.post(`${API_URL}/chats/${chatId}/media`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};

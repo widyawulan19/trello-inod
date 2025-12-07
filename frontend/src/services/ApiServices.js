@@ -999,21 +999,66 @@ export const updateMessage = async (chatId, data) => {
 // };
 
 // Upload file ke chat
-export const uploadChatMedia = async (chatId, file, mediaType) => {
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("mediaType", mediaType); // ⬅️ kirim type
+// export const uploadChatMedia = async (chatId, file, mediaType) => {
+//   const formData = new FormData();
+//   formData.append("file", file);
+//   formData.append("mediaType", mediaType); // ⬅️ kirim type
 
+//   try {
+//     const res = await axios.post(`${API_URL}/chats/${chatId}/media`, formData, {
+//       headers: { "Content-Type": "multipart/form-data" },
+//     });
+//     return res.data;
+//   } catch (err) {
+//     console.error("Error uploading media:", err);
+//     throw err;
+//   }
+// };
+
+// export const uploadChatMedia = async (chatId, file) => {
+//   const formData = new FormData();
+//   formData.append("file", file);
+
+//   try {
+//     const res = await axios.post(
+//       `${API_URL}/chats/${chatId}/media-another-testing`,
+//       formData,
+//       {
+//         headers: { "Content-Type": "multipart/form-data" }
+//       }
+//     );
+
+//     return res.data;
+
+//   } catch (err) {
+//     console.error("Upload media error:", err);
+//     throw err;
+//   }
+// };
+
+
+
+export const uploadChatMedia = async (chatId, file) => {
+  const formData = new FormData();
+  formData.append("file", file); // FIELD HARUS 'file'
+  // optional: include media_type if BE expects it
+  // formData.append("media_type", file.type.split('/')[0]);
+
+  // DON'T manually set Content-Type so axios will include boundary automatically
   try {
-    const res = await axios.post(`${API_URL}/chats/${chatId}/media`, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    const res = await axios.post(
+      `${API_URL}/chats/${chatId}/media-another-testing`,
+      formData
+      // no headers here — axios sets multipart boundary automatically
+    );
+    console.log('uploadChatMedia response:', res.status, res.data);
     return res.data;
   } catch (err) {
-    console.error("Error uploading media:", err);
-    throw err;
+    console.error('uploadChatMedia error:', err.response ? err.response.data : err.message);
+    throw err; // rethrow so caller can handle
   }
 };
+
 
 
 
