@@ -11,7 +11,8 @@ import { FaXmark } from 'react-icons/fa6';
 import ExportDataMarketingId from '../exports/ExportDataMarketingId';
 import { useSnackbar } from '../context/Snackbar';
 import { AiFillCheckCircle } from 'react-icons/ai';
-
+import ReactQuill from 'react-quill-new';
+import "react-quill-new/dist/quill.snow.css";
 
 
 const ViewDataMarketing=({marketingId, onClose, isExported, setIsExported,marketingTransfile, fetchDataTransfile,onExport})=> {
@@ -139,6 +140,18 @@ const ViewDataMarketing=({marketingId, onClose, isExported, setIsExported,market
       });
     }
 
+
+// konfigurasi toolbar ReactQuill
+const modules = {
+    toolbar: [
+      [{ header: [1, 2, 3, false] }],
+      ["bold", "italic", "underline", "strike"], 
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["link", "blockquote", "code-block"],
+      [{ align: [] }],
+      ["clean"], // hapus format
+    ],
+  };
 
 
   return (
@@ -410,8 +423,8 @@ const ViewDataMarketing=({marketingId, onClose, isExported, setIsExported,market
         <div className="sec">
           <h4>Project Description</h4>
           <div className="sec-desc-content">
-            <div className="box" style={{width:'100%', padding:'0px 5px'}}>
-              {/* <p>Description</p> */}
+            <div className="box" style={{width:'100%', padding:'0px 5px', display:'flex', alignItems:'center', justifyContent:'center'}}>
+              {/* <p>Description</p>
               <div className='box1-des'>
                 <div
                   dangerouslySetInnerHTML={{
@@ -419,7 +432,15 @@ const ViewDataMarketing=({marketingId, onClose, isExported, setIsExported,market
                   }}
                 />
 
-              </div>
+              </div> */}
+              <ReactQuill
+                className='my-editor'
+                value={dataMarketings.detail_project || ""}
+                readOnly={true}
+                theme="snow"
+                modules={{toolbar: false }}
+                style={{ minHeight: "150px", backgroundColor: "#f9f9f9", borderRadius: "6px" }}
+              />
             </div>
           </div>
           

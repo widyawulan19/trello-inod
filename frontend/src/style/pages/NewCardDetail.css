@@ -907,6 +907,14 @@
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.div-p a,
+.desc-viewer a,
+.ql-editor a {
+    color: #5557e7 !important;
+    text-decoration: underline !important;
+    cursor: pointer;
+}
+
 /* CARD DETAIL  */
 
 .ncd-cover-detail .ncd-detail {
