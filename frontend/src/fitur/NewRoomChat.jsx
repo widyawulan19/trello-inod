@@ -233,102 +233,10 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
   };
 
   // === FIXED: handleUploadFromEditor (ensures preview shows reliably in main editor) ===
-  // const handleUploadFromEditor = (e, target = "main") => {
-  //   console.log("=== handleUploadFromEditor TERPANGGIL ===", { target });
-
-  //   // CASE 1: DIPANGGIL DARI TOOLBAR QUILL → e = undefined
-  //   if (!e || !e.target) {
-  //     console.log("Dipanggil dari toolbar Quill → buka file picker manual");
-  //     const input = document.createElement("input");
-  //     input.type = "file";
-  //     input.accept = "image/*"; // only images for preview embed
-  //     input.onchange = (ev) => handleUploadFromEditor(ev, target);
-  //     input.click();
-  //     return;
-  //   }
-
-  //   // CASE 2: DIPANGGIL DARI <input type="file">
-  //   const file = e.target.files?.[0];
-  //   console.log("FILE DARI INPUT:", file);
-
-  //   if (!file) return;
-
-  //   // only images are supported for image embed preview
-  //   if (!file.type.startsWith("image/")) {
-  //     showSnackbar("Hanya file gambar yang bisa dipreview", "error");
-  //     // still add to pendingFiles if you want, but no embed
-  //     if (target === "main") {
-  //       setPendingFiles(prev => [...prev, file]);
-  //     } else {
-  //       setReplyPendingFiles(prev => ({ ...prev, [target]: [...(prev[target] || []), file] }));
-  //     }
-  //     e.target.value = "";
-  //     return;
-  //   }
-
-  //   // Safely get Quill instance for main editor
-  //   const quill = mainEditorRef.current?.getEditor?.();
-  //   if (!quill) {
-  //     console.error("Quill belum siap (mainEditorRef null)");
-  //     showSnackbar("Editor belum siap", "error");
-  //     e.target.value = "";
-  //     return;
-  //   }
-
-  //   try {
-  //     // ensure selection; if null, insert at end
-  //     let range = quill.getSelection();
-  //     if (!range) {
-  //       range = { index: quill.getLength(), length: 0 };
-  //     }
-
-  //     // insert preview image using object URL
-  //     const previewUrl = URL.createObjectURL(file);
-  //     quill.insertEmbed(range.index, "image", previewUrl);
-  //     quill.setSelection(range.index + 1);
-
-  //     // sync controlled value so ReactQuill doesn't overwrite our embed
-  //     // (grab current editor html)
-  //     const html = quill.root.innerHTML;
-  //     setMessage(html);
-
-  //     // save file for later upload
-  //     if (target === "main") {
-  //       setPendingFiles(prev => {
-  //         const next = [...prev, file];
-  //         console.log("pendingFiles set ->", next);
-  //         return next;
-  //       });
-  //     } else {
-  //       setReplyPendingFiles(prev => {
-  //         const next = { ...prev, [target]: [...(prev[target] || []), file] };
-  //         console.log("replyPendingFiles set ->", next);
-  //         return next;
-  //       });
-  //     }
-  //   } catch (err) {
-  //     console.error("Insert embed failed:", err);
-  //     showSnackbar("Gagal menampilkan preview gambar", "error");
-  //   } finally {
-  //     // reset input agar bisa pilih file lagi
-  //     setTimeout(() => {
-  //       e.target.value = "";
-  //     }, 50);
-  //   }
-  // };
 
   const handleUploadFromEditor = (e, target = "main", fromToolbar = false) => {
-  console.log("=== handleUploadFromEditor TERPANGGIL ===", { target });
+    console.log("=== handleUploadFromEditor TERPANGGIL ===", { target });
 
-  // CASE 1: Dipanggil dari toolbar Quill → buka file picker manual
-  // if (!e || !e.target) {
-  //   const input = document.createElement("input");
-  //   input.type = "file";
-  //   input.accept = "image/*"; // hanya images
-  //   input.onchange = (ev) => handleUploadFromEditor(ev, target);
-  //   input.click();
-  //   return;
-  // }
   if (fromToolbar) {
     const input = document.createElement("input");
     input.type = "file";
@@ -436,23 +344,6 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
     return html.replace(/<img[^>]*>/g, ""); // hapus SEMUA tag <img>
   };
 
-//   const renderMedia = (medias) => {
-//   if (!medias || medias.length === 0) return null;
-
-//   return (
-//     <div className="chat-media">
-//       {medias.map((m) => {
-//         if (m.media_type === "image")
-//           return <img key={m.id} src={m.media_url} alt="chat" className="chat-media-img" />;
-//         if (m.media_type === "video")
-//           return <video key={m.id} src={m.media_url} controls className="chat-media-video" />;
-//         if (m.media_type === "audio")
-//           return <audio key={m.id} src={m.media_url} controls className='chat-media-audio'/>;
-//         return <a key={m.id} href={m.media_url} target="_blank" rel="noopener noreferrer" className="chat-media-file">📎 File</a>;
-//       })}
-//     </div>
-//   );
-// };
 
 
 
@@ -639,6 +530,7 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
           <div className="editor-wrapper">
             <div className="ql-container">
               <ReactQuill
+                ref={mainEditorRef}
                 theme="snow"
                 value={replyMessage[chat.id] || ""}
                 onChange={(val) => setReplyMessage(prev => ({ ...prev, [chat.id]: val }))}
@@ -649,10 +541,20 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
               />
             </div>
             <div className="editor-actions">
-              <div className="more-act">
+              {/* <div className="more-act">
                 <label className="upload-btn"><TiAttachmentOutline/>
                   <input type="file" accept="image/*" hidden onChange={e => handleUploadFromEditor(e, chat.id)} />
-                </label>
+                </label> */}
+                 <div className="more-act">
+              <label className="upload-btn" style={{ cursor: "pointer"}}>
+                <TiAttachmentOutline />
+                <input
+                  type="file"
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  onChange={(e) => handleUploadFromEditor(e, "reply")}
+                />
+              </label>
                 <button className='btn-icon' onClick={() => handleShowReplyEmoji(chat.id)}>
                   😎
                 </button>

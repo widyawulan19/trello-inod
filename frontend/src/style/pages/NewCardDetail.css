@@ -717,7 +717,7 @@
     border-radius: 8px;
     background-color: white;
     width: 80%;
-    height: 95%;
+    height: 90%;
     padding: 0px;
 }
 
@@ -905,6 +905,41 @@
     margin-bottom: 10px;
     padding: 5px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.div-p {
+    /* border: 1px solid red;
+    font-size: 10px; */
+}
+
+.desc-viewer {
+
+    line-height: 2 !important;
+}
+
+.div-p a,
+.desc-viewer a,
+.ql-editor a {
+    color: #4345bc !important;
+    background-color: #ececf8 !important;
+    /* color: red !important; */
+    text-decoration: underline !important;
+    cursor: pointer;
+    border: 1px solid #ececf8 !important;
+    border-radius: 4px;
+    padding: 3px;
+}
+
+/* untuk description auto generated */
+.auto-desc p {
+    margin: 6px 0 !important;
+    line-height: 1.5 !important;
+}
+
+.auto-desc strong {
+    border: 1px solid #ddd;
+    display: inline-block;
+    width: 140px;
 }
 
 /* CARD DETAIL  */
@@ -1428,6 +1463,26 @@
     border-top-right-radius: 8px;
     background-color: #f2f1ff;
     color: white;
+}
+
+.my-editor .ql-editor {
+    line-height: 1.8 !important;
+    font-size: 10px;
+    ;
+    /* jarak antar baris */
+}
+
+.my-editor .ql-editor p {
+    margin: 8px 0 !important;
+    display: flex;
+    gap: 6px;
+    /* line-height: 1.5 !important; */
+}
+
+.my-editor .ql-editor strong {
+    display: inline-block;
+    min-width: 100px;
+    /* border: 1px solid red; */
 }
 
 /* MODAL CHATROOM  */

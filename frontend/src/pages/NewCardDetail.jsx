@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+ import React, { useEffect, useRef, useState } from 'react'
 import { FiUsers } from "react-icons/fi";
 import { HiChatBubbleLeftRight, HiChevronDown, HiChevronUp, HiCog8Tooth, HiMiniArrowLeftStartOnRectangle, HiMiniChatBubbleLeftRight, HiMiniListBullet, HiMiniPhoto, HiOutlineArchiveBox, HiOutlineArrowsPointingOut, HiOutlineCalendar, HiOutlineChevronRight, HiOutlineCreditCard, HiOutlineListBullet, HiOutlineSquare2Stack, HiOutlineTrash, HiOutlineXMark, HiPaperClip, HiPlus, HiTag, HiXMark } from 'react-icons/hi2';
 import { HiDotsHorizontal } from "react-icons/hi";
@@ -144,8 +144,33 @@ const NewCardDetail=({fetchBoardDetail})=> {
 
     const quillRef = useRef(null);
 
-    const modules = {
-    toolbar: [
+//     const modules = {
+//     toolbar: [
+//       [{ header: [1, 2, false] }],
+//       ["bold", "italic", "underline", "strike"],
+//       [{ list: "ordered" }, { list: "bullet" }],
+//       ["blockquote", "code-block"],
+//       [{ align: [] }],
+//       ["link"],
+//       ["clean"],
+//     ],
+//     keyboard: {
+//       bindings: {
+//         tab: {
+//           key: 9,
+//           handler: function (range, context) {
+//           this.quill.insertText(range.index, "    "); // ⬅️ tambahin 4 spasi
+//           this.quill.setSelection(range.index + 4, 0); // ⬅️ cursor geser setelah spasi
+//           return false; // cegah pindah fokus
+//         },
+//         },
+//       },
+//     },
+//   };
+
+const modules = {
+  toolbar: {
+    container: [
       [{ header: [1, 2, false] }],
       ["bold", "italic", "underline", "strike"],
       [{ list: "ordered" }, { list: "bullet" }],
@@ -154,19 +179,38 @@ const NewCardDetail=({fetchBoardDetail})=> {
       ["link"],
       ["clean"],
     ],
-    keyboard: {
-      bindings: {
-        tab: {
-          key: 9,
-          handler: function (range, context) {
-          this.quill.insertText(range.index, "    "); // ⬅️ tambahin 4 spasi
-          this.quill.setSelection(range.index + 4, 0); // ⬅️ cursor geser setelah spasi
-          return false; // cegah pindah fokus
-        },
+    handlers: {
+      // FIX: supaya link bisa munculkan prompt bawaan
+      link: function () {
+        const range = this.quill.getSelection();
+        if (!range) return;
+
+        let url = prompt("Masukkan URL:");
+
+        if (url) {
+          if (!/^https?:\/\//i.test(url)) {
+            url = "https://" + url;
+          }
+          this.quill.format("link", url);
+        }
+      }
+    }
+  },
+
+  keyboard: {
+    bindings: {
+      tab: {
+        key: 9,
+        handler(range) {
+          this.quill.insertText(range.index, "    ");
+          this.quill.setSelection(range.index + 4, 0);
+          return false;
         },
       },
     },
-  };
+  },
+};
+
 
 
    // Fetch checklists
@@ -825,14 +869,28 @@ const NewCardDetail=({fetchBoardDetail})=> {
 
 
     // 🔗 fungsi untuk deteksi dan convert URL ke <a>
-    const linkify = (text) => {
-    if (!text) return "";
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    return text.replace(urlRegex, (url) => {
-        return `<a href="${url}" target="_blank" rel="noopener noreferrer" style="color:#5557e7; text-decoration:underline;">${url}</a>`;
-    });
-    };
+    // const linkify = (text) => {
+    // if (!text) return "";
+    // const urlRegex = /(https?:\/\/[^\s]+)/g;
+    // return text.replace(urlRegex, (url) => {
+    //     return `<a href="${url}" target="_blank" rel="noopener noreferrer" style="color:#5557e7; text-decoration:underline;">${url}</a>`;
+    // });
+    // };
     
+    const linkify = (text) => {
+        if (!text) return "";
+
+        // 1️⃣ Pisahkan label yang nempel dengan URL:
+        // "Gig Link: https://..." → "Gig Link:\nhttps://..."
+        text = text.replace(/(:\s*)(https?:\/\/[^\s]+)/g, "$1\n$2");
+
+        // 2️⃣ Convert URL ke <a>
+        const urlRegex = /(https?:\/\/[^\s]+)/g;
+        return text.replace(urlRegex, (url) => {
+            return `<a href="${url}" target="_blank" rel="noopener noreferrer" style="color:#5557e7; text-decoration:underline;">${url}</a>`;
+        });
+        };
+
   
 
   return (
@@ -1079,37 +1137,51 @@ const NewCardDetail=({fetchBoardDetail})=> {
                                         {cards.description && cards.description.trim() !== "" ? (
                                         <>
                                             <div
-                                            dangerouslySetInnerHTML={{
-                                                __html: showMore
-                                                ? linkify(cards.description)
-                                                : linkify(cards.description.substring(0, maxChars)),
-                                            }}
-                                            style={{ cursor: "text" }}
-                                            onClick={(e) => {
-                                                if (e.target.tagName === "A") e.stopPropagation();
-                                            }}
-                                            />
-                                            {cards.description.length > maxChars && (
-                                            <span
+                                                className="desc-viewer"
+                                                // onClick={(e) => handleEditDescription(e, cardId, cards.description)}
                                                 onClick={(e) => {
-                                                e.stopPropagation();
-                                                setShowMore((prev) => !prev);
+                                                // Kalau klik <a>, jangan masuk edit mode
+                                                    if (e.target.tagName === "A") {
+                                                        e.stopPropagation();
+                                                        return;
+                                                    }
+
+                                                    handleEditDescription(e, cardId, cards.description);
                                                 }}
-                                                style={{
-                                                color: "#5557e7",
-                                                fontWeight: "500",
-                                                cursor: "pointer",
-                                                display: "flex",
-                                                alignItems: "center",
-                                                justifyContent: "flex-start",
-                                                marginTop: "8px",
-                                                gap: "5px",
-                                                }}
+                                                style={{ cursor: "pointer" }}
                                             >
-                                                {showMore ? "Show Less" : "Show More"}
-                                                {showMore ? <HiChevronUp /> : <HiChevronDown />}
-                                            </span>
-                                            )}
+                                                <ReactQuill
+                                                    value={showMore
+                                                        ? cards.description
+                                                        : cards.description.substring(0, maxChars)
+                                                    }
+                                                    readOnly={true}
+                                                    theme="bubble"
+                                                    modules={{ toolbar: false }}
+                                                    className="my-editor"
+                                                />
+
+                                                {cards.description.length > maxChars && (
+                                                    <span
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setShowMore((prev) => !prev);
+                                                        }}
+                                                        style={{
+                                                            color: "#5557e7",
+                                                            fontWeight: "500",
+                                                            cursor: "pointer",
+                                                            display: "flex",
+                                                            alignItems: "center",
+                                                            marginTop: "8px",
+                                                            gap: "5px",
+                                                        }}
+                                                    >
+                                                        {showMore ? "Show Less" : "Show More"}
+                                                        {showMore ? <HiChevronUp /> : <HiChevronDown />}
+                                                    </span>
+                                                )}
+                                            </div>
                                         </>
                                         ) : (
                                         <div className="placeholder-desc">
