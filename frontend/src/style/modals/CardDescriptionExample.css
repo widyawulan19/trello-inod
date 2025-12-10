@@ -1,106 +1,217 @@
+/* =========================================================
+   WRAPPER CARD DESCRIPTION
+========================================================= */
 .card-description-container {
-    /* border: 1px solid red; */
     width: 100%;
     height: 100%;
 }
 
-.card-description-container .cd-header {
+/* HEADER */
+.cd-header {
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px;
-    box-shadow: 0px 4px 8px (0, 0, 0, 0.3);
-    /* border: 1px solid blue; */
-    border-radius: 8px;
-    background-image: linear-gradient(to right, #2d66e7, #3863e7, #425fe8, #4c5be7, #5557e7, #5d54e7, #6551e7, #6d4de7, #764ae7, #7e47e7, #8743e7, #8f3fe6);
+    padding: 10px 16px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    background-image: linear-gradient(to right, #2d66e7, #5557e7, #8f3fe6);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .cd-header h3 {
     color: white;
-    font-weight: bold;
     font-size: 15px;
-    margin: 0px;
+    font-weight: bold;
+    margin: 0;
 }
 
-.cd-header .cd-icon {
+.cd-icon {
     cursor: pointer;
     font-size: 20px;
     color: white;
 }
 
-
-/* MAIN  */
-.card-description-container .des-content {
+/* =========================================================
+   MODAL CONTENT
+========================================================= */
+.des-modal-content {
+    padding: 20px;
+    font-size: 14px;
+    color: #333;
     height: 80vh;
-    /* border: 1px solid red; */
-    padding: 10px;
+    overflow-y: auto;
+    scroll-behavior: smooth;
 }
 
+/* =========================================================
+   EDIT MODE (ReactQuill)
+========================================================= */
+.ta-content .my-editor .ql-editor {
+    min-height: 150px;
+}
 
-.des-content .action-btn {
-    /* border: 1px solid blue; */
+/* =========================================================
+   VIEW MODE (hasil dangerouslySetInnerHTML)
+========================================================= */
+.view-mode-wrapper {
+    width: 100%;
+    padding: 16px;
+    /* border: 1px solid #eaeaea; */
+    border-radius: 8px;
+    min-height: 50vh;
+    max-height: 78vh;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    font-size: 14px;
+    background: #fff;
+}
+
+/* =======================================
+   STYLING UNTUK HTML DI VIEW MODE
+======================================= */
+/* ============================
+   VIEW MODE = QUILL LOOK
+============================ */
+.view-mode-html {
+    /* ini ambil style default Quill editor */
+    line-height: 1.6;
+    font-size: 10px;
+    color: #333;
+    word-break: break-word;
+}
+
+/* Paragraf */
+.view-mode-html p {
+    margin: 0 0 8px;
     display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    margin-top: 10px;
+    gap: 6px;
 }
 
-.action-btn .btn-desc-save {
-    background: linear-gradient(90deg, #7246eb, #532189);
-    color: white;
-    border: 1px solid #532189;
-    border-radius: 8px;
-    padding: 5px 12px;
-    font-size: 15px;
-    font-weight: bold;
-    cursor: pointer;
-    width: 10vw;
-    text-align: center;
+/* Strong / Bold */
+.view-mode-html strong {
+    font-weight: 600;
+    display: inline-block;
+    min-width: 100px;
+    /* border: 1px solid green; */
 }
 
-.btn-desc-save:hover {
-    background: linear-gradient(90deg, #532189, #7246eb);
+/* Link identik seperti Quill */
+.view-mode-html a {
+    color: #1a73e8;
+    text-decoration: underline;
 }
 
-.action-btn .btn-desc-cancel {
-    background-color: #D94033;
-    color: white;
-    border: 1px solid #D94033;
-    border-radius: 8px;
-    padding: 5px 12px;
-    font-size: 15px;
-    font-weight: bold;
-    cursor: pointer;
-    width: 10vw;
-    text-align: center;
+/* List */
+.view-mode-html ul,
+.view-mode-html ol {
+    padding-left: 1.5rem;
+    margin: 6px 0;
 }
 
-.btn-desc-cancel:hover {
-    background-color: #B72619;
+.view-mode-html li {
+    margin-bottom: 4px;
 }
 
-.des-content .ta-content {
-    /* border: 1px solid red; */
-    height: 80vh;
+/* Heading */
+.view-mode-html h1,
+.view-mode-html h2,
+.view-mode-html h3 {
+    margin: 12px 0 6px;
+    font-weight: 600;
 }
 
-/* .des-content .div-p {
-    border: 1px solid green;
-    height: 80vh !important;
-} */
+/* Image */
+.view-mode-html img {
+    max-width: 100%;
+    border-radius: 6px;
+    margin: 10px 0;
+}
 
-/* SNOW REACT QUILL  */
-.my-editor .ql-container.ql-snow {
-    border: 1px solid white;
+/* =======================================
+   SNOW REACT QUILL
+======================================= */
+
+.detail-my-editor .ql-container.ql-snow {
+    /* border: 1px solid #f2f1ff; */
+    border: 1px solid #fff;
     height: 65vh;
+    overflow-y: auto;
 }
 
-.my-editor .ql-toolbar.ql-snow {
-    border: 1px solid #f2f1ff;
-    /* border: 1px solid blue; */
+.detail-my-editor .ql-toolbar.ql-snow {
+    /* border: 1px solid #f2f1ff; */
+    border: 1px solid #fff;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
     background-color: #f2f1ff;
+    padding: 5px 3px;
+    /* background-color: red; */
     color: white;
+}
+
+.detail-my-editor .ql-editor {
+    line-height: 1.8 !important;
+    font-size: 10px;
+    ;
+    /* jarak antar baris */
+}
+
+.detail-my-editor .ql-editor p {
+    margin: 8px 0 !important;
+    display: flex;
+    gap: 6px;
+    /* line-height: 1.5 !important; */
+}
+
+.detail-my-editor .ql-editor strong {
+    display: inline-block;
+    min-width: 100px;
+    /* border: 1px solid red; */
+}
+
+/* =======================================
+   BUTTON ACTIONS
+======================================= */
+.action-btn {
+    /* margin-top: 16px; */
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    /* border: 1px solid red; */
+}
+
+.action-btn .btn-desc-save {
+    background-color: #6D5FEA;
+    color: #fff;
+    border: 1px solid #6D5FEA;
+    padding: 3px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.btn-desc-save:hover {
+    box-shadow: 0px 4px 4px #5e12eb46;
+}
+
+.action-btn .btn-desc-cancel {
+    /* background-color: #af4c4c; */
+    background-color: #fff;
+    border: 1px solid #af4c4c;
+    color: #af4c4c;
+    padding: 3px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.btn-desc-cancel:hover {
+    box-shadow: 0px 4px 4px #eb121246;
 }

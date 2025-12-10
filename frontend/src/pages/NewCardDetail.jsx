@@ -1182,39 +1182,6 @@ const modules = {
                                                     </span>
                                                 )}
                                             </div>
-                                            {/* <div
-                                                dangerouslySetInnerHTML={{
-                                                    __html: showMore
-                                                    ? linkify(cards.description)
-                                                    : linkify(cards.description.substring(0, maxChars)),
-                                                }}
-                                                style={{ cursor: "text" }}
-                                                onClick={(e) => {
-                                                    if (e.target.tagName === "A") e.stopPropagation();
-                                                }}
-                                            />
-
-                                            {cards.description.length > maxChars && (
-                                            <span
-                                                onClick={(e) => {
-                                                e.stopPropagation();
-                                                setShowMore((prev) => !prev);
-                                                }}
-                                                style={{
-                                                color: "#5557e7",
-                                                fontWeight: "500",
-                                                cursor: "pointer",
-                                                display: "flex",
-                                                alignItems: "center",
-                                                justifyContent: "flex-start",
-                                                marginTop: "8px",
-                                                gap: "5px",
-                                                }}
-                                            >
-                                                {showMore ? "Show Less" : "Show More"}
-                                                {showMore ? <HiChevronUp /> : <HiChevronDown />}
-                                            </span>
-                                            )} */}
                                         </>
                                         ) : (
                                         <div className="placeholder-desc">
