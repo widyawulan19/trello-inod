@@ -1925,6 +1925,8 @@ app.get('/api/search/global-testing-fix', async (req, res) => {
     }
 
     const maxLimit = Math.min(parseInt(limit) || 50, 100);
+
+    // Gunakan wildcard ILIKE
     const searchKeyword = `%${keyword.toLowerCase()}%`;
 
     try {
@@ -1950,8 +1952,8 @@ app.get('/api/search/global-testing-fix', async (req, res) => {
             WHERE wu.user_id = $2
             AND c.is_deleted = FALSE
             AND (
-                LOWER(c.title) LIKE $1 
-                OR LOWER(c.description) LIKE $1
+                LOWER(c.title) ILIKE $1
+                OR LOWER(c.description) ILIKE $1
             )
         ),
 
@@ -1960,11 +1962,11 @@ app.get('/api/search/global-testing-fix', async (req, res) => {
                 a.entity_id AS card_id,
                 a.data ->> 'title' AS title,
                 LEFT(a.data ->> 'description', 300) AS description,
-                l.id AS list_id,
+                (a.data ->> 'list_id')::int AS list_id,
                 l.name AS list_name,
-                b.id AS board_id,
+                l.board_id AS board_id,
                 b.name AS board_name,
-                w.id AS workspace_id,
+                b.workspace_id AS workspace_id,
                 w.name AS workspace_name,
                 'Archive' AS status,
                 a.archived_at AS create_at
@@ -1976,8 +1978,8 @@ app.get('/api/search/global-testing-fix', async (req, res) => {
             WHERE a.entity_type = 'cards'
             AND wu.user_id = $2
             AND (
-                LOWER(a.data ->> 'title') LIKE $1
-                OR LOWER(a.data ->> 'description') LIKE $1
+                LOWER(a.data ->> 'title') ILIKE $1
+                OR LOWER(a.data ->> 'description') ILIKE $1
             )
         )
 
