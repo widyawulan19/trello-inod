@@ -1929,7 +1929,7 @@ app.get('/api/search/global-testing-fix', async (req, res) => {
     try {
         const query = `
         -- SEARCH WORKSPACES (limit 10)
-        SELECT 
+        (SELECT 
             w.id AS entity_id,
             w.name,
             w.description,
@@ -1944,11 +1944,12 @@ app.get('/api/search/global-testing-fix', async (req, res) => {
         AND (LOWER(w.name) ILIKE $1 OR LOWER(w.description) ILIKE $1)
         ORDER BY CASE WHEN LOWER(w.name) ILIKE $1 THEN 0 ELSE 1 END, w.name
         LIMIT 10
+    )
 
         UNION ALL
 
         -- SEARCH BOARDS (limit 10)
-        SELECT 
+     (   SELECT 
             b.id AS entity_id,
             b.name,
             b.description,
@@ -1963,11 +1964,11 @@ app.get('/api/search/global-testing-fix', async (req, res) => {
         AND (LOWER(b.name) ILIKE $1 OR LOWER(b.description) ILIKE $1)
         ORDER BY CASE WHEN LOWER(b.name) ILIKE $1 THEN 0 ELSE 1 END, b.name
         LIMIT 10
-
+    )
         UNION ALL
 
         -- SEARCH LISTS (limit 10)
-        SELECT 
+     (   SELECT 
             l.id AS entity_id,
             l.name,
             NULL AS description,
@@ -1983,11 +1984,11 @@ app.get('/api/search/global-testing-fix', async (req, res) => {
         AND LOWER(l.name) ILIKE $1
         ORDER BY l.name
         LIMIT 10
-
+    )
         UNION ALL
 
         -- SEARCH ACTIVE CARDS (limit 10)
-        SELECT 
+     (   SELECT 
             c.id AS entity_id,
             c.title AS name,
             c.description,
@@ -2004,11 +2005,11 @@ app.get('/api/search/global-testing-fix', async (req, res) => {
         AND (LOWER(c.title) ILIKE $1 OR LOWER(c.description) ILIKE $1)
         ORDER BY CASE WHEN LOWER(c.title) ILIKE $1 THEN 0 ELSE 1 END, c.title
         LIMIT 10
-
+    )
         UNION ALL
 
         -- SEARCH ARCHIVED CARDS (limit 10)
-        SELECT
+    (   SELECT
             a.entity_id AS entity_id,
             a.data ->> 'title' AS name,
             a.data ->> 'description' AS description,
@@ -2025,6 +2026,7 @@ app.get('/api/search/global-testing-fix', async (req, res) => {
         AND (LOWER(a.data ->> 'title') ILIKE $1 OR LOWER(a.data ->> 'description') ILIKE $1)
         ORDER BY CASE WHEN LOWER(a.data ->> 'title') ILIKE $1 THEN 0 ELSE 1 END, a.data ->> 'title'
         LIMIT 10;
+    );
         `;
 
         const result = await client.query(query, [searchKeyword, numericUserId]);
