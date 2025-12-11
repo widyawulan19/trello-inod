@@ -3,25 +3,27 @@ import Sidebar from './Sidebar';
 import Navbar from './Navbar';
 import '../style/components/Layout.css';
 import { Outlet } from 'react-router-dom';
+import useTheme from '../utils/useTheme';
 import { HiAdjustmentsHorizontal, HiArrowLeftCircle, HiArrowRightCircle } from 'react-icons/hi2';
 
 const Layout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   //theme
-  const [theme, setTheme] = useState(
-    localStorage.getItem("theme") || "light"
-  );
+  const {theme, toggleTheme } = useTheme();
+  // const [theme, setTheme] = useState(
+  //   localStorage.getItem("theme") || "light"
+  // );
 
   //FUNCTION THEME
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem("theme", theme);
-  }, [theme]);
+  // useEffect(() => {
+  //   document.documentElement.setAttribute("data-theme", theme);
+  //   localStorage.setItem("theme", theme);
+  // }, [theme]);
 
-  const toggleTheme = () => {
-    setTheme(prev => (prev === "light" ? "dark" : "light"));
-  };
+  // const toggleTheme = () => {
+  //   setTheme(prev => (prev === "light" ? "dark" : "light"));
+  // };
 
   //FUNCTION RESPONSIVE SIDEBAR
   useEffect(() => {

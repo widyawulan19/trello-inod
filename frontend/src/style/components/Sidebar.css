@@ -1,160 +1,179 @@
-/* Sidebar Layout Container */
+/* ==============================
+   SIDEBAR LAYOUT CONTAINER
+============================== */
 .sidebar-layout-container {
   display: flex;
-  background-color: rgba(255, 255, 255, 0.032);
+  background-color: var(--bg-sidebar);
 }
 
-/* Container utama sidebar */
+/* ==============================
+   SIDEBAR CONTAINER
+============================== */
 .sidebar-container {
   height: 100vh;
-  background-color: rgba(255, 255, 255, 0.032);
-  /* background-image: linear-gradient(to right bottom, #051937, #00235f, #042887, #3827ab, #6a11cb); */
-  /* background: linear-gradient(to bottom, #042787, #3927ab); */
-  color: white;
-  /* transition: width 0.3s ease; */
+  background-color: var(--bg-sidebar);
+  color: var(--sub-text);
   cursor: pointer;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  /* border: 1px solid red; */
+  padding: 10px;
 }
 
-/* Sidebar terlihat penuh */
+/* Sidebar open */
 .show-sidebar {
   /* width: 220px; */
-  width: 100%;
   padding-top: 15px;
-  /* border: 1px solid orange; */
 }
 
 .show-sidebar .sidebar-menu {
   padding: 5px;
 }
 
-/* Sidebar tertutup */
+/* Sidebar closed */
 .close-sidebar {
   width: 80px;
   padding-top: 15px;
 }
 
-/* Menu utama di sidebar */
+/* ==============================
+   SIDEBAR LOGO
+============================== */
+.logo-sidebar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 5px;
+  border-radius: 6px;
+  /* border: 1px solid red; */
+  background: var(--logo-bg-gradient);
+}
+
+.show-sidebar .logo-image {
+  width: 140px;
+  transition: 0.2s ease;
+}
+
+.close-sidebar .logo-image {
+  width: 30px;
+  transition: 0.2s ease;
+}
+
+
+/* ==============================
+   SIDEBAR MENU WRAPPER
+============================== */
 .sidebar-menu {
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: 10px 0;
-  /* border: 1px solid yellow; */
+  /* justify-content: space-between; */
+  padding: 5px 0;
+  /* border: 1px solid blue; */
 }
 
-/* Setiap item menu di sidebar */
+/* ==============================
+   ITEM
+============================== */
 .sidebar-main {
   display: flex;
   align-items: center;
-  /* padding: 10px 15px; */
-  padding: 2px;
+  padding: 4px 6px;
   cursor: pointer;
   border-radius: 8px;
-  /* border: 1px solid red; */
-  border: 2px solid transparent;
-  /* transition: background 0.3s ease; */
+  color: var(--sub-text);
+  transition: 0.2s ease;
 }
 
-/* Efek hover pada item */
+/* Hover effect */
 .sidebar-main:hover {
-  /* background-color: #2d2f36; */
-  background-color: white;
-  border-top-left-radius: 0px;
-  border-bottom-left-radius: 0px;
-  border-left: 2px solid #9b2fad;
-  color: #9b2fad !important;
+  background-color: var(--primary);
 }
 
-/* Item aktif (yang sedang dipilih) */
+/* ACTIVE Item */
 .sidebar-main.active {
-  background-color: white;
-  color: #9b2fad !important;
-  border-top-left-radius: 0px;
-  border-bottom-left-radius: 0px;
-  border-left: 2px solid #9b2fad;
+  background-color: var(--primary);
 }
 
-/* Expand/collapse style */
+/* Expanded/collapsed behavior */
 .sidebar-main.expanded {
   justify-content: flex-start;
 }
 
 .sidebar-main.collapsed {
   width: fit-content;
+  justify-content: center;
+}
+
+/* ==============================
+   LINK (ke halaman)
+============================== */
+.sidebar-link {
   display: flex;
   align-items: center;
-  justify-content: center;
-  /* border: 1px solid red; */
+  width: 100%;
+  text-decoration: none;
+  color: inherit;
+  /* 🟢 MENGIKUTI WARNA PARENT */
 }
 
-.sidebar-menu.collapsed {
-  border: 1px solid green;
-}
-
-/* Gaya icon */
-.icon {
-  font-size: 22px;
-}
-
-/* Container untuk icon di sidebar */
+/* ==============================
+   ICON & LABEL
+============================== */
 .sidebar-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* border: 1px solid red; */
-  padding: 7px;
+  padding: 2px;
+  font-size: 25px;
+  color: var(--sub-text);
 }
 
-/* Label teks di sidebar */
 .sidebar-label {
-  margin-left: 2px;
+  margin-left: 10px;
   font-size: 12px;
   font-weight: 500;
-  color: whire;
+  color: var(--sub-text);
 }
 
-/* Link di sidebar (menghapus underline) */
-.sidebar-link {
-  display: flex;
-  align-items: center;
-  /* color: red; */
-  text-decoration: none;
-  width: 100%;
+/* ==============================
+   HOVER + ACTIVE COLOR FIX
+   (Tidak merusak struktur JSX)
+============================== */
+.sidebar-main:hover .sidebar-link,
+.sidebar-main:hover .sidebar-icon,
+.sidebar-main:hover .sidebar-label {
+  color: white !important;
 }
 
-/* Tombol toggle sidebar */
-.btn {
-  margin-top: auto;
-  padding: 10px 15px;
+.sidebar-main.active .sidebar-link,
+.sidebar-main.active .sidebar-icon,
+.sidebar-main.active .sidebar-label {
+  color: white !important;
 }
 
-/* Tombol buka/tutup sidebar */
-.toggle-btn {
-  background-color: red;
-  /* background-color: transparent; */
-  border: none;
-  color: white;
-  cursor: pointer;
-  font-size: 22px;
-}
-
-/* STYLE FOR NEW BUTTON  */
+/* ==============================
+   TOGGLE BUTTON (ARROW)
+============================== */
 .btn-arr {
-  /* border: 1px solid green; */
   display: flex;
   align-items: center;
   justify-content: flex-end;
 }
 
 .btn-arrow {
-  border: 1px solid rgba(255, 0, 0, 0);
-  padding: 5px;
+  border: none;
+  padding: 6px;
   border-radius: 50%;
-  background-color: #00235f00;
-  color: white;
-  font-size: 25px;
+  background-color: transparent;
+  color: var(--sub-text);
+  font-size: 24px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-arrow:hover {
+  color: var(--primary);
 }

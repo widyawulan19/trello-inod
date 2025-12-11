@@ -17,6 +17,11 @@ import PersonalNotes from '../modules/PersonalNotes';
 import PersonalAgendas from '../modules/PersonalAgendas';
 import AgendaUser from '../UI/AgendaUser';
 import { IoCalendar, IoColorPalette, IoColorPaletteSharp } from 'react-icons/io5';
+import { LuLayoutDashboard } from "react-icons/lu";
+import useTheme from '../utils/useTheme';
+import { IoIosMoon, IoMdSunny } from "react-icons/io";
+import { RiDashboardHorizontalFill, RiDashboardHorizontalLine } from 'react-icons/ri';
+import { FaCircle } from 'react-icons/fa';
 
 //tooltip
 const BootstrapTooltip = styled(({className, ...props}) =>(
@@ -30,7 +35,7 @@ const BootstrapTooltip = styled(({className, ...props}) =>(
       },
 }));
 
-const Navbar=({onToggleTheme,theme})=> {
+const Navbar=({onToggleTheme, theme})=> {
     //state
     // const navigate = useNavigate();
     const [active, setActive] = useState(false);
@@ -48,6 +53,9 @@ const Navbar=({onToggleTheme,theme})=> {
     const [unreadCount, setUnreadCount] = useState(0);
     const [unfinishedCount, setUnfinishedCount] = useState(0);
     const [unfinishedAgendas, setUnfinishedAgendas] = useState([]);
+
+    //theme
+    // const {theme, toggleTheme } = useTheme();
 
     //debug
     console.log('NAVBAR ini menerima data user dan userId:', user, userId);
@@ -166,7 +174,12 @@ const Navbar=({onToggleTheme,theme})=> {
   return (
     <div className='navbar-container'>
         <div className="logo" >
-            <img src={logo1} alt={logo1} onClick={handleToHome}/>
+            <div className="mini-logo">
+                <LuLayoutDashboard className='logo-logo'/>
+            </div>
+            <h4>
+                Dashboard    
+            </h4>
         </div>
         <div className="more-fiture">
             <SearchGlobalCard userId={userId}/>
@@ -209,23 +222,11 @@ const Navbar=({onToggleTheme,theme})=> {
                 <BootstrapTooltip title="Notes">
                     <div 
                       className={`icon-wrapper ${active === 'notes' ? 'active' : ''}`} 
-                    //   onClick={() => handleActive('notes')}
-                    // onClick={handleShowNotes}
                     onClick={handleToNote}
                     >
                         <HiOutlineClipboardDocumentList className='icon-icon' />
                     </div>
                 </BootstrapTooltip>
-                <div className={`translate ${theme}`} onClick={onToggleTheme}>
-                    <BootstrapTooltip title={theme === "light" ? "Switch to Dark Mode" : "Switch to Light Mode"}>
-                        {theme === "light" ? (
-                            <IoColorPaletteSharp className='icon-icon' />
-                            ) : (
-                            <IoColorPalette className='icon-icon' />  // versi lain jika mau beda
-                        )}
-                    </BootstrapTooltip>
-                </div>
-
                 
                 <BootstrapTooltip title="Notify">
                     <div 
@@ -257,6 +258,14 @@ const Navbar=({onToggleTheme,theme})=> {
                     </div>
                 </BootstrapTooltip>
 
+                <BootstrapTooltip>
+                     <div className={`switch ${theme === "dark" ? "active" : ""}`} onClick={onToggleTheme}>
+                        <div className="switch-circle">
+                            {theme === "light" ? <IoIosMoon/> : <IoMdSunny/>}
+                        </div>
+                    </div>
+                </BootstrapTooltip>
+
                 {/* SHOW NOTIF MODAL  */}
                 {showNotif && (
                     <div className='notif-modal'>
@@ -283,18 +292,20 @@ const Navbar=({onToggleTheme,theme})=> {
            <div className="profil">
                 <BootstrapTooltip title="Profile">
                     <div className='icon-wrapper' onClick={navigateToProfile}>
-                    <img
-                        src={profilUser?.photo_url || defaultPic}
-                        alt={profilUser?.username || user?.username || 'User'}
-                        style={{
-                        width: '60px',
-                        height: '30px',
-                        borderRadius: '60%',
-                        objectFit: 'cover',
-                        backgroundColor:'white'                        
-                        }}
-                    />
+                        <img
+                            src={profilUser?.photo_url || defaultPic}
+                            alt={profilUser?.username || user?.username || 'User'}
+                            style={{
+                            width: '35px',
+                            height: '35px',
+                            borderRadius: '60%',
+                            objectFit: 'cover',
+                            backgroundColor:'white'                        
+                            }}
+                        />
+                        <FaCircle className='status-online'/>
                     </div>
+                    
                 </BootstrapTooltip>
             </div>
 

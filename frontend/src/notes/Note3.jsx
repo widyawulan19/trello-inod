@@ -1,130 +1,138 @@
-import { useRef } from "react";
-import ReactQuill from "react-quill-new";
-import "react-quill-new/dist/quill.snow.css";
-import { HiChevronDown, HiChevronUp, HiXMark } from "react-icons/hi2";
-import '../style/modals/CardDescriptionExample.css';
+import React, { useState, useEffect } from 'react';
+import { searchCardsByUser } from '../services/ApiServices';
+import '../style/fitur/SearchCard.css';
+import { IoSearchOutline } from 'react-icons/io5';
+import { useNavigate } from 'react-router-dom';
+import { FaCreditCard } from 'react-icons/fa6';
 
-const CardDescriptionExample = ({ 
-  card, 
-  onClose,
-  cardId, 
-  newDescription,
-  setNewDescription,
-  handleSaveDescription,
-  loading,
-  setEditingDescription,
-  editingDescription,
-  showMore,
-  setShowMore,
-  linkify,
-  handleEditDescription,
-  maxChars,
-  modules,
-}) => {
-  const quillRef = useRef(null);
+const SearchGlobalCard = ({ userId }) => {
+  const [keyword, setKeyword] = useState('');
+  const [results, setResults] = useState([]);
+  const navigate = useNavigate();
 
-  const handleStartEdit = (e) => {
-    setNewDescription(card.description || "");
-    handleEditDescription(e, cardId, card.description);
+  useEffect(() => {
+    const delayDebounce = setTimeout(() => {
+      if (keyword.trim() && userId) {
+        handleSearch();
+      } else {
+        setResults([]);
+      }
+    }, 400);
+
+    return () => clearTimeout(delayDebounce);
+  }, [keyword, userId]);
+
+  // const handleSearch = async () => {
+  //   try {
+  //     const response = await searchCardsByUser(keyword, userId);
+  //     console.log('Search results:', response.data); // debug
+  //     setResults(response.data);
+  //   } catch (error) {
+  //     console.error('Search failed:', error);
+  //   }
+  // };
+  const handleSearch = async () => {
+  try {
+    const response = await searchCardsByUser(keyword, userId);
+    console.log('Search keyword:', keyword);
+    console.log('User ID:', userId);
+    console.log('API response:', response);
+    console.log('Search results:', response.data);
+    setResults(response.data);
+  } catch (error) {
+    console.error('Search failed:', error);
+  }
+};
+
+  const extractMatchingSnippet = (description, keyword, contextLength = 30) => {
+    if (!description || !keyword) return '';
+
+    const lowerDesc = description.toLowerCase();
+    const lowerKeyword = keyword.toLowerCase();
+    const index = lowerDesc.indexOf(lowerKeyword);
+
+    if (index === -1) return '';
+
+    const start = Math.max(index - contextLength, 0);
+    const end = Math.min(index + keyword.length + contextLength, description.length);
+    let snippet = description.slice(start, end);
+
+    if (start > 0) snippet = '... ' + snippet;
+    if (end < description.length) snippet = snippet + ' ...';
+
+    const regex = new RegExp(`(${keyword})`, 'gi');
+    const highlighted = snippet.replace(regex, '<mark>$1</mark>');
+
+    return highlighted;
   };
 
-  const parsedHTML = showMore
-    ? linkify(card.description || "")
-    : linkify((card.description || "").substring(0, maxChars));
-
   return (
-    <div className='card-description-container'>
-      
-      {/* HEADER */}
-      <div className="cd-header">
-        <h3>Detail Description</h3>
-        <HiXMark onClick={onClose} className="cd-icon"/>
-      </div>
+    <div className="search-global-container">
+      <IoSearchOutline size={15} />
+      <input
+        type="text"
+        value={keyword}
+        onChange={(e) => setKeyword(e.target.value)}
+        placeholder="Search your cards across all workspaces..."
+      />
 
-      {/* CONTENT */}
-      {card && cardId && (
-        <div className="des-modal-content">
-          
-          {/* ===========================
-              MODE EDIT - ReactQuill
-          ============================ */}
-          {editingDescription === cardId ? (
-            <div className="ta-content">
-
-              <ReactQuill
-                ref={quillRef}
-                theme="snow"
-                value={newDescription}
-                onChange={setNewDescription}
-                modules={modules}
-                className="my-editor"
-              />
-
-              <div className="action-btn">
-                <button
-                  className="btn-desc-save"
-                  onClick={() => handleSaveDescription(cardId)}
-                  disabled={loading}
-                >
-                  {loading ? "Saving..." : "Save"}
-                </button>
-
-                <button
-                  className="btn-desc-cancel"
-                  onClick={() => {
-                    setEditingDescription(null);
-                    setNewDescription(card.description || "");
-                  }}
-                >
-                  Cancel
-                </button>
+      {keyword !== '' && (
+        <div className="search-global-result">
+          <div className="search-header">
+            <h2>
+              <div className="sgh-icon">
+                <FaCreditCard />
               </div>
-            </div>
-          ) : (
+              Search results
+            </h2>
+          </div>
 
-          /* ===========================
-               MODE VIEW - pure HTML
-          ============================ */
-            <div
-              onClick={handleStartEdit}
-              className="view-mode-wrapper"
-              style={{ cursor: "pointer" }}
-            >
-              {card.description && card.description.trim() !== "" ? (
-                <>
-                  <div
-                    className="my-view-html"
-                    dangerouslySetInnerHTML={{ __html: parsedHTML }}
-                  />
+          {results.length === 0 && <p className="no-res">No results found.</p>}
 
-                  {card.description.length > maxChars && (
-                    <span
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setShowMore((prev) => !prev);
+          {results.length > 0 && (
+            <ul className="search-result-list">
+              {results.map((card) => {
+                const isArchive = card.status === 'Archive';
+                return (
+                  <li
+                    key={card.card_id}
+                    className={`p-3 mb-2 border rounded cursor-pointer search-result-item hover:bg-gray-100 ${
+                      isArchive ? 'archive-card' : ''
+                    }`}
+                    onClick={() => {
+                      if (isArchive) {
+                        navigate(`/archive/cards/${card.card_id}`);
+                      } else if (card.workspace_id) {
+                        navigate(
+                          `/layout/workspaces/${card.workspace_id}/board/${card.board_id}/lists/${card.list_id}/cards/${card.card_id}`
+                        );
+                      }
+                      setKeyword('');
+                    }}
+                  >
+                    <div className="card-title">
+                      <strong>{card.title}</strong>
+                      {isArchive && <span className="archive-badge">Archive</span>}
+                    </div>
+                    <p
+                      className="p-desc"
+                      dangerouslySetInnerHTML={{
+                        __html: extractMatchingSnippet(card.description, keyword),
                       }}
-                      style={{
-                        color: "#5557e7",
-                        fontWeight: "500",
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "flex-start",
-                        marginTop: "8px",
-                        gap: "5px",
-                      }}
-                    >
-                      {showMore ? "Show Less" : "Show More"}
-                      {showMore ? <HiChevronUp /> : <HiChevronDown />}
-                    </span>
-                  )}
-                </>
-              ) : (
-                <div className="placeholder-desc">
-                  <p>(click to add description)</p>
-                </div>
-              )}
-            </div>
+                    ></p>
+
+                    <p className="p-contex">
+                      Workspace:{' '}
+                      <strong>{card.workspace_name || <span className="na-text">N/A</span>}</strong> | 
+                      Board:{' '}
+                      <strong>{card.board_name || <span className="na-text">N/A</span>}</strong> | 
+                      List:{' '}
+                      <strong>{card.list_name || <span className="na-text">N/A</span>}</strong>
+                    </p>
+                  </li>
+                );
+              })}
+            </ul>
           )}
         </div>
       )}
@@ -132,4 +140,4 @@ const CardDescriptionExample = ({
   );
 };
 
-export default CardDescriptionExample;
+export default SearchGlobalCard;

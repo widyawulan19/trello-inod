@@ -1,74 +1,121 @@
-import React, { useState, useEffect } from 'react';
-import { searchCardsByUser } from '../services/ApiServices';
-import '../style/fitur/SearchCard.css';
-import { IoSearchOutline } from 'react-icons/io5';
-import { useNavigate } from 'react-router-dom';
-import { FaCreditCard } from 'react-icons/fa6';
+import React, { useState, useEffect, useCallback } from "react";
+import { searchCardsByUser } from "../services/ApiServices";
+import "../style/fitur/SearchCard.css";
+import { IoSearchOutline } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
+import {
+  FaCreditCard,
+  FaXmark,
+  FaFaceSadCry,
+} from "react-icons/fa6";
+import { BsFillInboxesFill } from "react-icons/bs";
+import { HiArchiveBoxArrowDown } from "react-icons/hi2";
 
 const SearchGlobalCard = ({ userId }) => {
-  const [keyword, setKeyword] = useState('');
+  const [keyword, setKeyword] = useState("");
   const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  /* ---------------------------------------
+   *  Debounce Search
+   * --------------------------------------*/
   useEffect(() => {
-    const delayDebounce = setTimeout(() => {
-      if (keyword.trim() && userId) {
+    const handler = setTimeout(() => {
+      if (keyword.trim().length >= 2 && userId) {
         handleSearch();
       } else {
         setResults([]);
       }
-    }, 400);
+    }, 500); // lebih responsif
 
-    return () => clearTimeout(delayDebounce);
+    return () => clearTimeout(handler);
   }, [keyword, userId]);
 
-  // const handleSearch = async () => {
-  //   try {
-  //     const response = await searchCardsByUser(keyword, userId);
-  //     console.log('Search results:', response.data); // debug
-  //     setResults(response.data);
-  //   } catch (error) {
-  //     console.error('Search failed:', error);
-  //   }
-  // };
-  const handleSearch = async () => {
-  try {
-    const response = await searchCardsByUser(keyword, userId);
-    console.log('Search keyword:', keyword);
-    console.log('User ID:', userId);
-    console.log('API response:', response);
-    console.log('Search results:', response.data);
-    setResults(response.data);
-  } catch (error) {
-    console.error('Search failed:', error);
-  }
-};
+  /* ---------------------------------------
+   *  API Search
+   * --------------------------------------*/
+//   const handleSearch = async () => {
+//     try {
+//       setLoading(true);
+//       const res = await searchCardsByUser(keyword, userId);
+//       setResults(res.data);
+//     } catch (err) {
+//       console.error("Search failed:", err);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
 
-  const extractMatchingSnippet = (description, keyword, contextLength = 30) => {
-    if (!description || !keyword) return '';
+let controller = null;
 
-    const lowerDesc = description.toLowerCase();
-    const lowerKeyword = keyword.toLowerCase();
-    const index = lowerDesc.indexOf(lowerKeyword);
+const handleSearch = async () => {
+    try {
+      if (controller) controller.abort();
+      controller = new AbortController();
 
-    if (index === -1) return '';
+      setLoading(true);
+      const res = await searchCardsByUser(keyword, userId);
+      setResults(res.data);
 
-    const start = Math.max(index - contextLength, 0);
-    const end = Math.min(index + keyword.length + contextLength, description.length);
-    let snippet = description.slice(start, end);
+    } catch (err) {
+      if (err.name === "CanceledError") {
+        console.log("Request dibatalkan");
+      } else {
+        console.error("Search failed:", err);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    if (start > 0) snippet = '... ' + snippet;
-    if (end < description.length) snippet = snippet + ' ...';
 
-    const regex = new RegExp(`(${keyword})`, 'gi');
-    const highlighted = snippet.replace(regex, '<mark>$1</mark>');
 
-    return highlighted;
+  /* ---------------------------------------
+   *  Close Search Result
+   * --------------------------------------*/
+  const closeResult = () => {
+    setKeyword("");
+    setResults([]);
+  };
+
+  /* ---------------------------------------
+   *  Highlight Universal
+   * --------------------------------------*/
+  const highlightText = useCallback((text, keyword) => {
+    if (!text || !keyword) return text;
+
+    const regex = new RegExp(`(${keyword})`, "gi");
+    return text.replace(regex, "<mark>$1</mark>");
+  }, []);
+
+  /* ---------------------------------------
+   *  Extract Snippet (remove HTML + highlight)
+   * --------------------------------------*/
+  const extractMatchingSnippet = (description, keyword, context = 30) => {
+    if (!description || !keyword) return "";
+
+    const plain = description.replace(/<[^>]+>/g, "");
+    const lower = plain.toLowerCase();
+    const key = keyword.toLowerCase();
+
+    const index = lower.indexOf(key);
+    if (index === -1) return "";
+
+    const start = Math.max(index - context, 0);
+    const end = Math.min(index + keyword.length + context, plain.length);
+
+    let snippet = plain.slice(start, end);
+    if (start > 0) snippet = "... " + snippet;
+    if (end < plain.length) snippet += " ...";
+
+    return highlightText(snippet, keyword);
   };
 
   return (
     <div className="search-global-container">
-      <IoSearchOutline size={15} />
+      <IoSearchOutline className="icon-search" />
+
       <input
         type="text"
         value={keyword}
@@ -76,7 +123,7 @@ const SearchGlobalCard = ({ userId }) => {
         placeholder="Search your cards across all workspaces..."
       />
 
-      {keyword !== '' && (
+      {keyword !== "" && (
         <div className="search-global-result">
           <div className="search-header">
             <h2>
@@ -85,50 +132,121 @@ const SearchGlobalCard = ({ userId }) => {
               </div>
               Search results
             </h2>
+
+            <div className="search-close-btn" onClick={closeResult}>
+              <FaXmark />
+            </div>
           </div>
 
-          {results.length === 0 && <p className="no-res">No results found.</p>}
+          {/* LOADING EFFECT */}
+          {loading && (
+            <div className="loading-spinner">
+              <div className="dot"></div>
+              <div className="dot"></div>
+              <div className="dot"></div>
+              <p>Searching...</p>
+            </div>
+          )}
 
-          {results.length > 0 && (
+          {/* NO RESULTS */}
+          {!loading && results.length === 0 && keyword.length >= 2 && (
+            <div className="no-res">
+              <FaFaceSadCry size={40} style={{ marginBottom: "10px" }} />
+              <h5>Oops, nothing matches your search.</h5>
+              <p>
+                Coba ketikkan kata kunci lain ya, bestie.  
+                Mungkin judul, nama workspace, atau list yang lebih spesifik 💛
+              </p>
+            </div>
+          )}
+
+          {/* RESULTS LIST */}
+          {!loading && results.length > 0 && (
             <ul className="search-result-list">
               {results.map((card) => {
-                const isArchive = card.status === 'Archive';
+                const isArchive = card.status === "Archive";
+
                 return (
                   <li
                     key={card.card_id}
-                    className={`p-3 mb-2 border rounded cursor-pointer search-result-item hover:bg-gray-100 ${
-                      isArchive ? 'archive-card' : ''
+                    className={`search-result-item ${
+                      isArchive ? "archive-card" : ""
                     }`}
                     onClick={() => {
                       if (isArchive) {
                         navigate(`/archive/cards/${card.card_id}`);
-                      } else if (card.workspace_id) {
+                      } else {
                         navigate(
                           `/layout/workspaces/${card.workspace_id}/board/${card.board_id}/lists/${card.list_id}/cards/${card.card_id}`
                         );
                       }
-                      setKeyword('');
+                      setKeyword("");
                     }}
                   >
-                    <div className="card-title">
-                      <strong>{card.title}</strong>
-                      {isArchive && <span className="archive-badge">Archive</span>}
+                    <div className="result-icon">
+                      {isArchive ? (
+                        <HiArchiveBoxArrowDown className="ri" />
+                      ) : (
+                        <BsFillInboxesFill className="ri" />
+                      )}
                     </div>
-                    <p
-                      className="p-desc"
-                      dangerouslySetInnerHTML={{
-                        __html: extractMatchingSnippet(card.description, keyword),
-                      }}
-                    ></p>
 
-                    <p className="p-contex">
-                      Workspace:{' '}
-                      <strong>{card.workspace_name || <span className="na-text">N/A</span>}</strong> | 
-                      Board:{' '}
-                      <strong>{card.board_name || <span className="na-text">N/A</span>}</strong> | 
-                      List:{' '}
-                      <strong>{card.list_name || <span className="na-text">N/A</span>}</strong>
-                    </p>
+                    <div className="result-isi">
+                      {/* TITLE */}
+                      <div className="card-title">
+                        <strong
+                          dangerouslySetInnerHTML={{
+                            __html: highlightText(card.title, keyword),
+                          }}
+                        ></strong>
+
+                        {isArchive && (
+                          <span className="archive-badge">Archive</span>
+                        )}
+                      </div>
+
+                      {/* DESCRIPTION SNIPPET */}
+                      <p
+                        className="p-desc"
+                        dangerouslySetInnerHTML={{
+                          __html: extractMatchingSnippet(
+                            card.description,
+                            keyword
+                          ),
+                        }}
+                      ></p>
+
+                      {/* CONTEXT (workspace / board / list) */}
+                      <p className="p-contex">
+                        Workspace:{" "}
+                        <strong
+                          dangerouslySetInnerHTML={{
+                            __html: highlightText(
+                              card.workspace_name || "N/A",
+                              keyword
+                            ),
+                          }}
+                        ></strong>{" "}
+                        | Board:{" "}
+                        <strong
+                          dangerouslySetInnerHTML={{
+                            __html: highlightText(
+                              card.board_name || "N/A",
+                              keyword
+                            ),
+                          }}
+                        ></strong>{" "}
+                        | List:{" "}
+                        <strong
+                          dangerouslySetInnerHTML={{
+                            __html: highlightText(
+                              card.list_name || "N/A",
+                              keyword
+                            ),
+                          }}
+                        ></strong>
+                      </p>
+                    </div>
                   </li>
                 );
               })}
