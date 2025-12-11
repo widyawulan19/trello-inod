@@ -1912,6 +1912,101 @@ app.get('/api/search/global-testing', async (req, res) => {
     }
 });
 
+app.get('/api/search/global-testing-fix', async (req, res) => {
+    const { keyword, userId } = req.query;
+
+    if (!keyword || !userId) {
+        return res.status(400).json({ error: 'Keyword and userId are required' });
+    }
+
+    const numericUserId = parseInt(userId);
+    if (isNaN(numericUserId)) {
+        return res.status(400).json({ error: 'Invalid userId' });
+    }
+
+    try {
+        const searchKeyword = `%${keyword}%`;
+
+        const query = `
+        WITH user_workspaces AS (
+            SELECT workspace_id 
+            FROM workspaces_users 
+            WHERE user_id = $2
+        ),
+
+        active_cards AS (
+            SELECT 
+                c.id AS card_id,
+                c.title,
+                c.description,
+                l.id AS list_id,
+                l.name AS list_name,
+                b.id AS board_id,
+                b.name AS board_name,
+                w.id AS workspace_id,
+                w.name AS workspace_name,
+                'Active' AS status,
+                c.is_active,
+                c.show_toggle,
+                c.position,
+                c.create_at,
+                c.update_at
+            FROM cards c
+            JOIN lists l ON c.list_id = l.id
+            JOIN boards b ON l.board_id = b.id
+            JOIN workspaces w ON b.workspace_id = w.id
+            WHERE w.id IN (SELECT workspace_id FROM user_workspaces)
+            AND c.is_deleted = FALSE
+            AND (
+                c.title ILIKE $1 OR 
+                c.description ILIKE $1
+            )
+        ),
+
+        archived_cards AS (
+            SELECT
+                a.entity_id AS card_id,
+                a.data ->> 'title' AS title,
+                a.data ->> 'description' AS description,
+                l.id AS list_id,
+                l.name AS list_name,
+                b.id AS board_id,
+                b.name AS board_name,
+                w.id AS workspace_id,
+                w.name AS workspace_name,
+                'Archive' AS status,
+                NULL AS is_active,
+                NULL AS show_toggle,
+                NULL AS position,
+                a.archived_at AS create_at,
+                a.archived_at AS update_at
+            FROM archive_universal a
+            JOIN lists l ON (a.data ->> 'list_id')::int = l.id
+            JOIN boards b ON l.board_id = b.id
+            JOIN workspaces w ON b.workspace_id = w.id
+            WHERE a.entity_type = 'cards'
+            AND w.id IN (SELECT workspace_id FROM user_workspaces)
+            AND (
+                (a.data ->> 'title') ILIKE $1 OR
+                (a.data ->> 'description') ILIKE $1
+            )
+        )
+
+        SELECT * FROM active_cards
+        UNION ALL
+        SELECT * FROM archived_cards
+        ORDER BY update_at DESC NULLS LAST;
+        `;
+
+        const result = await client.query(query, [searchKeyword, numericUserId]);
+        res.json(result.rows);
+
+    } catch (err) {
+        console.error('🔥 Search error:', err.message);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 
 
 
