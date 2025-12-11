@@ -1928,105 +1928,113 @@ app.get('/api/search/global-testing-fix', async (req, res) => {
 
     try {
         const query = `
-        -- SEARCH WORKSPACES (limit 10)
-        (SELECT 
-            w.id AS entity_id,
-            w.name,
-            w.description,
-            NULL::integer AS board_id,
-            NULL::integer AS list_id,
-            NULL::integer AS card_id,
-            'workspace' AS type
-        FROM workspaces w
-        JOIN workspaces_users wu ON wu.workspace_id = w.id
-        WHERE wu.user_id = $2
-        AND w.is_deleted = FALSE
-        AND (LOWER(w.name) ILIKE $1 OR LOWER(w.description) ILIKE $1)
-        ORDER BY CASE WHEN LOWER(w.name) ILIKE $1 THEN 0 ELSE 1 END, w.name
-        LIMIT 10
-    )
+        SELECT * FROM (
+            -- SEARCH WORKSPACES (limit 10)
+            SELECT 
+                w.id AS entity_id,
+                w.name,
+                w.description,
+                NULL::integer AS board_id,
+                NULL::integer AS list_id,
+                NULL::integer AS card_id,
+                'workspace' AS type
+            FROM workspaces w
+            JOIN workspaces_users wu ON wu.workspace_id = w.id
+            WHERE wu.user_id = $2
+              AND w.is_deleted = FALSE
+              AND (LOWER(w.name) ILIKE $1 OR LOWER(w.description) ILIKE $1)
+            ORDER BY CASE WHEN LOWER(w.name) ILIKE $1 THEN 0 ELSE 1 END, w.name
+            LIMIT 10
+        ) AS t1
 
         UNION ALL
 
-        -- SEARCH BOARDS (limit 10)
-     (   SELECT 
-            b.id AS entity_id,
-            b.name,
-            b.description,
-            b.id AS board_id,
-            NULL::integer AS list_id,
-            NULL::integer AS card_id,
-            'board' AS type
-        FROM boards b
-        JOIN workspaces_users wu ON wu.workspace_id = b.workspace_id
-        WHERE wu.user_id = $2
-        AND b.is_deleted = FALSE
-        AND (LOWER(b.name) ILIKE $1 OR LOWER(b.description) ILIKE $1)
-        ORDER BY CASE WHEN LOWER(b.name) ILIKE $1 THEN 0 ELSE 1 END, b.name
-        LIMIT 10
-    )
+        SELECT * FROM (
+            -- SEARCH BOARDS (limit 10)
+            SELECT 
+                b.id AS entity_id,
+                b.name,
+                b.description,
+                b.id AS board_id,
+                NULL::integer AS list_id,
+                NULL::integer AS card_id,
+                'board' AS type
+            FROM boards b
+            JOIN workspaces_users wu ON wu.workspace_id = b.workspace_id
+            WHERE wu.user_id = $2
+              AND b.is_deleted = FALSE
+              AND (LOWER(b.name) ILIKE $1 OR LOWER(b.description) ILIKE $1)
+            ORDER BY CASE WHEN LOWER(b.name) ILIKE $1 THEN 0 ELSE 1 END, b.name
+            LIMIT 10
+        ) AS t2
+
         UNION ALL
 
-        -- SEARCH LISTS (limit 10)
-     (   SELECT 
-            l.id AS entity_id,
-            l.name,
-            NULL AS description,
-            l.board_id AS board_id,
-            l.id AS list_id,
-            NULL::integer AS card_id,
-            'list' AS type
-        FROM lists l
-        JOIN boards b ON b.id = l.board_id
-        JOIN workspaces_users wu ON wu.workspace_id = b.workspace_id
-        WHERE wu.user_id = $2
-        AND l.is_deleted = FALSE
-        AND LOWER(l.name) ILIKE $1
-        ORDER BY l.name
-        LIMIT 10
-    )
+        SELECT * FROM (
+            -- SEARCH LISTS (limit 10)
+            SELECT 
+                l.id AS entity_id,
+                l.name,
+                NULL AS description,
+                l.board_id AS board_id,
+                l.id AS list_id,
+                NULL::integer AS card_id,
+                'list' AS type
+            FROM lists l
+            JOIN boards b ON b.id = l.board_id
+            JOIN workspaces_users wu ON wu.workspace_id = b.workspace_id
+            WHERE wu.user_id = $2
+              AND l.is_deleted = FALSE
+              AND LOWER(l.name) ILIKE $1
+            ORDER BY l.name
+            LIMIT 10
+        ) AS t3
+
         UNION ALL
 
-        -- SEARCH ACTIVE CARDS (limit 10)
-     (   SELECT 
-            c.id AS entity_id,
-            c.title AS name,
-            c.description,
-            b.id AS board_id,
-            l.id AS list_id,
-            c.id AS card_id,
-            'card' AS type
-        FROM cards c
-        JOIN lists l ON l.id = c.list_id
-        JOIN boards b ON b.id = l.board_id
-        JOIN workspaces_users wu ON wu.workspace_id = b.workspace_id
-        WHERE wu.user_id = $2
-        AND c.is_deleted = FALSE
-        AND (LOWER(c.title) ILIKE $1 OR LOWER(c.description) ILIKE $1)
-        ORDER BY CASE WHEN LOWER(c.title) ILIKE $1 THEN 0 ELSE 1 END, c.title
-        LIMIT 10
-    )
+        SELECT * FROM (
+            -- SEARCH ACTIVE CARDS (limit 10)
+            SELECT 
+                c.id AS entity_id,
+                c.title AS name,
+                c.description,
+                b.id AS board_id,
+                l.id AS list_id,
+                c.id AS card_id,
+                'card' AS type
+            FROM cards c
+            JOIN lists l ON l.id = c.list_id
+            JOIN boards b ON b.id = l.board_id
+            JOIN workspaces_users wu ON wu.workspace_id = b.workspace_id
+            WHERE wu.user_id = $2
+              AND c.is_deleted = FALSE
+              AND (LOWER(c.title) ILIKE $1 OR LOWER(c.description) ILIKE $1)
+            ORDER BY CASE WHEN LOWER(c.title) ILIKE $1 THEN 0 ELSE 1 END, c.title
+            LIMIT 10
+        ) AS t4
+
         UNION ALL
 
-        -- SEARCH ARCHIVED CARDS (limit 10)
-    (   SELECT
-            a.entity_id AS entity_id,
-            a.data ->> 'title' AS name,
-            a.data ->> 'description' AS description,
-            l.board_id AS board_id,
-            l.id AS list_id,
-            a.entity_id AS card_id,
-            'card' AS type
-        FROM archive_universal a
-        LEFT JOIN lists l ON l.id = (a.data ->> 'list_id')::int
-        LEFT JOIN boards b ON b.id = l.board_id
-        LEFT JOIN workspaces_users wu ON wu.workspace_id = b.workspace_id
-        WHERE a.entity_type = 'cards'
-        AND wu.user_id = $2
-        AND (LOWER(a.data ->> 'title') ILIKE $1 OR LOWER(a.data ->> 'description') ILIKE $1)
-        ORDER BY CASE WHEN LOWER(a.data ->> 'title') ILIKE $1 THEN 0 ELSE 1 END, a.data ->> 'title'
-        LIMIT 10;
-    );
+        SELECT * FROM (
+            -- SEARCH ARCHIVED CARDS (limit 10)
+            SELECT
+                a.entity_id AS entity_id,
+                a.data ->> 'title' AS name,
+                a.data ->> 'description' AS description,
+                l.board_id AS board_id,
+                l.id AS list_id,
+                a.entity_id AS card_id,
+                'card' AS type
+            FROM archive_universal a
+            LEFT JOIN lists l ON l.id = (a.data ->> 'list_id')::int
+            LEFT JOIN boards b ON b.id = l.board_id
+            LEFT JOIN workspaces_users wu ON wu.workspace_id = b.workspace_id
+            WHERE a.entity_type = 'cards'
+              AND wu.user_id = $2
+              AND (LOWER(a.data ->> 'title') ILIKE $1 OR LOWER(a.data ->> 'description') ILIKE $1)
+            ORDER BY CASE WHEN LOWER(a.data ->> 'title') ILIKE $1 THEN 0 ELSE 1 END, a.data ->> 'title'
+            LIMIT 10
+        ) AS t5;
         `;
 
         const result = await client.query(query, [searchKeyword, numericUserId]);
