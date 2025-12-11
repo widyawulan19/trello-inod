@@ -1928,8 +1928,10 @@ app.get('/api/search/global-testing-fix', async (req, res) => {
 
     try {
         const query = `
-        SELECT * FROM (
-            -- SEARCH WORKSPACES (limit 10)
+        -- COMBINED SEARCH WITHOUT LIMIT PER TYPE, LIMIT TOTAL 20
+        SELECT *
+        FROM (
+            -- WORKSPACES
             SELECT 
                 w.id AS entity_id,
                 w.name,
@@ -1943,14 +1945,10 @@ app.get('/api/search/global-testing-fix', async (req, res) => {
             WHERE wu.user_id = $2
               AND w.is_deleted = FALSE
               AND (LOWER(w.name) ILIKE $1 OR LOWER(w.description) ILIKE $1)
-            ORDER BY CASE WHEN LOWER(w.name) ILIKE $1 THEN 0 ELSE 1 END, w.name
-            LIMIT 10
-        ) AS t1
 
-        UNION ALL
+            UNION ALL
 
-        SELECT * FROM (
-            -- SEARCH BOARDS (limit 10)
+            -- BOARDS
             SELECT 
                 b.id AS entity_id,
                 b.name,
@@ -1964,14 +1962,10 @@ app.get('/api/search/global-testing-fix', async (req, res) => {
             WHERE wu.user_id = $2
               AND b.is_deleted = FALSE
               AND (LOWER(b.name) ILIKE $1 OR LOWER(b.description) ILIKE $1)
-            ORDER BY CASE WHEN LOWER(b.name) ILIKE $1 THEN 0 ELSE 1 END, b.name
-            LIMIT 10
-        ) AS t2
 
-        UNION ALL
+            UNION ALL
 
-        SELECT * FROM (
-            -- SEARCH LISTS (limit 10)
+            -- LISTS
             SELECT 
                 l.id AS entity_id,
                 l.name,
@@ -1986,14 +1980,10 @@ app.get('/api/search/global-testing-fix', async (req, res) => {
             WHERE wu.user_id = $2
               AND l.is_deleted = FALSE
               AND LOWER(l.name) ILIKE $1
-            ORDER BY l.name
-            LIMIT 10
-        ) AS t3
 
-        UNION ALL
+            UNION ALL
 
-        SELECT * FROM (
-            -- SEARCH ACTIVE CARDS (limit 10)
+            -- ACTIVE CARDS
             SELECT 
                 c.id AS entity_id,
                 c.title AS name,
@@ -2009,14 +1999,10 @@ app.get('/api/search/global-testing-fix', async (req, res) => {
             WHERE wu.user_id = $2
               AND c.is_deleted = FALSE
               AND (LOWER(c.title) ILIKE $1 OR LOWER(c.description) ILIKE $1)
-            ORDER BY CASE WHEN LOWER(c.title) ILIKE $1 THEN 0 ELSE 1 END, c.title
-            LIMIT 10
-        ) AS t4
 
-        UNION ALL
+            UNION ALL
 
-        SELECT * FROM (
-            -- SEARCH ARCHIVED CARDS (limit 10)
+            -- ARCHIVED CARDS
             SELECT
                 a.entity_id AS entity_id,
                 a.data ->> 'title' AS name,
@@ -2032,9 +2018,9 @@ app.get('/api/search/global-testing-fix', async (req, res) => {
             WHERE a.entity_type = 'cards'
               AND wu.user_id = $2
               AND (LOWER(a.data ->> 'title') ILIKE $1 OR LOWER(a.data ->> 'description') ILIKE $1)
-            ORDER BY CASE WHEN LOWER(a.data ->> 'title') ILIKE $1 THEN 0 ELSE 1 END, a.data ->> 'title'
-            LIMIT 10
-        ) AS t5;
+        ) AS combined
+        ORDER BY type, name
+        LIMIT 20;
         `;
 
         const result = await client.query(query, [searchKeyword, numericUserId]);
