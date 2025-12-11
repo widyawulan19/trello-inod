@@ -1925,6 +1925,7 @@ app.get('/api/search/global-testing-fix', async (req, res) => {
     }
 
     const maxLimit = Math.min(parseInt(limit) || 50, 100);
+    const searchKeyword = `%${keyword.toLowerCase()}%`;
 
     try {
         const query = `
@@ -1948,7 +1949,10 @@ app.get('/api/search/global-testing-fix', async (req, res) => {
             JOIN workspaces_users wu ON wu.workspace_id = w.id
             WHERE wu.user_id = $2
             AND c.is_deleted = FALSE
-            AND c.search_vector @@ plainto_tsquery($1)
+            AND (
+                LOWER(c.title) LIKE $1 
+                OR LOWER(c.description) LIKE $1
+            )
         ),
 
         archived_cards AS (
@@ -1971,7 +1975,10 @@ app.get('/api/search/global-testing-fix', async (req, res) => {
             LEFT JOIN workspaces_users wu ON wu.workspace_id = w.id
             WHERE a.entity_type = 'cards'
             AND wu.user_id = $2
-            AND a.search_vector @@ plainto_tsquery($1)
+            AND (
+                LOWER(a.data ->> 'title') LIKE $1
+                OR LOWER(a.data ->> 'description') LIKE $1
+            )
         )
 
         SELECT *
@@ -1984,7 +1991,7 @@ app.get('/api/search/global-testing-fix', async (req, res) => {
         `;
 
         const result = await client.query(query, [
-            keyword,
+            searchKeyword,
             numericUserId,
             maxLimit
         ]);
