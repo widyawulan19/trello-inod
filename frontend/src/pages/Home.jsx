@@ -286,7 +286,7 @@ const Home=()=> {
                   <div className="sh-icon">
                     <HiFolder/>
                   </div>
-                  <h4><span className='sh-gradient'>Workspaces Summary</span></h4>
+                  <h4>Workspaces Summary</h4>
                 </div>
                 <BootstrapTooltip title='Show Workspaces' placement="top">
                   <div className="sh-right">

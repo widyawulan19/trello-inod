@@ -64,9 +64,11 @@ const WorkspaceSummary = ({ summaries, loading }) => {
           <div className="summary-header">
             <div className="sh-left">
               <h4 
-              className="summary-title"
-              onClick={() => navigateToFirstBoard(workspace.workspace_id)}
-              >{workspace.workspace_name}</h4>
+                className="summary-title"
+                onClick={() => navigateToFirstBoard(workspace.workspace_id)}
+              >
+                {workspace.workspace_name}
+              </h4>
             </div>
             <div
               className='view'
