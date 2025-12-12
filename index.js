@@ -16845,6 +16845,39 @@ app.get('/api/marketing/summary/daily', async (req, res) => {
     }
 });
 
+app.get('/api/marketing/summary/daily-testing', async (req, res) => {
+    try {
+        const result = await client.query(`
+      SELECT 
+        DATE(create_at) AS date,
+        COUNT(*) AS total_orders,
+        SUM(
+          COALESCE(price_normal::numeric, 0)
+          - COALESCE(price_normal::numeric, 0) * 
+            COALESCE(NULLIF(REPLACE(discount_percentage, '%', ''), '')::numeric, 0)/100
+        ) AS total_income
+      FROM marketing_design
+      WHERE create_at IS NOT NULL
+        AND is_deleted = false
+      GROUP BY DATE(create_at)
+      ORDER BY DATE(create_at);
+    `);
+
+        // Format hasil biar frontend gampang pakai
+        const formatted = result.rows.map(row => ({
+            date: row.date,
+            total_orders: parseInt(row.total_orders, 10),
+            total_income: parseFloat(row.total_income)
+        }));
+
+        res.status(200).json(formatted);
+    } catch (error) {
+        console.error('Error fetching daily marketing summary:', error);
+        res.status(500).json({ error: 'Failed to fetch marketing summary' });
+    }
+});
+
+
 
 // ===== server.js =====
 app.get('/api/marketing-music/summary/daily', async (req, res) => {
