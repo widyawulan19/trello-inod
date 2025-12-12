@@ -9707,6 +9707,80 @@ app.delete("/api/accept-status/:id", async (req, res) => {
 
 //DATA MARKETING DESIGN
 
+
+app.get("/api/marketing-design/new-joined", async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const offset = (page - 1) * limit;
+
+    try {
+        const result = await client.query(
+            `
+      SELECT 
+        md.marketing_design_id,
+        md.buyer_name,
+        md.code_order,
+        md.jumlah_design,
+        md.order_number,
+        md.deadline,
+        md.jumlah_revisi,
+        md.price_normal,
+        md.price_discount,
+        md.discount_percentage,
+        md.required_files,
+        md.file_and_chat,
+        md.detail_project,
+        md.create_at,
+        md.update_at,
+        md.card_id,
+        md.resolution,
+        md.reference,
+        md.project_number,
+        md.position,
+
+        mdu.id AS input_by_id,
+        mdu.nama_marketing AS input_by_name,
+        kdd.id AS acc_by_id,
+        kdd.nama AS acc_by_name,
+        ad.id AS account_id,
+        ad.nama_account AS account_name,
+        ot.id AS offer_type_id,
+        ot.offer_name AS offer_type_name,
+        pt.id AS project_type_id,
+        pt.project_name AS project_type_name,
+        sd.id AS style_id,
+        sd.style_name AS style_name,
+        sp.id AS status_project_id,
+        sp.status_name AS status_project_name,
+        dot.id AS order_type_id,
+        dot.order_name AS order_type_name
+
+      FROM marketing_design md
+      LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
+      LEFT JOIN kepala_divisi_design kdd ON md.acc_by = kdd.id
+      LEFT JOIN account_design ad ON md.account = ad.id
+      LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
+      LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
+      LEFT JOIN style_design sd ON md.style_id = sd.id
+      LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
+      LEFT JOIN design_order_type dot ON md.order_type_id = dot.id
+
+      WHERE md.is_deleted = false
+      ORDER BY md.position DESC
+      LIMIT $1 OFFSET $2;
+    `,
+            [limit, offset]
+        );
+
+        res.json(result.rows);
+
+    } catch (error) {
+        console.error("❌ Error get joined marketing_design:", error);
+        res.status(500).json({ error: "Failed to fetch joined data" });
+    }
+});
+
+
 //MARKETING DESIGN JOINED
 // ✅ Get all marketing_design + join
 app.get("/api/marketing-design/joined", async (req, res) => {
