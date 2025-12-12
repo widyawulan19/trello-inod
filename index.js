@@ -16810,7 +16810,7 @@ app.get("/api/testing_boards", async (req, res) => {
         res.status(500).json({ error: "Failed to fetch boards" });
     }
 });
-app.get('/api/marketing/summary/daily', async (req, res) => {
+app.get('/api/marketing/summary/daily-testing', async (req, res) => {
     try {
         const result = await client.query(`
       SELECT 
@@ -16845,7 +16845,7 @@ app.get('/api/marketing/summary/daily', async (req, res) => {
     }
 });
 
-app.get('/api/marketing/summary/daily-testing', async (req, res) => {
+app.get('/api/marketing/summary/daily', async (req, res) => {
     try {
         const result = await client.query(`
       SELECT 
