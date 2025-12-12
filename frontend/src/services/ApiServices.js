@@ -50,6 +50,11 @@ export const searchCardsByUser = (keyword, userId) => {
   });
 };
 
+export const searchGlobal = (keyword, userId) => {
+  return axios.get(`${API_URL}/search/global-testing`, {
+    params: { keyword, userId }
+  });
+};
 
 
 // COUNTERS MUSIK

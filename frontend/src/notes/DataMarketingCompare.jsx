@@ -60,7 +60,7 @@ const DataMarketingCompare = () => {
         ref={scrollRef}
         className="compare-content"
       >
-        <div style={{ width: `${data.length * 80}px`, height: "100%" }}>
+        <div style={{ width: `${data.length * 80}px`, height: "98%" }}>
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart
               data={data}

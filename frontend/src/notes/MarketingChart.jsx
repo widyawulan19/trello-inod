@@ -21,6 +21,7 @@ const MarketingChart = () => {
     const fetchSummary = async () => {
       try {
         const result = await getDailyMarketingSummary();
+        console.log("API data:", result);
 
         // Format tanggal jadi 20/10 dst
         const formattedData = result.map((item) => ({

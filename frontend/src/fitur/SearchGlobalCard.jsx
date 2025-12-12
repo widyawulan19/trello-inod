@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { searchCardsByUser } from "../services/ApiServices";
+import { searchCardsByUser, searchGlobal } from "../services/ApiServices";
 import "../style/fitur/SearchCard.css";
 import { IoSearchOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
@@ -16,6 +16,8 @@ const SearchGlobalCard = ({ userId }) => {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  let controller = null;
 
   /* ---------------------------------------
    *  Debounce Search
@@ -35,31 +37,39 @@ const SearchGlobalCard = ({ userId }) => {
   /* ---------------------------------------
    *  API Search
    * --------------------------------------*/
-//   const handleSearch = async () => {
+
+// const handleSearch = async () => {
 //     try {
+//       if (controller) controller.abort();
+//       controller = new AbortController();
+
 //       setLoading(true);
 //       const res = await searchCardsByUser(keyword, userId);
 //       setResults(res.data);
+
 //     } catch (err) {
-//       console.error("Search failed:", err);
+//       if (err.name === "CanceledError") {
+//         console.log("Request dibatalkan");
+//       } else {
+//         console.error("Search failed:", err);
+//       }
 //     } finally {
 //       setLoading(false);
 //     }
 //   };
-
-let controller = null;
-
-const handleSearch = async () => {
+  const handleSearch = async () => {
     try {
       if (controller) controller.abort();
       controller = new AbortController();
 
       setLoading(true);
-      const res = await searchCardsByUser(keyword, userId);
+      const res = await searchGlobal(keyword, userId, {
+        signal: controller.signal,
+      });
       setResults(res.data);
 
     } catch (err) {
-      if (err.name === "CanceledError") {
+      if (err.name === "CanceledError" || err.name === "AbortError") {
         console.log("Request dibatalkan");
       } else {
         console.error("Search failed:", err);
