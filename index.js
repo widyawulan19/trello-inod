@@ -9708,12 +9708,47 @@ app.delete("/api/accept-status/:id", async (req, res) => {
 //DATA MARKETING DESIGN
 
 
+// =========================================
+//  CREATE INDEX (JALANKAN 1x SAJA)
+// =========================================
+app.get("/api/marketing-design/create-index", async (req, res) => {
+    try {
+        await client.query(`
+      CREATE INDEX IF NOT EXISTS idx_marketing_design_position
+      ON marketing_design (position DESC);
+
+      CREATE INDEX IF NOT EXISTS idx_marketing_design_is_deleted
+      ON marketing_design (is_deleted);
+    `);
+
+        res.json({ message: "Indexes created successfully 🎉" });
+    } catch (error) {
+        console.error("❌ Error creating indexes:", error);
+        res.status(500).json({ error: "Failed to create indexes" });
+    }
+});
+
+
+// =========================================
+//  ENDPOINT PAGINATION
+// =========================================
 app.get("/api/marketing-design/new-joined", async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;
     const offset = (page - 1) * limit;
 
     try {
+        // Hitung total data
+        const countResult = await client.query(`
+      SELECT COUNT(*) 
+      FROM marketing_design 
+      WHERE is_deleted = false;
+    `);
+
+        const totalRows = parseInt(countResult.rows[0].count);
+        const totalPages = Math.ceil(totalRows / limit);
+
+        // Ambil data
         const result = await client.query(
             `
       SELECT 
@@ -9768,17 +9803,24 @@ app.get("/api/marketing-design/new-joined", async (req, res) => {
       WHERE md.is_deleted = false
       ORDER BY md.position DESC
       LIMIT $1 OFFSET $2;
-    `,
+      `,
             [limit, offset]
         );
 
-        res.json(result.rows);
+        res.json({
+            page,
+            limit,
+            totalRows,
+            totalPages,
+            data: result.rows,
+        });
 
     } catch (error) {
         console.error("❌ Error get joined marketing_design:", error);
         res.status(500).json({ error: "Failed to fetch joined data" });
     }
 });
+
 
 
 //MARKETING DESIGN JOINED
