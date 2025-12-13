@@ -24,7 +24,7 @@
    LOGO SECTION
 ================================ */
 .logo {
-    width: 10vw;
+    width: 20vw;
     margin-left: 10px;
     padding: 2px;
 
@@ -36,6 +36,7 @@
     font-weight: bold;
     font-size: 15px;
     color: var(--primary);
+    border: 1px solid red;
 }
 
 /* mini icon logo */

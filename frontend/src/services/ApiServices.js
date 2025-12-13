@@ -851,6 +851,16 @@ export const addMarketingDesignJoined = (data) =>
 
 export const addMarketingDesignJoinedFix = (data) => axios.post(`${API_URL}/marketing-design/joined-testing`, data);
 
+// GET Marketing Data (WITH PAGINATION)
+export const getMarketingDesignPaginated = (page = 1, limit = 10) => {
+  return axios.get(`${API_URL}/marketing-design/new-joined`, {
+    params: {
+      page: Number(page) || 1,
+      limit: Number(limit) || 10
+    }
+  });
+};
+
 // ✅ Get all marketing_design (joined)
 export const getAllMarketingDesignJoined = () =>
   axios.get(`${API_URL}/marketing-design/joined`);

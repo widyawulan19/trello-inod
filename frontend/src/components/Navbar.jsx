@@ -5,7 +5,7 @@ import logo1 from '../assets/whiteLogo.png'
 import { HiMiniCalendarDateRange,HiOutlineMagnifyingGlass,HiOutlineClipboardDocumentList,HiMiniLanguage,HiMiniBellAlert,HiOutlineUserCircle,HiOutlineChevronDown } from "react-icons/hi2";
 import { Tooltip, tooltipClasses } from '@mui/material';
 import {styled} from '@mui/material';
-import { useNavigate, useNavigation } from 'react-router-dom';
+import { useLocation, useNavigate, useNavigation } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 import { getProfileByUserId, getUnfinishAgenda, getUserTotalNotificationUnread } from '../services/ApiServices';
 import FullNewCalendar from '../fitur/FullNewCalendar';
@@ -22,6 +22,7 @@ import useTheme from '../utils/useTheme';
 import { IoIosMoon, IoMdSunny } from "react-icons/io";
 import { RiDashboardHorizontalFill, RiDashboardHorizontalLine } from 'react-icons/ri';
 import { FaCircle } from 'react-icons/fa';
+import { pageTitles } from '../utils/pageTitles';
 
 //tooltip
 const BootstrapTooltip = styled(({className, ...props}) =>(
@@ -53,6 +54,17 @@ const Navbar=({onToggleTheme, theme})=> {
     const [unreadCount, setUnreadCount] = useState(0);
     const [unfinishedCount, setUnfinishedCount] = useState(0);
     const [unfinishedAgendas, setUnfinishedAgendas] = useState([]);
+
+    // title pages 
+    const location = useLocation();
+    const pathname = location.pathname; // 👈 PENTING
+
+    const matched = pageTitles.find(item =>
+        pathname === item.path || pathname.startsWith(item.path + "/")
+    );
+
+    const title = matched?.title || "Dashboard";
+    const Icon = matched?.icon;
 
     //theme
     // const {theme, toggleTheme } = useTheme();
@@ -175,10 +187,11 @@ const Navbar=({onToggleTheme, theme})=> {
     <div className='navbar-container'>
         <div className="logo" >
             <div className="mini-logo">
-                <LuLayoutDashboard className='logo-logo'/>
+                 {Icon && <span className="logo-logo">{Icon}</span>}
             </div>
             <h4>
-                Dashboard    
+                {/* Dashboard   */}
+                {title}  
             </h4>
         </div>
         <div className="more-fiture">

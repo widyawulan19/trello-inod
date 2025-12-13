@@ -250,3 +250,48 @@ const SearchGlobalCard = ({ userId }) => {
 };
 
 export default SearchGlobalCard;
+
+
+
+const fetchData = useCallback(async () => {
+  setLoading(true);
+  try {
+    let response;
+
+    if (filterType === "DATA DENGAN CARD") {
+      response = await getDataWhereCardIdNotNull();
+      assignMarketingData(response.data || response);
+
+    } else if (filterType === "DATA TANPA CARD") {
+      response = await getDataWhereCardIdIsNull();
+      assignMarketingData(response.data || response);
+
+    } else {
+      // PAGINATION FIX
+      const resp = await getMarketingDesignPaginated(page, limit);
+      const list = resp?.data?.data || resp?.data || [];
+
+      const withExportStatus = await Promise.all(
+        list.map(async (d) => {
+          try {
+            const check = await getExportMarketingDesign(
+              d.marketing_design_id
+            );
+            return {
+              ...d,
+              is_transfiled: !!check?.data?.exported,
+            };
+          } catch {
+            return { ...d, is_transfiled: false };
+          }
+        })
+      );
+
+      assignMarketingData(withExportStatus);
+    }
+  } catch (err) {
+    console.error("Error fetching marketing design data:", err);
+  } finally {
+    setLoading(false);
+  }
+}, [filterType, page, assignMarketingData]);
