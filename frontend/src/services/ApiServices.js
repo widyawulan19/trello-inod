@@ -50,6 +50,13 @@ export const searchCardsByUser = (keyword, userId) => {
   });
 };
 
+export const searchGlobal = (keyword, userId) => {
+  return axios.get(`${API_URL}/search/global-testing`, {
+    params: { keyword, userId }
+  });
+};
+
+
 // COUNTERS MUSIK
 // ✅ Ambil data counter marketing_design
 export const getMarketingMusicCounter = async () => {
@@ -843,6 +850,16 @@ export const addMarketingDesignJoined = (data) =>
   axios.post(`${API_URL}/marketing-design/joined`, data);
 
 export const addMarketingDesignJoinedFix = (data) => axios.post(`${API_URL}/marketing-design/joined-testing`, data);
+
+// GET Marketing Data (WITH PAGINATION)
+export const getMarketingDesignPaginated = (page = 1, limit = 10) => {
+  return axios.get(`${API_URL}/marketing-design/new-joined`, {
+    params: {
+      page: Number(page) || 1,
+      limit: Number(limit) || 10
+    }
+  });
+};
 
 // ✅ Get all marketing_design (joined)
 export const getAllMarketingDesignJoined = () =>
