@@ -36,7 +36,7 @@
     font-weight: bold;
     font-size: 15px;
     color: var(--primary);
-    border: 1px solid red;
+    /* border: 1px solid red; */
 }
 
 /* mini icon logo */
