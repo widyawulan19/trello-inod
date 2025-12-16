@@ -20,6 +20,7 @@ import { AiFillCheckCircle } from "react-icons/ai";
 import FormMarketingExample from "../example/FormMarketingExample";
 import { MdLockReset } from "react-icons/md";
 import ResetCounter from "../fitur/ResetCounter";
+import LoadingSpinnerDot from "../utils/LoadingSpinnerDot";
 
 const DataMarketing = () => {
   const location = useLocation();
@@ -603,7 +604,8 @@ const handleExportToSheets = async (marketingId) => {
 
       <div className="data-marketing-form">
         {loading ? (
-          <p>Loading data...</p>
+          // <p>Loading data...</p>
+          <LoadingSpinnerDot text="Loading Data Marketing Musik"/>
         ):(
           <div className="dm-container">
             <table cellPadding="10" cellSpacing="0" className="dm-table">

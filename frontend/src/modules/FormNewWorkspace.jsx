@@ -1,91 +1,119 @@
 import { useState } from "react";
-import { createWorkspaceUser } from '../services/ApiServices'
 import { useNavigate } from "react-router-dom";
-import '../style/pages/Workspace.css'
-import { HiOutlineSquaresPlus, HiOutlineXMark, HiSquaresPlus, HiXMark } from "react-icons/hi2";
-import BootstrapTooltip from "../components/Tooltip";
+
+// Services
+import { createWorkspaceUser } from "../services/ApiServices";
+
+// Context
 import { useSnackbar } from "../context/Snackbar";
 
-const FormNewWorkspace = ({ userId,fetchWorkspaceUser, onCloseForm }) => {
-    console.log('user id diterima pada file form new workspace:', userId)
-    const [name, setName] = useState("");
-    const [description, setDescription] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const navigate = useNavigate();
-    const {showSnackbar} = useSnackbar()
+// Components
+import BootstrapTooltip from "../components/Tooltip";
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        setError(null);
+// Icons
+import { HiSquaresPlus, HiXMark } from "react-icons/hi2";
 
-        const workspaceData = {
-            name,
-            description,
-            userId,
-            role: "admin", // Default role
-        };
+// Styles
+import "../style/pages/Workspace.css";
 
-        try {
-            await createWorkspaceUser(workspaceData);
-            // alert("Workspace created successfully!");
-            showSnackbar('Workspace created successfully!', 'success')
-            fetchWorkspaceUser?.();
-            onCloseForm()
-            // navigate("/workspaces"); 
-        } catch (err) {
-            // setError(err.response?.data?.error || "Failed to create workspace");
-            showSnackbar('Failed to create workspace', 'error')
-        } finally {
-            setLoading(false);
-        }
+const FormNewWorkspace = ({ userId, fetchWorkspaceUser, onCloseForm }) => {
+  /* =========================
+   * STATE
+   * ========================= */
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  /* =========================
+   * HOOKS
+   * ========================= */
+  const navigate = useNavigate();
+  const { showSnackbar } = useSnackbar();
+
+  /* =========================
+   * HANDLERS
+   * ========================= */
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    const workspaceData = {
+      name,
+      description,
+      userId,
+      role: "admin", // default role
     };
 
-    return (
-        <div className="create-workspace-container">
-            <div className="cwc-header">
-                <h4>
-                    <div className="cwch-icon">
-                        <HiSquaresPlus/>
-                    </div>
-                    Create new workspace
-                </h4>
-                <BootstrapTooltip title='Close Form' placement='top'>
-                    <HiXMark  className='cwc-icon' onClick={onCloseForm} />
-                </BootstrapTooltip>
-            </div>
-           
-            {error && <p className="error">{error}</p>}
-            <form onSubmit={handleSubmit} className="form-workspace">
-                <div className="box-form-name">
-                    <label style={{fontSize:'12px', color:'#333', fontWeight:'bold'}}>Workspace Name: <span style={{color:'red'}}>*</span></label>
-                    <input
-                        type="text"
-                        value={name}
-                        placeholder="Enter workspace title"
-                        onChange={(e) => setName(e.target.value)}
-                        required
-                    />
-                </div>
-                <div className="box-form">
-                    <label>Description:</label>
-                    <textarea
-                        value={description}
-                        placeholder="Enter workspace description"
-                        onChange={(e) => setDescription(e.target.value)}
-                        // required
-                    />
-                </div>
-                <div className="workspace-btn-form">
-                    <button type="submit" disabled={loading}>
-                        {loading ? "Creating..." : "CREATE"}
-                    </button>
-                </div>
-               
-            </form>
+    try {
+      await createWorkspaceUser(workspaceData);
+
+      showSnackbar("Workspace created successfully!", "success");
+      fetchWorkspaceUser?.();
+      onCloseForm();
+    } catch (err) {
+      setError("Failed to create workspace");
+      showSnackbar("Failed to create workspace", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /* =========================
+   * RENDER
+   * ========================= */
+  return (
+    <div className="create-workspace-container">
+      {/* Header */}
+      <div className="cwc-header">
+        <h4>
+          <span className="cwch-icon">
+            <HiSquaresPlus />
+          </span>
+          Create new workspace
+        </h4>
+
+        <BootstrapTooltip title="Close Form" placement="top">
+          <HiXMark className="cwc-icon" onClick={onCloseForm} />
+        </BootstrapTooltip>
+      </div>
+
+      {/* Error */}
+      {error && <p className="error">{error}</p>}
+
+      {/* Form */}
+      <form onSubmit={handleSubmit} className="form-workspace">
+        <div className="box-form-name">
+          <label>
+            Workspace Name <span className="required">*</span>
+          </label>
+          <input
+            type="text"
+            value={name}
+            placeholder="Enter workspace title"
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
         </div>
-    );
+
+        <div className="box-form">
+          <label>Description</label>
+          <textarea
+            value={description}
+            placeholder="Enter workspace description"
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
+
+        <div className="workspace-btn-form">
+          <button type="submit" disabled={loading}>
+            {loading ? "CREATING..." : "CREATE WORKSPACE"}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
 };
 
 export default FormNewWorkspace;

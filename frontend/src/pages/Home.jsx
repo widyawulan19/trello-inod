@@ -320,7 +320,7 @@ const Home=()=> {
               </div>
               <div className="agenda-body">
                 {/* <PersonalAgenda/> */}
-                <PersonalAgendas userId={userId}/>
+                <PersonalAgendas userId={userId} fetchSummary={fetchSummary}/>
               </div>
             </div>
 

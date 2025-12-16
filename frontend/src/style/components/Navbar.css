@@ -15,7 +15,7 @@
     justify-content: space-between;
     align-items: center;
 
-    background-color: var(--bg);
+    background-color: var(--bg-sidebar);
     border-bottom: 1px solid var(--border);
 }
 
@@ -47,9 +47,10 @@
     font-size: 15px;
     color: white;
 
-    border: 1px solid var(--primary);
+    border: 1px solid var(--bg);
     border-radius: 4px;
-    background: linear-gradient(90deg, #692BAE, #3a5bff);
+    background: var(--bg-icon2);
+    /* background: linear-gradient(90deg, #692BAE, #3a5bff); */
 }
 
 /* text "Dashboard" */

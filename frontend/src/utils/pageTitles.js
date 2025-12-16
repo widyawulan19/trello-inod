@@ -35,7 +35,7 @@ export const pageTitles = [
     },
     {
         path: "/layout/workspaces",
-        title: "Workspace",
+        title: "Workspace Pages",
         icon: <HiOutlineSquaresPlus />,
     },
     {

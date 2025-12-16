@@ -451,24 +451,24 @@ const handleNavigateToWorkspace = () =>{
   return (
     <div className='wp-container'>
       <div className="wp-header">
-        <div className="nav">
+        <div className="wp-nav">
           <h5> WORKSPACE {workspace.name}</h5>
-          <div className="nav-title">
-            <p className='nav-p' onClick={handleNavigateToWorkspace}>{workspace.name}</p>
-            <HiChevronRight size={13}/>
-            <p style={{fontWeight:'normal'}}>Boards Page</p>
-          </div>
+          <HiChevronRight size={13}/>
+          <h5 className='nav-p' onClick={handleNavigateToWorkspace}>{workspace.name}</h5>
+          <HiChevronRight size={13}/>
+          <h5 style={{fontWeight:'normal'}}>BOARDS PAGE</h5>
         </div>
         <div className="more-action">
           <div className="create-board-btn" onClick={handleShowForm}>
             <HiPlus className='cbb-icon'/>
-            <p>Create Board</p>
+            <p>CREATE BOARD</p>
           </div>
         </div>
       </div>
       {/* CREATE A NEW BOARD  */}
       {showForm && (
         <form className='bform-workspace' onSubmit={handleSubmit} ref={showRef}>
+          <div className="bw-body">
           <div className="bheader">
             <div className="bheader-left">
               <div className="board-icon">
@@ -504,6 +504,7 @@ const handleNavigateToWorkspace = () =>{
               CREATE BOARD
             </button>
           </div>
+        </div>
         </form>
       )}
       {/* END CREATE A NEW BOARD  */}

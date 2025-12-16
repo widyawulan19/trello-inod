@@ -8,6 +8,7 @@ import { useUser } from '../context/UserContext';
 import { HiOutlineViewBoards } from 'react-icons/hi';
 import { MdOutlineFormatListBulleted } from "react-icons/md";
 import { IoCard } from 'react-icons/io5';
+import LoadingSpinnerDot from '../utils/LoadingSpinnerDot';
 
 const WorkspaceSummary = ({ summaries, loading }) => {
   const navigate = useNavigate();
@@ -38,7 +39,8 @@ const WorkspaceSummary = ({ summaries, loading }) => {
 
 
   // ✅ Kondisi loading
-  if (loading) return <p>Loading workspace summaries...</p>;
+  // if (loading) return <p>Loading workspace summaries...</p>;
+  if (loading) return <LoadingSpinnerDot text='Preparing your workspace summary'/>;
 
   // ✅ Kondisi jika tidak ada workspace
   if (!summaries || summaries.length === 0) {

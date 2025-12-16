@@ -10,8 +10,8 @@
 }
 
 .akses-box {
-    background-color: white;
-    border: 1px dashed #826a9c;
+    background-color: var(--bg-section);
+    border: 1px dashed var(--border);
     border-radius: 8px;
     padding: 10px;
     display: flex;
@@ -19,31 +19,29 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--box-shadow);
 }
 
 .akses-box:hover {
-    border: 1px solid #6a11cb;
-    box-shadow: 0px 4px 8px #6b11cb40;
+    border: 1px dashed var(--border-sec);
+    box-shadow: var(--box-shadow-purple);
 }
 
 .akses-box h4 {
     font-size: 10px;
-    color: #28054d;
+    color: var(--text);
     /* border: 1px solid grey; */
     text-align: center;
     font-weight: normal;
 }
 
 .akses-icon {
-    /* border: 1px solid #6b11cb0e; */
+    border: 1px solid var(--border);
     border-radius: 8px;
-    color: #6a11cb;
+    color: var(--primary);
     font-size: 15px;
-    padding: 10px;
-    /* background-color: white; */
-    /* background: linear-gradient(90deg, #6a11cb, #ba81f7); */
-    /* box-shadow: 0px 4px 8px #6b11cb40; */
+    padding: 5px;
+    margin-bottom: 5px;
 }
 
 

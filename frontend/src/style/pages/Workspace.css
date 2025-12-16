@@ -1,16 +1,15 @@
 .workspace-container {
-    border: 1px solid #ddd;
-    height: 100vh;
+    /* border: 1px solid red; */
+    width: 100%;
+    height: 100%;
+    padding-top: 10px;
     margin-bottom: 10px;
-    margin: 15px;
-    background-color: #F8FAFC;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    color: #333;
+    background-color: var(--bg);
+    color: var(--text);
 }
 
 .workspace-header {
-    border-bottom: 1px solid #ddd;
+    /* border-bottom: 1px solid #ddd; */
     padding: 5px 10px;
     display: flex;
     align-items: center;
@@ -21,7 +20,7 @@
 .wnav {
     display: flex;
     flex-direction: column;
-    /* align-items: center; */
+    align-items: center;
     justify-content: space-between;
     color: #333;
     cursor: pointer;
@@ -35,6 +34,7 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
+    color: var(--sub-text);
     /* gap: 2px; */
 }
 
@@ -43,41 +43,27 @@
 }
 
 .wnav-btn .nav-icon {
-    color: #333;
+    color: var(--sub-text);
     cursor: pointer;
-    font-size: 18px;
+    font-size: 15px;
 }
 
 .wnav-btn .nav-icon:hover {
-    color: #5D12EB;
+    box-shadow: var(--box-shadow-purple);
+    border-bottom: 1px solid var(--border-sec);
 }
 
-/* .wnav button{
-    padding: 5px;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid #fff;
-    border-radius: 4px;
-    color: #333;
-    background-color: white;
-    cursor: pointer;
-}
-.wnav button:hover{
-    background: linear-gradient(to right, #6b11cb41, #2574fc41);
-} */
+
 
 .wnav-btn-con .wnav-active {
-    color: #5D12EB;
-    font-size: 15px;
-    font-weight: bold;
+    color: var(--sub-text);
+    font-size: 13px;
 }
 
 
 
 .wform button {
-    padding: 8px 10px;
+    padding: 4px 10px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -85,14 +71,15 @@
     border-radius: 8px;
     color: white;
     /* font-weight: bold; */
-    font-size: 13px;
-    border: 1px solid #eee;
-    background: linear-gradient(90deg, #7246eb, #532189);
+    font-size: 12px;
+    border: 1px solid var(--bg);
+    background: var(--bg-icon2);
+    /* background: linear-gradient(90deg, #7246eb, #532189); */
 }
 
 .wform button:hover {
-    background: linear-gradient(to right, #532189, #7246eb);
-    box-shadow: 0px 4px 8px #5e12eb46;
+    /* background: linear-gradient(to right, #532189, #7246eb); */
+    box-shadow: var(--box-shadow-purples);
 }
 
 .wform-icon {
@@ -112,26 +99,26 @@
 .workspace-welcome {
     /* border: 1px solid red; */
     padding: 0px 20px;
-    margin-top: 20px;
 }
 
 .workspace-welcome h3 {
     font-size: 20px;
     font-weight: bold;
-    letter-spacing: 0.5px;
-    color: #48068f;
+    /* letter-spacing: 0.5px; */
+    color: var(--text);
 }
 
 .workspace-welcome p {
     margin: 0px;
-    font-size: 13px;
-    color: #333;
+    padding: 0px;
+    font-size: 11px;
+    color: var(--sub-text);
 }
 
 /* WORKSPACE BODY  */
 .workspace-body {
     /* border: 1px solid red; */
-    padding: 20px;
+    padding: 10px 20px;
     height: 78vh;
     position: relative;
 }
@@ -139,53 +126,48 @@
 .workspace-content {
     /* border: 1px solid blue; */
     height: 100%;
-    /* full parent height */
-    padding: 20px 0;
+    padding: 20px 5px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-auto-rows: min-content;
-    /* ✅ biar tinggi row ngepas isi */
     gap: 10px 15px;
-    /* atur jarak antar row & kolom */
-    /* white-space: nowrap; */
 }
 
 .workspace-card {
-    /* border: '1px solid red'; */
-    border: 1px solid #c5cad2;
+    border: 1px solid var(--border);
     width: 100%;
-    background-color: white;
+    background-color: var(--bg-section);
     height: fit-content;
     border-radius: 10px;
-    /* overflow-y: auto; */
     padding: 10px;
     position: relative;
     cursor: pointer;
-    box-shadow: 0px 4px 8px #bdc4cd;
+    /* box-shadow: var(--box-shadow); */
 }
 
 .workspace-card:hover {
-    border: 1px solid #ae8aeb;
-    box-shadow: 0px 4px 8px #5e12eb46;
+    background-color: var(--bg-section-hover);
+    box-shadow: var(--box-shadow);
 }
 
 /* CARD FORM CREATE  */
 .form-workspace-card {
-    border: 1px dashed #5D12EB;
-    background-color: #fff;
+    border: 1px dashed var(--border-sec);
+    background-color: var(--bg-section);
     border-radius: 8px;
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    box-shadow: 0px 4px 8px #bdc4cd;
+    box-shadow: var(--box-shadow);
     cursor: pointer;
     padding: 20px;
 }
 
 .form-workspace-card:hover {
-    box-shadow: 0px 4px 8px #5e12eb46;
+    background-color: var(--bg-section-hover);
+    box-shadow: var(--box-shadow-purple);
 }
 
 .form-workspace-card h4 {
@@ -198,17 +180,17 @@
 .form-workspace-card p {
     margin: 0px;
     font-size: 12px;
-    color: #5e5e5e;
+    color: var(--sub-text);
 }
 
 .fwc-icon {
     font-size: 20px;
     font-weight: bold;
-    border: 1px solid #eee;
+    /* border: 1px solid #eee; */
     border-radius: 8px;
     padding: 5px;
-    background-color: #eee;
-    color: #5D12EB;
+    background: none;
+    color: var(--primary);
     margin-bottom: 5px;
 }
 
@@ -220,7 +202,7 @@
     justify-content: space-between;
     padding: 5px 10px;
     position: relative;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--border);
     /* border: 1px solid yellow; */
     width: 100%;
     margin-bottom: 5px;
@@ -231,12 +213,13 @@
     position: absolute;
     top: 30px;
     right: 0;
-    border: 1px solid #ddd;
-    background-color: white;
+    color: var(--text);
+    border: 1px solid var(--bg-section);
+    background-color: var(--bg-section);
+    box-shadow: var(--box-shadow);
     height: fit-content;
     border-radius: 8px;
     padding: 5px;
-    box-shadow: 0px 4px 8px #5e12eb46;
     z-index: 9999;
     display: flex;
     flex-direction: column;
@@ -252,20 +235,35 @@
     align-items: center;
     justify-content: flex-start;
     font-size: 13px;
-    border: 1px solid #fff;
-    background-color: #fff;
+    border: 1px solid var(--bg-section);
+    background-color: var(--bg-setion);
     border-radius: 4px;
-    color: #333;
+    color: var(--sub-text);
+    width: 100%;
 }
 
 .setting-wc button:hover {
-    background-color: #eee;
+    background-color: var(--bg);
+    border: 1px solid var(--bg);
 }
 
 .swc-icon {
     margin-right: 5px;
     font-size: 13px;
-    color: #333;
+    color: var(--sub-text);
+}
+
+.setting-wc .delete {
+    padding: 4px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: 13px;
+    border: 1px solid var(--bg-section);
+    background-color: var(--bg-section);
+    border-radius: 4px;
+    color: red;
+    width: 100%;
 }
 
 .swc-delete {
@@ -310,7 +308,8 @@
     padding: 5px;
     border-radius: 6px;
     font-size: 12px;
-    background: linear-gradient(90deg, #7246eb, #532189)
+    background: var(--bg-icon2);
+    /* background: linear-gradient(90deg, #7246eb, #532189) */
 }
 
 .name-icon .ni-mini {
@@ -322,12 +321,15 @@
     /* border: 1px solid red; */
     font-size: 13px;
     padding: 0px 5px;
-    border-radius: 6px;
+    border-radius: 4px;
+    background-color: var(--bg);
+    color: var(--sub-text);
 }
 
 .wc-name input:focus {
     outline: none;
-    border: 1px solid #ddd;
+    background-color: var(--bg);
+    border: 1px solid var(--bg);
 }
 
 .wc-name h5 {
@@ -336,29 +338,26 @@
     margin: 0px;
     margin-left: 5px;
     word-wrap: break-word;
-    /* Break long words */
     word-break: break-word;
-    /* Break long words at the end of the line */
     max-width: 80vw;
-    /* Optional, adjust this for a max width */
     overflow-wrap: break-word;
-    /* border: 1px solid green; */
-    /* width: 95%; */
+    color: var(--sub-text);
 }
 
 .wc-header .setting-icon {
     cursor: pointer;
-    color: #333;
-    border: 1px solid #eeeeee41;
+    color: var(--text);
+    border: 1px solid var(--bg-section);
     border-radius: 4px;
     font-size: 20px;
 }
 
 .wc-header .setting-icon:hover {
     cursor: pointer;
-    border: 1px solid #ddd;
-    background-color: #ddd;
+    border: 1px solid var(--bg-section);
+    background-color: var(--bg-section);
     border-radius: 4px;
+    color: var(--text);
 }
 
 /* NEW BODY CARD WORKSPACE  */
@@ -446,7 +445,7 @@
 
 .prof-user p {
     font-size: 12px;
-    color: #5e5e5e;
+    color: var(--sub-text);
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -455,12 +454,14 @@
 .workspace-info .info-date {
     /* border: 1px solid red; */
     font-size: 10px;
-    color: #838383;
+    color: var(--sub-text);
 }
 
 .workspace-card-body .info-btm {
     /* border: 1px solid #ddd; */
 }
+
+.prof-user img {}
 
 .info-btm .summary-content {
     /* border: 1px solid blue; */
@@ -487,7 +488,7 @@
 }
 
 .mini-icon .mi {
-    color: #5D12EB;
+    color: var(--primary);
     font-size: 15px;
 }
 
@@ -495,6 +496,7 @@
     padding: 0px;
     margin: 0px;
     font-size: 10px;
+    color: var(--sub-text);
 }
 
 .detail-ul {
@@ -558,6 +560,7 @@
     width: 20px;
     height: 20px;
     border-radius: 50%;
+    background-color: var(--text-white);
 }
 
 .wc-icon {
@@ -572,16 +575,17 @@
 .btn-nav-board {
     padding: 5px 7px;
     border-radius: 8px;
-    border: 1px solid #5D12EB;
-    background: linear-gradient(90deg, #7246eb, #532189);
-    color: white;
+    border: 1px solid var(--bg-section);
+    background-color: var(--primary);
+    color: var(--text-white);
     font-size: 12px;
     /* font-weight: bold; */
     cursor: pointer;
 }
 
 .btn-nav-board:hover {
-    box-shadow: 0px 4px 8px #5e12eb46;
+    box-shadow: var(--box-shadow-purple);
+    border: 1px solid var(--bg-section-hover);
 }
 
 /* FORM CREATE WORKSPACE -> FORMNEWWORKSPACE  */
@@ -591,24 +595,25 @@
     right: 0;
     width: 30vw;
     z-index: 100;
-    background-color: white;
-    border: 1px solid #ddd;
+    background-color: var(--bg);
+    border: 1px solid var(--border);
     border-radius: 16px;
-    box-shadow: 0px 4px 8px #5e12eb46;
+    box-shadow: var(--box-shadow);
     /* box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3); */
 }
 
 .cwc-header {
-    border-bottom: 1px solid #ddd;
-    padding: 10px;
+    border-bottom: 1px solid var(--border);
+    padding: 7px 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
 .cwc-header h4 {
+    color: var(--text);
     margin: 0px;
-    padding: 5px;
+    padding: 0px;
     font-size: 13px;
     font-weight: bold;
     display: flex;
@@ -618,22 +623,22 @@
 
 .cwch-icon {
     margin-right: 5px;
-    color: white;
+    color: var(--text-white);
     padding: 5px;
     border-radius: 6px;
-    background: linear-gradient(90deg, #7246eb, #532189)
+    background: var(--bg-icon2)
 }
 
 .cwc-icon {
     font-size: 18px;
     cursor: pointer;
-    border: 1px solid white;
+    border: 1px solid var(--bg);
 }
 
 .cwc-icon:hover {
-    background-color: #ddd;
+    background-color: var(--bg-section-hover);
     border-radius: 4px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--bg-section-hover);
 }
 
 .create-workspace-container .form-workspace {
@@ -647,22 +652,23 @@
 
 .box-form input,
 .box-form-name input {
-    border: 1px solid #ddd;
+    border: 1px solid var(--border);
     border-radius: 8px;
     padding: 8px;
     outline: none;
     font-size: 12px;
+    background-color: var(--bg-section);
     /* background: linear-gradient(to right, #6a11cb, #2575fc); */
 }
 
 .box-form input:hover,
 .box-form-name input:hover {
-    background: linear-gradient(to right, #6b11cb41, #2574fc41);
+    background-color: var(--bg-section-hover);
 }
 
 .box-form input:focus,
 .box-form-name input:focus {
-    border: 1px solid #9b2fad;
+    border: 1px solid var(--bg-section-hover);
 }
 
 .box-form,
@@ -676,13 +682,15 @@
 
 .box-form label,
 .box-form-name label {
-    font-size: 10px;
-    color: #333;
+    font-size: 10px !important;
+    font-weight: normal !important;
+    color: var(--text) !important;
     margin: 5px 0px;
 }
 
 .box-form textarea {
-    border: 1px solid #ddd;
+    border: 1px solid var(--border);
+    background-color: var(--bg-section);
     border-radius: 8px;
     padding: 8px;
     height: 10vh;
@@ -691,11 +699,13 @@
 }
 
 .box-form textarea:hover {
-    background: linear-gradient(to right, #6b11cb41, #2574fc41);
+    background-color: var(--bg-section-hover);
+    /* background: linear-gradient(to right, #6b11cb41, #2574fc41); */
 }
 
 .box-form textarea:focus {
-    border: 1px solid #9b2fad;
+    /* border: 1px solid #9b2fad; */
+    border: 1px solid var(--bg-section-hover);
 }
 
 .workspace-btn-form {
@@ -708,18 +718,18 @@
 }
 
 .workspace-btn-form button {
-    background: linear-gradient(to bottom, #6E30DC, #5D12EB);
-    color: white;
+    background: var(--bg-icon2);
+    color: var(--text-white);
     font-weight: bold;
     width: 90%;
     font-size: 12px;
-    border: 1px solid #5D12EB;
+    border: 1px solid var(--bg-section);
     border-radius: 8px;
     /* padding: 8px 0px; */
 }
 
 .workspace-btn-form button:hover {
-    background: linear-gradient(to bottom, #5D12EB, #6E30DC);
+    box-shadow: var(--box-shadow-purple);
 }
 
 /* END FORM CREATE WORKSPACE -> FORMNEWWORKSPACE  */

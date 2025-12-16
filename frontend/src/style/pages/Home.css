@@ -78,13 +78,14 @@
     color: white;
     border: 1px solid #5220be46;
     border-radius: 8px;
+    background: var(--bg-icon2);
     /* background-image: linear-gradient(to bottom, #532189, #692bae, #6a4dba, #8850c1, #debcf9); */
-    background: linear-gradient(90deg, #7246eb, #532189);
+    /* background: linear-gradient(90deg, #7246eb, #532189); */
 }
 
 .hh-btn:hover {
-    box-shadow: 0px 4px 8px #6b11cb40;
-    background: linear-gradient(90deg, #532189, #7246eb);
+    box-shadow: var(--box-shadow-purple);
+    /* background: linear-gradient(90deg, #532189, #7246eb); */
 }
 
 .hh-btn p {
@@ -123,11 +124,12 @@
 .wf-icon {
     margin-right: 5px;
     font-size: 15px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--bg);
     border-radius: 6px;
     padding: 5px;
-    color: white;
-    background: linear-gradient(90deg, #7246eb, #532189)
+    color: var(--text-white);
+    background: var(--bg-icon2);
+    /* background: linear-gradient(90deg, #7246eb, #532189) */
 }
 
 .wf-header h5 {
@@ -521,11 +523,10 @@
 
 /* AGENDA  */
 .home-body-right .home-agenda {
-    background-color: white;
-    border: 1px solid #ddd;
-    /* border: 1px solid red; */
+    background-color: var(--bg-section);
+    border: 1px solid var(--border);
     border-radius: 16px;
-    box-shadow: 0px 4px 8px #6b11cb40;
+    box-shadow: var(--box-shadow);
     width: 100%;
     height: 50%;
 }
@@ -549,22 +550,19 @@
 }
 
 .ah-left .ahl-icon {
-    border: 1px solid #6b11cb0e;
     border-radius: 50%;
-    color: white;
-    font-size: 12px;
+    /* color: var(--sub-text); */
+    color: var(--border-sec);
+    font-size: 15px;
     padding: 8px;
-    background: linear-gradient(90deg, #6a11cb, #ba81f7);
-    box-shadow: 0px 4px 8px #6b11cb40;
+    background: var(--bg-icon);
 }
 
 .ah-left h4 {
     font-size: 15px;
     font-weight: bold;
-    background: linear-gradient(90deg, #6a11cb, #493af3);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    display: inline-block;
+    color: var(--text);
+
 }
 
 .home-body-right .agenda-body {
@@ -576,11 +574,9 @@
 
 /* QUICK */
 .home-quick {
-    background-color: white;
-    /* background-color: rgba(255, 255, 255, 0.500); */
-    border: 1px solid #ddd;
+    background-color: var(--bg-section);
+    border: 1px solid var(--border);
     border-radius: 16px;
-    box-shadow: 0px 4px 8px #6b11cb40;
     width: 100%;
     height: 50%;
     margin-top: 10px;
@@ -603,27 +599,22 @@
 }
 
 .quick-icon {
-    border: 1px solid #6b11cb0e;
     border-radius: 50%;
-    color: white;
-    font-size: 12px;
+    color: var(--border-sec);
+    font-size: 15px;
     padding: 8px;
-    background: linear-gradient(90deg, #6a11cb, #ba81f7);
-    box-shadow: 0px 4px 8px #6b11cb40;
+    background: var(--bg-icon);
 }
 
 .quick-left h4 {
     font-size: 15px;
     font-weight: bold;
-    background: linear-gradient(90deg, #6a11cb, #493af3);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--sub-text);
     display: inline-block;
 }
 
 .quick-body {
     border-radius: 16px;
-    /* border: 1px solid green; */
     padding: 5px 10px;
     height: 85%;
     overflow-y: auto;

@@ -8,7 +8,7 @@ import { useSnackbar } from '../context/Snackbar';
 import { IoTrash, IoCalendar } from 'react-icons/io5';
 import { LiaNetworkWiredSolid } from "react-icons/lia";
 
-const PersonalAgendas = ({ userId }) => {
+const PersonalAgendas = ({ userId, fetchSummary }) => {
   const [agendas, setAgendas] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -60,6 +60,7 @@ const PersonalAgendas = ({ userId }) => {
       await deletAgendaUser(agendaId, userId);
       showSnackbar('Successfully deleted agenda', 'success');
       fetchUnfinishedAgenda();
+      fetchSummary();
     } catch (error) {
       console.log('Error deleting agenda!', error);
       showSnackbar('Failed to delete agenda', 'error');

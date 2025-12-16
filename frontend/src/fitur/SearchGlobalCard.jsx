@@ -10,6 +10,7 @@ import {
 } from "react-icons/fa6";
 import { BsFillInboxesFill } from "react-icons/bs";
 import { HiArchiveBoxArrowDown } from "react-icons/hi2";
+import LoadingSpinnerDot from "../utils/LoadingSpinnerDot";
 
 const SearchGlobalCard = ({ userId }) => {
   const [keyword, setKeyword] = useState("");
@@ -150,12 +151,7 @@ const SearchGlobalCard = ({ userId }) => {
 
           {/* LOADING EFFECT */}
           {loading && (
-            <div className="loading-spinner">
-              <div className="dot"></div>
-              <div className="dot"></div>
-              <div className="dot"></div>
-              <p>Searching...</p>
-            </div>
+            <LoadingSpinnerDot text="Let me find that for you 👀"/>
           )}
 
           {/* NO RESULTS */}
