@@ -296,8 +296,10 @@
 }
 
 .wpf-content {
-    border: 1px dashed #5D12EB;
-    box-shadow: 0px 4px 8px #5e12eb46;
+    border: 1px dashed var(--primary);
+    background-color: var(--card-bg);
+    /* box-shadow: 0px 4px 8px #5e12eb46; */
+    color: var(--text);
     padding: 15px;
     display: flex;
     flex-direction: column;
@@ -308,11 +310,16 @@
     transition: transform 0.25s ease;
 }
 
+.wpf-content:hover {
+    background-color: var(--bg-section-hover);
+    box-shadow: var(--box-shadow-purple);
+}
+
 .wpf-content p {
     margin: 0px;
     font-size: 13px;
     font-weight: bold;
-    color: grey;
+    color: var(--text);
 }
 
 .wp-content .wp-content-box {
@@ -320,18 +327,21 @@
     align-items: center;
     justify-content: flex-start;
     gap: 10px;
+    padding: 5px 2px;
     scroll-behavior: smooth;
     /* border: 1px solid green; */
 }
 
 .wp-card {
-    border: 1px solid var(--border);
-    background-color: var(--bg-section);
+    /* border: 1px solid red; */
+    border: 1px solid var(--card-border);
+    background-color: var(--card-bg);
+    box-shadow: var(--card-hover-border);
     min-height: 18vh;
     padding: 5px;
     min-width: 23vw;
     width: 100%;
-    border-radius: 10px;
+    border-radius: 12px;
     position: relative;
     cursor: pointer;
     /* transition: all 0.25s ease; */
@@ -345,7 +355,7 @@
 /* Saat di-drag (dari class motion di atas) */
 .sortable-board-item {
     border-radius: 10px;
-    /* background-color: red; */
+    background-color: var(--bg) !important;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
     transition: box-shadow 0.2s ease, transform 0.2s ease;
     user-select: none;
@@ -405,8 +415,8 @@
 }
 
 .wp-name-text input {
-    border: 1px solid var(--border);
-    background-color: var(--bg-section);
+    border: 1px solid var(--card-bg);
+    background-color: var(--card-bg);
     padding: 5px;
     border-radius: 4px;
     width: 100% !important;
@@ -417,21 +427,23 @@
 
 .wp-name-text input:focus {
     outline: none;
-    background-color: var(--bg-section-hover);
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-bg);
 }
 
 .wp-setting {
     cursor: pointer;
     border-radius: 4px;
     padding: 2px;
-    border: 1px solid var(--bg-section-hover);
+    /* border: 1px solid var(--card-bg); */
     width: 10%;
     color: var(--text);
 }
 
 .wp-setting:hover {
     box-shadow: var(--box-shadow);
-    border: 1px solid var(--border);
+    color: var(--primary);
+    /* border: 1px solid var(--border); */
 }
 
 .bs-pop {
@@ -439,8 +451,8 @@
     top: 30px;
     left: 80%;
     transform: translateX(-50%);
-    background: white;
-    border: 1px solid #ddd;
+    background: var(--bg-section);
+    border: 1px solid var(--border);
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     padding: 10px;
@@ -455,8 +467,9 @@
 
 .bs-pop button {
     padding: 8px;
-    border: 1px solid white;
-    background-color: white;
+    border: 1px solid var(--bg-section);
+    background-color: var(--bg-section);
+    color: var(--text);
     border-radius: 4px;
     width: 100%;
     display: flex;
@@ -466,7 +479,7 @@
 }
 
 .bs-pop button:hover {
-    background-color: #eee;
+    background-color: var(--bg-section-hover);
 }
 
 .bs-pop .bs-icon {
@@ -476,8 +489,8 @@
 
 .bs-pop .delete {
     padding: 8px;
-    border: 1px solid white;
-    background-color: white;
+    border: 1px solid var(--bg-section);
+    background-color: var(--bg-section);
     border-radius: 4px;
     width: 100%;
     display: flex;
@@ -487,7 +500,7 @@
 }
 
 .bs-pop .delete:hover {
-    background-color: #eee;
+    background-color: var(--bg-section-hover);
 }
 
 .bs-pop .bs-delete {
@@ -498,13 +511,13 @@
 
 .bs-pop hr {
     width: 100%;
-    border: 0.1px solid #eee;
+    border: 0.1px solid var(--border);
 }
 
 .wp-body {
-    background-color: #fff;
-    border: 1px solid #eee;
-    /* border: 1px solid red; */
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    /* box-shadow: var(--box-shadow); */
     border-radius: 8px;
     margin: 5px;
     padding: 10px;
@@ -512,18 +525,32 @@
 
 .wp-body textarea {
     width: 95%;
-    border: 1px solid #eee;
+    border: 1px solid var(--card-bg);
     border-radius: 4px;
     padding: 10px 5px;
     outline: none;
-    color: grey;
+    color: var(--sub-text);
     font-size: 12px;
 }
 
+.wp-body textarea:hover,
+.wp-body textarea:focus {
+    border: 1px solid var(--card-bg);
+    background-color: var(--card-bg);
+    color: var(--sub-text);
+    outline: none;
+}
+
+
+
 .wp-body p {
+    border: 1px solid var(--card-bg);
+    background-color: var(--card-bg);
+    color: var(--sub-text);
     margin: 5px 0px;
     font-size: 12px;
     /* padding-top: 10px; */
+    /* line-height: 1.5px; */
     min-height: 8vh;
     max-width: 250px;
     width: 100%;
@@ -686,15 +713,17 @@
     justify-content: flex-start;
     padding: 5px;
     border-radius: 4px;
-    background-color: #fff;
+    border: 1px solid var(--card-bg);
+    background-color: var(--card-bg);
     font-size: 10px;
-    color: #5e5e5e;
+    color: var(--sub-text);
     width: 50%;
+    gap: 3px;
     /* border: 1px solid red; */
 }
 
 .wp-create .wp-icon {
-    color: #5D12EB;
+    color: var(--sub-text);
     font-size: 15px;
     /* border: 1px solid green; */
 }
@@ -703,19 +732,19 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 5px 7px;
-    border-radius: 8px;
-    border: 1px solid #5D12EB;
-    background: linear-gradient(90deg, #7246eb, #532189);
+    padding: 3px 7px;
+    border-radius: 4px;
+    border: 1px solid var(--bg-section);
+    background: var(--bg-icon2);
     cursor: pointer;
-    color: #fff;
-    font-weight: normal;
-    font-size: 12px;
+    color: var(--text-white);
+    font-weight: bold;
+    font-size: 10px;
     gap: 5px;
 }
 
 .wp-btm .view:hover {
-    box-shadow: 0px 4px 8px #5e12eb46;
+    box-shadow: var(--box-shadow-purple);
 }
 
 /* end body  */

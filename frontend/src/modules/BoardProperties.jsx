@@ -5,14 +5,53 @@ import {
   getALlPriorities,
   getBoardPriorities
 } from '../services/ApiServices';
-import '../style/modules/BoardProperties.css'
-import { HiOutlineAdjustmentsHorizontal, HiOutlineEllipsisHorizontal, HiOutlineLightBulb, HiOutlinePlus, HiXMark } from 'react-icons/hi2';
+import '../style/modules/BoardProperties.css';
+import {
+  HiOutlineEllipsisHorizontal,
+  HiOutlineLightBulb,
+  HiOutlinePlus
+} from 'react-icons/hi2';
 import BootstrapTooltip from '../components/Tooltip';
 import { useSnackbar } from '../context/Snackbar';
 import { FaXmark } from 'react-icons/fa6';
 
+/* =========================
+   PRIORITY THEME MAPPING
+========================= */
+const PRIORITY_THEME = {
+  low: 'status-confirmed',
+  medium: 'status-progress',
+  high: 'status-rejected',
+  no: 'status-unknown',
+};
+
+/* =========================
+   NORMALIZER (WAJIB)
+========================= */
+const normalizePriority = (name = '') => {
+  return name
+    .toLowerCase()
+    .replace('priority', '')
+    .trim();
+};
+
+/* =========================
+   STYLE HELPER
+========================= */
+const getPriorityStyle = (priorityName) => {
+  const key = normalizePriority(priorityName);
+  const theme = PRIORITY_THEME[key] || 'status-unknown';
+
+  return {
+    backgroundColor: `var(--${theme}-bg)`,
+    border: `1px solid var(--${theme}-border)`,
+    color: `var(--${theme}-text)`,
+  };
+};
+
 const BoardProperties = ({ boardId }) => {
-  const {showSnackbar} = useSnackbar();
+  const { showSnackbar } = useSnackbar();
+
   const [allPriorities, setAllPriorities] = useState([]);
   const [selectedPriority, setSelectedPriority] = useState(null);
   const [showBoardProperties, setShowBoardProperties] = useState(false);
@@ -25,105 +64,88 @@ const BoardProperties = ({ boardId }) => {
     try {
       const all = await getALlPriorities();
       const current = await getBoardPriorities(boardId);
+
       setAllPriorities(all.data);
-      setSelectedPriority(current.data[0] || null); // hanya satu prioritas
+      setSelectedPriority(current.data[0] || null);
     } catch (error) {
       console.error('Gagal fetch data', error);
     }
   };
 
-  const handleShowBoard = () => {
-    setShowBoardProperties((prev) => !prev);
-  };
-
-  const handleCloseBoard = () =>{
-    setShowBoardProperties(false)
-  }
-
-  const handleSelect = async (property) => {
+  const handleSelect = async (priority) => {
     try {
-      await addPriorityToBoard(boardId, property.id);
+      await addPriorityToBoard(boardId, priority.id);
       await fetchData();
       setShowBoardProperties(false);
-      showSnackbar('Priority board added','success');
+      showSnackbar('Priority board added', 'success');
     } catch (error) {
-      showSnackbar('Failed to add priority board','error');
-      console.error('Gagal menambahkan prioritas', error);
+      showSnackbar('Failed to add priority board', 'error');
     }
   };
 
-  const handleDelete = async () => {
-    try {
-      if (selectedPriority) {
-        await deletePropertyFromBoard(boardId, selectedPriority.id);
-        setSelectedPriority(null);
-      }
-    } catch (error) {
-      console.error('Gagal menghapus prioritas', error);
-    }
+  const handleCloseBoard = () => {
+    setShowBoardProperties(false);
   };
 
   return (
-    <div className='bp-container'>
-        <div className="bp-select">
-            {selectedPriority ? (
-                <div className='bps-box'>
-                    <button style={{ backgroundColor: selectedPriority.color, border:`1px solid ${selectedPriority.color}`, borderRadius:'6px' }}>
-                        <HiOutlineLightBulb className='bps-lamp'/>
-                        {selectedPriority.name}
-                    </button>
-                </div>
-            ) : (
-                <button className='box-add' onClick={handleShowBoard}>
-                  <HiOutlinePlus className='ba-icon'/>
-                  Add Priority
-                </button>
-            )}
-            <BootstrapTooltip title='Priority Setting' placement='top'>
-                <HiOutlineEllipsisHorizontal className='bps-icon' onClick={handleShowBoard}/>
-            </BootstrapTooltip>
-        </div>
+    <div className="bp-container">
+      <div className="bp-select">
+        {selectedPriority ? (
+          <div className="bps-box">
+            {/* MINI PRIORITY BADGE */}
+            <span
+              className="priority-mini"
+              style={getPriorityStyle(selectedPriority.name)}
+              title={selectedPriority.name}
+            >
+              <HiOutlineLightBulb className="priority-mini-icon" />
+              {selectedPriority.name}
+            </span>
+          </div>
+        ) : (
+          <button className="box-add" onClick={() => setShowBoardProperties(true)}>
+            <HiOutlinePlus className="ba-icon" />
+            Add Priority
+          </button>
+        )}
+
+        <BootstrapTooltip title="Priority Setting" placement="top">
+          <HiOutlineEllipsisHorizontal
+            className="bps-icon"
+            onClick={() => setShowBoardProperties((prev) => !prev)}
+          />
+        </BootstrapTooltip>
+      </div>
 
       {showBoardProperties && (
-        <ul className='sbp-container'>
-            <div className="sbp-header">
-              <div className="header-left">
-                <div className="left-icon">
-                  <HiOutlineLightBulb className='mini-icon'/>
-                </div>
-                <h4>Select Property</h4>
+        <ul className="sbp-container">
+          <div className="sbp-header">
+            <div className="header-left">
+              <div className="left-icon">
+                <HiOutlineLightBulb className="mini-icon" />
               </div>
-              <div className="header-right">
-                <BootstrapTooltip title='Close' placement='top'>
-                    <FaXmark onClick={handleCloseBoard} className='sbp-close'/>
-                </BootstrapTooltip>
-              </div>
+              <h4>Select Priority</h4>
             </div>
-            {allPriorities.map((priority) => (
-                <li
-                key={priority.id}
-                onClick={() => handleSelect(priority)}
-                style={{color:priority.color}}
-                className='sbp-li'
-                >
-                    <HiOutlineLightBulb className='sbp-icon'/>
-                    {priority.name}
-                </li>
-            ))}
+            <div className="header-right">
+              <BootstrapTooltip title="Close" placement="top">
+                <FaXmark onClick={handleCloseBoard} className="sbp-close" />
+              </BootstrapTooltip>
+            </div>
+          </div>
+
+          {allPriorities.map((priority) => (
+            <li
+              key={priority.id}
+              className="sbp-li"
+              onClick={() => handleSelect(priority)}
+              style={getPriorityStyle(priority.name)}
+            >
+              <HiOutlineLightBulb className="sbp-icon" />
+              {priority.name}
+            </li>
+          ))}
         </ul>
       )}
-
-      {/* {selectedPriority && (
-        <div style={{ marginTop: '10px' }}>
-          <p>
-            Prioritas terpilih:{' '}
-            <strong style={{ color: selectedPriority.color }}>
-              {selectedPriority.name}
-            </strong>
-          </p>
-          <button onClick={handleDelete}>Hapus Prioritas</button>
-        </div>
-      )} */}
     </div>
   );
 };

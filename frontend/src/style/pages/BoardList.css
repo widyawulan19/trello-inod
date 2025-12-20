@@ -1,59 +1,67 @@
 .bl-container {
-    border: 1px solid #ddd;
-    height: 97%;
-    /* margin-bottom: 10px; */
-    margin: 15px;
-    /* background-color: red; */
-    background-color: #F8FAFC;
-    border-radius: 8px;
-    color: #333;
+    /* border: 1px solid red; */
+    height: 100%;
+    width: 100%;
+    padding: 10px;
+    background-color: var(--bg);
+    /* border-radius: 8px; */
+    /* color: #333; */
     position: relative;
 }
 
 .bl-header {
-    border-bottom: 1px solid #ddd;
-    /* border: 1px solid red; */
     border-radius: 8px;
     padding: 5px 10px;
+    padding-left: 0px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     position: relative;
-    background-color: #fff;
+    background-color: var(--bg);
 }
 
 .blnav {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    color: #333;
+    color: var(--sub-text);
     cursor: pointer;
     margin-left: 10px;
     padding: 0px;
-    gap: 0px;
+    gap: 4px;
+    width: 100%;
     /* border: 1px solid green; */
 }
 
-.blnav h4 {
-    width: 100%;
+.blnav .back {
     text-align: left;
     font-size: 12px;
     font-weight: bold;
-    /* border: 1px solid red; */
 }
 
-/* .ellipsis-text {
-    border: 1px solid red;
+.blnav .back:hover {
+    border-bottom: 1px solid var(--border-sec);
+    box-shadow: var(--box-shadow);
+}
+
+.blnav .ellipsis-text {
+    /* border: 1px solid var(--primary); */
+    color: var(--primary);
     text-align: left;
-    font-size: 15px;
+    font-size: 12px;
     font-weight: bold;
-    width: 100%;
-    max-width: 15vw;
+    /* width: 100%; */
+    /* max-width: 15vw; */
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-} */
+}
+
+.blnav .page {
+    text-align: left;
+    font-size: 12px;
+    font-weight: normal;
+}
 
 .blnav .blnav-sub {
     width: 100%;
@@ -105,10 +113,10 @@
 }
 
 .more-action .btn-create-list {
-    border: 1px solid #5D12EB;
-    border-radius: 4px;
-    background: linear-gradient(to bottom, #6E30DC, #5D12EB);
-    color: #fff;
+    border: 1px solid var(--bg);
+    border-radius: 8px;
+    background: var(--bg-icon2);
+    color: var(--text-white);
     gap: 5px;
     width: fit-content;
     cursor: pointer;
@@ -119,8 +127,7 @@
 }
 
 .more-action .btn-create-list:hover {
-    background: linear-gradient(to bottom, #5D12EB, #6E30DC);
-    box-shadow: 0px 4px 8px #5e12eb46;
+    box-shadow: var(--box-shadow-purple);
 }
 
 .btn-create-list p {
@@ -176,9 +183,9 @@
 
 .bl-box {
     border-radius: 16px;
-    border: 1px solid #E5E7EB;
-    background-color: #fff;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border);
+    background-color: var(--bg-section);
+    /* box-shadow: var(--box-shadow); */
     padding: 8px;
     width: 100%;
     height: auto;
@@ -201,16 +208,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    /* background-color: #eee; */
-    border: 1px solid #fff;
+    background-color: var(--bg-section);
+    border: 1px solid var(--bg-section);
+    color: var(--text);
     border-radius: 4px;
     cursor: pointer;
     padding: 0px;
 }
 
 .list-title button:hover {
-    background-color: #ddd;
-    border: 1px solid #ddd;
+    background-color: var(--bg-section-hover);
+    border: 1px solid var(--bg-section-hover);
 }
 
 .l-name {
@@ -225,10 +233,16 @@
 
 .sortable-list-item {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    /* background-color: #5D12EB; */
 }
 
 .sortable-list-item.dragging {
     transform: rotate(2deg);
+}
+
+.sortable-card-item {
+    /* background-color: red; */
+    border-radius: 16px;
 }
 
 .l-name h5 {
@@ -238,40 +252,40 @@
     /* width: 100%; */
     width: 17vw;
     font-weight: bold;
-    color: #333;
+    color: var(--text);
 }
 
 .l-name .icon-i {
-    color: white;
     padding: 3px;
     border-radius: 4px;
     font-size: 12px;
-    background: linear-gradient(90deg, #7246eb, #532189)
+    background: var(--bg-icon2);
 }
 
 
 .l-name .licon {
     margin-right: 2px;
     font-size: 12px;
-    color: white;
+    color: var(--text-white);
 }
 
 .l-name input {
-    border: 1px solid #f2f1f1;
-    background-color: #f2f1f1;
+    border: 1px solid var(--bg-section);
+    background-color: var(--bg-section);
     padding: 0px 3px;
     width: 16vw;
     font-size: 12px;
 }
 
-.l-name input:hover {
+/* .l-name input:hover {
     border: 1px solid #f2f1f1;
     background-color: #f2f1f1;
-}
+} */
 
 .l-name input:focus {
     outline: none;
-    background-color: #f2f1f1;
+    color: var(--text);
+    background-color: var(--bg-section);
 }
 
 
@@ -282,17 +296,17 @@
     right: 0;
     z-index: 100;
     width: 150px;
-    background-color: #fff;
+    background-color: var(--bg-section);
     padding: 5px;
     border-radius: 8px;
-    /* border: 1px solid red; */
+    border: 1px solid var(--border);
     display: flex;
     flex-direction: column;
     /* align-items: center; */
     justify-content: flex-start;
     gap: 2px;
     font-size: 10px;
-    box-shadow: 0px 4px 8px #5e12eb46;
+    box-shadow: var(--box-shadow);
     /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
 }
 
@@ -302,25 +316,26 @@
     align-items: center;
     justify-content: flex-start;
     font-size: 10px;
-    border: 1px solid #fff;
-    background-color: #fff;
+    border: 1px solid var(--bg-section);
+    background-color: var(--bg-section);
     border-radius: 4px;
-    color: #333;
+    color: var(--text);
 }
 
 .list-setting button:hover {
-    background-color: #eee;
+    background-color: var(--bg-section-hover);
 }
 
 .delete button {
     color: red;
-    border-top: 1px solid #ddd;
+    border-radius: 0px;
+    border-top: 1px solid var(--border);
 }
 
-.cs-icon {
+.list-setting .cs-icon {
     margin-right: 5px;
     font-size: 13px;
-    color: #333;
+    color: var(--text);
 }
 
 .cs-delete {
@@ -386,13 +401,14 @@
     gap: 5px;
     padding: 2px 6px;
     cursor: pointer;
-    border: 1px solid white;
+    border: 1px solid var(--bg-section);
+    color: var(--text);
     border-radius: 4px;
 }
 
 .fc-cont:hover {
-    border: 1px solid #E5E7EB;
-    background-color: #E5E7EB;
+    border: 1px solid var(--bg-section-hover);
+    background-color: var(--bg-section-hover);
 }
 
 .form-card p {
@@ -437,6 +453,7 @@
     display: flex;
     align-items: center;
     justify-content: right;
+    color: var(--text);
 }
 
 .card-count p {
@@ -496,10 +513,10 @@
     top: 100%;
     right: 0;
     z-index: 100;
-    border: 1px solid #ddd;
+    border: 1px solid var(--bg);
     border-radius: 4px;
     padding: 5px;
-    background-color: white;
+    background-color: var(--bg);
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     display: flex;
     align-items: center;

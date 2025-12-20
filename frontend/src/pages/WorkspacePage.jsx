@@ -18,6 +18,7 @@ import { HiViewBoards } from "react-icons/hi";
 import { useUser } from '../context/UserContext';
 import { PiAlignTopFill } from 'react-icons/pi';
 import { GiCardExchange } from 'react-icons/gi';
+import { BsCalendar2DateFill } from "react-icons/bs";
 import {
   DndContext,
   closestCenter,
@@ -638,7 +639,7 @@ const handleNavigateToWorkspace = () =>{
 
                             <div className="wp-btm">
                               <div className='wp-create'>
-                                <IoTime className='wp-icon' />
+                                <BsCalendar2DateFill className='wp-icon' />
                                 {formatDate(board.create_at)}
                               </div>
                               <button

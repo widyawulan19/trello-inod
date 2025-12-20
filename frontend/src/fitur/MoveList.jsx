@@ -88,7 +88,7 @@ const MoveList = ({ boardId, userId, onClose, listId ,fetchLists,fetchCardList})
                     <div className="move-icon">
                         <HiMiniArrowLeftStartOnRectangle className='mini-icon'/>
                     </div>
-                    <p>Move List</p>
+                    <p>MOVE LIST</p>
                 </div>
                 
                 <div className="head-right">

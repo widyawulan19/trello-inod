@@ -1,31 +1,32 @@
-.card-box-container {
+/* .card-box-container {
     position: relative;
     border-radius: 16px;
-    /* border: 1px solid red; */
-    background-color: #fff;
-}
+    border: 1px solid blue;
+    border: 1px solid var(--border);
+    background-color: var(--bg-section);
+} */
 
 .card-container {
     border-radius: 16px;
-    border: 1px solid #E5E7EB;
-    background-color: #fff;
+    border: 1px solid var(--border);
+    background-color: var(--card-bg);
     padding: 5px;
     overflow: visible;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .card-container:hover {
     border-radius: 16px;
-    border: 1px solid #6a11cb;
-    box-shadow: 0px 4px 8px #5e12eb46;
+    border: 1px solid var(--border);
+    /* background-color: var(--bg-section-hover); */
+    box-shadow: var(--box-shadow);
     /* color:#1c982a */
 }
 
 .cc-top-header {
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--border);
     /* border: 1px solid blue; */
     /* margin-bottom: 3px; */
-    padding: 0px 2px;
+    padding: 0px;
     padding-bottom: 2px;
     display: flex;
     align-items: center;
@@ -36,16 +37,15 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
+    /* border: 1px solid red; */
+    width: 80%;
 }
 
-.cctop-status .cctop-icon {
-    /* font-size: 12px; */
-
-}
+.cctop-status .cctop-icon {}
 
 .cctop-icon .mini-cctop {
-    font-size: 15px;
-    color: #6a11cb;
+    font-size: 19px;
+    color: var(--icon-card-primary);
 }
 
 .cc-cover {
@@ -66,7 +66,8 @@
     right: 0;
     z-index: 101;
     width: 150px;
-    background-color: #fff;
+    background-color: var(--bg);
+    border: 1px solid var(--border);
     padding: 10px 7px;
     border-radius: 8px;
     display: flex;
@@ -75,34 +76,34 @@
     justify-content: flex-start;
     gap: 3px;
     font-size: 15px;
-    box-shadow: 0px 4px 8px #5e12eb46;
+    box-shadow: var(--box-shadow);
 }
 
 .card-setting button {
-    padding: 3px;
+    padding: 3px 5px;
     display: flex;
     align-items: center;
     justify-content: flex-start;
     font-size: 13px;
-    border: 1px solid #fff;
-    background-color: #fff;
-    border-radius: 8px;
-    color: #333;
+    border: 1px solid var(--bg);
+    background-color: var(--bg);
+    border-radius: 4px;
+    color: var(--text);
 }
 
 .card-setting button:hover {
-    background-color: #eee;
+    background-color: var(--bg-section-hover);
 }
 
 .delete button {
     color: red;
-    border-top: 1px solid #ddd;
+    border-top: 1px solid var(--border);
 }
 
 .cs-icon {
     margin-right: 5px;
     font-size: 13px;
-    color: #333;
+    color: var(--text);
 }
 
 .cs-delete {
@@ -142,11 +143,12 @@
 }
 
 .cc-title input {
-    background-color: white;
+    background-color: var(--card-bg);
     /* border: 1px solid red; */
-    border: 1px solid white;
+    border: 1px solid var(--border);
     border-radius: 4px;
     padding: 0px;
+    color: var(--text);
     /* padding: 3px 5px; */
     outline: none;
     width: 100%;
@@ -170,7 +172,7 @@
     word-wrap: break-word;
     overflow-wrap: break-word;
     white-space: normal;
-    color: #4F5966;
+    color: var(--text);
 }
 
 .toogle-cont {
@@ -181,8 +183,9 @@
 }
 
 .cc-setting {
+    color: var(--text);
     cursor: pointer;
-    border: 1px solid #fff;
+    border: 1px solid var(--bg);
     border-radius: 4px;
     display: flex;
     align-items: center;
@@ -190,8 +193,8 @@
 }
 
 .cc-setting:hover {
-    border: 1px solid #eee;
-    background-color: #eee;
+    border: 1px solid var(--bg-section);
+    background-color: var(--bg-section);
 }
 
 

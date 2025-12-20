@@ -13,18 +13,20 @@
 }
 
 .bp-select .box-add {
-    border: 1px solid #eee;
+    border: 1px solid var(--card-bg);
+    background-color: var(--card-bg);
+    color: var(--text);
     display: flex;
     align-items: center;
     justify-content: flex-start;
     cursor: pointer;
     font-size: 12px;
+    padding: 5px;
 }
 
 .box-add:hover {
-    border: 1px solid #eee;
-    background-color: #eee;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    background-color: var(--bg-section-hover);
+    box-shadow: var(--box-shadow);
 }
 
 .box-add .ba-icon {
@@ -56,16 +58,47 @@
 .bps-icon {
     margin-left: 5px;
     cursor: pointer;
-    border: 1px solid white;
+    color: var(--text);
     border-radius: 4px;
     /* padding: 3px; */
     font-size: 20px;
 }
 
 .bps-icon:hover {
-    border: 1px solid #ddd;
-    background-color: #ddd;
+    background-color: var(--bg-section-hover);
+    /* color: var(--primary); */
 }
+
+.priority-mini {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+
+    /* height: 22px; */
+    padding: 5px;
+
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 1;
+
+    border-radius: 8px !important;
+    border: none;
+    /* pill */
+    white-space: nowrap;
+
+    cursor: default;
+    user-select: none;
+}
+
+.priority-mini-icon {
+    font-size: 10px;
+    opacity: 0.9;
+}
+
+.priority-mini:hover {
+    filter: brightness(0.97);
+}
+
 
 .sbp-container {
     position: absolute;
@@ -76,13 +109,13 @@
     padding: 0;
     list-style: none;
     /* border: 1px solid red; */
-    border: 1px solid #ddd;
+    border: 1px solid var(--border);
     border-radius: 8px;
-    background-color: #fff;
+    background-color: var(--bg-section);
     z-index: 99;
     width: 80%;
     min-width: 150px;
-    box-shadow: 0px 4px 8px #5e12eb46;
+    box-shadow: var(--box-shadow);
 }
 
 .sbp-icon {
@@ -91,11 +124,11 @@
 
 .sbp-header {
     /* border: 1px solid green; */
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 5px;
+    padding: 7px 10px;
 }
 
 .sbp-header .header-left {
@@ -107,15 +140,15 @@
 }
 
 .header-left .left-icon {
-    color: white;
+    color: var(--text);
     padding: 5px;
     border-radius: 6px;
     font-size: 12px;
-    background: linear-gradient(90deg, #7246eb, #532189)
+    background: var(--bg-icon2);
 }
 
 .left-icon .mini-icon {
-    color: white;
+    color: var(--text-white);
     font-size: 15px;
 }
 
@@ -123,10 +156,12 @@
     margin: 0px;
     font-size: 12px;
     font-weight: bold;
+    color: var(--text);
 }
 
 .sbp-close {
-    border: 1px solid white;
+    border: 1px solid var(--bg-section);
+    color: var(--text);
     /* padding: 2px; */
     cursor: pointer;
     border-radius: 4px;
@@ -134,12 +169,12 @@
 }
 
 .sbp-close:hover {
-    border: 1px solid #ddd;
-    background-color: #ddd;
+    border: 1px solid var(--bg-section-hover);
+    background-color: var(--bg-section-hover);
 }
 
 .sbp-li {
-    border: 1px solid white;
+    border: 1px solid var(--bg-section);
     margin: 5px;
     border-radius: 4px;
     padding: 5px 7px;
@@ -151,9 +186,34 @@
 }
 
 .sbp-li:hover {
-    border: 1px solid #eee;
-    background-color: #eee;
+    border: 1px solid var(--bg-section-hover);
+    background-color: var(--bg-section-hover);
 }
+
+.priority-high {
+    background: var(--status-rejected-bg);
+    border: 1px solid var(--status-rejected-border);
+    color: var(--status-rejected-text);
+}
+
+.priority-medium {
+    background: var(--status-progress-bg);
+    border: 1px solid var(--status-progress-border);
+    color: var(--status-progress-text);
+}
+
+.priority-low {
+    background: var(--status-confirmed-bg);
+    border: 1px solid var(--status-confirmed-border);
+    color: var(--status-confirmed-text);
+}
+
+.priority-no\ priority {
+    background: var(--status-unknown-bg);
+    border: 1px solid var(--status-unknown-border);
+    color: var(--status-unknown-text);
+}
+
 
 /* HEIGHT MEDIA QUERY  */
 @media screen and (max-height: 600px) {

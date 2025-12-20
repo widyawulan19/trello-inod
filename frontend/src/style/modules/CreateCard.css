@@ -1,20 +1,19 @@
 .cf-container {
-    border: 1px solid #ddd;
+    border: 1px solid var(--border);
     border-radius: 8px;
-    background-color: white;
-    box-shadow: 0px 4px 8px #5e12eb46;
+    background-color: var(--bg);
+    box-shadow: var(--box-shadow);
 }
 
 .cf-header {
     padding: 7px 10px;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
 .cfh-left {
-    /* border: 1px solid yellow; */
     gap: 5px;
     display: flex;
     align-items: center;
@@ -23,9 +22,9 @@
 
 .cfh-icon {
     border-radius: 8px;
-    border: 1px solid #7e3ec2;
-    background-color: #7e3ec2;
-    color: white;
+    border: 1px solid var(--bg);
+    background: var(--bg-icon2);
+    color: var(--text-white);
     padding: 3px;
 }
 
@@ -33,18 +32,20 @@
     margin: 0px;
     font-size: 12px;
     font-weight: bold;
+    color: var(--text);
 }
 
 .cfh-right {
-    border: 1px solid white;
+    border: 1px solid var(--bg);
     padding: 1px;
     border-radius: 4px;
     cursor: pointer;
+    color: var(--text);
 }
 
 .cfh-right:hover {
-    border: 1px solid #eee;
-    background-color: #eee;
+    border: 1px solid var(--bg-section-hover);
+    background-color: var(--bg-section-hover);
 }
 
 
@@ -73,32 +74,33 @@
 .desc label {
     font-size: 12px;
     margin-bottom: 2px;
-    color: #333;
+    color: var(--sub-text);
     font-weight: normal;
 }
 
 .title-card input,
 .desc textarea {
     padding: 5px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border);
     border-radius: 8px;
     outline: none;
-    background-color: white;
+    color: var(--sub-text);
+    background-color: var(--input-bg-hover);
 }
 
 .title-card input:hover,
 .desc textarea:hover {
     padding: 5px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--input-bg-hover);
     border-radius: 8px;
     outline: none;
-    background: linear-gradient(to right, #6b11cb41, #2574fc41);
+    background: var(--input-bg-hover);
 }
 
 .title-card input:focus,
 .desc textarea:focus {
-    border: 1px solid #d1bde6;
-    background-color: white;
+    background: var(--input-bg-hover);
+    border: 1px solid var(--input-bg-hover);
 }
 
 .btn-btn {
@@ -111,10 +113,10 @@
 }
 
 .btn-btn button {
-    background: linear-gradient(to bottom, #6E30DC, #5D12EB);
+    background: var(--bg-icon2);
     border: 1px solid transparent !important;
     border-radius: 8px !important;
-    color: white;
+    color: var(--text-white);
     font-weight: normal;
     font-size: 12px;
     padding: 3px 10px !important;
@@ -126,7 +128,7 @@
 }
 
 .btn-btn button:hover {
-    background: linear-gradient(to bottom, #6E30DC, #5D12EB);
+    box-shadow: var(--box-shadow-purple);
 }
 
 

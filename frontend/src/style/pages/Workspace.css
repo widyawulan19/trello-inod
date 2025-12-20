@@ -136,7 +136,7 @@
 .workspace-card {
     border: 1px solid var(--border);
     width: 100%;
-    background-color: var(--bg-section);
+    background-color: var(--card-bg);
     height: fit-content;
     border-radius: 10px;
     padding: 10px;
@@ -147,20 +147,19 @@
 
 .workspace-card:hover {
     background-color: var(--bg-section-hover);
-    box-shadow: var(--box-shadow);
+    box-shadow: var(--card-shadow);
 }
 
 /* CARD FORM CREATE  */
 .form-workspace-card {
     border: 1px dashed var(--border-sec);
-    background-color: var(--bg-section);
+    background-color: var(--card-bg);
     border-radius: 8px;
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    box-shadow: var(--box-shadow);
     cursor: pointer;
     padding: 20px;
 }
@@ -347,14 +346,14 @@
 .wc-header .setting-icon {
     cursor: pointer;
     color: var(--text);
-    border: 1px solid var(--bg-section);
+    /* border: 1px solid var(--card-bg); */
     border-radius: 4px;
     font-size: 20px;
 }
 
 .wc-header .setting-icon:hover {
     cursor: pointer;
-    border: 1px solid var(--bg-section);
+    /* border: 1px solid var(--bg-section-hover); */
     background-color: var(--bg-section);
     border-radius: 4px;
     color: var(--text);
@@ -376,7 +375,8 @@
 }
 
 .workspace-card-desc textarea {
-    border: 1px solid #eee;
+    background-color: var(--bg);
+    color: var(--sub-text);
     border-radius: 4px;
     outline: none;
     width: 95%;
@@ -401,6 +401,7 @@
     word-wrap: break-word;
     overflow-wrap: break-word;
     white-space: normal;
+    color: var(--sub-text);
 
 }
 
@@ -420,11 +421,11 @@
     position: absolute;
     top: 100%;
     left: 0;
-    background-color: white;
-    border: 1px solid #ae8aeb;
+    background-color: var(--bg-section);
+    border: 1px solid var(--border);
     border-radius: 8px;
-    padding: 10px 7px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    padding: 0px 10px;
+    box-shadow: var(--box-shadow);
     z-index: 10;
     display: flex;
     flex-direction: column;
@@ -506,14 +507,14 @@
     padding: 10px;
     z-index: 99;
     border-radius: 4px;
-    border: 1px solid #ae8aeb;
-    background-color: white;
+    border: 1px solid var(--border);
+    background-color: var(--card-bg);
     display: flex;
     flex-direction: column;
     gap: 5px;
     align-items: center;
     justify-content: flex-start;
-    box-shadow: 0px 4px 8px #5e12eb46;
+    box-shadow: var(--card-shadow);
 }
 
 .detail-ul li {
@@ -524,16 +525,16 @@
     gap: 5px;
     padding: 2px 5px;
     cursor: pointer;
-    color: #5e5e5e;
+    color: var(--text);
     width: 100%;
-    border: 1px solid white;
+    border: 1px solid var(--card-bg);
     border-radius: 4px;
-    color: #5D12EB;
+    /* color: #5D12EB; */
 }
 
 .detail-ul li:hover {
-    background-color: #ddd;
-    border: 1px solid #ddd;
+    background-color: var(--bg-section-hover);
+    border: 1px solid var(--bg-section-hover);
 }
 
 
@@ -595,7 +596,7 @@
     right: 0;
     width: 30vw;
     z-index: 100;
-    background-color: var(--bg);
+    background-color: var(--card-bg);
     border: 1px solid var(--border);
     border-radius: 16px;
     box-shadow: var(--box-shadow);

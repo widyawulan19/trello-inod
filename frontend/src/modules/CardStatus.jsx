@@ -8,7 +8,6 @@ import {
   HiMiniXCircle
 } from 'react-icons/hi2';
 import { FaXmark } from 'react-icons/fa6';
-import { useUser } from '../context/UserContext';
 import { updateCardStatusTesting } from '../services/ApiServices';
 
 const CardStatus = ({
@@ -22,60 +21,94 @@ const CardStatus = ({
   setSelectedStatus
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  // const { user } = useUser();
-  // const userId = user?.id;
 
-  // Icon untuk setiap status
+  /* ================= ICON MAP ================= */
   const ICON_STATUS = {
-    Reviewed: <HiMiniEye />,
-    Approved: <HiCheckCircle />,
-    Rejected: <HiMiniXCircle />,
-    Returned: <HiArrowUturnLeft />
+    Accepted: <HiCheckCircle />,
+    Hold: <HiMiniEye />,
+    Cancle: <HiMiniXCircle />,
+    'On Progress': <HiChevronDown />,
+    Revisi: <HiArrowUturnLeft />,
+    'One Hit': <HiCheckCircle />,
+    'Pindah Producer': <HiArrowUturnLeft />,
+    'Revisi in chat on progress': <HiMiniEye />,
+    'Revisi in chat accept': <HiCheckCircle />,
+    FINISH: <HiCheckCircle />
   };
 
-  // Fungsi untuk mengubah status
+  /* ================= STATUS → CSS VAR MAP ================= */
+  const STATUS_VAR_MAP = {
+    Accepted: 'accepted',
+    Hold: 'hold',
+    Cancle: 'cancle',
+    'On Progress': 'on-progress',
+    Revisi: 'revisi',
+    'One Hit': 'one-hit',
+    'Pindah Producer': 'pindah-producer',
+    'Revisi in chat on progress': 'revisi-chat-progress',
+    'Revisi in chat accept': 'revisi-chat-accept',
+    FINISH: 'finish'
+  };
+
+  /* ================= STYLE HELPER ================= */
+  const getStatusStyle = (statusName) => {
+    const key = STATUS_VAR_MAP[statusName];
+
+    if (!key) {
+      return {
+        backgroundColor: 'var(--status-default-bg)',
+        color: 'var(--status-default-text)',
+        border: '1px solid var(--status-default-border)'
+      };
+    }
+
+    return {
+      backgroundColor: `var(--status-${key}-bg)`,
+      color: `var(--status-${key}-text)`,
+      border: `1px solid var(--status-${key}-border)`
+    };
+  };
+
+  /* ================= HANDLER ================= */
   const handleStatusChange = async (statusId) => {
     setSelectedStatus(statusId);
     setIsOpen(false);
 
     try {
-      const res = await updateCardStatusTesting(cardId, userId, { statusId });
-      console.log('✅ Status updated:', res.data);
-      fetchCardStatus(); // refresh data status
+      await updateCardStatusTesting(cardId, userId, { statusId });
+      fetchCardStatus();
     } catch (err) {
       console.error('❌ Failed to update status:', err);
-      if (err.response) {
-        console.error('Server response:', err.response.data);
-      }
     }
   };
 
+  const currentStyle = currentStatus
+    ? getStatusStyle(currentStatus.status_name)
+    : null;
+
   return (
     <div className="card-status-container">
-      {/* Header */}
+      {/* ===== HEADER ===== */}
       <div className="status-header">
         <h5>CARD STATUS</h5>
-        <FaXmark onClick={onClose} size={20} className="sch-icon" />
+        <FaXmark onClick={onClose} size={18} className="sch-icon" />
       </div>
 
-      {/* Status saat ini */}
+      {/* ===== CURRENT STATUS ===== */}
       <div className="sc-content">
         {currentStatus ? (
           <button
             style={{
-              backgroundColor: currentStatus.background_color,
-              border: `1px solid ${currentStatus.background_color}`,
-              color: currentStatus.text_color,
-              borderRadius: '4px',
-              fontWeight: 'bold',
+              ...currentStyle,
+              borderRadius: '6px',
               fontSize: '12px',
+              fontWeight: 600,
+              padding: '6px 12px',
+              width: '100%',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              marginTop: '5px',
-              padding: '6px 12px',
-              width: '100%',
-              gap: '5px'
+              gap: '6px'
             }}
           >
             {ICON_STATUS[currentStatus.status_name]}
@@ -86,7 +119,7 @@ const CardStatus = ({
         )}
       </div>
 
-      {/* Dropdown pilih status */}
+      {/* ===== DROPDOWN ===== */}
       <div className="dropdown-status">
         <button onClick={() => setIsOpen(!isOpen)}>
           Pilih Status
@@ -95,29 +128,30 @@ const CardStatus = ({
 
         {isOpen && (
           <div className="ds-box">
-            {allStatuses.map((status) => (
-              <div
-                key={status.status_id}
-                onClick={() => handleStatusChange(status.status_id)}
-                style={{
-                  padding: '4px 8px',
-                  fontSize: '12px',
-                  cursor: 'pointer',
-                  backgroundColor: status.background_color,
-                  color: status.text_color,
-                  border: `1px solid ${status.background_color}`,
-                  borderRadius: '4px',
-                  margin: '2px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'flex-start',
-                  gap: '8px'
-                }}
-              >
-                {ICON_STATUS[status.status_name]}
-                {status.status_name}
-              </div>
-            ))}
+            {allStatuses.map((status) => {
+              const style = getStatusStyle(status.status_name);
+
+              return (
+                <div
+                  key={status.status_id}
+                  onClick={() => handleStatusChange(status.status_id)}
+                  style={{
+                    ...style,
+                    padding: '6px 10px',
+                    fontSize: '12px',
+                    cursor: 'pointer',
+                    borderRadius: '6px',
+                    marginBottom: '4px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}
+                >
+                  {ICON_STATUS[status.status_name]}
+                  {status.status_name}
+                </div>
+              );
+            })}
           </div>
         )}
       </div>

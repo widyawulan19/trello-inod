@@ -632,19 +632,13 @@ if (!userId) {
     <div className='bl-container'>
         <div className="bl-header">
             <div className="blnav">
-                <h4 className='ellipsis-text'>{boards.name} <span style={{color:'#6a11cb'}}>Boards</span></h4>
-                {/* <h4 className='ellipsis-text'>{workspaceName.name} Boards</h4> */}
-                <div className="blnav-sub">
-                    <p className='back' onClick={()=>handleNavigateToWorkspace(workspaceId)}>All Boards</p>
-                    {/* <p className='back' onClick={()=>handleNavigateToWorkspace(workspaceId)}>{boards.name}</p> */}
-                    <HiOutlineChevronRight className='back-icon'/>
-                    <p>Board List</p>
-                </div>
+                <h4 className='back' onClick={()=>handleNavigateToWorkspace(workspaceId)}>ALL BOARD</h4>
+                <HiOutlineChevronRight className='back-icon'/>
+                <h4 className='ellipsis-text'>{boards.name} [BOARD]</h4>
+                <HiOutlineChevronRight className='back-icon'/>
+                <h4 className='page'>BOARD LISTS</h4>
             </div>
             <div className="more-action">
-                {/* <div className="search-btn">
-                    <SearchCard workspaceId={workspaceId}/>
-                </div> */}
                 <div className="btn-create-list" onClick={handleShowListForm}>
                     <FaPlus className='cl-icon'/>
                     <p>Create List</p>
@@ -669,19 +663,7 @@ if (!userId) {
                 }}
                 onDragCancel={() => setActiveId(null)}
             >
-            {/* <DndContext
-                collisionDetection={closestCenter}
-                onDragEnd={async (event) => {
-                    const { active } = event;
-                    const type = active.data.current?.type;
-
-                    if (type === "card") {
-                    await handleCardDragEnd(event);
-                    } else if (type === "list") {
-                    await handleListDragEnd(event);
-                    }
-                }}
-                > */}
+            
                 <SortableContext
                     items={lists.map((l) => l.id)}
                     strategy={horizontalListSortingStrategy}
@@ -818,8 +800,8 @@ if (!userId) {
                                                         Add Card
                                                     </div>
                                                     <div className="card-count">
-                                                    <p>{totalCard[list.id] || 0}</p> 
-                                                    <div><HiOutlineCreditCard style={{marginRight:'5px'}}/></div>
+                                                        <p>{totalCard[list.id] || 0}</p> 
+                                                        <div><HiOutlineCreditCard style={{marginRight:'5px'}}/></div>
                                                     </div>
                                                 </div>
                                                 {showForm[list.id]&&(

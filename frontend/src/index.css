@@ -14,10 +14,12 @@ code {
 
 /* Default: Light Theme */
 :root {
-  --bg: #F4F5F7;
+  /* --bg: #F4F5F7; */
+  --bg: #F2F3F6;
   --bg-section: #FFFFFF;
   --bg-section-hover: #F0F1F4;
-  --bg-sidebar: #EEF0F3;
+  /* --bg-sidebar: #F0ECF9; */
+  --bg-sidebar: #FFFFFF;
   --border: #E2E4E9;
   --border-sec: #5D12EB;
   --text: #1A1A1A;
@@ -27,11 +29,21 @@ code {
   --sub-text-grey: #5F5F5F;
   --primary: #6D5FEA;
   --primary-soft: #afa6fc;
+  --icon-card-primary: #6D5FEA;
   --logo-bg: linear-gradient(135deg, #D5CCFF, #AFC6FF);
   --logo-bg-gradient: var(--bg-icon2);
   /* --logo-bg: #4B42A6; */
-  --card-bg: #f7f7f7;
+
+  --card-bg: #FFFFFF;
+  --card-border: rgba(17, 24, 39, 0.08);
+  --card-hover-border: rgba(124, 92, 255, 0.35);
+  --card-shadow: 0 6px 18px rgba(17, 24, 39, 0.06);
+
+
+  --input-bg: #F0F1F4;
+  --input-bg-hover: #FFFFFF;
   --bg-icon: #F0ECF9;
+
   --bg-icon2: linear-gradient(135deg, #6D5FEA 0%, #8B7CFF 100%);
 
   --box-shadow-purple: 0px 4px 8px #6b11cb40;
@@ -65,6 +77,59 @@ code {
   --status-unknown-border: #6B7280;
   --status-unknown-text: #374151;
 
+  /* STATUS PROJECT  */
+  /* ========== STATUS : ACCEPTED ========== */
+  --status-accepted-bg: #E6F9ED;
+  --status-accepted-text: #1E7F43;
+  --status-accepted-border: #9FE3B8;
+
+  /* ========== STATUS : HOLD ========== */
+  --status-hold-bg: #FFF4E5;
+  --status-hold-text: #B45309;
+  --status-hold-border: #FACC15;
+
+  /* ========== STATUS : CANCLE ========== */
+  --status-cancle-bg: #FDEAEA;
+  --status-cancle-text: #B42318;
+  --status-cancle-border: #FDA4AF;
+
+  /* ========== STATUS : ON PROGRESS ========== */
+  --status-on-progress-bg: #E8F0FE;
+  --status-on-progress-text: #1D4ED8;
+  --status-on-progress-border: #93C5FD;
+
+  /* ========== STATUS : REVISI ========== */
+  --status-revisi-bg: #F3E8FF;
+  --status-revisi-text: #7C3AED;
+  --status-revisi-border: #C4B5FD;
+
+  /* ========== STATUS : ONE HIT ========== */
+  --status-one-hit-bg: #ECFDF3;
+  --status-one-hit-text: #15803D;
+  --status-one-hit-border: #86EFAC;
+
+  /* ========== STATUS : PINDAH PRODUCER ========== */
+  --status-pindah-producer-bg: #F1F5F9;
+  --status-pindah-producer-text: #334155;
+  --status-pindah-producer-border: #CBD5E1;
+
+  /* ========== STATUS : REVISI IN CHAT ON PROGRESS ========== */
+  --status-revisi-chat-progress-bg: #EEF2FF;
+  --status-revisi-chat-progress-text: #4338CA;
+  --status-revisi-chat-progress-border: #A5B4FC;
+
+  /* ========== STATUS : REVISI IN CHAT ACCEPT ========== */
+  --status-revisi-chat-accept-bg: #ECFEFF;
+  --status-revisi-chat-accept-text: #0369A1;
+  --status-revisi-chat-accept-border: #67E8F9;
+
+  /* ========== STATUS : FINISH ========== */
+  --status-finish-bg: #E0F2FE;
+  --status-finish-text: #075985;
+  --status-finish-border: #7DD3FC;
+
+
+
   /* LABEL CARD  */
   --label-card-bg: #E6F6F3;
   --label-card-border: #5FC9B5;
@@ -78,8 +143,8 @@ code {
 
 /* Dark Theme */
 [data-theme="dark"] {
-  --bg: #14171D;
-  --bg-section: #1E222A;
+  --bg: #1E222A;
+  --bg-section: #14171D;
   --bg-section-hover: #2A2F38;
   --bg-sidebar: #1A1D23;
   --border: #2F3440;
@@ -92,9 +157,18 @@ code {
   --sub-text-grey: #7A7D81;
   --primary: #3C31A3;
   --primary-soft: #a297ff;
+  --icon-card-primary: #A5B4FC;
   --logo-bg: #171A1F;
   --logo-bg-gradient: #171A1F;
-  --card-bg: #1E2128;
+  /* --card-bg: #14171D; */
+
+  /* CARD  */
+  --card-bg: #1B1F2A;
+  --card-border: rgba(255, 255, 255, 0.06);
+  --card-hover-border: rgba(124, 92, 255, 0.35);
+
+  --input-bg: #14171D;
+  --input-bg-hover: #2A2F38;
   --bg-icon: #372B56;
   --bg-icon2: linear-gradient(135deg, #4F42C9 0%, #6D5FEA 100%);
 
@@ -130,6 +204,59 @@ code {
   --status-unknown-bg: rgba(156, 163, 175, 0.2);
   --status-unknown-border: #9CA3AF;
   --status-unknown-text: #E5E7EB;
+
+  /* STATUS PROJECT  */
+
+  /* ========== STATUS : ACCEPTED ========== */
+  --status-accepted-bg: #0F2F1E;
+  --status-accepted-text: #6EE7B7;
+  --status-accepted-border: #14532D;
+
+  /* ========== STATUS : HOLD ========== */
+  --status-hold-bg: #2A1D0A;
+  --status-hold-text: #FACC15;
+  --status-hold-border: #713F12;
+
+  /* ========== STATUS : CANCLE ========== */
+  --status-cancle-bg: #2A0F12;
+  --status-cancle-text: #FDA4AF;
+  --status-cancle-border: #7F1D1D;
+
+  /* ========== STATUS : ON PROGRESS ========== */
+  --status-on-progress-bg: #0F1E3A;
+  --status-on-progress-text: #93C5FD;
+  --status-on-progress-border: #1E3A8A;
+
+  /* ========== STATUS : REVISI ========== */
+  --status-revisi-bg: #24103A;
+  --status-revisi-text: #D8B4FE;
+  --status-revisi-border: #6D28D9;
+
+  /* ========== STATUS : ONE HIT ========== */
+  --status-one-hit-bg: #0F2F1A;
+  --status-one-hit-text: #86EFAC;
+  --status-one-hit-border: #166534;
+
+  /* ========== STATUS : PINDAH PRODUCER ========== */
+  --status-pindah-producer-bg: #1E293B;
+  --status-pindah-producer-text: #CBD5E1;
+  --status-pindah-producer-border: #334155;
+
+  /* ========== STATUS : REVISI IN CHAT ON PROGRESS ========== */
+  --status-revisi-chat-progress-bg: #1E1B4B;
+  --status-revisi-chat-progress-text: #A5B4FC;
+  --status-revisi-chat-progress-border: #3730A3;
+
+  /* ========== STATUS : REVISI IN CHAT ACCEPT ========== */
+  --status-revisi-chat-accept-bg: #042F2E;
+  --status-revisi-chat-accept-text: #67E8F9;
+  --status-revisi-chat-accept-border: #155E75;
+
+  /* ========== STATUS : FINISH ========== */
+  --status-finish-bg: #082F49;
+  --status-finish-text: #7DD3FC;
+  --status-finish-border: #075985;
+
 
   /* LABEL CARD  */
   --label-card-bg: rgba(20, 184, 166, 0.15);
