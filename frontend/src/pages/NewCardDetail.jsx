@@ -6,7 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import '../style/pages/NewCardDetail.css'
 import BootstrapTooltip from '../components/Tooltip';
 import { GiCloudUpload } from "react-icons/gi";
-import { addCoverCardTesting, archiveCard, archiveData, deleteCard, deleteCoverCard, deleteCoverCardTesting, deleteUserFromCard, getActivityCardTesting, getAllCardUsers, getAllCovers, getAllDueDateByCardId, getAllStatus, getAllUploadFiles, getAllUserAssignToCard, getCardById, getCardByList, getCardPriority, getChecklistItemChecked, getChecklistsWithItemsByCardId, getCoverByCard, getLabelByCard, getListById, getStatusByCardId, getTotalChecklistItemByCardId, getTotalFile, updateCardCoverTesting, updateDescCard, updateDescCardTesting, updateTitleCard, updateTitleCardTesting } from '../services/ApiServices';
+import { addCoverCardTesting, archiveCard, archiveData, deleteCard, deleteCoverCard, deleteCoverCardTesting, deleteUserFromCard, getActivityCardTesting, getAllCardUsers, getAllCovers, getAllDueDateByCardId, getAllStatus, getAllUploadFiles, getAllUserAssignToCard, getCardById, getCardByList, getCardPriority, getChecklistItemChecked, getChecklistsWithItemsByCardId, getCoverByCard, getLabelByCard, getListById, getStatusByCardId, getTotalChecklistItemByCardId, getTotalFile, updateCardCoverTesting, updateDescCard, updateDescCardTesting, updateTitleCard, updateTitleCardAnotherTesting, updateTitleCardTesting } from '../services/ApiServices';
 import SelectedLabels from '../UI/SelectedLabels';
 import CardDetailPanel from '../modules/CardDetailPanel';
 import DetailCard from '../modules/DetailCard';
@@ -57,6 +57,12 @@ const NewCardDetail=({fetchBoardDetail})=> {
     //EDIT CARD TITLE
     const [editingTitle, setEditingTitle] = useState(null)
     const [newTitle, setNewTitle] = useState('')
+
+    const [editingCardId, setEditingCardId] = useState(null);
+    const [tempTitle, setTempTitle] = useState('');
+    const [loadingTitle, setLoadingTitle] = useState(false);
+
+
     //EDIT DESCRIPTION
     const [editingDescription, setEditingDescription] = useState(null);
     const [newDescription, setNewDescription] = useState('');
@@ -144,29 +150,7 @@ const NewCardDetail=({fetchBoardDetail})=> {
 
     const quillRef = useRef(null);
 
-//     const modules = {
-//     toolbar: [
-//       [{ header: [1, 2, false] }],
-//       ["bold", "italic", "underline", "strike"],
-//       [{ list: "ordered" }, { list: "bullet" }],
-//       ["blockquote", "code-block"],
-//       [{ align: [] }],
-//       ["link"],
-//       ["clean"],
-//     ],
-//     keyboard: {
-//       bindings: {
-//         tab: {
-//           key: 9,
-//           handler: function (range, context) {
-//           this.quill.insertText(range.index, "    "); // ⬅️ tambahin 4 spasi
-//           this.quill.setSelection(range.index + 4, 0); // ⬅️ cursor geser setelah spasi
-//           return false; // cegah pindah fokus
-//         },
-//         },
-//       },
-//     },
-//   };
+
 
 const modules = {
   toolbar: {
@@ -405,64 +389,58 @@ const modules = {
 
     //2. edit card title
 
-   // === EDIT MODE ===
-const handleEditCardName = (e) => {
-  e.stopPropagation();
-  setEditingTitle(cards.id);      // simpan cardId
-  setNewTitle(cards.title);       // isi input dengan title lama
-};
 
 
-// ==========================
-// ENTER EDIT MODE
-// ==========================
-const handleEditingTitle = (e, cardId, currentTitle) => {
-  e.stopPropagation();
 
-  if (!cardId) return;
-
-  setEditingTitle(cardId);
-  setNewTitle(currentTitle);
-};
 
 // ==========================
 // SAVE TITLE (SINGLE SOURCE)
 // ==========================
+const handleEditingTitle = (e, cardId, currentTitle) => {
+    e.stopPropagation();
+    setEditingTitle(cardId);
+    setNewTitle(currentTitle);
+};
+
 const handleSaveTitle = async (cardId) => {
-  const title = newTitle.trim();
-  if (!title || title === cards.title) {
+    const title = newTitle.trim();
+    if (!title || title === cards?.title) {
+        setEditingTitle(null);
+        return;
+    }
+
+    // ✅ 1. UPDATE UI LANGSUNG (OPTIMISTIC)
+    setCards(prev => ({
+        ...prev,
+        title
+    }));
+
     setEditingTitle(null);
-    return;
-  }
 
-  // ✅ update UI dulu
-  setCards(prev => ({
-    ...prev,
-    title
-  }));
+    try {
+        await updateTitleCardAnotherTesting(cardId, userId, { title });
 
-  setEditingTitle(null);
+        // (optional) sinkron ulang dari BE
+        await fetchCardById(cardId);
 
-  try {
-    await updateTitleCard(cardId, { title });
-  } catch (error) {
-    console.error(error);
-  }
+    } catch (error) {
+        console.error('Error updating card title:', error);
+
+        // ❗ rollback kalau gagal
+        await fetchCardById(cardId);
+    }
 };
 
 
-// ==========================
-// KEYBOARD HANDLER
-// ==========================
-const handleKeyPressTitle = (e, cardId) => {
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    handleSaveTitle(cardId);
-  }
+const handleKeyDownTitle = (e, cardId) => {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        handleSaveTitle(cardId);
+    }
 
-  if (e.key === 'Escape') {
-    setEditingTitle(null);
-  }
+    if (e.key === 'Escape') {
+        setEditingTitle(null);
+    }
 };
 
 
@@ -1007,10 +985,9 @@ const handleKeyPressTitle = (e, cardId) => {
                                 <input
                                     value={newTitle}
                                     onChange={(e) => setNewTitle(e.target.value)}
-                                    onKeyDown={(e) => handleKeyPressTitle(e, cardId)}
+                                    onKeyDown={(e) => handleKeyDownTitle(e, cardId)}
                                     autoFocus
-                                    />
-
+                                />
                                 ) : (
                                 <h5 onClick={(e) => handleEditingTitle(e, cardId, cards.title)}>
                                     {cards.title}
@@ -1018,6 +995,7 @@ const handleKeyPressTitle = (e, cardId) => {
                                 )}
                             </div>
                             )}
+
 
                             {/* HEADER LABEL  */}
                             <div className="ncd-label">

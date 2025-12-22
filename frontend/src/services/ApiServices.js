@@ -426,6 +426,9 @@ export const updateTitleCardTesting = (cardId, userId, payload) => {
   );
 };
 
+export const updateTitleCardAnotherTesting = (cardId, userId, payload) =>
+  axios.put(`${API_URL}/cards/${cardId}/title-another-testing/${userId}`, payload);
+
 // export const updateTitleCard = (id, title) => axios.put(`${API_URL}/cards/${id}/title`, title)
 export const updateTitleCard = (id, payload) =>
   axios.put(`${API_URL}/cards/${id}/title`, payload);
