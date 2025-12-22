@@ -5908,6 +5908,60 @@ app.put('/api/cards/:id/title', async (req, res) => {
     }
 })
 
+app.put('/api/cards/:id/title-another-testing/:userId', async (req, res) => {
+    const { id, userId } = req.params;
+    const { title } = req.body;
+
+    const actingUserId = parseInt(userId, 10);
+    if (!actingUserId) {
+        return res.status(400).json({ error: 'Invalid userId' });
+    }
+
+    try {
+        // 1️⃣ ambil title lama
+        const oldResult = await client.query(
+            'SELECT title FROM cards WHERE id = $1',
+            [id]
+        );
+
+        if (oldResult.rows.length === 0) {
+            return res.status(404).json({ error: 'Card not found' });
+        }
+
+        const oldTitle = oldResult.rows[0].title;
+
+        // 2️⃣ update title
+        const result = await client.query(
+            `UPDATE cards 
+             SET title = $1, update_at = CURRENT_TIMESTAMP 
+             WHERE id = $2 
+             RETURNING *`,
+            [title, id]
+        );
+
+        // 3️⃣ simpan activity
+        await logCardActivity({
+            action: 'updated_title',
+            card_id: parseInt(id),
+            user_id: actingUserId,
+            entity: 'title',
+            entity_id: id,
+            details: {
+                old_title: oldTitle,
+                new_title: title
+            }
+        });
+
+        // 4️⃣ response sukses
+        res.status(200).json(result.rows[0]);
+
+    } catch (error) {
+        console.error('Error updating card title:', error);
+        res.status(500).json({ error: 'Gagal update card title' });
+    }
+});
+
+
 //1.1 update title card (testing)
 app.put('/api/cards/:id/title-testing/:userId', async (req, res) => {
     const { id, userId } = req.params;
