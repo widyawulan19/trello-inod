@@ -6,7 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import '../style/pages/NewCardDetail.css'
 import BootstrapTooltip from '../components/Tooltip';
 import { GiCloudUpload } from "react-icons/gi";
-import { addCoverCardTesting, archiveCard, archiveData, deleteCard, deleteCoverCard, deleteCoverCardTesting, deleteUserFromCard, getActivityCardTesting, getAllCardUsers, getAllCovers, getAllDueDateByCardId, getAllStatus, getAllUploadFiles, getAllUserAssignToCard, getCardById, getCardByList, getCardPriority, getChecklistItemChecked, getChecklistsWithItemsByCardId, getCoverByCard, getLabelByCard, getListById, getStatusByCardId, getTotalChecklistItemByCardId, getTotalFile, updateCardCoverTesting, updateDescCard, updateDescCardTesting, updateTitleCard } from '../services/ApiServices';
+import { addCoverCardTesting, archiveCard, archiveData, deleteCard, deleteCoverCard, deleteCoverCardTesting, deleteUserFromCard, getActivityCardTesting, getAllCardUsers, getAllCovers, getAllDueDateByCardId, getAllStatus, getAllUploadFiles, getAllUserAssignToCard, getCardById, getCardByList, getCardPriority, getChecklistItemChecked, getChecklistsWithItemsByCardId, getCoverByCard, getLabelByCard, getListById, getStatusByCardId, getTotalChecklistItemByCardId, getTotalFile, updateCardCoverTesting, updateDescCard, updateDescCardTesting, updateTitleCard, updateTitleCardTesting } from '../services/ApiServices';
 import SelectedLabels from '../UI/SelectedLabels';
 import CardDetailPanel from '../modules/CardDetailPanel';
 import DetailCard from '../modules/DetailCard';
@@ -404,33 +404,102 @@ const modules = {
     };
 
     //2. edit card title
-        const handleEditingTitle = (e, cardId, currentCardTitle) =>{
-          console.log('HandleEdit title triggered', {cardId, currentCardTitle});
-          if(!cardId){
-            console.log('cardId tidak ada')
-            return;
-          }
-          e.stopPropagation();
-          setEditingTitle(cardId);
-          setNewTitle(currentCardTitle);
-        }
+
+   // === EDIT MODE ===
+const handleEditCardName = (e) => {
+  e.stopPropagation();
+  setEditingTitle(cards.id);      // simpan cardId
+  setNewTitle(cards.title);       // isi input dengan title lama
+};
+
+
+// ==========================
+// ENTER EDIT MODE
+// ==========================
+const handleEditingTitle = (e, cardId, currentTitle) => {
+  e.stopPropagation();
+
+  if (!cardId) return;
+
+  setEditingTitle(cardId);
+  setNewTitle(currentTitle);
+};
+
+// ==========================
+// SAVE TITLE (SINGLE SOURCE)
+// ==========================
+const handleSaveTitle = async (cardId) => {
+  const title = newTitle.trim();
+  if (!title || title === cards.title) {
+    setEditingTitle(null);
+    return;
+  }
+
+  // ✅ update UI dulu
+  setCards(prev => ({
+    ...prev,
+    title
+  }));
+
+  setEditingTitle(null);
+
+  try {
+    await updateTitleCard(cardId, { title });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+
+// ==========================
+// KEYBOARD HANDLER
+// ==========================
+const handleKeyPressTitle = (e, cardId) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    handleSaveTitle(cardId);
+  }
+
+  if (e.key === 'Escape') {
+    setEditingTitle(null);
+  }
+};
+
+
+
+
+
+
+
+        // const handleEditingTitle = (e, cardId, currentCardTitle) =>{
+        //   console.log('HandleEdit title triggered', {cardId, currentCardTitle});
+        //   if(!cardId){
+        //     console.log('cardId tidak ada')
+        //     return;
+        //   }
+        //   e.stopPropagation();
+        //   setEditingTitle(cardId);
+        //   setNewTitle(currentCardTitle);
+        // }
     
-        const handleSaveTitle = async(cardId)=>{
-          try{
-            await updateTitleCard(cardId, {title:newTitle})
-            setEditingTitle(null);
-            fetchCardById(cardId)
-          }catch(error){
-            console.error('Error updating card title:', error)
-          }
-        }
+        // const handleSaveTitle = async(cardId)=>{
+        //   try{
+        //     await updateTitleCard(cardId, {title:newTitle})
+        //     setEditingTitle(null);
+        //     fetchCardById()
+        //   }catch(error){
+        //     console.error('Error updating card title:', error)
+        //   }
+        // }
     
-        const handleKeyPressTitle = (e, cardId) =>{
-          if(e.key === 'Enter'){
-            handleSaveTitle(cardId)
-            e.stopPropagation();
-          }
-        } 
+        // const handleKeyPressTitle = (e, cardId) =>{
+        //   if(e.key === 'Enter'){
+        //     handleSaveTitle(cardId)
+        //     e.stopPropagation();
+        //   }
+        // }
+        
+        
 
     //3. fetch label
         const fetchLabels = async () =>{
@@ -933,22 +1002,21 @@ const modules = {
                         <div className="title-label">
                             {/* HEADER TITLE  */}
                             {cards && cardId && (
-                                <div className="ct-box">
-                                    {/* <HiOutlineCreditCard className='ct-icon'/> */}
-                                    {editingTitle === cardId ? (
-                                    <input
-                                        value={newTitle}
-                                        onChange={(e) => setNewTitle(e.target.value)}
-                                        onBlur={()=> handleSaveTitle(cardId)}
-                                        onKeyDown={(e) =>handleKeyPressTitle(e, cardId)}
-                                        autoFocus
+                            <div className="ct-box">
+                                {editingTitle === cardId ? (
+                                <input
+                                    value={newTitle}
+                                    onChange={(e) => setNewTitle(e.target.value)}
+                                    onKeyDown={(e) => handleKeyPressTitle(e, cardId)}
+                                    autoFocus
                                     />
-                                    ):(
-                                    <h5 onClick={(e)=>handleEditingTitle(e, cardId, cards.title)}>
-                                        {cards.title}
-                                    </h5>
-                                    )}
-                                </div>
+
+                                ) : (
+                                <h5 onClick={(e) => handleEditingTitle(e, cardId, cards.title)}>
+                                    {cards.title}
+                                </h5>
+                                )}
+                            </div>
                             )}
 
                             {/* HEADER LABEL  */}

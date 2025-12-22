@@ -1,277 +1,385 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import '../style/pages/BoardList.css'
 import { HiMiniListBullet,
-        HiMiniSlash,
-        HiOutlineChartBar,
         HiOutlineEllipsisHorizontal,
         HiOutlineSquare2Stack,
         HiOutlineArchiveBox,
         HiOutlineTrash,
-        HiOutlinePlus,
         HiOutlineCreditCard,
         HiPlus,
         HiMiniArrowLeftStartOnRectangle,
         HiOutlineChevronRight,
-        HiOutlineListBullet
          } from 'react-icons/hi2'
-import { archiveList, deleteLists, duplicateBoards, getAllLists, getBoardById, getCardByList, getListByBoard, updateLists,updateCardPosition, reorderListPosition, getListPositions, updateListPositions,getCardListTotal, reorderCards, getWorkspaceById } from '../services/ApiServices'
+
+import { RiArchiveStackLine } from 'react-icons/ri'
+import { FaPlus } from 'react-icons/fa'
+import { deleteLists, duplicateBoards, getBoardById, getCardByList, getListByBoard, updateLists,updateCardPosition, reorderListPosition, getCardListTotal, reorderCards, getWorkspaceById, updateTitleCard } from '../services/ApiServices'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import Card from './Card'
 import OutsideClick from '../hook/OutsideClick'
 import CreateCard from '../modules/CreateCard'
-import CustomAlert from '../hook/CustomAlert'
 import BootstrapTooltip from '../components/Tooltip'
-import CardDetail from './CardDetail'
 import FormNewLists from '../modules/FormNewLists'
-import CardDetailPopup from '../hook/CardDetailPopup'
 import MoveList from '../fitur/MoveList'
 import DuplicateList from '../fitur/DuplicateList'
 import ListDeleteConfirm from '../modals/ListDeleteConfirm'
 import { useSnackbar } from '../context/Snackbar'
 import { useUser } from '../context/UserContext'
-import { FaChevronRight, FaPlus } from 'react-icons/fa6'
 import { handleArchive } from '../utils/handleArchive'
-import SearchCard from '../fitur/SearchCard'
-import PositionList from '../modules/PositionList'
-import { GiCardExchange } from 'react-icons/gi'
 import { DndContext, closestCenter, DragOverlay } from "@dnd-kit/core";
+
 import {
   SortableContext,
   horizontalListSortingStrategy,
-  arrayMove,
-//   verticalListSortingStrategy,
+  arrayMove
 } from "@dnd-kit/sortable";
+
 import SortableListItem from '../hook/SortableListItem'
 import SortableCardItem from '../hook/SortableCardItem'
-import { RiArchiveStackLine } from 'react-icons/ri'
-// import SortableCardItem from '../hook/SortableCardItem'
 
 
 const BoardList=()=> {
-    //STATE
+ 
+    /* =======================
+    1. routing & context
+    ======================= */
     const location = useLocation();
-    const {user} = useUser();
-    const userId = user?.id;
-    console.log('File Board List menerima data user:', user)
-    console.log('berhasil menerima userId:', userId)
-    const {boardId, workspaceId} = useParams();
-    console.log('boardId diterima pada file board list:',boardId)
-    console.log('workspace id diterima:', workspaceId)
-    const [boards, setBoards] = useState({});
-    const [lists, setLists] = useState([]);
-    const [listId, setListId] = useState([]);
-    const [positions, setPositions] = useState({});
-    const [clickedListId, setClickedListId] = useState(null);
-    const [cards, setCards] = useState({});
-    const [cardPositionDropdown, setCardPositionDropdown] = useState(null);
-    const [showPosition,setShowPosition] = useState({});
-    const [listPositionDropdown, setListPositionDropdown] = useState(null);
-    //workspace
-    const [workspaceName, setWorkspaceName] = useState('');
-    //state show
-    const [showSetting, setShowSetting] = useState({})
-    const settingRef = OutsideClick(()=>setShowSetting(false))
-    const [showForm, setShowForm] = useState({});
-    const formRef = OutsideClick(()=> setShowForm(false))
-    //navigate
     const navigate = useNavigate();
-    //edit list
+    const { boardId, workspaceId } = useParams();
+
+    const { user } = useUser();
+    const userId = user?.id;
+
+    const { showSnackbar } = useSnackbar();
+
+    /* =======================
+   2.  DATA STATE
+    ======================= */
+    // board & workspace data
+    const [boards, setBoards] = useState({});
+    const [workspaceName, setWorkspaceName] = useState('');
+
+    // list & card data
+    const [lists, setLists] = useState([]);
+    const [cardsByList, setCardsByList] = useState({});
+
+    // metadata
+    const [totalCard, setTotalCard] = useState({});
+
+
+
+    /* =======================
+    3. POSITION & ORDERING (DRAG / SORT)
+    ======================= */
+
+    // list & card ordering
+    const [positions, setPositions] = useState({});
+    const [listPositionDropdown, setListPositionDropdown] = useState(null);
+    const [cardPositionDropdown, setCardPositionDropdown] = useState(null);
+
+    // drag state
+    const [activeId, setActiveId] = useState(null);     // list drag
+    const [activeCard, setActiveCard] = useState(null); // card drag
+
+    /* =======================
+    4. UI VISIBILITY (DROPDOWN, FORM, SETTING)
+    ======================= */
+    // list ui
+    const [showSetting, setShowSetting] = useState({});
+    const [showForm, setShowForm] = useState({});
+    const [showPosition, setShowPosition] = useState({});
+    const [showListForm, setShowListForm] = useState(false);
+
+    // outside click refs
+    const settingRef = OutsideClick(() => setShowSetting(false));
+    const formRef = OutsideClick(() => setShowForm(false));
+    const listFormRef = OutsideClick(() => setShowListForm(false));
+
+    /* =======================
+    5. EDIT MODE (INLINE EDIT)
+    ======================= */
+    // edit list
     const [editName, setEditName] = useState(null);
-    const [newName, setNewName] = useState('')
-    //alert
-    const {showSnackbar} = useSnackbar();
-    //show list form
-    const [showListForm, setShowListForm] = useState(false)
-    const listFormRef = OutsideClick(()=> setShowListForm(false))
-    const [activeId, setActiveId] = useState(null);
+    const [newName, setNewName] = useState('');
+
+    // edit card
+    const [editCardName, setEditCardName] = useState(null);
+    const [newCardName, setNewCardName] = useState('');
+    const [editingCardListId, setEditingCardListId] = useState(null);
 
 
-
-
-    const handleShowListForm = (e)=>{
-        e.preventDefault()
-        setShowListForm((prev)=> !prev)
-    }
-
-
-    const handleShow = () =>{
-        setShowForm(!showForm)
-    }
-
-    // const handleShowListForm = () => {
-    //     setShowListForm(!showListForm)
-    // }
-   
+    /* =======================
+    6. POPUP & MODAL STATE
+    ======================= */
+    // card detail popup
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [selectedCardId, setSelectedCardId] = useState(null);
-    //move and duplicate
-    const [showMovePopup, setShowMovePopup] = useState({})
-    const [showDuplicatePopup, setShowDuplicatePopup] = useState({})
-    //Delete confirm
-    const [showConfirmModal, setShowConfirmModal] = useState(false)
-    const [selectedListId, setSelectedListId] = useState(null)
 
-    //card position 
-    const [cardsByList, setCardsByList] = useState({});
-    const [activeCard, setActiveCard] = useState(null);
+    // list actions
+    const [showMovePopup, setShowMovePopup] = useState({});
+    const [showDuplicatePopup, setShowDuplicatePopup] = useState({});
+
+    // delete confirmation
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [selectedListId, setSelectedListId] = useState(null);
+
+    // ========================================================
+    const [listId, setListId] = useState([]);      // ❓ bisa derive dari lists
+    const [cards, setCards] = useState({});       // ❌ sudah diganti cardsByList
+    const [clickedListId, setClickedListId] = useState(null); // ❓ tidak terlihat dipakai
 
 
-    //total card in list
-    const [totalCard, setTotalCard] = useState({});
     
-    //FUNCTION TO GET TOTAL CARD IN LIST
-    useEffect(() => {
-    const fetchTotals = async () => {
-        const totals = {};
-        for (const list of lists) {
-        try {
-            const response = await getCardListTotal(list.id);
-            totals[list.id] = response.data.card_count || 0;
-        } catch {
-            totals[list.id] = 0;
-        }
-        }
-        setTotalCard(totals);
-    };
+ /* =======================
+ FUNCTION 
+ ======================= */
 
-    if (lists.length > 0) fetchTotals();
-    }, [lists]);
+/* =======================
+1. UI TOGGLE SEDERHANA & AMAN
+======================= */
+/**
+ * Toggle form pembuatan list baru
+ * e.preventDefault dipakai karena handler ini sering dipanggil dari button / form
+ */
+const handleShowListForm = (e) => {
+  e.preventDefault();
+  setShowListForm(prev => !prev);
+};
 
-    //FUNGSI POPUP MOVE DAN DUPLICATE
-    const handleShowMovePopup = (listId) => {
-        setShowMovePopup((prevState) => ({
-            ...prevState,
-            [listId]: !prevState[listId],  // Toggle true/false untuk board tersebut
-        }));
-        setShowSetting(false)
-        // handleShowSetting(false)
+/**
+ * Toggle form card (fallback global)
+ * ⚠️ Catatan: lebih aman pakai versi berbasis listId (yang sudah kamu pakai)
+ */
+const handleShow = () => {
+  setShowForm(prev => !prev);
+};
+
+/* =======================
+2. TOTAL CARD PER LIST
+======================= */
+/* =======================
+   FETCH TOTAL CARD PER LIST
+   - Jalan setiap kali daftar list berubah
+   - Menggunakan Promise.all agar paralel (lebih cepat)
+======================= */
+useEffect(() => {
+  if (!lists.length) return;
+
+  const fetchTotals = async () => {
+    try {
+      const results = await Promise.all(
+        lists.map(async (list) => {
+          try {
+            const res = await getCardListTotal(list.id);
+            return { listId: list.id, total: res.data.card_count || 0 };
+          } catch {
+            return { listId: list.id, total: 0 };
+          }
+        })
+      );
+
+      // Convert array → object { [listId]: total }
+      const totalsMap = results.reduce((acc, item) => {
+        acc[item.listId] = item.total;
+        return acc;
+      }, {});
+
+      setTotalCard(totalsMap);
+    } catch (err) {
+      console.error("Failed fetching card totals:", err);
     }
-    const handleCloseMovePopup = (listId) =>{
-        setShowMovePopup((prevState)=>({
-          ...prevState,
-            [listId]: false,
-        }))
-      }
-    
-     //DUPLICATE
-     const handleShowDuplicate = (listId)=>{
-        setShowDuplicatePopup((prevState) => ({
-            ...prevState,
-            [listId]: !prevState[listId],  // Toggle true/false untuk board tersebut
-        }));
-        setShowSetting(false)
-     } 
+  };
 
-     const handleCloseDuplicate = (listId)=>{
-        setShowDuplicatePopup((prevState)=>({
-            ...prevState,
-              [listId]: false,
-          }))
-     }
+  fetchTotals();
+}, [lists]);
 
-    // Fungsi untuk menampilkan popup
-    const handleOpenPopup = (cardId) => {
-        setSelectedCardId(cardId);
-        setIsPopupOpen(true);
+/* =======================
+3. MOVE & DUPLICATE POPUP
+======================= */
+    /**
+     * Toggle popup Move List
+     * - Menggunakan object berbasis listId agar popup independen
+     * - Tutup setting menu supaya UI bersih
+     */
+    const handleShowMovePopup = (listId) => {
+    setShowMovePopup(prev => ({
+        ...prev,
+        [listId]: !prev[listId],
+    }));
+    setShowSetting(false);
     };
 
-    // Fungsi untuk menutup popup
-    const handleClosePopup = () => {
-        setIsPopupOpen(false);
-        setSelectedCardId(null);
+    const handleCloseMovePopup = (listId) => {
+    setShowMovePopup(prev => ({
+        ...prev,
+        [listId]: false,
+    }));
     };
 
-    //FUNCTION
-    //1.1 fetch workspace
-    useEffect(() => {
-    const fetchWorkspace = async () => {
-      try {
-        const workspaceData = await getWorkspaceById(workspaceId);
-        console.log("workspace data:", workspaceData);
-
-        // Misal backend kamu balikin { id: 1, name: "Design Team", ... }
-        setWorkspaceName(workspaceData.name);
-      } catch (error) {
-        console.error("Gagal ambil nama workspace:", error);
-      }
+    /**
+     * Toggle popup Duplicate List
+     */
+    const handleShowDuplicate = (listId) => {
+    setShowDuplicatePopup(prev => ({
+        ...prev,
+        [listId]: !prev[listId],
+    }));
+    setShowSetting(false);
     };
 
-    if (workspaceId) fetchWorkspace();
-  }, [workspaceId]);
-
-
-    //1.2fetch board 
-    const fetchBoardDetail = async () =>{
-        if(!boardId) return;
-        try{
-            const response = await getBoardById(boardId);
-            setBoards(response.data)
-        }catch(error){
-            console.log('Failed fetching board data:');
-        }
+    const handleCloseDuplicate = (listId) => {
+    setShowDuplicatePopup(prev => ({
+        ...prev,
+        [listId]: false,
+    }));
     };
 
-    useEffect(() => {
-    fetchBoardDetail();
-  }, [boardId]);
+/* =======================
+4. CARD DETAIL POPUP
+======================= */
 
-    //2. fetch lists
-    const fetchLists = useCallback(async()=>{
-        try{
-            const response = await getListByBoard(boardId)
-            setLists(response.data)
-            const ids = response.data.map(list => list.id)
-            setListId(ids)
-        }catch(error){
-            console.error('Failed fetching lists:', error)
-        }
-    },[boardId])
+/**
+ * Buka popup detail card
+ * - Simpan cardId yang aktif
+ */
+const handleOpenPopup = (cardId) => {
+  setSelectedCardId(cardId);
+  setIsPopupOpen(true);
+};
 
-    useEffect(()=>{
-        if(boardId){
-            fetchLists()
-        }
-    }, [boardId, fetchLists]);
+/**
+ * Tutup popup & reset state
+ */
+const handleClosePopup = () => {
+  setIsPopupOpen(false);
+  setSelectedCardId(null);
+};
 
-    
-    //3. fetch card by list
-    const fetchCardList = useCallback(async(listId)=>{
-        console.log('Fetching cards for list:', listId); 
-        try{
-            const response = await getCardByList(listId);
-            setCards(prevCards => ({
-                ...prevCards,
-                [listId]: response.data // Simpan kartu berdasarkan listId
-            }));
-            
-            // RETURN agar bisa dipakai di tempat lain
-            return response.data;
-        }catch(error){
-            console.error('failed fatch cards:', error)
-        }
-    },[])
+/* =======================
+   FETCH BOARD DETAIL
+======================= */
+const fetchBoardDetail = async () => {
+  if (!boardId) return;
 
-    // Fetch cards for all lists when lists are loaded
-    useEffect(() => {
-        lists.forEach(list => fetchCardList(list.id));
-    }, [lists, fetchCardList]);
+  try {
+    const response = await getBoardById(boardId);
+    setBoards(response.data);
+  } catch {
+    console.error("Failed fetching board data");
+  }
+};
 
-    // const fetchAllCardList = useCallback(()=>{
-    //     lists.forEach(list => fetchCardList(list.id));
-    // },[lists, fetchCardList]);
+useEffect(() => {
+  fetchBoardDetail();
+}, [boardId]);
 
-    //FETCH ALL
-    const fetchAllCardList = useCallback(() => {
-    lists.forEach(list => fetchCardList(list.id));
-    }, [lists, fetchCardList]);
+/* =======================
+   FETCH LISTS
+   - Return data agar bisa dipakai chaining
+======================= */
+const fetchLists = useCallback(async () => {
+  const res = await getListByBoard(boardId);
+  setLists(res.data);
+  return res.data;
+}, [boardId]);
 
-    const handleRefetchBoard = () => {
-    fetchBoardDetail();
-    fetchLists();   // otomatis setelah fetchLists selesai → lists berubah → useEffect jalan → fetchAllCardList
-    fetchAllCardList();
-    };
+/* =======================
+   FETCH CARDS PER LIST
+======================= */
+// const fetchCardList = useCallback(async (listId) => {
+//   try {
+//     const res = await getCardByList(listId);
+//     setCards(prev => ({
+//       ...prev,
+//       [listId]: res.data,
+//     }));
+//     return res.data;
+//   } catch (err) {
+//     console.error("Failed fetching cards:", err);
+//   }
+// }, []);
 
-    //4. create new list 
+const fetchCardList = useCallback(async (listId) => {
+  try {
+    const res = await getCardByList(listId);
+
+    // 🔥 PAKSA ARRAY BARU → trigger rerender
+    const freshCards = [...res.data];
+
+    setCards(prev => ({
+      ...prev,
+      [listId]: freshCards,
+    }));
+
+    return freshCards;
+  } catch (err) {
+    console.error("Failed fetching cards:", err);
+  }
+}, []);
+
+
+/* =======================
+   LOAD BOARD (LIST + CARD)
+======================= */
+useEffect(() => {
+  if (!boardId) return;
+
+  const loadBoard = async () => {
+    const listsData = await fetchLists();
+    await Promise.all(
+      listsData.map(list => fetchCardList(list.id))
+    );
+  };
+
+  loadBoard();
+}, [boardId, fetchLists, fetchCardList]);
+
+/* =======================
+7. REFETCH BOARD
+======================= */
+
+/**
+ * Refetch seluruh board (list + card)
+ * Digunakan setelah edit besar (archive, move, dsb)
+ */
+const handleRefetchBoard = async () => {
+  const listsData = await fetchLists();
+  await Promise.all(
+    listsData.map(list => fetchCardList(list.id))
+  );
+};
+
+const handleRefetchCard = async (listId) => {
+  if (!listId) return;
+  await fetchCardList(listId);
+};
+
+/* =======================
+8. CREATE LIST & CARD
+======================= */
+
+/**
+ * Setelah card dibuat:
+ * - Update state lokal
+ * - Fetch ulang card di list tersebut
+ */
+const handleCardCreated = (newCard) => {
+  setCards(prev => ({
+    ...prev,
+    [newCard.list_id]: [
+      ...(prev[newCard.list_id] || []),
+      newCard,
+    ],
+  }));
+
+  fetchCardList(newCard.list_id);
+  setShowForm(false);
+};
+
+
+
+// ============================================
+//4. create new list 
     const handleListCreated = (newList) => {
         setLists([...lists, newList]); // Menambahkan list baru ke state
     };
@@ -323,17 +431,62 @@ const BoardList=()=> {
         }
     }
 
-    const handleCardCreated = (newCard) => {
-        setCards((prevCards) => ({
-          ...prevCards,
-          [newCard.list_id]: [...(prevCards[newCard.list_id] || []), newCard],
-        }));
-        fetchCardList(listId)
-        setShowForm(false)
-      };
+    //fungsi editing card name
+    const handleEditCardName = (e, cardId, currentName) => {
+            e.preventDefault();
+            e.stopPropagation();
+    
+            setEditCardName(cardId);
+              setEditingCardListId(listId); 
+            setNewCardName(currentName);
+        };
+    
+        const handleSaveCardName = async (cardId) => {
+  const title = newCardName.trim();
+  if (!title) return;
 
-        
-    //fungsi duplicate list 
+  try {
+    await updateTitleCard(cardId, { title });
+
+    // 🔥 optimistic update (langsung update UI)
+    setCards(prev => ({
+      ...prev,
+      [editingCardListId]: prev[editingCardListId].map(card =>
+        card.id === cardId ? { ...card, title } : card
+      ),
+    }));
+
+    // optional: sync ke backend (kalau mau super aman)
+    // await fetchCardList(editingCardListId);
+
+    setEditCardName(null);
+    setEditingCardListId(null);
+
+    showSnackbar("success editing title", "success");
+  } catch (error) {
+    console.error("Error updating name card:", error);
+  }
+};
+
+    
+    
+    
+        const handleKeyPressCardName = (e, cardId) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleSaveName(cardId);
+            }
+    
+            if (e.key === 'Escape') {
+                setEditCardName(null);
+            }
+        };
+    
+
+   
+
+
+ //fungsi duplicate list 
 
     const duplicateBoardToWorkspace = async (boardId, workspaceId) => {
     try {
@@ -609,16 +762,18 @@ useEffect(() => {
 
     setActiveCard(null);
 };
+// =====================================================
 
 
-//NAVIGATION
+/* =======================
+NAVIGATION
+======================= */
 
-
-// <Route path='/workspaces/:workspaceId' element={<WorkspacePage/>}/>
 const handleNavigateToWorkspace = (workspaceId) => {
     navigate(`/layout/workspaces/${workspaceId}`);
     console.log("Navigating to board:", boardId);
 }
+
 const handleNavigateToBoard = (workspaceId,boardId) =>{
     navigate(`/layout/workspaces/${workspaceId}/board/${boardId}`);
 }
@@ -758,10 +913,11 @@ if (!userId) {
                                                     >
                                                         <div className="list-body">
                                                         {cards[list.id]?.map((card) => (
-                                                            <SortableCardItem key={card.id} id={card} listId={list.id} data={{ type: "card", listId: list.id }} style={{borderRadius:'16px'}}>
+                                                            <SortableCardItem key={card.id} id={card.id} listId={list.id} data={{ type: "card", listId: list.id }} style={{borderRadius:'16px'}}>
                                                             {({ dragHandleCardProps }) => (
                                                                 <Card
-                                                                    key={card.id} 
+                                                                    // key={card.id} 
+                                                                    key={`${card.id}-${card.title}`} 
                                                                     userId={userId}
                                                                     card={card} 
                                                                     cardId={card.id}
@@ -769,6 +925,7 @@ if (!userId) {
                                                                     handleNavigate = {()=>handleNavigateToBoard(workspaceId, boardId)} 
                                                                     onClick={() => handleOpenPopup(card.id)}
                                                                     onRefetch={handleRefetchBoard}
+                                                                    onRefetchCard={handleRefetchCard}
                                                                     fetchBoardDetail={fetchBoardDetail}
                                                                     fetchLists={fetchLists}
                                                                     fetchCardList={fetchCardList}
@@ -784,7 +941,7 @@ if (!userId) {
                                                                     cardsByList={cardsByList}
                                                                     activeCard={activeCard}
                                                                     dragHandleCardProps={dragHandleCardProps}
-                                                                    onNavigateToCard={handleNavigateToCard}
+                                                                    onNavigateToCard={handleNavigateToCard}   
                                                                 />
                                                             )}
                                                             </SortableCardItem>

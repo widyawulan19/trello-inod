@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { RxSwitch } from "react-icons/rx";
-import { deleteCard,updateTitleCard , getStatusCard,  getTotalFile, getNotifications, patchReadNotification,checkHasNewChat, getTotalChecklistItemByCardId, getChecklistItemChecked, updateCardActive, updateToggleShow} from '../services/ApiServices';
+import { deleteCard,updateTitleCard , getStatusCard,  getTotalFile, getNotifications, patchReadNotification,checkHasNewChat, getTotalChecklistItemByCardId, getChecklistItemChecked, updateCardActive, updateToggleShow, updateTitleCardTesting} from '../services/ApiServices';
 import '../style/pages/Card.css'
 import '../style/modules/BoxStatus.css'
 import {    HiOutlineEllipsisHorizontal,
@@ -45,8 +45,6 @@ import StatusBadge from '../fitur/StatusBadge';
 
 const Card=({
     card,
-    boards,
-    lists,
     userId,
     listName,
     listId,
@@ -58,28 +56,16 @@ const Card=({
     cardPositionDropdown,
     setCardPositionDropdown,
     handleChangeCardPosition,
-    onDragStart,
-    onDragEnd,
-    cardsByList,
-    activeCard,
-    attributes,
-  listeners,
-  setNodeRef,
-  dragHandleCardProps,
-  onNavigateToCard,
+    dragHandleCardProps,
+    onNavigateToCard,
 })=> {
-    // console.log('cards diterima:', card)
     const { workspaceId, boardId} = useParams();
-    //DEBUG
-    // console.log('workspace id:', workspaceId);
-    // console.log('board id diterima pada file card', boardId)
-    // console.log('list id diterima:', listId);
     console.log('File card menerima userId:', userId);
     console.log('File Card menerima list name:',listName)
-    // const [cardId, setCardId] = useState([]);
     //edit card
-    const [editCardName, setEditCardName] = useState(null);
-    const [newCardName, setNewCardName] = useState('')
+    const [editingId, setEditingId] = useState(null);
+    const [newTitle, setNewTitle] = useState("");
+
     const [cardData, setCardData] = useState(card);
     const navigate = useNavigate();
     const [showDetail, setShowDetail] = useState(false)
@@ -146,8 +132,8 @@ const Card=({
     // FUNGSI ON OFF CARDS 
     const toggleActive = async () => {
         await updateCardActive(card.id, !card.is_active);
-        // fetchBoardDetail()
         fetchCardList(listId);
+        showSnackbar('toggle active', 'success');
     };
 
 
@@ -235,11 +221,6 @@ const Card=({
             [cardId]: !prev[cardId],
         }))
     }
-
-    //navigate to newCardDetail
-    // const handleNavigateToCardDetail = () =>{
-    //     navigate(`/layout/workspaces/${workspaceId}/board/${boardId}/lists/${listId}/cards/${card.id} `)
-    // }
     
 
     const handleShowModal = () =>{
@@ -291,66 +272,49 @@ const Card=({
           }))
     }
 
+    
+    /* =======================
     //EDIT NAME CARD
-    // const handleEditCardName = (e, cardId, currentName) => {
-    // e.stopPropagation();
-    // setEditCardName(cardId);
-    // setNewCardName(currentName);
-    // };
-
-    // const handleSaveName = async (cardId) => {
-    // try {
-    //     await updateTitleCard(cardId, { title: newCardName});
-    //     setEditCardName(null)
-    //     fetchCardList(listId);
-    // } catch (error) {
-    //     console.error('Error updating name card:', error);
-    // }
-    // };
-
-    // const handleKeyPressName = async (e, cardId) => {
-    //     if (e.key === 'Enter') {
-    //         e.preventDefault();
-    //         await handleSaveName(cardId);
-    //     }
-    // };
-
-
- const handleEditCardName = (e, cardId, currentName) => {
-  e.preventDefault();
+    ======================= */
+    
+const handleEditCardName = (e) => {
   e.stopPropagation();
-
-  setEditCardName(cardId);
-  setNewCardName(currentName);
+  setEditingId(card.id);
+  setNewTitle(card.title);
 };
 
-const handleSaveName = async (cardId) => {
-  const title = newCardName.trim();
-  setEditCardName(null);
+const handleSaveTitle = async () => {
+  const title = newTitle.trim();
 
-  if (!title) return;
+  if (!title || title === card.title) {
+    setEditingId(null);
+    return;
+  }
 
   try {
-    await updateTitleCard(cardId, { title });
-    setCardTitle(title); // ⬅️ INI KUNCI
-  } catch (error) {
-    console.error('Error updating name card:', error);
+    await updateTitleCardTesting(card.id, userId, { title });
+
+    // 🔥 trigger parent refresh
+    await fetchCardList(listId);
+
+    setEditingId(null);
+    showSnackbar("Title card berhasil diupdate", "success");
+  } catch (err) {
+    console.error("UPDATE TITLE ERROR:", err);
+    showSnackbar("Gagal update title card", "error");
   }
 };
 
-
-
-const handleKeyPressName = (e, cardId) => {
-  if (e.key === 'Enter') {
+const handleKeyDown = (e) => {
+  if (e.key === "Enter") {
     e.preventDefault();
-    handleSaveName(cardId);
+    handleSaveTitle();
   }
 
-  if (e.key === 'Escape') {
-    setEditCardName(null);
+  if (e.key === "Escape") {
+    setEditingId(null);
   }
 };
-
 
 
 
@@ -590,25 +554,20 @@ const handleKeyPressName = (e, cardId) => {
         </div>
         <div className="cc-header-card">
             <div className="cc-title">
-{editCardName === card.id ? (
-  <input
-    value={newCardName}
-    onChange={(e) => setNewCardName(e.target.value)}
-    onBlur={() => handleSaveName(card.id)}
-    onKeyDown={(e) => handleKeyPressName(e, card.id)}
-    autoFocus
-  />
-) : (
-  <h5 onClick={(e) => handleEditCardName(e, card.id, cardTitle)}>
-    {cardTitle}
-  </h5>
-)}
-
-
-
+            {editingId === card.id ? (
+                <input
+                value={newTitle}
+                onChange={(e) => setNewTitle(e.target.value)}
+                onKeyDown={handleKeyDown}
+                onBlur={() => setEditingId(null)} // cancel only
+                autoFocus
+                />
+            ) : (
+                <h5 onClick={handleEditCardName}>
+                {card.title}
+                </h5>
+            )}
             </div>
-
-
         </div>
         <div className="cc-label">
             <SelectedLabelCard cardId={card.id} />
