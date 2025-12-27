@@ -8053,6 +8053,63 @@ app.get('/api/status-testing', async (req, res) => {
     }
 });
 
+app.post('/api/status-testing', async (req, res) => {
+    const { status_name, accent_color } = req.body;
+
+    // ===== VALIDATION =====
+    if (!status_name || status_name.trim() === '') {
+        return res.status(400).json({ error: 'Status name wajib diisi' });
+    }
+
+    // Color picker HTML / React = HEX
+    if (!accent_color || !/^#([0-9A-Fa-f]{6})$/.test(accent_color)) {
+        return res.status(400).json({
+            error: 'Accent color harus format HEX (#RRGGBB)'
+        });
+    }
+
+    try {
+        // ===== CHECK DUPLICATE =====
+        const exists = await client.query(
+            `SELECT 1 FROM status WHERE LOWER(status_name) = LOWER($1)`,
+            [status_name.trim()]
+        );
+
+        if (exists.rowCount > 0) {
+            return res.status(409).json({
+                error: 'Status dengan nama ini sudah ada'
+            });
+        }
+
+        // ===== INSERT (MATCH TABLE STRUCTURE) =====
+        const result = await client.query(
+            `
+      INSERT INTO status (
+        status_name,
+        text_color,
+        background_color,
+        accent_color
+      )
+      VALUES ($1, $2, NULL, $2)
+      RETURNING
+        status_id,
+        status_name,
+        COALESCE(accent_color, text_color) AS accent_color
+      `,
+            [status_name.trim(), accent_color]
+        );
+
+        res.status(201).json(result.rows[0]);
+    } catch (error) {
+        console.error('Create status error:', error);
+        res.status(500).json({
+            error: 'Gagal membuat status'
+        });
+    }
+});
+
+
+
 
 /* =======================
 ======================= */
