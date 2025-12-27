@@ -7994,6 +7994,71 @@ app.get('/api/cards/:cardId/status', async (req, res) => {
     }
 });
 
+/* =======================
+TESTING
+======================= */
+app.get('/api/cards/:cardId/status-testing', async (req, res) => {
+    const { cardId } = req.params;
+
+    try {
+        const result = await client.query(
+            `
+      SELECT 
+        s.status_id,
+        s.status_name,
+        COALESCE(s.accent_color, s.text_color) AS accent_color,
+        s.text_color,
+        s.background_color,
+        cs.assigned_at
+      FROM card_status cs
+      JOIN status s ON cs.status_id = s.status_id
+      WHERE cs.card_id = $1
+      `,
+            [cardId]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Tidak ada status untuk cardId ini' });
+        }
+
+        res.json(result.rows[0]); // biasanya cuma satu status aktif
+    } catch (error) {
+        console.error('Database Error:', error);
+        res.status(500).json({
+            error: 'Gagal mengambil status',
+            detail: error.message
+        });
+    }
+});
+
+app.get('/api/status-testing', async (req, res) => {
+    try {
+        const result = await client.query(`
+      SELECT
+        status_id,
+        status_name,
+        COALESCE(accent_color, text_color) AS accent_color,
+        text_color,
+        background_color
+      FROM status
+      ORDER BY status_id
+    `);
+
+        res.json(result.rows);
+    } catch (error) {
+        res.status(500).json({
+            error: 'Gagal mengambil daftar status',
+            detail: error.message
+        });
+    }
+});
+
+
+/* =======================
+======================= */
+
+
+
 app.get('/api/card-status/:cardId', async (req, res) => {
     const { cardId } = req.params;
 
