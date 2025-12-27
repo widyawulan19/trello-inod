@@ -70,7 +70,9 @@ const DueDateDisplay = ({
             <div 
               key={date.id}
               style={{ 
-                border: `2px solid ${getDueStatusColor(date.due_date)}`,
+                // border: `2px solid ${getDueStatusColor(date.due_date)}`,
+                backgroundColor:'#f7dddf',
+                border:'1px solid #E2E4E9',
                 borderRadius: '8px',
                 width: '100%',
                 padding: '10px',

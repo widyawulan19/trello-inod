@@ -4,6 +4,9 @@
 .card-description-container {
     width: 100%;
     height: 100%;
+    background-color: var(--bg);
+    border: 1px solid var(--bg) !important;
+    border-radius: 8px;
 }
 
 /* HEADER */
@@ -15,13 +18,24 @@
     padding: 10px 16px;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
-    background-image: linear-gradient(to right, #2d66e7, #5557e7, #8f3fe6);
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid var(--bg) !important;
+    background: var(--primary);
+    /* background-image: linear-gradient(to right, #2d66e7, #5557e7, #8f3fe6); */
+    /* box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); */
+}
+
+.cd-header .cdh-icon {
+    background: var(--bg-icon2);
+    color: var(--text-white);
+    font-size: 13px;
+    padding: 4px;
+    border: 1px solid var(--primary);
+    border-radius: 4px;
 }
 
 .cd-header h3 {
-    color: white;
-    font-size: 15px;
+    color: var(--text-white);
+    font-size: 13px;
     font-weight: bold;
     margin: 0;
 }
@@ -29,7 +43,7 @@
 .cd-icon {
     cursor: pointer;
     font-size: 20px;
-    color: white;
+    color: var(--text-white);
 }
 
 /* =========================================================
@@ -38,10 +52,11 @@
 .des-modal-content {
     padding: 20px;
     font-size: 14px;
-    color: #333;
-    height: 80vh;
+    color: var(--text-white);
+    height: 83vh;
     overflow-y: auto;
     scroll-behavior: smooth;
+    /* border: 1px solid red; */
 }
 
 /* =========================================================
@@ -64,7 +79,7 @@
     overflow-y: auto;
     scroll-behavior: smooth;
     font-size: 14px;
-    background: #fff;
+    background: var(--bg);
 }
 
 /* =======================================
@@ -77,7 +92,7 @@
     /* ini ambil style default Quill editor */
     line-height: 1.6;
     font-size: 10px;
-    color: #333;
+    color: var(--sub-text) !important;
     word-break: break-word;
 }
 
@@ -86,6 +101,7 @@
     margin: 0 0 8px;
     display: flex;
     gap: 6px;
+    color: var(--sub-text) !important;
 }
 
 /* Strong / Bold */
@@ -93,13 +109,33 @@
     font-weight: 600;
     display: inline-block;
     min-width: 100px;
+    color: var(--sub-text) !important;
     /* border: 1px solid green; */
 }
 
+.view-mode-html span {
+    margin: 8px 0 !important;
+    display: flex;
+    gap: 6px;
+    color: var(--sub-text) !important;
+    /* line-height: 1.5 !important; */
+}
+
+
 /* Link identik seperti Quill */
 .view-mode-html a {
-    color: #1a73e8;
-    text-decoration: underline;
+    color: var(--link-text) !important;
+    background-color: var(--link-bg) !important;
+    /* color: red !important; */
+    text-decoration: underline !important;
+    cursor: pointer;
+    border: 1px solid var(--link-border) !important;
+    border-radius: 4px;
+    padding: 3px;
+}
+
+.view-mode-html a:hover {
+    filter: brightness(1.15);
 }
 
 /* List */
@@ -134,40 +170,83 @@
 
 .detail-my-editor .ql-container.ql-snow {
     /* border: 1px solid #f2f1ff; */
-    border: 1px solid #fff;
-    height: 65vh;
+    border: 1px solid #f2f1ff;
+    height: 70vh;
     overflow-y: auto;
 }
 
 .detail-my-editor .ql-toolbar.ql-snow {
-    /* border: 1px solid #f2f1ff; */
-    border: 1px solid #fff;
+    border: 1px solid #f2f1ff;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
-    background-color: #f2f1ff;
-    padding: 5px 3px;
-    /* background-color: red; */
+    background-color: #ccc8ff;
     color: white;
+    padding: 5px 3px;
+}
+
+/* 🌙 DARK THEME – REACT QUILL SNOW */
+[data-theme='dark'] .detail-my-editor .ql-container.ql-snow {
+    border: 1px solid #374151;
+    /* background-color: red; */
+    background-color: var(--card-bg);
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    color: var(--text-white);
+}
+
+[data-theme='dark'] .detail-my-editor .ql-toolbar.ql-snow {
+    border: 1px solid #374151;
+    border-bottom: none;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    background-color: #374151;
+    /* color: var(--text-white) !important; */
+}
+
+[data-theme='dark'] .ql-snow .ql-stroke {
+    stroke: #e5e7eb;
+}
+
+[data-theme='dark'] .ql-snow .ql-fill {
+    fill: #e5e7eb;
+}
+
+[data-theme='dark'] .ql-snow .ql-picker {
+    color: #e5e7eb;
+}
+
+[data-theme='dark'] .ql-toolbar button:hover {
+    /* background-color: #312e81; */
+    background-color: var(--primary);
+    color: white !important;
 }
 
 .detail-my-editor .ql-editor {
     line-height: 1.8 !important;
     font-size: 10px;
-    ;
-    /* jarak antar baris */
+    color: var(--sub-text) !important;
 }
 
 .detail-my-editor .ql-editor p {
     margin: 8px 0 !important;
     display: flex;
     gap: 6px;
+    color: var(--sub-text) !important;
     /* line-height: 1.5 !important; */
 }
 
 .detail-my-editor .ql-editor strong {
     display: inline-block;
     min-width: 100px;
+    color: var(--sub-text) !important;
     /* border: 1px solid red; */
+}
+
+.detail-my-editor .ql-editor span {
+    margin: 8px 0 !important;
+    display: flex;
+    gap: 6px;
+    color: var(--sub-text) !important;
 }
 
 /* =======================================

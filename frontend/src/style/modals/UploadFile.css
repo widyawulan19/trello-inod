@@ -1,5 +1,5 @@
 .upload-file-container {
-    /* border:1px solid blue; */
+    /* border: 1px solid blue; */
     width: 100%;
     gap: 5px;
     padding: 10px;
@@ -11,16 +11,15 @@
 
 .upload-cont {
     cursor: pointer;
-    /* border: 1px solid red; */
-    border: 1px solid #ddd;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border);
     border-radius: 8px;
     width: fit-content;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .upload-cont:hover {
-    border: 1px solid #6a11cb;
-    box-shadow: 0px 4px 8px #5e12eb46;
+    border: 1px solid var(--primary);
 }
 
 .upload-cont .upload-cont-prev {
@@ -40,33 +39,38 @@
 }
 
 .upload-cont-header {
-    /* border: 1px solid blue; */
+    border-radius: 8px;
     display: flex;
     align-items: baseline;
     justify-content: flex-end;
     width: 100%;
     padding: 5px;
+    border: 1px solid var(--card-bg) !important;
 }
 
 .upload-cont-header button {
     cursor: pointer;
-    color: #6a11cb;
+    border: 1px solid var(--card-bg) !important;
+    color: var(--text-white);
+    background: var(--card-bg);
+}
+
+.upload-cont-header button:hover {
+    background: var(--bg-section-hover);
+    box-shadow: var(--box-shadow-purple);
 }
 
 /* setting modal  */
 .file-set {
-    border: 1px solid #ccc;
-    background-color: white;
+    border: 1px solid var(--bg-section);
+    background: var(--bg-section);
     border-radius: 6px;
     position: absolute;
     top: 30%;
-    /* tampil tepat di bawah upload-cont-header */
     right: 0;
-    /* sejajar kanan dengan tombol setting */
     z-index: 100;
     padding: 5px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-    /* biar lebih rapi */
 }
 
 .file-set .del-btn {
@@ -75,12 +79,13 @@
     justify-content: center;
     font-size: 10px;
     padding: 5px;
-    border-radius: 1px solid 8px;
+    border-radius: 4px;
     cursor: pointer;
+    color: var(--text);
 }
 
 .del-btn:hover {
-    background-color: #eee;
+    background-color: var(--bg-section-hover);
 }
 
 /* end setting modal  */
@@ -102,7 +107,7 @@
 
 .upload-cont-body {
     /* border: 1px solid blue; */
-    border-top: 1px solid #ddd;
+    border-top: 1px solid var(--border);
     padding: 10px;
     width: 15vw;
     display: flex;
@@ -113,7 +118,7 @@
 .upload-desc h5 {
     margin: 0px;
     font-size: 12px;
-    color: #333;
+    color: var(--text);
     font-weight: bold;
     /* border: 1px solid red; */
     width: 13vw;
@@ -124,21 +129,22 @@
 .upload-desc p {
     margin: 0px;
     font-size: 10px;
+    color: var(--text);
 }
 
 .upload-desc a {
-    border: 1px solid #8688fa;
-    background: linear-gradient(to right, #6a11cb, #2575fc);
-    color: white;
+    border: 1px solid var(--bg-section);
+    background: var(--bg-icon2);
+    color: var(--text-white);
     /* font-weight: bold; */
     border-radius: 6px;
-    padding: 3px 5px;
+    padding: 3px 7px !important;
     font-size: 12px;
     margin: 5px 0px;
 }
 
 .upload-desc a:hover {
-    background: linear-gradient(to right, #2575fc, #6a11cb);
+    box-shadow: var(--box-shadow-purple);
 }
 
 

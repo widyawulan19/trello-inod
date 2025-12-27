@@ -4,6 +4,7 @@ import "react-quill-new/dist/quill.snow.css";
 import { HiChevronDown, HiChevronUp, HiXMark } from "react-icons/hi2";
 import '../style/modals/CardDescriptionExample.css';
 import { IoClose, IoSaveOutline } from "react-icons/io5";
+import { BiSolidMessageSquareDetail } from "react-icons/bi";
 
 const CardDescriptionExample = ({ 
   card, 
@@ -93,6 +94,10 @@ const CardDescriptionExample = ({
       
       {/* HEADER */}
       <div className="cd-header">
+        <div className="cdh-icon">
+          <BiSolidMessageSquareDetail/>
+        </div>
+        
         <h3>Detail Description</h3>
         <HiXMark onClick={onClose} className="cd-icon"/>
       </div>

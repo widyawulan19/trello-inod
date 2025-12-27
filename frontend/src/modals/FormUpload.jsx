@@ -62,8 +62,8 @@ const FormUpload = ({ cardId, onClose, fetchCardById,fetchAllUploadFile }) => {
   return (
     <div className='form-upload-container'>
       <div className="form-upload-header">
-        <h3>Upload Shot</h3>
-        <HiXMark onClick={onClose} className='close-icon'/>
+        <h3>UPLOAD YOUR SHOT</h3>
+        <HiXMark onClick={onClose} className='ci-icon'/>
       </div>
 
       <div className="form-upload-input">
@@ -86,19 +86,18 @@ const FormUpload = ({ cardId, onClose, fetchCardById,fetchAllUploadFile }) => {
       {/* ✅ Preview file sebelum diupload */}
       {file && (
         <div className="preview-section" style={{ marginTop: "1rem" }}>
-          <div style={{display:'flex', flexDirection:'row', gap:'5px'}}>
+          <div className='ps-name'>
              <strong>File selected:</strong><br />
               <span>{file.name}</span>
           </div>
          
 
-          <div style={{ marginTop: "0.5rem" }}>
+          <div className='ps-img'>
             {file.type.startsWith("image/") ? (
               // ✅ Preview image
               <img
                 src={URL.createObjectURL(file)}
                 alt="preview"
-                style={{ maxWidth: "120px", borderRadius: "8px" }}
               />
             ) : (
               // ✅ Preview icon (selain image)
@@ -114,7 +113,7 @@ const FormUpload = ({ cardId, onClose, fetchCardById,fetchAllUploadFile }) => {
                       alignItems: "center",
                       gap: "8px",
                       color,
-                      fontSize: "1.5rem"
+                      fontSize: "1.5rem",
                     }}
                   >
                     {Icon} <span style={{ fontSize: "0.9rem", color: "#333" }}>{ext.toUpperCase()} File</span>
@@ -126,19 +125,36 @@ const FormUpload = ({ cardId, onClose, fetchCardById,fetchAllUploadFile }) => {
         </div>
       )}
 
-      
       <div className="button-upload">
-        <button onClick={handleUploadFile} style={{ marginLeft: '1rem' }}>
-          {loading ? 'Uploading...' : 'Upload'}
-          {/* Upload */}
+        <button
+          onClick={handleUploadFile}
+          className={`upload-btn ${loading ? 'loading' : ''}`}
+          disabled={loading}
+        >
+          {loading ? (
+            <>
+              <span className="spinner" />
+              Uploading...
+            </>
+          ) : (
+            'Upload'
+          )}
         </button>
 
+        {/* SUCCESS */}
         {uploadedFile && (
-          <div style={{ marginTop: '1rem' }}>
-            <strong>Success Uploaded File:</strong><br />
-            <a href={uploadedFile.file_url} target="_blank" rel="noreferrer">
-              {uploadedFile.file_name}
-            </a>
+          <div className="upload-notif success">
+            <span className="icon">✔</span>
+            <div>
+              <strong>Upload berhasil</strong>
+              <a
+                href={uploadedFile.file_url}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {uploadedFile.file_name}
+              </a>
+            </div>
           </div>
         )}
       </div>

@@ -38,20 +38,6 @@ const UploadFile = ({ cardId, fetchCardById, fetchAllUploadFile, allUploadFile }
     }
   };
 
-  // // fetch upload file
-  // const fetchAllUploadFile = async () => {
-  //   try {
-  //     const result = await getAllUploadFiles(cardId);
-  //     setAllUploadFile(result.data);
-  //   } catch (error) {
-  //     console.error('Error fetching all file:', error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchAllUploadFile();
-  // }, [cardId]);
-
   const handleShowSetting = (fileId) => {
     setShowSetting(showSetting === fileId ? null : fileId);
   };

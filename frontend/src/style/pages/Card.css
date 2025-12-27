@@ -66,7 +66,7 @@
     right: 0;
     z-index: 101;
     width: 150px;
-    background-color: var(--bg);
+    background-color: var(--bg-section);
     border: 1px solid var(--border);
     padding: 10px 7px;
     border-radius: 8px;
@@ -85,8 +85,8 @@
     align-items: center;
     justify-content: flex-start;
     font-size: 13px;
-    border: 1px solid var(--bg);
-    background-color: var(--bg);
+    border: 1px solid var(--bg-section);
+    background-color: var(--bg-section);
     border-radius: 4px;
     color: var(--text);
 }
@@ -197,8 +197,10 @@
     background-color: var(--bg-section);
 }
 
+/* =======================
+BODY CARD
+======================= */
 
-/* BODY  */
 .cc-body {
     /* border: 1px solid red; */
     border-radius: 4px;
@@ -217,7 +219,7 @@
     margin: 0px;
     font-size: 8px;
     padding: 5px;
-    color: #4F5966;
+    color: var(--sub-text-grey);
 }
 
 .cc-body .p-full {
@@ -226,15 +228,14 @@
     font-size: 8px;
     overflow: hidden;
     transition: height 0.3s ease;
-    /* border: 1px solid red; */
+    color: var(--sub-text-grey);
 }
 
 .cc-body .p-empty {
     height: 0px;
-    /* overflow: hidden; */
     transition: height 0.3s ease;
-    /* border: 1px solid blue; */
     margin-bottom: 0px;
+    color: var(--sub-text-grey);
 }
 
 /* END BODY  */
@@ -269,19 +270,14 @@
 
 .member button {
     padding: 3px 8px;
-    color: white;
-    /* color: #6a11cb; */
-    /* font-weight: bold; */
+    color: var(--text-white);
     font-size: 10px;
     text-align: center;
     margin: 0px;
-    border: 1px solid #6a11cb;
-    /* color: #6a11cb; */
+    border: 1px solid var(--border);
     border-radius: 6px;
-    /* background-color: white; */
     cursor: pointer;
-    background-color: #6a11cb;
-    /* background: linear-gradient(to right, #6a11cb, #2575fc); */
+    background: var(--bg-icon2);
 }
 
 .member button:hover {

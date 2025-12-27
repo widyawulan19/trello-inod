@@ -1,6 +1,7 @@
 .cfoot-container {
-    border-top: 1px solid #ddd;
+    border-top: 1px solid var(--border);
     margin: 2px 0px;
+    padding-top: 2px !important;
     padding: 0px 5px;
     display: flex;
     align-items: center;
@@ -9,39 +10,19 @@
 }
 
 .cfoot-container button {
-    border: 1px solid white;
-    /* border: 1px solid #ddd; */
+    border: 1px solid var(--card-bg);
+    background-color: var(--card-bg);
     display: flex;
     align-items: center;
     justify-content: flex-start;
     gap: 2px;
-    padding: 2px;
+    padding: 1px;
     font-size: 10px;
-    color: #5e5e5e;
+    color: var(--sub-text);
+    cursor: pointer;
 }
 
-/* .cf-chat{
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    font-size: 10px;
-    padding: 0px;
+.cfoot-container button:hover {
+    background-color: var(--bg-section-hover);
+    border: 1px solid var(--bg-section-hover);
 }
-.cf-attach{
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    font-size: 10px;
-    padding: 0px;
-}
-.btn-checklist{
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    font-size: 10px;
-    padding: 0px;
-}
-
-.cf-icon{
-    margin-right: 2px;
-} */

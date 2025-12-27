@@ -51,6 +51,12 @@ code {
   --red-soft: #f7dddf;
   --red-bg: #F87171;
   --dropdown-hover: #F3E8FF;
+
+  /* LINK TEXT  */
+  --link-text: #4345bc;
+  --link-bg: #ececf8;
+  --link-border: #ececf8;
+
   /* GRAFIK  */
   --area-design-color: #3b82f6;
   --area-music-color: #a855f7;
@@ -177,6 +183,12 @@ code {
   --red-soft: #EF4444;
   --red-bg: #F87171;
   --dropdown-hover: #7A3FFF;
+
+  /* LINK TEXT  */
+  --link-text: #a5b4fc;
+  --link-bg: #1e1b4b;
+  --link-border: #312e81;
+
   /* GRAFIK  */
   --area-design-color: #60a5fa;
   --area-music-color: #c084fc;

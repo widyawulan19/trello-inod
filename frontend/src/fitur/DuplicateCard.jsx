@@ -120,7 +120,7 @@ const DuplicateCard = ({ userId,cardId, boardId, listId, workspaceId, onClose, f
         </div>
         <div className='dc-right'>
           <BootstrapTooltip title='Close' placement='top'>
-            <HiOutlineXMark className='dc-icon' onClick={onClose} />
+            <HiOutlineXMark className='close-icon' onClick={onClose} />
           </BootstrapTooltip>
         </div>
       </div>
@@ -130,7 +130,7 @@ const DuplicateCard = ({ userId,cardId, boardId, listId, workspaceId, onClose, f
         {/* 🗂️ Select Board */}
         <div className='dc-board'>
           <label>Choose Board</label>
-          <div className='dcb-dropdown'>
+          <div className='duplicate-card-dropdown'>
             <button
               className='dcb-btn'
               onClick={(e) => {
@@ -151,7 +151,7 @@ const DuplicateCard = ({ userId,cardId, boardId, listId, workspaceId, onClose, f
                   placeholder='Search boards...'
                   value={searchBoard}
                   onChange={(e) => setSearchBoard(e.target.value)}
-                  className='dcb-search-input'
+                  className='duplicate-card-search-input'
                 />
                 <ul className='dcb-menu'>
                   {boards
@@ -161,7 +161,7 @@ const DuplicateCard = ({ userId,cardId, boardId, listId, workspaceId, onClose, f
                     .map((board) => (
                       <li
                         key={board.id}
-                        className='dcb-item'
+                        className='duplicate-card-dropdwon-item'
                         onClick={() => {
                           setSelectedBoardId(board.id)
                           setSelectedList(null)
@@ -184,7 +184,7 @@ const DuplicateCard = ({ userId,cardId, boardId, listId, workspaceId, onClose, f
             <label>Choose List</label>
             <div className='dcb-list-dropdown'>
               <button
-                className='dcb-btn'
+                className='dcb-button'
                 onClick={(e) => {
                   e.stopPropagation()
                   setShowListDropdown(!showListDropdown)
@@ -201,9 +201,9 @@ const DuplicateCard = ({ userId,cardId, boardId, listId, workspaceId, onClose, f
                     placeholder='Search lists...'
                     value={searchList}
                     onChange={(e) => setSearchList(e.target.value)}
-                    className='dcb-search-input'
+                    className='dc-list-search-input'
                   />
-                  <ul className='dcb-menu'>
+                  <ul className='duplicate-card-list-menu'>
                     {lists
                       .filter((list) =>
                         list.name.toLowerCase().includes(searchList.toLowerCase())
@@ -211,7 +211,7 @@ const DuplicateCard = ({ userId,cardId, boardId, listId, workspaceId, onClose, f
                       .map((list) => (
                         <li
                           key={list.id}
-                          className={`dcb-item ${
+                          className={`dc-item ${
                             selectedList?.id === list.id ? 'selected' : ''
                           }`}
                           onClick={() => {
@@ -231,7 +231,7 @@ const DuplicateCard = ({ userId,cardId, boardId, listId, workspaceId, onClose, f
         )}
 
         {selectedList && (
-          <div className="mc-position">
+          <div className="dc-position">
             {/* <label>Card Position (1 - {positions.length + 1})</label> */}
             <label>Card Position</label>
             <input
@@ -241,7 +241,7 @@ const DuplicateCard = ({ userId,cardId, boardId, listId, workspaceId, onClose, f
               value={targetPosition || ''}
               onChange={(e) => setTargetPosition(e.target.value)}
               placeholder="Position number"
-              className="mc-position-input"
+              className="dc-position-input"
             />
           </div>
         )}
@@ -250,13 +250,13 @@ const DuplicateCard = ({ userId,cardId, boardId, listId, workspaceId, onClose, f
       </div>
 
       {/* 🚀 BUTTON */}
-      <div className='div-btn'>
+      <div className='duplicate-card-button'>
         <button
-          className='dcb-move-btn'
+          className='dc-move-btn'
           onClick={handleDuplicateCard}
           disabled={!selectedList || isDuplicating}
         >
-          <HiOutlineSquare2Stack className='dcb-icon' />
+          <HiOutlineSquare2Stack className='dc-icon' />
           {isDuplicating ? 'Duplicating...' : 'Duplicate Card'}
         </button>
       </div>

@@ -41,7 +41,8 @@ const SelectPriority = ({
                         display: 'flex',
                         flexDirection: 'column',
                         color: selectedPriority.color,
-                        border: `2px solid ${selectedPriority.color}`,
+                        border:'1px solid #E2E4E9',
+                        // border: `2px solid ${selectedPriority.color}`,
                         backgroundColor: selectedPriority.background,
                     }}
                 >

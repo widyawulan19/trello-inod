@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import '../style/modules/CardStatus.css';
-import {
-  HiArrowUturnLeft,
-  HiCheckCircle,
-  HiChevronDown,
-  HiMiniEye,
-  HiMiniXCircle
-} from 'react-icons/hi2';
+import { HiChevronDown } from 'react-icons/hi2';
 import { FaXmark } from 'react-icons/fa6';
 import { updateCardStatusTesting } from '../services/ApiServices';
+import {
+  ICON_STATUS,
+  getStatusClass
+} from '../context/StatusStyleHelper';
 
 const CardStatus = ({
   cardId,
@@ -21,53 +19,6 @@ const CardStatus = ({
   setSelectedStatus
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-
-  /* ================= ICON MAP ================= */
-  const ICON_STATUS = {
-    Accepted: <HiCheckCircle />,
-    Hold: <HiMiniEye />,
-    Cancle: <HiMiniXCircle />,
-    'On Progress': <HiChevronDown />,
-    Revisi: <HiArrowUturnLeft />,
-    'One Hit': <HiCheckCircle />,
-    'Pindah Producer': <HiArrowUturnLeft />,
-    'Revisi in chat on progress': <HiMiniEye />,
-    'Revisi in chat accept': <HiCheckCircle />,
-    FINISH: <HiCheckCircle />
-  };
-
-  /* ================= STATUS → CSS VAR MAP ================= */
-  const STATUS_VAR_MAP = {
-    Accepted: 'accepted',
-    Hold: 'hold',
-    Cancle: 'cancle',
-    'On Progress': 'on-progress',
-    Revisi: 'revisi',
-    'One Hit': 'one-hit',
-    'Pindah Producer': 'pindah-producer',
-    'Revisi in chat on progress': 'revisi-chat-progress',
-    'Revisi in chat accept': 'revisi-chat-accept',
-    FINISH: 'finish'
-  };
-
-  /* ================= STYLE HELPER ================= */
-  const getStatusStyle = (statusName) => {
-    const key = STATUS_VAR_MAP[statusName];
-
-    if (!key) {
-      return {
-        backgroundColor: 'var(--status-default-bg)',
-        color: 'var(--status-default-text)',
-        border: '1px solid var(--status-default-border)'
-      };
-    }
-
-    return {
-      backgroundColor: `var(--status-${key}-bg)`,
-      color: `var(--status-${key}-text)`,
-      border: `1px solid var(--status-${key}-border)`
-    };
-  };
 
   /* ================= HANDLER ================= */
   const handleStatusChange = async (statusId) => {
@@ -82,9 +33,9 @@ const CardStatus = ({
     }
   };
 
-  const currentStyle = currentStatus
-    ? getStatusStyle(currentStatus.status_name)
-    : null;
+  const currentClass = currentStatus
+    ? getStatusClass(currentStatus.status_name)
+    : 'neutral';
 
   return (
     <div className="card-status-container">
@@ -98,18 +49,7 @@ const CardStatus = ({
       <div className="sc-content">
         {currentStatus ? (
           <button
-            style={{
-              ...currentStyle,
-              borderRadius: '6px',
-              fontSize: '12px',
-              fontWeight: 600,
-              padding: '6px 12px',
-              width: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '6px'
-            }}
+            className={`status-pill status--${currentClass}`}
           >
             {ICON_STATUS[currentStatus.status_name]}
             {currentStatus.status_name}
@@ -121,7 +61,10 @@ const CardStatus = ({
 
       {/* ===== DROPDOWN ===== */}
       <div className="dropdown-status">
-        <button onClick={() => setIsOpen(!isOpen)}>
+        <button
+          className="dropdown-trigger"
+          onClick={() => setIsOpen(!isOpen)}
+        >
           Pilih Status
           <HiChevronDown />
         </button>
@@ -129,23 +72,13 @@ const CardStatus = ({
         {isOpen && (
           <div className="ds-box">
             {allStatuses.map((status) => {
-              const style = getStatusStyle(status.status_name);
+              const statusClass = getStatusClass(status.status_name);
 
               return (
                 <div
                   key={status.status_id}
+                  className={`status-pill status--${statusClass}`}
                   onClick={() => handleStatusChange(status.status_id)}
-                  style={{
-                    ...style,
-                    padding: '6px 10px',
-                    fontSize: '12px',
-                    cursor: 'pointer',
-                    borderRadius: '6px',
-                    marginBottom: '4px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px'
-                  }}
                 >
                   {ICON_STATUS[status.status_name]}
                   {status.status_name}

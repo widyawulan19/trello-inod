@@ -7,6 +7,7 @@ import OutsideClick from '../hook/OutsideClick';
 import BootstrapTooltip from '../components/Tooltip';
 import { useSnackbar } from '../context/Snackbar';
 import { FaXmark } from 'react-icons/fa6';
+import { IoMdPricetag } from "react-icons/io";
 
 const Label = ({ cardId,userId, fetchCardDetail, labels, setLabels, fetchLabels, onClose,fetchCardActivities }) => {
     const [allLabels, setAllLabels] = useState([]);
@@ -183,29 +184,22 @@ const Label = ({ cardId,userId, fetchCardDetail, labels, setLabels, fetchLabels,
 
     return (
         <div className='label-container'>
-            <div className="lc-header">
+           <div className="lc-header">
                 <h5>
-                    <FaTags className='l-icon' />
-                    CARD LABELS
+                    <FaTags/>
+                    MANAGE LABELS
                 </h5>
                 <BootstrapTooltip title='Close' placement='top'>
                     <FaXmark onClick={onClose} className='l-close'/>
                 </BootstrapTooltip>
             </div>
-           
+            
 
             {/* LABELS YANG SUDAH DITAMBAHKAN */}
 
             <div className="labels-main-body">
                 <div className='labels-cont'>
-                    <h5 style={{
-                        fontSize:'10px',
-                        fontWeight:'bold',
-                        color:'#4F5966',
-                        borderBottom:'1px solid #ddd',
-                        marginBottom:'5px',
-                        paddingBottom:'5px'
-                    }}>Active label</h5>
+                    <h5>Active label</h5>
                     <div className="sl-container">
                         {labels.map(label => (
                             <div
@@ -242,16 +236,7 @@ const Label = ({ cardId,userId, fetchCardDetail, labels, setLabels, fetchLabels,
 
                 {/* LIST SELECT LABEL */}
                 <div className="show-label" ref={showLabelRef}>
-                    <h5
-                        style={{
-                        fontSize:'10px',
-                        fontWeight:'bold',
-                        color:'#4F5966',
-                        borderBottom:'1px solid #ddd',
-                        marginBottom:'5px',
-                        paddingBottom:'5px'
-                    }}
-                    >All Label</h5>
+                    <h5>Available Labels</h5>
                     <div className="l-box">
                         {allLabels.map(label => (
                             <div
@@ -289,18 +274,18 @@ const Label = ({ cardId,userId, fetchCardDetail, labels, setLabels, fetchLabels,
                                             <div className="color-label-con">
                                                 {bgColorOption.map(color => (
                                                 <div
-                                                className='color-code'
-                                                    key={color.id}
-                                                    title={color.name}
-                                                    onClick={() => handleAssignBgColorToLabel(label.id, color.id)}
-                                                    style={{
-                                                    width: '20px',
-                                                    height: '20px',
-                                                    borderRadius: '3px',
-                                                    backgroundColor: color.hex_code,
-                                                    cursor: 'pointer',
-                                                    // border: '1px solid #ccc'
-                                                    }}
+                                                    className='color-code'
+                                                        key={color.id}
+                                                        title={color.name}
+                                                        onClick={() => handleAssignBgColorToLabel(label.id, color.id)}
+                                                        style={{
+                                                        width: '20px',
+                                                        height: '20px',
+                                                        borderRadius: '16px',
+                                                        backgroundColor: color.hex_code,
+                                                        cursor: 'pointer',
+                                                        // border: '1px solid red'
+                                                        }}
                                                 />
                                             ))}
                                             </div>
@@ -310,21 +295,11 @@ const Label = ({ cardId,userId, fetchCardDetail, labels, setLabels, fetchLabels,
                             </div>
                         ))}
                     </div>
-                    
                 </div>
 
                 {/* FORM CREATE NEW LABEL */}
                 <div className='fl-label'>
-                    <h5
-                        style={{
-                        fontSize:'10px',
-                        fontWeight:'bold',
-                        color:'#4F5966',
-                        borderBottom:'1px solid #ddd',
-                        marginBottom:'5px',
-                        paddingBottom:'5px',
-                        width:'100%'
-                    }}>
+                    <h5>
                         Create New Label
                     </h5>
                     <div className="form-label">
