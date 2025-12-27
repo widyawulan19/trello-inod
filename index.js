@@ -8056,7 +8056,8 @@ app.get('/api/status-testing', async (req, res) => {
 app.post('/api/status-testing', async (req, res) => {
     const { status_name, accent_color } = req.body;
 
-    if (!status_name?.trim()) {
+    // ===== VALIDATION =====
+    if (!status_name || status_name.trim() === '') {
         return res.status(400).json({ error: 'Status name wajib diisi' });
     }
 
@@ -8066,10 +8067,8 @@ app.post('/api/status-testing', async (req, res) => {
         });
     }
 
-    // 🔐 HARD GUARANTEE
-    const safeColor = accent_color.trim();
-
     try {
+        // ===== CHECK DUPLICATE NAME =====
         const exists = await client.query(
             `SELECT 1 FROM status WHERE LOWER(status_name) = LOWER($1)`,
             [status_name.trim()]
@@ -8081,6 +8080,7 @@ app.post('/api/status-testing', async (req, res) => {
             });
         }
 
+        // ===== INSERT (LET DB HANDLE status_id) =====
         const result = await client.query(
             `
       INSERT INTO status (
@@ -8089,26 +8089,28 @@ app.post('/api/status-testing', async (req, res) => {
         background_color,
         accent_color
       )
-      VALUES ($1, $2, NULL, $3)
+      VALUES ($1, $2, NULL, $2)
       RETURNING
         status_id,
         status_name,
-        text_color,
-        accent_color
+        COALESCE(accent_color, text_color) AS accent_color
       `,
-            [
-                status_name.trim(),
-                safeColor,   // 👈 text_color WAJIB
-                safeColor    // 👈 accent_color
-            ]
+            [status_name.trim(), accent_color]
         );
 
         res.status(201).json(result.rows[0]);
     } catch (error) {
-        console.error('Create status error:', error.message);
+        console.error('Create status error:', error);
+
+        // ===== HANDLE SEQUENCE ERROR EXPLICITLY =====
+        if (error.code === '23505') {
+            return res.status(409).json({
+                error: 'Duplicate key error (sequence kemungkinan tidak sinkron)'
+            });
+        }
+
         res.status(500).json({
-            error: 'Gagal membuat status',
-            detail: error.message
+            error: 'Gagal membuat status'
         });
     }
 });
