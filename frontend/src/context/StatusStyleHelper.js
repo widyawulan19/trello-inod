@@ -34,7 +34,7 @@ export const STATUS_CLASS_MAP = {
     'On Progress': 'info',
 
     // status netral / operasional
-    'Pindah Producer': 'neutral',
+    'Pindah Producer': 'success',
     'Revisi in chat on progress': 'neutral',
     'Revisi in chat accept': 'neutral'
 };
@@ -43,3 +43,29 @@ export const STATUS_CLASS_MAP = {
 export const getStatusClass = (statusName) => {
     return STATUS_CLASS_MAP[statusName] || 'neutral';
 };
+
+const hexToRgb = (hex) => {
+    const cleanHex = hex.replace('#', '');
+    const bigint = parseInt(cleanHex, 16);
+
+    return {
+        r: (bigint >> 16) & 255,
+        g: (bigint >> 8) & 255,
+        b: bigint & 255
+    };
+};
+
+export const getStatusColorStyle = (accentColor) => {
+    if (!accentColor) return {};
+
+    const { r, g, b } = hexToRgb(accentColor);
+
+    return {
+        '--status-r': r,
+        '--status-g': g,
+        '--status-b': b
+    };
+};
+
+
+

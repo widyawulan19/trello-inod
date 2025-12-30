@@ -2,11 +2,17 @@ import React, { useState } from 'react';
 import '../style/modules/CardStatus.css';
 import { HiChevronDown } from 'react-icons/hi2';
 import { FaXmark } from 'react-icons/fa6';
-import { updateCardStatusTesting } from '../services/ApiServices';
+import {
+  updateCardStatusTesting,
+  createStatusTesting
+} from '../services/ApiServices';
 import {
   ICON_STATUS,
-  getStatusClass
+  getStatusClass,
+  getStatusColorStyle
 } from '../context/StatusStyleHelper';
+import { useSnackbar } from '../context/Snackbar';
+// import { getStatusColorStyle } from '../context/StatusStyleHelper';
 
 const CardStatus = ({
   cardId,
@@ -20,7 +26,14 @@ const CardStatus = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
+  // ===== CREATE STATUS STATE =====
+  const [isCreating, setIsCreating] = useState(false);
+  const [newStatusName, setNewStatusName] = useState('');
+  const [accentColor, setAccentColor] = useState('#2563eb');
+  const {showSnackbar} = useSnackbar();
+
   /* ================= HANDLER ================= */
+
   const handleStatusChange = async (statusId) => {
     setSelectedStatus(statusId);
     setIsOpen(false);
@@ -30,6 +43,32 @@ const CardStatus = ({
       fetchCardStatus();
     } catch (err) {
       console.error('❌ Failed to update status:', err);
+    }
+  };
+
+  const handleCreateStatus = async () => {
+    if (!newStatusName.trim()) return;
+
+    try {
+      await createStatusTesting({
+        status_name: newStatusName.trim(),
+        accent_color: accentColor
+      });
+
+      // reset
+      setNewStatusName('');
+      setAccentColor('#2563eb');
+      setIsCreating(false);
+      showSnackbar('Status created successfully','success');
+
+      // refresh status list (parent)
+      fetchCardStatus();
+    } catch (err) {
+      console.error(
+        '❌ Failed to create status:',
+        err.response?.data?.error
+      );
+      showSnackbar('Failed to create status','error');
     }
   };
 
@@ -48,16 +87,18 @@ const CardStatus = ({
       {/* ===== CURRENT STATUS ===== */}
       <div className="sc-content">
         {currentStatus ? (
-          <button
-            className={`status-pill status--${currentClass}`}
+         <button
+            className="status-pill"
+            style={getStatusColorStyle(currentStatus.accent_color)}
           >
-            {ICON_STATUS[currentStatus.status_name]}
             {currentStatus.status_name}
           </button>
+
         ) : (
           <p>Status belum ditentukan</p>
         )}
       </div>
+
 
       {/* ===== DROPDOWN ===== */}
       <div className="dropdown-status">
@@ -71,20 +112,67 @@ const CardStatus = ({
 
         {isOpen && (
           <div className="ds-box">
-            {allStatuses.map((status) => {
-              const statusClass = getStatusClass(status.status_name);
-
-              return (
+            <div className="dsb-pill">
+              {allStatuses.map((status) => (
                 <div
                   key={status.status_id}
-                  className={`status-pill status--${statusClass}`}
+                  className="status-pill"
+                  style={getStatusColorStyle(status.accent_color)}
                   onClick={() => handleStatusChange(status.status_id)}
                 >
-                  {ICON_STATUS[status.status_name]}
                   {status.status_name}
                 </div>
-              );
-            })}
+              ))}
+            </div>
+        
+            {/* ===== CREATE STATUS SECTION ===== */}
+            <div className="create-status-box">
+              {!isCreating ? (
+                <button
+                  className="create-status-btn"
+                  onClick={() => setIsCreating(true)}
+                >
+                  + Create New Status
+                </button>
+              ) : (
+                <>
+                  <input
+                    type="text"
+                    placeholder="Status name"
+                    value={newStatusName}
+                    onChange={(e) =>
+                      setNewStatusName(e.target.value)
+                    }
+                  />
+
+                  <div className="color-picker">
+                    <input
+                      type="color"
+                      value={accentColor}
+                      onChange={(e) =>
+                        setAccentColor(e.target.value)
+                      }
+                    />
+                    <span>{accentColor}</span>
+                  </div>
+
+                  <div className="cs-action">
+                    <button
+                      className="cs-save"
+                      onClick={handleCreateStatus}
+                    >
+                      Save
+                    </button>
+                    <button
+                      className="cs-cancel"
+                      onClick={() => setIsCreating(false)}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         )}
       </div>

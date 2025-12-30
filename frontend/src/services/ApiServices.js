@@ -551,6 +551,8 @@ export const getAllStatus = () => axios.get(`${API_URL}/status`)
 export const updateStatus = (cardId, statusId) => axios.post(`${API_URL}/cards/${cardId}/status`, statusId)
 export const getStatusCard = (cardId) => axios.get(`${API_URL}/card-status/${cardId}`);
 
+export const createStatusTesting = (data) => axios.post(`${API_URL}/status-testing`, data);
+
 export const updateCardStatusTesting = (cardId, userId, data) =>
   axios.post(`${API_URL}/cards/${cardId}/update-status-testing/${userId}`, data);
 

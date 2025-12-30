@@ -560,17 +560,37 @@ const NewCardDetail=({fetchBoardDetail})=> {
     /* =======================
     FECTH CARD STATUS
     ======================= */
-    const fetchCardStatus = async() =>{
-        try{
+    // const fetchCardStatus = async() =>{
+    //     try{
+    //         const response = await getStatusByCardId(cardId);
+    //         if(response.data.length > 0){
+    //             setCurrentStatus(response.data[0]);
+    //             setSelectedStatus(response.data[0].status_id);
+    //         }
+    //     }catch(error){
+    //         console.error('Gagal mengambil status kartu:', error);
+    //     }
+    // };
+    const fetchCardStatus = async () => {
+        try {
             const response = await getStatusByCardId(cardId);
-            if(response.data.length > 0){
-                setCurrentStatus(response.data[0]);
-                setSelectedStatus(response.data[0].status_id);
+
+            if (response.data.length > 0) {
+            const rawStatus = response.data[0];
+
+            const mappedStatus = {
+                ...rawStatus,
+                accent_color: rawStatus.text_color, // ⬅️ PENTING
+            };
+
+            setCurrentStatus(mappedStatus);
+            setSelectedStatus(rawStatus.status_id);
             }
-        }catch(error){
+        } catch (error) {
             console.error('Gagal mengambil status kartu:', error);
         }
-    };
+        };
+
 
     /* =======================
     FECTH ALL STATUS

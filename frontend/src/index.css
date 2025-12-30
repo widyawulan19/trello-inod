@@ -145,6 +145,17 @@ code {
   --check-active: #16A34A;
   --check-success: #16A34A;
   --check-disabled: #64748B;
+
+
+  /* STATUS CARD  */
+  /* --status-bg-opacity: 0.18;
+  --status-text-strength: 90;
+  --status-border-strength: 40; */
+  --status-bg-opacity: 0.12;
+  --status-text-strength: -90;
+  --status-border-strength: -40;
+
+
 }
 
 /* Dark Theme */
@@ -279,6 +290,15 @@ code {
   --check-active: #4ADE80;
   --check-success: #4ADE80;
   --check-disabled: #94A3B8;
+
+  /* STATUS CARD  */
+
+  --status-bg-opacity: 0.18;
+  --status-text-strength: 90;
+  --status-border-strength: 40;
+  /* --status-bg-opacity: 0.12;
+  --status-text-strength: -90;
+  --status-border-strength: -40; */
 }
 
 

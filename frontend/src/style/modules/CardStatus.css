@@ -1,5 +1,5 @@
 .card-status-container {
-    /* border: 1px solid blue; */
+    border: 1px solid blue;
     width: 100% !important;
     padding: 5px;
 
@@ -26,7 +26,6 @@
 }
 
 .sc-content {
-    /* border: 1px solid grey; */
     /* margin: 5px 0px; */
     padding: 5px 0px;
 }
@@ -76,8 +75,8 @@
     padding: 5px;
     margin: 0;
     position: absolute;
-    background-color: white;
-    border: 1px solid #ddd;
+    background-color: var(--bg-section);
+    /* border: 1px solid red; */
     border-radius: 4px;
     min-width: 180px;
     width: 95%;
@@ -85,18 +84,57 @@
     box-shadow: 0px 4px 8px #5e12eb46;
 }
 
+.dsb-pill {
+    max-height: 200px;
+    overflow-y: auto;
+    /* border: 1px solid blue; */
+    gap: 5px;
+}
+
+
 .status-pill {
     padding: 6px 12px;
+    margin: 2px;
     border-radius: 6px;
     font-size: 12px;
     font-weight: 600;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    width: fit-content;
 
-    background: var(--status-bg);
-    color: var(--status-text);
-    border: 1px solid var(--status-border);
+    /* RGB dari helper */
+    --r: var(--status-r, 120);
+    --g: var(--status-g, 120);
+    --b: var(--status-b, 120);
+
+    color: rgb(clamp(0, calc(var(--r) + var(--status-text-strength)), 255),
+            clamp(0, calc(var(--g) + var(--status-text-strength)), 255),
+            clamp(0, calc(var(--b) + var(--status-text-strength)), 255));
+
+    border: 1px solid rgb(clamp(0, calc(var(--r) + var(--status-border-strength)), 255),
+            clamp(0, calc(var(--g) + var(--status-border-strength)), 255),
+            clamp(0, calc(var(--b) + var(--status-border-strength)), 255));
+
+    background-color: rgba(var(--r),
+            var(--g),
+            var(--b),
+            var(--status-bg-opacity));
+}
+
+.status-pill:hover {
+    background-color: rgba(var(--r),
+            var(--g),
+            var(--b),
+            calc(var(--status-bg-opacity) + 0.06));
+}
+
+
+
+.status-pill:hover {
+    background-color: rgba(var(--r),
+            var(--g),
+            var(--b),
+            calc(var(--status-bg-opacity) + 0.08));
 }
 
 /* ===== VARIANTS ===== */
@@ -128,4 +166,81 @@
     --status-bg: rgba(148, 163, 184, 0.12);
     --status-border: rgba(148, 163, 184, 0.35);
     --status-text: #94a3b8;
+}
+
+
+
+
+
+/* =======================
+/* STATUS DISPLAY 
+======================= */
+/* ===== STATUS DISPLAY PILL ===== */
+
+.status-display-wrapper {
+    width: 100%;
+    display: block;
+}
+
+
+
+.status-display-pill {
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    width: 100%;
+}
+
+
+/* .status-display-pill {
+    outline: 2px dashed lime;
+} */
+
+
+
+.pill-status-display {
+    width: 100%;
+    border-radius: 10px;
+    padding: 12px 14px;
+
+    /* INHERIT dari parent */
+    color: inherit;
+    border: inherit;
+    background: transparent;
+}
+
+.display-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 6px 14px;
+    border-radius: 999px;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    color: #fff;
+    background-color: var(--status-bg, #64748b);
+
+    border: none;
+    width: fit-content;
+}
+
+/* icon kecil */
+.ds-icon {
+    font-size: 14px;
+    line-height: 1;
+}
+
+/* text */
+.ds-text {
+    white-space: nowrap;
+}
+
+/* kalau status kosong */
+.display-status.empty {
+    background-color: #e5e7eb;
+    color: #374151;
 }
