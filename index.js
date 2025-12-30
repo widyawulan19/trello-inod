@@ -1919,91 +1919,119 @@ app.get('/api/search/global-testing-fix', async (req, res) => {
         return res.status(400).json({ error: 'Keyword and userId are required' });
     }
 
+    const searchKeyword = `%${keyword.toLowerCase()}%`;
     const numericUserId = parseInt(userId);
+
     if (isNaN(numericUserId)) {
         return res.status(400).json({ error: 'Invalid userId' });
     }
 
     try {
-        const searchKeyword = `%${keyword}%`;
-
         const query = `
-        WITH user_workspaces AS (
-            SELECT workspace_id 
-            FROM workspaces_users 
-            WHERE user_id = $2
-        ),
-
-        active_cards AS (
+        -- COMBINED SEARCH WITHOUT LIMIT PER TYPE, LIMIT TOTAL 20
+        SELECT *
+        FROM (
+            -- WORKSPACES
             SELECT 
-                c.id AS card_id,
-                c.title,
+                w.id AS entity_id,
+                w.name,
+                w.description,
+                NULL::integer AS board_id,
+                NULL::integer AS list_id,
+                NULL::integer AS card_id,
+                'workspace' AS type
+            FROM workspaces w
+            JOIN workspaces_users wu ON wu.workspace_id = w.id
+            WHERE wu.user_id = $2
+              AND w.is_deleted = FALSE
+              AND (LOWER(w.name) ILIKE $1 OR LOWER(w.description) ILIKE $1)
+
+            UNION ALL
+
+            -- BOARDS
+            SELECT 
+                b.id AS entity_id,
+                b.name,
+                b.description,
+                b.id AS board_id,
+                NULL::integer AS list_id,
+                NULL::integer AS card_id,
+                'board' AS type
+            FROM boards b
+            JOIN workspaces_users wu ON wu.workspace_id = b.workspace_id
+            WHERE wu.user_id = $2
+              AND b.is_deleted = FALSE
+              AND (LOWER(b.name) ILIKE $1 OR LOWER(b.description) ILIKE $1)
+
+            UNION ALL
+
+            -- LISTS
+            SELECT 
+                l.id AS entity_id,
+                l.name,
+                NULL AS description,
+                l.board_id AS board_id,
+                l.id AS list_id,
+                NULL::integer AS card_id,
+                'list' AS type
+            FROM lists l
+            JOIN boards b ON b.id = l.board_id
+            JOIN workspaces_users wu ON wu.workspace_id = b.workspace_id
+            WHERE wu.user_id = $2
+              AND l.is_deleted = FALSE
+              AND LOWER(l.name) ILIKE $1
+
+            UNION ALL
+
+            -- ACTIVE CARDS
+            SELECT 
+                c.id AS entity_id,
+                c.title AS name,
                 c.description,
-                l.id AS list_id,
-                l.name AS list_name,
                 b.id AS board_id,
-                b.name AS board_name,
-                w.id AS workspace_id,
-                w.name AS workspace_name,
-                'Active' AS status,
-                c.is_active,
-                c.show_toggle,
-                c.position,
-                c.create_at,
-                c.update_at
+                l.id AS list_id,
+                c.id AS card_id,
+                'card' AS type
             FROM cards c
-            JOIN lists l ON c.list_id = l.id
-            JOIN boards b ON l.board_id = b.id
-            JOIN workspaces w ON b.workspace_id = w.id
-            WHERE w.id IN (SELECT workspace_id FROM user_workspaces)
-            AND c.is_deleted = FALSE
-            AND (
-                c.title ILIKE $1 OR 
-                c.description ILIKE $1
-            )
-        ),
+            JOIN lists l ON l.id = c.list_id
+            JOIN boards b ON b.id = l.board_id
+            JOIN workspaces_users wu ON wu.workspace_id = b.workspace_id
+            WHERE wu.user_id = $2
+              AND c.is_deleted = FALSE
+              AND (LOWER(c.title) ILIKE $1 OR LOWER(c.description) ILIKE $1)
 
-        archived_cards AS (
+            UNION ALL
+
+            -- ARCHIVED CARDS
             SELECT
-                a.entity_id AS card_id,
-                a.data ->> 'title' AS title,
+                a.entity_id AS entity_id,
+                a.data ->> 'title' AS name,
                 a.data ->> 'description' AS description,
+                l.board_id AS board_id,
                 l.id AS list_id,
-                l.name AS list_name,
-                b.id AS board_id,
-                b.name AS board_name,
-                w.id AS workspace_id,
-                w.name AS workspace_name,
-                'Archive' AS status,
-                NULL AS is_active,
-                NULL AS show_toggle,
-                NULL AS position,
-                a.archived_at AS create_at,
-                a.archived_at AS update_at
+                a.entity_id AS card_id,
+                'card' AS type
             FROM archive_universal a
-            JOIN lists l ON (a.data ->> 'list_id')::int = l.id
-            JOIN boards b ON l.board_id = b.id
-            JOIN workspaces w ON b.workspace_id = w.id
+            LEFT JOIN lists l ON l.id = (a.data ->> 'list_id')::int
+            LEFT JOIN boards b ON b.id = l.board_id
+            LEFT JOIN workspaces_users wu ON wu.workspace_id = b.workspace_id
             WHERE a.entity_type = 'cards'
-            AND w.id IN (SELECT workspace_id FROM user_workspaces)
-            AND (
-                (a.data ->> 'title') ILIKE $1 OR
-                (a.data ->> 'description') ILIKE $1
-            )
-        )
-
-        SELECT * FROM active_cards
-        UNION ALL
-        SELECT * FROM archived_cards
-        ORDER BY update_at DESC NULLS LAST;
+              AND wu.user_id = $2
+              AND (LOWER(a.data ->> 'title') ILIKE $1 OR LOWER(a.data ->> 'description') ILIKE $1)
+        ) AS combined
+        ORDER BY type, name
+        LIMIT 20;
         `;
 
         const result = await client.query(query, [searchKeyword, numericUserId]);
         res.json(result.rows);
 
     } catch (err) {
-        console.error('🔥 Search error:', err.message);
-        res.status(500).json({ error: 'Internal server error' });
+        console.error('❌ Search error:', err.message);
+        res.status(500).json({
+            error: 'Internal server error',
+            detail: err.message
+        });
     }
 });
 
@@ -5880,8 +5908,6 @@ app.put('/api/cards/:id/title', async (req, res) => {
     }
 })
 
-
-
 app.put('/api/cards/:id/title-another-testing/:userId', async (req, res) => {
     const { id, userId } = req.params;
     const { title } = req.body;
@@ -5934,6 +5960,7 @@ app.put('/api/cards/:id/title-another-testing/:userId', async (req, res) => {
         res.status(500).json({ error: 'Gagal update card title' });
     }
 });
+
 
 //1.1 update title card (testing)
 app.put('/api/cards/:id/title-testing/:userId', async (req, res) => {
@@ -7967,6 +7994,132 @@ app.get('/api/cards/:cardId/status', async (req, res) => {
     }
 });
 
+/* =======================
+TESTING
+======================= */
+app.get('/api/cards/:cardId/status-testing', async (req, res) => {
+    const { cardId } = req.params;
+
+    try {
+        const result = await client.query(
+            `
+      SELECT 
+        s.status_id,
+        s.status_name,
+        COALESCE(s.accent_color, s.text_color) AS accent_color,
+        s.text_color,
+        s.background_color,
+        cs.assigned_at
+      FROM card_status cs
+      JOIN status s ON cs.status_id = s.status_id
+      WHERE cs.card_id = $1
+      `,
+            [cardId]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Tidak ada status untuk cardId ini' });
+        }
+
+        res.json(result.rows[0]); // biasanya cuma satu status aktif
+    } catch (error) {
+        console.error('Database Error:', error);
+        res.status(500).json({
+            error: 'Gagal mengambil status',
+            detail: error.message
+        });
+    }
+});
+
+app.get('/api/status-testing', async (req, res) => {
+    try {
+        const result = await client.query(`
+      SELECT
+        status_id,
+        status_name,
+        COALESCE(accent_color, text_color) AS accent_color,
+        text_color,
+        background_color
+      FROM status
+      ORDER BY status_id
+    `);
+
+        res.json(result.rows);
+    } catch (error) {
+        res.status(500).json({
+            error: 'Gagal mengambil daftar status',
+            detail: error.message
+        });
+    }
+});
+
+app.post('/api/status-testing', async (req, res) => {
+    const { status_name, accent_color } = req.body;
+
+    // ===== VALIDATION =====
+    if (!status_name || status_name.trim() === '') {
+        return res.status(400).json({ error: 'Status name wajib diisi' });
+    }
+
+    if (!accent_color || !/^#([0-9A-Fa-f]{6})$/.test(accent_color)) {
+        return res.status(400).json({
+            error: 'Accent color harus format HEX (#RRGGBB)'
+        });
+    }
+
+    try {
+        // ===== CHECK DUPLICATE NAME =====
+        const exists = await client.query(
+            `SELECT 1 FROM status WHERE LOWER(status_name) = LOWER($1)`,
+            [status_name.trim()]
+        );
+
+        if (exists.rowCount > 0) {
+            return res.status(409).json({
+                error: 'Status dengan nama ini sudah ada'
+            });
+        }
+
+        // ===== INSERT (LET DB HANDLE status_id) =====
+        const result = await client.query(
+            `
+      INSERT INTO status (
+        status_name,
+        text_color,
+        background_color,
+        accent_color
+      )
+      VALUES ($1, $2, NULL, $2)
+      RETURNING
+        status_id,
+        status_name,
+        COALESCE(accent_color, text_color) AS accent_color
+      `,
+            [status_name.trim(), accent_color]
+        );
+
+        res.status(201).json(result.rows[0]);
+    } catch (error) {
+        console.error('Create status error:', error);
+
+        // ===== HANDLE SEQUENCE ERROR EXPLICITLY =====
+        if (error.code === '23505') {
+            return res.status(409).json({
+                error: 'Duplicate key error (sequence kemungkinan tidak sinkron)'
+            });
+        }
+
+        res.status(500).json({
+            error: 'Gagal membuat status'
+        });
+    }
+});
+
+/* =======================
+======================= */
+
+
+
 app.get('/api/card-status/:cardId', async (req, res) => {
     const { cardId } = req.params;
 
@@ -7996,6 +8149,40 @@ app.get('/api/status', async (req, res) => {
     }
 })
 
+//3. add/update status card id
+// app.post('/api/cards/:cardId/status', async (req, res) => {
+//     const { cardId } = req.params;
+//     const { statusId } = req.body;
+//     const userId = req.user.id;
+
+//     try {
+//         // Cek apakah kartu sudah memiliki status
+//         const check = await client.query(`SELECT * FROM card_status WHERE card_id = $1`, [cardId]);
+
+//         if (check.rows.length > 0) {
+//             // Jika ada, update status
+//             await client.query(`UPDATE card_status SET status_id = $1, update_at = CURRENT_TIMESTAMP WHERE card_id = $2`, [statusId, cardId]);
+//             res.json({ message: 'Status kartu berhasil diperbarui' });
+//         } else {
+//             // Jika belum ada, tambahkan status baru
+//             await client.query(`INSERT INTO card_status (card_id, status_id, assigned_at) VALUES ($1, $2, CURRENT_TIMESTAMP)`, [cardId, statusId]);
+//             res.json({ message: 'Status kartu berhasil ditambahkan' });
+//         }
+
+//         //add log card activity
+//         await logCardActivity({
+//             action: 'updated_status',
+//             card_id: cardId,
+//             user_id: userId,
+//             entity: 'status',
+//             entity_id: statusId,
+//             details: ''
+//         })
+
+//     } catch (error) {
+//         res.status(500).json({ error: 'Gagal menambahkan/memperbarui status kartu' });
+//     }
+// })
 
 //3.1 add/update status card id
 app.post('/api/cards/:cardId/update-status-testing/:userId', async (req, res) => {
@@ -9699,6 +9886,122 @@ app.delete("/api/accept-status/:id", async (req, res) => {
 // END STATUS ACCEPT 
 
 //DATA MARKETING DESIGN
+
+
+// =========================================
+//  CREATE INDEX (JALANKAN 1x SAJA)
+// =========================================
+app.get("/api/marketing-design/create-index", async (req, res) => {
+    try {
+        await client.query(`
+      CREATE INDEX IF NOT EXISTS idx_marketing_design_position
+      ON marketing_design (position DESC);
+
+      CREATE INDEX IF NOT EXISTS idx_marketing_design_is_deleted
+      ON marketing_design (is_deleted);
+    `);
+
+        res.json({ message: "Indexes created successfully 🎉" });
+    } catch (error) {
+        console.error("❌ Error creating indexes:", error);
+        res.status(500).json({ error: "Failed to create indexes" });
+    }
+});
+
+
+// =========================================
+//  ENDPOINT PAGINATION
+// =========================================
+app.get("/api/marketing-design/new-joined", async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const offset = (page - 1) * limit;
+
+    try {
+        // Hitung total data
+        const countResult = await client.query(`
+      SELECT COUNT(*) 
+      FROM marketing_design 
+      WHERE is_deleted = false;
+    `);
+
+        const totalRows = parseInt(countResult.rows[0].count);
+        const totalPages = Math.ceil(totalRows / limit);
+
+        // Ambil data
+        const result = await client.query(
+            `
+      SELECT 
+        md.marketing_design_id,
+        md.buyer_name,
+        md.code_order,
+        md.jumlah_design,
+        md.order_number,
+        md.deadline,
+        md.jumlah_revisi,
+        md.price_normal,
+        md.price_discount,
+        md.discount_percentage,
+        md.required_files,
+        md.file_and_chat,
+        md.detail_project,
+        md.create_at,
+        md.update_at,
+        md.card_id,
+        md.resolution,
+        md.reference,
+        md.project_number,
+        md.position,
+
+        mdu.id AS input_by_id,
+        mdu.nama_marketing AS input_by_name,
+        kdd.id AS acc_by_id,
+        kdd.nama AS acc_by_name,
+        ad.id AS account_id,
+        ad.nama_account AS account_name,
+        ot.id AS offer_type_id,
+        ot.offer_name AS offer_type_name,
+        pt.id AS project_type_id,
+        pt.project_name AS project_type_name,
+        sd.id AS style_id,
+        sd.style_name AS style_name,
+        sp.id AS status_project_id,
+        sp.status_name AS status_project_name,
+        dot.id AS order_type_id,
+        dot.order_name AS order_type_name
+
+      FROM marketing_design md
+      LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
+      LEFT JOIN kepala_divisi_design kdd ON md.acc_by = kdd.id
+      LEFT JOIN account_design ad ON md.account = ad.id
+      LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
+      LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
+      LEFT JOIN style_design sd ON md.style_id = sd.id
+      LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
+      LEFT JOIN design_order_type dot ON md.order_type_id = dot.id
+
+      WHERE md.is_deleted = false
+      ORDER BY md.position DESC
+      LIMIT $1 OFFSET $2;
+      `,
+            [limit, offset]
+        );
+
+        res.json({
+            page,
+            limit,
+            totalRows,
+            totalPages,
+            data: result.rows,
+        });
+
+    } catch (error) {
+        console.error("❌ Error get joined marketing_design:", error);
+        res.status(500).json({ error: "Failed to fetch joined data" });
+    }
+});
+
+
 
 //MARKETING DESIGN JOINED
 // ✅ Get all marketing_design + join
@@ -16803,7 +17106,7 @@ app.get("/api/testing_boards", async (req, res) => {
         res.status(500).json({ error: "Failed to fetch boards" });
     }
 });
-app.get('/api/marketing/summary/daily', async (req, res) => {
+app.get('/api/marketing/summary/daily-testing', async (req, res) => {
     try {
         const result = await client.query(`
       SELECT 
@@ -16837,6 +17140,39 @@ app.get('/api/marketing/summary/daily', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch marketing summary' });
     }
 });
+
+app.get('/api/marketing/summary/daily', async (req, res) => {
+    try {
+        const result = await client.query(`
+      SELECT 
+        DATE(create_at) AS date,
+        COUNT(*) AS total_orders,
+        SUM(
+          COALESCE(price_normal::numeric, 0)
+          - COALESCE(price_normal::numeric, 0) * 
+            COALESCE(NULLIF(REPLACE(discount_percentage, '%', ''), '')::numeric, 0)/100
+        ) AS total_income
+      FROM marketing_design
+      WHERE create_at IS NOT NULL
+        AND is_deleted = false
+      GROUP BY DATE(create_at)
+      ORDER BY DATE(create_at);
+    `);
+
+        // Format hasil biar frontend gampang pakai
+        const formatted = result.rows.map(row => ({
+            date: row.date,
+            total_orders: parseInt(row.total_orders, 10),
+            total_income: parseFloat(row.total_income)
+        }));
+
+        res.status(200).json(formatted);
+    } catch (error) {
+        console.error('Error fetching daily marketing summary:', error);
+        res.status(500).json({ error: 'Failed to fetch marketing summary' });
+    }
+});
+
 
 
 // ===== server.js =====
@@ -16962,4 +17298,5 @@ app.get('/api/marketing/summary/compare', async (req, res) => {
 
 
 // TESTING NEW FITUR  EDNPOIN 
+
 
