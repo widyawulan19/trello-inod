@@ -7976,7 +7976,7 @@ app.get('/api/cards/:cardId/status', async (req, res) => {
 
     try {
         const result = await client.query(
-            `SELECT s.status_id, s.status_name, s.text_color,s.background_color, cs.assigned_at
+            `SELECT s.status_id, s.status_name, s.text_color,s.background_color, cs.assigned_at, s.accent_color
             FROM card_status cs
             JOIN status s ON cs.status_id = s.status_id
             WHERE cs.card_id = $1`,
