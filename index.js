@@ -6774,6 +6774,11 @@ app.put('/api/card-due-date-testing/:id/:userId', async (req, res) => {
     const { id, userId } = req.params;   // 👈 userId dari URL
     const { due_date } = req.body;
 
+    const userIdInt = parseInt(userId, 10);
+    if (isNaN(userIdInt)) {
+        return res.status(400).json({ error: "Invalid userId" });
+    }
+
     try {
         // Ambil cardId dan due date lama
         const existing = await client.query(
