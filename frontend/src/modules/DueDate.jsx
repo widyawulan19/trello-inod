@@ -7,14 +7,17 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { 
   getAllDueDateByCardId, 
   addNewDueDate, 
-  updateDueDate 
+  updateDueDate, 
+  updateCardDueDate
 } from "../services/ApiServices"; // Sesuaikan dengan lokasi file API
 import { HiXMark } from "react-icons/hi2";
 import BootstrapTooltip from "../components/Tooltip";
 import { useSnackbar } from "../context/Snackbar";
 import { FaClock } from "react-icons/fa6";
+import { useUser } from "../context/UserContext";
 
 const DueDate = ({ 
+  // userId,
     cardId , 
     onClose,
     dueDates,
@@ -29,41 +32,57 @@ const DueDate = ({
   }) => {
 
   const {showSnackbar} = useSnackbar()
+  const {user} = useUser();
+  const userId = user?.id;
 
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
 
-  const handleSaveDueDate = async () => {
-    if (!selectedDate) {
-      alert("Pilih due date terlebih dahulu!");
-      return;
+const handleSaveDueDate = async () => {
+  if (!selectedDate) {
+    showSnackbar("Pilih due date terlebih dahulu", "warning");
+    return;
+  }
+
+  try {
+    setLoading(true);
+    const formattedDate = selectedDate.toISOString();
+
+    if (selectedDueDateId) {
+      // =============================
+      // UPDATE DUE DATE
+      // =============================
+      await updateCardDueDate(
+        selectedDueDateId,
+        userId,
+        formattedDate
+      );
+
+      showSnackbar("Due date berhasil diperbarui", "success");
+    } else {
+      // =============================
+      // CREATE DUE DATE
+      // =============================
+      await addNewDueDate({
+        card_id: cardId,
+        due_date: formattedDate,
+      });
+
+      showSnackbar("Due date berhasil ditambahkan", "success");
     }
 
-    try {
-      setLoading(true);
-      const formattedDate = selectedDate.toISOString();
+    await fetchDueDates();
+    onClose();
+  } catch (error) {
+    console.error("Error saving due date:", error);
+    showSnackbar("Gagal menyimpan due date", "error");
+  } finally {
+    setLoading(false);
+  }
+};
 
-      if (selectedDueDateId) {
-        await updateDueDate(selectedDueDateId, { due_date: formattedDate });
-        // alert("Due date berhasil diperbarui!");
-        showSnackbar('Due date berhasil diperbarui','success')
-      } else {
-        await addNewDueDate({ card_id: cardId, due_date: formattedDate });
-        // alert("Due date berhasil ditambahkan!");
-        showSnackbar('Due data berhasil ditambahkan','success')
-      }
-
-      fetchDueDates();
-    } catch (error) {
-      console.error("Error saving due date:", error);
-      // alert("Gagal menyimpan due date");
-      showSnackbar('Gagal menyimpan due date','error')
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const getDueDateClass = (date) => {
     if (!date) return "";

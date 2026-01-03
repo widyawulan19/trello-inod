@@ -1147,6 +1147,7 @@ const NewCardDetail=({fetchBoardDetail})=> {
                         </div>
                         <div className="due">
                             <DueDateDisplay
+                                userId={userId}
                                 cardId={cardId}
                                 dueDates={dueDates}
                                 setDueDates={setDueDates}
@@ -1161,61 +1162,6 @@ const NewCardDetail=({fetchBoardDetail})=> {
                         </div>
                     </div>
 
-                    {/* Toggle Button (only for small screen)
-                    <div className="status-toggle-btn-wrapper">
-                        <button 
-                            className="status-toggle-btn" 
-                            onClick={toggleStatusVisibility}
-                        >
-                            {statusVisible ? 'Hide Status ▲' : 'Show Status ▼'}
-                        </button>
-                    </div> */}
-                    
-                    {/* STATUS 
-                     <div className={`ncd-status ${!statusVisible ? 'status-hidden' : ''}`}>
-                        <div className="ncd-status-container">
-                            <StatusDisplay 
-                                userId={userId}
-                                cardId={cardId} 
-                                // onClose={handleCloseStatus}
-                                currentStatus={currentStatus}
-                                setCurrentStatus={setCurrentStatus}
-                                allStatuses={allStatuses}
-                                setAllStatuses={setAllStatuses}
-                                selectedStatus={selectedStatus}
-                                setSelectedStatus={setSelectedStatus}
-                                fetchCardStatus={fetchCardStatus}
-                                fetchAllStatuses={fetchAllStatuses}
-                            />
-                        </div>
-                        <div className="ncd-status-priority">
-                           <SelectPriority 
-                                cardId={cardId} 
-                                selectedProperties={selectedProperties} 
-                                setSelectedProperties={setSelectedProperties} 
-                                selectedPriority={selectedPriority}
-                                refreshPriority={fetchPriority}
-                                fetchCardDetail={fetchCardById}
-                                fetchCardActivities={fetchCardActivities}
-                                cardActivities={cardActivities} 
-                                setCardActivities={setCardActivities}
-                            />
-                        </div>
-                        <div className="ncd-status-due">
-                            <DueDateDisplay
-                                cardId={cardId}
-                                dueDates={dueDates}
-                                setDueDates={setDueDates}
-                                selectedDate={selectedDate}
-                                setSelectedDate={setSelectedDate}
-                                selectedDueDateId={selectedDueDateId}
-                                setSelectedDueDateId={setSelectedDueDateId}
-                                loading={loading}
-                                setLoading={setLoading}
-                                fetchDueDates={fetchDueDates}
-                            />
-                        </div>
-                    </div> */}
                 </div>
 
                 <div className="ncd-main-content">

@@ -15,6 +15,7 @@ const DueDateDisplay = ({
   loading, 
   setLoading,
   fetchDueDates,
+  userId
 }) => {
   const [showDueDate, setShowDueDate] = useState(false);
 
@@ -94,6 +95,7 @@ const getDueDateClass = (dueDateString) => {
       {showDueDate && (
         <div className="due-date-popup">
           <DueDate
+          userId={userId}
             cardId={cardId}
             onClose={handleCloseDueDate}
             dueDates={dueDates}
