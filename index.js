@@ -6769,6 +6769,76 @@ app.put('/api/card-due-date/:id', async (req, res) => {
     }
 });
 
+// 5. update due date by id (userId dari URL)
+app.put('/api/card-due-date-testing/:id/:userId', async (req, res) => {
+    const { id, userId } = req.params;   // 👈 userId dari URL
+    const { due_date } = req.body;
+
+    try {
+        // Ambil cardId dan due date lama
+        const existing = await client.query(
+            "SELECT * FROM card_due_dates WHERE id = $1",
+            [id]
+        );
+
+        if (existing.rows.length === 0) {
+            return res.status(404).json({ error: "Due date not found" });
+        }
+
+        const oldDueDate = existing.rows[0].due_date;
+        const cardId = existing.rows[0].card_id;
+
+        // Update due date
+        const result = await client.query(
+            `
+            UPDATE card_due_dates
+            SET due_date = $1,
+                updated_at = NOW()
+            WHERE id = $2
+            RETURNING *
+            `,
+            [due_date, id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Due date not found after update" });
+        }
+
+        const updatedDueDate = result.rows[0].due_date;
+
+        // Format tanggal: Wednesday, 11 June 2025
+        const formatDate = (dateStr) => {
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            };
+            return new Intl.DateTimeFormat('en-GB', options)
+                .format(new Date(dateStr));
+        };
+
+        // Log aktivitas update
+        await logCardActivity({
+            action: 'updated_due',
+            card_id: cardId,
+            user_id: userId,   // 👈 pakai dari params
+            entity: 'due date',
+            entity_id: null,
+            details: {
+                old_title: formatDate(oldDueDate),
+                new_title: formatDate(updatedDueDate),
+            }
+        });
+
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server Error");
+    }
+});
+
+
 
 //6. delete due date by ID
 app.delete('/api/card-due-date/:id', async (req, res) => {
