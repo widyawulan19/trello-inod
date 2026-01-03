@@ -6770,7 +6770,7 @@ app.put('/api/card-due-date/:id', async (req, res) => {
 });
 
 // 5. update due date by id (userId dari URL)
-app.put('/api/card-due-date-testing/:id/:userId', async (req, res) => {
+app.put('/api/due/card-due-date-testing/:id/:userId', async (req, res) => {
     const { id, userId } = req.params;   // 👈 userId dari URL
     const { due_date } = req.body;
 
