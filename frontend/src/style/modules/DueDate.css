@@ -1,142 +1,376 @@
-.due-container{
-    /* border: 1px solid red !important; */
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 5px;
-}
-.due-header{
-    /* border: 1px solid grey; */
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    margin: 2px 0px;
-    padding: 5px;
-    font-size: 12px;
-    font-weight: bold;
-    color: #333;
-}
-.due-header h5{
-    margin: 0px;
-    color: #5e5e5e;
-    font-size: 10px;
-}
-.dh-icon{
-    border: 0.5px solid white;
-    border-radius: 4px;
-    color: #333;
-    font-size: 15px;
-}
-.dh-icon:hover{
-    border: 0.5px solid #ddd;
-    background-color: #ddd;
-}
-.due-date-picker{
-    /* border: 1px solid blue;  */
+/* =======================
+DUE DATE DISPLAY STYLES
+======================= */
+.due-date-display {
+  position: relative;
+  /* border: 1px solid var(--border); */
 }
 
-.date-input{
-    /* border: 1px solid green; */
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 5px;
+/* =======================
+LOADING and EMPY STATES
+======================= */
+.due-date-loading {}
+
+.due-date-empty {
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  padding: 5px 10px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--sub-text);
+  background-color: var(--bg-section);
 }
-.date-box{
-    border: 0.5px solid #ddd;
-    border-radius: 4px;
-    padding: 5px;
-    outline: none;
-    /* margin-right: 10px; */
-    font-size: 12px;
+
+.due-date-empty p {
+  margin: 0px 8px;
 }
-.date-box:hover{
-    border: 0.5px solid #9b2fad;
+
+.due-date-empty .no-due-date-btn {
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  color: var(--sub-text);
+  background-color: var(--bg-section-hover);
+  border: 1px solid var(--border);
+  border-radius: 4px;
 }
-.date-box:focus{
-    border: 0.5px solid #9b2fad;
+
+.due-date-empty .no-due-date-btn:hover {
+  background-color: var(--bg-section);
+  border: 1px solid var(--primary);
+  color: var(--primary);
 }
-.date-input-con{
+
+/* =======================
+DUE DATE LIST
+======================= */
+.due-date-list {
+  /* border: 1px solid blue; */
+}
+
+.due-date-list .due-date-card {
+  border-radius: 8px;
+  width: 100%;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+/* COLOR DUE DATE BASED ON STATUS  */
+
+/* OVERDUE */
+/* .due-date-card.due-overdue {
+  border-color: #9ca3af;
+  color: #9ca3af;
+} */
+
+/* < 24 jam */
+.due-date-card.due-red,
+.due-date-card.due-overdue {
+  border-color: var(--due-red-border);
+  color: var(--due-red-text);
+  background: var(--due-red-bg);
+}
+
+/* < 2 hari */
+.due-date-card.due-orange {
+  border-color: var(--due-orange-border);
+  color: var(--due-orange-text);
+  background: var(--due-orange-bg);
+}
+
+/* < 3 hari */
+.due-date-card.due-blue {
+  border-color: var(--due-blue-border);
+  color: var(--due-blue-text);
+  background: var(--due-blue-bg);
+}
+
+/* aman */
+.due-date-card.due-normal {
+  border-color: var(--due-normal-border);
+  color: var(--due-normal-text);
+  background: var(--due-normal-bg);
+}
+
+/* ICON IKUT WARNA */
+.due-date-card svg,
+.due-date-card-title {
+  color: inherit;
+}
+
+.due-date-card-title.due-red {
+  color: var(--due-red-text);
+  background: none;
+}
+
+.due-date-card-title.due-orange {
+  color: var(--due-orange-text);
+  background: none;
+}
+
+.due-date-card-title.due-blue {
+  color: var(--due-blue-text);
+  background: none;
+}
+
+.due-date-card-title.due-normal {
+  color: var(--due-normal-text);
+  background: none;
+}
+
+
+
+/* HEADER  */
+.due-date-card-header {
+  /* border: 1px solid red; */
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between
+}
+
+.due-date-card-header .due-date-card-title {
+  gap: 5px;
+  font-weight: bold;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  /* color: var(--sub-text); */
+}
+
+.due-date-card-header .due-date-setting-icon {
+  cursor: pointer;
+}
+
+
+/* MAIN CONTENT  */
+.due-date-card-content {
+  /* border: 1px solid green; */
+  width: 100%;
+  display: flex;
+  align-items: center;
+  font-size: 10px;
+  padding-top: 10px;
+}
+
+.due-date-card-datetime {
+  font-weight: bold;
   gap: 5px;
 }
 
-.date-input-con .btn-date{
-    padding: 5px;
-    border: 1px solid #6a11cb;
-    border-radius: 4px;
-    background: linear-gradient(to right, #6a11cb, #2575fc);
-    color: white;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 12px;
-    width: 100%;
+.due-date-card-datetime span {
+  margin: 0px 4px;
+}
+
+
+/* popup  */
+.due-date-popup {
+  position: absolute;
+  top: 100%;
+  right: 0px;
+  padding: 5px;
+  border: 1px solid var(--border);
+  box-shadow: var(--box-shadow-purple);
+  border-radius: 8px;
+  background-color: var(--bg-section);
+  z-index: 99;
+  width: 300px;
+}
+
+/* =======================
+END DUE DATE DISPLAY STYLES
+======================= */
+
+/* ================================== */
+
+
+
+/* =======================
+DUE DATE STYLE
+======================= */
+
+.due-date-picker {
+  /* border: 1px solid blue; */
+}
+
+.due-date-loading {
+  font-size: 10px;
+  color: var(--sub-text);
+  padding: 0px;
+  margin: 0px;
+}
+
+/* MAIN CONTENTE DUE DATE  */
+.due-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 5px;
+}
+
+.due-header {
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin: 2px 0px;
+  padding: 5px;
+  padding-top: 0px;
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--sub-text);
+}
+
+.due-header .dh-left {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 5px;
+  font-size: 12px;
+}
+
+.dh-left h5 {
+  margin: 0px;
+  color: var(--sub-text);
+  font-size: 10px;
+}
+
+.dh-icon {
+  border-radius: 8px;
+  color: var(--sub-text);
+  font-size: 15px;
+  padding: 2px;
+  cursor: pointer;
+}
+
+.dh-icon:hover {
+  background-color: var(--bg-section-hover);
+}
+
+
+.date-input {
+  /* border: 1px solid green; */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px;
+}
+
+.date-box {
+  border: 0.5px solid #ddd;
+  border-radius: 4px;
+  padding: 5px;
+  outline: none;
+  /* margin-right: 10px; */
+  font-size: 12px;
+}
+
+.date-box:hover {
+  border: 0.5px solid #9b2fad;
+}
+
+.date-box:focus {
+  border: 0.5px solid #9b2fad;
+}
+
+.date-input-con {
+  gap: 5px;
+}
+
+.date-input-con .btn-date {
+  padding: 5px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-icon2);
+  color: var(--text-white);
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 12px;
+  width: 100%;
 
 }
-.date-input-con .btn-date:hover{
-    background: linear-gradient(to right, #2575fc, #6a11cb);
-    color: white;
+
+.date-input-con .btn-date:hover {
+  box-shadow: var(--box-shadow-purple);
 }
-.date-input-con .date-sbox{
-  border: 1px solid #ddd;
+
+.date-input-con .date-sbox {
   border-radius: 4px;
+  border: 1px solid var(--border);
   padding: 5px;
   font-size: 10px;
 }
-.date-sbox:hover{
-  border: 1px solid #6a11cb;
+
+.date-sbox:hover {
   box-shadow: 0px 4px 8px #5e12eb46;
 }
-.date-sbox:focus{
+
+.date-sbox:focus {
   outline: none;
-  border: 1px solid #6a11cb;
   box-shadow: 0px 4px 8px #5e12eb46;
 }
 
 .due-red {
-    color: red;
-    font-weight: bold;
-  }
-  
-  .due-orange {
-    color: orange;
-    font-weight: bold;
-  }
-  
-  .due-blue {
-    color: blue;
-    font-weight: bold;
-  }
-  
-  .due-normal {
-    color: black;
-  }
+  color: var(--due-red-text);
+  border: var(--due-red-border);
+  background: var(--due-red-bg);
+  font-weight: bold;
+}
 
-  .date-input-con{
-    /* border: 1px solid blue; */
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-  }
+.due-orange {
+  color: var(--due-orange-text);
+  border: var(--due-orange-border);
+  background: var(--due-orange-bg);
+  font-weight: bold;
+}
+
+.due-blue {
+  color: var(--due-blue-text);
+  border: var(--due-blue-border);
+  background: var(--due-blue-bg);
+  font-weight: bold;
+}
+
+.due-normal {
+  color: var(--due-normal-text);
+  border: var(--due-normal-border);
+  background: var(--due-normal-bg);
+}
+
+.date-input-con {
+  /* border: 1px solid blue; */
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
 
 /* DISPLAY DATE  */
 
-.date-show{
-    /* border:1px solid transparent; */
-    padding: 0px;
-    /* border: 1px solid red; */
-    border-radius: 4px;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    /* position: relative; */
+.date-show {
+  /* border:1px solid transparent; */
+  padding: 0px;
+  /* border: 1px solid red; */
+  border-radius: 4px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  /* position: relative; */
 }
-.date-show .ds-header{
+
+.date-show .ds-header {
   /* border: 1px solid blue; */
   display: flex;
   align-items: center;
@@ -144,32 +378,37 @@
   width: 100%;
   position: relative;
 }
-.due-setting{
+
+.due-setting {
   font-size: 15pz;
 }
-.date{
-    /* border: 1px solid grey; */
-    margin-top: 5px;
-    font-size: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
+
+.date {
+  /* border: 1px solid grey; */
+  margin-top: 5px;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
-.date-icon{
-    margin-right: 5px;
-    font-size: 12px;
-    color: black;
+
+.date-icon {
+  margin-right: 5px;
+  font-size: 12px;
+  color: black;
 }
-.time{
-    /* border: 1px solid grey; */
-    font-size: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
+
+.time {
+  /* border: 1px solid red; */
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
-.time-icon{
-    margin-right: 5px;
-    font-size: 12px;
+
+.time-icon {
+  margin-right: 5px;
+  font-size: 12px;
 }
 
 
@@ -177,109 +416,132 @@
 
 /* DATE NAVIGATE  */
 .react-datepicker__navigation {
-    top: 1rem;
-    line-height: 1;
-    border: 1px solid yellow !important;
-    background-color: transparent !important;
-    cursor: pointer;
-    padding: 0.5rem;
-    width: 200px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
-    /* z-index: 10; */
-  }
-  
-  .react-datepicker__navigation--previous {
-    border: 1px solid transparent !important;
-    width: 20% !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-  .react-datepicker__navigation--previous:hover {
-    color: #5D12EB !important;
-  }
+  top: 1rem;
+  line-height: 1;
+  border: 1px solid yellow !important;
+  background-color: transparent !important;
+  cursor: pointer;
+  padding: 0.5rem;
+  width: 200px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
 
-  .react-datepicker__navigation--next {
-    border: 1px solid transparent !important;
-    width: 20% !important;
-    margin-right: 10px;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-  
-  .react-datepicker__navigation-icon::before {
-    border-color: #2563eb;
-    border-style: solid;
-    border-width: 2px 2px 0 0;
-    content: "";
-    display: block;
-    height: 10px;
-    position: relative;
-    top: 3px;
-    transform: rotate(-135deg);
-    width: 10px;
-  }
-  
-  .react-datepicker__navigation--next .react-datepicker__navigation-icon::before {
-    transform: rotate(45deg);
-  }
-  
+  /* z-index: 10; */
+}
+
+.react-datepicker__navigation--previous {
+  border: 1px solid transparent !important;
+  width: 20% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.react-datepicker__navigation--previous:hover {
+  color: #5D12EB !important;
+}
+
+.react-datepicker__navigation--next {
+  border: 1px solid transparent !important;
+  width: 20% !important;
+  margin-right: 10px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.react-datepicker__navigation-icon::before {
+  border-color: #2563eb;
+  border-style: solid;
+  border-width: 2px 2px 0 0;
+  content: "";
+  display: block;
+  height: 10px;
+  position: relative;
+  top: 3px;
+  transform: rotate(-135deg);
+  width: 10px;
+}
+
+.react-datepicker__navigation--next .react-datepicker__navigation-icon::before {
+  transform: rotate(45deg);
+}
+
 
 /* Pastikan ini berada di custom-datepicker.css */
 .react-datepicker {
-    display: flex !important;
-    flex-direction: row;
-    gap: 0.5rem;
-    border: 1px solid #6a11cb !important;
-    /* border: 1px solid green !important; */
-    border-radius: 0.75rem;
-    overflow: hidden;
-    box-shadow: 0px 4px 8px #5e12eb46;
-  }
-  
-  .react-datepicker__month-container {
-    /* border: 1px solid #6a11cb; */
-    border-right: 1px solid #5D12EB;
-  }
-  
-  .react-datepicker__time-container {
-    width: 90px;
-    border-left: none;
-    /* border: 1px solid blue; */
-  }
-  
-  .react-datepicker__time {
-    background-color: #f9fafb;
-    width: 100%;
-  }
-  
-  .react-datepicker__header {
-    background: linear-gradient(to right, #6a11cb, #2575fc) !important;
-    /* background-color: red !important; */
-    color: white !important;
-    padding: 1rem;
-    /* margin-top: 35px; */
-  }
-  
-  .react-datepicker__day--selected,
-  .react-datepicker__day--keyboard-selected {
-    background-color: #2563eb !important;
-    color: white !important;
-    border-radius: 9999px;
-  }
-  
-  .react-datepicker__triangle {
-    display: none;
-  }
-  
+  display: flex !important;
+  flex-direction: row;
+  /* gap: 0.5rem; */
+  border: 1px solid var(--border) !important;
+  /* border: 1px solid green !important; */
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0px 4px 8px #5e12eb46;
+  /* color: red !important; */
+}
 
-  /* MEDIA QUERY  */
+.react-datepicker__month-container {
+  /* border: 1px solid #6a11cb; */
+  border-right: 1px solid var(--border);
+  /* background-color: var(--bg-section); */
+  color: var(--text) !important;
+
+}
+
+/* MONTH HEADER (DATE) */
+.custom-datepicker .react-datepicker__current-month {
+  color: var(--text-white);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* TIME HEADER (KANAN) */
+.custom-datepicker .react-datepicker__time__header {
+  color: var(--text-white);
+  font-weight: 600;
+  font-size: 13px;
+}
+
+
+.react-datepicker__time-container {
+  width: 90px;
+  border-left: none;
+  /* border: 1px solid blue; */
+}
+
+.react-datepicker__time {
+  background-color: var(--bg-section);
+  /* background-color: red !important; */
+  width: 100%;
+  height: 25vh !important;
+  overflow-y: auto;
+}
+
+.react-datepicker__header {
+  /* background: linear-gradient(to right, #6a11cb, #2575fc) !important; */
+  background: var(--bg-icon2);
+  padding: 1rem;
+  /* margin-top: 35px; */
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected {
+  background-color: #2563eb !important;
+  color: white !important;
+  border-radius: 9999px;
+}
+
+.react-datepicker__triangle {
+  display: none;
+}
+
+
+/* MEDIA QUERY  */
 /* Medium devices (tablets, ≥768px) */
 @media (min-width: 768px) and (max-width: 991.98px) {
-    
+
   /* CSS tablet atau iPad */
 }
 

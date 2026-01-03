@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { HiChevronRight, HiOutlineClock } from "react-icons/hi2";
 import '../style/modules/DueDate.css';
 import DueDate from "../modules/DueDate";
+import { FaClock } from "react-icons/fa6";
 
 const DueDateDisplay = ({ 
   cardId,
@@ -17,107 +18,69 @@ const DueDateDisplay = ({
 }) => {
   const [showDueDate, setShowDueDate] = useState(false);
 
-  const getDueStatusColor = (date) => {
-    const now = new Date();
-    const dueDate = new Date(date);
-    const timeDiff = dueDate.getTime() - now.getTime();
-    const oneDay = 24 * 60 * 60 * 1000;
 
-    if (timeDiff <= oneDay) return "red";
-    if (timeDiff <= 2 * oneDay) return "orange";
-    if (timeDiff <= 3 * oneDay) return "blue";
-    return "#333";
-  };
+const getDueDateClass = (dueDateString) => {
+  if (!dueDateString) return "due-normal";
+
+  const now = new Date();
+  const dueDate = new Date(dueDateString);
+  const timeDiff = dueDate.getTime() - now.getTime();
+  const oneDay = 24 * 60 * 60 * 1000;
+
+  if (timeDiff < 0) return "due-overdue";
+  if (timeDiff <= oneDay) return "due-red";
+  if (timeDiff <= 2 * oneDay) return "due-orange";
+  if (timeDiff <= 3 * oneDay) return "due-blue";
+  return "due-normal";
+};
+
+
 
   const handleShowDueDate = () => setShowDueDate(true);
   const handleCloseDueDate = () => setShowDueDate(false);
 
   return (
-    <div className="due-date-display" style={{ position: 'relative' }}>
+    <div className="due-date-display">
       {loading ? (
-        <p>Loading...</p>
+        <p className="due-date-loading">Loading...</p>
       ) : dueDates.length === 0 ? (
-        <div
-          style={{
-            border: '1px dashed #ccc',
-            borderRadius: '8px',
-            // padding: '12px',
-            padding:'5px 10px',
-            textAlign: 'center',
-            fontSize: '12px',
-            color: '#888',
-            backgroundColor: '#f9f9f9',
-          }}
-        >
-          <p style={{ margin: '0 0 8px 0' }}>No due date set</p>
+        <div className="due-date-empty">
+          <p>No due date set</p>
           <button
+            className="no-due-date-btn"
             onClick={handleShowDueDate}
-            style={{
-              padding: '4px 8px',
-              fontSize: '12px',
-              cursor: 'pointer',
-              backgroundColor: '#eef',
-              border: '1px solid #ccd',
-              borderRadius: '4px',
-            }}
           >
             + Set Due Date
           </button>
         </div>
       ) : (
-        <div className="date-show">
+        <div className="due-date-list">
           {dueDates.map((date) => (
             <div 
               key={date.id}
-              style={{ 
-                // border: `2px solid ${getDueStatusColor(date.due_date)}`,
-                backgroundColor:'#f7dddf',
-                border:'1px solid #E2E4E9',
-                borderRadius: '8px',
-                width: '100%',
-                padding: '10px',
-                paddingBottom: '3px',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: getDueStatusColor(date.due_date),
-                position: 'relative'
-              }}
+              className={`due-date-card ${getDueDateClass(date.due_date)}`}
             >
-              <div className="ds-header">
+              <div className="due-date-card-header">
                 <div
-                  style={{
-                    gap: '5px',
-                    fontSize: '12px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'flex-start',
-                    color: getDueStatusColor(date.due_date),
-                  }}
+                  className={`due-date-card-title ${getDueDateClass(date.due_date)}`}
                 >
-                  <HiOutlineClock />
+                  <FaClock/>
                   DUE DATE
                 </div>
                 <HiChevronRight
-                  className="due-setting"
+                  className="due-setting-icon"
                   onClick={handleShowDueDate}
-                  style={{ cursor: 'pointer' }}
                 />
               </div>
 
-              <div style={{
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                fontSize: '12px',
-                paddingTop: '12px'
-              }}>
-                <div style={{ fontWeight: 'bold' }}>
+              {/* CONTENT */}
+
+              <div className="due-date-card-content">
+                <div className="due-date-card-datetime">
                   {new Date(date.due_date).toLocaleDateString("id-ID", {
                     day: "numeric", month: "long", year: "numeric"
                   })}
-                  <span style={{ margin: '0 4px' }}>|</span>
+                  <span>|</span>
                   {new Date(date.due_date).toLocaleTimeString("id-ID", {
                     hour: "2-digit", minute: "2-digit", hour12: false
                   })}
@@ -129,21 +92,7 @@ const DueDateDisplay = ({
       )}
 
       {showDueDate && (
-        <div
-          className="due-setting"
-          style={{
-            position: 'absolute',
-            top: '100%',
-            right: 0,
-            padding: '5px',
-            border: '1px solid #ddd',
-            boxShadow: '0px 4px 8px #5e12eb1e',
-            borderRadius: '8px',
-            backgroundColor: 'white',
-            zIndex: '99',
-            width: '300px',
-          }}
-        >
+        <div className="due-date-popup">
           <DueDate
             cardId={cardId}
             onClose={handleCloseDueDate}

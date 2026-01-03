@@ -50,29 +50,33 @@
 
 
 .status-display-empty {
-    border: 1.5px dashed var(--border-muted);
-    border-radius: 10px;
-    padding: 14px;
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 5px 10px;
     text-align: center;
+    font-size: 12px;
+    color: var(--sub-text);
+    background-color: var(--bg-section);
 }
 
 .status-display-empty p {
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-bottom: 6px;
+    margin: 0px 8px;
 }
 
 .status-display-empty button {
-    border: none;
-    background: transparent;
-    color: var(--accent-primary);
-    font-size: 13px;
-    font-weight: 600;
+    padding: 4px 8px;
+    font-size: 12px;
     cursor: pointer;
+    color: var(--sub-text);
+    background-color: var(--bg-section-hover);
+    border: 1px solid var(--border);
+    border-radius: 4px;
 }
 
 .status-display-empty button:hover {
-    text-decoration: underline;
+    background-color: var(--bg-section);
+    border: 1px solid var(--primary);
+    color: var(--primary);
 }
 
 

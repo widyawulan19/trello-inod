@@ -1,28 +1,39 @@
 .card-status-container {
-    border: 1px solid blue;
+    /* border: 1px solid blue; */
     width: 100% !important;
     padding: 5px;
+    padding-top: 0px;
+    background-color: var(--bg-section);
 
 }
 
 .status-header {
-    /* border: 1px solid red; */
+    border-bottom: 1px solid var(--border);
     padding: 5px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    color: #5e5e5e;
+    color: var(--sub-text);
 }
 
-.status-header h5 {
+.status-header .header-left {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 6px;
+}
+
+
+.header-left h5 {
     margin: 0px;
-    font-size: 10px;
-    font-weight: bold;
-    color: #5e5e5e;
+    font-size: 10px !important;
+    /* font-weight: bold; */
+    color: var(--sub-text);
 }
 
 .sch-icon {
     margin-right: 5px;
+    font-size: 13px;
 }
 
 .sc-content {
@@ -49,39 +60,42 @@
 .dropdown-status {
     position: relative;
     display: inline-block;
-    margin-top: 5px;
+    /* margin-top: 5px; */
     width: 100%;
-    /* border: 1px solid red; */
+    border-top: 1px solid var(--border);
 }
 
-.dropdown-status button {
+.dropdown-status .dropdown-trigger {
     /* min-width: 200px; */
     width: 100%;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    /* background: linear-gradient(to right, #6a11cb, #2575fc); */
-    /* background-color: white; */
-    background: linear-gradient(to right, #6a11cb, #2575fc);
-    border: 1px solid #6a11cb !important;
-    box-shadow: 0px 4px 8px #5e12eb1e !important;
-    border-radius: 4px !important;
-    color: white !important;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg-section);
+    border: 1px solid var(--bg-section);
+    border-radius: 4px;
+    color: var(--text);
     font-size: 12px;
+}
+
+.dropdown-status .dropdown-trigger:hover {
+    border: 1px solid var(--bg-section-hover);
+    background: var(--bg-section-hover);
+    box-shadow: 0px 4px 8px #5e12eb1e;
 }
 
 .ds-box {
     list-style: none;
     padding: 5px;
     margin: 0;
-    position: absolute;
+    /* position: absolute; */
     background-color: var(--bg-section);
     /* border: 1px solid red; */
-    border-radius: 4px;
+    /* border-radius: 4px; */
     min-width: 180px;
-    width: 95%;
+    width: 100%;
     z-index: 100;
-    box-shadow: 0px 4px 8px #5e12eb46;
+    /* box-shadow: 0px 4px 8px #5e12eb46; */
 }
 
 .dsb-pill {
@@ -93,10 +107,10 @@
 
 
 .status-pill {
-    padding: 6px 12px;
+    padding: 4px 12px;
     margin: 2px;
-    border-radius: 6px;
-    font-size: 12px;
+    border-radius: 16px;
+    font-size: 10px;
     font-weight: 600;
     display: inline-flex;
     align-items: center;
@@ -111,9 +125,9 @@
             clamp(0, calc(var(--g) + var(--status-text-strength)), 255),
             clamp(0, calc(var(--b) + var(--status-text-strength)), 255));
 
-    border: 1px solid rgb(clamp(0, calc(var(--r) + var(--status-border-strength)), 255),
+    /* border: 1px solid rgb(clamp(0, calc(var(--r) + var(--status-border-strength)), 255),
             clamp(0, calc(var(--g) + var(--status-border-strength)), 255),
-            clamp(0, calc(var(--b) + var(--status-border-strength)), 255));
+            clamp(0, calc(var(--b) + var(--status-border-strength)), 255)); */
 
     background-color: rgba(var(--r),
             var(--g),
@@ -168,8 +182,133 @@
     --status-text: #94a3b8;
 }
 
+/* =======================
+CREATE STATUS BOX
+======================= */
+.create-status-box {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
 
+.create-status-box .create-status-btn {
+    border: 1px solid var(--border);
+    font-size: 12px;
+    background: var(--bg-icon2);
+    color: var(--text-white);
+    cursor: pointer;
+}
 
+.create-status-btn:hover {
+    box-shadow: var(--box-shadow-purple);
+}
+
+/* =======================
+CREATE STATUS FORM
+======================= */
+.create-status-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    /* border: 1px solid red; */
+}
+
+.create-status-form h5 {
+    margin: 0px;
+    font-size: 12px;
+    color: var(--text);
+}
+
+.create-status-form .fill-form {
+    /* border: 1px solid blue; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
+    width: 100%;
+}
+
+.fill-form input[type="text"] {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 10px;
+    color: var(--text);
+    background-color: var(--bg-section);
+}
+
+.fill-form input[type="text"]:focus {
+    outline: none;
+    background-color: var(--bg-section-hover);
+    border: 1px solid var(--bg-section-hover);
+    box-shadow: var(--box-shadow);
+}
+
+.fill-form .color-picker {
+    background-color: var(--bg-section);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0px 4px;
+    cursor: pointer;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.color-picker input[type="color"] {
+    border: none;
+    width: 28px;
+    height: 28px;
+    padding: 0px;
+    cursor: pointer;
+    background-color: var(--bg-section);
+}
+
+/* =======================
+CS ACTION BUTTONS
+======================= */
+.cs-action {
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.cs-action .cs-cancel {
+    border: 1px solid var(--primary);
+    border-radius: 4px;
+    padding: 4px 12px;
+    background: var(--bg-section);
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.cs-cancel:hover {
+    background: var(--bg-section-hover);
+    box-shadow: var(--box-shadow-purple);
+}
+
+.cs-action .cs-save {
+    border: 1px solid var(--primary);
+    border-radius: 4px;
+    padding: 4px 12px;
+    background: var(--primary);
+    color: var(--text-white);
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.cs-save:hover {
+    box-shadow: var(--box-shadow-purple);
+}
 
 
 /* =======================
@@ -180,67 +319,132 @@
 .status-display-wrapper {
     width: 100%;
     display: block;
+    position: relative;
+    /* border: 1px solid red; */
 }
 
 
 
 .status-display-pill {
-    padding: 10px 14px;
-    border-radius: 10px;
+    padding: 10px 12px;
+    margin: 2px;
+    border-radius: 6px;
     font-size: 12px;
     font-weight: 600;
     width: 100%;
-}
 
-
-/* .status-display-pill {
-    outline: 2px dashed lime;
-} */
-
-
-
-.pill-status-display {
-    width: 100%;
-    border-radius: 10px;
-    padding: 12px 14px;
-
-    /* INHERIT dari parent */
-    color: inherit;
-    border: inherit;
-    background: transparent;
-}
-
-.display-status {
     display: inline-flex;
+    flex-direction: column;
     align-items: center;
-    gap: 8px;
+    justify-content: flex-start;
 
-    padding: 6px 14px;
-    border-radius: 999px;
 
-    font-size: 13px;
-    font-weight: 600;
 
-    color: #fff;
-    background-color: var(--status-bg, #64748b);
+    /* RGB dari helper */
+    --r: var(--status-r, 120);
+    --g: var(--status-g, 120);
+    --b: var(--status-b, 120);
 
-    border: none;
-    width: fit-content;
+    color: rgb(clamp(0, calc(var(--r) + var(--status-text-strength)), 255),
+            clamp(0, calc(var(--g) + var(--status-text-strength)), 255),
+            clamp(0, calc(var(--b) + var(--status-text-strength)), 255));
+
+    border: 1px solid rgb(clamp(0, calc(var(--r) + var(--status-border-strength)), 255),
+            clamp(0, calc(var(--g) + var(--status-border-strength)), 255),
+            clamp(0, calc(var(--b) + var(--status-border-strength)), 255));
+
+    background-color: rgba(var(--r),
+            var(--g),
+            var(--b),
+            var(--status-bg-opacity));
 }
 
-/* icon kecil */
-.ds-icon {
-    font-size: 14px;
-    line-height: 1;
+
+.status-display-pill:hover {
+    background-color: rgba(var(--r),
+            var(--g),
+            var(--b),
+            calc(var(--status-bg-opacity) + 0.06));
 }
 
-/* text */
-.ds-text {
-    white-space: nowrap;
+/* =======================
+HEADER
+======================= */
+.status-display-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    /* border: 1px solid red; */
+    width: 100%;
 }
 
-/* kalau status kosong */
-.display-status.empty {
-    background-color: #e5e7eb;
-    color: #374151;
+.status-display-header .header-left {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 6px;
+}
+
+.header-left h5 {
+    margin: 0px;
+    padding: 0px;
+    font-size: 12px;
+    /* font-weight: bold; */
+    color: var(--text);
+}
+
+.status-display-name {
+    width: 100%;
+    text-align: left;
+}
+
+.status-display-action {
+    font-size: 15px;
+    color: var(--text);
+    cursor: pointer;
+}
+
+.status-popover {
+    position: absolute;
+    top: 30px;
+    left: 0;
+    background-color: var(--bg-section);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    box-shadow: 0px 4px 8px #5e12eb46;
+    z-index: 200;
+    width: 100%;
+    padding-top: 5px;
+    padding: 10px;
+}
+
+.status-display-empty {
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 5px 10px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--sub-text);
+    background-color: var(--bg-section);
+}
+
+.status-display-empty p {
+    margin: 0px 8px;
+}
+
+.status-display-empty button {
+    padding: 4px 8px;
+    font-size: 12px;
+    cursor: pointer;
+    color: var(--sub-text);
+    background-color: var(--bg-section-hover);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+}
+
+.status-display-empty button:hover {
+    background-color: var(--bg-section);
+    border: 1px solid var(--primary);
+    color: var(--primary);
 }

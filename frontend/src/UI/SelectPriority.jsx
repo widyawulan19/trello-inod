@@ -14,54 +14,62 @@ const SelectPriority = ({
     cardActivities,
     setCardActivities
 }) => {
-    const [showPriority, setShowPriority] = useState(false);
+ const [showPriority, setShowPriority] = useState(false);
+ 
+const handleShowPriority = () => {
+    setShowPriority(true);
+};
+const handleClosePriority = () => {
+    setShowPriority(false);
+};
 
-    const handleShowPriority = () => {
-        setShowPriority(true);
-    };
+/* =========================
+   PRIORITY THEME MAPPING
+========================= */
+const PRIORITY_THEME = {
+  low: 'status-progress',
+  medium: 'status-confirmed',
+  high: 'status-rejected',
+  no: 'status-unknown',
+};
 
-    const handleClosePriority = () => {
-        setShowPriority(false);
-    };
+/* =========================
+   NORMALIZER (WAJIB)
+========================= */
+const normalizePriority = (name = '') => {
+  return name
+    .toLowerCase()
+    .replace('priority', '')
+    .trim();
+};
+
+/* =========================
+   STYLE HELPER
+========================= */
+const getPriorityStyle = (priorityName) => {
+  const key = normalizePriority(priorityName);
+  const theme = PRIORITY_THEME[key] || 'status-unknown';
+
+  return {
+    backgroundColor: `var(--${theme}-bg)`,
+    border: `1px solid var(--${theme}-border)`,
+    color: `var(--${theme}-text)`,
+  };
+};
+
 
     return (
-        <div
-        className="card-priority"
-            style={{
-                width: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                position: 'relative',
-            }}
-        >
+        <div className="card-priority">
             {selectedPriority ? (
                 <div
+                    className='cp-card-selected'
                     style={{
-                        borderRadius: '8px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        color: selectedPriority.color,
-                        border:'1px solid #E2E4E9',
-                        // border: `2px solid ${selectedPriority.color}`,
-                        backgroundColor: selectedPriority.background,
+                        ...getPriorityStyle(selectedPriority.name),
                     }}
                 >
-                    <div
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            padding: '10px',
-                        }}
-                    >
-                        <div
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px',
-                                fontSize: '12px',
-                            }}
-                        >
+                    {/* HEADER  */}
+                    <div className='cp-card-header'>
+                        <div className='cp-card-title'>
                             <HiMiniLightBulb />
                             PRIORITY
                         </div>
@@ -70,42 +78,16 @@ const SelectPriority = ({
                             style={{ cursor: 'pointer' }}
                         />
                     </div>
-                    <div
-                        style={{
-                            padding: '0px 10px',
-                            fontWeight: 'bold',
-                            fontSize: '12px',
-                            marginBottom: '5px',
-                        }}
-                    >
+
+                    {/* PRIORITY NAME */}
+                    <div className='cp-card-value'>
                         {selectedPriority.name}
                     </div>
                 </div>
             ) : (
-                <div
-                    style={{
-                        border: '1px dashed #ccc',
-                        borderRadius: '8px',
-                        // padding: '12px',
-                        padding:'5px 10px',
-                        textAlign: 'center',
-                        fontSize: '12px',
-                        color: '#888',
-                        backgroundColor: '#f9f9f9',
-                    }}
-                >
-                    <p style={{ margin: '0 0 8px 0' }}>No priority set</p>
-                    <button
-                        onClick={handleShowPriority}
-                        style={{
-                            padding: '4px 8px',
-                            fontSize: '12px',
-                            cursor: 'pointer',
-                            backgroundColor: '#eef',
-                            border: '1px solid #ccd',
-                            borderRadius: '4px',
-                        }}
-                    >
+                <div className='cp-empty'>
+                    <p>No priority set</p>
+                    <button onClick={handleShowPriority}>
                         + Choose Priority
                     </button>
                 </div>

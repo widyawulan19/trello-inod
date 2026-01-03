@@ -12,6 +12,7 @@ import {
 import { HiXMark } from "react-icons/hi2";
 import BootstrapTooltip from "../components/Tooltip";
 import { useSnackbar } from "../context/Snackbar";
+import { FaClock } from "react-icons/fa6";
 
 const DueDate = ({ 
     cardId , 
@@ -26,37 +27,9 @@ const DueDate = ({
     setLoading,
     fetchDueDates
   }) => {
-  // const [dueDates, setDueDates] = useState([]);
-  // const [selectedDate, setSelectedDate] = useState(null);
-  // const [selectedDueDateId, setSelectedDueDateId] = useState(null);
-  // const [loading, setLoading] = useState(false);
+
   const {showSnackbar} = useSnackbar()
 
-  // useEffect(() => {
-  //   fetchDueDates();
-  // }, [cardId]);
-
-  // const fetchDueDates = async () => {
-  //   try {
-  //     setLoading(true);
-  //     const response = await getAllDueDateByCardId(cardId);
-  //     console.log("Fetched Due Dates:", response.data);
-
-  //     if (response.data.length > 0) {
-  //       setDueDates(response.data);
-  //       setSelectedDate(new Date(response.data[0].due_date));
-  //       setSelectedDueDateId(response.data[0].id);
-  //     } else {
-  //       setDueDates([]);
-  //       setSelectedDate(null);
-  //       setSelectedDueDateId(null);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching due dates:", error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -113,11 +86,14 @@ const DueDate = ({
   return (
     <div className="due-date-picker">
       {loading ? (
-        <p className="text-center text-gray-500">Loading...</p>
+        <p className="due-date-loading">Loading...</p>
       ) : (
         <div className="due-container">
           <div className="due-header">
-            <h5>SELECT DATE</h5>
+            <div className="dh-left">
+              <FaClock/>
+              <h5>SELECT DATE</h5>
+            </div>          
             <BootstrapTooltip title='Close' placement='top'>
               <HiXMark className="dh-icon" onClick={onClose}/>
             </BootstrapTooltip>
@@ -153,28 +129,3 @@ const DueDate = ({
 
 export default DueDate;
 
-// return (
-//   <div className="due-date-picker">
-//     {loading ? (
-//       <p>Loading...</p>
-//     ) : (
-//       <div className="due-container">
-//         <div className="date-input-con">
-//           <DatePicker 
-//             selected={selectedDate} 
-//             onChange={handleDateChange}
-//             showTimeSelect
-//             timeFormat="HH:mm"
-//             timeIntervals={15}
-//             dateFormat="dd MMMM yyyy, HH:mm"
-//             placeholderText="Pilih due date & waktu"
-//             className={`date-box ${getDueDateClass(selectedDate)}`}
-//           />
-//           <button onClick={handleSaveDueDate} disabled={!selectedDate}>
-//             {selectedDueDateId ? "Update Due Date" : "Add Due Date"}
-//           </button>
-//         </div>
-//       </div>
-//     )}
-//   </div>
-// );

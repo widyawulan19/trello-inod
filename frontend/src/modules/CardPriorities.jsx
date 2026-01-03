@@ -9,11 +9,13 @@ import {
 // import '../style/modules/BoardProperties.css';
 import {
   HiChevronDown,
+  HiMiniLightBulb,
   HiOutlineAdjustmentsHorizontal,
   HiOutlineEllipsisHorizontal,
   HiOutlineLightBulb,
   HiXMark
 } from 'react-icons/hi2';
+import { FaTrash } from "react-icons/fa";
 import BootstrapTooltip from '../components/Tooltip';
 import '../style/modules/CardPriorities.css'
 import { useSnackbar } from '../context/Snackbar';
@@ -62,52 +64,75 @@ const CardProperties = ({ cardId, selectedPriority, refreshPriority, onClose, fe
     }
   };
 
-  const handleDelete = async () => {
+  const handleRemovePriority = async () => {
+    if (!selectedPriority) return;
+  
     try {
-      if (selectedPriority) {
-        await deletePriorityFromCard(cardId, selectedPriority.id);
-        await refreshPriority(); // Sinkronkan kembali
-      }
+      await deletePriorityFromCard(cardId, selectedPriority.priority_id);
+  
+      showSnackbar('Priority removed from card', 'success');
+  
+      // 🔄 refresh state & data
+      refreshPriority?.();
+      fetchCardDetail?.();
+      fetchCardActivities?.();
+  
     } catch (error) {
-      console.error('Gagal menghapus prioritas kartu', error);
+      console.error('❌ Failed to remove priority:', error);
+      showSnackbar('Failed to remove priority', 'error');
     }
   };
 
   return (
     <div className='cp-container'>
       <div className="scp-header">
-        <h4>SELECT PRIORITY</h4>
+        <div className="scp-header-left">
+          <HiMiniLightBulb/>
+          <h4>SELECT PRIORITY</h4>
+        </div>
+        
         <BootstrapTooltip title='Close' placement='top'>
           <HiXMark onClick={onClose} className='close-icon' />
         </BootstrapTooltip>
       </div>
       <div className="scp-content">
-          {selectedPriority && (
+        {selectedPriority ? (
+          <>
+            {/* PRIORITY BADGE */}
             <div className='cps-box'>
               <button
                 style={{
                   backgroundColor: selectedPriority.color,
-                  border: `1px solid ${selectedPriority.color}`,
-                  borderRadius: '6px',
-                  color: 'white',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  fontSize:'12px',
-                  fontWeight:'bold',
-                  padding: '4px 10px',
-                  width:'100%'
+                  border: `1px solid ${selectedPriority.color}`
                 }}
               >
                 <HiOutlineLightBulb className='cps-lamp' />
                 {selectedPriority.name}
               </button>
             </div>
-          )}
+
+            {/* DELETE PRIORITY */}
+            <div className="scp-delete-priority">
+              <button onClick={handleRemovePriority}>
+                <FaTrash />
+                Remove Priority
+              </button>
+            </div>
+          </>
+        ) : (
+          /* NO PRIORITY STATE */
+          <div className="cps-no-priority">
+            <div className='cps-no-priority-button'>
+              <HiOutlineLightBulb />
+              No Priority
+            </div>
+          </div>
+        )}
       </div>
 
+
       <div className="scp-container">
-        <button onClick={handleShowProperties}>
+        <button className='scp-button' onClick={handleShowProperties}>
           Select Priority
           <HiChevronDown/>
         </button>
@@ -118,13 +143,8 @@ const CardProperties = ({ cardId, selectedPriority, refreshPriority, onClose, fe
                 key={priority.id}
                 onClick={() => handleSelect(priority)}
                 style={{
-                  margin: '0px 5px',
-                  borderRadius: '4px',
-                  padding: '5px 10px',
-                  fontSize: '12px',
-                  cursor: 'pointer',
                   color:priority.color,
-                  gap:'5px',
+                  border:`1px solid ${priority.color}`,
                 }}
                 className='sbp-li'
               >

@@ -112,6 +112,9 @@ const NewCardDetail=({fetchBoardDetail})=> {
     const [allUploadFile, setAllUploadFile] = useState([]);
     console.log("Card data:", cards);
 
+    //CARD CHECKLIST
+    const [isExpandedChecklist, setIsExpandedChecklist] = useState(false);
+
 
     /* =======================
     FUNGSI
@@ -1393,7 +1396,6 @@ const NewCardDetail=({fetchBoardDetail})=> {
 
 
                     <div className="ncd-main-right">
-
                         {/* COVER & DETAIL  */}
                         <div className="ncd-cover-detail">
                             <CoverSelect cardId={cardId} fetchCardDetail={fetchCardById} selectedCover={selectedCover}/>
@@ -1426,7 +1428,8 @@ const NewCardDetail=({fetchBoardDetail})=> {
                                                     <HiOutlineArchiveBox/>
                                                     Archive
                                                 </button>
-                                                <button onClick={handleDeleteClick}>
+                                                <hr />
+                                                <button className='cs-btn-delete' onClick={handleDeleteClick}>
                                                     <HiOutlineTrash/>
                                                     Delete
                                                 </button>
@@ -1478,14 +1481,14 @@ const NewCardDetail=({fetchBoardDetail})=> {
                                          <HiOutlineCalendar className='cc-icon'/>
                                          <div className="cc-date">
                                              <p>Created</p>
-                                             <p style={{fontSize:'8px'}}>{cards.create_at && new Date(cards.create_at).toLocaleString()}</p>
+                                             <p className='detail-create'>{cards.create_at && new Date(cards.create_at).toLocaleString()}</p>
                                              {/* {cards.create_at} */}
                                              {/* {cards.create_at && formatTimestamp(cards.create_at)} */}
                                          </div>
                                     </div>
                                     <div className="c-create">
                                          <HiMiniListBullet className='cc-icon'/>
-                                         <div className="cc-date" style={{fontWeight:'bold', width:'100%'}}>
+                                         <div className="cc-date">
                                              <p>List</p>
                                               {listName || 'Loading...'}
                                              {/* {listName} */}
@@ -1523,7 +1526,7 @@ const NewCardDetail=({fetchBoardDetail})=> {
 
                             {/* SHOW USER ASSIGMENT  */}
                             {showAssigment && (
-                                <div className='assign-modal'>
+                                <div className='assign-modal-container'>
                                     <CardAssigment
                                         cardId={cardId}
                                         onClose={handleCloseAssign}
@@ -1539,11 +1542,15 @@ const NewCardDetail=({fetchBoardDetail})=> {
                         </div>
 
                         {/* CHECKLIST  */}
-                        <div className="ncd-card-checklist">
+                        <div className={`ncd-card-checklist ${isExpandedChecklist ? 'expanded' : 'collapsed'}`}>
                             <div className="ncd-checklist-header">
                                 Checklist List
-                                <button>
-                                    {/* {checkChecklist.checked} /  {checklistTotal.total} */}
+                               <button
+                                    className="checklist-toggle-btn"
+                                    onClick={() => setIsExpandedChecklist(prev => !prev)}
+                                >
+                                    {isExpandedChecklist ? 'Show less' : 'Show more'}
+                                    {isExpandedChecklist ? <HiChevronUp /> : <HiChevronDown />}
                                 </button>
                             </div>
                             <div className="ncd-checklist-content">

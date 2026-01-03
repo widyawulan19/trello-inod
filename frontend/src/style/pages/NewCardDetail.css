@@ -474,13 +474,14 @@
 EXAMPLE SHOW
 ======================= */
 .show-example {
-    /* border: 1px solid var(--border); */
+    /* border: 1px solid red; */
     width: 100%;
     padding: 0px 10px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
 }
+
 
 
 /* =======================
@@ -881,7 +882,8 @@ BODY RIGHT
 }
 
 .ncd-main-right .ncd-cover-detail {
-    border: 1px solid #E2E8F0;
+    border: 1px solid var(--card-border);
+    background-color: var(--card-bg);
     border-radius: 8px;
     margin-bottom: 10px;
     padding: 5px;
@@ -940,11 +942,11 @@ BODY RIGHT
 .ncd-detail .ncd-detail-header {
     /* border: 1px solid red; */
     margin-top: 10px;
-    border-left: 3px solid #28a12c;
+    border-left: 3px solid var(--primary);
     padding-left: 10px;
     /* font-size: 12px; */
     font-weight: bold;
-    color: #333;
+    color: var(--sub-text);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -955,18 +957,19 @@ BODY RIGHT
     margin: 0px;
     padding: 0px;
     font-size: 12px;
+    color: var(--sub-text);
 }
 
 .ncd-detail-header .set-card {
-    border: 1px solid #eee;
+    border: 1px solid var(--bg-section);
     border-radius: 4px;
     padding: 2px 5px;
     gap: 5px;
     font-size: 10px;
     font-weight: normal;
     cursor: pointer;
-    color: #333;
-    background-color: #f2f1ff;
+    color: var(--sub-text);
+    background-color: var(--bg-section);
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     display: flex;
     align-items: center;
@@ -975,8 +978,8 @@ BODY RIGHT
 }
 
 .set-card:hover {
-    border: 1px solid #eee;
-    background-color: #eee;
+    border: 1px solid var(--bg-section-hover);
+    background-color: var(--bg-section-hover);
     /* text-decoration: underline; */
 }
 
@@ -987,8 +990,8 @@ BODY RIGHT
     /* muncul tepat di bawah tombol Card Action */
     right: 0;
     margin-top: 6px;
-    background-color: #ffffff;
-    border: 1px solid #ddd;
+    background-color: var(--bg-section);
+    border: 1px solid var(--border);
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     z-index: 200;
@@ -1028,9 +1031,14 @@ BODY RIGHT
 
 }
 
-.cs-modal button {
+.cs-button hr {
+    border: 0.5px solid var(--border);
+}
+
+.cs-modal button,
+.cs-modal .cs-btn-delete {
     background: none;
-    border: 1px solid white;
+    border: 1px solid var(--bg-section);
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -1041,13 +1049,17 @@ BODY RIGHT
     margin: 3px 0px;
     font-size: 10px;
     font-weight: normal;
-    color: #333;
+    color: var(--sub-text);
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
 
+.cs-modal .cs-btn-delete {
+    color: var(--red-bg);
+}
+
 .cs-modal button:hover {
-    background-color: #f4f5f7;
+    background-color: var(--bg-section-hover);
 }
 
 
@@ -1093,26 +1105,40 @@ BODY RIGHT
     display: flex;
     align-items: center;
     justify-content: space-between;
+    color: var(--sub-text);
+    font-weight: bold;
+    width: 100%;
+
     /* border: 1px solid red; */
+}
+
+.cc-date .detail-create {
+    font-size: 8px;
+    color: var(--sub-text);
 }
 
 .c-create p {
     font-size: 10px;
     margin: 0px;
     font-weight: normal;
+    color: var(--sub-text);
 }
+
+
 
 /* USER ASSIGMNE  */
 .ncd-user-assign {
-    border: 1px solid #E2E8F0;
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
     border-radius: 8px;
     padding: 10px 5px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
 }
 
 .ncd-user-assign .ncd-assign-header {
     /* border: 1px solid grey; */
-    border-left: 3px solid #646BED;
+    border-left: 3px solid var(--primary);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -1120,16 +1146,21 @@ BODY RIGHT
     padding-left: 10px;
     font-size: 12px;
     font-weight: bold;
+    color: var(--text);
 }
 
 .ncd-assign-header button {
     font-size: 10px;
     padding: 2px 8px;
     cursor: pointer;
-    border: 1px solid #ABBAFA;
+    border: 1px solid var(--card-border);
     border-radius: 4px;
-    background-color: #EEF2FE;
-    color: #646BED;
+    background-color: var(--card-bg);
+    color: var(--sub-text);
+}
+
+.ncd-assign-header button:hover {
+    background-color: var(--bg-section-hover);
 }
 
 .ncd-user-assign .ncd-assign-content {
@@ -1143,7 +1174,7 @@ BODY RIGHT
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
+
 }
 
 .ncd-add-btn button {
@@ -1153,42 +1184,72 @@ BODY RIGHT
     font-size: 12px;
     font-weight: bold;
     gap: 5px;
-    border: 1.5px dashed #4c5be7;
     border-radius: 8px;
     width: 90%;
-    color: #4c4fe8;
     cursor: pointer;
+    color: var(--sub-text);
+    background-color: var(--bg-section-hover);
+    border: 1px dashed var(--card-border);
 }
 
 .ncd-add-btn button:hover {
-    background-color: #4c5ce75a;
+    background-color: var(--bg-section);
+    border: 1px dashed var(--primary);
+    color: var(--primary);
 }
 
 /* USER ASSIGN SHOW MODAL */
-.assign-modal {
+.ncd-user-assign .assign-modal-container {
     position: absolute;
-    top: 50%;
-    right: 8%;
+    top: 100%;
+    right: 0%;
     z-index: 99;
-    /* border: 1px solid red; */
     border-radius: 8px;
     padding: 0px;
-    width: 20vw;
-    background-color: white;
+    width: 100% !important;
     box-shadow: 0px 4px 8px #5e12eb46;
 }
 
 /* CHECKLIST CARD  */
 .ncd-card-checklist {
+    height: 100%;
     margin-top: 10px;
-    border: 1px solid #E2E8F0;
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
     border-radius: 8px;
     padding: 10px 5px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+}
+
+/* MODE COLLAPSE */
+.ncd-card-checklist.collapsed {
+    max-height: 20vh;
+    /* tinggi awal (LESS) */
+}
+
+/* MODE EXPAND */
+.ncd-card-checklist.expanded {
+    max-height: 40vh;
+    /* cukup besar biar semua konten tampil */
+}
+
+/* OPTIONAL: fade bawah */
+.ncd-card-checklist.collapsed::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: linear-gradient(to bottom,
+            rgba(0, 0, 0, 0),
+            var(--bg-card));
 }
 
 .ncd-card-checklist .ncd-checklist-header {
-    border-left: 3px solid orange;
+    border-left: 3px solid var(--primary);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -1196,22 +1257,28 @@ BODY RIGHT
     padding-left: 10px;
     font-size: 12px;
     font-weight: bold;
+    color: var(--sub-text);
 }
 
 .ncd-checklist-header button {
     font-size: 10px;
-    padding: 2px 8px;
+    padding: 5px 8px;
     cursor: pointer;
-    border: 1px solid #ABBAFA;
+    border: 1px solid var(--card-border);
     border-radius: 4px;
-    background-color: #EEF2FE;
-    color: #646BED;
+    background-color: var(--card-bg);
+    color: var(--sub-text);
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
 }
 
 .ncd-checklist-content {
-    /* border: 1px solid blue;c */
+    /* border: 1px solid blue; */
     /* padding: 5px; */
-    margin-top: 5px;
+    margin: 5px 0px;
+    height: 100%;
 }
 
 /* END CHECKOLIST CARD  */
@@ -1219,7 +1286,8 @@ BODY RIGHT
 /* CARD ACTIVITY  */
 .ncd-card-activity {
     margin-top: 10px;
-    border: 1px solid #E2E8F0;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
     border-radius: 8px;
     padding: 10px 5px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
@@ -1227,7 +1295,7 @@ BODY RIGHT
 
 .ncd-card-activity .ncd-activity-header {
     /* border: 1px solid grey; */
-    border-left: 3px solid rgb(144, 0, 255);
+    border-left: 3px solid var(--primary);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -1235,6 +1303,7 @@ BODY RIGHT
     padding-left: 10px;
     font-size: 12px;
     font-weight: bold;
+    color: var(--sub-text);
 }
 
 .ncd-card-activity .ncd-activiy-content {

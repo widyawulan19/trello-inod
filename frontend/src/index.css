@@ -148,18 +148,29 @@ code {
 
 
   /* STATUS CARD  */
-  /* --status-bg-opacity: 0.18;
-  --status-text-strength: 90;
-  --status-border-strength: 40; */
-  --status-bg-opacity: 0.12;
+  /* --status-bg-opacity: 0.12; */
+  --status-bg-opacity: 0.30;
   --status-text-strength: -90;
   --status-border-strength: -40;
 
-
+  /* DUE DATE COLORS */
+  --due-red-border: #ef4444;
+  --due-red-bg: #fee2e2;
+  --due-red-text: #ef4444;
+  --due-orange-border: #f59e0b;
+  --due-orange-bg: #feeac7;
+  --due-orange-text: #f59e0b;
+  --due-blue-border: #3b82f6;
+  --due-blue-bg: #dbe8fe;
+  --due-blue-text: #3b82f6;
+  --due-normal-border: #22c55e;
+  --due-normal-bg: #dcfce8;
+  --due-normal-text: #22c55e;
 }
 
 /* Dark Theme */
 [data-theme="dark"] {
+
   --bg: #1E222A;
   --bg-section: #14171D;
   --bg-section-hover: #2A2F38;
@@ -293,12 +304,25 @@ code {
 
   /* STATUS CARD  */
 
-  --status-bg-opacity: 0.18;
+  /* --status-bg-opacity: 0.18; */
+
+  --status-bg-opacity: 0.30;
   --status-text-strength: 90;
   --status-border-strength: 40;
-  /* --status-bg-opacity: 0.12;
-  --status-text-strength: -90;
-  --status-border-strength: -40; */
+
+  /* DUE DATE COLORS */
+  --due-red-border: #f87171;
+  --due-red-bg: rgba(239, 68, 68, 0.15);
+  --due-red-text: #fca5a5;
+  --due-orange-border: #fbbf24;
+  --due-orange-bg: rgba(245, 158, 11, 0.15);
+  --due-orange-text: #fcd34d;
+  --due-blue-border: #60a5fa;
+  --due-blue-bg: rgba(59, 130, 246, 0.15);
+  --due-blue-text: #93c5fd;
+  --due-normal-border: #4ade80;
+  --due-normal-bg: rgba(34, 197, 94, 0.15);
+  --due-normal-text: #86efac;
 }
 
 

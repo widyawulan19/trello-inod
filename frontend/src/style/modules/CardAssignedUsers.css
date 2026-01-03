@@ -23,14 +23,13 @@
   /* align-items: center; */
   justify-content: flex-start;
   gap: 5px;
-  /* border: 1px solid red; */
 }
 
 .user-avatar {
-  background-color: #EEF2FE;
-  border: 1px solid #ABBAFA;
+  /* background-color: var(--bg); */
+  /* border: 1px solid var(--bg); */
   border-radius: 6px;
-  color: #555;
+  color: var(--sub-text);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -39,8 +38,7 @@
 }
 
 .user-avatar:hover {
-  border: 1px solid #ABBAFA;
-  background-color: #b3c5fa;
+  background-color: var(--bg-section-hover);
 }
 
 .user-avatar .ua-prof {
@@ -55,6 +53,7 @@
   height: 30px;
   border-radius: 50%;
   /* padding: 0px; */
+  background: #F2F3F6;
   object-fit: cover;
   border: 1px solid #ABBAFA;
   box-shadow: 0px 4px 8px #5e12eb46;

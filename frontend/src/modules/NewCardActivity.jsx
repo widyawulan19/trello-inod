@@ -112,7 +112,6 @@ const NewCardActivity = ({ cardId, fetchCardActivities, cardActivities, setCardA
                   borderLeftWidth: '4px',
                   borderLeftStyle: 'solid',
                   borderLeftColor: borderColor,
-                  backgroundColor: '#f8fafc',
                   borderRadius: '0.25rem'
                 }}
               >

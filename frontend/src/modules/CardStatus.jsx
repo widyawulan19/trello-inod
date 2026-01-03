@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import '../style/modules/CardStatus.css';
-import { HiChevronDown } from 'react-icons/hi2';
+import { HiCheckCircle, HiChevronDown } from 'react-icons/hi2';
 import { FaXmark } from 'react-icons/fa6';
 import {
   updateCardStatusTesting,
@@ -80,8 +80,12 @@ const CardStatus = ({
     <div className="card-status-container">
       {/* ===== HEADER ===== */}
       <div className="status-header">
-        <h5>CARD STATUS</h5>
-        <FaXmark onClick={onClose} size={18} className="sch-icon" />
+        <div className="header-left">
+          <HiCheckCircle/>
+          <h5>SELECT CARD STATUS</h5>
+        </div>
+        
+        <FaXmark onClick={onClose} className="sch-icon" />
       </div>
 
       {/* ===== CURRENT STATUS ===== */}
@@ -135,42 +139,45 @@ const CardStatus = ({
                   + Create New Status
                 </button>
               ) : (
-                <>
-                  <input
-                    type="text"
-                    placeholder="Status name"
-                    value={newStatusName}
-                    onChange={(e) =>
-                      setNewStatusName(e.target.value)
-                    }
-                  />
-
-                  <div className="color-picker">
+                <div className="create-status-form">
+                  <h5>Create New Status</h5>
+                  <div className="fill-form">
                     <input
-                      type="color"
-                      value={accentColor}
+                      type="text"
+                      placeholder="Status name"
+                      value={newStatusName}
                       onChange={(e) =>
-                        setAccentColor(e.target.value)
+                        setNewStatusName(e.target.value)
                       }
                     />
-                    <span>{accentColor}</span>
-                  </div>
 
+                    <div className="color-picker">
+                      <input
+                        type="color"
+                        value={accentColor}
+                        onChange={(e) =>
+                          setAccentColor(e.target.value)
+                        }
+                      />
+                      <span>{accentColor}</span>
+                    </div>
+                  </div>
+                
                   <div className="cs-action">
-                    <button
-                      className="cs-save"
-                      onClick={handleCreateStatus}
-                    >
-                      Save
-                    </button>
                     <button
                       className="cs-cancel"
                       onClick={() => setIsCreating(false)}
                     >
                       Cancel
                     </button>
+                    <button
+                      className="cs-save"
+                      onClick={handleCreateStatus}
+                    >
+                      Save
+                    </button>
                   </div>
-                </>
+                </div>
               )}
             </div>
           </div>
