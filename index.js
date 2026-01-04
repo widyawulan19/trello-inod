@@ -6770,9 +6770,14 @@ app.put('/api/card-due-date/:id', async (req, res) => {
 });
 
 // 5. update due date by id (userId dari URL)
-app.put('/api/card-due-date/:id/:userId', async (req, res) => {
+app.put('/api/due/card-due-date-testing/:id/:userId', async (req, res) => {
     const { id, userId } = req.params;   // 👈 userId dari URL
     const { due_date } = req.body;
+
+    const userIdInt = parseInt(userId, 10);
+    if (isNaN(userIdInt)) {
+        return res.status(400).json({ error: "Invalid userId" });
+    }
 
     try {
         // Ambil cardId dan due date lama
@@ -6822,7 +6827,7 @@ app.put('/api/card-due-date/:id/:userId', async (req, res) => {
         await logCardActivity({
             action: 'updated_due',
             card_id: cardId,
-            user_id: userId,   // 👈 pakai dari params
+            user_id: [userIdInt],   // 👈 pakai dari params
             entity: 'due date',
             entity_id: null,
             details: {
@@ -8046,7 +8051,7 @@ app.get('/api/cards/:cardId/status', async (req, res) => {
 
     try {
         const result = await client.query(
-            `SELECT s.status_id, s.status_name, s.text_color,s.background_color, cs.assigned_at
+            `SELECT s.status_id, s.status_name, s.text_color,s.background_color, cs.assigned_at, s.accent_color
             FROM card_status cs
             JOIN status s ON cs.status_id = s.status_id
             WHERE cs.card_id = $1`,
@@ -8184,6 +8189,10 @@ app.post('/api/status-testing', async (req, res) => {
         });
     }
 });
+
+
+
+
 
 /* =======================
 ======================= */
@@ -17368,5 +17377,4 @@ app.get('/api/marketing/summary/compare', async (req, res) => {
 
 
 // TESTING NEW FITUR  EDNPOIN 
-
 

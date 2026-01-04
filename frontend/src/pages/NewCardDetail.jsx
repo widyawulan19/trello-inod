@@ -707,31 +707,65 @@ const NewCardDetail=({fetchBoardDetail})=> {
     /* =======================
     fetch DUE DATE
     ======================= */
-    const fetchDueDates = async()=>{
-        try{
-            setLoading(true);
-            const response = await getAllDueDateByCardId(cardId)
-            console.log('Fetching due date data:', response.data)
+    // const fetchDueDates = async()=>{
+    //     try{
+    //         setLoading(true);
+    //         const response = await getAllDueDateByCardId(cardId)
+    //         console.log('Fetching due date data:', response.data)
 
-            if (response.data.length > 0) {
-                setDueDates(response.data);
-                setSelectedDate(new Date(response.data[0].due_date));
-                setSelectedDueDateId(response.data[0].id);
-              } else {
-                setDueDates([]);
-                setSelectedDate(null);
-                setSelectedDueDateId(null);
-              }
-        }catch(error){
-            console.error('Error fetching due dates:', error);
-        }finally{
-            setLoading(false)
+    //         if (response.data.length > 0) {
+    //             setDueDates(response.data);
+    //             setSelectedDate(new Date(response.data[0].due_date));
+    //             setSelectedDueDateId(response.data[0].id);
+    //           } else {
+    //             setDueDates([]);
+    //             setSelectedDate(null);
+    //             setSelectedDueDateId(null);
+    //           }
+    //     }catch(error){
+    //         console.error('Error fetching due dates:', error);
+    //     }finally{
+    //         setLoading(false)
+    //     }
+    // }
+
+    // useEffect(()=>{
+    //     fetchDueDates();
+    // },[cardId])
+    /* =======================
+    FETCH DUE DATE
+    ======================= */
+    const fetchDueDates = async () => {
+    try {
+        setLoading(true);
+
+        const response = await getAllDueDateByCardId(cardId);
+        console.log('Fetching due date data:', response.data);
+
+        if (Array.isArray(response.data) && response.data.length > 0) {
+        const dueDate = response.data[0];
+
+        setDueDates(response.data);
+        setSelectedDueDateId(dueDate.id); // ✅ INI KUNCI UTAMA
+        setSelectedDate(dueDate.due_date ? new Date(dueDate.due_date) : null);
+        } else {
+        setDueDates([]);
+        setSelectedDate(null);
+        setSelectedDueDateId(null);
         }
+    } catch (error) {
+        console.error('Error fetching due dates:', error);
+    } finally {
+        setLoading(false);
     }
+    };
 
-    useEffect(()=>{
+    useEffect(() => {
+    if (cardId) {
         fetchDueDates();
-    },[cardId])
+    }
+    }, [cardId]);
+
 
 
     /* =======================

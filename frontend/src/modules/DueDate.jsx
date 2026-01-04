@@ -8,7 +8,8 @@ import {
   getAllDueDateByCardId, 
   addNewDueDate, 
   updateDueDate, 
-  updateCardDueDate
+  updateCardDueDate,
+  updateDueDateTesting
 } from "../services/ApiServices"; // Sesuaikan dengan lokasi file API
 import { HiXMark } from "react-icons/hi2";
 import BootstrapTooltip from "../components/Tooltip";
@@ -35,14 +36,23 @@ const DueDate = ({
   const {user} = useUser();
   const userId = user?.id;
 
+  /* =======================
+  DEBUGING
+  ======================= */
+useEffect(() => {
+  console.log('PARENT selectedDueDateId:', selectedDueDateId);
+}, [selectedDueDateId]);
+
+
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
 
+
 const handleSaveDueDate = async () => {
   if (!selectedDate) {
-    showSnackbar("Pilih due date terlebih dahulu", "warning");
+    showSnackbar('Pilih due date terlebih dahulu', 'warning');
     return;
   }
 
@@ -51,37 +61,37 @@ const handleSaveDueDate = async () => {
     const formattedDate = selectedDate.toISOString();
 
     if (selectedDueDateId) {
-      // =============================
+      // ======================
       // UPDATE DUE DATE
-      // =============================
-      await updateCardDueDate(
-        selectedDueDateId,
-        userId,
-        formattedDate
+      // ======================
+      await updateDueDateTesting(
+        selectedDueDateId,  // id due_date
+        userId,             // userId (wajib dari API)
+        { due_date: formattedDate }
       );
 
-      showSnackbar("Due date berhasil diperbarui", "success");
+      showSnackbar('Due date berhasil diperbarui', 'success');
     } else {
-      // =============================
-      // CREATE DUE DATE
-      // =============================
+      // ======================
+      // ADD NEW DUE DATE
+      // ======================
       await addNewDueDate({
         card_id: cardId,
         due_date: formattedDate,
       });
 
-      showSnackbar("Due date berhasil ditambahkan", "success");
+      showSnackbar('Due date berhasil ditambahkan', 'success');
     }
 
-    await fetchDueDates();
-    onClose();
+    fetchDueDates();
   } catch (error) {
-    console.error("Error saving due date:", error);
-    showSnackbar("Gagal menyimpan due date", "error");
+    console.error('Error saving due date:', error);
+    showSnackbar('Gagal menyimpan due date', 'error');
   } finally {
     setLoading(false);
   }
 };
+
 
 
   const getDueDateClass = (date) => {
