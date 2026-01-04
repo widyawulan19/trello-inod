@@ -6770,8 +6770,82 @@ app.put('/api/card-due-date/:id', async (req, res) => {
 });
 
 // 5. update due date by id (userId dari URL)
+// app.put('/api/due/card-due-date-testing/:id/:userId', async (req, res) => {
+//     const { id, userId } = req.params;   // 👈 userId dari URL
+//     const { due_date } = req.body;
+
+//     const userIdInt = parseInt(userId, 10);
+//     if (isNaN(userIdInt)) {
+//         return res.status(400).json({ error: "Invalid userId" });
+//     }
+
+//     try {
+//         // Ambil cardId dan due date lama
+//         const existing = await client.query(
+//             "SELECT * FROM card_due_dates WHERE id = $1",
+//             [id]
+//         );
+
+//         if (existing.rows.length === 0) {
+//             return res.status(404).json({ error: "Due date not found" });
+//         }
+
+//         const oldDueDate = existing.rows[0].due_date;
+//         const cardId = existing.rows[0].card_id;
+
+//         // Update due date
+//         const result = await client.query(
+//             `
+//             UPDATE card_due_dates
+//             SET due_date = $1,
+//                 updated_at = NOW()
+//             WHERE id = $2
+//             RETURNING *
+//             `,
+//             [due_date, id]
+//         );
+
+//         if (result.rows.length === 0) {
+//             return res.status(404).json({ error: "Due date not found after update" });
+//         }
+
+//         const updatedDueDate = result.rows[0].due_date;
+
+//         // Format tanggal: Wednesday, 11 June 2025
+//         const formatDate = (dateStr) => {
+//             const options = {
+//                 weekday: 'long',
+//                 year: 'numeric',
+//                 month: 'long',
+//                 day: 'numeric'
+//             };
+//             return new Intl.DateTimeFormat('en-GB', options)
+//                 .format(new Date(dateStr));
+//         };
+
+//         // Log aktivitas update
+//         await logCardActivity({
+//             action: 'updated_due',
+//             card_id: cardId,
+//             user_id: userId,   // 👈 pakai dari params
+//             entity: 'due date',
+//             entity_id: null,
+//             details: {
+//                 old_title: formatDate(oldDueDate),
+//                 new_title: formatDate(updatedDueDate),
+//             }
+//         });
+
+//         res.json(result.rows[0]);
+//     } catch (err) {
+//         console.error(err.message);
+//         res.status(500).send("Server Error");
+//     }
+// });
+
+// 5. update due date by id (userId dari URL)
 app.put('/api/due/card-due-date-testing/:id/:userId', async (req, res) => {
-    const { id, userId } = req.params;   // 👈 userId dari URL
+    const { id, userId } = req.params;
     const { due_date } = req.body;
 
     const userIdInt = parseInt(userId, 10);
@@ -6780,9 +6854,9 @@ app.put('/api/due/card-due-date-testing/:id/:userId', async (req, res) => {
     }
 
     try {
-        // Ambil cardId dan due date lama
+        // 1️⃣ Ambil data lama (card_id + due_date)
         const existing = await client.query(
-            "SELECT * FROM card_due_dates WHERE id = $1",
+            `SELECT id, card_id, due_date FROM card_due_dates WHERE id = $1`,
             [id]
         );
 
@@ -6790,18 +6864,17 @@ app.put('/api/due/card-due-date-testing/:id/:userId', async (req, res) => {
             return res.status(404).json({ error: "Due date not found" });
         }
 
-        const oldDueDate = existing.rows[0].due_date;
-        const cardId = existing.rows[0].card_id;
+        const { card_id: cardId, due_date: oldDueDate } = existing.rows[0];
 
-        // Update due date
+        // 2️⃣ Update due date
         const result = await client.query(
             `
-            UPDATE card_due_dates
-            SET due_date = $1,
-                updated_at = NOW()
-            WHERE id = $2
-            RETURNING *
-            `,
+      UPDATE card_due_dates
+      SET due_date = $1,
+          updated_at = NOW()
+      WHERE id = $2
+      RETURNING id, card_id, due_date
+      `,
             [due_date, id]
         );
 
@@ -6811,37 +6884,45 @@ app.put('/api/due/card-due-date-testing/:id/:userId', async (req, res) => {
 
         const updatedDueDate = result.rows[0].due_date;
 
-        // Format tanggal: Wednesday, 11 June 2025
+        // 3️⃣ Helper format tanggal (safe)
         const formatDate = (dateStr) => {
+            if (!dateStr) return '-';
             const options = {
                 weekday: 'long',
                 year: 'numeric',
                 month: 'long',
-                day: 'numeric'
+                day: 'numeric',
             };
             return new Intl.DateTimeFormat('en-GB', options)
                 .format(new Date(dateStr));
         };
 
-        // Log aktivitas update
-        await logCardActivity({
-            action: 'updated_due',
-            card_id: cardId,
-            user_id: userId,   // 👈 pakai dari params
-            entity: 'due date',
-            entity_id: null,
-            details: {
-                old_title: formatDate(oldDueDate),
-                new_title: formatDate(updatedDueDate),
-            }
-        });
+        // 4️⃣ Log aktivitas (TIDAK BOLEH GAGALKAN UPDATE)
+        try {
+            await logCardActivity({
+                action: 'updated_due',
+                card_id: cardId,              // ✅ dari card_due_dates
+                user_ids: [userIdInt],        // ✅ ARRAY
+                entity: 'due date',
+                entity_id: null,
+                details: {
+                    old_title: formatDate(oldDueDate),
+                    new_title: formatDate(updatedDueDate),
+                },
+            });
+        } catch (logErr) {
+            console.error('logCardActivity failed:', logErr.message);
+            // ❗ jangan lempar error
+        }
 
+        // 5️⃣ Response sukses
         res.json(result.rows[0]);
     } catch (err) {
-        console.error(err.message);
-        res.status(500).send("Server Error");
+        console.error('UPDATE DUE DATE ERROR:', err.message);
+        res.status(500).json({ error: "Server Error" });
     }
 });
+
 
 
 
