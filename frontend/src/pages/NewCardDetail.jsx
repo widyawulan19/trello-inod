@@ -702,36 +702,6 @@ const NewCardDetail=({fetchBoardDetail})=> {
          }
      };
 
-    // END COVER FUNCTION 
-
-    /* =======================
-    fetch DUE DATE
-    ======================= */
-    // const fetchDueDates = async()=>{
-    //     try{
-    //         setLoading(true);
-    //         const response = await getAllDueDateByCardId(cardId)
-    //         console.log('Fetching due date data:', response.data)
-
-    //         if (response.data.length > 0) {
-    //             setDueDates(response.data);
-    //             setSelectedDate(new Date(response.data[0].due_date));
-    //             setSelectedDueDateId(response.data[0].id);
-    //           } else {
-    //             setDueDates([]);
-    //             setSelectedDate(null);
-    //             setSelectedDueDateId(null);
-    //           }
-    //     }catch(error){
-    //         console.error('Error fetching due dates:', error);
-    //     }finally{
-    //         setLoading(false)
-    //     }
-    // }
-
-    // useEffect(()=>{
-    //     fetchDueDates();
-    // },[cardId])
     /* =======================
     FETCH DUE DATE
     ======================= */

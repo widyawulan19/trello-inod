@@ -3,13 +3,15 @@
     width: 40%;
     height: fit-content;
     margin: 40px auto;
-    background: linear-gradient(135deg, #5f2eea, #7c83fd);
+    background-color: var(--bg-section);
+    /* background: linear-gradient(135deg, #5f2eea, #7c83fd); */
     /* background: linear-gradient(to bottom, #6E30DC, #5D12EB); */
     padding: 10px;
     border-radius: 16px;
-    border: 1px solid #5f2eea;
-    color: #fff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border);
+    color: var(--sub-text);
+    box-shadow: var(--box-shadow);
+    /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); */
 }
 
 .counter-card-musik {
@@ -26,28 +28,63 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
+/* =======================
+HEADER
+======================= */
+
 .counter-card .counter-header,
 .counter-card-musik .counter-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    border-bottom: 1px solid var(--border);
     /* border: 1px solid red; */
     margin-bottom: 16px;
+    padding-bottom: 10px;
 }
 
+
 .counter-header .title {
-    text-align: center;
-    font-size: 14px;
-    font-weight: bold;
-    margin: 0px;
-    padding: 0px;
     display: flex;
     align-items: center;
     justify-content: flex-start;
+    /* border: 1px solid red; */
+    gap: 5px;
+    color: var(--sub-text);
 }
 
+.title h2 {
+    text-align: center;
+    font-size: 14px;
+    font-weight: normal;
+    /* color: var(--sub-text); */
+    margin: 0px;
+    padding: 0px;
+}
+
+.counter-icon {
+    font-size: 18px;
+    color: var(--text-white);
+    padding: 3px;
+    border-radius: 4px;
+    background: var(--bg-icon2);
+}
+
+.counter-header .counter-close-icon {
+    cursor: pointer;
+}
+
+.counter-close-icon:hover {
+    color: var(--primary);
+}
+
+
+/* =======================
+MAIN INFO COUNTER
+======================= */
+
 .counter-info {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--bg-section-hover);
     padding: 12px;
     border-radius: 8px;
     margin-bottom: 20px;
@@ -56,12 +93,29 @@
 .counter-info p {
     margin: 4px 0;
     font-size: 12px;
+    color: var(--sub-text);
+}
+
+.counter-info strong {
+    color: var(--text);
+}
+
+.counter-info .last-info {
+    color: #F87171;
+    background: #f7dddf;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 10px;
 }
 
 .updated {
     color: #ddd;
     font-size: 0.9rem;
 }
+
+/* =======================
+COUNTER FORM
+======================= */
 
 .counter-form {
     display: flex;
@@ -71,7 +125,7 @@
     /* border: 1px solid red; */
 }
 
-.form-group {
+.form-counter-group {
     display: flex;
     flex-direction: column;
 }
@@ -80,34 +134,35 @@ label {
     font-size: 12px;
     font-weight: 600;
     margin-bottom: 4px;
+    color: var(--text);
 }
 
-.form-group input {
+.form-counter-group input {
     padding: 5px 10px;
     border-radius: 8px;
     border: none;
     outline: none;
-    color: #333;
+    color: var(--text);
     font-size: 12px;
-    border: 1px solid white;
-    background-color: white;
+    border: 1px solid var(--bg-section-hover);
+    background-color: var(--bg-section-hover);
 }
 
-.form-group input:hover {
-    border: 1px solid #5f2eea;
-    background-color: #ffffff4b;
-    color: white;
+.form-counter-group input:hover {
+    border: 1px solid var(--bg-section-hover);
+    background-color: var(--bg-section-hover);
+    color: var(--sub-text);
 }
 
-.form-group input:focus {
-    border: 1px solid #5f2eea;
-    background-color: #ffffff4b;
-    color: white;
+.form-counter-group input:focus {
+    border: 1px solid var(--bg-section-hover);
+    background-color: var(--bg-section-hover);
+    color: var(--sub-text);
 }
 
-.update-btn {
-    background: #00c9a7;
-    color: white;
+.counter-form .update-btn {
+    background: var(--bg-icon2);
+    color: var(--text-white);
     font-weight: bold;
     font-size: 13px;
     border: none;
@@ -118,8 +173,8 @@ label {
     transition: background 0.2s ease;
 }
 
-.update-btn:hover {
-    background: #00b08f;
+.counter-form .update-btn:hover {
+    box-shadow: var(--box-shadow-purple);
 }
 
 .update-btn:disabled {

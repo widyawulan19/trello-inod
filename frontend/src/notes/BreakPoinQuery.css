@@ -136,3 +136,60 @@
 
 /* HEIGHT BREAKPOIN  */
 @media (min-height:375px) and (max-height:600px) {}
+
+
+
+
+/* =======================
+BREAKPOINT SERING DIPAKAI
+======================= */
+/* MEDIA QUERY  */
+@media (min-width: 1401px) and (max-width: 2100px) {
+  .chat-toolbar-container {
+    padding-top: 10px;
+  }
+}
+
+/* Extra large devices (large desktops, ≥1200px) */
+@media (min-width: 1200px) and (max-width:1400px) {
+  .chat-toolbar-container {
+    padding-top: 10px;
+  }
+}
+
+
+/* Large devices (desktops, ≥992px) */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .chat-toolbar-container {
+    padding-top: 10px;
+  }
+}
+
+/* Medium devices (tablets, ≥768px) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .chat-toolbar-container {
+    padding-top: 10px;
+  }
+}
+
+/* ukuran handpone besar  */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .chat-toolbar-container {
+    padding-top: 10px;
+  }
+}
+
+/* ukuran handpone kecil  */
+@media (min-width:375px) and (max-width:575px) {
+  .chat-toolbar-container {
+    padding-top: 10px;
+  }
+}
+
+
+/* HEIGHT BREAKPOIN  */
+@media (min-height:400px) and (max-height:730px) {
+  .chat-toolbar-container {
+    padding: 10px 5px;
+  }
+}

@@ -4,6 +4,7 @@ import { useSnackbar } from '../context/Snackbar';
 import '../style/fitur/ResetCounter.css';
 import { FaXmark } from 'react-icons/fa6';
 import { MdLockReset } from 'react-icons/md';
+import { HiXMark } from 'react-icons/hi2';
 
 const ResetCounterDesign=({onClose})=> {
     // state 
@@ -58,23 +59,28 @@ const ResetCounterDesign=({onClose})=> {
   return (
     <div className='counter-card'>
         <div className="counter-header">
-            <h2 className='title'><MdLockReset style={{marginRight:'5px'}} className='close-icon'/> Reset Counter Marketing Music</h2>
-            <FaXmark className='close-icon' onClick={onClose}/>
+            <div className="title">
+                <div className='counter-icon'>
+                    <MdLockReset/>
+                </div>
+                <h2> Reset Counter Marketing Music</h2>   
+            </div>
+            <HiXMark className='counter-close-icon' onClick={onClose}/>
         </div>
         
         {/* {loading && <p>Loading...</p>} */}
 
         {counter && (
             <div className="counter-info">
-            <p><strong>Counter Name:</strong> {counter.counter_name} musik</p>
-            <p><strong>Project Number:</strong> {counter.current_project_number}</p>
-            <p><strong>Order Number:</strong> {counter.current_order_number}</p>
-            <p style={{color:'#b22234', backgroundColor: '#fff4b3', padding: '2px 4px', borderRadius: '4px'}}><em>Last Updated:</em> {new Date(counter.last_updated).toLocaleString()}</p>
+                <p><strong>Counter Name:</strong> {counter.counter_name} musik</p>
+                <p><strong>Project Number:</strong> {counter.current_project_number}</p>
+                <p><strong>Order Number:</strong> {counter.current_order_number}</p>
+                <p className='last-info'><em>Last Updated:</em> {new Date(counter.last_updated).toLocaleString()}</p>
             </div>
         )}
 
         <div className="counter-form">
-            <div className="form-group">
+            <div className="form-counter-group">
                 <label>Project Number</label>
                 <input
                   type="number"
@@ -82,19 +88,18 @@ const ResetCounterDesign=({onClose})=> {
                   onChange={(e) => setProjectNumber(e.target.value)}
                 />
             </div>
-            <div className="form-group">
+            <div className="form-counter-group">
                 <label>Order Number</label>
                 <input
-                type="number"
-                value={orderNumber}
-                onChange={(e) => setOrderNumber(e.target.value)}
+                    type="number"
+                    value={orderNumber}
+                    onChange={(e) => setOrderNumber(e.target.value)}
                 />
             </div>
         
-        <button className='update-btn' onClick={handleUpdateCounter}>
-          Reset Counter
-        </button>
-
+            <button className='update-btn' onClick={handleUpdateCounter}>
+                Reset Counter
+            </button>
       </div>
 
     </div>

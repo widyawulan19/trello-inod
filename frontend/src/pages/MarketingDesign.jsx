@@ -24,7 +24,8 @@ import {
   HiArrowsUpDown, HiChevronDown, HiChevronUp, HiChevronUpDown,
   HiCurrencyDollar, HiHandThumbUp, HiMiniTableCells, HiOutlineArchiveBox,
   HiOutlineChartBar,
-  HiOutlineCircleStack, HiOutlineFunnel, HiOutlinePencil, HiOutlinePlus, HiOutlineTrash
+  HiOutlineCircleStack, HiOutlineFunnel, HiOutlinePencil, HiOutlinePlus, HiOutlineTrash,
+  HiXMark
 } from 'react-icons/hi2';
 import { HiOutlineSearch } from 'react-icons/hi';
 import ViewDataMarketingDesign from './ViewDataMarketingDesign';
@@ -166,26 +167,26 @@ const MarketingDesignRow = memo(({
       <td className='action-container' style={{textAlign:'center' }}>
         <div className="action-table">
           <BootstrapTooltip title='View Data' placement='top'>
-            <button onClick={()=> handleShowDetail(item.marketing_design_id)}>
-                <IoEyeSharp style={{color:'white'}}/>
+            <button className='btn-action-icon' onClick={()=> handleShowDetail(item.marketing_design_id)}>
+                <IoEyeSharp/>
             </button>
           </BootstrapTooltip>
 
           <BootstrapTooltip title='Edit Data' placement='top'>
-            <button onClick={()=> handleShowEdit(item.marketing_design_id)}>
-                <HiOutlinePencil style={{color:'white'}}/>
+            <button className='btn-action-icon' onClick={()=> handleShowEdit(item.marketing_design_id)}>
+                <HiOutlinePencil/>
             </button>
           </BootstrapTooltip>
 
           <BootstrapTooltip title='Archive Data' placement='top'>
-            <button onClick={()=>handleArchiveDataMarketingDesign(item.marketing_design_id)}>
-              <HiOutlineArchiveBox style={{color:'white'}}/>
+            <button className='btn-action-icon' onClick={()=>handleArchiveDataMarketingDesign(item.marketing_design_id)}>
+              <HiOutlineArchiveBox/>
             </button>
           </BootstrapTooltip>
 
           <BootstrapTooltip title='Delete Data' placement='top'>
-            <button onClick={()=>handleDeleteClick(item.marketing_design_id)}>
-              <HiOutlineTrash style={{color:'white'}}/>
+            <button className='btn-action-icon' onClick={()=>handleDeleteClick(item.marketing_design_id)}>
+              <HiOutlineTrash/>
             </button>
           </BootstrapTooltip>
         </div>
@@ -558,14 +559,6 @@ const MarketingDesign = () => {
           </div>
 
           <div className="mdh-search-container">
-            {/* <div className="mdh-search">
-              <HiOutlineSearch className='mdh-search-icon'/>
-              <input
-                type="search"
-                placeholder='Search buyer, order, account...'
-                onChange={(e)=> handleFilterData(e.target.value)}
-              />
-            </div> */}
             <SearchSugesstion
               data={dataMarketingDesign}
               onSearch={handleFilterData}
@@ -599,11 +592,11 @@ const MarketingDesign = () => {
           {showData && (
             <div className='sd-cont' ref={showDataRef}>
               <div className="sd-header">
-                <h5><HiMiniTableCells className='h5-icon'/>Show Data By </h5>
-                <FaXmark onClick={handleShowDataMarketing} style={{cursor:'pointer'}}/>
+                <h5><HiMiniTableCells className='h5-icon'/>SHOW DATA BY </h5>
+                {/* <HiXMark onClick={handleShowDataMarketing} style={{cursor:'pointer'}}/> */}
               </div>
               <div className="sd-box">
-                <h5>Show Data By:</h5>
+                {/* <h5>Show Data By:</h5> */}
                 <button onClick={() => { setFilterType('DATA MARKETING DESIGN'); setShowData(false); }}>All Data</button>
                 <button onClick={() => { setFilterType('DATA DENGAN CARD'); setShowData(false); }}>Data Dengan Card</button>
                 <button onClick={() => { setFilterType('DATA TANPA CARD'); setShowData(false); }}>Data Tanpa Card</button>
@@ -621,7 +614,7 @@ const MarketingDesign = () => {
                     {shortType ? shortType.replace('_', ' ') : 'Filter Type'}
                   </div>
                   {dropdownOpen && (
-                    <ul className='ul-ftc'>
+                    <ul className='ul-ftc-box'>
                       <li className="li-ftc" onClick={() => { setShortType('buyer_name'); setDropdownOpen(false); }}>Buyer Name</li>
                       <li className="li-ftc" onClick={() => { setShortType('order_number'); setDropdownOpen(false); }}>Order Number</li>
                       <li className="li-ftc" onClick={() => { setShortType('account'); setDropdownOpen(false); }}>Account</li>
@@ -629,7 +622,7 @@ const MarketingDesign = () => {
                     </ul>
                   )}
                 </div>
-                <div className="ftc-input">
+                <div className="ftc-input-box">
                   {shortType && (
                     <input
                       type="text"

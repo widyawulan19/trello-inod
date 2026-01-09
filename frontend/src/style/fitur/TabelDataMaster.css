@@ -19,7 +19,7 @@
     padding: 0px;
     font-size: 15px;
     font-weight: bold;
-    color: #333;
+    color: var(--sub-text);
     width: 40%;
 }
 
@@ -32,17 +32,38 @@
     width: 60%;
 }
 
-.table-btn button {
-    border: 1px solid #ddd;
+/* =======================
+BUTTON EXPORT
+======================= */
+
+.table-btn button,
+.table-btn .add {
+    border: 1px solid var(--bg);
+    background-color: var(--bg);
     border-radius: 4px;
     padding: 7px 12px;
-    font-size: 10px;
-    font-weight: bold;
-    color: #333;
+    gap: 7px;
+    font-size: 12px;
+    font-weight: normal;
+    color: var(--sub-text);
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.table-btn .add {
+
+.table-btn button:hover,
+.table-btn .add:hover {
+    box-shadow: var(--box-shadow);
+    background: var(--bg-dark-hover);
+}
+
+/* =======================
+BUTTON ADD
+======================= */
+
+/* .table-btn .add {
     border: 1px solid #ddd;
     border-radius: 4px;
     padding: 7px 12px;
@@ -51,13 +72,17 @@
     color: white;
     background-color: #6336c3;
     cursor: pointer;
-}
+} */
 
+/* =======================
+INPUT
+======================= */
 .table-btn .table-input {
     width: 40%;
     gap: 5px;
     padding: 0px 8px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border);
+    background-color: var(--card-bg);
     border-radius: 6px;
     display: flex;
     align-items: center;
@@ -72,8 +97,10 @@
     padding: 3px 5px;
     font-size: 12px;
     border-radius: 6px;
-    border: 1px solid #fff;
+    border: 1px solid var(--card-bg);
+    background-color: var(--card-bg);
     width: 100%;
+    color: var(--sub-text);
     /* margin-right: 10px; */
 }
 
@@ -82,9 +109,13 @@
     outline: none;
 }
 
+/* =======================
+MASTER TABLE
+======================= */
+
 /* === TABLE === */
 .table-master-container .master-table {
-    border: 1px solid #eee;
+    border: 1px solid var(--bg);
     padding: 3px;
     border-radius: 4px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
@@ -101,7 +132,7 @@
 }
 
 .table-box thead {
-    background: #f1f1f1;
+    background: var(--card-bg);
     /* background-color: white; */
     position: sticky;
     top: 0;
@@ -112,8 +143,8 @@
     padding: 8px;
     text-align: left;
     font-weight: 600;
-    color: #333;
-    border-bottom: 1px solid #ddd;
+    color: var(--sub-text);
+    border-bottom: 1px solid var(--border);
 }
 
 .table-box th:first-child,
@@ -131,22 +162,23 @@
 
 /* striped rows */
 .table-box tbody tr:nth-child(odd) {
-    background: #fff;
+    background: var(--card-bg);
 }
 
 .table-box tbody tr:nth-child(even) {
-    background: #fafafa;
+    background: var(--bg-section-hover);
 }
 
 .table-box tbody tr:hover {
-    background: #eee;
+    background: var(--bg);
     transition: 0.2s ease;
 }
 
 .table-box td {
     padding: 7px 10px;
     font-size: 11px;
-    border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid var(--border);
+    color: var(--sub-text);
 }
 
 .table-box td button {

@@ -3,11 +3,13 @@ import { useSnackbar } from '../context/Snackbar';
 import { addDesignOrderType, addKepalaDivisiDesign, addOfferTypeDesign, addProjectTypeDesign, addStatusProjectDesign, addStyleDesign, createAccountDesign, createMarketingDesainUser, getAllAccountDesign, getAllDesignOrderType, getAllKepalaDivisiDesign, getAllMarketingDesainUsers, getAllOfferTypesDesign, getAllProjectTypesDesign, getAllStatusProjectDesign, getAllStyleDesign, getMarketingDesignById, updateDataMarketingJoined, updateMarketingDesign } from '../services/ApiServices';
 import BootstrapTooltip from '../components/Tooltip';
 import { FaXmark } from 'react-icons/fa6';
+import { RiEdit2Fill } from "react-icons/ri";
 import '../style/pages/EditMarketingForm.css';
 // import CustomDropdownDesign from '../marketing/CustomDropdownDesign';
 import CustomDropdownDesignEdit from '../marketing/CustomDropdownDesignEdit';
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
+import { HiXMark } from 'react-icons/hi2';
 
 
 const initialFormState = {
@@ -280,12 +282,13 @@ console.log('data marketing design:', marketingDesignId);
     <div className="em-container">
       <div className="em-header">
         <div className="em-left">
+          <RiEdit2Fill/>
           <h4>EDIT DATA MARKETING DESIGN</h4>
            {/* {form.style_id} | {form.buyer_name} | {form.account_name} | {get5LastChar(form.code_order)} */}
         </div>
         <div className="em-right">
           <BootstrapTooltip title="Close Edit" placement='top'>
-               <FaXmark onClick={onClose} className='em-icon'/>
+               <HiXMark onClick={onClose} className='em-icon'/>
            </BootstrapTooltip>
         </div>
       </div>
@@ -328,7 +331,7 @@ console.log('data marketing design:', marketingDesignId);
 
               {/* Acc By */}
               <div className="box-content">
-                <label >Accept By <span style={{color:'red', fontSize:'10px'}}> ** Periksa oleh kadiv</span></label>
+                <label >Accept By <span style={{color:'#F87171', fontSize:'10px'}}> ** Periksa oleh kadiv</span></label>
                 <CustomDropdownDesignEdit
                   options={dropdownData.accs}  // <- benar-benar dari kepala_divisi
                   value={form.acc_by}
@@ -344,7 +347,7 @@ console.log('data marketing design:', marketingDesignId);
 
               {/* STATUS ACCEPT */}
               <div className="box-content">
-                  <label>Status <span style={{color:'red', fontSize:'10px'}}> ** Periksa oleh kadiv</span></label>
+                  <label>Status <span style={{color:'#F87171', fontSize:'10px'}}> ** Periksa oleh kadiv</span></label>
                   <CustomDropdownDesignEdit
                       options={dropdownData.statusProject}  // <- benar-benar dari kepala_divisi
                       value={form.status_project_id}
@@ -510,7 +513,7 @@ console.log('data marketing design:', marketingDesignId);
 
                     {/* Jumlah Design */}
                     <div className="box-content">
-                        <label >Style <span style={{color:'red', fontSize:'10px'}}> ** Periksa oleh kadiv</span> </label>
+                        <label >Style <span style={{color:'#F87171', fontSize:'10px'}}> ** Periksa oleh kadiv</span> </label>
                         <CustomDropdownDesignEdit
                           options={dropdownData.style}
                           value={form.style_id}
@@ -621,10 +624,10 @@ console.log('data marketing design:', marketingDesignId);
             {/* DETAIL PROJECT  */}
             <div className="form-content">
                 <h4 className='h4'>DETAIL PROJECT</h4>
-                <div className="sec-content" style={{display:'flex',flexDirection:'column', alignItems:'center', justifyContent:'center'}}>
+                <div className="sec-content-detail" style={{display:'flex',flexDirection:'column', alignItems:'center', justifyContent:'center'}}>
                     <div className="box-content">
                       <ReactQuill
-                        className="my-editor"
+                        className="my-editor-edit"
                         theme="snow"
                         value={form.detail_project}
                         onChange={handleChangeQuill}
@@ -636,7 +639,7 @@ console.log('data marketing design:', marketingDesignId);
                 </div>
             </div>
 
-            <div className="btn-form">
+            <div className="btn-submit-edit">
                 <button type='submit'>SUBMIT NEW DATA</button>
             </div>
 

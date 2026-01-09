@@ -40,29 +40,27 @@ const CustomDropdownDesignEdit = ({
   return (
     <div className="dropdown-custom-container" ref={ref}>
       {/* Dropdown Trigger */}
-      <div
-      className='dropdown-trigger'
-        onClick={() => setIsOpen(!isOpen)}
-      >
+      <div className='dropdown-trigger' onClick={() => setIsOpen(!isOpen)}>
         <span>{options.find(o => o.id === value)?.name || placeholder}</span>
         <span className={isOpen ? "rotate-180 transition-transform" : "transition-transform"}>▼</span>
       </div>
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <ul className='menu-ul'>
-          {/* Search Input */}
-          <li>
-            <input
+        <div className="menu-custom-dropdown">
+          {/* search input  */}
+          <div className="menu-search">
+            <input 
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={searchPlaceholder}
               disabled={loading}
+              className="input-menu-ul" 
             />
-          </li>
+          </div>
 
-          {/* Loading */}
+          {/* loading  */}
           {loading && <li className="p-2 text-center text-gray-500">Loading...</li>}
 
           {/* Empty state */}
@@ -70,38 +68,37 @@ const CustomDropdownDesignEdit = ({
             <li className="p-2 text-center text-gray-500">Data tidak tersedia</li>
           )}
 
-           {/* List options */}
-          <div className="menu-option">
-          {!loading && filteredOptions.map((o) => (
-            
-              <li
-                key={o.id}
-                className='li-option'
-                onClick={() => handleSelect(o.id)}
-              >
-                {o.name}
-              </li>
-          ))}
+          {/* item dropdown  */}
+          <div className="menu-ul">
+            <ul>
+              {!loading && filteredOptions.map((o) => (
+                  <li
+                    key={o.id}
+                    className='li-option'
+                    onClick={() => handleSelect(o.id)}
+                  >
+                    {o.name}
+                  </li>
+              ))}
+            </ul>
           </div>
 
-          {/* Add new */}
+          {/* button add  */}
           {!loading && (
-            <li className='new-li'>
+            <div className="btn-new-add">
               <input
                 type="text"
                 value={newItem}
                 onChange={(e) => setNewItem(e.target.value)}
                 placeholder={addPlaceholder}
+                className="input-new"
               />
-              <button
-                type="button"
-                onClick={addNew}
-              >
+              <button type="button" onClick={addNew}>
                 <FaPlus/>
               </button>
-            </li>
+            </div>
           )}
-        </ul>
+        </div>
       )}
     </div>
   );

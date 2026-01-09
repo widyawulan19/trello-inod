@@ -70,6 +70,8 @@
 .more-fiture {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
+    /* border: 1px solid orange; */
     margin-right: 10px;
     padding: 3px 10px;
 }
@@ -316,12 +318,23 @@
 /* ================================
    RESPONSIVE SECTION
 ================================ */
-@media (min-width: 992px) {
-    .agenda-modal {
-        width: 40vw;
-        right: 0;
-    }
+/* MEDIA QUERY  */
+@media (min-width: 1401px) and (max-width: 2100px) {}
+
+.more-fiture {
+    /* border: 1px solid blue; */
 }
+
+/* Extra large devices (large desktops, ≥1200px) */
+@media (min-width: 1200px) and (max-width:1400px) {}
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    .more-fiture .profil {
+        width: 10vw;
+    }
+
+}
+
 
 @media (min-width: 768px) and (max-width: 991.98px) {
     .navbar-container .logo {
@@ -360,6 +373,7 @@
 
     .more-fiture .profil {
         width: 10vw;
+        /* border: 1px solid green; */
     }
 
     .agenda-modal {
@@ -373,8 +387,16 @@
     }
 
     .more-fiture {
+        width: 90%;
         margin-right: 0;
+        /* border: 1px solid blue; */
     }
+
+    .more-fiture .profil {
+        width: 20vw;
+        /* border: 1px solid green; */
+    }
+
 
     .more-fiture .input {
         width: 3vh;

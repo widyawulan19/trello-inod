@@ -301,8 +301,7 @@ const MasterDataDesign=()=> {
           <div className="mp-title">
             <h4>Data Master</h4>
             <div className="mp-search" onClick={navigateToMainData}>
-              {/* <HiOutlineCircleStack className='mps-icon' /> */}
-              <HiOutlineArrowCircleLeft className='mps-icon'/>
+              <HiOutlineArrowCircleLeft/>
               Data Marekting
             </div>
   
@@ -341,7 +340,7 @@ const MasterDataDesign=()=> {
                 </div>
               ))}
   
-              <div className="btn-modal">
+              <div className="btn-modal-master">
                 <button onClick={() => setShowEditModal(false)}>Close</button>
                 <button className="btn-modal-save" onClick={handlePickSave}>Save</button>
               </div>
