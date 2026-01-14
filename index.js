@@ -10505,6 +10505,89 @@ app.put("/api/marketing-design/joined/:id", async (req, res) => {
 
 // ✅ UPDATE Data Marketing Design by ID
 
+/// ✅ Endpoint marketing-design per HARI dengan detail + join
+app.get("/api/marketing-design/reports/daily", async (req, res) => {
+    try {
+        const result = await client.query(`
+      SELECT
+        DATE(md.create_at) AS date,                     -- ✅ group per hari
+        COUNT(*) AS total,
+        ARRAY_AGG(md.marketing_design_id) AS ids,
+        JSON_AGG(
+          JSON_BUILD_OBJECT(
+            'marketing_design_id', md.marketing_design_id,
+            'buyer_name', md.buyer_name,
+            'code_order', md.code_order,
+            'order_number', md.order_number,
+            'jumlah_design', md.jumlah_design,
+            'deadline', md.deadline,
+            'jumlah_revisi', md.jumlah_revisi,
+            'price_normal', md.price_normal,
+            'price_discount', md.price_discount,
+            'discount_percentage', md.discount_percentage,
+            'required_files', md.required_files,
+            'file_and_chat', md.file_and_chat,
+            'detail_project', md.detail_project,
+            'create_at', md.create_at,
+            'update_at', md.update_at,
+            'resolution', md.resolution,
+            'reference', md.reference,
+            'project_number', md.project_number,
+
+            -- Relasi Input By
+            'input_by', mdu.id,
+            'input_by_name', mdu.nama_marketing,
+
+            -- Relasi Acc By
+            'acc_by', kdd.id,
+            'acc_by_name', kdd.nama,
+
+            -- Relasi Account
+            'account', ad.id,
+            'account_name', ad.nama_account,
+
+            -- Relasi Offer Type
+            'offer_type', ot.id,
+            'offer_type_name', ot.offer_name,
+
+            -- Relasi Project Type
+            'project_type', pt.id,
+            'project_type_name', pt.project_name,
+
+            -- Relasi Style
+            'style', sd.id,
+            'style_name', sd.style_name,
+
+            -- Relasi Status Project
+            'status_project', sp.id,
+            'status_project_name', sp.status_name,
+
+            -- Relasi Design Order Type
+            'order_type', dot.id,
+            'order_type_name', dot.order_name
+          )
+        ) AS details
+      FROM marketing_design md
+      LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
+      LEFT JOIN kepala_divisi_design kdd ON md.acc_by = kdd.id
+      LEFT JOIN account_design ad ON md.account = ad.id
+      LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
+      LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
+      LEFT JOIN style_design sd ON md.style_id = sd.id
+      LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
+      LEFT JOIN design_order_type dot ON md.order_type_id = dot.id
+      WHERE md.is_deleted = false
+      GROUP BY DATE(md.create_at)
+      ORDER BY date DESC;
+    `);
+
+        res.json(result.rows);
+    } catch (err) {
+        console.error("❌ Query error:", err.message);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 
 /// ✅ Endpoint marketing-design per 10 hari dengan detail + join
 app.get("/api/marketing-design/reports", async (req, res) => {
