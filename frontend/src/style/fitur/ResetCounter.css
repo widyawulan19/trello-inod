@@ -1,31 +1,25 @@
 .counter-card {
-    /* max-width: 600px; */
     width: 40%;
     height: fit-content;
     margin: 40px auto;
     background-color: var(--bg-section);
-    /* background: linear-gradient(135deg, #5f2eea, #7c83fd); */
-    /* background: linear-gradient(to bottom, #6E30DC, #5D12EB); */
     padding: 10px;
     border-radius: 16px;
     border: 1px solid var(--border);
     color: var(--sub-text);
     box-shadow: var(--box-shadow);
-    /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); */
 }
 
 .counter-card-musik {
-    /* max-width: 600px; */
-    width: 70%;
+    width: 40%;
     height: fit-content;
     margin: 40px auto;
-    background: linear-gradient(135deg, #5f2eea, #7c83fd);
-    /* background: linear-gradient(to bottom, #6E30DC, #5D12EB); */
+    background-color: var(--bg-section);
     padding: 10px;
     border-radius: 16px;
-    border: 1px solid #5f2eea;
-    color: #fff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border);
+    color: var(--sub-text);
+    box-shadow: var(--box-shadow);
 }
 
 /* =======================

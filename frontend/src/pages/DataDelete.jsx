@@ -13,6 +13,7 @@ import '../style/pages/DataDelete.css';
 import { FaTrashRestore } from "react-icons/fa";
 import { IoSearchOutline } from "react-icons/io5";
 import { useSnackbar } from '../context/Snackbar';
+import LoadingSpinnerDot from "../utils/LoadingSpinnerDot.jsx";
 
 
 export default function DataDelete() {
@@ -98,7 +99,7 @@ export default function DataDelete() {
     }
   };
 
-  if (loading) return <p>Loading recycle bin...</p>;
+  if(loading) return <LoadingSpinnerDot text="Sebentar ya, datanya lagi dimuat 😊"/>
 
   // 🧩 Tentukan nama yang ditampilkan
   const getDisplayName = (key, item) => {
@@ -126,7 +127,8 @@ export default function DataDelete() {
       }
     };
 
-  if (loading) return <p>Loading recycle bin...</p>;
+  // if (loading) return <p>Loading recycle bin...</p>;
+  if(loading) return <LoadingSpinnerDot text="Sebentar ya, datanya lagi dimuat 😊"/>
 
   return (
     <div className="rb-container">

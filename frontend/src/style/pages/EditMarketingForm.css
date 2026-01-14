@@ -26,6 +26,7 @@
 
 .em-left h4 {
     margin: 0px;
+    margin-right: 10px;
     font-size: 13px;
     font-weight: normal;
 }
@@ -127,6 +128,7 @@ form h4 {
     font-size: 10px !important;
     margin-bottom: 3px;
     font-weight: normal !important;
+    color: var(--sub-text);
     /* color: grey; */
 }
 
@@ -172,8 +174,10 @@ form h4 {
     box-shadow: 0px 4px 8px #6f30dc54;
 }
 
-.sec-content-edit-ref .box-content-ref {
-    /* border: 1px solid red; */
+/* =======================
+DESCRIPTION
+======================= */
+.sec-content .box-content {
     border-radius: 4px;
     padding: 2px;
     display: flex;
@@ -182,24 +186,43 @@ form h4 {
     width: 100%;
 }
 
+.sec-content-edit-ref .box-content-ref {
+    /* border: 1px solid red; */
+    border-radius: 4px;
+    padding: 2px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 100% !important;
+}
+
+.box-content-ref label {
+    color: var(--sub-text);
+    font-size: 10px !important;
+    margin-bottom: 3px;
+    font-weight: normal !important;
+}
+
 .sec-content-edit-ref textarea {
-    border: 1px solid #ddd;
+    border: 1px solid var(--border);
+    background-color: var(--bg-section-hover);
     border-radius: 8px;
     padding: 5px;
     /* width: 100%; */
+    color: var(--sub-text);
     min-height: 15vh;
     font-size: 12px;
     cursor: pointer;
 }
 
 .sec-content-edit-ref textarea:hover {
-    box-shadow: 0px 4px 8px #6f30dc54;
+    box-shadow: var(--box-shadow);
 }
 
 .sec-content-edit-ref textarea:focus {
     outline: none;
-    border: 1px solid #6f30dc47;
-    box-shadow: 0px 4px 8px #6f30dc54;
+    border: 1px solid var(--bg-section-hover);
+    box-shadow: var(--box-shadow);
 }
 
 /* BUTTON SUBMIT  */
@@ -382,6 +405,7 @@ DROPDOWN CUSTOM STYLE
 .dropdown-custom-container .dropdown-trigger {
     background: var(--bg-section-hover);
     border: 1px solid var(--border);
+    /* border: 1px solid red; */
     /* color: var(--text) !important; */
     /* color: red !important; */
     display: flex;
@@ -390,6 +414,7 @@ DROPDOWN CUSTOM STYLE
     padding: 5px;
     border-radius: 8px;
     cursor: pointer;
+
 }
 
 .dropdown-trigger:hover {
@@ -449,7 +474,7 @@ INPUT SEACH
 }
 
 /* =======================
-MENU DROPDOWN
+MENU DROPDOWN MARKETING
 ======================= */
 .menu-ul {
     /* border: 1px solid red; */

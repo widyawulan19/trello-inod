@@ -211,7 +211,7 @@ const renderTextWithLinks = (text) => {
                 : <MdMarkEmailUnread/>}
               {designTransfile.some(exp => exp.marketing_design_id === marketingDesignId)
                 ? "SUDAH TRANSFILE"
-                : "TRANSFILE TP SPREDSHEET"}
+                : "TRANSFILE TO SPREDSHEET"}
             </button>
           </div>
 

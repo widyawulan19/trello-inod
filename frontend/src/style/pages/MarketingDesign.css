@@ -354,6 +354,11 @@
     background-color: #f5f5f5;
 }
 
+.project-number-container:hover {
+    text-decoration: underline;
+    color: #5320be !important;
+}
+
 /* ======== CREATE CARD LABEL ======== */
 
 .label-card {
@@ -533,7 +538,7 @@
     cursor: pointer;
 }
 
-.action-table .btn-action-icon:hover {
+.action-table .btn-action-icona:hover {
     color: white !important;
     box-shadow: var(--box-shadow-purple);
 }

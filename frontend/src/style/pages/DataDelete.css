@@ -1,6 +1,6 @@
 .rb-container {
     position: relative;
-    background-color: white;
+    background-color: var(--bg);
     margin-left: 10px;
     margin-top: 10px;
     border-radius: 8px;
@@ -9,16 +9,16 @@
 
 /* HEADER  */
 .rb-container .rb-header {
-    border: 1px solid #ddd;
+    border-bottom: 1px solid var(--bg);
     border-radius: 8px;
-    padding: 10px;
+    padding: 5px 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    background-color: white;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: var(--bg);
+    /* box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); */
 }
 
 .rb-header .header-title {
@@ -38,19 +38,20 @@
 }
 
 .header-icon {
-    border: 1px solid white;
+    border: 1px solid var(--bg);
     border-radius: 8px;
     padding: 8px;
-    color: white;
+    color: var(--text-white);
     font-size: 12px;
-    background: linear-gradient(90deg, #7246eb, #532189);
+    background: var(--bg-icon2);
+    /* background: linear-gradient(90deg, #7246eb, #532189); */
 }
 
 .title-left h2 {
     margin: 0px;
     font-weight: bold;
     width: 100%;
-    color: #5320be;
+    color: var(--text);
 }
 
 .header-title .title-right {
@@ -58,8 +59,9 @@
 }
 
 .title-right .rb-search {
-    border: 1px solid #ddd;
+    border: 1px solid var(--border);
     border-radius: 8px;
+    background: var(--bg);
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -70,15 +72,16 @@
 }
 
 .rb-search:hover {
-    border: 1px solid #532189;
-    box-shadow: 0px 4px 8px #6f30dc44;
+    background: var(--bg-section-hover);
+    box-shadow: var(--box-shadow);
 }
 
 .rb-search input {
-    border: 1px solid white;
+    border: 1px solid var(--bg);
+    background: var(--bg);
     border-radius: 16px;
     font-size: 12px;
-    color: #5e5e5e;
+    color: var(--sub-text);
     padding: 5px;
     width: 15vw;
 }
@@ -86,6 +89,10 @@
 .rb-search input:hover,
 .rb-search input:focus {
     outline: none;
+    background: var(--bg-section-hover);
+    box-shadow: var(--box-shadow);
+
+    border: 1px solid var(--bg-section-hover);
 }
 
 .rb-header .sub-title {
@@ -97,13 +104,15 @@
 .sub-title p {
     margin: 0px;
     font-size: 12px;
-    color: #333;
+    color: var(--sub-text);
 }
 
 /* END HEADER  */
 
+/* =======================
+BODY DATA DELETE
+======================= */
 
-/* BODY  */
 .rb-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
@@ -116,31 +125,27 @@
 }
 
 .rb-section {
-    background: #fff;
-    border: 1px solid #ddd;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
     border-radius: 16px;
     height: 60vh;
-    /* overflow-y: auto; */
     padding: 10px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
     cursor: pointer;
 }
 
 .rb-section:hover {
-    border: 1px solid #532189;
-    box-shadow: 0px 4px 8px #6f30dc44;
+    box-shadow: var(--box-shadow);
 }
 
 .rb-section-title {
     font-weight: 600;
     font-size: 1rem;
-    color: #333;
+    color: var(--sub-text);
     margin-bottom: 0.8rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    border-bottom: 1px solid #ddd;
-    /* border: 1px solid red; */
+    border-bottom: 1px solid var(--border);
 }
 
 .no-data-delete {
@@ -168,7 +173,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid #eee;
+    border: 1px solid var(--border);
     padding: 0.7rem 1rem;
     border-radius: 12px;
     transition: all 0.2s ease-in-out;
@@ -176,33 +181,34 @@
 }
 
 .rb-card:hover {
-    background-color: #f8fafc;
-    box-shadow: 0px 4px 8px #6f30dc44;
+    background-color: var(--bg-section-hover);
+    box-shadow: var(--box-shadow);
     transform: translateY(-1px);
 }
 
 .rb-card-title {
     font-weight: 500;
     font-size: 12px;
-    color: #111;
+    color: var(--sub-text);
 }
 
 .rb-card-id {
     font-size: 0.8rem;
-    color: #777;
+    color: var(--sub-text-grey);
 }
 
 .rb-restore-btn {
-    background-color: #22c55e;
-    color: white;
+    background: var(--status-one-hit-bg);
+    color: var(--status-one-hit-text);
     border: none;
     padding: 0.4rem 0.8rem;
+    border: 1px solid var(--status-one-hit-border);
     border-radius: 8px;
-    font-size: 0.85rem;
+    font-size: 10px;
     transition: all 0.2s ease-in-out;
     cursor: pointer;
 }
 
 .rb-restore-btn:hover {
-    background-color: #16a34a;
+    /* background-color: #16a34a; */
 }

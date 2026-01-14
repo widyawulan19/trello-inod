@@ -34,14 +34,11 @@ const MarketingDesignReport =()=> {
         <div className="design-report-content">
             <div className="report-header">
                 <div className="report-title">
-                    <div className="report-icon">
-                        <HiOutlineDocumentReport className='report-logo'/>
-                    </div>
                     <h2>LAPORAN MARKETING DESIGN</h2>
                 </div>
-                
                 <p>Selamat datang di halaman laporan Marketing Design. Di sini kamu bisa melihat ringkasan aktivitas dan performa tim desain marketing secara real-time maupun per periode.</p>
             </div>
+            
             <div className="report-button">
                 <button
                     onClick={navigateToMarketingDesign}

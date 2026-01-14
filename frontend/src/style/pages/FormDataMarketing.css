@@ -23,11 +23,11 @@
     color: var(--sub-text);
 }
 
-/* .header-form-left .header-icon {
+.header-form-left .header-icon {
     background: var(--bg-icon2);
     border-radius: 8px;
     padding: 5px;
-} */
+}
 
 .header-form-left h4 {
     margin: 0px;
@@ -79,6 +79,14 @@
 }
 
 .form-content .h4 {
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--sub-text);
+    margin-bottom: 5px;
+    border-bottom: 1px solid var(--card-border);
+}
+
+.form-content h4 {
     font-size: 13px;
     font-weight: bold;
     color: var(--sub-text);
@@ -422,11 +430,12 @@
 
 /* SNOW REACT QUILL  */
 .my-editor-form .ql-editor {
-    color: var(--text);
+    color: var(--text) !important;
 }
 
 .my-editor-form .ql-editor * {
-    color: var(--text);
+    color: var(--text) !important;
+    /* background-color: var(--bg-section-hover); */
 }
 
 .my-editor-form .ql-editor.ql-blank::before {

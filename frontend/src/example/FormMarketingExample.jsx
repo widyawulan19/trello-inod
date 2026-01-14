@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { getAllMarketingUsers, addMarketingUser, addDataMarketing, addDataMarketingTesting, getAllAccountsMusic, addAccountMusic, getAllOfferTypesMusic, addOfferTypeMusic, getAllTrackTypes, addTrackType, getAllGenresMusic, addGenreMusic, getAllProjectTypesMusic, addProjectTypeMusic, getAllOrderTypesMusic, addOrderTypeMusic, getAllKuponDiskon, addKuponDiskon,getAllAcceptStatus } from "../services/ApiServices";
 import { getAllKepalaDivisi, addKepalaDivisi } from "../services/ApiServices";
 import CustomDropdown from "../marketing/CustomDropdown";
@@ -9,6 +9,7 @@ import { HiXMark } from "react-icons/hi2";
 import { useSnackbar } from "../context/Snackbar";
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
+import { MdEditDocument } from "react-icons/md";
 
 const FormMarketingExample = ({onClose, fetchData}) => {
   const {showSnackbar} = useSnackbar();
@@ -24,6 +25,7 @@ const FormMarketingExample = ({onClose, fetchData}) => {
   const [newOrder, setNewOrder] = useState("");
   const [newKupon, setNewKupon] = useState("");
   const [links, setLinks] = useState([""]);
+  const quillRef = useRef(null);
 
   
 
@@ -182,9 +184,41 @@ useEffect(() => {
     setNewKupon("");
   }
 
-  const handleChangeQuill = (value) => {
-    setForm({ ...form, detail_project: value });
-  };
+
+    useEffect(() => {
+        const quill = quillRef.current?.getEditor();
+        if (!quill) return;
+
+        quill.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
+            delta.ops.forEach(op => {
+            if (op.attributes) {
+                delete op.attributes.color;
+                delete op.attributes.background;
+            }
+            });
+            return delta;
+        });
+    }, []);
+
+
+    const handleChangeQuill = (value, delta, source) => {
+        if (source === 'user') {
+            const quill = quillRef.current?.getEditor();
+            if (quill) {
+            quill.format('color', false);
+            quill.format('background', false);
+            }
+        }
+
+        setForm(prev => ({
+            ...prev,
+            detail_project: value,
+        }));
+    };
+
+  // const handleChangeQuill = (value) => {
+  //   setForm({ ...form, detail_project: value });
+  // };
 
   // konfigurasi toolbar ReactQuill
   const modules = {
@@ -280,11 +314,9 @@ useEffect(() => {
   return (
     <div className="fdm-container">
       <div className="fdm-header">
-        <div className="fmdh-left">
-          <div className="header-icon">
-            <IoCreate size={15}/>
-          </div>
-          <h4>CREATE DATA MARKETING</h4>
+        <div className="header-form-left">
+          <MdEditDocument size={15}/>
+          <h4>CREATE DATA MARKETING MUSIK</h4>          
         </div>
 
         <BootstrapTooltip title='close' placement='top'>
@@ -316,7 +348,7 @@ useEffect(() => {
 
                 {/* Acc By */}
                 <div className="box-content">
-                  <label >Accept By <span style={{color:'red', fontSize:'10px'}}> ** diisi oleh kadiv</span></label>
+                  <label >Accept By <span className="label-span"> ** diisi oleh kadiv</span></label>
                   <CustomDropdown
                     options={dropdownData.accs}  // <- benar-benar dari kepala_divisi
                     value={form.acc_by}
@@ -332,7 +364,7 @@ useEffect(() => {
 
                 {/* STATUS ACCEPT */}
                 <div className="box-content">
-                  <label>Status <span style={{color:'red', fontSize:'10px'}}> ** diisi oleh kadiv</span></label>
+                  <label>Status <span className="label-span"> ** diisi oleh kadiv</span></label>
                   <CustomDropdown
                     options={dropdownData.statusAccept}  // <- benar-benar dari kepala_divisi
                     value={form.accept_status_id}
@@ -474,7 +506,7 @@ useEffect(() => {
 
                 {/* Genre */}
                 <div className="box-content">
-                  <label >Genre <span style={{color:'red', fontSize:'10px'}}> ** diisi oleh kadiv</span></label>
+                  <label >Genre <span className="label-span"> ** diisi oleh kadiv</span></label>
                   <CustomDropdown
                     options={dropdownData.genres}        // data dari API
                     value={form.genre}
@@ -672,11 +704,11 @@ useEffect(() => {
             {/* PROJECT DESCRIPTION */}
             <div className="form-content">
               <h4>PROJECT DESCRIPTION</h4>
-              <div className="sec-content-detail" style={{border:'1px solid white'}}>
+              <div className="sec-content-detail">
                 <div className="box-content">
-                  {/* <label style={{fontWeight:'bold'}}>Detail Project</label> */}
                   <ReactQuill
-                    className="my-editor"
+                    ref={quillRef}
+                    className="my-editor-form"
                     theme="snow"
                     value={form.detail_project}
                     onChange={handleChangeQuill}
@@ -700,5 +732,4 @@ useEffect(() => {
 };
 
 export default FormMarketingExample;
-
 

@@ -4,6 +4,7 @@ import { useSnackbar } from '../context/Snackbar';
 import '../style/fitur/ResetCounter.css';
 import { FaXmark } from 'react-icons/fa6';
 import { MdLockReset } from 'react-icons/md';
+import { HiXMark } from 'react-icons/hi2';
 
 const ResetCounter=({onClose})=> {
     // state 
@@ -58,8 +59,13 @@ const ResetCounter=({onClose})=> {
   return (
     <div className='counter-card-musik'>
         <div className="counter-header">
-            <h2 className='title'><MdLockReset style={{marginRight:'5px'}} className='close-icon'/> Reset Counter Marketing Music</h2>
-            <FaXmark className='close-icon' onClick={onClose}/>
+            <div className="title">
+                <div className='counter-icon'>
+                    <MdLockReset/>
+                </div>
+                <h2> Reset Counter Marketing Music</h2>   
+            </div>
+            <HiXMark className='counter-close-icon' onClick={onClose}/>
         </div>
         
         {/* {loading && <p>Loading...</p>} */}

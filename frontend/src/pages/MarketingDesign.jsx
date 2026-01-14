@@ -27,7 +27,7 @@ import {
   HiOutlineCircleStack, HiOutlineFunnel, HiOutlinePencil, HiOutlinePlus, HiOutlineTrash,
   HiXMark
 } from 'react-icons/hi2';
-import { HiOutlineSearch } from 'react-icons/hi';
+import { HiOutlineDocumentReport, HiOutlineSearch } from 'react-icons/hi';
 import ViewDataMarketingDesign from './ViewDataMarketingDesign';
 import EditMarketingDesign from './EditMarketingDesign';
 import FormMarketingDesign from './FormMarketingDesign';
@@ -554,7 +554,7 @@ const MarketingDesign = () => {
           <div className="mdhr-btn">
             <button onClick={handleShowDataMarketing}> <HiAdjustmentsHorizontal /> SHOW DATA</button>
             <button onClick={handleFilterButton}> <HiOutlineFunnel/> FILTER DATA</button>
-            <button onClick={() => navigate('/layout/marketing-design-report')}><HiOutlineChartBar/> REPORT</button>
+            <button onClick={() => navigate('/layout/marketing-design-report')}><HiOutlineDocumentReport/> REPORT</button>
             {/* <button className='new-data-btn'  onClick={handleShowForm}> <HiOutlinePlus/> NEW DATA</button> */}
           </div>
 

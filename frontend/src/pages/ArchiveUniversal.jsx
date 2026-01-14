@@ -7,6 +7,7 @@ import { MdOutlineRestore } from "react-icons/md";
 import BootstrapTooltip from '../components/Tooltip';
 import { handleRestoreArchive } from '../utils/handleRestoreArchive';
 import { useSnackbar } from '../context/Snackbar';
+import LoadingSpinnerDot from '../utils/LoadingSpinnerDot';
 
 const ArchiveUniversal=()=> {
     //STATE
@@ -132,7 +133,7 @@ const ArchiveUniversal=()=> {
       
 
      {loading ? (
-        <p>Loading...</p>
+        <LoadingSpinnerDot text='Preparing your data archive'/>
         ) : (
         <div className="archive-table-container">
             <table className="archive-table">
@@ -170,26 +171,27 @@ const ArchiveUniversal=()=> {
                             : item.data?.name || '-'}
                     </td>
                     <td>{new Date(item.archived_at).toLocaleString()}</td>
-                    <td style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
+                    <td className='td-action' style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
                         <BootstrapTooltip>
-                            <button onClick={()=> handleShowDetailCard(item.entity_id)}>
+                            <button className='btn-action' onClick={()=> handleShowDetailCard(item.entity_id)}>
                                 <IoEyeSharp/>
                             </button>
                         </BootstrapTooltip>
                         <BootstrapTooltip title='Restore data' placement="top">
-                            <button onClick={()=>
+                            <button className='btn-action' onClick={()=>
                                 handleRestoreArchive({
                                     entity: item.entity_type,
                                     id: item.entity_id,
                                     refetch:fetchArchiveData,
                                     showSnackbar,
                                 })
+                                
                             }>
                                 <MdOutlineRestore/>
                             </button>
                         </BootstrapTooltip>
                         <BootstrapTooltip title='Delete data' placement='top'>
-                            <button onClick={()=> handleDeleteArchive(item.id)}>
+                            <button className='btn-action' onClick={()=> handleDeleteArchive(item.id)}>
                                 <IoTrash/>
                             </button>
                         </BootstrapTooltip>

@@ -4,6 +4,7 @@ import MarketingDayliReport from './MarketingDayliReport';
 import MarketingTenDaysReport from './MarketingTenDaysReport';
 import { HiOutlineDocumentReport } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
+import { HiCalendar, HiCalendarDateRange, HiCalendarDays, HiOutlineCircleStack } from 'react-icons/hi2';
 
 const DataMarketingReport=()=> {
     // STATE 
@@ -34,31 +35,29 @@ const DataMarketingReport=()=> {
         <div className="marketing-report-content">
             <div className="report-header">
                 <div className="report-title">
-                    <div className="report-icon">
-                        <HiOutlineDocumentReport className='report-logo'/>
-                    </div>
                     <h2>LAPORAN DATA MARKERING MUSIK</h2>
                 </div>
                 <p>Selamat datang di halaman laporan Marketing Musik. Di sini kamu bisa melihat ringkasan aktivitas dan performa tim desain marketing secara real-time maupun per periode.</p>
             </div>
 
             <div className="report-button">
-                <button
-                    onClick={navigateToDataMarketing}
-                >
-                    Data Marketing
+                <button onClick={navigateToDataMarketing}>
+                    <HiOutlineCircleStack/>
+                    DATA MARKETING
                 </button>
                 <button
                     className={activeReport === 'today' ? 'active': ''}
                     onClick={()=> setActiveReport('today')}
                 >
-                    Report Today
+                    <HiCalendarDays/>
+                    DAILY REPORT
                 </button>
                 <button
                     className={activeReport === 'period' ? 'active' :''}
                     onClick={()=> setActiveReport('period')}
                 >
-                    Report Period
+                    <HiCalendarDateRange/>
+                    MONTHLY REPORT
                 </button>
                
             </div>

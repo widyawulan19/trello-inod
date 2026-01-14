@@ -283,8 +283,8 @@ console.log('data marketing design:', marketingDesignId);
       <div className="em-header">
         <div className="em-left">
           <RiEdit2Fill/>
-          <h4>EDIT DATA MARKETING DESIGN</h4>
-           {/* {form.style_id} | {form.buyer_name} | {form.account_name} | {get5LastChar(form.code_order)} */}
+          <h4>EDIT DATA MARKETING DESIGN</h4> 
+           {form.style_id} | {form.buyer_name} | {form.account_name} | {get5LastChar(form.code_order)}
         </div>
         <div className="em-right">
           <BootstrapTooltip title="Close Edit" placement='top'>

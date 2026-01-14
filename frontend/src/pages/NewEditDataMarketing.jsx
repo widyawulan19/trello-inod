@@ -32,6 +32,7 @@ import { useSnackbar } from "../context/Snackbar";
 import CustomDropdownEdit from "../marketing/CustomDropdownEdit";
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
+import { RiEdit2Fill } from "react-icons/ri";
 
 const initialFormState = {
   marketing_id: "",
@@ -358,7 +359,8 @@ console.log('data selcted acc:', selectedAccById);
     <div className="em-container">
       <div className="em-header">
         <div className="em-left">
-              <h4 className='font-bold'>EDIT DATA MARKETING</h4>
+              <RiEdit2Fill/>
+              <h4 className='font-bold'>EDIT DATA MARKETING</h4> 
               {form.genre} | {form.buyer_name} | {form.account_name} | {get5LastChar(form.code_order)}
           </div>
           <div className="em-right">
@@ -407,7 +409,7 @@ console.log('data selcted acc:', selectedAccById);
 
               {/* Acc By */}
               <div className="box-content">
-                <label>Accept By <span style={{color:'red', fontSize:'6px'}}> ** diisi oleh kadiv</span></label>
+                <label>Accept By <span style={{color:'#F87171', fontSize:'10px'}}> ** diisi oleh kadiv</span></label>
                 {/* {dropdownData.accs?.length > 0 && ( */}
                   <CustomDropdownEdit
                     options={dropdownData.accs}
@@ -425,7 +427,7 @@ console.log('data selcted acc:', selectedAccById);
 
                {/* ACCEPT STATUS */}
               <div className="box-content">
-                <label>Status Accept <span style={{color:'red', fontSize:'6px'}}> ** diisi oleh kadiv</span></label>
+                <label>Status Accept <span style={{color:'#F87171', fontSize:'10px'}}> ** diisi oleh kadiv</span></label>
                   <CustomDropdownEdit
                     options={dropdownData.statusAccept}
                     value={form.accept_status_id}  // pakai ID string, misal "2"
@@ -560,7 +562,7 @@ console.log('data selcted acc:', selectedAccById);
 
               {/* Genre */}
               <div className="box-content">
-                <label>Genre <span style={{color:'red', fontSize:'6px'}}> ** diisi oleh kadiv</span></label>
+                <label>Genre <span style={{color:'#F87171', fontSize:'10px'}}> ** diisi oleh kadiv</span></label>
                 <CustomDropdownEdit
                   options={dropdownData.genres}        // data dari API
                   value={form.genre}
@@ -759,10 +761,10 @@ console.log('data selcted acc:', selectedAccById);
           {/* PROJECT DESCRIPTION */}
           <div className="form-content">
             <h4>PROJECT DESCRIPTION</h4>
-            <div className="sec-content" style={{display:'flex',flexDirection:'column', alignItems:'center', justifyContent:'center'}}>
+            <div className="sec-content-detail" style={{display:'flex',flexDirection:'column', alignItems:'center', justifyContent:'center'}}>
               <div className="box-content">
-                <ReactQuill
-                  className="my-editor"
+                 <ReactQuill
+                  className="my-editor-edit"
                   theme="snow"
                   value={form.detail_project}
                   onChange={handleChangeQuill}
@@ -775,12 +777,12 @@ console.log('data selcted acc:', selectedAccById);
           </div>
         </div>
 
-        {/* kamu bisa copy dropdown lain persis dari DataMarketingForm */}
-        {/* tinggal ganti value={form.field} onChange={(val) => setForm({...form, field: val})} */}
-
-        <button type="submit" className="form-submit">
-          Update
-        </button>
+        
+        <div className="btn-submit-edit">
+            <button type="submit">
+              SUBMIT UPDATE DATA
+            </button>
+        </div>
       </form>
     </div>
   );

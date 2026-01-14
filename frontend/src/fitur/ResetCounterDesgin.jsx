@@ -63,7 +63,7 @@ const ResetCounterDesign=({onClose})=> {
                 <div className='counter-icon'>
                     <MdLockReset/>
                 </div>
-                <h2> Reset Counter Marketing Music</h2>   
+                <h2> Reset Counter Marketing Design</h2>   
             </div>
             <HiXMark className='counter-close-icon' onClick={onClose}/>
         </div>
