@@ -1147,7 +1147,7 @@ INPUT FILTER
 /* Medium devices (tablets, ≥768px) */
 @media (min-width: 767px) and (max-width: 991.98px) {
 
-    /* //BODY TABEL  */
+    /* BODY TABEL  */
     .new-data {
         height: 80%;
     }
