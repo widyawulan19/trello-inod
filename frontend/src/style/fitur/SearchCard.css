@@ -135,7 +135,7 @@
     color: var(--text-white);
 }
 
-*/ .result-isi {
+.result-isi {
     display: flex;
     flex-direction: column;
     gap: 4px;
