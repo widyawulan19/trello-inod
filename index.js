@@ -6770,8 +6770,82 @@ app.put('/api/card-due-date/:id', async (req, res) => {
 });
 
 // 5. update due date by id (userId dari URL)
+// app.put('/api/due/card-due-date-testing/:id/:userId', async (req, res) => {
+//     const { id, userId } = req.params;   // 👈 userId dari URL
+//     const { due_date } = req.body;
+
+//     const userIdInt = parseInt(userId, 10);
+//     if (isNaN(userIdInt)) {
+//         return res.status(400).json({ error: "Invalid userId" });
+//     }
+
+//     try {
+//         // Ambil cardId dan due date lama
+//         const existing = await client.query(
+//             "SELECT * FROM card_due_dates WHERE id = $1",
+//             [id]
+//         );
+
+//         if (existing.rows.length === 0) {
+//             return res.status(404).json({ error: "Due date not found" });
+//         }
+
+//         const oldDueDate = existing.rows[0].due_date;
+//         const cardId = existing.rows[0].card_id;
+
+//         // Update due date
+//         const result = await client.query(
+//             `
+//             UPDATE card_due_dates
+//             SET due_date = $1,
+//                 updated_at = NOW()
+//             WHERE id = $2
+//             RETURNING *
+//             `,
+//             [due_date, id]
+//         );
+
+//         if (result.rows.length === 0) {
+//             return res.status(404).json({ error: "Due date not found after update" });
+//         }
+
+//         const updatedDueDate = result.rows[0].due_date;
+
+//         // Format tanggal: Wednesday, 11 June 2025
+//         const formatDate = (dateStr) => {
+//             const options = {
+//                 weekday: 'long',
+//                 year: 'numeric',
+//                 month: 'long',
+//                 day: 'numeric'
+//             };
+//             return new Intl.DateTimeFormat('en-GB', options)
+//                 .format(new Date(dateStr));
+//         };
+
+//         // Log aktivitas update
+//         await logCardActivity({
+//             action: 'updated_due',
+//             card_id: cardId,
+//             user_id: userId,   // 👈 pakai dari params
+//             entity: 'due date',
+//             entity_id: null,
+//             details: {
+//                 old_title: formatDate(oldDueDate),
+//                 new_title: formatDate(updatedDueDate),
+//             }
+//         });
+
+//         res.json(result.rows[0]);
+//     } catch (err) {
+//         console.error(err.message);
+//         res.status(500).send("Server Error");
+//     }
+// });
+
+// 5. update due date by id (userId dari URL)
 app.put('/api/due/card-due-date-testing/:id/:userId', async (req, res) => {
-    const { id, userId } = req.params;   // 👈 userId dari URL
+    const { id, userId } = req.params;
     const { due_date } = req.body;
 
     const userIdInt = parseInt(userId, 10);
@@ -6780,9 +6854,9 @@ app.put('/api/due/card-due-date-testing/:id/:userId', async (req, res) => {
     }
 
     try {
-        // Ambil cardId dan due date lama
+        // 1️⃣ Ambil data lama (card_id + due_date)
         const existing = await client.query(
-            "SELECT * FROM card_due_dates WHERE id = $1",
+            `SELECT id, card_id, due_date FROM card_due_dates WHERE id = $1`,
             [id]
         );
 
@@ -6790,18 +6864,17 @@ app.put('/api/due/card-due-date-testing/:id/:userId', async (req, res) => {
             return res.status(404).json({ error: "Due date not found" });
         }
 
-        const oldDueDate = existing.rows[0].due_date;
-        const cardId = existing.rows[0].card_id;
+        const { card_id: cardId, due_date: oldDueDate } = existing.rows[0];
 
-        // Update due date
+        // 2️⃣ Update due date
         const result = await client.query(
             `
-            UPDATE card_due_dates
-            SET due_date = $1,
-                updated_at = NOW()
-            WHERE id = $2
-            RETURNING *
-            `,
+      UPDATE card_due_dates
+      SET due_date = $1,
+          updated_at = NOW()
+      WHERE id = $2
+      RETURNING id, card_id, due_date
+      `,
             [due_date, id]
         );
 
@@ -6811,37 +6884,45 @@ app.put('/api/due/card-due-date-testing/:id/:userId', async (req, res) => {
 
         const updatedDueDate = result.rows[0].due_date;
 
-        // Format tanggal: Wednesday, 11 June 2025
+        // 3️⃣ Helper format tanggal (safe)
         const formatDate = (dateStr) => {
+            if (!dateStr) return '-';
             const options = {
                 weekday: 'long',
                 year: 'numeric',
                 month: 'long',
-                day: 'numeric'
+                day: 'numeric',
             };
             return new Intl.DateTimeFormat('en-GB', options)
                 .format(new Date(dateStr));
         };
 
-        // Log aktivitas update
-        await logCardActivity({
-            action: 'updated_due',
-            card_id: cardId,
-            user_id: [userIdInt],   // 👈 pakai dari params
-            entity: 'due date',
-            entity_id: null,
-            details: {
-                old_title: formatDate(oldDueDate),
-                new_title: formatDate(updatedDueDate),
-            }
-        });
+        // 4️⃣ Log aktivitas (TIDAK BOLEH GAGALKAN UPDATE)
+        try {
+            await logCardActivity({
+                action: 'updated_due',
+                card_id: cardId,              // ✅ dari card_due_dates
+                user_ids: [userIdInt],        // ✅ ARRAY
+                entity: 'due date',
+                entity_id: null,
+                details: {
+                    old_title: formatDate(oldDueDate),
+                    new_title: formatDate(updatedDueDate),
+                },
+            });
+        } catch (logErr) {
+            console.error('logCardActivity failed:', logErr.message);
+            // ❗ jangan lempar error
+        }
 
+        // 5️⃣ Response sukses
         res.json(result.rows[0]);
     } catch (err) {
-        console.error(err.message);
-        res.status(500).send("Server Error");
+        console.error('UPDATE DUE DATE ERROR:', err.message);
+        res.status(500).json({ error: "Server Error" });
     }
 });
+
 
 
 
@@ -10423,6 +10504,89 @@ app.put("/api/marketing-design/joined/:id", async (req, res) => {
 
 
 // ✅ UPDATE Data Marketing Design by ID
+
+/// ✅ Endpoint marketing-design per HARI dengan detail + join
+app.get("/api/marketing-design/reports/daily", async (req, res) => {
+    try {
+        const result = await client.query(`
+      SELECT
+        DATE(md.create_at) AS date,                     -- ✅ group per hari
+        COUNT(*) AS total,
+        ARRAY_AGG(md.marketing_design_id) AS ids,
+        JSON_AGG(
+          JSON_BUILD_OBJECT(
+            'marketing_design_id', md.marketing_design_id,
+            'buyer_name', md.buyer_name,
+            'code_order', md.code_order,
+            'order_number', md.order_number,
+            'jumlah_design', md.jumlah_design,
+            'deadline', md.deadline,
+            'jumlah_revisi', md.jumlah_revisi,
+            'price_normal', md.price_normal,
+            'price_discount', md.price_discount,
+            'discount_percentage', md.discount_percentage,
+            'required_files', md.required_files,
+            'file_and_chat', md.file_and_chat,
+            'detail_project', md.detail_project,
+            'create_at', md.create_at,
+            'update_at', md.update_at,
+            'resolution', md.resolution,
+            'reference', md.reference,
+            'project_number', md.project_number,
+
+            -- Relasi Input By
+            'input_by', mdu.id,
+            'input_by_name', mdu.nama_marketing,
+
+            -- Relasi Acc By
+            'acc_by', kdd.id,
+            'acc_by_name', kdd.nama,
+
+            -- Relasi Account
+            'account', ad.id,
+            'account_name', ad.nama_account,
+
+            -- Relasi Offer Type
+            'offer_type', ot.id,
+            'offer_type_name', ot.offer_name,
+
+            -- Relasi Project Type
+            'project_type', pt.id,
+            'project_type_name', pt.project_name,
+
+            -- Relasi Style
+            'style', sd.id,
+            'style_name', sd.style_name,
+
+            -- Relasi Status Project
+            'status_project', sp.id,
+            'status_project_name', sp.status_name,
+
+            -- Relasi Design Order Type
+            'order_type', dot.id,
+            'order_type_name', dot.order_name
+          )
+        ) AS details
+      FROM marketing_design md
+      LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
+      LEFT JOIN kepala_divisi_design kdd ON md.acc_by = kdd.id
+      LEFT JOIN account_design ad ON md.account = ad.id
+      LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
+      LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
+      LEFT JOIN style_design sd ON md.style_id = sd.id
+      LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
+      LEFT JOIN design_order_type dot ON md.order_type_id = dot.id
+      WHERE md.is_deleted = false
+      GROUP BY DATE(md.create_at)
+      ORDER BY date DESC;
+    `);
+
+        res.json(result.rows);
+    } catch (err) {
+        console.error("❌ Query error:", err.message);
+        res.status(500).json({ error: err.message });
+    }
+});
 
 
 /// ✅ Endpoint marketing-design per 10 hari dengan detail + join
@@ -17377,4 +17541,5 @@ app.get('/api/marketing/summary/compare', async (req, res) => {
 
 
 // TESTING NEW FITUR  EDNPOIN 
+
 
