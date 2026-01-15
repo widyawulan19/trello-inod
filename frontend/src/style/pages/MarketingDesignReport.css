@@ -1,9 +1,9 @@
 /* MAKETING DESIGN REPORT  */
 .design-report-container {
-    height: 97%;
-    min-width: 80vw;
+    width: 100%;
+    min-width: 100%;
     position: relative;
-    background-color: white;
+    background-color: var(--bg);
     margin-left: 10px;
     margin-top: 10px;
     border-radius: 8px;
@@ -24,11 +24,8 @@
 }
 
 .design-report-content .report-header {
-    border: 1px solid #ddd;
-    border-radius: 10px;
     padding: 10px;
     width: 100%;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .report-header .report-title {
@@ -39,48 +36,96 @@
     justify-content: flex-start;
 }
 
-.report-title .report-icon {
-    border: 1px solid white;
-    border-radius: 8px;
-    padding: 5px;
-    color: white;
-    background: linear-gradient(90deg, #7246eb, #532189);
-}
 
 .report-title h2 {
     margin: 0px;
     font-weight: bold;
     width: 100%;
     font-size: 15px;
-    color: #5320be;
+    color: var(--text);
 }
 
 .report-header p {
     font-size: 10px;
+    color: var(--sub-text);
+}
+
+/* =======================
+FADE MAIN CONTENT
+======================= */
+.fade {
+    width: 100%;
+    min-width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* button  */
 .design-report-content .report-button {
-    /* border: 1px solid blue; */
+    border-bottom: 1px solid var(--border);
     width: 100%;
     padding: 5px 10px;
+    padding-bottom: 10px;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
 }
 
+/* =======================
+BUTTON BASE STYLE
+======================= */
+
 .report-button button {
-    background-color: #532189;
-    color: white;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 5px 12px;
+    border-radius: 6px;
+
     font-size: 12px;
+    font-weight: 600;
+
+    border: 1px solid var(--border);
+    background-color: var(--bg);
+    color: var(--text);
+
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.report-button button svg {
+    font-size: 16px;
 }
 
 .report-button button.active {
-    background: linear-gradient(90deg, #532189, #7246eb);
-    box-shadow: 0px 4px 8px #6f30dc7c;
+    background-color: #6f30dc;
+    border-color: #6f30dc;
+    color: #ffffff;
 }
 
+
 .report-button button:hover {
-    background: linear-gradient(90deg, #532189, #7246eb);
-    box-shadow: 0px 4px 8px #6f30dc7c;
+    background-color: #6f30dc;
+    border-color: #6f30dc;
+    color: #ffffff;
 }
+
+.report-button button.active svg {
+    color: #ffffff;
+}
+
+
+.report-button button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(111, 48, 220, 0.3);
+}
+
+/* =======================
+BODY TABLE
+======================= */
 
 /* body  */
 .design-report-content .report-body {

@@ -1,1216 +1,819 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
+import React, { useEffect, useState, useRef } from "react";
+import { getAllDataMarketing,getAllDataMarketingJoined, deleteDataMarketing, getDataMarketingAccepted, getDataMarketingWithCardId, getDataMarketingWithCardIdNull, getDataMarketingRejected, archiveDataMarketing, getAllMarketingExports, exportDataMarketingToSheets, addExportMarketing, updateMarketingPosition } from "../services/ApiServices";
+import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import "../style/pages/DataMarketing.css";
+import { HiArrowsUpDown, HiChevronUpDown, HiMiniTableCells, HiOutlineArchiveBox, HiOutlineCircleStack, HiOutlinePencil, HiOutlinePlus, HiOutlineTrash, HiOutlineXCircle } from "react-icons/hi2";
+import { HiChevronDown, HiChevronUp, HiOutlineFilter, HiOutlineSearch } from "react-icons/hi";
+import BootstrapTooltip from "../components/Tooltip";
+import ViewDataMarketing from "./ViewDataMarketing";
+import EditMarketingForm from "./EditMarketingForm";
+import NewEditDataMarketing from "./NewEditDataMarketing";
+import FormDataMarketing from "./FormDataMarketing";
+import { useSnackbar } from "../context/Snackbar";
+import DataMarketingDeleteConfirm from "../modals/DataMarketingDeleteConfirm";
+import OutsideClick from "../hook/OutsideClick";
+import { IoEyeSharp } from "react-icons/io5";
+import { handleArchive } from "../utils/handleArchive";
+import ExportDataMarketing from "../exports/ExportDataMarketing";
+import { FaXmark } from "react-icons/fa6";
+import { AiFillCheckCircle } from "react-icons/ai";
+import FormMarketingExample from "../example/FormMarketingExample";
+import { MdLockReset } from "react-icons/md";
+import ResetCounter from "../fitur/ResetCounter";
+import LoadingSpinnerDot from "../utils/LoadingSpinnerDot";
 
-// import React, { useEffect, useState } from 'react';
-// import { getActivityCard } from '../services/ApiServices';
-// import { useUser } from '../context/UserContext';
-// import '../style/modules/CardActivity.css';
+const DataMarketing = () => {
+  const location = useLocation();
+  // const {workspaceId, boardId, listId,cardId} = location.state || {}
 
-// const COLOR_BORDER = {
-//   updated_title: '#3b82f6',      // blue-500
-//   updated_desc: '#6366f1',       // indigo-500
-//   remove_label: '#ef4444',       // red-500
-//   remove_user: '#ef4444',        // red-500
-//   remove_cover: '#ef4444',       // red-500
-//   add_user: '#22c55e',           // green-500
-//   add_label: '#22c55e',          // green-500
-//   add_cover: '#22c55e',          // green-500
-//   // updated_cover: '#eab308',   // yellow-500 (optional, uncomment if needed)
-//   updated_due: '#a855f7',        // purple-500
-//   updated_prio: '#ec4899',       // pink-500
-//   updated_status: '#14b8a6',      // teal-500
-//   move: '#f59e0b',
-//   duplicate:''
-// };
+  const [searchParams] = useSearchParams();
+  const workspaceId = searchParams.get("workspaceId");
+  const boardId = searchParams.get("boardId");
+  const listId = searchParams.get("listId");
+  const cardId = searchParams.get("cardId");
 
-// const MESSAGE_ACTIVITY = {
-//   updated_title: 'updated title to',
-//   updated_desc: 'updated description',
-//   remove_label: 'removed label',
-//   remove_user: 'removed user',
-//   remove_cover: 'removed cover from card',
-//   add_user: 'added a user',
-//   add_label: 'added a new label',
-//   add_cover:'added a new cover',
-//   // updated_cover: 'updated cover card',
-//   updated_due: 'updated due date',
-//   updated_prio: 'updated priority card',
-//   updated_status: 'updated status',
-//   move: 'moved this card',
-//   duplicate: 'duplicate this card'
-// };
-=======
-// // const handleSendMessage = async () => {
-// //   const html = editorRef.current?.innerHTML || "";
-// //   if (!html.trim() && pendingFiles.length === 0) return;
-
-// //   try {
-// //     const res = await createMessage(cardId, {
-// //       user_id: userId,
-// //       message: html, // simpan dengan format HTML
-// //       parent_message_id: null,
-// //     });
-
-// //     const chatId = res.data.id;
-
-// //     for (let file of pendingFiles) {
-// //       await uploadChatMedia(chatId, file);
-// //     }
-
-// //     editorRef.current.innerHTML = "";
-// //     setPendingFiles([]);
-// //     fetchChats();
-// //     showSnackbar("Pesan + file terkirim!", "success");
-// //   } catch (err) {
-// //     console.error("Send error:", err);
-// //     showSnackbar("Gagal kirim pesan", "error");
-// //   }
-// // };
+  const [marketingTransfile, setMarketingTransfile] = useState([]);
+  const [isExported, setIsExported] = useState(false);
+  const [stickyCount, setStickyCount] = useState(3); // default 3 kolom
 
 
-// // const handleSendReply = async (parentId) => {
-// //   const html = replyEditorRefs.current[parentId]?.innerHTML || "";
-// //   const files = replyPendingFiles[parentId] || [];
-// //   if (!html.trim() && files.length === 0) return;
-
-// //   try {
-// //     const res = await createMessage(cardId, {
-// //       user_id: userId,
-// //       message: html, // simpan dengan format HTML
-// //       parent_message_id: parentId,
-// //     });
-
-// //     const chatId = res.data.id;
-// //     for (let file of files) {
-// //       await uploadChatMedia(chatId, file);
-// //     }
-
-// //     replyEditorRefs.current[parentId].innerHTML = "";
-// //     setReplyPendingFiles((prev) => ({ ...prev, [parentId]: [] }));
-
-// //     fetchChats();
-// //     showSnackbar("Success reply", "success");
-// //   } catch (err) {
-// //     console.error("Reply error:", err);
-// //     showSnackbar("Reply failed", "error");
-// //   }
-// // };
->>>>>>> feature
-
-// const CardActivity = ({ cardId, fetchCardById }) => {
-//   const { user } = useUser();
-//   const userId = user?.id;
-//   const [cardActivities, setCardActivities] = useState([]);
-//   const [loading, setLoading] = useState(false);
-
-//   //debug
-//   console.log('file card activity menerima fetchcardById', fetchCardById);
-
-<<<<<<< HEAD
-//   const fetchCardActivites = async () => {
-//     try {
-//       setLoading(true);
-//       const response = await getActivityCard(cardId);
-//       setCardActivities(response.data.activities); // Pastikan sesuai struktur
-//     } catch (error) {
-//       console.error('Failed to fetch card activity:', error);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   useEffect(() => {
-//     if (cardId) {
-//       fetchCardActivites();
-//     }
-//   }, [cardId]);
-
-//   return (
-//     <div className="ca-container">
-//       {loading ? (
-//         <p>Loading...</p>
-//       ) : cardActivities.length === 0 ? (
-//         <p
-//           style={{
-//             // border:'1px solid red',
-//             width:'100%',
-//             display:'flex',
-//             alignItems:'center',
-//             justifyContent:'center',
-//             fontSize:'12px'
-//           }}
-//         >No activity yet.</p>
-//       ) : (
-//         <ul className="space-y-3">
-//           {cardActivities.map((activity) => {
-//             const detail = activity.action_detail ? JSON.parse(activity.action_detail) : {};
-//             const actionKey = `${activity.action_type}_${activity.entity}`;
-//             const borderColor = COLOR_BORDER[activity.action_type] || '#ddd';
-//             const messageText = MESSAGE_ACTIVITY[activity.action_type] || `${activity.action_type}`;
-            
-//             let message = `${activity.username} ${messageText}`;
-            
-
-
-//             if (detail.old_title && detail.new_title) {
-//               message += ` "${detail.new_title}"`;
-//               // message += ` from "${detail.old_title}" to "${detail.new_title}"`;
-//             } else if (detail.new_title) {
-//               message += ` "${detail.new_title}"`;
-//             }
-
-//             return (
-//               <li
-//                 key={activity.id}
-//                 className='ca-li'
-//                 style={{
-//                   padding: '0.25rem',
-//                   borderLeftWidth: '4px',
-//                   borderLeftStyle: 'solid',
-//                   borderLeftColor: borderColor,
-//                   backgroundColor: '#f8fafc', // slate-50
-//                   borderRadius: '0.25rem',
-//                 }}
-//               >
-//                 <p 
-//                   style={{
-//                     fontSize:'12px',
-//                     padding:'0px',
-//                     margin:'0px'
-//                   }}
-//                 className="text-sm">{message}</p>
-//                 <p 
-//                   style={{
-//                     fontSize:'10px',
-//                     // border:'1px solid red',
-//                     width:'100%',
-//                     display:'flex',
-//                     alignItems:'center',
-//                     justifyContent:'flex-end'
-//                   }}
-//                 >
-//                   {new Date(activity.created_at).toLocaleString()}
-//                 </p>
-//               </li>
-//             );
-//           })}
-//         </ul>
-//       )}
-//     </div>
-//   );
-<<<<<<< HEAD
-// };
-
-// export default CardActivity;
-=======
-// }
-=======
-// // const html = editorRef.current?.innerHTML || "";
-// // if ((!html || html === "<br>") && pendingFiles.length === 0) return;
-
-// // const res = await createMessage(cardId, {
-// //   user_id: userId,
-// //   message: html, // simpan HTML biar bold/italic tetap tampil
-// //   parent_message_id: null,
-// // });
-
-
-
-// // const html = replyEditorRefs.current[parentId]?.innerHTML || "";
-// // ...
-// // message: html,
-
-
-// // import React, { useRef, useEffect } from "react";
-
-// // export default function ChatInput() {
-// //   const editorRef = useRef(null);
-
-// //   // === FORMAT TOOLS ===
-// //   const handleFormat = (command, value = null) => {
-// //     document.execCommand(command, false, value);
-// //     editorRef.current?.focus();
-// //   };
-
-// //   // === SHORTCUT HANDLER ===
-// //   const handleKeyDown = (e) => {
-// //     if (!e.ctrlKey && !e.metaKey) return; // hanya tangkap Ctrl/Cmd
-
-// //     // Bold: Ctrl + B
-// //     if (e.key.toLowerCase() === "b") {
-// //       e.preventDefault();
-// //       handleFormat("bold");
-// //     }
-
-// //     // Italic: Ctrl + I
-// //     if (e.key.toLowerCase() === "i") {
-// //       e.preventDefault();
-// //       handleFormat("italic");
-// //     }
-
-// //     // Underline: Ctrl + U
-// //     if (e.key.toLowerCase() === "u") {
-// //       e.preventDefault();
-// //       handleFormat("underline");
-// //     }
-
-// //     // Strikethrough: Ctrl + Shift + S
-// //     if (e.shiftKey && e.key.toLowerCase() === "s") {
-// //       e.preventDefault();
-// //       handleFormat("strikeThrough");
-// //     }
-
-// //     // Ordered list: Ctrl + Shift + O
-// //     if (e.shiftKey && e.key.toLowerCase() === "o") {
-// //       e.preventDefault();
-// //       handleFormat("insertOrderedList");
-// //     }
-
-// //     // Unordered list: Ctrl + Shift + U
-// //     if (e.shiftKey && e.key.toLowerCase() === "u") {
-// //       e.preventDefault();
-// //       handleFormat("insertUnorderedList");
-// //     }
-
-// //     // Inline code: Ctrl + E
-// //     if (e.key.toLowerCase() === "e") {
-// //       e.preventDefault();
-// //       // ambil teks yang dipilih lalu bungkus dengan <code>
-// //       const selection = window.getSelection();
-// //       if (selection.rangeCount > 0) {
-// //         const range = selection.getRangeAt(0);
-// //         const codeNode = document.createElement("code");
-// //         range.surroundContents(codeNode);
-// //       }
-// //     }
-// //   };
-
-// //   useEffect(() => {
-// //     const editor = editorRef.current;
-// //     if (editor) editor.addEventListener("keydown", handleKeyDown);
-// //     return () => editor?.removeEventListener("keydown", handleKeyDown);
-// //   }, []);
-
-// //   return (
-// //     <div className="p-3 bg-white border rounded-lg shadow">
-// //       {/* Toolbar */}
-// //       <div className="flex gap-2 mb-2">
-// //         <button onClick={() => handleFormat("bold")}><b>B</b></button>
-// //         <button onClick={() => handleFormat("italic")}><i>I</i></button>
-// //         <button onClick={() => handleFormat("underline")}><u>U</u></button>
-// //         <button onClick={() => handleFormat("strikeThrough")}><s>S</s></button>
-// //         <button onClick={() => handleFormat("insertOrderedList")}>1.</button>
-// //         <button onClick={() => handleFormat("insertUnorderedList")}>•</button>
-// //         <button onClick={() => handleFormat("code")}><code>{`</>`}</code></button>
-// //       </div>
-
-// //       {/* Editable area */}
-// //       <div
-// //         ref={editorRef}
-// //         contentEditable
-// //         suppressContentEditableWarning
-// //         className="min-h-[120px] border p-2 rounded focus:outline-none"
-// //         placeholder="Tulis pesanmu..."
-// //       />
-// //     </div>
-// //   );
-// // }
-
-
-// import React, { useEffect, useState } from 'react';
-// import { getBoardsByWorkspace } from '../services/ApiServices';
-// import { useUser } from '../context/UserContext';
-// import { useParams } from 'react-router-dom';
-
-// const BoardList = () => {
-//   const { workspaceId } = useParams();
-//   const { user } = useUser(); // pastikan user.id ada
-//   const [boards, setBoards] = useState([]);
-//   const [loading, setLoading] = useState(true);
-
-//   useEffect(() => {
-//     const fetchBoards = async () => {
-//       try {
-//         const data = await getBoardsByWorkspace(workspaceId, user.id);
-//         setBoards(data);
-//       } catch (error) {
-//         console.error('Failed to load boards:', error);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     if (workspaceId && user?.id) {
-//       fetchBoards();
-//     }
-//   }, [workspaceId, user]);
-
-//   if (loading) return <p>Loading boards...</p>;
-
-//   return (
-//     <div>
-//       <h2>Boards in Workspace {workspaceId}</h2>
-//       {boards.length > 0 ? (
-//         <ul>
-//           {boards.map((b) => (
-//             <li key={b.id}>{b.name}</li>
-//           ))}
-//         </ul>
-//       ) : (
-//         <p>No boards found.</p>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default BoardList;
->>>>>>> feature
-
-
-// // src/pages/BoardPage.js
-// import React, { useEffect, useState } from 'react';
-// import { getBoardsWorkspace } from '../services/ApiServices';
-// import { useParams } from 'react-router-dom';
-// import '../style/pages/BoardPage.css';
-
-// const BoardPage = () => {
-//   const { workspaceId } = useParams(); // Ambil workspaceId dari URL
-//   const [boards, setBoards] = useState([]);
-//   const [loading, setLoading] = useState(true);
-
-//   const userId = localStorage.getItem('userId'); // Misal disimpan waktu login
-
-//   useEffect(() => {
-//     const fetchBoards = async () => {
-//       try {
-//         const data = await getBoardsWorkspace(workspaceId, userId);
-//         setBoards(data);
-//       } catch (error) {
-//         console.error('Gagal ambil boards:', error);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     if (workspaceId && userId) {
-//       fetchBoards();
-//     }
-//   }, [workspaceId, userId]);
-
-//   if (loading) return <p>Loading boards...</p>;
-
-//   return (
-//     <div className="board-page">
-//       <h2 className="board-title">Boards di Workspace #{workspaceId}</h2>
-//       <div className="board-list">
-//         {boards.length > 0 ? (
-//           boards.map((board) => (
-//             <div key={board.id} className="board-card">
-//               <h3>{board.name}</h3>
-//               <p>{board.description}</p>
-//             </div>
-//           ))
-//         ) : (
-          
-//         )}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default BoardPage;
-
-
-import React, { useEffect, useRef, useState } from 'react';
-import { createMessage, deleteMessage, getAllCardChat, uploadChatMedia } from '../services/ApiServices';
-import '../style/fitur/NewRoomChat.css';
-import { FaXmark } from 'react-icons/fa6';
-import { IoArrowUpOutline, IoReturnDownBackSharp, IoTrash } from "react-icons/io5";
-import { useSnackbar } from '../context/Snackbar';
-import bg from '../assets/tele-wallps.png';
-
-const NewRoomChat = ({ cardId, userId, onClose }) => {
-  const [chats, setChats] = useState([]);
+  const [data, setData] = useState([]);
+  const [dataMarketing, setDataMarketing] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [showDetail, setShowDetail] = useState(false);
+  const [selectedMarketingId, setSelectedMarketingId] = useState(null);
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [showFormCreate, setShowFormCreate] = useState(false);
   const [loading, setLoading] = useState(true);
-  const editorRef = useRef(null);
-  const chatListRef = useRef(null);
-  const replyEditorRefs = useRef({});
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const { showSnackbar } = useSnackbar();
-  const [replyTo, setReplyTo] = useState(null);
+  const dropdownRef = useRef(null);
+  const navigate = useNavigate();
+  // const {workspaceId, boardId} = useParams();
+  console.log('lihat select marketingId pada file ini', selectedMarketingId);  //SATE DELETE CONFIRM
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const {showSnackbar} = useSnackbar();
+  //FILTER DATA
+  const [filterType, setFilterType] = useState('DATA MARKETING')
+  const [filters, setFilters] = useState({
+    buyer_name:'',
+    order_number:'',
+    account:'',
+  })
+  //ACCEPT DATA
+  const [showAcceptData, setShowAcceptData] = useState([]);
 
-  const [pendingFiles, setPendingFiles] = useState([]);
-  const [replyPendingFiles, setReplyPendingFiles] = useState({});
+  //SHOW STATE
+  const [showData, setShowData] = useState(false)
+  const showDataRef = OutsideClick(()=> setShowData(false));
+  const [showFilter,setShowFilter] = useState(false)
+  const showFilterRef = OutsideClick(()=> setShowFilter(false))
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [shortType, setShortType] = useState('');
+  const [showCounterReset, setShowCounterReset] = useState(false);
 
-  useEffect(() => {
-    fetchChats();
-  }, [cardId]);
+  // FUNGSI SHOW FORM RESET COUNTER 
+  const handleShowCounterReset = () =>{
+    setShowCounterReset(!showCounterReset)
+  }
+  const handleCloseCounterReset = () =>{
+    setShowCounterReset(false)
+  }
 
-  useEffect(() => {
-    if (chatListRef.current) {
-      chatListRef.current.scrollTo({
-        top: chatListRef.current.scrollHeight,
-        behavior: "smooth"
-      });
-    }
-  }, [chats]);
+//   FUNGSI SHOW DETAIL 
+  const handleShowDetail = (marketingId)=>{
+    // e.stopPropagation();
+    setSelectedMarketingId(marketingId)
+    setShowDetail(!showDetail);
+  }
+  const handleCloseDetail = ()=>{
+    setShowDetail(false)
+  }
 
-  const fetchChats = async () => {
-    setLoading(true);
-    try {
-      const res = await getAllCardChat(cardId);
-      setChats(res.data);
-    } catch (err) {
-      console.error('Error fetching chats:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+//FUNGSI SHOW EDIT FORM
+const handleShowEditForm = (marketingId) =>{
+    setShowEditForm(!showEditForm)
+    setSelectedMarketingId(marketingId)
+}
+const handleCloseEditForm = ()=>{
+    setShowEditForm(false)
+}
 
-  const handleSendMessage = async () => {
-    const html = editorRef.current?.innerHTML || "";
-    if ((!html || html === "<br>") && pendingFiles.length === 0) return;
-
-    try {
-      const res = await createMessage(cardId, {
-        user_id: userId,
-        message: html,
-        parent_message_id: null,
-      });
-
-      const chatId = res.data.id;
-
-      for (let file of pendingFiles) {
-        await uploadChatMedia(chatId, file);
-      }
-
-      editorRef.current.innerHTML = "";
-      setPendingFiles([]);
-      fetchChats();
-      showSnackbar("Pesan + file terkirim!", "success");
-    } catch (err) {
-      console.error("Send error:", err);
-      showSnackbar("Gagal kirim pesan", "error");
-    }
-  };
-
-  const handleSendReply = async (parentId) => {
-    const html = replyEditorRefs.current[parentId]?.innerHTML || "";
-    const files = replyPendingFiles[parentId] || [];
-    if ((!html || html === "<br>") && files.length === 0) return;
-
-    try {
-      const res = await createMessage(cardId, {
-        user_id: userId,
-        message: html,
-        parent_message_id: parentId,
-      });
-
-      const chatId = res.data.id;
-      for (let file of files) await uploadChatMedia(chatId, file);
-
-      replyEditorRefs.current[parentId].innerText = "";
-      setReplyPendingFiles((prev) => ({ ...prev, [parentId]: [] }));
-      fetchChats();
-      showSnackbar("Reply terkirim!", "success");
-    } catch (err) {
-      console.error("Reply error:", err);
-      showSnackbar("Reply gagal", "error");
-    }
-  };
-
-  const handleDeleteChat = async (chatId) => {
-    try {
-      await deleteMessage(chatId);
-      fetchChats();
-      showSnackbar('Chat berhasil dihapus', 'success');
-    } catch (err) {
-      console.error('Delete failed:', err);
-      showSnackbar('Gagal hapus chat', 'error');
-    }
-  };
-
-  // const handleFormat = (command, value = null) => {
-  //   document.execCommand(command, false, value);
-  //   editorRef.current?.focus();
-  // };
-
-  const handleFormat = (command, target = 'main') => {
-    const editor = target === 'main' ? editorRef.current : replyEditorRefs.current[target];
-    if (!editor) return;
-
-    editor.focus();
-    const selection = window.getSelection();
-    if (!selection.rangeCount) return;
-
-    const range = selection.getRangeAt(0);
-    const parent = range.startContainer.parentNode;
-
-    // Fungsi helper buat ngebungkus teks jadi list item
-    const wrapInList = (listTag) => {
-      const list = document.createElement(listTag);
-      const li = document.createElement('li');
-      li.appendChild(range.extractContents());
-      list.appendChild(li);
-      range.insertNode(list);
-    };
-
-    // ========== BOLD / ITALIC / UNDERLINE / STRIKE ==========
-    if (['bold', 'italic', 'underline', 'strikethrough'].includes(command)) {
-      const tagMap = {
-        bold: 'b',
-        italic: 'i',
-        underline: 'u',
-        strikethrough: 's',
-      };
-      const tag = tagMap[command];
-      const el = document.createElement(tag);
-      el.appendChild(range.extractContents());
-      range.insertNode(el);
-      return;
-    }
-
-    // ========== ORDERED / UNORDERED LIST ==========
-    if (command === 'orderedList' || command === 'unorderedList') {
-      const listTag = command === 'orderedList' ? 'ol' : 'ul';
-
-      // Kalau udah di dalam list → ubah balik ke paragraf
-      if (parent.tagName === 'LI' && parent.parentNode.tagName === listTag.toUpperCase()) {
-        const p = document.createElement('p');
-        p.innerHTML = parent.innerHTML;
-        parent.parentNode.replaceWith(p);
-        return;
-      }
-
-      // Kalau bukan list → bungkus jadi list baru
-      wrapInList(listTag);
-      return;
-    }
-
-    // ========== CODE ==========
-    if (command === 'code') {
-      const codeNode = document.createElement('code');
-      try {
-        range.surroundContents(codeNode);
-      } catch {
-        codeNode.textContent = selection.toString();
-        range.deleteContents();
-        range.insertNode(codeNode);
-      }
-    }
-  };
-
-
-
-  const handleKeyDown = (e) => {
-    if (!e.ctrlKey && !e.metaKey) return;
-    if (e.key.toLowerCase() === "b") { e.preventDefault(); handleFormat("bold"); }
-    if (e.key.toLowerCase() === "i") { e.preventDefault(); handleFormat("italic"); }
-    if (e.key.toLowerCase() === "u") { e.preventDefault(); handleFormat("underline"); }
-    if (e.shiftKey && e.key.toLowerCase() === "s") { e.preventDefault(); handleFormat("strikeThrough"); }
-    if (e.shiftKey && e.key.toLowerCase() === "o") { e.preventDefault(); handleFormat("insertOrderedList"); }
-    if (e.shiftKey && e.key.toLowerCase() === "u") { e.preventDefault(); handleFormat("insertUnorderedList"); }
-    if (e.key.toLowerCase() === "e") {
-      e.preventDefault();
-      const selection = window.getSelection();
-      if (selection.rangeCount > 0) {
-        const range = selection.getRangeAt(0);
-        const codeNode = document.createElement("code");
-        range.surroundContents(codeNode);
-      }
-    }
-  };
-
-  useEffect(() => {
-    const editor = editorRef.current;
-    if (editor) editor.addEventListener("keydown", handleKeyDown);
-    return () => editor?.removeEventListener("keydown", handleKeyDown);
-  }, []);
-
-  const emojiList = ["😀","😄","😁","😆","😅","😂","🤣","😊","😍","😎","🤩","😘","😢","😭","😡","🤔","👍","👎","🙏","👏","🔥","💯","🎉","❤️"];
-  const insertEmoji = (emoji, target = 'main') => {
-    let editor = target === 'main' ? editorRef.current : replyEditorRefs.current[target];
-    if (editor && editor.isContentEditable) {
-      editor.focus();
-      document.execCommand('insertText', false, emoji);
-    }
-    setShowEmojiPicker(false);
-  };
-
-  const handleUploadFromEditor = async (e, target = "main") => {
-    const file = e.target.files[0];
-    if (!file) return;
-    if (target === "main") setPendingFiles((prev) => [...prev, file]);
-    else setReplyPendingFiles((prev) => ({ ...prev, [target]: [...(prev[target] || []), file] }));
-
-    const fileURL = URL.createObjectURL(file);
-    const editor = target === "main" ? editorRef.current : replyEditorRefs.current[target];
-    let el;
-    if (file.type.startsWith("image/")) el = Object.assign(document.createElement("img"), { src: fileURL, className: "chat-inline-img" });
-    else if (file.type.startsWith("video/")) el = Object.assign(document.createElement("video"), { src: fileURL, controls: true, className: "chat-inline-video" });
-    else { el = document.createElement("span"); el.textContent = `📎 ${file.name}`; el.style.fontStyle = "italic"; }
-    editor.appendChild(el);
-    showSnackbar("File ditambahkan, akan dikirim saat klik send", "info");
-  };
-
-  const renderMedia = (medias) => {
-    if (!medias || medias.length === 0) return null;
-    return (
-      <div className="chat-media">
-        {medias.map((m) => {
-          if (m.media_type === "image") return <img key={m.id} src={m.media_url} alt="chat" className="chat-media-img" />;
-          if (m.media_type === "video") return <video key={m.id} src={m.media_url} controls className="chat-media-video" />;
-          if (m.media_type === "audio") return <audio key={m.id} src={m.media_url} controls className='chat-media-audio'/>;
-          return <a key={m.id} href={m.media_url} target="_blank" rel="noopener noreferrer" className="chat-media-file">📎 File</a>;
-        })}
-      </div>
-    );
-  };
-
-  // function autoLinkHTML(html) {
-  //   if (!html) return "";
-  //   return html.replace(/(^|[^">])(https?:\/\/[^\s<]+)/g,
-  //     (match, prefix, url) => `${prefix}<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`
-  //   );
-  // }
-  function autoLinkHTML(html) {
-  if (!html) return "";
-
-  // Regex: http, https, mailto
-  const urlRegex = /(^|[^">])(https?:\/\/[^\s<]+|mailto:[^\s<]+)/g;
-
-  return html.replace(urlRegex, (match, prefix, url) => {
-    // Jangan buat <a> jika sudah ada tag <a>
-    if (/<a\s/i.test(url)) return match;
-    return `${prefix}<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
-  });
+//FUNGSI SHOW CREATE FORM
+const handleShowForm = () =>{
+    setShowFormCreate(!showFormCreate)
+}
+const handleCloseForm = () =>{
+    setShowFormCreate(false)
 }
 
 
-  const renderChats = (chatList, level = 0) => chatList.map(chat => (
-    <div className={`chat-message ${level > 0 ? 'chat-reply' : ''} ${chat.user_id === userId ? 'chat-own' : ''}`} key={chat.id} style={{ marginLeft: `${level * 30}px` }}>
-      <div className="chat-header">
-        <div className="chat-image">
-          <img className="chat-avatar" src={chat.photo_url || '/default-avatar.png'} alt={chat.username}/>
-          <span className="chat-username">{chat.username}</span>
-        </div>
-        <div className="chat-user-info">
-          <span className="chat-timestamp">{new Date(chat.send_time).toLocaleString()}</span>
-        </div>
-      </div>
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-      {/* <div
-        className={`chat-bubble ${chat.user_id === userId ? 'chat-bubble-own' : 'chat-bubble-other'}`}
-        onClick={e => {
-          const link = e.target.closest("a");
-          if (link && link.target !== "_blank") {
-            window.open(link.href, "_blank", "noopener,noreferrer");
-          }
-        }}
-      >
-        <div dangerouslySetInnerHTML={{ __html: autoLinkHTML(chat.message) }} />
-        {renderMedia(chat.medias)}
-      </div> */}
-      <div
-  className={`chat-bubble ${chat.user_id === userId ? 'chat-bubble-own' : 'chat-bubble-other'}`}
-  onClick={(e) => {
-    const link = e.target.closest("a");
-    if (link) {
-      e.preventDefault(); // cegah browser override default
-      e.stopPropagation(); // ⛔ stop event supaya gak bubble ke parent!
-      window.open(link.href, "_blank", "noopener,noreferrer");
+  const fetchData = async() =>{
+    setLoading(true)
+    try{
+      let response;
+      if(filterType === 'DATA MARKETING DENGAN CARD'){
+        response = await getDataMarketingWithCardId();
+      }else if(filterType === 'DATA MARKETING TANPA CARD'){
+        response = await getDataMarketingWithCardIdNull();
+      }else if(filterType === 'DATA MARKETING ACCEPTED'){
+        response = await getDataMarketingAccepted();
+      }else if(filterType === 'DATA MARKETING NOT ACCEPTED'){
+        response = await getDataMarketingRejected();
+      }else if(filterType === 'SEMUA DATA MARKETING'){
+        // response = await getAllDataMarketing();
+        response = await getAllDataMarketingJoined();
+      }
+
+      console.log("📦 Response dari API:", response);
+
+      setData(response.data || response);
+      setFilteredData(response.data || response);
+
+    }catch(error){
+      console.error('Error fetching data marekting woi:', error)
+    }finally{
+      setLoading(false)
     }
-  }}
->
-  <div dangerouslySetInnerHTML={{ __html: autoLinkHTML(chat.message) }} />
-  {renderMedia(chat.medias)}
-</div>
+  }
+  useEffect(()=>{
+    fetchData();
+  },[filterType])
 
+  useEffect(() => {
+     let temp = [...data];
+     if (filters.buyer_name) {
+       temp = temp.filter((item) =>
+         item.buyer_name.toLowerCase().includes(filters.buyer_name.toLowerCase())
+       );
+     }
+     if (filters.order_number) {
+       temp = temp.filter((item) =>
+         item.order_number.toLowerCase().includes(filters.order_number.toLowerCase())
+       );
+     }
+     if (filters.account_name) {
+       temp = temp.filter((item) =>
+         item.account_name.toLowerCase().includes(filters.account_name.toLowerCase())
+       );
+     }
+     if (filters.input_by_name) {
+       temp = temp.filter((item) =>
+         item.input_by_name.toLowerCase().includes(filters.input_by_name.toLowerCase())
+       );
+     }
+     setFilteredData(temp);
+   }, [filters, data]);
 
-      <div className="chat-actions">
-        {chat.parent_message_id === null && <button className="chat-reply-btn" onClick={() => setReplyTo(chat.id)}><IoReturnDownBackSharp/> Reply</button>}
-        <button className="chat-reply-btn" onClick={() => handleDeleteChat(chat.id)}><IoTrash/> Delete</button>
-      </div>
+   const handleFilterChange = (e) => {
+     const { name, value } = e.target;
+     setFilters((prev) => ({
+       ...prev,
+       [name]: value,
+     }));
+   };
 
-      {replyTo === chat.id && (
-        <div className="chat-reply-form">
-          <div className="chat-toolbar">
-            <button onClick={() => handleFormat('bold', chat.id)}><b>B</b></button>
-            <button onClick={() => handleFormat('italic', chat.id)}><i>I</i></button>
-            <button onClick={() => handleFormat('underline', chat.id)}><u>U</u></button>
-            <button onClick={() => handleFormat('strikethrough', chat.id)}><s>S</s></button>
-            <button onClick={() => handleFormat('orderedList', chat.id)}>1.</button>
-            <button onClick={() => handleFormat('unorderedList', chat.id)}>•</button>
-            <button onClick={() => handleFormat('code', chat.id)}><code>{`</>`}</code></button>
+  const handleEdit = (id) => {
+    navigate(`/layout/edit-marketing/${id}`); // Redirect ke halaman edit
+  };
 
-            <label className="upload-btn">📎
-              <input type="file" hidden onChange={e => handleUploadFromEditor(e, chat.id)} />
-            </label>
-            <div className="emoji-picker-wrapper">
-              <button onClick={() => setShowEmojiPicker(showEmojiPicker === chat.id ? null : chat.id)}>😄</button>
-              {showEmojiPicker === chat.id && <div className="emoji-picker">{emojiList.map((emoji, i) => <span key={i} onClick={() => insertEmoji(emoji, chat.id)}>{emoji}</span>)}</div>}
-            </div>
-          </div>
-          <div className="chat-input-box">
-            <div className="chat-editor" contentEditable ref={el => (replyEditorRefs.current[chat.id] = el)} suppressContentEditableWarning={true}/>
-            <div className='reply-send' onClick={() => handleSendReply(chat.id)}><IoArrowUpOutline/></div>
-          </div>
-        </div>
-      )}
+  const handleToMarketingDetail = (marketinId) => {
+    navigate(`/layout/data-marketing/${marketinId}`)
+  }
 
-      {chat.replies?.length > 0 && renderChats(chat.replies, level + 1)}
-    </div>
-  ));
+  const handleToDataMaster = () =>{
+    navigate(`/layout/data-master-musik`)
+  }
 
-  if (loading) return <p className="chat-loading">Loading chats...</p>;
+  
+// FUNGSI STYCKY COLUMN 
+useEffect(() => {
+  const table = document.querySelector(".dm-table");
+  if (!table) return;
 
-  return (
-    <div className="chat-room-container" style={{ backgroundColor:'white', backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundPosition: "center" }}>
-      <div className="chat-title">
-        <h3>Chat Room</h3>
-        <FaXmark onClick={onClose} style={{cursor:'pointer'}}/>
-      </div>
+  const ths = table.querySelectorAll("thead th");
+  const tds = table.querySelectorAll("tbody td");
 
-      <div className="chat-list" ref={chatListRef}>
-        {chats.length === 0 ? <p className="chat-empty">No chats yet.</p> : renderChats(chats)}
-      </div>
+  let leftPositions = [];
 
-      <div className="chat-toolbar-container">
-        <div className="chat-toolbar">
-          <button onClick={() => handleFormat('bold', 'main')}><b>B</b></button>
-          <button onClick={() => handleFormat('italic', 'main')}><i>I</i></button>
-          <button onClick={() => handleFormat('underline', 'main')}><u>U</u></button>
-          <button onClick={() => handleFormat('strikethrough', 'main')}><s>S</s></button>
-          <button onClick={() => handleFormat('orderedList', 'main')}>1.</button>
-          <button onClick={() => handleFormat('unorderedList', 'main')}>•</button>
-          <button onClick={() => handleFormat('code', 'main')}><code>{`</>`}</code></button>
+  // hitung posisi kiri setiap kolom sticky
+  for (let i = 0; i < stickyCount; i++) {
+    const width = ths[i].offsetWidth;
+    leftPositions[i] = (leftPositions[i - 1] || 0) + (i === 0 ? 0 : ths[i - 1].offsetWidth);
+  }
 
-
-          <label className="upload-btn">📎
-            <input type="file" style={{ display: "none" }} onChange={e => handleUploadFromEditor(e, "main")} />
-          </label>
-          <div className="emoji-picker-wrapper">
-            <button onClick={() => setShowEmojiPicker(showEmojiPicker === 'main' ? null : 'main')}>😄</button>
-            {showEmojiPicker === 'main' && <div className="emoji-picker">{emojiList.map((emoji, i) => <span key={i} onClick={() => insertEmoji(emoji, 'main')}>{emoji}</span>)}</div>}
-          </div>
-        </div>
-
-        <div className="chat-input-box">
-          <div className="chat-editor" contentEditable ref={editorRef} suppressContentEditableWarning={true}/>
-          <div className="btn-send" onClick={handleSendMessage}><IoArrowUpOutline/></div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-<<<<<<< HEAD
-export default BoardList;
->>>>>>> feature
-=======
-// export default NewRoomChat;
-
-
-
-const [editingMessage, setEditingMessage] = useState(null);
-const [editText, setEditText] = useState('');
-
-const handleEditMessage = (msg) => {
-  setEditingMessage(msg.id);
-  setEditText(msg.message);
-};
-
-const handleSaveEdit = async () => {
-  if (!editText.trim()) return;
-
-  const res = await updateMessage(editingMessage, {
-    user_id: user.id,
-    message: editText,
+  // apply sticky ke TH
+  ths.forEach((th, index) => {
+    if (index < stickyCount) {
+      th.style.position = "sticky";
+      th.style.left = `${leftPositions[index]}px`;
+      th.style.zIndex = 9;
+      th.style.background = "white";
+    } else {
+      th.style.position = "";
+      th.style.left = "";
+    }
   });
 
-  if (res.data) {
-    // Update di frontend tanpa refetch
-    setMessages(prev =>
-      prev.map(m => m.id === editingMessage ? res.data : m)
-    );
-    setEditingMessage(null);
-    setEditText('');
+  // apply sticky ke TD
+  const rows = table.querySelectorAll("tbody tr");
+  rows.forEach((row) => {
+    const cells = row.querySelectorAll("td");
+    cells.forEach((td, index) => {
+      if (index < stickyCount) {
+        td.style.position = "sticky";
+        td.style.left = `${leftPositions[index]}px`;
+        td.style.zIndex = 8;
+        td.style.background = "white";
+      } else {
+        td.style.position = "";
+        td.style.left = "";
+      }
+    });
+  });
+}, [stickyCount]);
+
+
+//FUNGSI DELETE CONFIRM
+const handleDeleteClick = (marketingId) =>{
+  setSelectedMarketingId(marketingId)
+  setShowDeleteConfirm(true)
+}
+
+const confirmDelete = async()=>{
+  try{
+    console.log('komponen delete marketing dapat menerima data marketing ID:', selectedMarketingId)
+    const response = await deleteDataMarketing(selectedMarketingId)
+    showSnackbar('Data Marketing deleted successfully', 'success')
+    console.log('Berhasil menghapus data marketing', response.data)
+    fetchData() 
+    fetchDataMarketing()
+  }catch(error){
+    showSnackbar('Failed to delete Data Marketing','error')
+    console.log('Error deleting data marketing', error)
+  }finally{
+    setShowDeleteConfirm(false)
+    setSelectedMarketingId(null)
   }
+}
+
+const cancleDeleteDataMarketing = () =>{
+  setShowDeleteConfirm(false)
+  setSelectedMarketingId(null)
+}
+
+//fungsi untuk mengetahui data memiliki card Id
+const hasCardId = (item) => {
+  return item.card_id !== null && item.card_id !== undefined && item.card_id !== "";
 };
 
 
+//fetch marketing
+const fetchDataMarketing = async()=>{
+  try{
+    // const response = await getAllDataMarketing()
+    const response = await getAllDataMarketingJoined();
+    setDataMarketing(response.data)
+    setFilteredData(response.data)
+    console.log("✅ Data marketing fetched:", fetchDataMarketing);
+  }catch(error){
+    console.error('Error fetching data marekting:', error)
+  }
+}
 
-// ✅ Tambahan: import ReactQuill tetap ada karena dipakai di editor edit
-import React, { useEffect, useRef, useState } from 'react';
-import ReactQuill from 'react-quill-new';
-import "quill/dist/quill.snow.css";
-import { createMessage, deleteMessage, getAllCardChat, updateMessage, uploadChatMedia } from '../services/ApiServices';
-import '../style/fitur/NewRoomChat.css';
-import { FaXmark } from 'react-icons/fa6';
-import { IoArrowUpOutline, IoReturnDownBackSharp, IoTrash } from "react-icons/io5";
-import { useSnackbar } from '../context/Snackbar';
-import bg from '../assets/tele-wallps.png';
-import { IoIosSend } from "react-icons/io";
-import { TiAttachmentOutline } from "react-icons/ti";
-
-
-const NewRoomChat = ({ cardId, userId, onClose }) => {
-  const [chats, setChats] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [message, setMessage] = useState('');
-  const [replyMessage, setReplyMessage] = useState({});
-  const chatListRef = useRef(null);
-  const [replyTo, setReplyTo] = useState(null);
-  const [pendingFiles, setPendingFiles] = useState([]);
-  const [replyPendingFiles, setReplyPendingFiles] = useState({});
-  const { showSnackbar } = useSnackbar();
-  const editorRef = useRef(null);
-  const mainEditorRef = useRef(null);
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-
-  // ✅ EDIT MESSAGE FEATURE
-  const [editingMessage, setEditingMessage] = useState(null);
-  const [editText, setEditText] = useState('');
-
-  // ✅ Fungsi mulai edit
-  const handleEditMessage = (msg) => {
-    setEditingMessage(msg.id);
-    setEditText(msg.message);
-  };
-
-  // ✅ Fungsi simpan edit
-  const handleSaveEdit = async () => {
-    if (!editText.trim()) return;
-
+// Fungsi ubah posisi (up/down)
+  const handleMove = async (id, direction) => {
     try {
-      const res = await updateMessage(editingMessage, {
-        user_id: userId,
-        message: editText,
-      });
-
-      if (res.data) {
-        setChats((prev) =>
-          prev.map((m) => (m.id === editingMessage ? res.data : m))
-        );
-        setEditingMessage(null);
-        setEditText('');
-        showSnackbar('Pesan berhasil diedit', 'success');
-      }
-    } catch (error) {
-      console.error('Error editing message:', error);
-      showSnackbar('Gagal mengedit pesan', 'error');
+      const res = await updateMarketingPosition(id, direction);
+      console.log(res.message);
+      fetchDataMarketing(); // refresh urutan data setelah update
+    } catch (err) {
+      console.error("Gagal ubah posisi:", err);
     }
   };
 
-  const handleCancelEdit = () => {
-    setEditingMessage(null);
-    setEditText('');
-  };
+//archive data
+const handleArchiveDataMarketing =(marketing_id)=>{
+  handleArchive({
+    entity:'data_marketing',
+    id: marketing_id,
+    refetch: fetchDataMarketing,
+    showSnackbar: showSnackbar,
+  })
+}
 
-  // ✅ EMOJI
-  const handleShowEmoji = () => {
-    setShowEmojiPicker((prev) => !prev);
-  };
 
-  useEffect(() => {
-    fetchChats();
-  }, [cardId]);
-
-  useEffect(() => {
-    if (chatListRef.current) {
-      chatListRef.current.scrollTo({
-        top: chatListRef.current.scrollHeight,
-        behavior: "smooth",
-      });
+//fungsi filtered data
+const handleFilterData = (selectedTerm) => {
+    setIsDropdownOpen(false);
+    if (selectedTerm === "") {
+      setFilteredData(data);
+    } else {
+      const filtered = data.filter(
+        (item) =>
+          item.buyer_name.toLowerCase().includes(selectedTerm.toLowerCase()) ||
+          item.order_number.toLowerCase().includes(selectedTerm.toLowerCase()) ||
+          item.account_name.toLowerCase().includes(selectedTerm.toLowerCase()) ||
+          item.input_by_name.toLowerCase().includes(selectedTerm.toLowerCase())
+      );
+      setFilteredData(filtered);
     }
-  }, [chats]);
+  };
 
-  const fetchChats = async () => {
+useEffect(()=>{
+    fetchDataMarketing();
+    // fetchDataAccept();
+},[])
+
+//show data
+const handleShowDataMarketing = () =>{
+  setShowData(true)
+}
+
+const handleCloseShowData = () =>{
+  setShowData(false)
+}
+
+//show filtered data
+const handleFilterButton = () =>{
+  setShowFilter(!showFilter);
+}
+
+const handleCloseFilterButton = () =>{
+  setShowFilter(false)
+}
+
+const handleToReportPage = () =>{
+  navigate('/layout/marketing-report')
+}
+
+// PERHITUNGAN PRICE 
+const getPriceDiscount = (price_normal, discount) => {
+  if (!price_normal || !discount) return 0; // kalau ga ada diskon, potongan = 0
+
+  if (typeof discount === "string" && discount.includes("%")) {
+    let persen = parseFloat(discount.replace("%", ""));
+    return price_normal * (persen / 100);
+  } else {
+    return parseFloat(discount) || 0; // langsung nominal
+  }
+};
+
+const getBasicPrice = (price_normal, discount) => {
+  if (!price_normal) return null;
+
+  const potongan = getPriceDiscount(price_normal, discount);
+  return price_normal - potongan;
+};
+
+
+// fungsi data marketing export 
+const fetchDataTransfile = async () => {
+  try {
     setLoading(true);
-    try {
-      const res = await getAllCardChat(cardId);
-      setChats(res.data);
-    } catch (err) {
-      console.error('Error fetching chats:', err);
-    } finally {
-      setLoading(false);
+    const response = await getAllMarketingExports();
+    setMarketingTransfile(response);
+  } catch (err) {
+    console.error("❌ Error fetch transfile:", err);
+  } finally {
+    setLoading(false);
+  }
+};
+
+useEffect(() => {
+  fetchDataTransfile();
+}, []);
+
+
+const handleExportToSheets = async (marketingId) => {
+  try {
+    // ambil detail marketing dari list di parent
+    const marketingData = dataMarketing.find(m => m.marketing_id === marketingId);
+    console.log('data marketing bisa dilihat disini:',dataMarketing)
+
+    if (!marketingData) {
+      throw new Error("Data marketing tidak ditemukan");
     }
-  };
 
-  const handleSendMessage = async () => {
-    if ((!message || message === "<p><br></p>") && pendingFiles.length === 0) return;
-    try {
-      const res = await createMessage(cardId, {
-        user_id: userId,
-        message,
-        parent_message_id: null,
-      });
+    await exportDataMarketingToSheets(marketingData);
 
-      const chatId = res.data.id;
-      for (let file of pendingFiles) await uploadChatMedia(chatId, file);
+    setIsExported(true);
+    setMarketingTransfile((prev) => [...prev, { marketing_id: marketingId }]);
 
-      setMessage('');
-      setPendingFiles([]);
-      fetchChats();
-      showSnackbar("Pesan terkirim!", "success");
-    } catch (err) {
-      console.error("Send error:", err);
-      showSnackbar("Gagal kirim pesan", "error");
-    }
-  };
+    // 3. Insert ke DB
+    const res = await addExportMarketing(marketingId);
+    console.log("berhasil kirim data ke sheets:", res);
 
-  const handleSendReply = async (parentId) => {
-    const html = replyMessage[parentId] || "";
-    const files = replyPendingFiles[parentId] || [];
-    if ((!html || html === "<p><br></p>") && files.length === 0) return;
+    showSnackbar(`Berhasil kirim data ke sheets file`, "success");
+    fetchDataMarketing();
+  } catch (error) {
+    console.error("Gagal kirim data ke sheets:", error);
+    showSnackbar(` Gagal kirim data ke sheets file`, "error");
+  }
+};
 
-    try {
-      const res = await createMessage(cardId, {
-        user_id: userId,
-        message: html,
-        parent_message_id: parentId,
-      });
-
-      const chatId = res.data.id;
-      for (let file of files) await uploadChatMedia(chatId, file);
-
-      setReplyMessage((prev) => ({ ...prev, [parentId]: "" }));
-      setReplyPendingFiles((prev) => ({ ...prev, [parentId]: [] }));
-      fetchChats();
-      showSnackbar("Reply terkirim!", "success");
-    } catch (err) {
-      console.error("Reply error:", err);
-      showSnackbar("Reply gagal", "error");
-    }
-  };
-
-  const handleDeleteChat = async (chatId) => {
-    try {
-      await deleteMessage(chatId);
-      fetchChats();
-      showSnackbar("Chat berhasil dihapus", "success");
-    } catch (err) {
-      console.error("Delete failed:", err);
-      showSnackbar("Gagal hapus chat", "error");
-    }
-  };
-
-  const handleUploadFromEditor = async (e, target = "main") => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    if (target === "main") setPendingFiles((prev) => [...prev, file]);
-    else
-      setReplyPendingFiles((prev) => ({
-        ...prev,
-        [target]: [...(prev[target] || []), file],
-      }));
-
-    showSnackbar("File ditambahkan, akan dikirim saat klik kirim", "info");
-  };
-
-  function autoLinkHTML(html) {
-    if (!html) return "";
-    const urlRegex = /(^|[^">])(https?:\/\/[^\s<]+|mailto:[^\s<]+)/g;
-    return html.replace(urlRegex, (match, prefix, url) => {
-      if (/<a\s/i.test(url)) return match;
-      return `${prefix}<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
-    });
+  // FUNCTION TO SHOW STATUS 
+  const STATUS_COLORS ={
+    "ACCEPTED ":'#2E7D32',
+    "NOT ACCEPTED":'#C62828',
+    "ON PROGRESS":'#C38D24',
+    "UNKNOWN":'#F5F5F5',
+  }
+  const STATUS_BG = {
+    "ACCEPTED ":'#C8E6C9',
+    "NOT ACCEPTED":'#FFCDD2',
+    "ON PROGRESS":'#FFDCB3',
+    "UNKNOWN":"#9E9E9E",
   }
 
-  const renderMedia = (medias) => {
-    if (!medias || medias.length === 0) return null;
-    return (
-      <div className="chat-media">
-        {medias.map((m) => {
-          if (m.media_type === "image")
-            return <img key={m.id} src={m.media_url} alt="chat" className="chat-media-img" />;
-          if (m.media_type === "video")
-            return <video key={m.id} src={m.media_url} controls className="chat-media-video" />;
-          if (m.media_type === "audio")
-            return <audio key={m.id} src={m.media_url} controls className="chat-media-audio" />;
-          return (
-            <a key={m.id} href={m.media_url} target="_blank" rel="noopener noreferrer" className="chat-media-file">
-              📎 File
-            </a>
-          );
-        })}
-      </div>
-    );
-  };
-
-  const modules = {
-    toolbar: [
-      ['bold', 'italic', 'underline', 'strike', 'code'],
-      [{ list: 'ordered' }, { list: 'bullet' }],
-      ['link', 'image'],
-    ],
-  };
-
-  const formats = ['bold', 'italic', 'underline', 'strike', 'code', 'list', 'bullet', 'link', 'image'];
-
-  const emojiList = ["😀","😄","😁","😆","😅","😂","🤣","😊","😍","😎","🤩","😘","😢","😭","😡","🤔","👍","👎","🙏","👏","🔥","💯","🎉","❤️"];
-  const insertEmoji = (emoji, target = "main") => {
-    if (target === "main") setMessage((prev) => prev + emoji);
-    else
-      setReplyMessage((prev) => ({
-        ...prev,
-        [target]: (prev[target] || "") + emoji,
-      }));
-  };
-
-  // ✅ RENDER CHAT DENGAN MODE EDIT
-  const renderChats = (chatList, level = 0) =>
-    chatList.map((chat) => (
-      <div
-        className={`chat-message ${level > 0 ? 'chat-reply' : ''} ${chat.user_id === userId ? 'chat-own' : ''}`}
-        key={chat.id}
-        style={{ marginLeft: `${level * 30}px` }}
-      >
-        <div className="chat-header">
-          <div className="chat-image">
-            <img className="chat-avatar" src={chat.photo_url || '/default-avatar.png'} alt={chat.username} />
-            <span className="chat-username">{chat.username}</span>
-          </div>
-          <span className="chat-timestamp">{new Date(chat.send_time).toLocaleString()}</span>
-        </div>
-
-        {/* ✅ MODE EDIT */}
-        {editingMessage === chat.id ? (
-          <div className="edit-chat-box">
-            <ReactQuill
-              theme="snow"
-              value={editText}
-              onChange={setEditText}
-              modules={modules}
-              formats={formats}
-            />
-            <div className="edit-actions">
-              <button onClick={handleSaveEdit}>💾 Save</button>
-              <button onClick={handleCancelEdit}>❌ Cancel</button>
-            </div>
-          </div>
-        ) : (
-          <div
-            className={`chat-bubble ${chat.user_id === userId ? 'chat-bubble-own' : 'chat-bubble-other'}`}
-            onClick={(e) => {
-              const link = e.target.closest("a");
-              if (link) {
-                e.preventDefault();
-                e.stopPropagation();
-                window.open(link.href, "_blank", "noopener,noreferrer");
-              }
-            }}
-          >
-            <div dangerouslySetInnerHTML={{ __html: autoLinkHTML(chat.message) }} />
-            {chat.updated_at !== chat.created_at && (
-              <span className="edited-label">(edited)</span>
-            )}
-            {renderMedia(chat.medias)}
-          </div>
-        )}
-
-        {/* ✅ ACTION BUTTONS */}
-        <div className="chat-actions">
-          {chat.user_id === userId && (
-            <button className="chat-reply-btn" onClick={() => handleEditMessage(chat)}>
-              ✏️ Edit
-            </button>
-          )}
-          {chat.parent_message_id === null && (
-            <button className="chat-reply-btn" onClick={() => setReplyTo(chat.id)}>
-              <IoReturnDownBackSharp /> Reply
-            </button>
-          )}
-          <button className="chat-reply-btn" onClick={() => handleDeleteChat(chat.id)}>
-            <IoTrash /> Delete
-          </button>
-        </div>
-
-        {replyTo === chat.id && (
-          <div className="chat-reply-form">
-            <ReactQuill
-              theme="snow"
-              value={replyMessage[chat.id] || ""}
-              onChange={(val) => setReplyMessage((prev) => ({ ...prev, [chat.id]: val }))}
-              modules={modules}
-              formats={formats}
-              placeholder="Tulis balasan..."
-            />
-            <label className="upload-btn">
-              📎
-              <input type="file" hidden onChange={(e) => handleUploadFromEditor(e, chat.id)} />
-            </label>
-            <div className="emoji-picker-wrapper">
-              {emojiList.map((emoji, i) => (
-                <span key={i} onClick={() => insertEmoji(emoji, chat.id)}>
-                  {emoji}
-                </span>
-              ))}
-            </div>
-            <div className="reply-send" onClick={() => handleSendReply(chat.id)}>
-              <IoArrowUpOutline />
-            </div>
-          </div>
-        )}
-
-        {chat.replies?.length > 0 && renderChats(chat.replies, level + 1)}
-      </div>
-    ));
-
-  if (loading) return <p className="chat-loading">Loading chats...</p>;
 
   return (
-    <div className="chat-room-container" style={{ backgroundColor: 'white', backgroundImage: `url(${bg})`, backgroundSize: "cover" }}>
-      <div className="chat-title">
-        <h3>Chat Room</h3>
-        <FaXmark onClick={onClose} style={{ cursor: 'pointer' }} />
-      </div>
-
-      <div className="chat-list" ref={chatListRef}>
-        {chats.length === 0 ? <p className="chat-empty">No chats yet.</p> : renderChats(chats)}
-      </div>
-
-      {/* ✅ Toolbar & Editor */}
-      <div className="chat-toolbar-container">
-        <div className="editor-wrapper">
-          <div className="ql-container">
-            <ReactQuill
-              theme="snow"
-              value={message}
-              onChange={setMessage}
-              modules={modules}
-              formats={formats}
-              placeholder="Tulis pesan..."
-              className="my-editor"
-            />
+    <div className="dmc-container">
+      <div className="dm-panel">
+        <div className="dm-left">
+          <div className="dml-title">
+             <h3>{filterType}</h3>
           </div>
-          <div className="editor-actions">
-            <div className="more-act">
-              <label className="upload-btn">
-                <TiAttachmentOutline />
-                <input type="file" hidden onChange={(e) => handleUploadFromEditor(e, "main")} />
-              </label>
-              <button className="btn-icon" onClick={handleShowEmoji}>
-                😎
-              </button>
-            </div>
-            <div className="act-btn">
-              <button className="btn-send" onClick={handleSendMessage}>
-                <IoIosSend />
-              </button>
-            </div>
+          <div className="dml-desc">
+            <p>
+             Selamat datang di pusat informasi Data Marketing ! <br /> Halaman ini dirancang untuk meningkatkan transparansi dan efisiensi dalam proses pemasaran—dari awal order hingga proyek selesai.
+            </p>
           </div>
         </div>
 
-        {/* SHOW EMOJI */}
-        {showEmojiPicker && (
-          <div className="emoji-picker-fix">
-            {emojiList.map((emoji, i) => (
-              <span key={i} onClick={() => insertEmoji(emoji, "main")}>
-                {emoji}
-              </span>
-            ))}
+        {/* SHOW FORM  */}
+          {showFormCreate && (
+              <div className="dmf-cont">
+                  <div className="dmf-content">
+                      <FormMarketingExample onClose={handleCloseForm} fetchData={fetchDataMarketing}/>
+                  </div>
+              </div>
+          )}
+
+
+        {/* PANEL BUTTON  */}
+        <div className="dmc-right">
+          <div className="dmcr-btn">
+            <button onClick={handleToReportPage}>REPORT DATA</button>
+            <button onClick={handleShowForm}>
+                {/* <HiOutlinePlus className="dm-icon"/> */}
+                NEW DATA
+            </button>
+            <button onClick={handleShowDataMarketing}>
+              {/* <HiMiniTableCells className="dm-icon"/> */}
+              SHOW DATA
+            </button>
+            <button onClick={handleFilterButton}>
+              {/* <HiChevronUpDown className="dm-icon"/> */}
+              FILTER DATA
+            </button>
+          </div>
+          <div className="mdc-search-container">
+            <div className="dm-search-box">
+              <HiOutlineSearch className="dms-icon"/>
+                <input
+                type="search"
+                placeholder="Search here ..."
+                onChange={(e) => handleFilterData(e.target.value)}
+                />
+            </div>
+            <button className="reset-btn" onClick={handleShowCounterReset}>
+              <MdLockReset className="reset-icon"/> Reset Counter
+            </button>
+            <button className="reset-btn" onClick={handleToDataMaster}>
+              Data Master
+            </button>
+            
+          </div>
+
+          {/* SHOW FORM RESET COUNTER  */}
+          {showCounterReset && (
+              <div className="dmf-cont">
+                <ResetCounter onClose={handleCloseCounterReset} />
+              </div>
+          )}
+
+          {/* SHOW DATA */}
+          {showData && (
+            <div className="show-data-container">
+              <div className="sdc-header">
+                <h5><HiMiniTableCells className="h5-icons"/> Show Data By</h5>
+                <FaXmark onClick={handleCloseShowData} style={{cursor:'pointer'}}/>
+              </div>
+              <div className="sdc-container">
+                <button onClick={() => { setFilterType("SEMUA DATA MARKETING"); setShowData(false); }}>
+                  All Data
+                </button>
+                <button onClick={() => { setFilterType("DATA MARKETING DENGAN CARD"); setShowData(false); }}>
+                  Data Marketing Dengan Card
+                </button>
+                <button onClick={() => { setFilterType("DATA MARKETING TANPA CARD"); setShowData(false); }}>
+                  Data Marketing Tanpa Card
+                </button>
+                <button onClick={() => { setFilterType("DATA MARKETING ACCEPTED"); setShowData(false); }}>
+                  Data Marketing Accepted
+                </button>
+                <button onClick={() => { setFilterType("DATA MARKETING NOT ACCEPTED"); setShowData(false); }}>
+                  Data Marketing Not Accepted
+                </button>
+              </div>
+            </div>
+          )}
+
+
+          {/* SHOW DATA FILTER  */}
+          {showFilter && (
+            <div className="filter-container">
+              <div className="filter-header">
+                <h5><HiChevronUpDown className="h5-icons"/>Filter Data By</h5>
+                <FaXmark onClick={handleCloseFilterButton} style={{cursor:'pointer'}}/>
+              </div>
+              <div className="filter-content">
+                <div className="filter-box">
+                  <button onClick={()=> setDropdownOpen(!dropdownOpen)} className="filter-btn">
+                    <HiChevronUpDown/>
+                    {shortType ? shortType.replace('_', ' ') : 'Filter Type'}
+                  </button>
+                  {dropdownOpen && (
+                      <ul className='ul-filter'>
+                        <li
+                          className="li-filter"
+                          onClick={() => {
+                            setShortType('buyer_name');
+                            setDropdownOpen(false);
+                          }}
+                        >
+                          Buyer Name
+                        </li>
+                        <li
+                          className="li-filter"
+                          onClick={() => {
+                            setShortType('account_name');
+                            setDropdownOpen(false);
+                          }}
+                        >
+                          Account
+                        </li>
+                        <li
+                          className="li-filter"
+                          onClick={() => {
+                            setShortType('input_by_name');
+                            setDropdownOpen(false);
+                          }}
+                        >
+                          Marketing Name
+                        </li>
+                      </ul>
+                    )}
+                </div>
+                {/* Input Field */}
+                  <div className="filter-input">
+                    {shortType && (
+                      <input
+                        type="text"
+                        name={shortType}
+                        value={filters[shortType]}
+                        onChange={handleFilterChange}
+                        placeholder={`Filter by ${shortType.replace('_', ' ')}`}
+                        className="w-full p-2 border rounded"
+                      />
+                    )}
+                  </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+      </div>
+      
+
+      <div className="data-marketing-form">
+        {loading ? (
+          // <p>Loading data...</p>
+          <LoadingSpinnerDot text="Loading Data Marketing Musik"/>
+        ):(
+          <div className="dm-container">
+            <table cellPadding="10" cellSpacing="0" className="dm-table">
+              <thead>
+                <tr>
+                  <th style={{ borderTopLeftRadius: '8px'}}>NO</th>
+                  <th>PROJECT NUMBER</th>
+                  <th>INPUT BY</th>
+                  <th>ACCEPTED BY</th>
+                  <th>STATUS</th>
+                  <th  style={{ textAlign:'left'}}>
+                    <div className="dm-th">
+                      BUYER NAME 
+                      <HiArrowsUpDown/>
+                    </div>
+                  </th>
+                  <th>
+                    <div className="dm-th">
+                      ORDER NUMBER
+                      <HiArrowsUpDown/>
+                    </div>
+                  </th>
+                  <th style={{ textAlign:'left'}}>
+                    <div className="dm-th">
+                      ACCOUNT
+                      <HiArrowsUpDown/>
+                    </div>
+                  </th>
+                  <th>DEADLINE</th>
+                  <th>CODE ORDER</th>
+                  <th>JUMLAH TRACK</th>
+                  <th>ORDER TYPE</th>
+                  <th>OFFER TYPE</th>
+                  <th style={{ textAlign:'left'}}>JENIS TRACK</th>
+                  <th>GENRE</th>
+                  <th>PRICE NORMAL</th>
+                  <th>PRICE DISCOUNT</th>
+                  <th>DISCOUNT</th>
+                  <th>KUPON DISKON</th>
+                  <th>TOTAL PRICE </th>
+                  <th>PROJECT TYPE</th>
+                  <th>DURATION</th>
+                  <th style={{ borderTopRightRadius: '8px', textAlign:'center' }}>ACTION</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredData.map((item, index) => {
+                  // cek apakah marketing_id sudah di-export
+                 const isExported = marketingTransfile.some(
+                    (exp) => exp.marketing_id === item.marketing_id
+                  );
+
+                  return (
+                  <tr key={item.marketing_id}>
+                    <td className="nomor-box">
+                      <div className="number-box">
+                        {index + 1}
+                        <div className="icon-position">
+                          <BootstrapTooltip title='Move Up' placement='top'>
+                            <button
+                              onClick={() => handleMove(item.marketing_id, "up")}
+                              className="position-btn"
+                              style={{ padding:'0px', fontSize:'11px'}}
+                            >
+
+                                <HiChevronUp/>
+                            </button>
+                          </BootstrapTooltip>
+                          <BootstrapTooltip title='Move Down' placement='top'>
+                          <button
+                            onClick={() => handleMove(item.marketing_id, "down")}
+                            className="position-btn"
+                            style={{ padding:'0px', fontSize:'11px'}}
+                          >
+                              <HiChevronDown/>
+                          </button>
+                          </BootstrapTooltip>
+                        </div>
+                      <div className="number-box">
+                      </div>
+                      </div>
+                    </td>
+                    <td className="project-number-box" 
+                      onClick={()=> handleShowDetail(item.marketing_id)}
+                      >
+                      {item.project_number}
+                      </td>
+                    <td className="input-box-container" >
+                      {item.input_by_name || "-"}
+                      {hasCardId(item) && (
+                        <span
+                          style={{
+                            backgroundColor: '#e0f7fa',
+                            color: '#00796b',
+                            padding: '4px 6px',
+                            fontSize: '10px',
+                            fontWeight: 'bold',
+                            borderRadius: '4px',
+                            marginLeft: '5px',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px'
+                          }}
+                        >
+                          CARD
+                        </span>
+                      )}
+                      <button
+                        disabled={isExported}
+                        style={{
+                          backgroundColor: "transparent",
+                          color: isExported ? "green" : "white",
+                          cursor: isExported ? "not-allowed" : "pointer",
+                          padding: "4px 8px",
+                          border: "none",
+                          borderRadius: "4px",
+                          fontSize:'15px',
+                        }}
+                      >
+                        <AiFillCheckCircle />
+                      </button>
+                    </td>
+
+                    <td className="acc-box-container">{item.acc_by_name}</td>
+                    <td className="status-box-container" style={{textAlign:'center' }}>
+                        <span style={{
+                          padding: "2px 8px",
+                          borderRadius: "12px",
+                          color:STATUS_COLORS[item.accept_status_name],
+                          backgroundColor:STATUS_BG[item.accept_status_name],
+                          fontWeight: "bold",
+                        }}>
+                          {item.accept_status_name}
+                        </span>
+                      </td>
+                    <td className="buyer-box">{item.buyer_name}</td>
+                    <td className="order-number-box" style={{textAlign:'center' }} >{item.order_number}</td>
+                    <td className="account-box" style={{textAlign:'center' }}>{item.account_name}</td>
+                    <td className="deadline-box" style={{textAlign:'center' }}>{new Date(item.deadline).toLocaleDateString()}</td>
+                    <td className="code-order-box">{item.code_order}</td>
+                    <td className="jumlah-track-box" style={{textAlign:'center'}}>{item.jumlah_track}</td>
+                    <td className="order-type-box">{item.order_type_name}</td>
+                    <td className="offer-type-box">{item.offer_type_name}</td>
+                    <td className="jenis-track-box" >{item.track_type_name}</td>
+                    <td className="genre-box">{item.genre_name}</td>
+                    <td className="price-normal-box" style={{textAlign:'center', color:'#1E1E1E'}}>{item.price_normal}</td>
+                    <td className="price-discount-box" style={{textAlign:'center', color:'#E53935'}}>
+                      {getPriceDiscount(item.price_normal, item.discount)
+                            ? ` ${getPriceDiscount(item.price_normal, item.discount)}`
+                            : "-"}
+                    </td>
+                    <td className="discount-box" style={{textAlign:'center', color:'#388E3C'}}>{item.discount}</td>
+                    <td className="coupon-box" style={{textAlign:'center', color:'#388E3C'}}>{item.kupon_diskon_name}</td>
+                    <td className="basic-price-box" style={{color:'#388E3C',textAlign:'center'}}> 
+                      {getBasicPrice(item.price_normal, item.discount)
+                            ? ` ${getBasicPrice(item.price_normal, item.discount)}`
+                            : "-"}
+                    </td>
+                    <td className="project-type-box" >{item.project_type_name}</td>
+                    <td className="duration-box">{item.duration}</td>
+                    <td className="action-box">
+                      <div className="action-data-marketing">
+                        <BootstrapTooltip title='View Data' placement='top'>
+                            <button onClick={()=> handleShowDetail(item.marketing_id)}>
+                                <IoEyeSharp/>
+                            </button>
+                        </BootstrapTooltip>
+                        <BootstrapTooltip title='Edit Data' placement='top'>
+                            <button onClick={() => handleShowEditForm(item.marketing_id)}><HiOutlinePencil/></button>
+                        </BootstrapTooltip>
+                        <BootstrapTooltip title='Archive Data' placement='top'>
+                             <button onClick={()=>handleArchiveDataMarketing(item.marketing_id)}>
+                               <HiOutlineArchiveBox style={{color:'white'}}/>
+                             </button>
+                         </BootstrapTooltip>
+                        <BootstrapTooltip title='Delete Data' placement='top'>
+                            <button onClick={() => handleDeleteClick(item.marketing_id)}><HiOutlineTrash/></button>
+                        </BootstrapTooltip>
+                      </div>
+                        
+                    </td>
+                  </tr>
+                  )
+                })}
+              </tbody>
+              {/* Detail View */}
+                {showDetail && selectedMarketingId && (
+                    <div className="detail-data-marketing">
+                        <div className="detail-data-box">
+                            <ViewDataMarketing 
+                              marketingId={selectedMarketingId}
+                              onClose={handleCloseDetail} 
+                              isExported={isExported}
+                              setIsExported={setIsExported} 
+                              marketingTransfile={marketingTransfile}
+                              fetchDataTransfile={fetchDataTransfile}
+                              onExport={handleExportToSheets}
+                            />
+                            {/* <button onClick={() => setShowDetail(false)}>Close</button> */}
+                        </div>
+                    </div>
+                )}
+                {/* EDIT FORM  */}
+                {showEditForm && selectedMarketingId && (
+                    <div className="edit-data-marketing">
+                        <div className="edit-data-box">
+                          <NewEditDataMarketing marketingId={selectedMarketingId} onClose={handleCloseEditForm} fetchDataMarketing={fetchDataMarketing}/>
+                            {/* <EditMarketingForm marketingId={selectedMarketingId} onClose={handleCloseEditForm} fetchDataMarketing={fetchDataMarketing}/> */}
+                        </div>
+                    </div>
+                )}
+                {/* DELETE CONFIRM */}
+                <DataMarketingDeleteConfirm
+                  isOpen={showDeleteConfirm}
+                  marketingId={selectedMarketingId}
+                  onConfirm={confirmDelete}
+                  onCancle={cancleDeleteDataMarketing}
+                  fetchDataMarketing={fetchDataMarketing}
+                />
+            </table>
           </div>
         )}
       </div>
@@ -1218,106 +821,4 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
   );
 };
 
-// export default NewRoomChat;
-
-
-const handleSendReply = async (parentId) => {
-  const html = replyMessage[parentId] || "";
-  const files = replyPendingFiles[parentId] || [];
-
-  // kalau kosong semua, jangan kirim
-  if ((!html || html === "<p><br></p>") && files.length === 0) return;
-
-  try {
-    // kirim ke backend
-    const res = await createMessage(cardId, {
-      user_id: userId,
-      message: html,
-      parent_message_id: parentId,
-    });
-
-    const chatId = res.data.id;
-
-    // upload file jika ada
-    for (let file of files) await uploadChatMedia(chatId, file);
-
-    // reset input dan file
-    setReplyMessage(prev => ({ ...prev, [parentId]: "" }));
-    setReplyPendingFiles(prev => ({ ...prev, [parentId]: [] }));
-
-    // 🚀 Tutup editor reply dan emoji picker setelah kirim
-    setReplyTo(null);                // tutup editor reply
-    setShowReplyEmojiPicker(null);   // tutup emoji picker reply
-    setShowEmojiPicker(false);       // tutup emoji picker main (jaga-jaga)
-
-    // refresh chat list
-    fetchChats();
-
-    // notifikasi sukses
-    showSnackbar("Reply terkirim!", "success");
-  } catch (err) {
-    console.error("Reply error:", err);
-    showSnackbar("Reply gagal", "error");
-  }
-};
-
-
-{/* ✅ MODE EDIT */}
-{editingMessage === chat.id ? (
-  <div className="edit-chat-box">
-    <div className="editor-wrapper">
-      <div className="ql-container">
-        <ReactQuill
-          theme="snow"
-          value={editText}
-          onChange={setEditText}
-          modules={modules}
-          formats={formats}
-          placeholder="Edit pesan..."
-          className="my-editor"
-        />
-      </div>
-
-      <div className="editor-actions">
-        <div className="more-act">
-          <label className="upload-btn">
-            <TiAttachmentOutline />
-            <input
-              type="file"
-              hidden
-              onChange={(e) => handleUploadFromEditor(e, chat.id)}
-            />
-          </label>
-
-          <button
-            className="btn-icon"
-            onClick={() => handleShowEditEmoji(chat.id)}
-          >
-            😎
-          </button>
-        </div>
-
-        <div className="act-btn">
-          <button className="btn-send" onClick={handleSaveEdit}>
-            💾
-          </button>
-          <button className="btn-cancel" onClick={handleCancelEdit}>
-            ❌
-          </button>
-        </div>
-      </div>
-    </div>
-
-    {/* SHOW EMOJI  */}
-    {showEditEmojiPicker === chat.id && (
-      <div className="emoji-picker-fix">
-        {emojiList.map((emoji, i) => (
-          <span key={i} onClick={() => insertEmoji(emoji, "edit")}>{emoji}</span>
-        ))}
-      </div>
-    )}
-  </div>
-) : null}
->>>>>>> feature
-=======
->>>>>>> feature
+export default DataMarketing;

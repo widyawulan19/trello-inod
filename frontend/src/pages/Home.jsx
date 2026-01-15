@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { HiFolder } from "react-icons/hi2";
 import { GiMusicalScore } from "react-icons/gi";
 import { BsArrowsAngleExpand } from "react-icons/bs";
-import { FaChartLine, FaNoteSticky, FaPlus } from "react-icons/fa6";
+import { FaChartLine, FaNoteSticky, FaPlus, FaXmark } from "react-icons/fa6";
 import OutsideClick from '../hook/OutsideClick.jsx';
 import { createWorkspace, createWorkspaceUser, getWorkspaceSummary } from '../services/ApiServices.js';
 import { Alert } from '@mui/material';
@@ -187,7 +187,7 @@ const Home=()=> {
                   Create New Workspace
                 </h5>
                 <BootstrapTooltip title="Close Form" placement="top">
-                  <HiXMark onClick={handleCancle} className='wf-close'/>
+                  <FaXmark onClick={handleCancle} className='wf-close'/>
                 </BootstrapTooltip>
               </div>
                <div className="wf-content">
@@ -230,7 +230,7 @@ const Home=()=> {
                   <div className="nhl-icon">
                     <FaChartLine/>
                   </div>
-                  <h4><span className='nhl-gradient'>Chart Daily Income</span></h4>
+                  <h4>Chart Daily Income</h4>
                 </div>
                 <div className="nh-right">
                   <div className="dummy-drop">
@@ -251,27 +251,21 @@ const Home=()=> {
                     </button>
                     {/* DROPDOWN  */}
                     {openDropdown && (
-                      <ul className="absolute right-0 z-20 w-40 mt-2 bg-white border border-gray-200 rounded-md shadow-lg">
+                      <ul className="dropdown-menu">
                         <li
-                          className={`px-3 py-2 text-sm cursor-pointer hover:bg-purple-50 ${
-                            selectedChart === "both" ? "bg-purple-100" : ""
-                          }`}
+                          className={`dropdown-item ${selectedChart === "both" ? "selected" : ""}`}
                           onClick={() => handleSelect("both")}
                         >
                           Both
                         </li>
                         <li
-                          className={`px-3 py-2 text-sm cursor-pointer hover:bg-purple-50 ${
-                            selectedChart === "design" ? "bg-purple-100" : ""
-                          }`}
+                          className={`dropdown-item ${selectedChart === "design" ? "selected" : ""}`}
                           onClick={() => handleSelect("design")}
                         >
                           Design Only
                         </li>
                         <li
-                          className={`px-3 py-2 text-sm cursor-pointer hover:bg-purple-50 ${
-                            selectedChart === "music" ? "bg-purple-100" : ""
-                          }`}
+                          className={`dropdown-item ${selectedChart === "music" ? "selected" : ""}`}
                           onClick={() => handleSelect("music")}
                         >
                           Music Only
@@ -292,7 +286,7 @@ const Home=()=> {
                   <div className="sh-icon">
                     <HiFolder/>
                   </div>
-                  <h4><span className='sh-gradient'>Workspaces Summary</span></h4>
+                  <h4>Workspaces Summary</h4>
                 </div>
                 <BootstrapTooltip title='Show Workspaces' placement="top">
                   <div className="sh-right">
@@ -326,7 +320,7 @@ const Home=()=> {
               </div>
               <div className="agenda-body">
                 {/* <PersonalAgenda/> */}
-                <PersonalAgendas userId={userId}/>
+                <PersonalAgendas userId={userId} fetchSummary={fetchSummary}/>
               </div>
             </div>
 

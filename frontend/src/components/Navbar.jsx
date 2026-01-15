@@ -5,7 +5,7 @@ import logo1 from '../assets/whiteLogo.png'
 import { HiMiniCalendarDateRange,HiOutlineMagnifyingGlass,HiOutlineClipboardDocumentList,HiMiniLanguage,HiMiniBellAlert,HiOutlineUserCircle,HiOutlineChevronDown } from "react-icons/hi2";
 import { Tooltip, tooltipClasses } from '@mui/material';
 import {styled} from '@mui/material';
-import { useNavigate, useNavigation } from 'react-router-dom';
+import { useLocation, useNavigate, useNavigation } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 import { getProfileByUserId, getUnfinishAgenda, getUserTotalNotificationUnread } from '../services/ApiServices';
 import FullNewCalendar from '../fitur/FullNewCalendar';
@@ -16,7 +16,13 @@ import SearchGlobalCard from '../fitur/SearchGlobalCard';
 import PersonalNotes from '../modules/PersonalNotes';
 import PersonalAgendas from '../modules/PersonalAgendas';
 import AgendaUser from '../UI/AgendaUser';
-import { IoCalendar } from 'react-icons/io5';
+import { IoCalendar, IoColorPalette, IoColorPaletteSharp } from 'react-icons/io5';
+import { LuLayoutDashboard } from "react-icons/lu";
+import useTheme from '../utils/useTheme';
+import { IoIosMoon, IoMdSunny } from "react-icons/io";
+import { RiDashboardHorizontalFill, RiDashboardHorizontalLine } from 'react-icons/ri';
+import { FaCircle } from 'react-icons/fa';
+import { pageTitles } from '../utils/pageTitles';
 
 //tooltip
 const BootstrapTooltip = styled(({className, ...props}) =>(
@@ -30,7 +36,7 @@ const BootstrapTooltip = styled(({className, ...props}) =>(
       },
 }));
 
-const Navbar=()=> {
+const Navbar=({onToggleTheme, theme})=> {
     //state
     // const navigate = useNavigate();
     const [active, setActive] = useState(false);
@@ -48,6 +54,20 @@ const Navbar=()=> {
     const [unreadCount, setUnreadCount] = useState(0);
     const [unfinishedCount, setUnfinishedCount] = useState(0);
     const [unfinishedAgendas, setUnfinishedAgendas] = useState([]);
+
+    // title pages 
+    const location = useLocation();
+    const pathname = location.pathname; // 👈 PENTING
+
+    const matched = pageTitles.find(item =>
+        pathname === item.path || pathname.startsWith(item.path + "/")
+    );
+
+    const title = matched?.title || "Dashboard";
+    const Icon = matched?.icon;
+
+    //theme
+    // const {theme, toggleTheme } = useTheme();
 
     //debug
     console.log('NAVBAR ini menerima data user dan userId:', user, userId);
@@ -166,7 +186,13 @@ const Navbar=()=> {
   return (
     <div className='navbar-container'>
         <div className="logo" >
-            <img src={logo1} alt={logo1} onClick={handleToHome}/>
+            <div className="mini-logo">
+                 {Icon && <span className="logo-logo">{Icon}</span>}
+            </div>
+            <h4>
+                {/* Dashboard   */}
+                {title}  
+            </h4>
         </div>
         <div className="more-fiture">
             <SearchGlobalCard userId={userId}/>
@@ -209,18 +235,11 @@ const Navbar=()=> {
                 <BootstrapTooltip title="Notes">
                     <div 
                       className={`icon-wrapper ${active === 'notes' ? 'active' : ''}`} 
-                    //   onClick={() => handleActive('notes')}
-                    // onClick={handleShowNotes}
                     onClick={handleToNote}
                     >
                         <HiOutlineClipboardDocumentList className='icon-icon' />
                     </div>
                 </BootstrapTooltip>
-                <div className="translate">
-                    <BootstrapTooltip title="Translate">
-                        <HiMiniLanguage  className='icon-icon' />
-                    </BootstrapTooltip>
-                </div>
                 
                 <BootstrapTooltip title="Notify">
                     <div 
@@ -252,6 +271,14 @@ const Navbar=()=> {
                     </div>
                 </BootstrapTooltip>
 
+                <BootstrapTooltip>
+                     <div className={`switch ${theme === "dark" ? "active" : ""}`} onClick={onToggleTheme}>
+                        <div className="switch-circle">
+                            {theme === "light" ? <IoIosMoon/> : <IoMdSunny/>}
+                        </div>
+                    </div>
+                </BootstrapTooltip>
+
                 {/* SHOW NOTIF MODAL  */}
                 {showNotif && (
                     <div className='notif-modal'>
@@ -278,18 +305,20 @@ const Navbar=()=> {
            <div className="profil">
                 <BootstrapTooltip title="Profile">
                     <div className='icon-wrapper' onClick={navigateToProfile}>
-                    <img
-                        src={profilUser?.photo_url || defaultPic}
-                        alt={profilUser?.username || user?.username || 'User'}
-                        style={{
-                        width: '60px',
-                        height: '30px',
-                        borderRadius: '60%',
-                        objectFit: 'cover',
-                        backgroundColor:'white'                        
-                        }}
-                    />
+                        <img
+                            src={profilUser?.photo_url || defaultPic}
+                            alt={profilUser?.username || user?.username || 'User'}
+                            style={{
+                            width: '35px',
+                            height: '35px',
+                            borderRadius: '60%',
+                            objectFit: 'cover',
+                            backgroundColor:'white'                        
+                            }}
+                        />
+                        <FaCircle className='status-online'/>
                     </div>
+                    
                 </BootstrapTooltip>
             </div>
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useSnackbar } from '../context/Snackbar'
 import { 
   addMarketingDesignJoined,addMarketingDesignJoinedFix, addKepalaDivisiDesign, addOfferTypeDesign, addStyleDesign, 
@@ -9,6 +9,7 @@ import {
 import { IoCreate } from 'react-icons/io5';
 import BootstrapTooltip from '../components/Tooltip';
 import { HiXMark } from 'react-icons/hi2';
+import { MdEditDocument } from "react-icons/md";
 import '../style/pages/FormDataMarketing.css';
 import CustomDropdownDesign from '../marketing/CustomDropdownDesign';
 import ReactQuill from "react-quill-new";
@@ -17,6 +18,7 @@ import CustomDropdownDesignEdit from '../marketing/CustomDropdownDesignEdit';
 
 const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
     const {showSnackbar} = useSnackbar();
+    const quillRef = useRef(null);
 
     const [dropdownData, setDropdownData] = useState({ 
         users: [], accs: [], statusAccept: [], accounts: [], offers: [], style: [], projectType: [], orderType: []
@@ -146,9 +148,42 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
     };
     // END ADD FUNCTIONS
 
-    const handleChangeQuill = (value) => {
-    setForm({ ...form, detail_project: value });
-  };
+    // const handleChangeQuill = (value) => {
+    //     setForm({ ...form, detail_project: value });
+    // };
+
+    useEffect(() => {
+        const quill = quillRef.current?.getEditor();
+        if (!quill) return;
+
+        quill.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
+            delta.ops.forEach(op => {
+            if (op.attributes) {
+                delete op.attributes.color;
+                delete op.attributes.background;
+            }
+            });
+            return delta;
+        });
+    }, []);
+
+
+    const handleChangeQuill = (value, delta, source) => {
+        if (source === 'user') {
+            const quill = quillRef.current?.getEditor();
+            if (quill) {
+            quill.format('color', false);
+            quill.format('background', false);
+            }
+        }
+
+        setForm(prev => ({
+            ...prev,
+            detail_project: value,
+        }));
+    };
+
+
 
   // konfigurasi toolbar ReactQuill
   const modules = {
@@ -264,10 +299,8 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
     return (
         <div className="fdm-container">
             <div className="fdm-header">
-                <div className="dmfh-left" style={{ display:'flex', alignItem:'center', justifyContent:'center'}}>
-                    <div className="header-icon">
-                        <IoCreate size={15}/>
-                    </div>
+                <div className="header-form-left">
+                    <MdEditDocument size={15}/>
                     <h4>CREATE DATA MARKETING DESIGN</h4>
                 </div>
                 <BootstrapTooltip title='close' placement='top'>
@@ -299,7 +332,7 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
 
                         {/* Acc By */}
                         <div className="box-content">
-                          <label >Accept By <span style={{color:'red', fontSize:'10px'}}> ** diisi oleh kadiv</span></label>
+                          <label>Accept By <span className='label-span'> ** diisi oleh kadiv</span></label>
                           <CustomDropdownDesign
                             options={dropdownData.accs}  // <- benar-benar dari kepala_divisi
                             value={form.acc_by}
@@ -315,7 +348,7 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
 
                          {/* STATUS ACCEPT */}
                         <div className="box-content">
-                            <label>Status <span style={{color:'red', fontSize:'10px'}}> ** diisi oleh kadiv</span></label>
+                            <label>Status <span className='label-span'> ** diisi oleh kadiv</span></label>
                             <CustomDropdownDesign
                                 options={dropdownData.statusAccept}  // <- benar-benar dari kepala_divisi
                                 value={form.status_project_id}
@@ -478,7 +511,7 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
 
                         {/* Jumlah Design */}
                         <div className="box-content">
-                            <label >Style <span style={{color:'red', fontSize:'10px'}}> ** diisi oleh kadiv</span></label>
+                            <label >Style <span className='label-span'> ** diisi oleh kadiv</span></label>
                             <CustomDropdownDesign
                               options={dropdownData.style}
                               value={form.style_id}
@@ -599,21 +632,22 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
 
                         {/* REFERENCE  */}
                         <div className="box-content">
-                            <ReactQuill
-                              className="my-editor"
-                              theme="snow"
-                              value={form.detail_project}
-                              onChange={handleChangeQuill}
-                              modules={modules}
-                              placeholder="Deskripsikan detail project..."
-                              style={{ minHeight: "150px" }}
+                            <ReactQuill                        
+                                 ref={quillRef}
+                                  className="my-editor-form"
+                                  theme="snow"
+                                  value={form.detail_project}
+                                  onChange={handleChangeQuill}
+                                  modules={modules}
+                                  placeholder="Deskripsikan detail project..."
+                                  style={{ minHeight: "150px" }}
                             />
                         </div>
                     </div>
                 </div>    
             </div>
 
-             <div className="btn-form">
+            <div className="btn-form-box">
                 <button type='submit'>SUBMIT NEW DATA</button>
             </div>
         </form>
@@ -622,3 +656,4 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
 }
 
 export default FormMarketingDesignExample;
+

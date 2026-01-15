@@ -5,7 +5,8 @@
   flex-direction: column;
   height: 100vh;
   padding: 0px;
-  background-image: linear-gradient(to top, #042887, #20299a, #3827ab, #5021bc, #6a11cb);
+  /* background-image: linear-gradient(to top, #042887, #20299a, #3827ab, #5021bc, #6a11cb); */
+  background-color: var(--bg);
 }
 
 /* src/style/components/Layout.css */

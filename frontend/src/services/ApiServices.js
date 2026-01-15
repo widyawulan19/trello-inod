@@ -419,7 +419,20 @@ export const deleteUserFromCard = (cardId, userId) => axios.delete(`${API_URL}/c
 export const getAllCardUsers = (cardId) => axios.get(`${API_URL}/cards/${cardId}/users`)
 
 //UPDATE CARDS
-export const updateTitleCard = (id, title) => axios.put(`${API_URL}/cards/${id}/title`, title)
+export const updateTitleCardTesting = (cardId, userId, payload) => {
+  return axios.put(
+    `${API_URL}/cards/${cardId}/title-testing/${userId}`,
+    payload
+  );
+};
+
+export const updateTitleCardAnotherTesting = (cardId, userId, payload) =>
+  axios.put(`${API_URL}/cards/${cardId}/title-another-testing/${userId}`, payload);
+
+// export const updateTitleCard = (id, title) => axios.put(`${API_URL}/cards/${id}/title`, title)
+export const updateTitleCard = (id, payload) =>
+  axios.put(`${API_URL}/cards/${id}/title`, payload);
+
 export const updateDescCard = (id, description) => axios.put(`${API_URL}/cards/${id}/desc`, { description })
 export const updateDescCardTesting = (userId, id, description) => axios.put(`${API_URL}/cards/${id}/desc-testing/${userId}`, { description })
 export const updateDueDataCard = (id, due_date) => axios.put(`${API_URL}/cards/${id}/due_date`, due_date)
@@ -447,7 +460,16 @@ export const getDueDateById = (id) => axios.get(`${API_URL}/card-due-date/${id}`
 export const getAllDueDateByCardId = (cardId) => axios.get(`${API_URL}/card-due-date/card/${cardId}`)
 export const addNewDueDate = (data) => axios.post(`${API_URL}/card-due-dates`, data)
 export const updateDueDate = (id, data) => axios.put(`${API_URL}/card-due-date/${id}`, data)
-export const updateDueDateTesting = (userId, id, data) => axios.put(`${API_URL}/cards/${id}/due-testing/${userId}`, data)
+export const updateDueDateTesting = (id, userId, data) =>
+  axios.put(`${API_URL}/due/card-due-date-testing/${id}/${userId}`, data);
+
+// export const updateCardDueDate = (dueDateId, userId, due_date) => {
+//   return axios.put(
+//     `${API_URL}/due/card-due-date-testing/${dueDateId}/${userId}`,
+//     { due_date }
+//   );
+// };
+// export const updateDueDateTesting = (userId, id, data) => axios.put(`${API_URL}/cards/${id}/due-testing/${userId}`, data)
 export const deleteDueDate = (id) => axios.delete(`${API_URL}/card-due-date/${id}`)
 
 //REMINDERS
@@ -537,6 +559,8 @@ export const getStatusByCardId = (cardId) => axios.get(`${API_URL}/cards/${cardI
 export const getAllStatus = () => axios.get(`${API_URL}/status`)
 export const updateStatus = (cardId, statusId) => axios.post(`${API_URL}/cards/${cardId}/status`, statusId)
 export const getStatusCard = (cardId) => axios.get(`${API_URL}/card-status/${cardId}`);
+
+export const createStatusTesting = (data) => axios.post(`${API_URL}/status-testing`, data);
 
 export const updateCardStatusTesting = (cardId, userId, data) =>
   axios.post(`${API_URL}/cards/${cardId}/update-status-testing/${userId}`, data);

@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { deleteArchiveDataUniversalById, getAllDataArchive } from '../services/ApiServices';
 import '../style/pages/Archives.css'
 import { HiArchiveBoxArrowDown } from "react-icons/hi2";
-import { IoSearchOutline, IoTrash } from 'react-icons/io5';
+import { IoEyeSharp, IoSearchOutline, IoTrash } from 'react-icons/io5';
 import { MdOutlineRestore } from "react-icons/md";
 import BootstrapTooltip from '../components/Tooltip';
 import { handleRestoreArchive } from '../utils/handleRestoreArchive';
 import { useSnackbar } from '../context/Snackbar';
+import LoadingSpinnerDot from '../utils/LoadingSpinnerDot';
 
 const ArchiveUniversal=()=> {
     //STATE
@@ -16,6 +17,8 @@ const ArchiveUniversal=()=> {
     const [filteredData, setFilteredData] = useState([]);
     const [filterType, setFilterType] = useState('');
     const {showSnackbar} = useSnackbar();
+    const [showDetailCard, setShowDetailCard] = useState(false);
+
 
 
 
@@ -87,6 +90,11 @@ const ArchiveUniversal=()=> {
     data_marketing:'#533B4D',
   }
 
+  //SHOW FUNCTION
+  const handleShowDetailCard = (cardId) =>{
+    setShowDetailCard(!showDetailCard);
+  }
+
   return (
     <div className="archive-container">
         <div className="archive-header">
@@ -125,7 +133,7 @@ const ArchiveUniversal=()=> {
       
 
      {loading ? (
-        <p>Loading...</p>
+        <LoadingSpinnerDot text='Preparing your data archive'/>
         ) : (
         <div className="archive-table-container">
             <table className="archive-table">
@@ -163,21 +171,27 @@ const ArchiveUniversal=()=> {
                             : item.data?.name || '-'}
                     </td>
                     <td>{new Date(item.archived_at).toLocaleString()}</td>
-                    <td style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
+                    <td className='td-action' style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
+                        <BootstrapTooltip>
+                            <button className='btn-action' onClick={()=> handleShowDetailCard(item.entity_id)}>
+                                <IoEyeSharp/>
+                            </button>
+                        </BootstrapTooltip>
                         <BootstrapTooltip title='Restore data' placement="top">
-                            <button onClick={()=>
+                            <button className='btn-action' onClick={()=>
                                 handleRestoreArchive({
                                     entity: item.entity_type,
                                     id: item.entity_id,
                                     refetch:fetchArchiveData,
                                     showSnackbar,
                                 })
+                                
                             }>
                                 <MdOutlineRestore/>
                             </button>
                         </BootstrapTooltip>
                         <BootstrapTooltip title='Delete data' placement='top'>
-                            <button onClick={()=> handleDeleteArchive(item.id)}>
+                            <button className='btn-action' onClick={()=> handleDeleteArchive(item.id)}>
                                 <IoTrash/>
                             </button>
                         </BootstrapTooltip>
@@ -189,6 +203,15 @@ const ArchiveUniversal=()=> {
         </div>
         )}
 
+        {showDetailCard && (
+            <div className="detail-card-modal">
+                <div className="detail-card-content">
+                    <h3>Detail Card Archive (ID: {showDetailCard})</h3>
+                    <button className="close-button" onClick={handleShowDetailCard}>Close</button>
+                    {/* Here you can add more details about the archived card */}
+                </div>
+            </div>
+        )}
 
     </div>
   );

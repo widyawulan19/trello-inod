@@ -1,0 +1,88 @@
+.status-pill {
+    border-radius: 10px;
+    padding: 12px 14px;
+    border: 1.5px solid var(--status-border);
+    background: var(--status-bg);
+    color: var(--status-text);
+    transition: background 0.2s ease, border 0.2s ease;
+}
+
+.status-display-wrapper {
+    position: relative;
+}
+
+.status-display {
+    cursor: pointer;
+}
+
+.status-display-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.status-display-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+}
+
+.status-display-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--status-text);
+}
+
+.status-display-action {
+    font-size: 18px;
+    cursor: pointer;
+    color: var(--text-muted);
+}
+
+.status-display-action:hover {
+    color: var(--text-primary);
+}
+
+
+.status-display-empty {
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 5px 10px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--sub-text);
+    background-color: var(--bg-section);
+}
+
+.status-display-empty p {
+    margin: 0px 8px;
+}
+
+.status-display-empty button {
+    padding: 4px 8px;
+    font-size: 12px;
+    cursor: pointer;
+    color: var(--sub-text);
+    background-color: var(--bg-section-hover);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+}
+
+.status-display-empty button:hover {
+    background-color: var(--bg-section);
+    border: 1px solid var(--primary);
+    color: var(--primary);
+}
+
+
+.status-popover {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    z-index: 20;
+}

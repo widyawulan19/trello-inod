@@ -1,294 +1,314 @@
 /* ================ NEW COVER CARD ================  */
 .card-cover-container {
-    width: 35vw;
-    padding: 0px;
-    background-color: white;
-    border: 1px solid #E2E8F0;
-    border-radius: 8px;
+    width: 100%;
+    /* padding: 15px; */
+    background-color: var(--bg-section);
+    /* border: 1px solid grey; */
+    /* border: 1px solid var(--bg); */
+    /* border-radius: 8px; */
+    gap: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
 
-.card-cover-header {
+/* =======================
+COVER HEADER
+======================= */
+.card-cover-container .cover-header {
     /* border: 1px solid red; */
-    border-radius: 8px;
-    border-bottom-left-radius: 0px;
-    border-bottom-right-radius: 0px;
-    padding: 5px 10px;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    color: white;
-    background-color: #3863e7;
-    /* background-image: linear-gradient(to right, #2d66e7, #3863e7, #425fe8, #4c5be7, #5557e7, #5d54e7, #6551e7, #6d4de7, #764ae7, #7e47e7, #8743e7, #8f3fe6); */
-}
-
-.card-cover-header .cch-title {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 5px;
-}
-
-.cch-title h5 {
-    font-size: 12px;
-    font-weight: bold;
-}
-
-.card-cover-header .cch-btn {}
-
-.cch-btn button {
-    border: 1px solid rgba(255, 255, 255, 0);
-    border-radius: 6px;
-    cursor: pointer;
-    background-color: #4c5ce700;
-    color: white;
-    padding: 3px;
-}
-
-.cch-btn button:hover {
-    border: 1px solid #ddd;
-    background-color: #dddddd60;
 }
 
 
-.card-cover-body {
-    top: 100%;
-    left: 0;
-    border-radius: 8px;
-    background-color: #fff;
-    padding: 10px;
-    /* border: 1px solid red; */
-    width: 100%;
-}
-
-.image-cover {
-    /* border: 1px solid blue; */
-}
-
-.image-cover .ci {
-    margin-bottom: 10px;
-    padding: 2px 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.image-cover h5 {
-    font-weight: normal;
-    font-size: 13px;
-    color: #333;
-    /* border: 1px solid red; */
-}
-
-.image-cover h4 {
-    margin: 0px;
-}
-
-.image-content {
+/* HEADER LEFT  */
+.cover-header .ch-left {
+    width: 95%;
+    gap: 25px;
     /* border: 1px solid green; */
-    min-width: 25vw;
-    width: 97%;
-    height: fit-content;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    overflow-x: auto;
-    /* Memungkinkan scroll horizontal */
-    gap: 10px;
-    /* Jarak antar elemen */
-    padding: 5px;
-    /* Tambahkan padding agar lebih rapi */
-}
-
-/* ================ END COVER CARD ================  */
-
-
-.cover-container {
-    /* border: 1px solid green; */
-}
-
-.cover-container button {
-    padding: 5px;
-    border: 1px solid #eee;
-    border-radius: 4px;
-    background-color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-}
-
-.cover-container button:hover {
-    border: 1px solid #eee;
-    background-color: #eee;
-}
-
-.cover-icon {
-    margin-right: 5px;
-}
-
-.show-cover {
-    border-radius: 4px;
-    /* border: 1px solid #eee; */
-    /* border: 1px solid red; */
-    /* background-color: #fff; */
-    padding: 10px;
-    width: 500px;
-}
-
-.cover {
-    width: 100%;
-    position: relative;
-}
-
-.selected-cover {
-    /* border: 1px solid red; */
-}
-
-.button-cover {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-left: 5px;
-    border: 1px solid red;
-    padding: 5px 0px;
-    height: fit-content;
-    cursor: pointer;
-}
-
-.bc-left {
-    /* border: 1px solid blue; */
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 5px;
-}
-
-.bc-left h5 {
-    margin: 0px;
-    font-size: 12px;
-    color: #333;
-    letter-spacing: 1px;
-    font-weight: bold;
-}
-
-.button-cover .bc-rigth {
-    /* border: 1px solid red; */
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.bc-rigth .bc-delete {
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background: white;
+.ch-left h5 {
+    font-weight: 400;
+    font-size: 12px;
+    color: var(--text);
+    margin: 0px;
+    padding: 0px;
     gap: 5px;
-    color: red;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ch-left span {
     font-size: 10px;
-    /* letter-spacing: 0.5px; */
-    cursor: pointer;
     font-weight: normal;
+    color: var(--sub-text);
 }
 
-.bc-delete:hover {
-    background-color: #ddd;
+/* HEADER RIGHT  */
+.cover-header .ch-right {
+    width: 5%;
+    /* border: 1px solid blue; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
 }
 
-.bc-rigth .btn-close {
-    border: 1px solid white;
+.ch-right button {
     cursor: pointer;
     border-radius: 4px;
-    font-weight: bold;
+    border: 1px solid var(--bg-section);
+    font-size: 15px;
+    padding: 2px;
+    color: var(--text);
+    background-color: var(--bg-section);
 }
 
-.btn-close:hover {
-    border: 1px solid #ddd;
-    background-color: #ddd;
-}
-
-
-/* background: linear-gradient(to bottom, #6E30DC, #5D12EB); */
-
-
-
-.check-icon {
+.ch-right button:hover {
     color: #9b2fad;
 }
 
+/* =======================
+COVER BODY
+======================= */
 
-.default-color .cw {
-    margin-bottom: 10px;
-    padding: 2px 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.default-color h5 {
-    font-weight: normal;
-    font-size: 13px;
-    color: #333;
-}
-
-.default-content {
-    /* border: 1px solid green; */
-    min-width: 25vw;
+.card-cover-container .cover-select-body {
+    /* border: 1px solid blue; */
     width: 100%;
-    height: 20vh;
-    overflow-y: auto;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 5px;
-    /* height: fit-content;
+    height: 100%;
+    display: flex;
+    flex-direction: row !important;
+    align-items: center;
+    justify-content: center;
+}
+
+/* =======================
+COVER IMAGE
+======================= */
+.card-cover-container .cover-image {
+    width: 100%;
+    padding: 5px;
+    padding-top: 0px;
+    border-right: 1px solid var(--border);
+}
+
+.cover-image h5 {
+    margin: 0px;
+    padding: 0px;
+    font-size: 12px;
+    color: var(--sub-text);
+}
+
+.image-cover-box {
+    /* border: 1px solid yellow; */
+    width: 100%;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    overflow-x: auto;
-    gap: 10px;
-    padding: 5px; */
 }
 
-.default-content div {
-    flex-shrink: 0;
-    /* Mencegah item mengecil saat overflow */
-    transition: transform 0.2s ease-in-out, border 0.2s;
+.image-box-content {
+    /* border: 1px solid green; */
+    height: 25vh;
+    /* min-width: 25vh; */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    overflow-y: auto;
+    gap: 3px;
 }
 
-/* COVER SELECT  -> FILE COVER SELECT*/
-/* .card-cover-display{
-    border: 1px solid blue;
-} */
-/* END COVER SELECT  */
+.cover-thumb {
+    position: relative;
+    border: 1px solid var(--border);
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease,
+        transform 0.15s ease;
+}
+
+.cover-thumb:hover {
+    border: 1px solid var(--primary);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    transform: scale(1.05);
+}
+
+.cover-thumb.selected {
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(155, 47, 173, 0.35);
+}
 
 
+/* BTN UPLOAD IMAGE */
+.upload-image-btn {
+    width: 100%;
+    margin-top: 10px;
+    /* border: 1px solid blue; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.upload-image-btn .upload-btn-img {
+    border: 1px solid var(--bg);
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--sub-text);
+    gap: 5px;
+    margin: 0px;
+    padding: 4px 10px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.upload-btn-img:hover {
+    background-color: var(--bg-section-hover);
+    box-shadow: var(--box-shadow);
+}
+
+/* =======================
+COVER COLOR
+======================= */
+
+.card-cover-container .cover-color {
+    width: 100%;
+    margin-left: 5px;
+    /* border: 1px solid red; */
+}
+
+.card-cover-container .cw-box {
+    /* border: 1px solid green; */
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.color-default-content {
+    /* border: 1px solid green; */
+    height: 25vh;
+    /* min-width: 25vh; */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    overflow-y: auto;
+    gap: 3px;
+}
+
+.cover-color h5 {
+    margin: 0px;
+    padding: 0px;
+    font-size: 12px;
+    color: var(--sub-text);
+}
+
+
+.color-box {
+    position: relative;
+    border: 1px solid var(--border);
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease,
+        transform 0.15s ease;
+}
+
+/* HOVER */
+.color-box:hover {
+    border: 1px solid var(--primary);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    transform: scale(1.05);
+}
+
+/* SELECTED */
+.color-box.selected {
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(155, 47, 173, 0.35);
+}
+
+
+/* =======================
+REMOVE COVER
+======================= */
+.remove-cover-container {
+    /* border: 1px solid red; */
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.remove-cover-container h5 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    margin: 0px;
+    padding: 2px 10px;
+    font-size: 12px;
+    color: var(--sub-text);
+    /* border: 1px solid var(--bg-section); */
+    border-radius: 4px;
+    cursor: pointer;
+    /* background: var(--bg-section); */
+}
+
+.remove-cover-container h5:hover {
+    background-color: var(--bg-section-hover);
+}
+
+
+/* ================================= */
 
 /* MEDIA QUERY  */
+@media (min-width: 1401px) and (max-width:2000px) {
+    .card-cover-container {}
+}
+
+/* Extra large devices (large desktops, ≥1200px) */
+@media (min-width: 1200px) and (max-width:1400px) {}
+
+
+/* Large devices (desktops, ≥992px) */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+
+    /* .color-default-content {
+        grid-template-columns: repeat(2, 1fr);
+    } */
+
+}
+
 /* Medium devices (tablets, ≥768px) */
 @media (min-width: 768px) and (max-width: 991.98px) {
-    .card-cover-container {
-        width: 45vw;
-        /* border: 1px solid red; */
-    }
 
-    /* CSS tablet atau iPad */
+    .image-box-content,
+    .color-default-content {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 @media (min-width: 576px) and (max-width: 767.98px) {
-    .card-cover-container {
-        width: 50vw;
-        /* border: 1px solid blue; */
+
+    .image-box-content,
+    .color-default-content {
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
 /* ukuran handpone kecil  */
 @media (min-width:375px) and (max-width:575px) {
-    .card-cover-container {
-        width: 70vw;
-        /* border: 1px solid green; */
+
+    .image-box-content,
+    .color-default-content {
+        grid-template-columns: repeat(2, 1fr);
     }
 }

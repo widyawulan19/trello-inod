@@ -1,9 +1,10 @@
 /* MAKETING DESIGN MUSIK  */
 .marketing-report-container {
-    height: 97%;
-    min-width: 80vw;
+    /* height: 97%; */
+    width: 100%;
+    min-width: 100%;
     position: relative;
-    background-color: white;
+    background-color: var(--bg);
     margin-left: 10px;
     margin-top: 10px;
     border-radius: 8px;
@@ -24,12 +25,10 @@
 }
 
 .marketing-report-content .report-header {
-    border: 1px solid #ddd;
-    border-radius: 10px;
     padding: 10px;
     width: 100%;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
+
 
 .report-header .report-title {
     /* border: 1px solid red; */
@@ -39,62 +38,685 @@
     justify-content: flex-start;
 }
 
-.report-title .report-icon {
-    border: 1px solid white;
-    border-radius: 8px;
-    padding: 5px;
-    color: white;
-    background: linear-gradient(90deg, #7246eb, #532189);
-}
 
 .report-title h2 {
     margin: 0px;
     font-weight: bold;
     width: 100%;
     font-size: 15px;
-    color: #5320be;
+    color: var(--text);
 }
 
 .report-header p {
     font-size: 10px;
+    color: var(--sub-text);
 }
 
+/* =======================
+FADE MAIN CONTENT
+======================= */
+.fade {
+    /* border: 1px solid green; */
+    width: 100%;
+    min-width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* =======================
+BUTTON
+======================= */
 /* button  */
 .marketing-report-content .report-button {
-    /* border: 1px solid blue; */
+    border-bottom: 1px solid var(--border);
     width: 100%;
     padding: 5px 10px;
+    padding-bottom: 10px;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
 }
+
+/* =========================================================
+   BUTTON BASE STYLE
+   ========================================================= */
 
 .report-button button {
-    background-color: #532189;
-    color: white;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 5px 12px;
+    border-radius: 6px;
+
     font-size: 12px;
+    font-weight: 600;
+
+    border: 1px solid var(--border);
+    background-color: var(--bg);
+    color: var(--text);
+
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
 }
 
-.report-button button.active {
-    background: linear-gradient(90deg, #532189, #7246eb);
-    box-shadow: 0px 4px 8px #6f30dc7c;
+
+/* =========================================================
+   ICON STYLE
+   ========================================================= */
+
+.report-button button svg {
+    font-size: 16px;
 }
+
+
+/* =========================================================
+   HOVER STATE
+   ========================================================= */
 
 .report-button button:hover {
-    background: linear-gradient(90deg, #532189, #7246eb);
-    box-shadow: 0px 4px 8px #6f30dc7c;
+    background-color: #6f30dc;
+    border-color: #6f30dc;
+    color: #ffffff;
 }
 
+
+/* =========================================================
+   ACTIVE STATE
+   ========================================================= */
+
+.report-button button.active {
+    background-color: #6f30dc;
+    border-color: #6f30dc;
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   ACTIVE ICON COLOR
+   ========================================================= */
+
+.report-button button.active svg {
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   OPTIONAL: FOCUS STATE (ACCESSIBILITY)
+   ========================================================= */
+
+.report-button button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(111, 48, 220, 0.3);
+}
+
+
 /* body  */
-.marketing-report-content .report-body {
-    /* border: 1px solid red; */
+.report-body {
     height: 80vh;
+    width: 100%;
+    max-width: 100%;
+
+    overflow-y: auto;
+    overflow-x: auto;
+    /* ✅ biar tabel bisa scroll */
+
+    position: relative;
+}
+
+.report-content {
+    width: 100%;
+    max-width: 100%;
+}
+
+
+/* =======================
+DAILY REPORT
+======================= */
+
+.daily-container {
+    /* border: 1px solid blue; */
+    /* width: 9%; */
+    padding: 5px;
+}
+
+.dayli-title h2 {
+    font-size: 15px;
+    font-weight: bold;
+    color: var(--text);
+    padding: 0px;
+    margin: 0px;
+}
+
+
+/* =========================================================
+   DAILY TOTAL CONTAINER
+   ========================================================= */
+
+.daily-total {
+    padding: 10px 14px;
+    /* border-radius: 8px;
+    background-color: #fafafa;
+    border: 1px solid #e5e5e5; */
+}
+
+
+/* =========================================================
+   DATE TEXT
+   ========================================================= */
+
+.daily-total .date {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--sub-text);
+}
+
+
+/* =========================================================
+   TOTAL DATA
+   ========================================================= */
+
+.daily-total .total-data {
+    margin-top: 4px;
+    padding: 0;
+    font-size: 13px;
+    color: var(--sub-text);
+}
+
+
+/* =========================================================
+   HIGHLIGHT TOTAL DATA
+   ========================================================= */
+
+.daily-total .total-highlight {
+    margin-left: 4px;
+    color: var(--red-bg);
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   TOTAL PRICE
+   ========================================================= */
+
+.daily-total .total-price {
+    font-size: 13px;
+    color: var(--sub-text);
+}
+
+
+/* =========================================================
+   PRICE HIGHLIGHT
+   ========================================================= */
+
+.daily-total .price-highlight {
+    margin-left: 4px;
+    color: #16a34a;
+    /* green */
+    font-weight: 600;
+}
+
+
+
+/* =======================
+DAILY TABLE
+======================= */
+.daily-table {
+    /* border: 1px solid orange; */
+    font-family: Arial, sans-serif;
+    height: 70%;
+    width: 100%;
+    position: relative !important;
+    /* padding: 10px; */
+    padding-top: 0px;
+    overflow-x: auto;
+}
+
+.daily-table table {
+    width: 100%;
+    min-width: 1100px;
+    /* kolom aman */
+    border-collapse: separate;
+}
+
+.daily-table th {
+    background-color: var(--primary);
+    font-size: 10px;
+    font-weight: bold;
+    padding: 14px;
+    text-align: center;
+    color: var(--text-white);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    white-space: nowrap;
+}
+
+.daily-table td {
+    color: var(--text);
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: normal;
+    text-align: center;
+    background-color: var(--bg-section);
+    transition: background-color 0.3s ease;
+    /* biar halus pas hover */
+}
+
+.daily-table tr:nth-child(odd) td {
+    background-color: var(--bg-section);
+    color: var(--sub-text);
+}
+
+.daily-table tr:nth-child(even) td {
+    /* background-color: #ffffff; */
+    background-color: var(--bg-section);
+    color: var(--sub-text);
+}
+
+.daily-table tr:hover td {
+    background-color: var(--bg-section-hover);
+    cursor: pointer;
+}
+
+/* =======================
+TABLE BOX 
+======================= */
+
+.input-container {
+    width: 10vw;
+    min-width: 10vw;
+    max-width: 10vw;
+    /* border: 1px solid red; */
+}
+
+.buyer-name-container,
+.code-order-container {
+    width: 8vw;
+    min-width: 8vw;
+    max-width: 8vw;
+    /* border: 1px solid red; */
+}
+
+
+
+/* =======================
+MONTHLY REPORT
+======================= */
+.design-period-container {
+    width: 100%;
+    min-width: 100%;
+    position: relative;
+    background-color: var(--bg);
+    margin-left: 10px;
+    margin-top: 10px;
+    padding: 0px 10px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.dp-title {
+    /* padding: 10px; */
+    width: 100%;
+    /* border: 1px solid orange; */
+    text-align: center;
+}
+
+.dp-title h2 {
+    margin: 0px;
+    font-weight: bold;
+    width: 100%;
+    font-size: 15px;
+    color: var(--text);
+}
+
+/* =======================
+SELECT MONTH 
+======================= */
+.dp-select {
+    /* border: 1px solid red; */
+    width: 50%;
+    gap: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dp-select .select-bulan {
+    position: relative;
+    /* border: 1px solid blue; */
+    width: 100%;
+    /* width: fit-content; */
+    gap: 5px !important;
+    padding: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+}
+
+.select-bulan label {
+    width: 50%;
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--sub-text);
+}
+
+.select-bulan .month-trigger {
+    /* position: relative; */
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 10px;
+    padding: 5px 10px;
+    color: var(--sub-text);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.select-bulan .month-trigger:hover {
+    background-color: var(--bg-section-hover);
+    box-shadow: var(--box-shadow);
+}
+
+.month-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin: 0;
+    padding: 5px;
+    z-index: 100;
+    width: 70%;
+    height: 20vh;
+    /* overflow-y: auto; */
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg-section);
+    box-shadow: var(--box-shadow);
+}
+
+/* =========================================================
+   SEARCH INPUT
+   ========================================================= */
+.search-box {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    gap: 3px;
+    padding: 0px 5px;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    color: #999;
+    /* color: var(--sub-text); */
+}
+
+.month-search {
+    width: 100%;
+    padding: 5;
+    border: none;
+    font-size: 12px;
+    outline: none;
+}
+
+.month-search::placeholder {
+    color: #999;
+}
+
+/* empty state  */
+.month-empty {
+    padding: 10px;
+    text-align: center;
+    font-size: 12px;
+    color: #999;
+}
+
+.chevron {
+    transition: transform 0.2s ease;
+    font-size: 10px;
+    margin-left: 6px;
+}
+
+.rotate-180 {
+    transform: rotate(180deg);
+}
+
+/* =======================
+MONTH ITEM (LI)
+======================= */
+.month-dropdown-item {
+    height: 80%;
+    /* border: 1px solid red; */
     overflow-y: auto;
 }
 
-
-/* DAILY  */
-.daily-container {
-    /* border: 1px solid blue; */
+.month-item {
+    border: 1px solid var(--bg-section);
+    border-radius: 6px;
+    padding: 5px;
+    color: var(--sub-text);
+    background: var(--bg-section);
+    font-size: 10px;
+    cursor: pointer;
 }
 
-.daily-container .daily-total {
-    margin: 10px 0px;
+.month-item:hover {
+    border: 1px solid var(--bg-section-hover);
+    background: var(--bg-section-hover);
+}
+
+
+/* =========================================================
+   SELECT PERIODE (CUSTOM DROPDOWN)
+   ========================================================= */
+
+.select-periode {
+    position: relative !important;
+    /* border: 1px solid blue; */
+    width: 100%;
+    /* width: fit-content; */
+    gap: 5px;
+    padding: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.select-periode label {
+    /* width: 60%; */
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--sub-text);
+}
+
+/* =========================================================
+   TRIGGER
+   ========================================================= */
+/* .period-wrapper {
+    position: relative;
+    width: 220px;
+} */
+
+.period-trigger {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 10px;
+    padding: 5px 10px;
+    color: var(--sub-text);
+    width: 60%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.period-trigger:hover {
+    background-color: var(--bg-section-hover);
+    box-shadow: var(--box-shadow);
+}
+
+
+/* =========================================================
+   DROPDOWN
+   ========================================================= */
+
+.period-dropdown-item {
+    position: absolute;
+    top: calc(100% + 4px);
+    /* ⬅️ INI KUNCI */
+    left: 0;
+
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+
+    background: var(--bg-section);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    box-shadow: var(--box-shadow);
+    z-index: 1000 !important;
+}
+
+
+/* =========================================================
+   ITEM
+   ========================================================= */
+.period-item {
+    border: 1px solid var(--bg-section);
+    border-radius: 6px;
+    padding: 5px;
+    color: var(--sub-text);
+    background: var(--bg-section);
+    font-size: 10px;
+    cursor: pointer;
+}
+
+.period-item:hover {
+    border: 1px solid var(--bg-section-hover);
+    background: var(--bg-section-hover);
+}
+
+
+/* =========================================================
+   CHEVRON
+   ========================================================= */
+
+.chevron {
+    font-size: 10px;
+    transition: transform 0.2s ease;
+}
+
+.rotate-180 {
+    transform: rotate(180deg);
+}
+
+
+/* =======================
+DATA TABEL MONTHLY REPORT
+======================= */
+.data-report {
+    /* border: 1px solid red; */
+}
+
+.table-report-content {
+    /* border: 1px solid green; */
+}
+
+/* =======================
+REPORT SUMMARY
+======================= */
+.report-summary {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.report-summary h2 {
+    width: 100%;
+    padding: 0px;
+    margin: 0px;
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--sub-text);
+}
+
+/* =======================
+REPORT TABLE (2) MONTHLY
+======================= */
+
+.month-table {
+    font-family: Arial, sans-serif;
+    height: 70%;
+    width: 100%;
+    position: relative !important;
+    /* padding: 10px; */
+    padding-top: 0px;
+    overflow-x: auto;
+}
+
+.month-table table {
+    width: 100%;
+    min-width: 1100px;
+}
+
+.month-table th {
+    background: var(--primary);
+    font-size: 10px;
+    font-weight: bold;
+    padding: 14px;
+    text-align: center;
+    color: var(--text-white);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    white-space: nowrap;
+}
+
+.month-table td {
+    color: var(--text);
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: normal;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    background-color: var(--bg-section);
+    transition: background-color 0.3s ease;
+    /* biar halus pas hover */
+}
+
+.month-table tr:nth-child(odd) td {
+    background-color: var(--bg-section);
+    color: var(--sub-text);
+}
+
+.month-table tr:nth-child(even) td {
+    /* background-color: #ffffff; */
+    background-color: var(--bg-section);
+    color: var(--sub-text);
+}
+
+.month-table tr:hover td {
+    background-color: var(--bg-section-hover);
+    cursor: pointer;
+}
+
+/* =======================
+TABLE BOX MONTH 
+======================= */
+
+.jumlah-container {
+    width: 7vw;
+    min-width: 7vw;
+    max-width: 7vw;
+    /* border: 1px solid red; */
 }

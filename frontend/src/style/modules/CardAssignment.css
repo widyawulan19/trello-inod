@@ -1,18 +1,16 @@
 .card-user-manager {
-  /* padding: 0px 5px; */
-  /* border: 1px solid #ddd; */
-  background-color: white;
-  /* border: 1px solid #e5e7eb; */
+  background-color: var(--bg-section);
+  border: 1px solid var(--border);
   border-radius: 8px;
   width: 100%;
-  /* box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); */
 }
 
 .cum-header {
-  border-bottom: 1px solid #ddd;
+  /* border-bottom: 1px solid #ddd; */
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
-  background-image: linear-gradient(to right, #2d66e7, #3863e7, #425fe8, #4c5be7, #5557e7, #5d54e7, #6551e7, #6d4de7, #764ae7, #7e47e7, #8743e7, #8f3fe6);
+  background: var(--bg-icon2);
+  /* background-image: linear-gradient(to right, #2d66e7, #3863e7, #425fe8, #4c5be7, #5557e7, #5d54e7, #6551e7, #6d4de7, #764ae7, #7e47e7, #8743e7, #8f3fe6); */
   color: white;
   padding: 5px 10px;
   display: flex;
@@ -26,33 +24,40 @@
   justify-content: flex-start;
   /* border: 1px solid blue; */
   width: 60%;
-  gap: 7px;
+  gap: 5px;
+  color: var(--text);
 }
 
 .header-left .left-icon {
-  border: 1px solid rgba(255, 255, 255, 0.385);
-  border-radius: 8px;
-  background-color: rgba(255, 255, 255, 0.385);
-  color: #6a11cb;
+  background: var(--bg-icon2);
+  color: var(--text-white);
   padding: 3px;
+  border-radius: 6px;
 }
 
 .header-left h5 {
   margin: 0px;
   font-size: 12px;
   font-weight: bold;
+  color: var(--text-white) !important;
 }
 
 .cum-icon {
   border-radius: 4px;
   cursor: pointer;
+  font-size: 12px;
 }
 
+/* BODY  */
+.cum-body {
+  padding: 5px;
+  /* border: 1px solid blue; */
+}
 
 .card-user-manager .no-user {
   /* border: 1px solid red; */
   border-radius: 4px;
-  background-color: white;
+  background-color: var(--bg-section);
   padding: 10px 8px;
   /* width: 100%; */
   height: fit-content;
@@ -63,14 +68,14 @@
 }
 
 .no-user p {
-  font-size: 10px;
-  color: red;
+  font-size: 12px;
+  color: var(--text);
   text-align: center;
   /* width: 90%; */
 }
 
 .al-title {
-  border: 1px solid blue;
+  /* border: 1px solid blue; */
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -141,11 +146,14 @@
 }
 
 .dropdown-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
-  /* margin-top: 1rem; */
   /* border: 1px solid red; */
-  padding: 15px;
-  gap: 10px;
+  border-top: 1px solid var(--border);
+  padding: 5px;
+  gap: 5px;
 }
 
 .dropdown-container h5 {
@@ -155,18 +163,18 @@
 }
 
 .dropdown-container .dropdown-btn {
-  background-color: white;
-  border: 1px solid #ddd;
+  background-color: var(--bg);
+  border: 1px solid var(--border);
   border-radius: 4px;
   padding: 5px;
   font-size: 10px;
-  color: #6a11cb;
+  color: var(--text);
   font-weight: normal;
   width: 100%;
 }
 
 .dropdown-container .dropdown-btn:hover {
-  border: 1px solid #6a11cb;
+  background-color: var(--bg-section-hover);
 }
 
 
@@ -175,10 +183,10 @@
   top: 50%;
   right: 0%;
   z-index: 10;
-  width: 95%;
+  width: 100%;
   padding: 5px;
-  background-color: #fff;
-  border: 1px solid #d1d5db;
+  background-color: var(--bg-section);
+  border: 1px solid var(--border);
   /* border: 1px solid blue; */
   border-radius: 0.375rem;
   margin-top: 0.25rem;
@@ -228,22 +236,23 @@
    */
 
 .dropdown-list li {
-  padding: 3px;
+  padding: 3px 10px;
   cursor: pointer;
-  border: 1px solid #ABBAFA;
-  background-color: #EEF2FE;
+  border: 1px solid var(--bg-section);
+  background-color: var(--bg-section);
   /* border: 1px solid red; */
-  border-radius: 4px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 90%;
+  width: 100%;
+  color: var(--sub-text);
   margin: 3px 0px;
   font-size: 10px;
 }
 
 .dropdown-list li:hover {
-  background-color: #b3c5fa;
+  background-color: var(--bg-section-hover);
 }
 
 .assign-btn {
@@ -252,20 +261,22 @@
   gap: 5px;
   border-radius: 4px !important;
   color: white !important;
-  background: linear-gradient(to right, #2575fc, #6a11cb);
+  background: var(--bg-icon2);
+  /* background: linear-gradient(to right, #2575fc, #6a11cb); */
   border: none;
   cursor: pointer;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   cursor: pointer;
-  width: 100%;
+  width: 50%;
   font-size: 12px;
 }
 
 .assign-btn:hover {
+  box-shadow: 0px 4px 8px #5e12eb46;
   /* background-color: #2563eb; */
-  background: linear-gradient(to right, #6a11cb, #2575fc);
+  /* background: linear-gradient(to right, #6a11cb, #2575fc); */
 }
 
 .assign-btn:disabled {

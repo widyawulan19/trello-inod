@@ -6,15 +6,13 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    /* border: 1px solid #5D12EB; */
-    /* border: 1px solid red; */
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
-    padding: 10px 15px;
+    padding: 5px 15px;
     font-size: 12px;
     position: sticky;
     color: white;
-    background: linear-gradient(to bottom, #6E30DC, #5D12EB);
+    background: var(--primary);
 }
 
 .vmd-left {
@@ -23,11 +21,18 @@
 }
 
 .vmd-left h4 {
-    font-size: 15px;
+    font-size: 13px;
     margin: 0px;
     color: white;
     font-weight: bold;
     /* text-decoration: underline; */
+}
+
+.vmd-left p {
+    padding: 0px;
+    margin: 0px;
+    font-size: 12px;
+    font-weight: normal;
 }
 
 
@@ -40,21 +45,49 @@
     color: #051937;
 }
 
+/* =======================
+BUTTON ACTION
+======================= */
 .vmd-header .vmd-center {
     /* border: 1px solid green; */
+    gap: 3px;
     display: flex;
     align-items: center;
     justify-content: flex-end;
 }
 
-.create-btn {
-    border: 1px solid #6E30DC;
-    background: linear-gradient(to bottom, #042887, #051937);
-    color: white;
-    font-weight: bold;
-    padding: 7px;
+/* =======================
+TRANSFILE BUTTON
+======================= */
+.vmd-center .export {
+    /* border: 1px solid red; */
+}
+
+.export button {
+    padding: 5px 7px;
+    font-size: 12px;
+    font-weight: normal;
+    border: 1px solid var(--primary);
+    border-radius: 6px;
+    width: 100%;
     gap: 5px;
-    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* =======================
+CREATE BUTTON
+======================= */
+.vmd-center .create-btn-form {
+    border: 1px solid var(--primary);
+    /* background: linear-gradient(to bottom, #042887, #051937); */
+    background-color: var(--primary);
+    color: white;
+    font-weight: normal;
+    padding: 7px;
+    gap: 2px;
+    font-size: 12px;
     border-radius: 6px;
     cursor: pointer;
     /* margin: ; */
@@ -64,10 +97,58 @@
     position: relative;
 }
 
-.create-btn:hover {
-    background: linear-gradient(to bottom, #051937, #5D12EB);
-    box-shadow: 0px 4px 8px #5e12eb46;
+.create-btn-form:hover {
+    box-shadow: var(--box-shadow);
+    background-color: var(--primary-soft);
 }
+
+/* =======================
+CARD STATUS
+======================= */
+
+.vmd-center .card-status {
+    /* border: 1px solid red; */
+}
+
+
+.card-status .created-status {
+    border: 1px solid var(--primary);
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: normal;
+    padding: 5px 8px;
+    gap: 5px;
+    color: #fff;
+    cursor: not-allowed;
+    background-color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-status .created-status:hover {
+    box-shadow: var(--box-shadow);
+    background-color: var(--primary-soft);
+}
+
+.card-status .uncreated-status {
+    border: 1px solid var(--status-rejected-border);
+    padding: 5px 8px;
+    gap: 5px;
+    font-size: 12px;
+    font-weight: normal;
+    border-radius: 6px;
+    color: var(--status-rejected-border);
+    cursor: pointer;
+    font-weight: bold;
+    background: var(--status-rejected-bg);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
 
 .vmd-right {
     /* border: 1px solid blue; */
@@ -76,31 +157,9 @@
     justify-content: space-between;
 }
 
-.vmd-center .card-status {
-    /* border: 1px solid red; */
-}
-
-
-.card-status .created-status {
-    border: 1px solid #1454ea;
-    border-radius: 6px;
-    font-weight: bold;
-    padding: 5px 8px;
-    color: #fff;
-    /* background-color: #bec9e2; */
-    background-color: #1454ea;
-}
-
-.card-status .uncreated-status {
-    border: 1px solid #e21a13;
-    padding: 5px 8px;
-    font-weight: normal;
-    border-radius: 6px;
-    color: #fff;
-    font-weight: bold;
-    background-color: #e21a13;
-    /* background-color: white; */
-}
+/* =======================
+BODY MAIN
+======================= */
 
 /* BODY Tabel */
 .view-md-container .vmd-body {
@@ -116,6 +175,7 @@
 .vmd-body h4 {
     margin: 0px;
     font-size: 12px;
+    color: var(--sub-text);
 }
 
 .vmd-body .sec-informasi,
@@ -124,11 +184,11 @@
 .vmd-body .sec-price,
 .vmd-body .sec-reference,
 .vmd-body .sec-detail-project {
-    border: 1px solid #eee;
+    border: 1px solid var(--card-bg);
     border-radius: 8px;
     padding: 15px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    margin: 15px 10px;
+    /* box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); */
+    margin: 10px;
 }
 
 .sec-informasi h4,
@@ -150,17 +210,94 @@
     /* font-weight: bold; */
 }
 
+/* =======================
+DETAIL
+======================= */
+
 .vmd-detail {
-    /* border: 1px solid #eee; */
-    border-radius: 4px;
+    border-top: 1px solid var(--border);
+    /* border-radius: 4px; */
     padding: 5px;
     padding-left: 0px;
 }
 
+.vmd-detail .box-content-detail {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    width: 100%;
+    /* border: 1px solid blue; */
+}
+
+
+/* =======================
+REACT QUILL (READ ONLY)
+======================= */
+
+/* container utama */
+.my-detail-editor .ql-container {
+    background: var(--bg-section-hover);
+    border: 1px solid var(--bg-section-hover);
+
+    /* border: 1px solid blue; */
+    border-radius: 10px;
+    /* width: 100% !important; */
+    width: 60vw !important;
+
+}
+
+/* isi editor */
+.my-detail-editor .ql-editor {
+    color: var(--text) !important;
+    background: transparent !important;
+
+    /* padding rapi */
+    padding: 14px 16px;
+
+    /* teks */
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+/* 🚨 PAKSA SEMUA ELEMEN ANAK */
+.my-detail-editor .ql-editor * {
+    color: var(--text) !important;
+    background: transparent !important;
+}
+
+/* link */
+.my-detail-editor .ql-editor a {
+    color: var(--primary) !important;
+    text-decoration: underline;
+    background-color: #bdbef8 !important;
+}
+
+/* blockquote */
+.my-detail-editor .ql-editor blockquote {
+    border-left: 3px solid var(--primary);
+    padding-left: 12px;
+    color: var(--sub-text) !important;
+}
+
+/* code block */
+.my-detail-editor .ql-editor pre {
+    background: rgba(255, 255, 255, 0.04) !important;
+    color: var(--text) !important;
+    border-radius: 6px;
+}
+
+/* list */
+.my-detail-editor .ql-editor li {
+    color: var(--text) !important;
+}
+
+/* =================================== */
+
+
 .vmd-content {
-    /* border: 1px solid #eee; */
+    border-top: 1px solid var(--border);
     /* background: linear-gradient(to bottom, #6f30dc44, #5e12eb44); */
-    border-radius: 4px;
+    /* border-radius: 4px; */
     display: flex;
     align-items: center;
     padding: 5px;
@@ -179,8 +316,8 @@
 }
 
 .vmd-ref-content {
-    /* border: 1px solid #eee; */
-    border-radius: 4px;
+    border-top: 1px solid var(--border);
+    /* border-radius: 4px; */
     display: flex;
     /* flex-direction: row; */
     align-items: center;
@@ -196,7 +333,8 @@
 }
 
 .box-content .box-ref {
-    border: 1px solid #ddd;
+    border: 1px solid var(--bg-section-hover);
+    background-color: var(--bg-section-hover);
     border-radius: 6px;
     padding: 5px;
     margin-top: 3px;
@@ -233,29 +371,29 @@
 
 .box-content p {
     font-size: 10px;
-    color: #333;
+    color: var(--sub-text);
 }
 
 .box-content .box-box {
-    border: 1px solid #ddd;
+    background-color: var(--bg-section-hover);
+    border: 1px solid var(--bg-section-hover);
     border-radius: 6px;
     padding: 5px;
     margin-top: 3px;
     width: 170px;
+    cursor: pointer;
 }
 
 .box-box:hover {
-    border: 1px solid #6f30dc47;
-    box-shadow: 0px 4px 8px #6f30dc54;
+    box-shadow: var(--box-shadow);
 }
 
 .box-ref:hover {
-    border: 1px solid #6f30dc47;
-    box-shadow: 0px 4px 8px #6f30dc54;
+    box-shadow: var(--box-shadow);
 }
 
 .box-box p {
-    color: #333;
+    color: var(--sub-text);
     font-size: 12px;
 }
 
@@ -264,10 +402,14 @@
     white-space: normal;
     overflow-wrap: break-word;
     max-width: 100%;
-    color: #333;
+    color: var(--sub-text);
     font-size: 12px;
     /* height: 10vh; */
 }
+
+/* =======================
+FORM CREATE CARD
+======================= */
 
 .vmd-form {
     padding: 2px;
@@ -282,20 +424,23 @@
 }
 
 .box-ref ul {
-  list-style-type: disc;
-  margin-left: 20px;
-  padding-left: 20px;
+    list-style-type: disc;
+    margin-left: 20px;
+    padding-left: 20px;
 }
 
 .box-ref ol {
-  list-style-type: decimal;
-  margin-left: 20px;
-  padding-left: 20px;
+    list-style-type: decimal;
+    margin-left: 20px;
+    padding-left: 20px;
 }
 
 .box-ref p {
-  margin: 5px 0;
+    margin: 5px 0;
 }
+
+
+
 
 
 /* Large devices (desktops, ≥992px) */

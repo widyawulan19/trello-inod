@@ -62,6 +62,7 @@ import Dummy from '../notes/Dummy';
 import ResetCounter from '../fitur/ResetCounter';
 import MasterDataMusik from '../pages/MasterDataMusik';
 import MasterDataDesign from '../pages/MasterDataDesign';
+import LoadingTest from '../testing/LoadingTest';
 
 const AppRoutes=()=> {
   return (
@@ -132,6 +133,7 @@ const AppRoutes=()=> {
         <Route path='counter-music' element={<ResetCounter/>}/>
         <Route path='data-master-musik' element={<MasterDataMusik/>}/>
         <Route path='data-master-design' element={<MasterDataDesign/>}/>
+        <Route path='loading-test' element={<LoadingTest/>}/>
         </Route>
     </Routes>
   )

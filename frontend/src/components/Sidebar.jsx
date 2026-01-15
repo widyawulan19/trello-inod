@@ -8,6 +8,9 @@ import { styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { MdDeveloperMode } from 'react-icons/md';
+import logo from '../assets/LOGO1.png';
+import logo2 from '../assets/LOGO12.png';
+import { LuLayoutDashboard } from "react-icons/lu";
 
 // Tooltip
 const BootstrapTooltip = styled(({ className, ...props }) => (
@@ -49,21 +52,30 @@ const Sidebar = () => {
         className={`sidebar-container ${sidebarVisible ? 'show-sidebar' : 'close-sidebar'}`}
         onClick={handleOpenSidebar}
       >
+        <div className="logo-sidebar">
+          <img 
+            src={sidebarVisible ? logo : logo2} 
+            alt="Logo" 
+            className="logo-image" 
+            />
+        </div>
         <div className="sidebar-menu" onClick={handleStopPropagation}>
-          {[
-            { to: 'workspaces', icon: <HiOutlineSquaresPlus className='icon' />, label: 'Workspace', name: 'workspace' },
-            { to: 'data-member', icon: <HiOutlineUsers className='icon' />, label: 'Inod Member', name: 'member' },
-            { to: 'new-employee-schedules', icon: <HiOutlineCalendarDateRange className='icon' />, label: 'Member Schedule', name: 'schedule' },
+          {
+          [
+             { to: '/layout', icon: <LuLayoutDashboard className='sidebar-icon' />, label: 'Dashboard', name: 'Dashboard' },
+            { to: 'workspaces', icon: <HiOutlineSquaresPlus className='sidebar-icon' />, label: 'Workspace', name: 'workspace' },
+            { to: 'data-member', icon: <HiOutlineUsers className='sidebar-icon' />, label: 'Inod Member', name: 'member' },
+            { to: 'new-employee-schedules', icon: <HiOutlineCalendarDateRange className='sidebar-icon' />, label: 'Member Schedule', name: 'schedule' },
             // { to: '/employee-data', icon: <HiOutlineCalendarDateRange className='icon' />, label: 'Member Schedule', name: 'schedule' },
-            { to: 'data-marketing', icon: <HiOutlineCircleStack className='icon' />, label: 'Data Marketing', name: 'marketing' },
-            { to: 'marketing-design', icon: <HiOutlineChartBar className='icon' />, label: 'Marketing Design', name: 'marketing-design' },
-            { to: 'archive-data', icon: <HiOutlineArchiveBoxArrowDown className='icon' />, label: 'Archive Data', name: 'archive' },
-            { to: 'activity', icon: <HiOutlineCog8Tooth className='icon' />, label: 'User Activity', name: 'User Activity' },
-            { to: 'faq', icon: <HiAdjustmentsHorizontal className='icon' />, label: 'FaQ', name: 'faq' },
-            { to: 'data-delete', icon: <HiOutlineTrash className='icon' />, label: 'Trash', name: 'Trash' },
+            { to: 'data-marketing', icon: <HiOutlineCircleStack className='sidebar-icon' />, label: 'Data Marketing', name: 'marketing' },
+            { to: 'marketing-design', icon: <HiOutlineChartBar className='sidebar-icon' />, label: 'Marketing Design', name: 'marketing-design' },
+            { to: 'archive-data', icon: <HiOutlineArchiveBoxArrowDown className='sidebar-icon' />, label: 'Archive Data', name: 'archive' },
+            { to: 'activity', icon: <HiOutlineCog8Tooth className='sidebar-icon' />, label: 'User Activity', name: 'User Activity' },
+            { to: 'faq', icon: <HiAdjustmentsHorizontal className='sidebar-icon' />, label: 'FaQ', name: 'faq' },
+            { to: 'data-delete', icon: <HiOutlineTrash className='sidebar-icon' />, label: 'Trash', name: 'Trash' },
             // { to: 'marketing-chart', icon: <MdDeveloperMode className='icon' />, label: 'Testing Fitur', name: 'Testing Fitur' },
 
-            { to: 'counter-music', icon: <MdDeveloperMode className='icon' />, label: 'Testing Fitur', name: 'Testing Fitur' },
+            { to: 'loading-test', icon: <MdDeveloperMode className='sidebar-icon' />, label: 'Testing Fitur', name: 'Testing Fitur' },
             // { to: 'card-list', icon: <HiAdjustmentsHorizontal className='icon' />, label: 'Development', name: 'Dev page' },
           ].map((item) => (
             <div

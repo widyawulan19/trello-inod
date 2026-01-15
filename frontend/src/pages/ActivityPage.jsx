@@ -4,6 +4,7 @@ import '../style/pages/ActivityPage.css';
 import { useUser } from '../context/UserContext';
 import { MdOutlineHistory } from "react-icons/md";
 import OutsideClick from '../hook/OutsideClick';
+import LoadingSpinnerDot from '../utils/LoadingSpinnerDot';
 
 const UserActivityPage = () => {
   const { user } = useUser();
@@ -82,29 +83,11 @@ const UserActivityPage = () => {
             Pantau semua tindakan yang telah dilakukan oleh pengguna pada kartu, list, dan board secara real-time.
           </p>
         </div>
-
-        {/* <div className="ach-right">
-            <div className="custom-dropdown">
-              <div
-                className="dropdown-trigger"
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-              >
-                {renderActionLabel(selectedAction)}
-              </div>
-              {dropdownOpen && (
-                <ul className="dropdown-list">
-                  <li onClick={() => handleSelectAction('')}>Semua Aksi</li>
-                  <li onClick={() => handleSelectAction('create')}>Membuat</li>
-                  <li onClick={() => handleSelectAction('update')}>Memperbarui</li>
-                  <li onClick={() => handleSelectAction('delete')}>Menghapus</li>
-                </ul>
-              )}
-            </div>
-        </div> */}
       </div>
 
       {loading ? (
-        <p>Memuat aktivitas...</p>
+        <LoadingSpinnerDot text='Preparing your activity'/>
+        // <p>Memuat aktivitas...</p>
       ) : filteredActivities.length === 0 ? (
         // <p>{message}</p>
         <div className="no-activity">

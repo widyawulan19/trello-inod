@@ -20,11 +20,14 @@ import BootstrapTooltip from '../components/Tooltip';
 import { CgDatabase, CgDollar } from "react-icons/cg";
 import { IoEyeSharp } from "react-icons/io5";
 import {
+  HiAdjustmentsHorizontal,
   HiArrowsUpDown, HiChevronDown, HiChevronUp, HiChevronUpDown,
   HiCurrencyDollar, HiHandThumbUp, HiMiniTableCells, HiOutlineArchiveBox,
-  HiOutlineCircleStack, HiOutlinePencil, HiOutlinePlus, HiOutlineTrash
+  HiOutlineChartBar,
+  HiOutlineCircleStack, HiOutlineFunnel, HiOutlinePencil, HiOutlinePlus, HiOutlineTrash,
+  HiXMark
 } from 'react-icons/hi2';
-import { HiOutlineSearch } from 'react-icons/hi';
+import { HiOutlineDocumentReport, HiOutlineSearch } from 'react-icons/hi';
 import ViewDataMarketingDesign from './ViewDataMarketingDesign';
 import EditMarketingDesign from './EditMarketingDesign';
 import FormMarketingDesign from './FormMarketingDesign';
@@ -42,6 +45,8 @@ import NewEditMarketingDesign from './NewEditMarketingDesign';
 import { AiFillCheckCircle } from 'react-icons/ai';
 import { MdLockReset } from 'react-icons/md';
 import ResetCounterDesign from '../fitur/ResetCounterDesgin';
+import LoadingSpinnerDot from '../utils/LoadingSpinnerDot';
+import SearchSugesstion from '../fitur/SearchSugesstion';
 
 /* ---------------------------
   Memoized Row Component
@@ -58,6 +63,7 @@ const MarketingDesignRow = memo(({
   handleArchiveDataMarketingDesign,
   handleDeleteClick,
   hasCardId,
+  STATUS_CLASS,
   STATUS_BG,
   STATUS_COLORS
 }) => {
@@ -94,23 +100,12 @@ const MarketingDesignRow = memo(({
       <td className='input-container-box'>
         {item.input_by_name || "-"}
         {hasCardId(item) && (
-          <span style={{
-            backgroundColor: '#e0f7fa',
-            color: '#00796b',
-            padding: '4px 6px',
-            fontSize: '10px',
-            fontWeight:'bold',
-            borderRadius: '4px',
-            marginLeft: '5px',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '4px'
-          }}>
-            {'CARD'}
-            <HiHandThumbUp />
+          <span className="label-card">
+            CARD
           </span>
         )}
-        <button
+
+        {/* <button
           disabled={isExported}
           style={{
             backgroundColor: "transparent",
@@ -123,13 +118,26 @@ const MarketingDesignRow = memo(({
           }}
         >
           <AiFillCheckCircle />
+        </button> */}
+        <button
+          disabled={isExported}
+          className={`check-btn ${
+            isExported ? "success" : "active"
+          } ${isExported ? "disabled" : ""}`}
+        >
+          <AiFillCheckCircle />
         </button>
+
+        
       </td>
 
       <td className='acc-container' style={{textAlign:'center' }}>{item.acc_by_name}</td>
 
       <td className='status-container' style={{textAlign:'center' }}>
-        <span style={{
+        <span className={`status-badge status-${STATUS_CLASS[item.status_project_name?.trim()]}`}>
+          {item.status_project_name}
+        </span>
+        {/* <span style={{
           padding: '2px 8px',
           borderRadius: '12px',
           backgroundColor: STATUS_BG[item.status_project_name],
@@ -137,7 +145,7 @@ const MarketingDesignRow = memo(({
           fontWeight: 'bold'
         }}>
           {item.status_project_name}
-        </span>
+        </span> */}
       </td>
 
       <td className='buyer-name-container'>{item.buyer_name}</td>
@@ -151,7 +159,7 @@ const MarketingDesignRow = memo(({
       <td className='offer-type-container'>{item.offer_type_name}</td>
       <td className='style-container' style={{textAlign:'center' }}>{item.style_name}</td>
       <td className='resolution-container' style={{textAlign:'center' }}>{item.resolution}</td>
-      <td className='price-normal-container' style={{textAlign:'center', color:'#1E1E1E'}}>{item.price_normal}</td>
+      <td className='price-normal-container' style={{textAlign:'center'}}>{item.price_normal}</td>
       <td className='price-discount-container' style={{textAlign:'center', color:'#E53935'}}>{item.price_discount}</td>
       <td className='discount_percentage-container' style={{textAlign:'center', color:'#388E3C'}}>{item.discount_percentage}%</td>
       <td className='project-box-container' style={{textAlign:'center' }}>{item.project_type_name}</td>
@@ -159,26 +167,26 @@ const MarketingDesignRow = memo(({
       <td className='action-container' style={{textAlign:'center' }}>
         <div className="action-table">
           <BootstrapTooltip title='View Data' placement='top'>
-            <button onClick={()=> handleShowDetail(item.marketing_design_id)}>
-                <IoEyeSharp style={{color:'white'}}/>
+            <button className='btn-action-icon' onClick={()=> handleShowDetail(item.marketing_design_id)}>
+                <IoEyeSharp/>
             </button>
           </BootstrapTooltip>
 
           <BootstrapTooltip title='Edit Data' placement='top'>
-            <button onClick={()=> handleShowEdit(item.marketing_design_id)}>
-                <HiOutlinePencil style={{color:'white'}}/>
+            <button className='btn-action-icon' onClick={()=> handleShowEdit(item.marketing_design_id)}>
+                <HiOutlinePencil/>
             </button>
           </BootstrapTooltip>
 
           <BootstrapTooltip title='Archive Data' placement='top'>
-            <button onClick={()=>handleArchiveDataMarketingDesign(item.marketing_design_id)}>
-              <HiOutlineArchiveBox style={{color:'white'}}/>
+            <button className='btn-action-icon' onClick={()=>handleArchiveDataMarketingDesign(item.marketing_design_id)}>
+              <HiOutlineArchiveBox/>
             </button>
           </BootstrapTooltip>
 
           <BootstrapTooltip title='Delete Data' placement='top'>
-            <button onClick={()=>handleDeleteClick(item.marketing_design_id)}>
-              <HiOutlineTrash style={{color:'white'}}/>
+            <button className='btn-action-icon' onClick={()=>handleDeleteClick(item.marketing_design_id)}>
+              <HiOutlineTrash/>
             </button>
           </BootstrapTooltip>
         </div>
@@ -482,21 +490,39 @@ const MarketingDesign = () => {
   }, [dataMarketingDesign, showSnackbar, fetchData]);
 
   // STATUS constants
-  const STATUS_COLORS = useMemo(() => ({
-    "ACCEPTED ":'#2E7D32',
-    "NOT ACCEPTED":'#C62828',
-    "ON PROGRESS":'#C38D24',
-    "UNKNOWN":'#F5F5F5',
-    "CONFIRMED": "#1565C0"
-  }), []);
+  const STATUS_CLASS = {
+    "ACCEPTED": "accepted",
+    "NOT ACCEPTED": "rejected",
+    "ON PROGRESS": "progress",
+    "UNKNOWN": "unknown",
+    "CONFIRMED": "confirmed",
+  };
 
-  const STATUS_BG = useMemo(() => ({
-    "ACCEPTED ":'#C8E6C9',
-    "NOT ACCEPTED":'#FFCDD2',
-    "ON PROGRESS":'#FFDCB3',
-    "UNKNOWN":"#9E9E9E",
-    "CONFIRMED": "#BBDEFB"
-  }), []);
+
+  // const STATUS_COLORS = useMemo(() => ({
+  //   "ACCEPTED ":'#2E7D32',
+  //   "NOT ACCEPTED":'#C62828',
+  //   "ON PROGRESS":'#C38D24',
+  //   "UNKNOWN":'#F5F5F5',
+  //   "CONFIRMED": "#1565C0"
+  // }), []);
+
+  // const STATUS_BG = useMemo(() => ({
+  //   "ACCEPTED ": "rgba(200, 230, 201, 0.4)",    // #C8E6C9
+  //   "NOT ACCEPTED": "rgba(255, 205, 210, 0.4)", // #FFCDD2
+  //   "ON PROGRESS": "rgba(255, 220, 179, 0.4)",  // #FFDCB3
+  //   "UNKNOWN": "rgba(158, 158, 158, 0.4)",      // #9E9E9E
+  //   "CONFIRMED": "rgba(187, 222, 251, 0.4)",    // #BBDEFB
+  //   }), []);
+
+
+  // const STATUS_BG = useMemo(() => ({
+  //   "ACCEPTED ":'#C8E6C9',
+  //   "NOT ACCEPTED":'#FFCDD2',
+  //   "ON PROGRESS":'#FFDCB3',
+  //   "UNKNOWN":"#9E9E9E",
+  //   "CONFIRMED": "#BBDEFB"
+  // }), []);
 
   // UI render
   return (
@@ -504,9 +530,9 @@ const MarketingDesign = () => {
       <div className="md-header">
         <div className="mdh-left">
           <div className="mdh-title">
-            <div className="mdh-icon">
+            {/* <div className="mdh-icon">
               <HiOutlineCircleStack className='dm-mini' />
-            </div>
+            </div> */}
             <h3>{filterType}</h3>
           </div>
           <div className="mdh-des">
@@ -526,28 +552,34 @@ const MarketingDesign = () => {
 
         <div className="mdh-right">
           <div className="mdhr-btn">
-            <button onClick={() => navigate('/layout/marketing-design-report')}>REPORT</button>
-            <button onClick={handleShowForm}>NEW DATA</button>
-            <button onClick={handleShowDataMarketing}>SHOW DATA</button>
-            <button onClick={handleFilterButton}>FILTER DATA</button>
+            <button onClick={handleShowDataMarketing}> <HiAdjustmentsHorizontal /> SHOW DATA</button>
+            <button onClick={handleFilterButton}> <HiOutlineFunnel/> FILTER DATA</button>
+            <button onClick={() => navigate('/layout/marketing-design-report')}><HiOutlineDocumentReport/> REPORT</button>
+            {/* <button className='new-data-btn'  onClick={handleShowForm}> <HiOutlinePlus/> NEW DATA</button> */}
           </div>
 
           <div className="mdh-search-container">
-            <div className="mdh-search">
-              <HiOutlineSearch className='mdh-search-icon'/>
-              <input
-                type="search"
-                placeholder='Search here ...'
-                onChange={(e)=> handleFilterData(e.target.value)}
-              />
-            </div>
+            <SearchSugesstion
+              data={dataMarketingDesign}
+              onSearch={handleFilterData}
+              onSelect={(field, value) => {
+                setFilters((prev) => ({
+                  ...prev,
+                  buyer_name: "",
+                  order_number: "",
+                  account: "",
+                  [field]: value,
+                }));
+              }}
+            />
 
-            <div className="reset-btn" onClick={handleShowCounter}>
-              <MdLockReset className='reset-icon'/> <span>Reset Counter</span>
+            <div className='new-data-btn'  onClick={handleShowForm}> <HiOutlinePlus/> NEW DATA</div>
+            <div className="reset-btn-btn" onClick={handleShowCounter}>
+              <MdLockReset/> <span>RESET COUNTER</span>
             </div>
             <div className="data-master-btn" onClick={() => navigate('/layout/data-master-design')}>
-              <CgDatabase className='master-icon'/>
-              <span>Data Master</span>
+              <CgDatabase/>
+              <span>DATA MASTER</span>
             </div>
           </div>
 
@@ -560,11 +592,11 @@ const MarketingDesign = () => {
           {showData && (
             <div className='sd-cont' ref={showDataRef}>
               <div className="sd-header">
-                <h5><HiMiniTableCells className='h5-icon'/>Show Data By </h5>
-                <FaXmark onClick={handleShowDataMarketing} style={{cursor:'pointer'}}/>
+                <h5><HiMiniTableCells className='h5-icon'/>SHOW DATA BY </h5>
+                {/* <HiXMark onClick={handleShowDataMarketing} style={{cursor:'pointer'}}/> */}
               </div>
               <div className="sd-box">
-                <h5>Show Data By:</h5>
+                {/* <h5>Show Data By:</h5> */}
                 <button onClick={() => { setFilterType('DATA MARKETING DESIGN'); setShowData(false); }}>All Data</button>
                 <button onClick={() => { setFilterType('DATA DENGAN CARD'); setShowData(false); }}>Data Dengan Card</button>
                 <button onClick={() => { setFilterType('DATA TANPA CARD'); setShowData(false); }}>Data Tanpa Card</button>
@@ -582,7 +614,7 @@ const MarketingDesign = () => {
                     {shortType ? shortType.replace('_', ' ') : 'Filter Type'}
                   </div>
                   {dropdownOpen && (
-                    <ul className='ul-ftc'>
+                    <ul className='ul-ftc-box'>
                       <li className="li-ftc" onClick={() => { setShortType('buyer_name'); setDropdownOpen(false); }}>Buyer Name</li>
                       <li className="li-ftc" onClick={() => { setShortType('order_number'); setDropdownOpen(false); }}>Order Number</li>
                       <li className="li-ftc" onClick={() => { setShortType('account'); setDropdownOpen(false); }}>Account</li>
@@ -590,7 +622,7 @@ const MarketingDesign = () => {
                     </ul>
                   )}
                 </div>
-                <div className="ftc-input">
+                <div className="ftc-input-box">
                   {shortType && (
                     <input
                       type="text"
@@ -610,7 +642,8 @@ const MarketingDesign = () => {
 
       <div className="new-data">
         {loading ? (
-          <p>loading data...</p>
+          // <p>loading data...</p>
+          <LoadingSpinnerDot text='Preparing your data marketing'/>
         ) : (
           <div className='data-accept-design'>
             <table cellPadding='10' cellSpacing='0'>
@@ -655,8 +688,9 @@ const MarketingDesign = () => {
                       handleArchiveDataMarketingDesign={handleArchiveDataMarketingDesign}
                       handleDeleteClick={(id) => { setSelectedMarketingDesign(id); setShowDeleteConfirm(true); }}
                       hasCardId={hasCardId}
-                      STATUS_BG={STATUS_BG}
-                      STATUS_COLORS={STATUS_COLORS}
+                      STATUS_CLASS={STATUS_CLASS}
+                      // STATUS_BG={STATUS_BG}
+                      // STATUS_COLORS={STATUS_CLASS}
                     />
                   );
                 })}

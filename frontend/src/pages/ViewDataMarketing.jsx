@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { getAllLists, getDataMarketingById,getAllDataMarketingJoinedById, createCardFromMarketing, checkCardIdNullOrNot, exportDataMarketingToSheets, getMarketingWithExportStatus,checkMarketingExport ,addMarketingExport,addExportMarketing, getAllMarketingExports} from '../services/ApiServices';
 import { data, useNavigate, useParams } from 'react-router-dom';
 import '../style/pages/ViewDataMarketing.css'
-import { HiCube, HiCubeTransparent, HiOutlinePlus, HiOutlineXMark } from 'react-icons/hi2';
+import { HiCube, HiCubeTransparent, HiOutlinePlus, HiOutlineXMark, HiPlus, HiXMark } from 'react-icons/hi2';
 import BootstrapTooltip from '../components/Tooltip';
 import OutsideClick from '../hook/OutsideClick';
 import FormCreateCardMarketing from '../fitur/FormCreateCardMarketing';
@@ -13,6 +13,8 @@ import { useSnackbar } from '../context/Snackbar';
 import { AiFillCheckCircle } from 'react-icons/ai';
 import ReactQuill from 'react-quill-new';
 import "react-quill-new/dist/quill.snow.css";
+import { MdMarkEmailRead, MdMarkEmailUnread } from 'react-icons/md';
+import { IoCheckbox, IoCheckboxOutline } from 'react-icons/io5';
 
 
 const ViewDataMarketing=({marketingId, onClose, isExported, setIsExported,marketingTransfile, fetchDataTransfile,onExport})=> {
@@ -153,6 +155,23 @@ const modules = {
     ],
   };
 
+  // FUNCTION TO SHOW STATUS 
+  const STATUS_COLORS ={
+    "ACCEPTED ":'#2E7D32',
+    "NOT ACCEPTED":'#C62828',
+    "ON PROGRESS":'#C38D24',
+    "UNKNOWN":'#F5F5F5',
+    "CONFIRMED": "#1565C0"
+  }
+  const STATUS_BG = {
+    "ACCEPTED ":'#C8E6C9',
+    "NOT ACCEPTED":'#FFCDD2',
+    "ON PROGRESS":'#FFDCB3',
+    "UNKNOWN":"#9E9E9E",
+    "CONFIRMED": "#BBDEFB" 
+  }
+
+
 
   return (
     <div className='view-dm-container'>
@@ -160,31 +179,34 @@ const modules = {
       <div className="vmd-header">
         <div className="vdm-left">
           <h4>DETAIL DATA MARKETING</h4>
-          {/* nama buyer , akun, order type , code order */}
-          {dataMarketings.buyer_name} | {dataMarketings.account_name} | {dataMarketings.order_type_name} | {getLastFiveCodeOrder(dataMarketings.code_order)}
+          <p>
+            {dataMarketings.buyer_name} | {dataMarketings.account_name} | {dataMarketings.order_type_name} | {getLastFiveCodeOrder(dataMarketings.code_order)}
+          </p>
         </div>
         
         <div className="vdm-center">
-          <div className="export">
+          <div className="export-button">
               <button
+              className='btn-transfile'
                 onClick={() => onExport(marketingId)}
                 disabled={marketingTransfile.some(exp => exp.marketing_id === marketingId)} // disable jika sudah di-transfile
                 style={{
                   backgroundColor: marketingTransfile.some(exp => exp.marketing_id === marketingId) ? "#ccc" : "#1C7821",
-                  color: "white",
+                  color: marketingTransfile.some(exp => exp.marketing_id === marketingId) ? "#666" : "#fff",
                   cursor: marketingTransfile.some(exp => exp.marketing_id === marketingId) ? "not-allowed" : "pointer",
-                  border: "none",
-                  padding: "6px 7px",
-                  borderRadius: "6px"
                 }}
               >
                 {marketingTransfile.some(exp => exp.marketing_id === marketingId)
-                  ? "Sudah Transfile"
-                  : "Transfile to SpreedSheets"}
+                  ? <MdMarkEmailRead/>
+                  : <MdMarkEmailUnread/>
+                }
+                {marketingTransfile.some(exp => exp.marketing_id === marketingId)
+                  ? "SUDAH TRANSFILE"
+                  : "TRANSFILE TO SPREDSHEETs"}
               </button>
 
               <button className='cc-btn' onClick={()=> handleShowLists(marketingId)}>
-                {/* <HiOutlinePlus style={{fontSize:'15px'}}/> */}
+                <HiPlus/>
                 CREATE CARD
               </button>
 
@@ -193,9 +215,9 @@ const modules = {
                 {loadingCardId ? (
                   <p>Memeriksa...</p>
                 ): cardId ? (
-                  <button className='created'>Created</button>
+                  <button className='created'> <IoCheckbox/> CREATED</button>
                 ):(
-                  <button className='uncreated'>Not Created</button>
+                  <button className='uncreated'> <IoCheckboxOutline/> NOT CREATED</button>
                 )}
               </div>
 
@@ -209,7 +231,7 @@ const modules = {
         </div>
         <div className="vdm-right">
             <BootstrapTooltip title='Close' placement='top'>
-              <FaXmark onClick={onClose} className='vdm-icon'/>
+              <HiXMark onClick={onClose} className='vdm-icon'/>
             </BootstrapTooltip>
           </div>
       </div>
@@ -220,8 +242,8 @@ const modules = {
       <div className="vdm-body">
         {/* INFORMASI PESANAN CONTAINER  */}
         <div className="sec">
-          <h4>Informasi Pesanan</h4>
-          <div className="sec-content">
+          <h4>INFORMASI PESANAN</h4>
+          <div className="sec-container">
             <div className="box">
               <p>Project Number</p>
               <div className='box1'>
@@ -247,11 +269,10 @@ const modules = {
                   style={{
                     padding: '5px 8px',
                     borderRadius: '3px',
-                    backgroundColor: dataMarketings.accept_status_name ? '#C8E6C9' : '#FFCDD2',
-                    color: dataMarketings.accept_status_name ? '#2E7D32' : '#C62828',
+                    backgroundColor: STATUS_BG[dataMarketings?.accept_status_name],
+                    color:STATUS_COLORS[dataMarketings?.accept_status_name],
                     fontWeight: 'bold',
-                    textAlign:'center',
-                    margin:"0px"
+                    textAlign:'center'
                   }}
                 >
                   {dataMarketings.accept_status_name}
@@ -276,8 +297,8 @@ const modules = {
 
         {/* DETAIL PESANAN  */}
         <div className="sec">
-          <h4>Detail Pesanan</h4>
-          <div className="sec-content">
+          <h4>DETAIL PESANAN</h4>
+          <div className="sec-container">
             <div className="box">
               <p>Code Order</p>
               <div className='box1'>
@@ -344,8 +365,8 @@ const modules = {
 
         {/* INFORMASI HARGA  */}
         <div className="sec">
-          <h4>Informasi Harga dan Diskon</h4>
-          <div className="sec-content">
+          <h4>INFORMASI HARGA DAN DISKON</h4>
+          <div className="sec-container">
             <div className="box">
               <p>Price Normal</p>
               <div className='box1'>
@@ -382,8 +403,9 @@ const modules = {
 
         {/* REFERENSI DAN FILE PENDUKUNG  */}
         <div className="sec">
-          <h4>Referensi dan File Pendukung</h4>
-          <div className="sec-content-link">
+          <h4>REFERENSI DAN FILE PENDUKUNG</h4>
+          {/* <h4>Referensi dan File Pendukung</h4> */}
+          <div className="sec-container-link">
             <div className="box">
               <p>Gig Link</p>
               <div className='box1-ref'>
@@ -421,25 +443,25 @@ const modules = {
 
         {/* PROJECT DESCRIPTION  */}
         <div className="sec">
-          <h4>Project Description</h4>
+          <h4>PROJECT DESCRIPTION</h4>
           <div className="sec-desc-content">
             <div className="box" style={{width:'100%', padding:'0px 5px', display:'flex', alignItems:'center', justifyContent:'center'}}>
-              {/* <p>Description</p>
-              <div className='box1-des'>
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: linkify(dataMarketings.detail_project || ""),
-                  }}
-                />
-
-              </div> */}
-              <ReactQuill
+              
+              {/* <ReactQuill
                 className='my-editor'
                 value={dataMarketings.detail_project || ""}
                 readOnly={true}
                 theme="snow"
                 modules={{toolbar: false }}
                 style={{ minHeight: "150px", backgroundColor: "#f9f9f9", borderRadius: "6px" }}
+              /> */}
+              <ReactQuill
+                className='my-detail-editor'
+                value={dataMarketings.detail_project || ""}
+                // readOnly={true}
+                theme="snow"
+                modules={{toolbar: false }}
+                // style={{ minHeight: "150px", backgroundColor: "#f9f9f9", borderRadius: "6px" }}
               />
             </div>
           </div>

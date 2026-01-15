@@ -12,6 +12,339 @@ code {
     monospace;
 }
 
+/* Default: Light Theme */
+:root {
+  /* --bg: #F4F5F7; */
+  --bg: #F2F3F6;
+  --bg-section: #FFFFFF;
+  --bg-section-hover: #F0F1F4;
+  --bg-dark-hover: #d0d0d1;
+  /* --bg-sidebar: #F0ECF9; */
+  --bg-sidebar: #FFFFFF;
+  --border: #E2E4E9;
+  --border-sec: #5D12EB;
+
+  --text: #1A1A1A;
+  --sub-text: #363B47;
+  --sub-text2: #363B47;
+  --text-white: #FFFFFF;
+  --text-primary2: var(--primary);
+  --sub-text-grey: #5F5F5F;
+
+  --primary: #6D5FEA;
+  --primary-soft: #afa6fc;
+  --icon-card-primary: #6D5FEA;
+  --logo-bg: linear-gradient(135deg, #D5CCFF, #AFC6FF);
+  --logo-bg-gradient: var(--bg-icon2);
+  /* --logo-bg: #4B42A6; */
+
+  --text-primary: #111827;
+  --text-secondary: #6B7280;
+
+  --accent: #2563EB;
+  --accent-hover: #1E40AF;
+
+  --card-bg: #FFFFFF;
+  --card-border: rgba(17, 24, 39, 0.08);
+  --card-hover-border: rgba(176, 157, 253, 0.35);
+  --card-shadow: 0 6px 18px rgba(17, 24, 39, 0.06);
+
+
+  --input-bg: #F0F1F4;
+  --input-bg-hover: #FFFFFF;
+  --bg-icon: #F0ECF9;
+
+  --bg-icon2: linear-gradient(135deg, #6D5FEA 0%, #8B7CFF 100%);
+
+  --box-shadow-purple: 0px 4px 8px #6b11cb40;
+  --box-shadow: 0 2px 6px rgba(0, 0, 0, 0.07);
+  --red-soft: #f7dddf;
+  --red-bg: #F87171;
+  --dropdown-hover: #F3E8FF;
+
+  /* LINK TEXT  */
+  --link-text: #4345bc;
+  --link-bg: #ececf8;
+  --link-border: #ececf8;
+
+  /* GRAFIK  */
+  --area-design-color: #3b82f6;
+  --area-music-color: #a855f7;
+  --td-bg: var(--bg-section);
+
+  /* STATUS COLOR SYSTEM (FINAL) */
+  --status-accepted-bg: rgba(34, 197, 94, 0.15);
+  --status-accepted-border: #22C55E;
+  --status-accepted-text: #166534;
+
+  --status-confirmed-bg: rgba(59, 130, 246, 0.15);
+  --status-confirmed-border: #3B82F6;
+  --status-confirmed-text: #1D4ED8;
+
+  --status-progress-bg: rgba(245, 158, 11, 0.18);
+  --status-progress-border: #F59E0B;
+  --status-progress-text: #92400E;
+
+  --status-rejected-bg: rgba(239, 68, 68, 0.15);
+  --status-rejected-border: #EF4444;
+  --status-rejected-text: #991B1B;
+
+  --status-unknown-bg: rgba(107, 114, 128, 0.15);
+  --status-unknown-border: #6B7280;
+  --status-unknown-text: #374151;
+
+  /* STATUS PROJECT  */
+  /* ========== STATUS : ACCEPTED ========== */
+  --status-accepted-bg: #E6F9ED;
+  --status-accepted-text: #1E7F43;
+  --status-accepted-border: #9FE3B8;
+
+  /* ========== STATUS : HOLD ========== */
+  --status-hold-bg: #FFF4E5;
+  --status-hold-text: #B45309;
+  --status-hold-border: #FACC15;
+
+  /* ========== STATUS : CANCLE ========== */
+  --status-cancle-bg: #FDEAEA;
+  --status-cancle-text: #B42318;
+  --status-cancle-border: #FDA4AF;
+
+  /* ========== STATUS : ON PROGRESS ========== */
+  --status-on-progress-bg: #E8F0FE;
+  --status-on-progress-text: #1D4ED8;
+  --status-on-progress-border: #93C5FD;
+
+  /* ========== STATUS : REVISI ========== */
+  --status-revisi-bg: #F3E8FF;
+  --status-revisi-text: #7C3AED;
+  --status-revisi-border: #C4B5FD;
+
+  /* ========== STATUS : ONE HIT ========== */
+  --status-one-hit-bg: #ECFDF3;
+  --status-one-hit-text: #15803D;
+  --status-one-hit-border: #86EFAC;
+
+  /* ========== STATUS : PINDAH PRODUCER ========== */
+  --status-pindah-producer-bg: #F1F5F9;
+  --status-pindah-producer-text: #334155;
+  --status-pindah-producer-border: #CBD5E1;
+
+  /* ========== STATUS : REVISI IN CHAT ON PROGRESS ========== */
+  --status-revisi-chat-progress-bg: #EEF2FF;
+  --status-revisi-chat-progress-text: #4338CA;
+  --status-revisi-chat-progress-border: #A5B4FC;
+
+  /* ========== STATUS : REVISI IN CHAT ACCEPT ========== */
+  --status-revisi-chat-accept-bg: #ECFEFF;
+  --status-revisi-chat-accept-text: #0369A1;
+  --status-revisi-chat-accept-border: #67E8F9;
+
+  /* ========== STATUS : FINISH ========== */
+  --status-finish-bg: #E0F2FE;
+  --status-finish-text: #075985;
+  --status-finish-border: #7DD3FC;
+
+
+
+  /* LABEL CARD  */
+  --label-card-bg: #E6F6F3;
+  --label-card-border: #5FC9B5;
+  --label-card-text: #0F766E;
+
+  /* CHECK ICON  */
+  --check-active: #16A34A;
+  --check-success: #16A34A;
+  --check-disabled: #64748B;
+
+
+  /* STATUS CARD  */
+  /* --status-bg-opacity: 0.12; */
+  --status-bg-opacity: 0.30;
+  --status-text-strength: -90;
+  --status-border-strength: -40;
+
+  /* DUE DATE COLORS */
+  --due-red-border: #ef4444;
+  --due-red-bg: #fee2e2;
+  --due-red-text: #ef4444;
+  --due-orange-border: #f59e0b;
+  --due-orange-bg: #feeac7;
+  --due-orange-text: #f59e0b;
+  --due-blue-border: #3b82f6;
+  --due-blue-bg: #dbe8fe;
+  --due-blue-text: #3b82f6;
+  --due-normal-border: #22c55e;
+  --due-normal-bg: #dcfce8;
+  --due-normal-text: #22c55e;
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+
+  --bg: #1E222A;
+  --bg-section: #14171D;
+  --bg-section-hover: #2A2F38;
+  --bg-dark-hover: #2A2F38;
+  --bg-sidebar: #1A1D23;
+  --border: #2F3440;
+  --border-sec: #5D12EB;
+
+  --text: #BBBEC2;
+  --sub-text: #DEE1E6;
+  --sub-text2: #FFFFFF;
+  --text-white: #FFFFFF;
+  --text-primary2: #5D12EB;
+  --sub-text-grey: #7A7D81;
+
+  --primary: #3C31A3;
+  --primary-soft: #a297ff;
+  --icon-card-primary: #A5B4FC;
+  --logo-bg: #171A1F;
+  --logo-bg-gradient: #171A1F;
+  /* --card-bg: #14171D; */
+
+  --text-primary: #E5E7EB;
+  --text-secondary: #9CA3AF;
+
+  --accent: #38BDF8;
+  --accent-hover: #0EA5E9;
+
+  /* CARD  */
+  --card-bg: #1B1F2A;
+  --card-border: rgba(255, 255, 255, 0.06);
+  --card-hover-border: rgba(124, 92, 255, 0.35);
+
+  --input-bg: #14171D;
+  --input-bg-hover: #2A2F38;
+  --bg-icon: #372B56;
+  --bg-icon2: linear-gradient(135deg, #4F42C9 0%, #6D5FEA 100%);
+
+  --box-shadow-purple: 0px 4px 8px #6b11cb40;
+  --box-shadow: 0 2px 6px rgba(255, 255, 255, 0.06);
+  --red-soft: #EF4444;
+  --red-bg: #F87171;
+  --dropdown-hover: #7A3FFF;
+
+  /* LINK TEXT  */
+  --link-text: #a5b4fc;
+  --link-bg: #1e1b4b;
+  --link-border: #312e81;
+
+  /* GRAFIK  */
+  --area-design-color: #60a5fa;
+  --area-music-color: #c084fc;
+  --td-bg: var(--bg);
+  /* TABEL  */
+
+
+  /* STATUS COLOR SYSTEM (FINAL) */
+  --status-accepted-bg: rgba(34, 197, 94, 0.2);
+  --status-accepted-border: #4ADE80;
+  --status-accepted-text: #BBF7D0;
+
+  --status-confirmed-bg: rgba(96, 165, 250, 0.2);
+  --status-confirmed-border: #60A5FA;
+  --status-confirmed-text: #BFDBFE;
+
+  --status-progress-bg: rgba(251, 191, 36, 0.25);
+  --status-progress-border: #FBBF24;
+  --status-progress-text: #FEF3C7;
+
+  --status-rejected-bg: rgba(239, 68, 68, 0.2);
+  --status-rejected-border: #F87171;
+  --status-rejected-text: #FECACA;
+
+  --status-unknown-bg: rgba(156, 163, 175, 0.2);
+  --status-unknown-border: #9CA3AF;
+  --status-unknown-text: #E5E7EB;
+
+  /* STATUS PROJECT  */
+
+  /* ========== STATUS : ACCEPTED ========== */
+  --status-accepted-bg: #0F2F1E;
+  --status-accepted-text: #6EE7B7;
+  --status-accepted-border: #14532D;
+
+  /* ========== STATUS : HOLD ========== */
+  --status-hold-bg: #2A1D0A;
+  --status-hold-text: #FACC15;
+  --status-hold-border: #713F12;
+
+  /* ========== STATUS : CANCLE ========== */
+  --status-cancle-bg: #2A0F12;
+  --status-cancle-text: #FDA4AF;
+  --status-cancle-border: #7F1D1D;
+
+  /* ========== STATUS : ON PROGRESS ========== */
+  --status-on-progress-bg: #0F1E3A;
+  --status-on-progress-text: #93C5FD;
+  --status-on-progress-border: #1E3A8A;
+
+  /* ========== STATUS : REVISI ========== */
+  --status-revisi-bg: #24103A;
+  --status-revisi-text: #D8B4FE;
+  --status-revisi-border: #6D28D9;
+
+  /* ========== STATUS : ONE HIT ========== */
+  --status-one-hit-bg: #0F2F1A;
+  --status-one-hit-text: #86EFAC;
+  --status-one-hit-border: #166534;
+
+  /* ========== STATUS : PINDAH PRODUCER ========== */
+  --status-pindah-producer-bg: #1E293B;
+  --status-pindah-producer-text: #CBD5E1;
+  --status-pindah-producer-border: #334155;
+
+  /* ========== STATUS : REVISI IN CHAT ON PROGRESS ========== */
+  --status-revisi-chat-progress-bg: #1E1B4B;
+  --status-revisi-chat-progress-text: #A5B4FC;
+  --status-revisi-chat-progress-border: #3730A3;
+
+  /* ========== STATUS : REVISI IN CHAT ACCEPT ========== */
+  --status-revisi-chat-accept-bg: #042F2E;
+  --status-revisi-chat-accept-text: #67E8F9;
+  --status-revisi-chat-accept-border: #155E75;
+
+  /* ========== STATUS : FINISH ========== */
+  --status-finish-bg: #082F49;
+  --status-finish-text: #7DD3FC;
+  --status-finish-border: #075985;
+
+
+  /* LABEL CARD  */
+  --label-card-bg: rgba(20, 184, 166, 0.15);
+  --label-card-border: #14B8A6;
+  --label-card-text: #5EEAD4;
+
+  /* CHECK ICON  */
+  --check-active: #4ADE80;
+  --check-success: #4ADE80;
+  --check-disabled: #94A3B8;
+
+  /* STATUS CARD  */
+
+  /* --status-bg-opacity: 0.18; */
+
+  --status-bg-opacity: 0.30;
+  --status-text-strength: 90;
+  --status-border-strength: 40;
+
+  /* DUE DATE COLORS */
+  --due-red-border: #f87171;
+  --due-red-bg: rgba(239, 68, 68, 0.15);
+  --due-red-text: #fca5a5;
+  --due-orange-border: #fbbf24;
+  --due-orange-bg: rgba(245, 158, 11, 0.15);
+  --due-orange-text: #fcd34d;
+  --due-blue-border: #60a5fa;
+  --due-blue-bg: rgba(59, 130, 246, 0.15);
+  --due-blue-text: #93c5fd;
+  --due-normal-border: #4ade80;
+  --due-normal-bg: rgba(34, 197, 94, 0.15);
+  --due-normal-text: #86efac;
+}
+
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

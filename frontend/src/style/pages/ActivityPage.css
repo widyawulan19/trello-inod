@@ -2,21 +2,25 @@
     height: 97%;
     min-width: 80vw;
     position: relative;
-    background-color: white;
+    background-color: var(--bg);
     margin-left: 10px;
     margin-top: 10px;
     border-radius: 8px;
     padding: 5px 10px;
 }
 
+/* =======================
+HEADER
+======================= */
+
 .ac-header {
-    border: 1px solid #ddd;
-    border-radius: 16px;
-    padding: 10px 15px;
+    border: 1px solid var(--bg);
+    /* border-radius: 16px; */
+    padding: 5px 15px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    /* box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); */
 }
 
 .ac-header .ac-title {
@@ -29,23 +33,24 @@
 }
 
 .ac-title .ac-icon {
-    border: 1px solid #fff;
+    border: 1px solid var(--bg);
     border-radius: 8px;
     padding: 5px;
     font-size: 18px;
-    color: white;
-    background: linear-gradient(90deg, #7246eb, #532189)
+    color: var(--text-white);
+    background: var(--bg-icon2);
+    /* background: linear-gradient(90deg, #7246eb, #532189) */
 }
 
 .ac-title h2 {
-    color: #5D12EB;
+    color: var(--text);
     font-size: 20px;
     font-weight: bold;
 }
 
 .page-description {
     margin-top: 4px;
-    color: #555;
+    color: var(--sub-text);
     width: 100%;
     font-size: 13px;
 }
@@ -81,9 +86,13 @@
 }
 
 .no-activity h4 {
-    color: #7246eb;
+    color: var(--primary);
     /* text-decoration: italic; */
 }
+
+/* =======================
+BODY ACTIVITY
+======================= */
 
 .activity-table-container {
     overflow-x: auto;
@@ -105,8 +114,8 @@
 .activity-table th {
     position: sticky;
     top: 0;
-    background-color: #5D12EB;
-    color: white;
+    background-color: var(--primary);
+    color: var(--text-white);
     z-index: 1;
     font-weight: normal;
     text-align: center;
@@ -114,8 +123,8 @@
 
 .activity-table td {
     font-size: 12px;
-    color: #555;
-    border: 1px solid #ddd;
+    color: var(--sub-text);
+    border-bottom: 1px solid var(--border);
 }
 
 @media screen and (max-height: 600px) {

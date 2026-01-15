@@ -1,44 +1,57 @@
 .form-upload-container {
     margin: 0px;
-    width: 100%;
-    height: 100%;
+    width: 80%;
+    height: fit-content;
     gap: 5px;
+    padding: 0px;
+    padding-bottom: 10px;
     display: flex;
     flex-direction: column;
-    background-color: white;
+    /* background-color: white; */
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background-color: var(--bg-section);
+    box-shadow: var(--box-shadow);
 }
 
 .form-upload-container .form-upload-header {
-    /* border: 1px solid blue; */
+    background-color: var(--primary);
     display: flex;
     align-items: center;
     justify-content: space-between;
     font-size: 15px;
-    color: #333;
-    /* padding: 5px; */
-    margin-bottom: 5px;
+    padding: 10px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    color: var(--text-white);
 }
 
 .form-upload-header h3 {
     margin: 0px;
     font-weight: bold;
-    color: #333;
+    color: var(--text-white);
     font-size: 12px;
 }
 
-.form-upload-header .close-icon {
+.form-upload-header .ci-icon {
     cursor: pointer;
+    color: var(--text-white);
 }
 
+.ci-icon:hover {
+    color: var(--text);
+}
+
+
 .form-upload-container .form-upload-input {
-    border: 1px dashed #8688fa;
+    border: 1px dashed var(--primary);
     border-radius: 8px;
     padding: 25px;
+    margin: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: 10px;
 }
 
 .fu-icon {
@@ -54,18 +67,23 @@
     /* margin-top: 5px; */
 }
 
+.input-con label {
+    color: var(--primary);
+}
+
 .custom-upload-button {
     display: inline-block;
     padding: 10px;
     font-size: 12px;
-    background: white;
+    background: none;
     color: #8f3fe6;
     border-radius: 6px;
     cursor: pointer;
     font-weight: bold;
 }
-.custom-upload-button:hover{
-    text-decoration:underline;
+
+.custom-upload-button:hover {
+    text-decoration: underline;
 }
 
 .input-con input {
@@ -89,33 +107,160 @@
 .button-upload button {
     padding: 5px 25px;
     border-radius: 8px;
-    border: 1px solid #8688fa;
+    border: none;
     color: white;
-    background: linear-gradient(to right, #6a11cb, #2575fc);
+    background: var(--bg-icon2);
+    /* background: linear-gradient(to right, #6a11cb, #2575fc); */
     font-size: 13px;
 }
 
+.button-upload button:hover {
+    box-shadow: var(--box-shadow-purple);
+}
 
+
+/* =======================
+NOTIF SUCCESS
+======================= */
+/* =======================
+   NOTIFICATION
+======================= */
+.upload-notif {
+    display: flex;
+    gap: 12px;
+    margin-top: 1rem;
+    padding: 14px 16px;
+    border-radius: 10px;
+    animation: fadeSlideIn 0.45s ease forwards;
+}
+
+.upload-notif a {
+    display: block;
+    margin-top: 4px;
+    font-size: 14px;
+    color: inherit;
+    opacity: 0.85;
+}
+
+/* SUCCESS */
+.upload-notif.success {
+    background: #ecfdf5;
+    color: #065f46;
+}
+
+.upload-notif.success .icon {
+    color: #10b981;
+}
+
+
+/* =======================
+PREVIEW SECTION 
+======================= */
+
+.preview-section {
+    margin-top: 1rem;
+}
+
+.preview-section .ps-name {
+    display: flex;
+    gap: 5px;
+    padding: 0px;
+    margin: 0px;
+    /* border: 1px solid blue; */
+}
+
+.ps-name strong {
+    color: var(--text);
+    font-size: 12px;
+    font-weight: normal;
+}
+
+.ps-name span {
+    color: var(--sub-text);
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.ps-img {
+    margin-top: 5px;
+    padding: 2px;
+}
+
+.ps-img img {
+    max-width: 120px;
+    border-radius: 8px;
+    border: 3px solid var(--primary);
+    box-shadow: var(--box-shadow-purple);
+}
+
+/* =======================
+ANIMATE
+======================= */
 /* animate  */
 .loading-spinner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: #555;
-  font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #555;
+    font-size: 14px;
 }
 
 .spinner {
-  border: 3px solid #f3f3f3; /* background */
-  border-top: 3px solid #3498db; /* warna animasi */
-  border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  animation: spin 1s linear infinite;
-  margin-bottom: 0.5rem;
+    border: 3px solid #f3f3f3;
+    /* background */
+    border-top: 3px solid #3498db;
+    /* warna animasi */
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 0.5rem;
 }
 
+
+/* =======================
+ANIMATION
+======================= */
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes fadeSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-6px) scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes shake {
+    0% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-4px);
+    }
+
+    50% {
+        transform: translateX(4px);
+    }
+
+    75% {
+        transform: translateX(-3px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
 }

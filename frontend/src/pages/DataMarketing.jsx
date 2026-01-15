@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { getAllDataMarketing,getAllDataMarketingJoined, deleteDataMarketing, getDataMarketingAccepted, getDataMarketingWithCardId, getDataMarketingWithCardIdNull, getDataMarketingRejected, archiveDataMarketing, getAllMarketingExports, exportDataMarketingToSheets, addExportMarketing, updateMarketingPosition } from "../services/ApiServices";
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import "../style/pages/DataMarketing.css";
-import { HiArrowsUpDown, HiChevronUpDown, HiMiniTableCells, HiOutlineArchiveBox, HiOutlineCircleStack, HiOutlinePencil, HiOutlinePlus, HiOutlineTrash, HiOutlineXCircle } from "react-icons/hi2";
-import { HiChevronDown, HiChevronUp, HiOutlineFilter, HiOutlineSearch } from "react-icons/hi";
+import { HiAdjustmentsHorizontal, HiArrowsUpDown, HiChevronUpDown, HiMiniTableCells, HiOutlineArchiveBox, HiOutlineChartBar, HiOutlineCircleStack, HiOutlineFunnel, HiOutlinePencil, HiOutlinePlus, HiOutlineTrash, HiOutlineXCircle } from "react-icons/hi2";
+import { HiChevronDown, HiChevronUp, HiOutlineDocumentReport, HiOutlineFilter, HiOutlineSearch } from "react-icons/hi";
 import BootstrapTooltip from "../components/Tooltip";
 import ViewDataMarketing from "./ViewDataMarketing";
 import EditMarketingForm from "./EditMarketingForm";
@@ -20,6 +20,9 @@ import { AiFillCheckCircle } from "react-icons/ai";
 import FormMarketingExample from "../example/FormMarketingExample";
 import { MdLockReset } from "react-icons/md";
 import ResetCounter from "../fitur/ResetCounter";
+import LoadingSpinnerDot from "../utils/LoadingSpinnerDot";
+import { CgDatabase } from "react-icons/cg";
+import SearchSuggestionMarketing from "../fitur/SearchSuggestionMarketing";
 
 const DataMarketing = () => {
   const location = useLocation();
@@ -264,10 +267,6 @@ const cancleDeleteDataMarketing = () =>{
   setSelectedMarketingId(null)
 }
 
-//fungsi untuk mengetahui data memiliki card Id
-const hasCardId = (item) => {
-  return item.card_id !== null && item.card_id !== undefined && item.card_id !== "";
-};
 
 
 //fetch marketing
@@ -349,6 +348,11 @@ const handleToReportPage = () =>{
   navigate('/layout/marketing-report')
 }
 
+// helper hasCardId
+const hasCardId = useCallback((item) => {
+  return item.card_id !== null && item.card_id !== undefined && item.card_id !== "";
+}, []);
+
 // PERHITUNGAN PRICE 
 const getPriceDiscount = (price_normal, discount) => {
   if (!price_normal || !discount) return 0; // kalau ga ada diskon, potongan = 0
@@ -415,18 +419,14 @@ const handleExportToSheets = async (marketingId) => {
 };
 
   // FUNCTION TO SHOW STATUS 
-  const STATUS_COLORS ={
-    "ACCEPTED ":'#2E7D32',
-    "NOT ACCEPTED":'#C62828',
-    "ON PROGRESS":'#C38D24',
-    "UNKNOWN":'#F5F5F5',
-  }
-  const STATUS_BG = {
-    "ACCEPTED ":'#C8E6C9',
-    "NOT ACCEPTED":'#FFCDD2',
-    "ON PROGRESS":'#FFDCB3',
-    "UNKNOWN":"#9E9E9E",
-  }
+ // STATUS constants
+  const STATUS_CLASS = {
+    "ACCEPTED": "accepted",
+    "NOT ACCEPTED": "rejected",
+    "ON PROGRESS": "progress",
+    "UNKNOWN": "unknown",
+    "CONFIRMED": "confirmed",
+  };
 
 
   return (
@@ -434,15 +434,9 @@ const handleExportToSheets = async (marketingId) => {
       <div className="dm-panel">
         <div className="dm-left">
           <div className="dml-title">
-            <div className="dm-icon">
-              <HiOutlineCircleStack className="dm-mini" />
-            </div>
-             
              <h3>{filterType}</h3>
-            {/* <h4>DASHBOARD DATA MARKETING</h4> */}
           </div>
           <div className="dml-desc">
-            {/* <strong>Selamat datang di pusat informasi Data Marketing !</strong> */}
             <p>
              Selamat datang di pusat informasi Data Marketing ! <br /> Halaman ini dirancang untuk meningkatkan transparansi dan efisiensi dalam proses pemasaran—dari awal order hingga proyek selesai.
             </p>
@@ -453,43 +447,47 @@ const handleExportToSheets = async (marketingId) => {
           {showFormCreate && (
               <div className="dmf-cont">
                   <div className="dmf-content">
-                      {/* <FormDataMarketing onClose={handleCloseForm} fetchData={fetchData}/> */}
                       <FormMarketingExample onClose={handleCloseForm} fetchData={fetchDataMarketing}/>
                   </div>
               </div>
           )}
 
+
+        {/* PANEL BUTTON  */}
         <div className="dmc-right">
           <div className="dmcr-btn">
-            <button onClick={handleToReportPage}>REPORT DATA</button>
-            <button onClick={handleShowForm}>
-                {/* <HiOutlinePlus className="dm-icon"/> */}
-                NEW DATA
-            </button>
-            <button onClick={handleShowDataMarketing}>
-              {/* <HiMiniTableCells className="dm-icon"/> */}
-              SHOW DATA
-            </button>
-            <button onClick={handleFilterButton}>
-              {/* <HiChevronUpDown className="dm-icon"/> */}
-              FILTER DATA
-            </button>
+            <button onClick={handleShowDataMarketing}> <HiAdjustmentsHorizontal/> SHOW DATA</button>
+            <button onClick={handleFilterButton}> <HiOutlineFunnel/> FILTER DATA</button>
+            <button onClick={handleToReportPage}> <HiOutlineDocumentReport/> REPORT</button>
           </div>
+
           <div className="mdc-search-container">
-            <div className="dm-search-box">
+            {/* <div className="dm-search-box">
               <HiOutlineSearch className="dms-icon"/>
                 <input
                 type="search"
                 placeholder="Search here ..."
                 onChange={(e) => handleFilterData(e.target.value)}
                 />
+            </div> */}
+            <SearchSuggestionMarketing
+              data={dataMarketing}
+              onSearch={handleFilterData}
+              onSelect={(field, value) => {
+                handleFilterData(value); // filter langsung
+              }}
+            />
+
+            <div className="new-data-btn" onClick={handleShowForm}>
+              <HiOutlinePlus/> NEW DATA 
             </div>
-            <button className="reset-btn" onClick={handleShowCounterReset}>
-              <MdLockReset className="reset-icon"/> Reset Counter
-            </button>
-            <button className="reset-btn" onClick={handleToDataMaster}>
-              Data Master
-            </button>
+            <div className="reset-btn" onClick={handleShowCounterReset}>
+              <MdLockReset/>  RESET COUNTER
+            </div>
+            <div className="reset-btn" onClick={handleToDataMaster}>
+              <CgDatabase/>
+              DATA MASTER
+            </div>
             
           </div>
 
@@ -502,10 +500,10 @@ const handleExportToSheets = async (marketingId) => {
 
           {/* SHOW DATA */}
           {showData && (
-            <div className="show-data-container">
+            <div className="show-data-container" ref={showDataRef}>
               <div className="sdc-header">
-                <h5><HiMiniTableCells className="h5-icons"/> Show Data By</h5>
-                <FaXmark onClick={handleCloseShowData} style={{cursor:'pointer'}}/>
+                <h5><HiMiniTableCells className="h5-icons"/> SHOW DATA BY</h5>
+                {/* <FaXmark onClick={handleCloseShowData} style={{cursor:'pointer'}}/> */}
               </div>
               <div className="sdc-container">
                 <button onClick={() => { setFilterType("SEMUA DATA MARKETING"); setShowData(false); }}>
@@ -517,32 +515,15 @@ const handleExportToSheets = async (marketingId) => {
                 <button onClick={() => { setFilterType("DATA MARKETING TANPA CARD"); setShowData(false); }}>
                   Data Marketing Tanpa Card
                 </button>
-                <button onClick={() => { setFilterType("DATA MARKETING ACCEPTED"); setShowData(false); }}>
-                  Data Marketing Accepted
-                </button>
-                <button onClick={() => { setFilterType("DATA MARKETING NOT ACCEPTED"); setShowData(false); }}>
-                  Data Marketing Not Accepted
-                </button>
               </div>
             </div>
           )}
 
-          {/* SHOW FORM  */}
-          {/* {showFormCreate && (
-              <div className="dmf-cont">
-                  <div className="dmf-content">
-                      <FormMarketingExample onClose={handleCloseForm} fetchData={fetchDataMarketing}/>
-                  </div>
-              </div>
-          )} */}
 
           {/* SHOW DATA FILTER  */}
           {showFilter && (
-            <div className="filter-container">
-              <div className="filter-header">
-                <h5><HiChevronUpDown className="h5-icons"/>Filter Data By</h5>
-                <FaXmark onClick={handleCloseFilterButton} style={{cursor:'pointer'}}/>
-              </div>
+            <div className="filter-container" ref={showFilterRef}>
+              <div className="filter-header"> <h5>Filter By:</h5> </div>
               <div className="filter-content">
                 <div className="filter-box">
                   <button onClick={()=> setDropdownOpen(!dropdownOpen)} className="filter-btn">
@@ -551,8 +532,7 @@ const handleExportToSheets = async (marketingId) => {
                   </button>
                   {dropdownOpen && (
                       <ul className='ul-filter'>
-                        <li
-                          className="li-filter"
+                        <li className="li-filter"
                           onClick={() => {
                             setShortType('buyer_name');
                             setDropdownOpen(false);
@@ -598,12 +578,14 @@ const handleExportToSheets = async (marketingId) => {
             </div>
           )}
         </div>
+
       </div>
       
 
       <div className="data-marketing-form">
         {loading ? (
-          <p>Loading data...</p>
+          // <p>Loading data...</p>
+          <LoadingSpinnerDot text="Loading Data Marketing Musik"/>
         ):(
           <div className="dm-container">
             <table cellPadding="10" cellSpacing="0" className="dm-table">
@@ -693,35 +675,17 @@ const handleExportToSheets = async (marketingId) => {
                       </td>
                     <td className="input-box-container" >
                       {item.input_by_name || "-"}
-                      {hasCardId(item) && (
-                        <span
-                          style={{
-                            backgroundColor: '#e0f7fa',
-                            color: '#00796b',
-                            padding: '4px 6px',
-                            fontSize: '10px',
-                            fontWeight: 'bold',
-                            borderRadius: '4px',
-                            marginLeft: '5px',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '4px'
-                          }}
-                        >
-                          CARD
-                        </span>
-                      )}
+                        {hasCardId(item) && (
+                          <span className="label-card">
+                            CARD
+                          </span>
+                        )}
+
                       <button
                         disabled={isExported}
-                        style={{
-                          backgroundColor: "transparent",
-                          color: isExported ? "green" : "white",
-                          cursor: isExported ? "not-allowed" : "pointer",
-                          padding: "4px 8px",
-                          border: "none",
-                          borderRadius: "4px",
-                          fontSize:'15px',
-                        }}
+                        className={`check-btn ${
+                          isExported ? "success" : "active"
+                        } ${isExported ? "disabled" : ""}`}
                       >
                         <AiFillCheckCircle />
                       </button>
@@ -729,14 +693,8 @@ const handleExportToSheets = async (marketingId) => {
 
                     <td className="acc-box-container">{item.acc_by_name}</td>
                     <td className="status-box-container" style={{textAlign:'center' }}>
-                        <span style={{
-                          padding: "2px 8px",
-                          borderRadius: "12px",
-                          color:STATUS_COLORS[item.accept_status_name],
-                          backgroundColor:STATUS_BG[item.accept_status_name],
-                          fontWeight: "bold",
-                        }}>
-                          {item.accept_status_name}
+                         <span className={`status-badge status-${STATUS_CLASS[item.accept_status_name?.trim()]}`}>
+                            {item.accept_status_name}
                         </span>
                       </td>
                     <td className="buyer-box">{item.buyer_name}</td>
@@ -749,7 +707,7 @@ const handleExportToSheets = async (marketingId) => {
                     <td className="offer-type-box">{item.offer_type_name}</td>
                     <td className="jenis-track-box" >{item.track_type_name}</td>
                     <td className="genre-box">{item.genre_name}</td>
-                    <td className="price-normal-box" style={{textAlign:'center', color:'#1E1E1E'}}>{item.price_normal}</td>
+                    <td className="price-normal-box" style={{textAlign:'center'}}>{item.price_normal}</td>
                     <td className="price-discount-box" style={{textAlign:'center', color:'#E53935'}}>
                       {getPriceDiscount(item.price_normal, item.discount)
                             ? ` ${getPriceDiscount(item.price_normal, item.discount)}`

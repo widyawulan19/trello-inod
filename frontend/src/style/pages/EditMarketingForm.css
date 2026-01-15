@@ -6,20 +6,29 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px;
+    padding: 5px 10px;
     font-size: 12px;
     position: sticky;
-    color: white;
-    background: linear-gradient(to bottom, #6E30DC, #5D12EB);
-    border: 1px solid #5D12EB;
+    color: var(--text-white);
+    /* background: linear-gradient(to bottom, #6E30DC, #5D12EB); */
+    border: 1px solid var(--primary);
+    background: var(--primary);
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
 }
 
-.em-header h4 {
+.em-header .em-left {
+    gap: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.em-left h4 {
     margin: 0px;
-    color: white;
-    font-weight: bold;
+    margin-right: 10px;
+    font-size: 13px;
+    font-weight: normal;
 }
 
 .em-icon {
@@ -63,13 +72,11 @@ form h4 {
 }
 
 .form-edit .form-content {
-    /* border: 1px solid red;
-    width: 100%;
-    margin: 20px 0px; */
-    border: 1px solid #eee;
+    /* border: 1px solid red; */
+    border: 1px solid var(--card-bg);
     border-radius: 8px;
     padding: 15px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    /* box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); */
     margin: 15px 10px;
 }
 
@@ -104,6 +111,8 @@ form h4 {
 }
 
 
+
+
 .sec-content .box-content {
     /* border: 1px solid red; */
     border-radius: 4px;
@@ -119,6 +128,7 @@ form h4 {
     font-size: 10px !important;
     margin-bottom: 3px;
     font-weight: normal !important;
+    color: var(--sub-text);
     /* color: grey; */
 }
 
@@ -129,6 +139,7 @@ form h4 {
     width: 90%;
     font-size: 12px;
     cursor: pointer;
+    color: var(--text);
 }
 
 .box-content input:hover {
@@ -163,8 +174,10 @@ form h4 {
     box-shadow: 0px 4px 8px #6f30dc54;
 }
 
-.sec-content-edit-ref .box-content-ref {
-    /* border: 1px solid red; */
+/* =======================
+DESCRIPTION
+======================= */
+.sec-content .box-content {
     border-radius: 4px;
     padding: 2px;
     display: flex;
@@ -173,24 +186,43 @@ form h4 {
     width: 100%;
 }
 
+.sec-content-edit-ref .box-content-ref {
+    /* border: 1px solid red; */
+    border-radius: 4px;
+    padding: 2px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 100% !important;
+}
+
+.box-content-ref label {
+    color: var(--sub-text);
+    font-size: 10px !important;
+    margin-bottom: 3px;
+    font-weight: normal !important;
+}
+
 .sec-content-edit-ref textarea {
-    border: 1px solid #ddd;
+    border: 1px solid var(--border);
+    background-color: var(--bg-section-hover);
     border-radius: 8px;
     padding: 5px;
     /* width: 100%; */
+    color: var(--sub-text);
     min-height: 15vh;
     font-size: 12px;
     cursor: pointer;
 }
 
 .sec-content-edit-ref textarea:hover {
-    box-shadow: 0px 4px 8px #6f30dc54;
+    box-shadow: var(--box-shadow);
 }
 
 .sec-content-edit-ref textarea:focus {
     outline: none;
-    border: 1px solid #6f30dc47;
-    box-shadow: 0px 4px 8px #6f30dc54;
+    border: 1px solid var(--bg-section-hover);
+    box-shadow: var(--box-shadow);
 }
 
 /* BUTTON SUBMIT  */
@@ -361,143 +393,285 @@ form h4 {
     border-radius: 4px;
 }
 
+/* =======================
+DROPDOWN CUSTOM STYLE 
+======================= */
 
-/* DROPDOWN CUSTOM STYLE  */
 .dropdown-custom-container {
     /* border: 1px solid blue; */
     position: relative;
 }
 
 .dropdown-custom-container .dropdown-trigger {
-    border: 1px solid #ddd;
-    background-color: white;
+    background: var(--bg-section-hover);
+    border: 1px solid var(--border);
+    /* border: 1px solid red; */
+    /* color: var(--text) !important; */
+    /* color: red !important; */
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 5px;
     border-radius: 8px;
     cursor: pointer;
+
 }
 
 .dropdown-trigger:hover {
-    /* border: 1px solid #5D12EB; */
-    background: linear-gradient(to bottom, #6f30dc44, #1248eb50);
-    box-shadow: 0px 4px 8px #6f30dc54;
+    box-shadow: var(--box-shadow);
+    background: var(--bg-section-hover);
 }
 
 .dropdown-trigger:focus {
     outline: none;
-    border: 1px solid #6f30dc47;
-    box-shadow: 0px 4px 8px #6f30dc54;
+    border: 1px solid var(--border);
+    box-shadow: var(--box-shadow);
 }
 
 .dropdown-trigger span {
     font-size: 12px;
-    color: #333;
+    color: var(--text);
+    /* color: var(--sub-text-grey); */
 }
 
-.dropdown-custom-container .menu-ul {
+.menu-custom-dropdown {
     position: absolute;
-    background-color: white;
-    z-index: 1000;
-    /* border: 1px solid blue; */
-    border: 1px solid #ddd;
+    border: 1px solid var(--border);
     border-radius: 8px;
     padding: 5px;
-    margin-top: 5px;
-    min-width: 18vw;
-    /* width: 100%; */
-    overflow-y: auto;
-    min-height: 10vh;
-    background-color: white;
-    box-shadow: 0px 4px 8px #6b11cb40;
+    z-index: 100;
+    gap: 5px;
+    height: 20vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: var(--bg-section);
+    /* box-shadow: var(--box-shadow); */
 }
 
-.menu-ul li {
+/* =======================
+INPUT SEACH
+======================= */
+.menu-custom-dropdown .menu-search {
     /* border: 1px solid red; */
     width: 100%;
 }
 
-.menu-ul input {
-    width: 100%;
-    border: 1px solid #ddd;
+.menu-search .input-menu-ul {
+    font-size: 10px;
+    /* color: red !important; */
+    padding: 5px;
+    background: var(--bg-section);
     border-radius: 8px;
-    padding: 5px;
-    margin-top: 3px;
-    font-size: 12px;
+    border: 1px solid var(--border);
 }
 
-.menu-ul input:hover {
-    border: 1px solid #5D12EB;
+.input-menu-ul:hover,
+.input-menu-ul:focus {
+    background: var(--bg-section-hover);
 }
 
-.menu-ul .menu-option {
+/* =======================
+MENU DROPDOWN MARKETING
+======================= */
+.menu-ul {
     /* border: 1px solid red; */
-    padding: 5px;
-    min-height: 10vh;
+    width: 100%;
     height: 15vh;
     overflow-y: auto;
 }
 
 .li-option {
-    /* border: 1px solid red; */
     border-radius: 8px;
     padding: 4px 8px;
-    font-size: 12px;
+    font-size: 10px;
     cursor: pointer;
+    color: var(--sub-text);
 }
 
 .li-option:hover {
-    background-color: #eee;
+    background: var(--bg-section-hover);
 }
 
-
-/* NEW MENU  */
-.new-li {
+/* =======================
+BTN ADD
+======================= */
+.btn-new-add {
+    /* border: 1px solid red; */
+    position: sticky;
+    bottom: 0px;
+    z-index: 100;
+    gap: 5px;
     width: 100%;
     display: flex;
-    padding: 5px;
-    margin-top: 5px;
-    border-top: 1px solid #ddd;
-    gap: 5px;
+    align-items: center;
+    justify-content: center;
 }
 
-.new-li input {
+.btn-new-add .input-new {
     width: 100%;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+    font-size: 10px;
+    color: var(--text);
     padding: 5px;
-    margin-top: 3px;
-    font-size: 12px;
-}
-
-.new-li input:hover {
-    border: 1px solid #5D12EB;
-}
-
-.new-li button {
-    padding: 3px 8px;
+    background: var(--bg-section);
     border-radius: 8px;
-    background-color: #5D12EB;
-    color: white;
-    font-size: 12px;
+    border: 1px solid var(--border);
 }
 
-/* END DROPDOWN CUSTOM STYLE  */
+.input-new:hover,
+.input-new:focus {
+    background: var(--bg-section-hover);
+}
 
+.btn-new-add button {
+    /* width: 100%; */
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid var(--bg-section);
+    background-color: var(--primary);
+    color: var(--text-white);
+    font-size: 10px;
+    cursor: pointer;
+}
+
+.btn-new-add button:hover {
+    box-shadow: var(--box-shadow);
+}
+
+
+/* =======================
+NO DATA
+======================= */
+.no-data {
+    height: 100%;
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.no-data p {
+    padding: 0px;
+    margin: 0px;
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--red-bg) !important;
+}
+
+/* ======================================= */
 
 /* SNOW REACT QUILL  */
-.my-editor .ql-container.ql-snow {
-    border: 1px solid #f2f1ff;
+.my-editor-edit .ql-container.ql-snow {
+    border: 1px solid var(--border);
 }
 
-.my-editor .ql-toolbar.ql-snow {
-    border: 1px solid #f2f1ff;
+.my-editor-edit .ql-toolbar.ql-snow {
+    background-color: var(--bg-section-hover);
+    border: 1px solid var(--border);
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
-    background-color: #f2f1ff;
-    color: white;
+    color: var(--text);
 }
+
+/* =======================
+REACT QUILL (READ ONLY)
+======================= */
+
+.form-content .sec-content-detail {
+    /* border: 1px solid red; */
+    border-radius: none;
+    /* border: 1px solid var(--card-bg); */
+    /* border-radius: 8px; */
+    /* padding: 15px; */
+    /* box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); */
+    /* margin: 15px 10px; */
+}
+
+/* container utama */
+.my-editor-edit .ql-container {
+    background: var(--bg-section-hover);
+    /* border: 1px solid var(--bg-section-hover); */
+
+    /* border: 1px solid blue; */
+    /* border-radius: 10px; */
+    /* width: 100% !important; */
+    /* width: 60vw !important; */
+
+}
+
+/* isi editor */
+.my-editor-edit .ql-editor {
+    color: var(--text) !important;
+    background: transparent !important;
+
+    /* padding rapi */
+    padding: 14px 16px;
+
+    /* teks */
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+/* 🚨 PAKSA SEMUA ELEMEN ANAK */
+.my-editor-edit .ql-editor * {
+    color: var(--text) !important;
+    background: transparent !important;
+}
+
+/* link */
+.my-editor-edit .ql-editor a {
+    color: var(--primary) !important;
+    text-decoration: underline;
+    background-color: #bdbef8 !important;
+}
+
+/* blockquote */
+.my-editor-edit .ql-editor blockquote {
+    border-left: 3px solid var(--primary);
+    padding-left: 12px;
+    color: var(--sub-text) !important;
+}
+
+/* code block */
+.my-editor-edit.ql-editor pre {
+    background: rgba(255, 255, 255, 0.04) !important;
+    color: var(--text) !important;
+    border-radius: 6px;
+}
+
+/* list */
+.my-editor-edit .ql-editor li {
+    color: var(--text) !important;
+}
+
+
+/* =======================
+BUTTON SUBMIT EDIT
+======================= */
+.btn-submit-edit {
+    /* border: 1px solid red; */
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-submit-edit button {
+    background: var(--primary);
+    border-radius: 6px;
+    padding: 5px 15px;
+    font-size: 13px;
+    color: var(--text-white);
+    cursor: pointer;
+}
+
+.btn-submit-edit button:hover {
+    box-shadow: var(--box-shadow);
+}
+
+
 
 
 /* MEDIA QUERY  */

@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { checkCardIdNullOrNotForDesign, getExportMarketingDesign, getMarketingDesignById } from '../services/ApiServices'
-import {HiPlus } from 'react-icons/hi2'
+import {HiPlus, HiXMark } from 'react-icons/hi2'
 import { FaXmark } from "react-icons/fa6";
+import { MdMarkEmailRead, MdMarkEmailUnread } from "react-icons/md";
 import BootstrapTooltip from '../components/Tooltip'
 import '../style/pages/ViewDataMarketingDesign.css'
 import OutsideClick from '../hook/OutsideClick';
@@ -9,6 +10,7 @@ import FormCreateCardDesign from '../fitur/FormCreateCardDesign'
 import ExportMarketingDesignById from '../exports/ExportMarketingDesignById';
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
+import { IoCheckbox, IoCheckboxOutline } from 'react-icons/io5';
 
 
 const ViewDataMarketingDesign=({marketingDesignId, onClose, fetchMarketingDesign, handleExportToSheet, isExported,setIsExported, designTransfile, setDesignTransfile})=> {
@@ -20,6 +22,7 @@ const ViewDataMarketingDesign=({marketingDesignId, onClose, fetchMarketingDesign
     const [loadingCardId, setLoadingCardId] = useState(true)
     const [showCardForm, setShowCardForm] = useState({})
     const showCreateRef = OutsideClick(()=> setShowCardForm(false))
+    const quillRef = useRef(null);
 
 
     //FUNCTION 
@@ -186,32 +189,34 @@ const renderTextWithLinks = (text) => {
       <div className="vmd-header">
         <div className="vmd-left">
           <h4>DETAIL DATA MARKETING DESIGN</h4>
-          {dataMarketingDesign.buyer_name} | {dataMarketingDesign.account_name} | {dataMarketingDesign.order_type_name} | {getLastFiveCodeOrder(dataMarketingDesign.code_order)}
+          <p>
+            {dataMarketingDesign.buyer_name} | {dataMarketingDesign.account_name} | {dataMarketingDesign.order_type_name} | {getLastFiveCodeOrder(dataMarketingDesign.code_order)}
+          </p>
         </div>
+
+        {/* button action    */}
         <div className="vmd-center">
-          <div className="export" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <div className="export">
             <button
               onClick={() => handleExportToSheet(marketingDesignId)}
               disabled={designTransfile.some(exp => exp.marketing_design_id === marketingDesignId)} 
               style={{
                 backgroundColor: designTransfile.some(exp => exp.marketing_design_id === marketingDesignId) ? "#ccc" : "#1C7821",
                 color: designTransfile.some(exp => exp.marketing_design_id === marketingDesignId) ? "#666" : "#fff",
-                padding: "6px 7px",
-                border: "none",
-                borderRadius: "6px",
-                fontWeight:'bold',
                 cursor: designTransfile.some(exp => exp.marketing_design_id === marketingDesignId) ? "not-allowed" : "pointer"
               }}
             >
-
               {designTransfile.some(exp => exp.marketing_design_id === marketingDesignId)
-                ? "Sudah Transfile"
-                : "Transfile to SpreedSheets"}
+                ? <MdMarkEmailRead/>
+                : <MdMarkEmailUnread/>}
+              {designTransfile.some(exp => exp.marketing_design_id === marketingDesignId)
+                ? "SUDAH TRANSFILE"
+                : "TRANSFILE TO SPREDSHEET"}
             </button>
           </div>
 
-          <button className='create-btn' onClick={()=> showCreateForm(marketingDesignId)}>
-            {/* <HiPlus size={15}/> */}
+          <button className='create-btn-form' onClick={()=> showCreateForm(marketingDesignId)}>
+            <HiPlus/>
             CREATE CARD
           </button>
           {showCardForm[marketingDesignId]&& (
@@ -224,18 +229,17 @@ const renderTextWithLinks = (text) => {
               {loadingCardId ? (
                 <p>Memeriksa...</p>
               ): cardId ? (
-                <button className='created-status'>Created</button>
+                <button className='created-status'><IoCheckbox/> CREATED</button>
               ):(
-                <button className='uncreated-status'>Not Created</button>
+                <button className='uncreated-status'><IoCheckboxOutline/> NOT CREATED</button>
               )}
           </div>
-
         </div>
         
           
         <div className="vmd-right">
           <BootstrapTooltip title='Close' placement='top'>
-            <FaXmark onClick={onClose} className='vmd-icon'/>
+            <HiXMark onClick={onClose} className='vmd-icon'/>
           </BootstrapTooltip>
         </div>
 
@@ -243,8 +247,10 @@ const renderTextWithLinks = (text) => {
       
       {/* FORM CREATE  */}
       <div className="vmd-body">
+
+        {/* INFORMASI PESANAN  */}
         <div className="sec-informasi">
-          <h4>Informasi Pesanan</h4>
+          <h4>INFORMASI PESANAN</h4>
           <div className="vmd-content" >
             <div className="box-content" >
               <p>Project Number</p>
@@ -308,8 +314,10 @@ const renderTextWithLinks = (text) => {
             
           </div>
         </div>
+
+        {/* DETAIL PESANAN */}
         <div className="sec-detail-pesanan">
-          <h4>Detail Pesanan</h4>
+          <h4>DETAIL PESANAN</h4>
           <div className="vmd-content">
             <div className="box-content">
               <p>Jumlah Design</p>
@@ -349,8 +357,10 @@ const renderTextWithLinks = (text) => {
             </div>
           </div>
         </div>
+
+        {/* DETAIL DESIGN  */}
         <div className="sec-detail-design">
-          <h4>Detail Design</h4>
+          <h4>DETAIL DESIGN</h4>
           <div className="vmd-content">
             <div className="box-content">
               <p>Style</p>
@@ -396,8 +406,9 @@ const renderTextWithLinks = (text) => {
           </div>
         </div>
 
+        {/* REFERENCE  */}
         <div className="sec-reference">
-          <h4>Reference</h4>
+          <h4>REFERENCE</h4>
           <div className="vmd-ref-content">
             <div className="box-content">
               <p>Reference</p>
@@ -437,28 +448,19 @@ const renderTextWithLinks = (text) => {
 
           </div>
         </div>
+
+        {/* DETAIL PROJECT */}
         <div className="sec-detail-project">
-          <h4>Detail Project</h4>
+          <h4>DETAIL PROJECT</h4>
           <div className="vmd-detail">
-            <div className="box-content" style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
-              {/* <p>Detail Project</p> */}
-              {/* <div className="box-ref" >
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: linkify(dataMarketingDesign.detail_project || ""),
-                  }}
-                  style={{fontSize:'12px'}}
-                />
-              </div> */}
+            <div className="box-content-detail">
               <ReactQuill
-                className="my-editor"
+                className="my-detail-editor"
                 theme="snow"
                 value={dataMarketingDesign?.detail_project || ""}
                 readOnly={true}
                 modules={{ toolbar: false }} // sembunyikan toolbar
-                style={{ minHeight: "150px", backgroundColor: "#f9f9f9", borderRadius: "6px" }}
               />
-
             </div>
           </div>
         </div>

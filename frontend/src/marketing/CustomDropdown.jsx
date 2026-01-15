@@ -40,27 +40,25 @@ const CustomDropdown = ({
   return (
     <div className="dropdown-custom-container" ref={ref}>
       {/* Dropdown Trigger */}
-      <div
-      className='dropdown-trigger'
-        onClick={() => setIsOpen(!isOpen)}
-      >
+      <div className='dropdown-trigger' onClick={() => setIsOpen(!isOpen)}>
         <span>{options.find(o => o.id === value)?.name || placeholder}</span>
         <span className={isOpen ? "rotate-180 transition-transform" : "transition-transform"}>▼</span>
       </div>
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <ul className='menu-ul'>
+        <ul className='menu-custom-dropdown'>
           {/* Search Input */}
-          <li>
+          <div className="menu-search">
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={searchPlaceholder}
               disabled={loading}
+              className="input-menu-ul"
             />
-          </li>
+          </div>
 
           {/* Loading */}
           {loading && <li className="p-2 text-center text-gray-500">Loading...</li>}
@@ -71,17 +69,19 @@ const CustomDropdown = ({
           )}
 
            {/* List options */}
-          <div className="menu-option">
-          {!loading && filteredOptions.map((o) => (
-            
-              <li
-                key={o.id}
-                className='li-option'
-                onClick={() => handleSelect(o.id)}
-              >
-                {o.name}
-              </li>
-          ))}
+          <div className="menu-ul">
+            <ul>
+              {!loading && filteredOptions.map((o) => (
+
+                  <li
+                    key={o.id}
+                    className='li-option'
+                    onClick={() => handleSelect(o.id)}
+                  >
+                    {o.name}
+                  </li>
+              ))}
+            </ul>
           </div>
 
           {/* Add new */}

@@ -3,6 +3,8 @@ import ReactQuill from 'react-quill-new';
 import "quill/dist/quill.snow.css";
 import { createMessage, deleteMessage, getAllCardChat, updateMessage, uploadChatMedia } from '../services/ApiServices';
 import '../style/fitur/NewRoomChat.css';
+import '../style/fitur/EditChatBox.css';
+import '../style/fitur/ReplyChatBox.css';
 import { FaXmark } from 'react-icons/fa6';
 import { IoArrowUpOutline, IoClose, IoReturnDownBackSharp, IoTrash } from "react-icons/io5";
 import { useSnackbar } from '../context/Snackbar';
@@ -40,7 +42,7 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
   const [editText, setEditText] = useState('');
   const [showEditEmojiPicker, setShowEditEmojiPicker] = useState(null);
   //preview (optional UI preview outside editor)
-  const [previewImage, setPreviewImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
 
   const handleImagePreview = (e) => {
   const file = e.target.files[0];
@@ -98,6 +100,26 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
     setEditText('');
     setShowEditEmojiPicker(null);
   };
+
+  const handleCancelReply = (parentId) => {
+    setReplyTo(null);
+
+    // reset isi reply
+    setReplyMessage(prev => ({
+      ...prev,
+      [parentId]: ""
+    }));
+
+    // reset pending file reply (kalau dipakai)
+    setReplyPendingFiles(prev => ({
+      ...prev,
+      [parentId]: []
+    }));
+
+    // tutup emoji picker reply
+    setShowReplyEmojiPicker(null);
+  };
+
 
   // fungsi show emoji 
   const handleShowEmoji = () => {
@@ -237,14 +259,14 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
   const handleUploadFromEditor = (e, target = "main", fromToolbar = false) => {
     console.log("=== handleUploadFromEditor TERPANGGIL ===", { target });
 
-  if (fromToolbar) {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = "image/*";
-    input.onchange = (ev) => handleUploadFromEditor(ev, target, false); // dari toolbar sudah selesai
-    input.click();
-    return;
-  }
+    if (fromToolbar) {
+      const input = document.createElement("input");
+      input.type = "file";
+      input.accept = "image/*";
+      input.onchange = (ev) => handleUploadFromEditor(ev, target, false); // dari toolbar sudah selesai
+      input.click();
+      return;
+    }
 
   // CASE 2: Dipanggil dari <input type="file">
   const file = e.target.files?.[0];
@@ -385,12 +407,20 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
 
   const renderChats = (chatList, level = 0) => chatList.map(chat => (
     <div
+      className={`chat-message-wrapper ${level > 0 ? 'is-reply' : ''}`}
+      key={chat.id}
+    >
+      {/* GARIS THREAD */}
+      {level > 0 && <div className="reply-thread-line" />}
+    
+
+    <div
       className={`chat-message ${level > 0 ? 'chat-reply' : ''} ${chat.user_id === userId ? 'chat-own' : ''}`}
       key={chat.id}
       style={{
-        marginLeft: `${level * 30}px`,
-        backgroundColor: 'white',
-        border: `1px solid ${level > 0 ? 'white' : '#eee'}`,
+        // marginLeft: `${level * 30}px`,
+        // backgroundColor: 'red',
+        // border: `1px solid ${level > 0 ? 'white' : '#eee'}`,
         boxShadow: level > 0 ? 'none' : '0 1px 3px rgba(0, 0, 0, 0.1)',
         borderRadius: '8px',
         padding: '10px',
@@ -418,7 +448,7 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
                   modules={modules}
                   formats={formats}
                   placeholder="Edit pesan..."
-                  className="my-editor"
+                  className="my-editor-edit"
                 />
               </div>
 
@@ -427,7 +457,7 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
                   {/* <label className="upload-btn"><TiAttachmentOutline/>
                     <input type="file" accept="image/*" hidden onChange={e => handleUploadFromEditor(e, chat.id)} />
                   </label> */}
-                  <label htmlFor="file-upload" className="upload-btn" style={{ cursor: "pointer" }}>
+                  {/* <label htmlFor="file-upload" className="upload-btn" style={{ cursor: "pointer" }}>
                     <TiAttachmentOutline />
                   </label>
                   <input
@@ -436,7 +466,7 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
                     accept="image/*"
                     style={{ display: "none" }}
                     onChange={(e) => handleUploadFromEditor(e, "main")}
-                  />
+                  /> */}
                   <button className='btn-icon' onClick={() => handleShowEditEmoji(chat.id)}>
                     😎
                   </button>
@@ -520,7 +550,7 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
             <BsFillReplyFill/> Reply
           </button>
         )}
-        <button className="chat-reply-btn" style={{color:'red'}} onClick={() => handleDeleteChat(chat.id)}>
+        <button className="chat-reply-btn" style={{color:'#F87171'}} onClick={() => handleDeleteChat(chat.id)}>
           <IoTrash/> Delete
         </button>
       </div>
@@ -537,7 +567,7 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
                 modules={modules}
                 formats={formats}
                 placeholder="Tulis balasan..."
-                className="my-editor"
+                className="my-editor-reply"
               />
             </div>
             <div className="editor-actions">
@@ -546,15 +576,15 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
                   <input type="file" accept="image/*" hidden onChange={e => handleUploadFromEditor(e, chat.id)} />
                 </label> */}
                  <div className="more-act">
-              <label className="upload-btn" style={{ cursor: "pointer"}}>
-                <TiAttachmentOutline />
-                <input
-                  type="file"
-                  accept="image/*"
-                  style={{ display: "none" }}
-                  onChange={(e) => handleUploadFromEditor(e, "reply")}
-                />
-              </label>
+                  {/* <label className="upload-btn" style={{ cursor: "pointer"}}>
+                    <TiAttachmentOutline />
+                    <input
+                      type="file"
+                      accept="image/*"
+                      style={{ display: "none" }}
+                      onChange={(e) => handleUploadFromEditor(e, "reply")}
+                    />
+                  </label> */}
                 <button className='btn-icon' onClick={() => handleShowReplyEmoji(chat.id)}>
                   😎
                 </button>
@@ -574,11 +604,17 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
                 <span key={i} onClick={() => insertEmoji(emoji, chat.id)}>{emoji}</span>
               ))}
             </div>
-          )}          
+          )}  
+
+          {/* CANCLE REPLY          */}
+          <div className="cancle-reply-box">
+            <button className='cancle-reply' onClick={() => handleCancelReply(chat.id)}> <IoClose/> Cancle Reply </button>
+          </div>
         </div>
       )}
       {chat.replies?.length > 0 && renderChats(chat.replies, level + 1)}
     </div>
+  </div>
   ));
 
   if (loading) return <p className="chat-loading">Loading chats...</p>;
@@ -594,12 +630,30 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
           <h3>Chat Room (Comment)</h3>
         </div>
         
-        <FaXmark onClick={onClose} style={{cursor:'pointer', fontSize:'15px', color:'#2c0895'}}/>
+        <FaXmark onClick={onClose} className='ct-icon'/>
       </div>
 
       <div className="chat-list" ref={chatListRef}>
         {chats.length === 0 ? <p className="chat-empty">No chats yet.</p> : renderChats(chats)}
       </div>
+
+      {/* IMAGE PREVIEW MODAL */}
+    {imagePreview && (
+      <div className="image-preview-modal">
+        <img src={imagePreview.url} alt="preview" />
+
+        <button
+          className="remove-preview"
+          onClick={() => {
+            setImagePreview(null);
+            setPendingFiles([]);
+          }}
+        >
+          <IoClose />
+        </button>
+      </div>
+    )}
+
 
       {/* ✅ Toolbar & Editor gabung */}
       <div className="chat-toolbar-container">
@@ -613,20 +667,21 @@ const NewRoomChat = ({ cardId, userId, onClose }) => {
               modules={modules}
               formats={formats}
               placeholder="Tulis pesan..."
-              className="my-editor"
+              className="my-editor-tool"
             />
           </div>
           <div className="editor-actions">
             <div className="more-act">
-              <label className="upload-btn" style={{ cursor: "pointer"}}>
+              {/* <div className="upload-btn" style={{ cursor: "pointer"}}>
                 <TiAttachmentOutline />
                 <input
                   type="file"
                   accept="image/*"
                   style={{ display: "none" }}
+
                   onChange={(e) => handleUploadFromEditor(e, "main")}
                 />
-              </label>
+              </div> */}
               <button className='btn-icon' onClick={handleShowEmoji}>
                 😎
               </button>

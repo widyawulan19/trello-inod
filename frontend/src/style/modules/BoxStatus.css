@@ -13,9 +13,42 @@
     justify-content: flex-start;
     font-size: 8px;
     font-weight: bold;
-    border: 1px solid transparent;
+    border: 1px solid var(--bg-section);
 }
 
+.sp-box:hover {
+    border: 1px solid var(--bg-section-hover);
+    background-color: var(--bg-section-hover);
+}
+
+.priority-high {
+    background: var(--status-rejected-bg);
+    border: 1px solid var(--status-rejected-border);
+    color: var(--status-rejected-text);
+}
+
+.priority-medium {
+    background: var(--status-confirmed-bg);
+    border: 1px solid var(--status-confirmed-border);
+    color: var(--status-confirmed-text);
+}
+
+.priority-low {
+    background: var(--status-progress-bg);
+    border: 1px solid var(--status-progress-border);
+    color: var(--status-progress-text);
+}
+
+.priority-no\ priority {
+    background: var(--status-unknown-bg);
+    border: 1px solid var(--status-unknown-border);
+    color: var(--status-unknown-text);
+}
+
+.priority-icon {
+    font-size: 120x;
+    color: currentColor;
+}
 
 
 /* STATUS  CARD */

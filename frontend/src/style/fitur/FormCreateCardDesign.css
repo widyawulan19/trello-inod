@@ -1,12 +1,11 @@
 .form-card-design {
   padding: 5px;
-  /* border: 1px solid #5D12EB; */
-  border: 1px solid #ddd;
+  border: 1px solid var(--bg-section);
   border-radius: 6px;
   max-width: 800px;
   /* height: 500px; */
   margin: auto;
-  background-color: #fff;
+  background-color: var(--bg-section);
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
 }
 
@@ -17,7 +16,7 @@
   align-items: center;
   padding: 5px;
   margin-bottom: 15px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--border);
 }
 
 .cc-head .cc-title {
@@ -25,15 +24,15 @@
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  color: #333;
+  color: var(--sub-text);
 }
 
 .cc-title .cch-icon {
-  border: 1px solid white;
+  /* border: 1px solid white; */
   border-radius: 8px;
   padding: 5px;
-  color: white;
-  background: linear-gradient(90deg, #7246eb, #532189);
+  color: var(--sub-text);
+  /* background: linear-gradient(90deg, #7246eb, #532189); */
 }
 
 .mini-icon {

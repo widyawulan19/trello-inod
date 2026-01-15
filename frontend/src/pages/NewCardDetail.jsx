@@ -1,32 +1,22 @@
  import React, { useEffect, useRef, useState } from 'react'
-import { FiUsers } from "react-icons/fi";
-import { HiChatBubbleLeftRight, HiChevronDown, HiChevronUp, HiCog8Tooth, HiMiniArrowLeftStartOnRectangle, HiMiniChatBubbleLeftRight, HiMiniListBullet, HiMiniPhoto, HiOutlineArchiveBox, HiOutlineArrowsPointingOut, HiOutlineCalendar, HiOutlineChevronRight, HiOutlineCreditCard, HiOutlineListBullet, HiOutlineSquare2Stack, HiOutlineTrash, HiOutlineXMark, HiPaperClip, HiPlus, HiTag, HiXMark } from 'react-icons/hi2';
-import { HiDotsHorizontal } from "react-icons/hi";
+import { HiChatBubbleLeftRight, HiChevronDown, HiChevronUp, HiMiniArrowLeftStartOnRectangle, HiMiniListBullet, HiMiniPhoto, HiOutlineArchiveBox, HiOutlineCalendar, HiOutlineChevronRight, HiOutlineLockClosed, HiOutlineSquare2Stack, HiOutlineTrash, HiOutlineXMark, HiPlus, HiTag} from 'react-icons/hi2';
 import { useNavigate, useParams } from 'react-router-dom'
 import '../style/pages/NewCardDetail.css'
 import BootstrapTooltip from '../components/Tooltip';
-import { GiCloudUpload } from "react-icons/gi";
-import { addCoverCardTesting, archiveCard, archiveData, deleteCard, deleteCoverCard, deleteCoverCardTesting, deleteUserFromCard, getActivityCardTesting, getAllCardUsers, getAllCovers, getAllDueDateByCardId, getAllStatus, getAllUploadFiles, getAllUserAssignToCard, getCardById, getCardByList, getCardPriority, getChecklistItemChecked, getChecklistsWithItemsByCardId, getCoverByCard, getLabelByCard, getListById, getStatusByCardId, getTotalChecklistItemByCardId, getTotalFile, updateCardCoverTesting, updateDescCard, updateDescCardTesting, updateTitleCard } from '../services/ApiServices';
+import { addCoverCardTesting,archiveData, deleteCard, deleteCoverCardTesting, deleteUserFromCard, getActivityCardTesting, getAllCardUsers, getAllCovers, getAllDueDateByCardId, getAllStatus, getAllUploadFiles, getAllUserAssignToCard, getCardById, getCardByList, getCardPriority, getChecklistItemChecked, getChecklistsWithItemsByCardId, getCoverByCard, getLabelByCard, getListById, getStatusByCardId, getTotalChecklistItemByCardId, getTotalFile, updateCardCoverTesting, updateDescCard, updateDescCardTesting, updateTitleCardTesting } from '../services/ApiServices';
 import SelectedLabels from '../UI/SelectedLabels';
-import CardDetailPanel from '../modules/CardDetailPanel';
-import DetailCard from '../modules/DetailCard';
 import Checklist from '../modules/Checklist';
-import CardActivity from '../modules/CardActivity';
 import CoverSelect from '../UI/CoverSelect';
 import CoverCard from '../modules/CoverCard';
-import { IoDocumentAttachOutline, IoSettings, IoSettingsOutline, IoShareOutline } from "react-icons/io5";
+import { IoSettingsOutline, IoShareOutline } from "react-icons/io5";
 import { RiExpandDiagonalLine } from "react-icons/ri";
 import CardAssignedUsers from '../modules/CardAssignedUsers';
 import CardAssigment from '../modules/CardAssigment';
 import { useSnackbar } from '../context/Snackbar';
 import DuplicateCard from '../fitur/DuplicateCard';
-import CardDetailDuplicate from '../fitur/CardDetailDuplicate';
 import MoveCard from '../fitur/MoveCard';
-import CardDetailMove from '../fitur/CardDetailMove';
-import RoomCardChat from '../fitur/RoomCardChat';
 import { useUser } from '../context/UserContext';
 import Label from '../modules/Label';
-import DetailOrder from '../modules/DetailOrder';
 import OutsideClick from '../hook/OutsideClick';
 import StatusDisplay from '../UI/StatusDisplay';
 import SelectPriority from '../UI/SelectPriority';
@@ -34,14 +24,12 @@ import DueDateDisplay from '../UI/DueDateDisplay';
 import FormUpload from '../modals/FormUpload';
 import UploadFile from '../modals/UploadFile';
 import NewRoomChat from '../fitur/NewRoomChat';
-import { FaXmark } from 'react-icons/fa6';
-import CardDescription from '../modals/CardDesctiption';
 import ReactQuill from 'react-quill-new';
 import "quill/dist/quill.snow.css";
 import CardDescriptionExample from '../modals/CardDescriptionExample';
 import NewCardActivity from '../modules/NewCardActivity';
 import CardDeleteConfirm from '../modals/CardDeleteConfirm';
-import { handleArchive } from '../utils/handleArchive';
+import { HiOutlineSave } from 'react-icons/hi';
 
 const NewCardDetail=({fetchBoardDetail})=> {
     
@@ -51,12 +39,11 @@ const NewCardDetail=({fetchBoardDetail})=> {
     const {workspaceId, boardId, listId, cardId} = useParams();
     const navigate = useNavigate();
     const {showSnackbar} = useSnackbar();
-    const [layoutOpen, setLayoutOpen] = useState(false);
     const [cards, setCards] = useState({});
-    const [activeTab, setActiveTab] = useState('Detail')
     //EDIT CARD TITLE
     const [editingTitle, setEditingTitle] = useState(null)
     const [newTitle, setNewTitle] = useState('')
+
     //EDIT DESCRIPTION
     const [editingDescription, setEditingDescription] = useState(null);
     const [newDescription, setNewDescription] = useState('');
@@ -109,7 +96,6 @@ const NewCardDetail=({fetchBoardDetail})=> {
     //total file 
     const [totalFile, setTotalFile] = useState(0);
     //status
-    const [showStatusInput, setShowStatusInput] = useState(false);
     const [statusVisible, setStatusVisible] = useState(true); // default: visible
     //MODAL DES
     const [showModalDes, setShowModalDes] = useState(false);
@@ -121,223 +107,283 @@ const NewCardDetail=({fetchBoardDetail})=> {
     const [showMove, setShowMove] = useState(false);
     // DELETE CARD CONFIRM
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
-    const [selectedCardId, setSelectedCardId] = useState(null)
     
     // ATTACHMENT 
     const [allUploadFile, setAllUploadFile] = useState([]);
     console.log("Card data:", cards);
 
-    // fungsi show card setting 
-    const handleShowCardSetting = (e) =>{
-        e.stopPropagation();
-        setShowCardSetting((prev=>({
-            ...prev,
-            [cardId]: !prev[cardId],
-        })))
-        // setShowCardSetting(!showCardSetting);
-    }
+    //CARD CHECKLIST
+    const [isExpandedChecklist, setIsExpandedChecklist] = useState(false);
 
 
-    const handleCloseCardSetting = () =>{
-        setShowCardSetting(false);
-    }
+    /* =======================
+    FUNGSI
+    ======================= */
 
+    // ============================
+    // CARD SETTING (DROPDOWN)
+    // ============================
+
+    // Tampilkan / sembunyikan card setting per card
+    const handleShowCardSetting = (e) => {
+    e.stopPropagation();
+
+    setShowCardSetting(prev => ({
+        ...prev,
+        [cardId]: !prev[cardId], // toggle setting berdasarkan cardId
+    }));
+    };
+
+    // Tutup semua card setting
+    const handleCloseCardSetting = () => {
+    setShowCardSetting(false);
+    };
+
+
+    // ============================
+    // QUILL EDITOR CONFIG
+    // ============================
+
+    // Ref editor (dipakai kalau mau akses quill instance)
     const quillRef = useRef(null);
 
-//     const modules = {
-//     toolbar: [
-//       [{ header: [1, 2, false] }],
-//       ["bold", "italic", "underline", "strike"],
-//       [{ list: "ordered" }, { list: "bullet" }],
-//       ["blockquote", "code-block"],
-//       [{ align: [] }],
-//       ["link"],
-//       ["clean"],
-//     ],
-//     keyboard: {
-//       bindings: {
-//         tab: {
-//           key: 9,
-//           handler: function (range, context) {
-//           this.quill.insertText(range.index, "    "); // ⬅️ tambahin 4 spasi
-//           this.quill.setSelection(range.index + 4, 0); // ⬅️ cursor geser setelah spasi
-//           return false; // cegah pindah fokus
-//         },
-//         },
-//       },
-//     },
-//   };
+    // Konfigurasi toolbar & keyboard Quill
+    const modules = {
+    toolbar: {
+        container: [
+        [{ header: [1, 2, false] }],
+        ['bold', 'italic', 'underline', 'strike'],
+        [{ list: 'ordered' }, { list: 'bullet' }],
+        ['blockquote', 'code-block'],
+        [{ align: [] }],
+        ['link'],
+        ['clean'],
+        ],
 
-const modules = {
-  toolbar: {
-    container: [
-      [{ header: [1, 2, false] }],
-      ["bold", "italic", "underline", "strike"],
-      [{ list: "ordered" }, { list: "bullet" }],
-      ["blockquote", "code-block"],
-      [{ align: [] }],
-      ["link"],
-      ["clean"],
-    ],
-    handlers: {
-      // FIX: supaya link bisa munculkan prompt bawaan
-      link: function () {
-        const range = this.quill.getSelection();
-        if (!range) return;
+        handlers: {
+        // Custom handler link → munculin prompt URL
+        link: function () {
+            const range = this.quill.getSelection();
+            if (!range) return;
 
-        let url = prompt("Masukkan URL:");
+            let url = prompt('Masukkan URL:');
 
-        if (url) {
-          if (!/^https?:\/\//i.test(url)) {
-            url = "https://" + url;
-          }
-          this.quill.format("link", url);
-        }
-      }
-    }
-  },
-
-  keyboard: {
-    bindings: {
-      tab: {
-        key: 9,
-        handler(range) {
-          this.quill.insertText(range.index, "    ");
-          this.quill.setSelection(range.index + 4, 0);
-          return false;
-        },
-      },
-    },
-  },
-};
-
-
-
-   // Fetch checklists
-    const fetchCardChecklists = async () => {
-        try {
-            const response = await getChecklistsWithItemsByCardId(cardId);
-            console.log('Fetched checklists:', response);
-
-            if (Array.isArray(response.data)) {
-                setChecklists(response.data);
-            } else {
-                console.error('Unexpected API response format:', response);
-                setChecklists([]);
+            // Auto tambahin https:// kalau user lupa
+            if (url) {
+            if (!/^https?:\/\//i.test(url)) {
+                url = 'https://' + url;
             }
-        } catch (error) {
-            console.error('Error fetching checklist data:', error);
-            setChecklists([]);
-        }
+            this.quill.format('link', url);
+            }
+        },
+        },
+    },
+
+    keyboard: {
+        bindings: {
+        // Override tombol TAB → jadi 4 spasi
+        tab: {
+            key: 9,
+            handler(range) {
+            this.quill.insertText(range.index, '    ');
+            this.quill.setSelection(range.index + 4, 0);
+            return false;
+            },
+        },
+        },
+    },
     };
 
+
+
+
+   // ============================
+    // FETCH CARD CHECKLIST
+    // ============================
+
+    const fetchCardChecklists = async () => {
+    try {
+        const response = await getChecklistsWithItemsByCardId(cardId);
+        console.log('Fetched checklists:', response);
+
+        // Pastikan response array
+        if (Array.isArray(response.data)) {
+        setChecklists(response.data);
+        } else {
+        console.error('Unexpected checklist format:', response);
+        setChecklists([]);
+        }
+    } catch (error) {
+        console.error('Error fetching checklist:', error);
+        setChecklists([]);
+    }
+    };
+
+    // Fetch ulang checklist kalau cardId berubah
     useEffect(() => {
-        fetchCardChecklists();
+    if (cardId) fetchCardChecklists();
     }, [cardId]);
 
 
-    // fetch upload file
+
+    // ============================
+    // FETCH UPLOAD FILE
+    // ============================
+
     const fetchAllUploadFile = async () => {
-      try {
+    try {
         const result = await getAllUploadFiles(cardId);
         setAllUploadFile(result.data);
-      } catch (error) {
-        console.error('Error fetching all file:', error);
-      }
+    } catch (error) {
+        console.error('Error fetching upload files:', error);
+    }
     };
-  
+
+    // Fetch ulang file saat cardId berubah
     useEffect(() => {
-      fetchAllUploadFile();
+    if (cardId) fetchAllUploadFile();
     }, [cardId]);
 
-    const handleShowModalDes = () =>{
-        setShowModalDes(!showModalDes)
-    }
 
-    const handleCloseModalDes = () =>{
-        setShowModalDes(false)
-    }
+    // ============================
+    // MODAL DESCRIPTION
+    // ============================
 
+    // Toggle modal description
+    const handleShowModalDes = () => {
+    setShowModalDes(prev => !prev);
+    };
+
+    // Tutup modal description
+    const handleCloseModalDes = () => {
+    setShowModalDes(false);
+    };
+
+
+    // ============================
+    // STATUS VISIBILITY
+    // ============================
+
+    // Toggle show / hide status
     const toggleStatusVisibility = () => {
-      setStatusVisible(!statusVisible);
+    setStatusVisible(prev => !prev);
     };
 
-    
 
 
 
-    const handleShowExample = () =>{
-        setExampleUpload(!exampleUpload);
-        alert('tombol upload berhasil di klik')
-    }
+   // ============================
+    // UPLOAD HANDLER
+    // ============================
 
-    const handleShowFormUpload = () =>{
-        setFormUpload(!showFormUpload);
-        console.log('button upload berhasil di klik')
-    }
-    const handleCloseFormUpload = () =>{
-        setFormUpload(false);
-    }
+    // Example upload (testing)
+    const handleShowExample = () => {
+    setExampleUpload(prev => !prev);
+    alert('Tombol upload berhasil di klik');
+    };
+
+    // Tampilkan form upload
+    const handleShowFormUpload = () => {
+    setFormUpload(prev => !prev);
+    console.log('Button upload berhasil di klik');
+    };
+
+    // Tutup form upload
+    const handleCloseFormUpload = () => {
+    setFormUpload(false);
+    };
 
 
-    const handleShowChatroom = () =>{
-        setShowChat(!showChat);
-    }
+    // ============================
+    // CHATROOM
+    // ============================
 
-    const handleCloseChatroom = () =>{
-        setShowChat(false);
-    }
+    // Tampilkan chatroom
+    const handleShowChatroom = () => {
+    setShowChat(prev => !prev);
+    };
 
-    //text long description
-    const toggleShowMore = () => setShowMore(!showMore);
+    // Tutup chatroom
+    const handleCloseChatroom = () => {
+    setShowChat(false);
+    };
 
+
+    // ============================
+    // LONG DESCRIPTION RENDER
+    // ============================
+
+    // Toggle show more / less description
+    const toggleShowMore = () => {
+    setShowMore(prev => !prev);
+    };
+
+    // Render description:
+    // - Support line break
+    // - Auto-detect link
+    // - Support show more / less
     const renderDescription = (desc) => {
-        const textToRender = showMore || desc.length <= maxChars ? desc : desc.slice(0, maxChars) + '...';
-        
-        return textToRender.split('\n').map((line, index) => (
+    const text =
+        showMore || desc.length <= maxChars
+        ? desc
+        : desc.slice(0, maxChars) + '...';
+
+    return text.split('\n').map((line, index) => (
         <div key={index}>
-            {line.trim() === '' ? (
+        {line.trim() === '' ? (
             <>&nbsp;</>
-            ) : (
+        ) : (
             line.split(/(https?:\/\/[^\s]+)/g).map((part, i) =>
-                part.match(/https?:\/\/[^\s]+/) ? (
-                <a key={i} href={part} target="_blank" rel="noopener noreferrer" style={{ color: '#007bff', textDecoration: 'underline' }}>
-                    {part}
+            part.match(/https?:\/\/[^\s]+/) ? (
+                <a
+                key={i}
+                href={part}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                    color: '#007bff',
+                    textDecoration: 'underline',
+                }}
+                >
+                {part}
                 </a>
-                ) : (
+            ) : (
                 <React.Fragment key={i}>{part}</React.Fragment>
-                )
             )
-            )}
+            )
+        )}
         </div>
-        ));
+    ));
     };
 
+    // ============================
+    // FETCH CARD DETAIL
+    // ============================
 
-    //FUNCTION
-    //1. fetch Card by id
-        const fetchCardById = async(cardId)=>{
-            if(!cardId){
-                console.warn('Card Id is invalid')
-                return;
-            }
+    const fetchCardById = async (cardId) => {
+    if (!cardId) {
+        console.warn('Card ID is invalid');
+        return;
+    }
 
-            try {
-              console.log('FetchCardById menerima cardId', cardId);
-              const response = await getCardById(cardId);
-              setCards(response.data);
-            } catch (error) {
-              console.error('Failed fetch card data:', error);
-            }
-        } 
+    try {
+        console.log('Fetching card by ID:', cardId);
+        const response = await getCardById(cardId);
+        setCards(response.data);
+    } catch (error) {
+        console.error('Failed to fetch card data:', error);
+    }
+    };
 
-        useEffect(()=>{
-            if (cardId) {
-                fetchCardById(cardId);
-            }
-        },[cardId])
-    //edit card desc
-    // EDIT mode trigger
+    // Auto fetch saat cardId berubah
+    useEffect(() => {
+    if (cardId) fetchCardById(cardId);
+    }, [cardId]);
+
+
+    // ============================
+    // EDIT CARD DESCRIPTION
+    // ============================
     const handleEditDescription = (e, cardId, currentCardDesc) => {
     e.stopPropagation();
     if (!cardId) {
@@ -371,8 +417,9 @@ const modules = {
     };
 
 
-
-    //another edit desc
+    // ============================
+    // ALTERNATIVE EDIT DESCRIPTION (SIMPLE)
+    // ============================
     const startEditingDescription = (e, cardId, currentDesc) => {
     console.log("startEditingDescription triggered", { cardId, currentDesc });
     if (!cardId) {
@@ -403,91 +450,107 @@ const modules = {
     }
     };
 
-    //2. edit card title
-        const handleEditingTitle = (e, cardId, currentCardTitle) =>{
-          console.log('HandleEdit title triggered', {cardId, currentCardTitle});
-          if(!cardId){
-            console.log('cardId tidak ada')
-            return;
-          }
-          e.stopPropagation();
-          setEditingTitle(cardId);
-          setNewTitle(currentCardTitle);
-        }
-    
-        const handleSaveTitle = async(cardId)=>{
-          try{
-            await updateTitleCard(cardId, {title:newTitle})
+    // ============================
+    // EDIT CARD TITLE
+    // ============================
+    const handleEditingTitle = (e, cardId, currentTitle) => {
+        e.stopPropagation();
+        setEditingTitle(cardId);
+        setNewTitle(currentTitle);
+    };
+
+    const handleSaveTitle = async (cardId) => {
+        const title = newTitle.trim();
+
+        if (!title || title === cards?.title) {
             setEditingTitle(null);
-            fetchCardById(cardId)
-          }catch(error){
-            console.error('Error updating card title:', error)
-          }
+            return;
         }
+
+        // ✅ 1. UPDATE UI LANGSUNG (OPTIMISTIC)
+        setCards(prev => ({
+            ...prev,
+            title
+        }));
+
+        setEditingTitle(null);
+
+        try {
+            await updateTitleCardTesting(cardId, userId, { title });
+
+            // (optional) sinkron ulang dari BE
+            await fetchCardById(cardId);
+
+        } catch (error) {
+            console.error('Error updating card title:', error);
+
+            // ❗ rollback kalau gagal
+            await fetchCardById(cardId);
+        }
+    };
+
+    // Keyboard handler title
+    const handleKeyDownTitle = (e, cardId) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            handleSaveTitle(cardId);
+        }
+
+        if (e.key === 'Escape') {
+            setEditingTitle(null);
+        }
+    };
+
     
-        const handleKeyPressTitle = (e, cardId) =>{
-          if(e.key === 'Enter'){
-            handleSaveTitle(cardId)
-            e.stopPropagation();
-          }
-        } 
+    /* =======================
+    FETCH LABEL
+    ======================= */
+    const fetchLabels = async () =>{
+      try{
+        const response = await getLabelByCard(cardId)
+        setLabels(response.data)
+        fetchCardById(cardId)
+      }catch(error){
+        console.error('Error fetching label:', error)
+      }
+    }
+    useEffect(()=>{
+      if(cardId) fetchLabels()
+    },[cardId])
 
-    //3. fetch label
-        const fetchLabels = async () =>{
-          try{
-            const response = await getLabelByCard(cardId)
-            setLabels(response.data)
-            fetchCardById(cardId)
-          }catch(error){
-            console.error('Error fetching label:', error)
-          }
-        }
-        useEffect(()=>{
-          if(cardId) fetchLabels()
-        },[cardId])
-
-    //4. function time 
-    // const formatTimestamp = (timestamp) => {
-    //     const date = new Date(timestamp);
-      
-    //     const day = String(date.getDate()).padStart(2, '0');
-    //     const month = String(date.getMonth() + 1).padStart(2, '0');
-    //     const year = date.getFullYear();
-      
-    //     const hours = String(date.getHours()).padStart(2, '0');
-    //     const minutes = String(date.getMinutes()).padStart(2, '0');
-      
-    //     return `${day}/${month}/${year} | ${hours}.${minutes}`;
-    // };
+    /* =======================
+    FUNCTION TIME 
+    ======================= */
     const formatTimestamp = (timestamp) => {
-  if (!timestamp) return "-";
+        if (!timestamp) return "-";
 
-  // Kalau timestamp bukan ISO, ubah manual biar bisa dibaca oleh Date
-  let date;
-  if (typeof timestamp === "string" && !timestamp.includes("T")) {
-    // tambahkan "T" agar valid ISO
-    date = new Date(timestamp.replace(" ", "T"));
-  } else {
-    date = new Date(timestamp);
-  }
+        // Kalau timestamp bukan ISO, ubah manual biar bisa dibaca oleh Date
+        let date;
+        if (typeof timestamp === "string" && !timestamp.includes("T")) {
+            // tambahkan "T" agar valid ISO
+            date = new Date(timestamp.replace(" ", "T"));
+        } else {
+            date = new Date(timestamp);
+        }
 
-  if (isNaN(date)) return "-"; // kalau tetap invalid, jangan crash
+        if (isNaN(date)) return "-"; // kalau tetap invalid, jangan crash
 
-  const day = String(date.getDate()).padStart(2, "0");
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const year = date.getFullYear();
-  const hours = String(date.getHours()).padStart(2, "0");
-  const minutes = String(date.getMinutes()).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const year = date.getFullYear();
+        const hours = String(date.getHours()).padStart(2, "0");
+        const minutes = String(date.getMinutes()).padStart(2, "0");
 
-  return `${day}/${month}/${year} | ${hours}.${minutes}`;
-};
+        return `${day}/${month}/${year} | ${hours}.${minutes}`;
+    };
 
-
-    //5. fetch list untuk mendapatkan list name
+    /* =======================
+        FETCH LIST FOR LIST NAME
+    ======================= */ 
     useEffect(() => {
         const fetchListName = async () => {
           try {
-            const response = await getListById(listId); // kamu harus punya service ini
+            const response = await getListById(listId);
             setListName(response.data.name);
           } catch (error) {
             console.error("Failed to fetch list name", error);
@@ -496,21 +559,45 @@ const modules = {
       
         if (listId) fetchListName();
       }, [listId]);
-      
-    //6. fetch Card status
-    const fetchCardStatus = async() =>{
-        try{
+
+    /* =======================
+    FECTH CARD STATUS
+    ======================= */
+    // const fetchCardStatus = async() =>{
+    //     try{
+    //         const response = await getStatusByCardId(cardId);
+    //         if(response.data.length > 0){
+    //             setCurrentStatus(response.data[0]);
+    //             setSelectedStatus(response.data[0].status_id);
+    //         }
+    //     }catch(error){
+    //         console.error('Gagal mengambil status kartu:', error);
+    //     }
+    // };
+    const fetchCardStatus = async () => {
+        try {
             const response = await getStatusByCardId(cardId);
-            if(response.data.length > 0){
-                setCurrentStatus(response.data[0]);
-                setSelectedStatus(response.data[0].status_id);
+
+            if (response.data.length > 0) {
+            const rawStatus = response.data[0];
+
+            const mappedStatus = {
+                ...rawStatus,
+                accent_color: rawStatus.text_color, // ⬅️ PENTING
+            };
+
+            setCurrentStatus(mappedStatus);
+            setSelectedStatus(rawStatus.status_id);
             }
-        }catch(error){
+        } catch (error) {
             console.error('Gagal mengambil status kartu:', error);
         }
-    };
+        };
 
-    //7. fetch all status
+
+    /* =======================
+    FECTH ALL STATUS
+    ======================= */
     const fetchAllStatuses = async () =>{
         try{
             const response = await getAllStatus();
@@ -524,7 +611,9 @@ const modules = {
         fetchAllStatuses();
     }, [cardId]);
 
-    //8. fetch card priority
+    /* =======================
+    FETCH CARD PRIORITY
+    ======================= */
     const fetchPriority = async() =>{
         try{
             const result = await getCardPriority(cardId);
@@ -539,9 +628,9 @@ const modules = {
     },[cardId])
 
 
-    // COVER FUNCION 
-    
-    //9. fetchCardCover
+    /* =======================
+    FETCH CARD COVER
+    ======================= */
     const fetchCardCover = async ()=>{
         try{
           const response = await getCoverByCard(cardId);
@@ -558,7 +647,9 @@ const modules = {
           fetchCardCover()
         },[cardId])
 
-    // 9.1 fungsi select vocer 
+    /* =======================
+    FUNGSI SELECT COVER
+    ======================= */
     const handleSelectCover = async(coverId) =>{
         try{
             const coverData = {card_id: cardId, cover_id: coverId};
@@ -577,7 +668,10 @@ const modules = {
         }
     }
 
-    //9.2 fungsi cover remove
+    /* =======================
+    fungsi cover remove
+    ======================= */
+     
      const handleRemoveCover = async() =>{
         try{
             await deleteCoverCardTesting(cardId, userId);
@@ -592,51 +686,61 @@ const modules = {
         }
     }
 
+    /* =======================
+    Ambil semua cover saat komponen mount
+    ======================= */
+     useEffect(() => {
+         fetchCovers();
+     }, [cardId]);
 
-    //9.3 Ambil semua cover saat komponen mount
-        useEffect(() => {
-            fetchCovers();
-        }, [cardId]);
-    
-        const fetchCovers = async () => {
-            try {
-                const response = await getAllCovers();
-                setCovers(response.data);
-            } catch (error) {
-                console.error('Gagal mengambil daftar cover:', error);
-            }
-        };
+     const fetchCovers = async () => {
+         try {
+             const response = await getAllCovers();
+             setCovers(response.data);
+         } catch (error) {
+             console.error('Gagal mengambil daftar cover:', error);
+         }
+     };
 
-    // END COVER FUNCTION 
+    /* =======================
+    FETCH DUE DATE
+    ======================= */
+    const fetchDueDates = async () => {
+    try {
+        setLoading(true);
 
-    //10. fetch DUE DATE
-    const fetchDueDates = async()=>{
-        try{
-            setLoading(true);
-            const response = await getAllDueDateByCardId(cardId)
-            console.log('Fetching due date data:', response.data)
+        const response = await getAllDueDateByCardId(cardId);
+        console.log('Fetching due date data:', response.data);
 
-            if (response.data.length > 0) {
-                setDueDates(response.data);
-                setSelectedDate(new Date(response.data[0].due_date));
-                setSelectedDueDateId(response.data[0].id);
-              } else {
-                setDueDates([]);
-                setSelectedDate(null);
-                setSelectedDueDateId(null);
-              }
-        }catch(error){
-            console.error('Error fetching due dates:', error);
-        }finally{
-            setLoading(false)
+        if (Array.isArray(response.data) && response.data.length > 0) {
+        const dueDate = response.data[0];
+
+        setDueDates(response.data);
+        setSelectedDueDateId(dueDate.id); // ✅ INI KUNCI UTAMA
+        setSelectedDate(dueDate.due_date ? new Date(dueDate.due_date) : null);
+        } else {
+        setDueDates([]);
+        setSelectedDate(null);
+        setSelectedDueDateId(null);
         }
+    } catch (error) {
+        console.error('Error fetching due dates:', error);
+    } finally {
+        setLoading(false);
     }
+    };
 
-    useEffect(()=>{
+    useEffect(() => {
+    if (cardId) {
         fetchDueDates();
-    },[cardId])
+    }
+    }, [cardId]);
 
-    //11. FETCH ASSIGMENT
+
+
+    /* =======================
+    FETCH ASSIGMENT
+    ======================= */
     const fetchAssignedUsers = async()=>{
         const response = await getAllCardUsers(cardId)
         setAssignedUsers(response.data)
@@ -652,7 +756,9 @@ const modules = {
         }
     },[cardId])
 
-    //12. function remove user from card
+    /* =======================
+     function remove user from card
+    ======================= */
     const handleRemoveUser = async(userId) =>{
         try{
             await deleteUserFromCard(cardId, userId);
@@ -665,7 +771,10 @@ const modules = {
         }
     }
 
-    //13. function duplicate card
+    /* =======================
+    function duplicate card
+    ======================= */
+    
     const handleDuplicateCard = () =>{
         setShowDuplicate(true);
         setShowCardSetting(false);
@@ -675,7 +784,9 @@ const modules = {
         setShowDuplicate(false)
     }
 
-    //14. function to move card
+    /* =======================
+    function to move card
+    ======================= */
     const handleMoveCard = () => {
         setShowMove(true);
         setShowCardSetting(false);
@@ -685,7 +796,9 @@ const modules = {
     setShowMove(false);
     };
 
-    //15. function fetch list card
+    /* =======================
+    function fetch list card
+    ======================= */
     const fetchCardList = async(listId) => {
         try{
             const res = await getCardByList(listId);
@@ -696,7 +809,9 @@ const modules = {
         }
     }
 
-    //16. fetch total file
+    /* =======================
+    fetch total file
+    ======================= */
     const fetchTotalFile = async()=>{
         try{
             const result = await getTotalFile(cardId);
@@ -710,24 +825,18 @@ const modules = {
     },[cardId])
       
 
+    /* =======================
     //FUNCTION NAVIGATE
-    // const handleNavigateToBoardList = () =>{
-    //     navigate(`/layout/workspaces/${workspaceId}/board/${boardId}`)
-    // }
-    // const handleNavigateToBoardList = () => {
-    //     // biarkan sessionStorage masih menyimpan scrollLeft
-    //     setTimeout(() => {
-    //         navigate(`/layout/workspaces/${workspaceId}/board/${boardId}`);
-    //     }, 0);
-    // };
-// ⬅️ balik ke BoardList TANPA reset scroll
-  const handleNavigateToBoardList = () => {
-    navigate(`/layout/workspaces/${workspaceId}/board/${boardId}`);
-    // ❗ jangan hapus sessionStorage di sini!
-  };
+    ======================= */    
+    // ⬅️ balik ke BoardList TANPA reset scroll
+    const handleNavigateToBoardList = () => {
+        navigate(`/layout/workspaces/${workspaceId}/board/${boardId}`);
+        // ❗ jangan hapus sessionStorage di sini!
+    };
 
-
+    /* =======================
     //function checklist
+    ======================= */
     const fetchTotalChecklist = async()=>{
         try{
             const response = await getTotalChecklistItemByCardId(cardId);
@@ -740,7 +849,9 @@ const modules = {
         }
     }
 
+    /* =======================
     //function fetch checklist already checklist
+    ======================= */
     const fetchChecklist = async() =>{
         try{
             const response = await getChecklistItemChecked(cardId);
@@ -867,15 +978,6 @@ const modules = {
         if (cardId) fetchCardActivities();
       }, [cardId]);
 
-
-    // 🔗 fungsi untuk deteksi dan convert URL ke <a>
-    // const linkify = (text) => {
-    // if (!text) return "";
-    // const urlRegex = /(https?:\/\/[^\s]+)/g;
-    // return text.replace(urlRegex, (url) => {
-    //     return `<a href="${url}" target="_blank" rel="noopener noreferrer" style="color:#5557e7; text-decoration:underline;">${url}</a>`;
-    // });
-    // };
     
     const linkify = (text) => {
         if (!text) return "";
@@ -897,13 +999,11 @@ const modules = {
     <div className='new-card-detail'>
         <div className="ncd-header">
             <div className="ncd-left">
-                <div className='ncd-board' onClick={handleNavigateToBoardList}>
-                    Board Lists
-                </div>
+                <h4 className='ncd-board-back' onClick={handleNavigateToBoardList}>BOARD LISTS</h4>
                 <HiOutlineChevronRight className='ncd-icon'/>
-                <div className='ncd-active'>
-                    Card Detail
-                </div>
+                <h4 className='text-active'>{listName} </h4>
+                <HiOutlineChevronRight className='ncd-icon'/>
+                <h4 className='ncd-board'>CARD DETAIL PAGE</h4>
             </div>  
             <div className="btn-chatroom">
                 <BootstrapTooltip title='Open Room Chat' placement='top'>
@@ -933,23 +1033,22 @@ const modules = {
                         <div className="title-label">
                             {/* HEADER TITLE  */}
                             {cards && cardId && (
-                                <div className="ct-box">
-                                    {/* <HiOutlineCreditCard className='ct-icon'/> */}
-                                    {editingTitle === cardId ? (
-                                    <input
-                                        value={newTitle}
-                                        onChange={(e) => setNewTitle(e.target.value)}
-                                        onBlur={()=> handleSaveTitle(cardId)}
-                                        onKeyDown={(e) =>handleKeyPressTitle(e, cardId)}
-                                        autoFocus
-                                    />
-                                    ):(
-                                    <h5 onClick={(e)=>handleEditingTitle(e, cardId, cards.title)}>
-                                        {cards.title}
-                                    </h5>
-                                    )}
-                                </div>
+                            <div className="ct-box">
+                                {editingTitle === cardId ? (
+                                <input
+                                    value={newTitle}
+                                    onChange={(e) => setNewTitle(e.target.value)}
+                                    onKeyDown={(e) => handleKeyDownTitle(e, cardId)}
+                                    autoFocus
+                                />
+                                ) : (
+                                <h5 onClick={(e) => handleEditingTitle(e, cardId, cards.title)}>
+                                    {cards.title}
+                                </h5>
+                                )}
+                            </div>
                             )}
+
 
                             {/* HEADER LABEL  */}
                             <div className="ncd-label">
@@ -967,13 +1066,13 @@ const modules = {
                             <BootstrapTooltip title='Select Cover' placement='top'>
                                 <button onClick={handleShowCover}> 
                                     <HiMiniPhoto className='cdl-icon'/>
-                                    {/* SELECT COVER */}
+                                    COVER
                                 </button>
                             </BootstrapTooltip>
                             <BootstrapTooltip title='Select Label' placement='top'>
                                 <button onClick={handleShowLabel}>
                                     <HiTag className='cdl-icon'/>
-                                    {/* SELECT LABEL */}
+                                    LABEL
                                 </button>
                             </BootstrapTooltip>
                         </div>
@@ -1021,19 +1120,8 @@ const modules = {
                         {/* END SHOW BUTTON  */}
                     </div>
 
-                    {/* Toggle Button (only for small screen) */}
-                    <div className="status-toggle-btn-wrapper">
-                        <button 
-                            className="status-toggle-btn" 
-                            onClick={toggleStatusVisibility}
-                        >
-                            {statusVisible ? 'Hide Status ▲' : 'Show Status ▼'}
-                        </button>
-                    </div>
-                    
-                    {/* STATUS  */}
-                     <div className={`ncd-status ${!statusVisible ? 'status-hidden' : ''}`}>
-                        <div className="ncd-status-container">
+                    <div className="show-example">
+                        <div className="status-box">
                             <StatusDisplay 
                                 userId={userId}
                                 cardId={cardId} 
@@ -1048,8 +1136,8 @@ const modules = {
                                 fetchAllStatuses={fetchAllStatuses}
                             />
                         </div>
-                        <div className="ncd-status-priority">
-                           <SelectPriority 
+                        <div className="priority">
+                            <SelectPriority 
                                 cardId={cardId} 
                                 selectedProperties={selectedProperties} 
                                 setSelectedProperties={setSelectedProperties} 
@@ -1061,8 +1149,9 @@ const modules = {
                                 setCardActivities={setCardActivities}
                             />
                         </div>
-                        <div className="ncd-status-due">
+                        <div className="due">
                             <DueDateDisplay
+                                userId={userId}
                                 cardId={cardId}
                                 dueDates={dueDates}
                                 setDueDates={setDueDates}
@@ -1076,6 +1165,7 @@ const modules = {
                             />
                         </div>
                     </div>
+
                 </div>
 
                 <div className="ncd-main-content">
@@ -1114,6 +1204,7 @@ const modules = {
                                             onClick={() => handleSaveDescription(cardId)}
                                             disabled={loading}
                                         >
+                                            {/* <HiOutlineSave/> */}
                                             {loading ? "Saving..." : "Save"}
                                         </button>
 
@@ -1124,6 +1215,7 @@ const modules = {
                                             setNewDescription(cards.description || "");
                                             }}
                                             >
+                                            {/* <HiOutlineXMark/> */}
                                             Cancel
                                         </button>
                                         </div>
@@ -1205,14 +1297,25 @@ const modules = {
                             <div className="attach-header-cont">
                                 <h5>Attachment</h5>
                                 <div className="attach-header-btn">
-                                <button className="total-file">{totalFile} files</button>
-                                <BootstrapTooltip title="add attachment" placement="top">
-                                    <button className="add-attach" onClick={handleShowFormUpload}>
-                                    <HiPlus />
-                                    </button>
-                                </BootstrapTooltip>
+                                    <button className="total-file">{totalFile} files</button>
+                                        <BootstrapTooltip title="add attachment" placement="top">
+                                            <button className="add-attach" onClick={handleShowFormUpload}>
+                                                <HiPlus />
+                                            </button>
+                                        </BootstrapTooltip>
                                 </div>
                             </div>
+                            
+                            {showFormUpload && (
+                            <div className="upload-modals-form">
+                                <FormUpload 
+                                    cardId={cardId} 
+                                    onClose={handleCloseFormUpload} 
+                                    fetchCardById={fetchCardById}
+                                    fetchAllUploadFile={fetchAllUploadFile}
+                                    />
+                            </div>
+                            )}
 
                             <div className="attach-body">
                                 {totalFile > 0 ? (
@@ -1237,24 +1340,12 @@ const modules = {
                                 )}
                             </div>
                             </div>
-
-                            {showFormUpload && (
-                            <div className="upload-form-modals">
-                                <FormUpload 
-                                    cardId={cardId} 
-                                    onClose={handleCloseFormUpload} 
-                                    fetchCardById={fetchCardById}
-                                    fetchAllUploadFile={fetchAllUploadFile}
-                                    />
-                            </div>
-                            )}
                             {/* END ATTACHMENT  */}
 
                     </div>
 
 
                     <div className="ncd-main-right">
-
                         {/* COVER & DETAIL  */}
                         <div className="ncd-cover-detail">
                             <CoverSelect cardId={cardId} fetchCardDetail={fetchCardById} selectedCover={selectedCover}/>
@@ -1287,7 +1378,8 @@ const modules = {
                                                     <HiOutlineArchiveBox/>
                                                     Archive
                                                 </button>
-                                                <button onClick={handleDeleteClick}>
+                                                <hr />
+                                                <button className='cs-btn-delete' onClick={handleDeleteClick}>
                                                     <HiOutlineTrash/>
                                                     Delete
                                                 </button>
@@ -1339,16 +1431,17 @@ const modules = {
                                          <HiOutlineCalendar className='cc-icon'/>
                                          <div className="cc-date">
                                              <p>Created</p>
-                                             <p style={{fontSize:'8px'}}>{cards.create_at && new Date(cards.create_at).toLocaleString()}</p>
+                                             <p className='detail-create'>{cards.create_at && new Date(cards.create_at).toLocaleString()}</p>
                                              {/* {cards.create_at} */}
                                              {/* {cards.create_at && formatTimestamp(cards.create_at)} */}
                                          </div>
                                     </div>
                                     <div className="c-create">
                                          <HiMiniListBullet className='cc-icon'/>
-                                         <div className="cc-date" style={{fontWeight:'bold', width:'100%'}}>
+                                         <div className="cc-date">
                                              <p>List</p>
-                                             {listName}
+                                              {listName || 'Loading...'}
+                                             {/* {listName} */}
                                          </div>
                                     </div>
                                 </div>
@@ -1383,7 +1476,7 @@ const modules = {
 
                             {/* SHOW USER ASSIGMENT  */}
                             {showAssigment && (
-                                <div className='assign-modal'>
+                                <div className='assign-modal-container'>
                                     <CardAssigment
                                         cardId={cardId}
                                         onClose={handleCloseAssign}
@@ -1399,11 +1492,15 @@ const modules = {
                         </div>
 
                         {/* CHECKLIST  */}
-                        <div className="ncd-card-checklist">
+                        <div className={`ncd-card-checklist ${isExpandedChecklist ? 'expanded' : 'collapsed'}`}>
                             <div className="ncd-checklist-header">
                                 Checklist List
-                                <button>
-                                    {/* {checkChecklist.checked} /  {checklistTotal.total} */}
+                               <button
+                                    className="checklist-toggle-btn"
+                                    onClick={() => setIsExpandedChecklist(prev => !prev)}
+                                >
+                                    {isExpandedChecklist ? 'Show less' : 'Show more'}
+                                    {isExpandedChecklist ? <HiChevronUp /> : <HiChevronDown />}
                                 </button>
                             </div>
                             <div className="ncd-checklist-content">

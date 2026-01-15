@@ -2,22 +2,22 @@
   height: 97%;
   min-width: 80vw;
   position: relative;
-  background-color: white;
+  background-color: var(--bg);
   margin-left: 10px;
   margin-top: 10px;
   border-radius: 8px;
-  padding: 5px 10px;
+  /* padding: 5px 10px; */
 }
 
 /* HEADER  */
 .archive-header {
-  border: 1px solid #ddd;
-  border-radius: 16px;
-  padding: 10px 15px;
+  /* border: 1px solid #ddd; */
+  /* border-radius: 16px; */
+  padding: 5px 15px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); */
 }
 
 .archive-header h2 {
@@ -28,11 +28,12 @@
   align-items: center;
   justify-content: flex-start;
   gap: 5px;
-  color: #5D12EB;
+  color: var(--text);
 }
 
 .header-desc {
   font-size: 12px;
+  color: var(--sub-text);
   /* border: 1px solid red; */
   width: 90%;
 }
@@ -51,13 +52,14 @@
 }
 
 .left-title .lt-icon {
-  border: 1px solid #fff;
+  border: 1px solid var(--bg);
   border-radius: 8px;
   padding: 5px;
-  color: white;
-  background-color: #410ca5b9;
+  color: var(--text-white);
+  background: var(--bg-icon2);
 }
 
+/* SEARCH FEATURE  */
 .archive-header .ah-right {
   /* border: 1px solid blue; */
   width: 20%;
@@ -72,11 +74,14 @@
   font-size: 12px;
   width: 100%;
   text-align: left;
+  color: var(--sub-text);
 }
 
 .ah-right .search-archive {
-  border: 1px solid #ddd;
+  border: 1px solid var(--border);
   border-radius: 12px;
+  background: var(--bg);
+  color: var(--sub-text);
   gap: 5px;
   padding: 0px 5px;
   display: flex;
@@ -87,8 +92,9 @@
 }
 
 .ah-right .search-archive:hover {
-  border: 1px solid #5D12EB;
-  box-shadow: 0px 4px 10px #5e12eb44;
+  border: 1px solid var(--border);
+  background: var(--bg-section-hover);
+  box-shadow: var(--box-shadow);
 }
 
 .search-archive .sa-icon {
@@ -96,19 +102,27 @@
 }
 
 .search-archive input {
-  border: 1px solid white;
+  background: var(--bg);
+  /* border: 1px solid var(--bg); */
   border-radius: 12px;
   padding: 5px;
   font-size: 12px;
   width: 100%;
+  color: var(--sub-text);
 }
 
+.search-archive input:hover,
 .search-archive input:focus {
   outline: none;
+
+  background: var(--bg-section-hover);
+  /* box-shadow: var(--box-shadow); */
+
 }
 
-
-/* //TABLE  */
+/* =======================
+TABLE
+======================= */
 .archive-table-container {
   overflow-x: auto;
   margin-top: 10px;
@@ -142,11 +156,11 @@
 }
 
 .archive-table thead {
-  /* background-color: #f3f4f6; */
-  background-color: #5D12EB;
+  background-color: var(--primary);
   color: white;
-  /* gray-100 */
   text-align: left;
+  position: sticky;
+  z-index: 100;
 }
 
 .archive-table th {
@@ -162,9 +176,9 @@
 .archive-table td {
   padding: 0.5rem;
   /* p-2 */
-  color: #5e5e5e;
+  color: var(--sub-text);
   font-size: 11px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border);
   /* border-left: 1px solid #d1d5db; */
 }
 
@@ -177,9 +191,65 @@
 }
 
 .archive-table tbody tr:hover {
-  background-color: #eeeeee;
+  background-color: var(--bg-section-hover);
   /* hover:bg-gray-50 */
 }
+
+.btn-action {
+  border-radius: 6px;
+  border: 1px solid var(--bg);
+  font-size: 10px;
+  padding: 4px 8px;
+  cursor: pointer;
+  color: var(--text-white);
+  background: var(--primary);
+}
+
+.btn-action:hover {
+  box-shadow: var(--box-shadow-purple);
+}
+
+/* MODAL DETAIL CARD  */
+.archive-container .detail-card-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.detail-card-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.detail-card-content h3 {
+  margin-top: 0;
+}
+
+.close-button {
+  margin-top: 15px;
+  padding: 8px 12px;
+  background-color: #5D12EB;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.close-button:hover {
+  background-color: #410ca5;
+}
+
 
 /* MEDIA QUERY  */
 /* Large devices (desktops, ≥992px) */

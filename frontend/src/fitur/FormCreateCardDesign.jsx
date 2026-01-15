@@ -153,9 +153,7 @@ const FormCreateCardDesign = ({ marketingDesignId, onClose }) => {
     <div className="create-card-container">
       <div className="cc-header">
         <div className="cch-title">
-          <div className="cch-icon">
-            <IoIosCreate className='mini-icon' />
-          </div>
+          <IoIosCreate className='mini-icon' />
           <p>CREATE CARD</p>
         </div>
         <BootstrapTooltip title="Close" placement="top">

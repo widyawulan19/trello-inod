@@ -21,7 +21,7 @@ const AksesCepat=({userId,handleShowForm})=> {
     //debug
     console.log('Fitur akses cepat menerima data userId:',userId)
   return (
-    <div className='akses-container'> 
+    <div className='akses-cepat-container'> 
         <div className="akses-box">
             <div className="akses-icon" onClick={handleShowForm}>
                 <FaPlus/>

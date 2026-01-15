@@ -75,14 +75,12 @@ const CardAssigment = ({
           <BootstrapTooltip title='Close' placement='top'>
             <FaXmark className='cum-icon' onClick={onClose}/>
         </BootstrapTooltip>
-        </div>
-        
-        
+        </div>    
       </div>
       <div className="cum-body">
           {assignedUsers.length === 0 ? (
             <div className="no-user">
-                <p>Gak punya temen ya :"</p>
+                <p>Gak punya temen ya 🤭</p>
             </div>
             ) : (
               <p></p>
@@ -107,9 +105,7 @@ const CardAssigment = ({
                   <img src={user.photo_url} alt={user.username}/>
                   <span>{user.username}</span>
                 </div>
-                {/* <button className="select-btn">
-                  <IoCheckmarkCircleOutline/>
-                </button> */}
+                
               </li>
             ))}
           </ul>

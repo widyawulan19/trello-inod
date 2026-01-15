@@ -1,7 +1,6 @@
 .checklist-container {
     width: 100%;
-    min-height: 10vh;
-    height: 10vh;
+    height: 100%;
     cursor: pointer;
     margin: 0px;
     padding: 0px;
@@ -16,20 +15,17 @@
     justify-content: space-between;
     position: relative;
     padding: 5px;
-    /* padding-right: 10px; */
     border-radius: 4px;
-    /* border: 1px solid red; */
-    /* border: 1px solid #eee; */
     font-size: 12px;
     font-weight: bold;
     width: 100%;
-    color: #5b5b5b;
-    /* padding: 10px; */
+    color: var(--sub-text);
+    cursor: pointer;
 }
 
 .c-content:hover {
-    background-color: #f0f0f0;
-    border: 1px solid #ddd;
+    background-color: var(--bg-section-hover);
+    /* border: 1px solid var(--border); */
 }
 
 .cc-left {
@@ -37,6 +33,7 @@
     align-items: center;
     justify-content: flex-start;
     font-size: 10px;
+    color: var(--sub-text);
 }
 
 .cc-right {
@@ -102,18 +99,17 @@
     border: 1px solid white;
 }
 
+/* FORM CREATE CHECKLIST   */
 .from-create {
     position: absolute;
     top: 15%;
     right: 0%;
-    padding: 7px;
-    /* width: 200px; */
-    /* width: fit-content; */
+    padding: 10px;
     width: 100%;
     z-index: 100;
-    background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    background-color: var(--bg-section);
+    border: 1px solid var(--border);
+    border-radius: 8px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
@@ -121,33 +117,34 @@
 }
 
 .fc-header {
-    /* border: 1px solid grey; */
+    border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
     margin-bottom: 5px;
+    color: var(--sub-text);
 }
 
 .fc-header h5 {
     margin: 0px;
-    font-size: 10px;
+    font-weight: bold;
+    font-size: 11px;
 }
 
 .fc-icon {
-    border: 1px solid white;
     border-radius: 4px;
     padding: 2px;
     cursor: pointer;
 }
 
 .fc-icon:hover {
-    border: 1px solid #ddd;
-    background-color: #ddd;
+    background-color: var(--bg-section-hover);
 }
 
+/* MAIN FORM  */
+
 .fc-con {
-    /* border: 1px solid green; */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -156,27 +153,30 @@
 }
 
 .fc-con input {
-    padding: 5px;
-    /* margin-right: 5px; */
-    border: 1px solid #ddd;
+    padding: 5px 10px;
+    background-color: var(--bg-section);
+    border: 1px solid var(--border);
     border-radius: 8px;
     width: 60%;
     font-size: 10px;
+    color: var(--sub-text);
 }
 
 .fc-con input:focus {
     outline: none;
+    background-color: var(--bg-section-hover);
 }
 
 .fc-con input:hover {
-    background-color: #ddd;
+    background-color: var(--bg-section-hover);
 }
 
 .fc-con button {
     padding: 5px;
     border: none;
     border-radius: 8px;
-    background: linear-gradient(to right, #6a11cb, #2575fc);
+    background: var(--bg-icon2);
+    /* background: linear-gradient(to right, #6a11cb, #2575fc); */
     color: #fff;
     cursor: pointer;
     display: flex;
@@ -188,23 +188,26 @@
 }
 
 .fc-con button:hover {
-    background: linear-gradient(to right, #2575fc, #6a11cb);
+    box-shadow: 0px 4px 8px #2575fc40;
+    /* background: linear-gradient(to right, #2575fc, #6a11cb); */
 }
 
-/* SHOW CHECKLIST */
+/* =======================
+/* SHOW CHECKLIST
+======================= */
+
 .cs-container {
     /* border: 1px solid blue; */
     gap: 10px;
-    padding: 0px;
+    padding: 5px;
     margin: 0px;
     /* margin-bottom: 10px; */
-    height: 20vh;
+    height: fit-content;
     overflow-y: auto;
 }
 
 .cs-content {
-    border: 1px solid #fff;
-    /* border: 1px solid green; */
+    border: 1px solid var(--border);
     margin-top: 5px;
     border-radius: 8px;
     /* background-color: #fff; */
@@ -212,8 +215,8 @@
 }
 
 .cs-title {
-    border: 1px solid #ddd;
-    background-color: #ddd;
+    border: 1px solid var(--bg-section-hover);
+    background-color: var(--bg-section-hover);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -223,6 +226,7 @@
     position: relative;
     font-size: 12px;
     font-weight: bold;
+    color: var(--sub-text);
     /* margin-top: 5px; */
 }
 
@@ -237,7 +241,7 @@
 }
 
 .cs-title h5:hover {
-    background-color: #eee;
+    /* background-color: #eee; */
 }
 
 .tleft {
@@ -249,20 +253,21 @@
 .tleft p {
     margin: 0px;
     font-size: 10px;
-    color: #945e9e;
+    color: var(--primary);
 }
 
 .tleft input {
     padding: 3px;
     border-radius: 4px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--bg-section-hover);
     font-size: 10px;
+    color: var(--sub-text);
 }
 
 .tleft input:focus {
     outline: none;
     font-size: 12px;
-    background-color: #ddd;
+    background-color: var(--bg-section-hover);
 }
 
 .tright {
@@ -272,15 +277,11 @@
 
 .tright button {
     padding: 3px 5px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--bg-section-hover);
     border-radius: 8px;
     cursor: pointer;
-    background-color: #ddd;
-}
-
-.tright button:hover {
-    background-color: #eee;
-    border: 1px solid #ddd;
+    color: var(--text);
+    background-color: var(--bg-section-hover);
 }
 
 .tright-set {
@@ -288,7 +289,7 @@
     top: 80%;
     right: 0;
     z-index: 100;
-    background-color: #fff;
+    background-color: var(--bg-section);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -302,27 +303,28 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    border: 0.5px solid #fff;
+    border: 1px solid var(--border);
     border-radius: 4px;
-    background-color: white;
+    background-color: var(--bg-section);
     padding: 3px 5px;
     width: 100%;
+    color: var(--sub-text);
     /* margin: 2px; */
 }
 
 .tright-set button:hover {
-    background-color: #eee;
+    background-color: var(--bg-section-hover);
 }
 
 .tright-set .set-delete {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    border: 0.5px solid #fff;
+    border: 1px solid var(--bg-section);
     border-radius: 4px;
-    background-color: white;
+    background-color: var(--bg-section);
     padding: 3px 5px;
-    color: red;
+    color: var(--red-bg);
     width: 100%;
     /* margin: 2px; */
     font-size: 9px;
@@ -330,17 +332,19 @@
 }
 
 .tright-set .set-delete:hover {
-    background-color: #eee;
+    background-color: var(--bg-section-hover);
 }
 
 .set-icon {
     margin-right: 5px;
 }
 
-/* ITEMS  */
+/* =======================
+/* CHECKLIST  ITEMS 
+======================= */
 .ci-container {
-    border-top: 0.5px solid #eee;
-    border-bottom: 0.5px solid #eee;
+    border-top: 1px solid var(--card-border);
+    border-bottom: 1px solid var(--card-border);
     /* display: flex; */
     align-items: center;
     justify-content: flex-start;
@@ -351,9 +355,10 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    border-top: 0.5px solid #ddd;
+    /* border-top: 0.5px solid #ddd; */
     padding: 5px;
     position: relative;
+    color: var(--sub-text);
 }
 
 .ci-item h5 {
@@ -378,10 +383,11 @@
 
 .ci-buttons button {
     padding: 2px;
-    border: 0.5px solid #fff;
-    background-color: #eee;
+    border: 1px solid var(--card-bg) !important;
+    background-color: var(--card-bg) !important;
     border-radius: 4px;
     cursor: pointer;
+    color: var(--text) !important;
 }
 
 .ci-item:hover .ci-buttons,
@@ -391,7 +397,7 @@
 }
 
 .ci-item .ci-input {
-    border: 1px solid #ddd;
+    border: 1px solid var(--card-border);
     border-radius: 4px;
     /* padding: 3px; */
     font-size: 10px;
@@ -400,8 +406,8 @@
 
 .ci-item .ci-input:focus {
     outline: none;
-    border: 1px solid white;
-    background-color: white;
+    border: 1px solid var(--card-border);
+    background-color: var(--card-border);
 }
 
 .checkbox {
@@ -416,6 +422,7 @@
 
 .btn-icon {
     font-size: 12px;
+    color: var(--text);
 }
 
 /* SETTING ITEM CEHCKLIS  */
@@ -424,10 +431,10 @@
     top: 100%;
     right: 0;
     z-index: 100;
-    padding: 5px;
-    border: 1px solid #ddd;
+    padding: 2px 5px;
+    border: 1px solid var(--bg-section);
     border-radius: 4px;
-    background-color: white;
+    background-color: var(--bg-section);
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
@@ -436,37 +443,38 @@
 }
 
 .item-set button {
-    padding: 5px;
+    /* padding: 5px; */
     width: 100%;
     margin: 2px;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    border: 1px solid white;
+    border: 1px solid var(--bg-section);
     border-radius: 4px;
-    background-color: white;
+    background-color: var(--bg-section);
 }
 
 .item-set button:hover {
-    background-color: #ddd !important;
-
+    background-color: var(--bg-section-hover) !important;
 }
 
 .item-set .set-delete {
-    padding: 5px;
+    /* padding: 5px; */
     width: 100%;
-    margin: 2px;
+    /* margin: 2px; */
+    font-size: 10px;
     display: flex;
+    cursor: pointer;
     align-items: center;
     justify-content: flex-start;
-    border: 1px solid white;
-    color: red;
+    border: 1px solid var(--bg-section);
+    color: var(--red-bg);
     border-radius: 4px;
-    background-color: white;
+    background-color: var(--bg-section);
 }
 
 .item-set .set-delete:hover {
-    background-color: #ddd !important;
+    background-color: var(--bg-section-hover) !important;
 
 }
 
@@ -490,6 +498,7 @@
     background-color: #eeeeee00;
     margin-right: 5px;
     width: 100%;
+    color: var(--sub-text);
 }
 
 .add-checklist-item input:focus {
@@ -498,6 +507,7 @@
 
 .add-icon {
     margin-right: 5px;
+    color: var(--text);
 }
 
 .add-checklist-item button {

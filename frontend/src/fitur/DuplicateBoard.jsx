@@ -103,7 +103,7 @@ const DuplicateBoard = ({ boardId, userId, onClose, fetchBoards }) => {
                         </li>
                         ))
                     ):(
-                        <li>No workspace found</li>
+                        <li className='db-no'>No workspace found</li>
                     )}
                 </ul>
                 </div>

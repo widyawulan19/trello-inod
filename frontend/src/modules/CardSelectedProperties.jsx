@@ -23,31 +23,53 @@ const CardSelectedProperties=({cardId})=> {
           }
         },[cardId])
 
+    /* =========================
+    PRIORITY THEME MAPPING
+    ========================= */
+    const PRIORITY_THEME = {
+      low: 'status-confirmed',
+      medium: 'status-confirmed',
+      high: 'status-rejected',
+      no: 'status-unknown',
+    };
+    
+    /* =========================
+      NORMALIZER (WAJIB)
+    ========================= */
+    const normalizePriority = (name = '') => {
+      return name
+        .toLowerCase()
+        .replace('priority', '')
+        .trim();
+    };
+
+    /* =========================
+      STYLE HELPER
+    ========================= */
+    const getPriorityStyle = (priorityName) => {
+      const key = normalizePriority(priorityName);
+      const theme = PRIORITY_THEME[key] || 'status-unknown';
+
+      return {
+        backgroundColor: `var(--${theme}-bg)`,
+        border: `1px solid var(--${theme}-border)`,
+        color: `var(--${theme}-text)`,
+      };
+    };
+
   return (
-        <div className='selected-priorities-container'>
-          {priorities.map(priority => (
-            <div 
-              key={priority.id}
-              className='sp-box'
-              style={{ 
-                backgroundColor: priority.color.startsWith('#') ? `${priority.color}55` : priority.color,
-                color: priority.color,
-                // padding: "4px",
-                // margin: "2px",
-                // borderRadius: "4px",
-                // display:'flex',
-                // alignItems:'center',
-                // justifyContent:'flex-start',
-                // fontSize: '10px',
-                // fontWeight: 'bold',
-                // border:'1px solid transparent'
-              }}
-            >
-              <HiMiniLightBulb style={{ color: priority.color}} />
-              {priority.name}
-            </div>
-          ))}
-        </div>
+      <div className='selected-priorities-container'>
+        {priorities.map(priority => (
+          <div 
+            key={priority.id}
+            className='sp-box'
+            style={getPriorityStyle(priority.name)}
+          >
+            <HiMiniLightBulb className="priority-icon" />
+            {priority.name}
+          </div>
+        ))}
+      </div>
   )
 }
 

@@ -29,59 +29,6 @@ dayjs.extend(timezone);
 dayjs.locale("id");
 
 
-// ============================
-// 🔢 COUNTER SETUP DATA MARKETING DESIGN
-// ============================
-// let currentDesignOrderNumber = 0;
-// let currentDesignProjectNumber = 0;
-// let lastProjectMonth = dayjs().month();
-
-// async function initializeCounters() {
-//     try {
-//         const result = await client.query(`
-//       SELECT 
-//         MAX(CAST(order_number AS INTEGER)) AS max_order_number,
-//         MAX(CAST(SUBSTRING(project_number FROM 2 FOR 2) AS INTEGER)) AS max_project_number,
-//         MAX(create_at) AS last_created_at
-//       FROM marketing_design
-//     `);
-
-//         const row = result.rows[0];
-//         currentDesignOrderNumber = row.max_order_number || 0;
-//         currentDesignProjectNumber = row.max_project_number || 0;
-//         lastProjectMonth = row.last_created_at
-//             ? dayjs(row.last_created_at).month()
-//             : dayjs().month();
-
-//         console.log("✅ Counter initialized:");
-//         console.log("   currentDesignOrderNumber:", currentDesignOrderNumber);
-//         console.log("   currentDesignProjectNumber:", currentDesignProjectNumber);
-//         console.log("   lastProjectMonth:", lastProjectMonth + 1);
-//     } catch (error) {
-//         console.error("❌ Failed to initialize counters:", error.message);
-//     }
-// }
-
-// // Jalankan saat server start
-// initializeCounters();
-
-
-
-// // ============================
-// // 🔢 COUNTER SETUP DATA MARKETING MUSIK
-// // ============================
-
-
-// // =======================
-// // 🔹 VARIABEL GLOBAL
-// // =======================
-// let currentOrderNumberMarketing = 558;     // bisa kamu set manual
-// let currentProjectNumberMarketing = 558;    // bisa kamu set manual
-// let lastMarketingMonth = dayjs().month();  // default bulan saat ini
-
-
-
-
 // =======================
 // 🔹 INISIALISASI COUNTER
 // =======================
@@ -264,8 +211,13 @@ module.exports = { generateMarketingDesignNumbers };
 //TOP
 dotenv.config();
 
+
 const app = express();
 app.use(express.json());
+
+app.use(express.json({ limit: '200mb' }));
+app.use(express.urlencoded({ limit: '200mb', extended: true }));
+
 
 app.use(cors({
     // origin: "*",
@@ -1794,70 +1746,9 @@ app.get('/api/search', async (req, res) => {
     }
 });
 
-//GLOBAL SEARCH CARD (berdasarkan user)
-// app.get('/api/search/global', async (req, res) => {
-//     const { keyword, userId } = req.query;
-
-//     // Validasi input
-//     if (!keyword || !userId) {
-//         return res.status(400).json({ error: 'Keyword and userId are required' });
-//     }
-
-//     const searchKeyword = `%${keyword}%`;
-//     const numericUserId = parseInt(userId);
-
-//     if (isNaN(numericUserId)) {
-//         return res.status(400).json({ error: 'Invalid userId' });
-//     }
-
-//     // Logging input
-//     console.log('🔍 keyword:', keyword);
-//     console.log('🔍 userId:', numericUserId);
-//     console.log('🔍 searchKeyword:', searchKeyword);
-
-//     try {
-//         const query = `
-//       SELECT 
-//         cards.id AS card_id,
-//         cards.title,
-//         cards.description,
-//         cards.list_id,
-//         lists.name AS list_name,
-//         lists.board_id,
-//         boards.name AS board_name,
-//         boards.workspace_id,
-//         workspaces.name AS workspace_name,
-//         workspaces.id AS workspace_id
-//       FROM 
-//         cards
-//       JOIN lists ON cards.list_id = lists.id
-//       JOIN boards ON lists.board_id = boards.id
-//       JOIN workspaces ON boards.workspace_id = workspaces.id
-//       JOIN workspaces_users ON workspaces_users.workspace_id = workspaces.id
-//       WHERE 
-//         workspaces_users.user_id = $2
-//         AND (
-//           LOWER(cards.title) ILIKE LOWER($1)
-//           OR LOWER(cards.description) ILIKE LOWER($1)
-//         )
-//     `;
-
-//         const result = await client.query(query, [searchKeyword, numericUserId]);
-//         res.json(result.rows);
-//     } catch (err) {
-//         console.error('❌ Search error message:', err.message);
-//         console.error('🧨 Full error:', err);
-//         res.status(500).json({
-//             error: 'Internal server error',
-//             detail: err.message
-//         });
-//     }
-// });
-
 
 //WORKSPACE
 //1.Get all workspace
-// GLOBAL SEARCH CARD (termasuk archived)
 // GLOBAL SEARCH CARD (termasuk archived)
 app.get('/api/search/global', async (req, res) => {
     const { keyword, userId } = req.query;
@@ -1921,6 +1812,222 @@ app.get('/api/search/global', async (req, res) => {
     } catch (err) {
         console.error('❌ Search error message:', err.message);
         console.error('🧨 Full error:', err);
+        res.status(500).json({
+            error: 'Internal server error',
+            detail: err.message
+        });
+    }
+});
+
+
+app.get('/api/search/global-testing', async (req, res) => {
+    const { keyword, userId } = req.query;
+
+    if (!keyword || !userId) {
+        return res.status(400).json({ error: 'Keyword and userId are required' });
+    }
+
+    const searchKeyword = `%${keyword.toLowerCase()}%`;
+    const numericUserId = parseInt(userId);
+
+    if (isNaN(numericUserId)) {
+        return res.status(400).json({ error: 'Invalid userId' });
+    }
+
+    try {
+        const query = `
+        -- 🔍 1. SEARCH ACTIVE CARDS
+        SELECT 
+            c.id AS card_id,
+            c.title,
+            c.description,
+            l.id AS list_id,
+            l.name AS list_name,
+            b.id AS board_id,
+            b.name AS board_name,
+            w.id AS workspace_id,
+            w.name AS workspace_name,
+            'Active' AS status,
+            c.is_active,
+            c.show_toggle,
+            c.position,
+            c.create_at,
+            c.update_at
+        FROM cards c
+        JOIN lists l ON c.list_id = l.id
+        JOIN boards b ON l.board_id = b.id
+        JOIN workspaces w ON b.workspace_id = w.id
+        JOIN workspaces_users wu ON wu.workspace_id = w.id
+        WHERE wu.user_id = $2
+        AND c.is_deleted = FALSE
+        AND (
+            LOWER(c.title) ILIKE $1 OR 
+            LOWER(c.description) ILIKE $1
+        )
+
+        UNION ALL
+
+        -- 🔍 2. SEARCH ARCHIVED CARDS (WORKSPACE BASED)
+        SELECT
+            a.entity_id AS card_id,
+            a.data ->> 'title' AS title,
+            a.data ->> 'description' AS description,
+            l.id AS list_id,
+            l.name AS list_name,
+            b.id AS board_id,
+            b.name AS board_name,
+            w.id AS workspace_id,
+            w.name AS workspace_name,
+            'Archive' AS status,
+            NULL AS is_active,
+            NULL AS show_toggle,
+            NULL AS position,
+            a.archived_at AS create_at,
+            a.archived_at AS update_at
+        FROM archive_universal a
+        LEFT JOIN lists l ON l.id = (a.data ->> 'list_id')::int
+        LEFT JOIN boards b ON b.id = l.board_id
+        LEFT JOIN workspaces w ON w.id = b.workspace_id
+        LEFT JOIN workspaces_users wu ON wu.workspace_id = w.id
+        WHERE a.entity_type = 'cards'
+        AND wu.user_id = $2
+        AND (
+            LOWER(a.data ->> 'title') ILIKE $1
+            OR LOWER(a.data ->> 'description') ILIKE $1
+        )
+
+
+        ORDER BY create_at DESC;
+        `;
+
+        const result = await client.query(query, [searchKeyword, numericUserId]);
+        res.json(result.rows);
+
+    } catch (err) {
+        console.error('❌ Search error:', err.message);
+        res.status(500).json({
+            error: 'Internal server error',
+            detail: err.message
+        });
+    }
+});
+
+app.get('/api/search/global-testing-fix', async (req, res) => {
+    const { keyword, userId } = req.query;
+
+    if (!keyword || !userId) {
+        return res.status(400).json({ error: 'Keyword and userId are required' });
+    }
+
+    const searchKeyword = `%${keyword.toLowerCase()}%`;
+    const numericUserId = parseInt(userId);
+
+    if (isNaN(numericUserId)) {
+        return res.status(400).json({ error: 'Invalid userId' });
+    }
+
+    try {
+        const query = `
+        -- COMBINED SEARCH WITHOUT LIMIT PER TYPE, LIMIT TOTAL 20
+        SELECT *
+        FROM (
+            -- WORKSPACES
+            SELECT 
+                w.id AS entity_id,
+                w.name,
+                w.description,
+                NULL::integer AS board_id,
+                NULL::integer AS list_id,
+                NULL::integer AS card_id,
+                'workspace' AS type
+            FROM workspaces w
+            JOIN workspaces_users wu ON wu.workspace_id = w.id
+            WHERE wu.user_id = $2
+              AND w.is_deleted = FALSE
+              AND (LOWER(w.name) ILIKE $1 OR LOWER(w.description) ILIKE $1)
+
+            UNION ALL
+
+            -- BOARDS
+            SELECT 
+                b.id AS entity_id,
+                b.name,
+                b.description,
+                b.id AS board_id,
+                NULL::integer AS list_id,
+                NULL::integer AS card_id,
+                'board' AS type
+            FROM boards b
+            JOIN workspaces_users wu ON wu.workspace_id = b.workspace_id
+            WHERE wu.user_id = $2
+              AND b.is_deleted = FALSE
+              AND (LOWER(b.name) ILIKE $1 OR LOWER(b.description) ILIKE $1)
+
+            UNION ALL
+
+            -- LISTS
+            SELECT 
+                l.id AS entity_id,
+                l.name,
+                NULL AS description,
+                l.board_id AS board_id,
+                l.id AS list_id,
+                NULL::integer AS card_id,
+                'list' AS type
+            FROM lists l
+            JOIN boards b ON b.id = l.board_id
+            JOIN workspaces_users wu ON wu.workspace_id = b.workspace_id
+            WHERE wu.user_id = $2
+              AND l.is_deleted = FALSE
+              AND LOWER(l.name) ILIKE $1
+
+            UNION ALL
+
+            -- ACTIVE CARDS
+            SELECT 
+                c.id AS entity_id,
+                c.title AS name,
+                c.description,
+                b.id AS board_id,
+                l.id AS list_id,
+                c.id AS card_id,
+                'card' AS type
+            FROM cards c
+            JOIN lists l ON l.id = c.list_id
+            JOIN boards b ON b.id = l.board_id
+            JOIN workspaces_users wu ON wu.workspace_id = b.workspace_id
+            WHERE wu.user_id = $2
+              AND c.is_deleted = FALSE
+              AND (LOWER(c.title) ILIKE $1 OR LOWER(c.description) ILIKE $1)
+
+            UNION ALL
+
+            -- ARCHIVED CARDS
+            SELECT
+                a.entity_id AS entity_id,
+                a.data ->> 'title' AS name,
+                a.data ->> 'description' AS description,
+                l.board_id AS board_id,
+                l.id AS list_id,
+                a.entity_id AS card_id,
+                'card' AS type
+            FROM archive_universal a
+            LEFT JOIN lists l ON l.id = (a.data ->> 'list_id')::int
+            LEFT JOIN boards b ON b.id = l.board_id
+            LEFT JOIN workspaces_users wu ON wu.workspace_id = b.workspace_id
+            WHERE a.entity_type = 'cards'
+              AND wu.user_id = $2
+              AND (LOWER(a.data ->> 'title') ILIKE $1 OR LOWER(a.data ->> 'description') ILIKE $1)
+        ) AS combined
+        ORDER BY type, name
+        LIMIT 20;
+        `;
+
+        const result = await client.query(query, [searchKeyword, numericUserId]);
+        res.json(result.rows);
+
+    } catch (err) {
+        console.error('❌ Search error:', err.message);
         res.status(500).json({
             error: 'Internal server error',
             detail: err.message
@@ -5498,6 +5605,66 @@ app.put('/api/archive-card/:cardId', async (req, res) => {
     }
 });
 
+app.put('/api/archive-card-testing/:cardId/:userId', async (req, res) => {
+    const { cardId, userId } = req.params;
+
+    try {
+        // 1. Ambil data card
+        const cardResult = await client.query(
+            'SELECT list_id, position, title, description FROM public.cards WHERE id = $1',
+            [cardId]
+        );
+
+        if (cardResult.rows.length === 0) {
+            return res.status(404).json({ error: 'Card not found' });
+        }
+
+        const { list_id, position, title, description } = cardResult.rows[0];
+
+        // 2. Insert card ke archive
+        const archiveResult = await client.query(
+            `INSERT INTO public.archive (entity_type, entity_id, name, description, parent_id, parent_type)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING *`,
+            ['card', cardId, title, description, list_id, 'list']
+        );
+
+        const archivedData = archiveResult.rows[0];
+
+        // 3. Hapus card dari table cards
+        await client.query('DELETE FROM public.cards WHERE id = $1', [cardId]);
+
+        // 4. Reorder posisi card lain di list
+        await client.query(
+            `UPDATE public.cards
+             SET position = position - 1
+             WHERE list_id = $1 AND position > $2`,
+            [list_id, position]
+        );
+
+        // 5. Log activity
+        await logActivity(
+            'card',
+            cardId,
+            'archive',
+            userId, // dari URL
+            `Card dengan ID ${cardId} berhasil di archive`,
+            'list',
+            cardId
+        );
+
+        return res.status(200).json({
+            message: 'Card archived successfully',
+            archivedData,
+        });
+
+    } catch (error) {
+        console.error('Error archiving card:', error);
+        return res.status(500).json({ error: 'An error occurred while archiving the card' });
+    }
+});
+
+
 // 8. on off card 
 app.patch('/api/cards/:cardId/active', async (req, res) => {
     const { cardId } = req.params;
@@ -5740,6 +5907,60 @@ app.put('/api/cards/:id/title', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 })
+
+app.put('/api/cards/:id/title-another-testing/:userId', async (req, res) => {
+    const { id, userId } = req.params;
+    const { title } = req.body;
+
+    const actingUserId = parseInt(userId, 10);
+    if (!actingUserId) {
+        return res.status(400).json({ error: 'Invalid userId' });
+    }
+
+    try {
+        // 1️⃣ ambil title lama
+        const oldResult = await client.query(
+            'SELECT title FROM cards WHERE id = $1',
+            [id]
+        );
+
+        if (oldResult.rows.length === 0) {
+            return res.status(404).json({ error: 'Card not found' });
+        }
+
+        const oldTitle = oldResult.rows[0].title;
+
+        // 2️⃣ update title
+        const result = await client.query(
+            `UPDATE cards 
+             SET title = $1, update_at = CURRENT_TIMESTAMP 
+             WHERE id = $2 
+             RETURNING *`,
+            [title, id]
+        );
+
+        // 3️⃣ simpan activity
+        await logCardActivity({
+            action: 'updated_title',
+            card_id: parseInt(id),
+            user_id: actingUserId,
+            entity: 'title',
+            entity_id: id,
+            details: {
+                old_title: oldTitle,
+                new_title: title
+            }
+        });
+
+        // 4️⃣ response sukses
+        res.status(200).json(result.rows[0]);
+
+    } catch (error) {
+        console.error('Error updating card title:', error);
+        res.status(500).json({ error: 'Gagal update card title' });
+    }
+});
+
 
 //1.1 update title card (testing)
 app.put('/api/cards/:id/title-testing/:userId', async (req, res) => {
@@ -6547,6 +6768,162 @@ app.put('/api/card-due-date/:id', async (req, res) => {
         res.status(500).send("Server Error");
     }
 });
+
+// 5. update due date by id (userId dari URL)
+// app.put('/api/due/card-due-date-testing/:id/:userId', async (req, res) => {
+//     const { id, userId } = req.params;   // 👈 userId dari URL
+//     const { due_date } = req.body;
+
+//     const userIdInt = parseInt(userId, 10);
+//     if (isNaN(userIdInt)) {
+//         return res.status(400).json({ error: "Invalid userId" });
+//     }
+
+//     try {
+//         // Ambil cardId dan due date lama
+//         const existing = await client.query(
+//             "SELECT * FROM card_due_dates WHERE id = $1",
+//             [id]
+//         );
+
+//         if (existing.rows.length === 0) {
+//             return res.status(404).json({ error: "Due date not found" });
+//         }
+
+//         const oldDueDate = existing.rows[0].due_date;
+//         const cardId = existing.rows[0].card_id;
+
+//         // Update due date
+//         const result = await client.query(
+//             `
+//             UPDATE card_due_dates
+//             SET due_date = $1,
+//                 updated_at = NOW()
+//             WHERE id = $2
+//             RETURNING *
+//             `,
+//             [due_date, id]
+//         );
+
+//         if (result.rows.length === 0) {
+//             return res.status(404).json({ error: "Due date not found after update" });
+//         }
+
+//         const updatedDueDate = result.rows[0].due_date;
+
+//         // Format tanggal: Wednesday, 11 June 2025
+//         const formatDate = (dateStr) => {
+//             const options = {
+//                 weekday: 'long',
+//                 year: 'numeric',
+//                 month: 'long',
+//                 day: 'numeric'
+//             };
+//             return new Intl.DateTimeFormat('en-GB', options)
+//                 .format(new Date(dateStr));
+//         };
+
+//         // Log aktivitas update
+//         await logCardActivity({
+//             action: 'updated_due',
+//             card_id: cardId,
+//             user_id: userId,   // 👈 pakai dari params
+//             entity: 'due date',
+//             entity_id: null,
+//             details: {
+//                 old_title: formatDate(oldDueDate),
+//                 new_title: formatDate(updatedDueDate),
+//             }
+//         });
+
+//         res.json(result.rows[0]);
+//     } catch (err) {
+//         console.error(err.message);
+//         res.status(500).send("Server Error");
+//     }
+// });
+
+// 5. update due date by id (userId dari URL)
+app.put('/api/due/card-due-date-testing/:id/:userId', async (req, res) => {
+    const { id, userId } = req.params;
+    const { due_date } = req.body;
+
+    const userIdInt = parseInt(userId, 10);
+    if (isNaN(userIdInt)) {
+        return res.status(400).json({ error: "Invalid userId" });
+    }
+
+    try {
+        // 1️⃣ Ambil data lama (card_id + due_date)
+        const existing = await client.query(
+            `SELECT id, card_id, due_date FROM card_due_dates WHERE id = $1`,
+            [id]
+        );
+
+        if (existing.rows.length === 0) {
+            return res.status(404).json({ error: "Due date not found" });
+        }
+
+        const { card_id: cardId, due_date: oldDueDate } = existing.rows[0];
+
+        // 2️⃣ Update due date
+        const result = await client.query(
+            `
+      UPDATE card_due_dates
+      SET due_date = $1,
+          updated_at = NOW()
+      WHERE id = $2
+      RETURNING id, card_id, due_date
+      `,
+            [due_date, id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Due date not found after update" });
+        }
+
+        const updatedDueDate = result.rows[0].due_date;
+
+        // 3️⃣ Helper format tanggal (safe)
+        const formatDate = (dateStr) => {
+            if (!dateStr) return '-';
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+            };
+            return new Intl.DateTimeFormat('en-GB', options)
+                .format(new Date(dateStr));
+        };
+
+        // 4️⃣ Log aktivitas (TIDAK BOLEH GAGALKAN UPDATE)
+        try {
+            await logCardActivity({
+                action: 'updated_due',
+                card_id: cardId,              // ✅ dari card_due_dates
+                user_ids: [userIdInt],        // ✅ ARRAY
+                entity: 'due date',
+                entity_id: null,
+                details: {
+                    old_title: formatDate(oldDueDate),
+                    new_title: formatDate(updatedDueDate),
+                },
+            });
+        } catch (logErr) {
+            console.error('logCardActivity failed:', logErr.message);
+            // ❗ jangan lempar error
+        }
+
+        // 5️⃣ Response sukses
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error('UPDATE DUE DATE ERROR:', err.message);
+        res.status(500).json({ error: "Server Error" });
+    }
+});
+
+
 
 
 //6. delete due date by ID
@@ -7755,7 +8132,7 @@ app.get('/api/cards/:cardId/status', async (req, res) => {
 
     try {
         const result = await client.query(
-            `SELECT s.status_id, s.status_name, s.text_color,s.background_color, cs.assigned_at
+            `SELECT s.status_id, s.status_name, s.text_color,s.background_color, cs.assigned_at, s.accent_color
             FROM card_status cs
             JOIN status s ON cs.status_id = s.status_id
             WHERE cs.card_id = $1`,
@@ -7772,6 +8149,136 @@ app.get('/api/cards/:cardId/status', async (req, res) => {
         res.status(500).json({ error: 'Gagal mengambil status', detail: error.message });
     }
 });
+
+/* =======================
+TESTING
+======================= */
+app.get('/api/cards/:cardId/status-testing', async (req, res) => {
+    const { cardId } = req.params;
+
+    try {
+        const result = await client.query(
+            `
+      SELECT 
+        s.status_id,
+        s.status_name,
+        COALESCE(s.accent_color, s.text_color) AS accent_color,
+        s.text_color,
+        s.background_color,
+        cs.assigned_at
+      FROM card_status cs
+      JOIN status s ON cs.status_id = s.status_id
+      WHERE cs.card_id = $1
+      `,
+            [cardId]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Tidak ada status untuk cardId ini' });
+        }
+
+        res.json(result.rows[0]); // biasanya cuma satu status aktif
+    } catch (error) {
+        console.error('Database Error:', error);
+        res.status(500).json({
+            error: 'Gagal mengambil status',
+            detail: error.message
+        });
+    }
+});
+
+app.get('/api/status-testing', async (req, res) => {
+    try {
+        const result = await client.query(`
+      SELECT
+        status_id,
+        status_name,
+        COALESCE(accent_color, text_color) AS accent_color,
+        text_color,
+        background_color
+      FROM status
+      ORDER BY status_id
+    `);
+
+        res.json(result.rows);
+    } catch (error) {
+        res.status(500).json({
+            error: 'Gagal mengambil daftar status',
+            detail: error.message
+        });
+    }
+});
+
+app.post('/api/status-testing', async (req, res) => {
+    const { status_name, accent_color } = req.body;
+
+    // ===== VALIDATION =====
+    if (!status_name || status_name.trim() === '') {
+        return res.status(400).json({ error: 'Status name wajib diisi' });
+    }
+
+    if (!accent_color || !/^#([0-9A-Fa-f]{6})$/.test(accent_color)) {
+        return res.status(400).json({
+            error: 'Accent color harus format HEX (#RRGGBB)'
+        });
+    }
+
+    try {
+        // ===== CHECK DUPLICATE NAME =====
+        const exists = await client.query(
+            `SELECT 1 FROM status WHERE LOWER(status_name) = LOWER($1)`,
+            [status_name.trim()]
+        );
+
+        if (exists.rowCount > 0) {
+            return res.status(409).json({
+                error: 'Status dengan nama ini sudah ada'
+            });
+        }
+
+        // ===== INSERT (LET DB HANDLE status_id) =====
+        const result = await client.query(
+            `
+      INSERT INTO status (
+        status_name,
+        text_color,
+        background_color,
+        accent_color
+      )
+      VALUES ($1, $2, NULL, $2)
+      RETURNING
+        status_id,
+        status_name,
+        COALESCE(accent_color, text_color) AS accent_color
+      `,
+            [status_name.trim(), accent_color]
+        );
+
+        res.status(201).json(result.rows[0]);
+    } catch (error) {
+        console.error('Create status error:', error);
+
+        // ===== HANDLE SEQUENCE ERROR EXPLICITLY =====
+        if (error.code === '23505') {
+            return res.status(409).json({
+                error: 'Duplicate key error (sequence kemungkinan tidak sinkron)'
+            });
+        }
+
+        res.status(500).json({
+            error: 'Gagal membuat status'
+        });
+    }
+});
+
+
+
+
+
+/* =======================
+======================= */
+
+
 
 app.get('/api/card-status/:cardId', async (req, res) => {
     const { cardId } = req.params;
@@ -9540,6 +10047,122 @@ app.delete("/api/accept-status/:id", async (req, res) => {
 
 //DATA MARKETING DESIGN
 
+
+// =========================================
+//  CREATE INDEX (JALANKAN 1x SAJA)
+// =========================================
+app.get("/api/marketing-design/create-index", async (req, res) => {
+    try {
+        await client.query(`
+      CREATE INDEX IF NOT EXISTS idx_marketing_design_position
+      ON marketing_design (position DESC);
+
+      CREATE INDEX IF NOT EXISTS idx_marketing_design_is_deleted
+      ON marketing_design (is_deleted);
+    `);
+
+        res.json({ message: "Indexes created successfully 🎉" });
+    } catch (error) {
+        console.error("❌ Error creating indexes:", error);
+        res.status(500).json({ error: "Failed to create indexes" });
+    }
+});
+
+
+// =========================================
+//  ENDPOINT PAGINATION
+// =========================================
+app.get("/api/marketing-design/new-joined", async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const offset = (page - 1) * limit;
+
+    try {
+        // Hitung total data
+        const countResult = await client.query(`
+      SELECT COUNT(*) 
+      FROM marketing_design 
+      WHERE is_deleted = false;
+    `);
+
+        const totalRows = parseInt(countResult.rows[0].count);
+        const totalPages = Math.ceil(totalRows / limit);
+
+        // Ambil data
+        const result = await client.query(
+            `
+      SELECT 
+        md.marketing_design_id,
+        md.buyer_name,
+        md.code_order,
+        md.jumlah_design,
+        md.order_number,
+        md.deadline,
+        md.jumlah_revisi,
+        md.price_normal,
+        md.price_discount,
+        md.discount_percentage,
+        md.required_files,
+        md.file_and_chat,
+        md.detail_project,
+        md.create_at,
+        md.update_at,
+        md.card_id,
+        md.resolution,
+        md.reference,
+        md.project_number,
+        md.position,
+
+        mdu.id AS input_by_id,
+        mdu.nama_marketing AS input_by_name,
+        kdd.id AS acc_by_id,
+        kdd.nama AS acc_by_name,
+        ad.id AS account_id,
+        ad.nama_account AS account_name,
+        ot.id AS offer_type_id,
+        ot.offer_name AS offer_type_name,
+        pt.id AS project_type_id,
+        pt.project_name AS project_type_name,
+        sd.id AS style_id,
+        sd.style_name AS style_name,
+        sp.id AS status_project_id,
+        sp.status_name AS status_project_name,
+        dot.id AS order_type_id,
+        dot.order_name AS order_type_name
+
+      FROM marketing_design md
+      LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
+      LEFT JOIN kepala_divisi_design kdd ON md.acc_by = kdd.id
+      LEFT JOIN account_design ad ON md.account = ad.id
+      LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
+      LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
+      LEFT JOIN style_design sd ON md.style_id = sd.id
+      LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
+      LEFT JOIN design_order_type dot ON md.order_type_id = dot.id
+
+      WHERE md.is_deleted = false
+      ORDER BY md.position DESC
+      LIMIT $1 OFFSET $2;
+      `,
+            [limit, offset]
+        );
+
+        res.json({
+            page,
+            limit,
+            totalRows,
+            totalPages,
+            data: result.rows,
+        });
+
+    } catch (error) {
+        console.error("❌ Error get joined marketing_design:", error);
+        res.status(500).json({ error: "Failed to fetch joined data" });
+    }
+});
+
+
+
 //MARKETING DESIGN JOINED
 // ✅ Get all marketing_design + join
 app.get("/api/marketing-design/joined", async (req, res) => {
@@ -9881,6 +10504,89 @@ app.put("/api/marketing-design/joined/:id", async (req, res) => {
 
 
 // ✅ UPDATE Data Marketing Design by ID
+
+/// ✅ Endpoint marketing-design per HARI dengan detail + join
+app.get("/api/marketing-design/reports/daily", async (req, res) => {
+    try {
+        const result = await client.query(`
+      SELECT
+        DATE(md.create_at) AS date,                     -- ✅ group per hari
+        COUNT(*) AS total,
+        ARRAY_AGG(md.marketing_design_id) AS ids,
+        JSON_AGG(
+          JSON_BUILD_OBJECT(
+            'marketing_design_id', md.marketing_design_id,
+            'buyer_name', md.buyer_name,
+            'code_order', md.code_order,
+            'order_number', md.order_number,
+            'jumlah_design', md.jumlah_design,
+            'deadline', md.deadline,
+            'jumlah_revisi', md.jumlah_revisi,
+            'price_normal', md.price_normal,
+            'price_discount', md.price_discount,
+            'discount_percentage', md.discount_percentage,
+            'required_files', md.required_files,
+            'file_and_chat', md.file_and_chat,
+            'detail_project', md.detail_project,
+            'create_at', md.create_at,
+            'update_at', md.update_at,
+            'resolution', md.resolution,
+            'reference', md.reference,
+            'project_number', md.project_number,
+
+            -- Relasi Input By
+            'input_by', mdu.id,
+            'input_by_name', mdu.nama_marketing,
+
+            -- Relasi Acc By
+            'acc_by', kdd.id,
+            'acc_by_name', kdd.nama,
+
+            -- Relasi Account
+            'account', ad.id,
+            'account_name', ad.nama_account,
+
+            -- Relasi Offer Type
+            'offer_type', ot.id,
+            'offer_type_name', ot.offer_name,
+
+            -- Relasi Project Type
+            'project_type', pt.id,
+            'project_type_name', pt.project_name,
+
+            -- Relasi Style
+            'style', sd.id,
+            'style_name', sd.style_name,
+
+            -- Relasi Status Project
+            'status_project', sp.id,
+            'status_project_name', sp.status_name,
+
+            -- Relasi Design Order Type
+            'order_type', dot.id,
+            'order_type_name', dot.order_name
+          )
+        ) AS details
+      FROM marketing_design md
+      LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
+      LEFT JOIN kepala_divisi_design kdd ON md.acc_by = kdd.id
+      LEFT JOIN account_design ad ON md.account = ad.id
+      LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
+      LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
+      LEFT JOIN style_design sd ON md.style_id = sd.id
+      LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
+      LEFT JOIN design_order_type dot ON md.order_type_id = dot.id
+      WHERE md.is_deleted = false
+      GROUP BY DATE(md.create_at)
+      ORDER BY date DESC;
+    `);
+
+        res.json(result.rows);
+    } catch (err) {
+        console.error("❌ Query error:", err.message);
+        res.status(500).json({ error: err.message });
+    }
+});
 
 
 /// ✅ Endpoint marketing-design per 10 hari dengan detail + join
@@ -10958,7 +11664,7 @@ app.put('/api/create-card-marketing-design/:listId/:marketingDesignId', async (r
                 <p><strong>Buyer:</strong> ${marketing.buyer_name || 'N/A'}</p>
                 <p><strong>Order Number:</strong> ${marketing.order_number || 'N/A'}</p>
                 <p><strong>Account:</strong> ${marketing.account_name || 'N/A'}</p>
-                <p><strong>Design Count:</strong> ${marketing.jumlah_design || '0'}</p>
+                <p><strong>Jumlah Image:</strong> ${marketing.jumlah_design || '0'}</p>
                 <p><strong>Deadline:</strong> ${marketing.deadline ? new Date(marketing.deadline).toISOString().split('T')[0] : 'N/A'}</p>
                 <p><strong>Jumlah Revisi:</strong> ${marketing.jumlah_revisi || '0'}</p>
                 <p><strong>Offer Type:</strong> ${marketing.offer_type_name || 'N/A'}</p>
@@ -12147,7 +12853,7 @@ app.get('/api/archive-data', async (req, res) => {
     }
 });
 //2. archive data berdasarkan entity
-app.post('/api/archive/:entity/:id', async (req, res) => {
+app.post('/api/archive/:entity/:id/:userId', async (req, res) => {
     const { entity, id, userId } = req.params;
 
     const entityMap = {
@@ -12158,7 +12864,6 @@ app.post('/api/archive/:entity/:id', async (req, res) => {
         cards: { table: 'cards', idField: 'id' },
         data_marketing: { table: 'data_marketing', idField: 'marketing_id' },
         marketing_design: { table: 'marketing_design', idField: 'marketing_design_id' }
-        // tambahkan entitas lainnya jika perlu
     };
 
     const config = entityMap[entity];
@@ -12167,35 +12872,81 @@ app.post('/api/archive/:entity/:id', async (req, res) => {
     try {
         const { table, idField } = config;
 
-        // 1. Ambil data dari tabel asli
+        // 1. Ambil data utama
         const result = await client.query(
-            `SELECT * FROM ${table} WHERE ${idField} = $1`, [id]
+            `SELECT * FROM ${table} WHERE ${idField} = $1`,
+            [id]
         );
 
         if (result.rows.length === 0) {
             return res.status(404).json({ error: `Data ${entity} dengan ID ${id} tidak ditemukan` });
         }
 
-        const data = result.rows[0];
+        let data = result.rows[0];
 
-        // 2. Masukkan ke archive_universal
-        await client.query(`
-        INSERT INTO archive_universal (entity_type, entity_id, data, user_id)
-        VALUES ($1, $2, $3, $4)
-        `, [entity, id, data, userId]); // <-- pastikan req.user.id diset
+        // ======================================================
+        // 2. Jika entity = cards → ambil seluruh relasi
+        // ======================================================
+        if (entity === "cards") {
+            const relations = {};
 
+            const relationTables = {
+                checklists: "card_checklists",
+                cover: "card_cover",
+                descriptions: "card_descriptions",
+                due_dates: "card_due_dates",
+                labels: "card_labels",
+                members: "card_members",
+                priorities: "card_priorities",
+                status: "card_status",
+                users: "card_users",
+                chats: "card_chats"
+            };
 
-        // 3. Hapus dari tabel aslinya
+            // 2a. Ambil relasi-relasi card
+            for (const [key, tableName] of Object.entries(relationTables)) {
+                const q = await client.query(
+                    `SELECT * FROM ${tableName} WHERE card_id = $1`,
+                    [id]
+                );
+                relations[key] = q.rows;
+            }
+
+            // 2b. Gabungkan ke object data
+            data = {
+                ...data,
+                ...relations
+            };
+        }
+
+        // ======================================================
+        // 3. SIMPAN SEMUA DATA KE ARCHIVE
+        // ======================================================
         await client.query(
-            `DELETE FROM ${table} WHERE ${idField} = $1`, [id]
+            `INSERT INTO archive_universal (entity_type, entity_id, data, user_id)
+             VALUES ($1, $2, $3, $4)`,
+            [entity, id, data, userId]
         );
 
-        res.status(200).json({ message: `Data ${entity} ID ${id} berhasil diarsipkan` });
+        // ======================================================
+        // 4. HAPUS HANYA DATA UTAMANYA (bukan relasi)
+        // ======================================================
+        await client.query(
+            `DELETE FROM ${table} WHERE ${idField} = $1`,
+            [id]
+        );
+
+        res.status(200).json({
+            message: `Data ${entity} ID ${id} berhasil diarsipkan BESERTA relasinya (tanpa menghapus relasi dari tabel asli)`,
+            archived_data: data
+        });
+
     } catch (err) {
         console.error('Archive error:', err);
         res.status(500).json({ error: err.message });
     }
 });
+
 
 //3. delete data archive by id
 app.delete('/api/archive-data/:id', async (req, res) => {
@@ -12213,59 +12964,216 @@ app.delete('/api/archive-data/:id', async (req, res) => {
     }
 });
 
-//4. restore data archive 
+
+//4. RESTORE UNIVERSAL
 app.post('/api/restore/:entity/:id', async (req, res) => {
     const { entity, id } = req.params;
 
     const entityMap = {
-        workspaces_users: { table: 'workspaces_users' },
-        workspaces: { table: 'workspaces' },
-        boards: { table: 'boards' },
-        lists: { table: 'lists' },
-        cards: { table: 'cards' },
-        data_marketing: { table: 'data_marketing' },
-        marketing_design: { table: 'marketing_design' }
-        // tambah sesuai entity kamu
+        workspaces_user: { table: 'workspaces_users', idField: 'workspace_id' },
+        workspaces: { table: 'workspaces', idField: 'id' },
+        boards: { table: 'boards', idField: 'id' },
+        lists: { table: 'lists', idField: 'id' },
+        cards: { table: 'cards', idField: 'id' },
+        data_marketing: { table: 'data_marketing', idField: 'marketing_id' },
+        marketing_design: { table: 'marketing_design', idField: 'marketing_design_id' }
     };
 
     const config = entityMap[entity];
     if (!config) return res.status(400).json({ error: 'Entity tidak dikenali' });
 
     try {
-        // 1. Ambil data dari archive_universal
-        const archiveResult = await client.query(
-            `SELECT data FROM archive_universal WHERE entity_type = $1 AND entity_id = $2`,
+        const { table, idField } = config;
+
+        // 1. AMBIL DATA DARI ARCHIVE
+        const archive = await client.query(
+            `SELECT * FROM archive_universal WHERE entity_type=$1 AND entity_id=$2`,
             [entity, id]
         );
 
-        if (archiveResult.rows.length === 0) {
-            return res.status(404).json({ error: `Data ${entity} dengan id ${id} tidak ditemukan di archive` });
+        if (archive.rows.length === 0) {
+            return res.status(404).json({ error: 'Data archive tidak ditemukan' });
         }
 
-        const data = archiveResult.rows[0].data;
-        const keys = Object.keys(data);
-        const values = Object.values(data);
-        const placeholders = values.map((_, i) => `$${i + 1}`).join(', ');
+        const archivedData = archive.rows[0].data;
 
-        // 2. Insert kembali ke tabel aslinya
-        const insertQuery = `
-      INSERT INTO ${config.table} (${keys.join(', ')})
-      VALUES (${placeholders})
-    `;
-        await client.query(insertQuery, values);
+        // 2. RESTORE DATA UTAMA (INSERT ULANG)
+        const dataKeys = Object.keys(archivedData).filter(k =>
+            !Array.isArray(archivedData[k]) && typeof archivedData[k] !== "object"
+        );
 
-        // 3. Hapus dari archive_universal
+        const columns = dataKeys.join(", ");
+        const placeholders = dataKeys.map((_, i) => `$${i + 1}`).join(", ");
+        const values = dataKeys.map(k => archivedData[k]);
+
         await client.query(
-            `DELETE FROM archive_universal WHERE entity_type = $1 AND entity_id = $2`,
+            `INSERT INTO ${table} (${columns}) VALUES (${placeholders})`,
+            values
+        );
+
+        // ===========================================================
+        // 3. KHUSUS entity = cards → RESTORE SEMUA RELASI
+        // ===========================================================
+
+        if (entity === "cards") {
+            const relationTables = {
+                checklists: "card_checklists",
+                cover: "card_cover",
+                descriptions: "card_descriptions",
+                due_dates: "card_due_dates",
+                labels: "card_labels",
+                members: "card_members",
+                priorities: "card_priorities",
+                status: "card_status",
+                users: "card_users",
+                chats: "card_chats"
+            };
+
+            for (const [key, tableName] of Object.entries(relationTables)) {
+                const rows = archivedData[key];
+
+                if (!rows || rows.length === 0) continue;
+
+                for (const row of rows) {
+
+                    const rKeys = Object.keys(row);
+                    const rCols = rKeys.join(", ");
+                    const rPh = rKeys.map((_, i) => `$${i + 1}`).join(", ");
+                    const rVals = rKeys.map(k => row[k]);
+
+                    await client.query(
+                        `INSERT INTO ${tableName} (${rCols}) VALUES (${rPh})
+                         ON CONFLICT DO NOTHING`,
+                        rVals
+                    );
+                }
+            }
+        }
+
+        // 4. HAPUS DATA DARI ARCHIVE SETELAH RESTORE BERHASIL
+        await client.query(
+            `DELETE FROM archive_universal WHERE entity_type=$1 AND entity_id=$2`,
             [entity, id]
         );
 
-        res.status(200).json({ message: `Data ${entity} berhasil direstore.` });
+        res.status(200).json({
+            message: `Data ${entity} dengan ID ${id} berhasil direstore BESERTA seluruh relasinya`,
+            restored_data: archivedData
+        });
+
     } catch (err) {
-        console.error('Restore error:', err);
+        console.error("Restore error:", err);
         res.status(500).json({ error: err.message });
     }
 });
+
+
+
+
+// app.post('/api/restore-testing/:entity/:id', async (req, res) => {
+//     const { entity, id } = req.params;
+
+//     const entityMap = {
+//         workspaces_users: { table: 'workspaces_users' },
+//         workspaces: { table: 'workspaces' },
+//         boards: { table: 'boards' },
+//         lists: { table: 'lists' },
+//         cards: { table: 'cards' },
+//         data_marketing: { table: 'data_marketing' },
+//         marketing_design: { table: 'marketing_design' }
+//     };
+
+//     const config = entityMap[entity];
+//     if (!config) {
+//         return res.status(400).json({ error: `Entity '${entity}' tidak dikenali` });
+//     }
+
+//     try {
+//         await client.query("BEGIN");
+
+//         // 1. AMBIL DATA DARI ARCHIVE
+//         const archiveRes = await client.query(
+//             `SELECT data FROM archive_universal WHERE entity_type = $1 AND entity_id = $2`,
+//             [entity, id]
+//         );
+
+//         if (archiveRes.rows.length === 0) {
+//             return res.status(404).json({
+//                 error: `Data ${entity} id ${id} tidak ditemukan di archive`
+//             });
+//         }
+
+//         const raw = archiveRes.rows[0].data;
+
+//         // =======================================================
+//         // STEP 1 — RESTORE DATA UTAMA (UTAMA DULU)
+//         // =======================================================
+//         const keys = Object.keys(raw);
+//         const vals = Object.values(raw);
+//         const ph = keys.map((_, i) => `$${i + 1}`).join(", ");
+
+//         const insertMain = await client.query(
+//             `INSERT INTO ${config.table} (${keys.join(", ")})
+//              VALUES (${ph})
+//              RETURNING *`,
+//             vals
+//         );
+
+//         const restoredMain = insertMain.rows[0];
+
+//         // =======================================================
+//         // STEP 2 — RESTORE RELASI HANYA JIKA ENTITY = cards
+//         // =======================================================
+//         const restoreRelation = async (tableName, arr) => {
+//             if (!arr || arr.length === 0) return;
+
+//             for (const row of arr) {
+//                 const rKeys = Object.keys(row);
+//                 const rVals = Object.values(row);
+//                 const rPh = rVals.map((_, i) => `$${i + 1}`).join(", ");
+
+//                 await client.query(
+//                     `INSERT INTO ${tableName} (${rKeys.join(", ")})
+//                      VALUES (${rPh})`,
+//                     rVals
+//                 );
+//             }
+//         };
+
+//         if (entity === "cards") {
+//             await restoreRelation("card_checklists", raw.checklists);
+//             await restoreRelation("card_cover", raw.cover);
+//             await restoreRelation("card_descriptions", raw.descriptions);
+//             await restoreRelation("card_due_dates", raw.due_dates);
+//             await restoreRelation("card_labels", raw.labels);
+//             await restoreRelation("card_members", raw.members);
+//             await restoreRelation("card_priorities", raw.priorities);
+//             await restoreRelation("card_status", raw.status);
+//             await restoreRelation("card_users", raw.users);
+//             await restoreRelation("card_chats", raw.chats);
+//         }
+
+//         // =======================================================
+//         // STEP 3 — HAPUS DARI ARCHIVE
+//         // =======================================================
+//         await client.query(
+//             `DELETE FROM archive_universal WHERE entity_type = $1 AND entity_id = $2`,
+//             [entity, id]
+//         );
+
+//         await client.query("COMMIT");
+
+//         return res.status(200).json({
+//             message: `${entity} restored successfully`,
+//             restored: restoredMain
+//         });
+
+//     } catch (err) {
+//         await client.query("ROLLBACK");
+//         console.error("❌ Restore Error:", err);
+//         return res.status(500).json({ error: err.message });
+//     }
+// });
 
 //END ARCHIVE UNIVERSAL
 
@@ -14423,23 +15331,26 @@ app.post('/api/chats/:chatId/media', upload.single('file'), async (req, res) => 
     }
 
     try {
-        // Upload buffer ke Cloudinary
+
         const result = await new Promise((resolve, reject) => {
-            cloudinary.uploader.upload_stream(
+            const uploadStream = cloudinary.uploader.upload_stream(
                 {
-                    resource_type: 'auto', // auto = bisa image, video, pdf, dll
+                    resource_type: 'auto',
                     folder: 'trello_chat_media',
-                    public_id: `${Date.now()}-${req.file.originalname}`,
+                    public_id: `${Date.now()}-${req.file.originalname}`
                 },
                 (error, result) => {
                     if (error) reject(error);
                     else resolve(result);
                 }
-            ).end(req.file.buffer);
+            );
+
+            uploadStream.end(req.file.buffer);
         });
 
         const fileUrl = result.secure_url;
         const fileName = req.file.originalname;
+
 
         // Tentukan tipe media berdasarkan mimetype
         const mimeType = req.file.mimetype;
@@ -14462,6 +15373,139 @@ app.post('/api/chats/:chatId/media', upload.single('file'), async (req, res) => 
     }
 });
 
+app.post('/api/chats/:chatId/media-testing', upload.single('file'), async (req, res) => {
+    const { chatId } = req.params;
+
+    try {
+        // 🔥 CEK FILE WAJIB
+        if (!req.file) {
+            return res.status(400).json({ error: "No file uploaded" });
+        }
+
+        // 🔥 CEK chatId number
+        if (!chatId || isNaN(chatId)) {
+            return res.status(400).json({ error: "Invalid chatId" });
+        }
+
+        // 🔥 UPLOAD KE CLOUDINARY
+        const result = await new Promise((resolve, reject) => {
+            cloudinary.uploader.upload_stream(
+                {
+                    folder: "trello_chat_media",
+                    resource_type: "auto",
+                    public_id: `${Date.now()}-${req.file.originalname}`,
+                },
+                (error, uploaded) => {
+                    if (error) reject(error);
+                    else resolve(uploaded);
+                }
+            ).end(req.file.buffer);
+        });
+
+        const fileUrl = result.secure_url;
+
+        // 🔥 DETEKSI TIPE MEDIA
+        let mediaType = "file";
+        if (req.file.mimetype.startsWith("image/")) mediaType = "image";
+        else if (req.file.mimetype.startsWith("video/")) mediaType = "video";
+        else if (req.file.mimetype.startsWith("audio/")) mediaType = "audio";
+
+        // 🔥 INSERT KE DATABASE
+        const dbInsert = await client.query(
+            `INSERT INTO card_chats_media (chat_id, media_url, media_type)
+             VALUES ($1, $2, $3) RETURNING *`,
+            [chatId, fileUrl, mediaType]
+        );
+
+        return res.status(201).json(dbInsert.rows[0]);
+
+    } catch (err) {
+        console.error("Upload error:", err);
+        return res.status(500).json({
+            error: "Upload failed",
+            message: err.message,
+        });
+    }
+});
+
+
+app.post('/api/chats/:chatId/media-another-testing', upload.single('file'), async (req, res) => {
+    const { chatId } = req.params;
+
+    if (!chatId || !req.file) {
+        return res.status(400).json({ error: 'Missing chatId or file' });
+    }
+
+    try {
+        // Upload ke Cloudinary
+        const uploadResult = await new Promise((resolve, reject) => {
+            cloudinary.uploader.upload_stream(
+                {
+                    resource_type: 'auto',
+                    folder: 'trello_chat_media',
+                    public_id: `${Date.now()}-${req.file.originalname}`
+                },
+                (err, result) => (err ? reject(err) : resolve(result))
+            ).end(req.file.buffer);
+        });
+
+        const fileUrl = uploadResult.secure_url;
+
+        // Deteksi tipe file dari mimetype
+        const mime = req.file.mimetype;
+        let mediaType =
+            mime.startsWith("image/") ? "image" :
+                mime.startsWith("video/") ? "video" :
+                    mime.startsWith("audio/") ? "audio" :
+                        "file";
+
+        // Insert ke DB
+        const inserted = await client.query(
+            `INSERT INTO card_chats_media (chat_id, media_url, media_type)
+       VALUES ($1, $2, $3)
+       RETURNING *`,
+            [chatId, fileUrl, mediaType]
+        );
+
+        return res.status(201).json(inserted.rows[0]);
+
+    } catch (err) {
+        console.error("Upload error:", err);
+        res.status(500).json({
+            error: "Upload failed",
+            message: err.message
+        });
+    }
+});
+
+
+
+
+// media chats langsung ke cloudinary
+app.post('/api/chats/:chatId/media-testing', async (req, res) => {
+    const { chatId } = req.params;
+    const { media_url, media_type } = req.body;
+
+    if (!media_url) {
+        return res.status(400).json({ error: 'Missing media_url' });
+    }
+
+    try {
+        const result = await client.query(
+            `INSERT INTO card_chats_media (chat_id, media_url, media_type)
+       VALUES ($1, $2, $3)
+       RETURNING *`,
+            [chatId, media_url, media_type]
+        );
+
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to save media' });
+    }
+});
+
+
 // GET all jumlah media per card
 app.get('/api/cards/media-count', async (req, res) => {
     try {
@@ -14482,6 +15526,94 @@ app.get('/api/cards/media-count', async (req, res) => {
         res.status(500).json({ error: 'Internal server error', detail: err.message });
     }
 });
+
+
+app.get('/api/cards/:cardId/media/count-testing', async (req, res) => {
+    const { cardId } = req.params;
+
+    try {
+        const result = await client.query(
+            `SELECT COUNT(*) AS total_media
+             FROM card_chats_media
+             WHERE chat_id IN (
+                 SELECT id FROM card_chats WHERE card_id = $1
+             )`,
+            [cardId]
+        );
+
+        res.json({
+            card_id: cardId,
+            total_media: Number(result.rows[0].total_media)
+        });
+
+    } catch (error) {
+        console.error("Count media error:", error);
+        res.status(500).json({ error: "Failed to count media" });
+    }
+});
+
+
+
+app.get('/api/cards/:cardId/chat-media-summary', async (req, res) => {
+    const { cardId } = req.params;
+
+    try {
+        // 1. Ambil semua chat ID dari card_chats
+        const chatResult = await client.query(
+            `SELECT id 
+             FROM card_chats
+             WHERE card_id = $1`,
+            [cardId]
+        );
+
+        const chatIds = chatResult.rows.map(r => r.id);
+
+        if (chatIds.length === 0) {
+            return res.json({
+                cardId,
+                chats: [],
+                message: "No chats found for this card."
+            });
+        }
+
+        // 2. Ambil semua media berdasarkan chat_id
+        const mediaResult = await client.query(
+            `SELECT chat_id, media_type, media_url
+             FROM card_chats_media
+             WHERE chat_id = ANY($1::int[])`,
+            [chatIds]
+        );
+
+        // 3. Buat map media per chat_id
+        const mediaMap = {};
+        mediaResult.rows.forEach(m => {
+            if (!mediaMap[m.chat_id]) mediaMap[m.chat_id] = [];
+            mediaMap[m.chat_id].push(m);
+        });
+
+        // 4. Buat summary per chat_id
+        const summary = chatIds.map(chatId => {
+            const mediaList = mediaMap[chatId] || [];
+
+            return {
+                chat_id: chatId,
+                hasMedia: mediaList.length > 0,
+                hasImage: mediaList.some(m => m.media_type === "image"),
+                hasVideo: mediaList.some(m => m.media_type === "video"),
+                hasFile: mediaList.some(m => m.media_type === "audio"),
+                mediaTypes: [...new Set(mediaList.map(m => m.media_type))],
+                medias: mediaList // bisa dihapus kalau tidak mau
+            };
+        });
+
+        res.json({ cardId, chats: summary });
+
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({ error: "Failed to process media summary" });
+    }
+});
+
 
 // GET jumlah media per media_type + total untuk card tertentu
 app.get('/api/cards/:cardId/media-count', async (req, res) => {
@@ -14527,6 +15659,29 @@ app.get('/api/cards/:cardId/media-count', async (req, res) => {
     } catch (err) {
         console.error('❌ Error fetching media count:', err.message);
         res.status(500).json({ error: 'Internal server error', detail: err.message });
+    }
+});
+
+app.get('/api/chats/:chatId/has-image', async (req, res) => {
+    const { chatId } = req.params;
+
+    try {
+        const result = await client.query(
+            `SELECT * 
+             FROM card_chats_media 
+             WHERE chat_id = $1 
+               AND media_type = 'image'`,
+            [chatId]
+        );
+
+        res.json({
+            chatId,
+            hasImage: result.rows.length > 0,
+            medias: result.rows,  // Optional: bisa dihapus kalau hanya ingin boolean
+        });
+    } catch (error) {
+        console.error("Error checking image media:", error);
+        res.status(500).json({ error: "Failed to check image media" });
     }
 });
 
@@ -15562,7 +16717,7 @@ app.get('/api/cards/:cardId/activities-testing', async (req, res) => {
 
 // 5. duplicate card
 // Endpoint untuk duplikasi card ke list tertentu
-app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (req, res) => {
+app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/oldtesting', async (req, res) => {
     const { cardId, listId, userId } = req.params; // 🎯 userId dari URL
     const { position } = req.body; // ambil posisi dari body
     const actingUserId = parseInt(userId, 10);
@@ -15582,15 +16737,31 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (r
             );
         }
 
+        // const result = await client.query(
+        //     `INSERT INTO public.cards (title, description, list_id, position) 
+        //      SELECT title, description, $1, 
+        //             COALESCE($2, (SELECT COALESCE(MAX(position), 0) + 1 FROM public.cards WHERE list_id = $1))
+        //      FROM public.cards 
+        //      WHERE id = $3 
+        //      RETURNING id, title, list_id`,
+        //     [listId, position, cardId]
+        // );
         const result = await client.query(
-            `INSERT INTO public.cards (title, description, list_id, position) 
-             SELECT title, description, $1, 
-                    COALESCE($2, (SELECT COALESCE(MAX(position), 0) + 1 FROM public.cards WHERE list_id = $1))
-             FROM public.cards 
-             WHERE id = $3 
-             RETURNING id, title, list_id`,
+            `INSERT INTO public.cards 
+                (title, description, list_id, position, is_active, show_toggle) 
+            SELECT 
+                title, 
+                description, 
+                $1, 
+                COALESCE($2, (SELECT COALESCE(MAX(position), 0) + 1 FROM public.cards WHERE list_id = $1)),
+                is_active,
+                show_toggle
+            FROM public.cards 
+            WHERE id = $3 
+            RETURNING id, title, list_id, is_active, show_toggle`,
             [listId, position, cardId]
         );
+
 
         const newCardId = result.rows[0].id;
         const newCardTitle = result.rows[0].title;
@@ -15651,6 +16822,17 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (r
         await client.query(
             `INSERT INTO public.card_users (card_id, user_id)
              SELECT $1, user_id FROM public.card_users WHERE card_id = $2`,
+            [newCardId, cardId]
+        );
+
+        await client.query(
+            `INSERT INTO public.card_chats 
+                (card_id, user_id, message, parent_message_id, mentions, send_time, created_at, updated_at, deleted_at)
+            SELECT 
+                $1, user_id, message, parent_message_id, mentions, 
+                NOW(), NOW(), NOW(), NULL
+            FROM public.card_chats 
+            WHERE card_id = $2`,
             [newCardId, cardId]
         );
 
@@ -15737,6 +16919,386 @@ app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (r
     }
 });
 
+app.post('/api/duplicate-card-to-list/:cardId/:listId/:userId/testing', async (req, res) => {
+    const { cardId, listId, userId } = req.params; // 🎯 userId dari URL
+    const { position } = req.body; // ambil posisi dari body
+    const actingUserId = parseInt(userId, 10);
+
+    if (!actingUserId) return res.status(401).json({ error: 'Unauthorized: userId missing' });
+
+    try {
+        await client.query('BEGIN');
+
+        // Kalau user pilih posisi, geser posisi lain dulu
+        if (position) {
+            await client.query(
+                `UPDATE public.cards 
+                 SET position = position + 1 
+                 WHERE list_id = $1 AND position >= $2`,
+                [listId, position]
+            );
+        }
+
+        // const result = await client.query(
+        //     `INSERT INTO public.cards (title, description, list_id, position) 
+        //      SELECT title, description, $1, 
+        //             COALESCE($2, (SELECT COALESCE(MAX(position), 0) + 1 FROM public.cards WHERE list_id = $1))
+        //      FROM public.cards 
+        //      WHERE id = $3 
+        //      RETURNING id, title, list_id`,
+        //     [listId, position, cardId]
+        // );
+        const result = await client.query(
+            `INSERT INTO public.cards 
+                (title, description, list_id, position, is_active, show_toggle) 
+            SELECT 
+                title, 
+                description, 
+                $1, 
+                COALESCE($2, (SELECT COALESCE(MAX(position), 0) + 1 FROM public.cards WHERE list_id = $1)),
+                is_active,
+                show_toggle
+            FROM public.cards 
+            WHERE id = $3 
+            RETURNING id, title, list_id, is_active, show_toggle`,
+            [listId, position, cardId]
+        );
+
+
+        const newCardId = result.rows[0].id;
+        const newCardTitle = result.rows[0].title;
+
+        // Salin relasi-relasi card
+        await client.query(
+            `INSERT INTO public.card_checklists (card_id, checklist_id, created_at, updated_at)
+             SELECT $1, checklist_id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+             FROM public.card_checklists WHERE card_id = $2`,
+            [newCardId, cardId]
+        );
+
+        await client.query(
+            `INSERT INTO public.card_cover (card_id, cover_id)
+             SELECT $1, cover_id FROM public.card_cover WHERE card_id = $2`,
+            [newCardId, cardId]
+        );
+
+        await client.query(
+            `INSERT INTO public.card_descriptions (card_id, description, created_at, updated_at)
+             SELECT $1, description, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+             FROM public.card_descriptions WHERE card_id = $2`,
+            [newCardId, cardId]
+        );
+
+        await client.query(
+            `INSERT INTO public.card_due_dates (card_id, due_date, created_at, updated_at)
+             SELECT $1, due_date, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+             FROM public.card_due_dates WHERE card_id = $2`,
+            [newCardId, cardId]
+        );
+
+        await client.query(
+            `INSERT INTO public.card_labels (card_id, label_id)
+             SELECT $1, label_id FROM public.card_labels WHERE card_id = $2`,
+            [newCardId, cardId]
+        );
+
+        await client.query(
+            `INSERT INTO public.card_members (card_id, user_id)
+             SELECT $1, user_id FROM public.card_members WHERE card_id = $2`,
+            [newCardId, cardId]
+        );
+
+        await client.query(
+            `INSERT INTO public.card_priorities (card_id, priority_id)
+             SELECT $1, priority_id FROM public.card_priorities WHERE card_id = $2`,
+            [newCardId, cardId]
+        );
+
+        await client.query(
+            `INSERT INTO public.card_status (card_id, status_id, assigned_at)
+             SELECT $1, status_id, CURRENT_TIMESTAMP
+             FROM public.card_status WHERE card_id = $2`,
+            [newCardId, cardId]
+        );
+
+        await client.query(
+            `INSERT INTO public.card_users (card_id, user_id)
+             SELECT $1, user_id FROM public.card_users WHERE card_id = $2`,
+            [newCardId, cardId]
+        );
+
+        // ========== 4. DUPLICATE CARD CHATS (WITH PARENT MAPPING) ==========
+        // 4a. Ambil semua chat lama (urut berdasarkan id agar mapping deterministic)
+        const oldChatsRes = await client.query(
+            `SELECT * FROM public.card_chats WHERE card_id = $1 ORDER BY id ASC`,
+            [cardId]
+        );
+        const oldChats = oldChatsRes.rows;
+
+        // chatIdMap: oldChatId -> newChatId
+        const chatIdMap = {};
+
+        // 4b. Insert chats satu per satu, set parent_message_id = NULL dulu (atau tetap NULL kalau tidak ada)
+        for (const chat of oldChats) {
+            const insertChat = await client.query(
+                `INSERT INTO public.card_chats 
+            (card_id, user_id, message, parent_message_id, mentions, send_time, created_at, updated_at, deleted_at)
+            VALUES ($1, $2, $3, $4, $5, COALESCE($6, NOW()), NOW(), NOW(), $7)
+            RETURNING id`,
+                [
+                    newCardId,
+                    chat.user_id,
+                    chat.message,
+                    null,           // parent_message_id sementara null; akan diupdate nanti jika perlu
+                    chat.mentions,
+                    chat.send_time,
+                    chat.deleted_at
+                ]
+            );
+
+            const newChatId = insertChat.rows[0].id;
+            chatIdMap[chat.id] = newChatId;
+        }
+
+        // 4c. Update parent_message_id pada chat baru sesuai mapping (jika parent exists)
+        for (const chat of oldChats) {
+            if (chat.parent_message_id) {
+                const oldParent = chat.parent_message_id;
+                const newParent = chatIdMap[oldParent] || null;
+                const newChat = chatIdMap[chat.id];
+
+                // Jika parent tidak ditemukan dalam map (edge case), biarkan null
+                await client.query(
+                    `UPDATE public.card_chats SET parent_message_id = $1 WHERE id = $2`,
+                    [newParent, newChat]
+                );
+            }
+        }
+
+        // ========== 5. DUPLICATE CARD_CHATS_MEDIA berdasarkan mapping ==========
+        // Ambil semua media untuk semua old chat id
+        const oldChatIds = oldChats.map(c => c.id);
+        if (oldChatIds.length > 0) {
+            const oldMediaRes = await client.query(
+                `SELECT * FROM public.card_chats_media WHERE chat_id = ANY($1::int[]) ORDER BY id ASC`,
+                [oldChatIds]
+            );
+
+            for (const media of oldMediaRes.rows) {
+                const newChatIdForMedia = chatIdMap[media.chat_id];
+                if (!newChatIdForMedia) continue; // safety
+                await client.query(
+                    `INSERT INTO public.card_chats_media (chat_id, media_url, media_type, created_at)
+            VALUES ($1, $2, $3, NOW())`,
+                    [newChatIdForMedia, media.media_url, media.media_type]
+                );
+            }
+        }
+        // await client.query(
+        //     `INSERT INTO public.card_chats 
+        //         (card_id, user_id, message, parent_message_id, mentions, send_time, created_at, updated_at, deleted_at)
+        //     SELECT 
+        //         $1, user_id, message, parent_message_id, mentions, 
+        //         NOW(), NOW(), NOW(), NULL
+        //     FROM public.card_chats 
+        //     WHERE card_id = $2`,
+        //     [newCardId, cardId]
+        // );
+
+        // Ambil username userId
+        const userRes = await client.query(
+            "SELECT username FROM users WHERE id = $1",
+            [actingUserId]
+        );
+        const userName = userRes.rows[0]?.username || 'Unknown';
+
+        // Ambil info list + board asal dan tujuan
+        const oldListRes = await client.query(
+            `SELECT l.id AS list_id, l.name AS list_name, b.id AS board_id, b.name AS board_name
+             FROM cards c
+             JOIN lists l ON c.list_id = l.id
+             JOIN boards b ON l.board_id = b.id
+             WHERE c.id = $1`,
+            [cardId]
+        );
+        const fromListId = oldListRes.rows[0]?.list_id;
+        const fromListName = oldListRes.rows[0]?.list_name || "Unknown List";
+        const fromBoardId = oldListRes.rows[0]?.board_id;
+        const fromBoardName = oldListRes.rows[0]?.board_name || "Unknown Board";
+
+        const newListRes = await client.query(
+            `SELECT l.id AS list_id, l.name AS list_name, b.id AS board_id, b.name AS board_name
+             FROM lists l
+             JOIN boards b ON l.board_id = b.id
+             WHERE l.id = $1`,
+            [listId]
+        );
+        const toListName = newListRes.rows[0]?.list_name || "Unknown List";
+        const toBoardId = newListRes.rows[0]?.board_id;
+        const toBoardName = newListRes.rows[0]?.board_name || "Unknown Board";
+
+        await client.query('COMMIT');
+
+        // 🔥 Simpan activity langsung ke tabel card_activities
+        await client.query(`
+      INSERT INTO card_activities 
+        (card_id, user_id, action_type, entity, entity_id, action_detail)
+      VALUES ($1, $2, $3, $4, $5, $6)
+    `, [
+            newCardId,
+            actingUserId,
+            'duplicate',
+            'list',
+            listId,
+            JSON.stringify({
+                cardTitle: newCardTitle,
+                fromListId,
+                fromListName,
+                fromBoardId,
+                fromBoardName,
+                toListId: listId,
+                toListName,
+                toBoardId,
+                toBoardName,
+                position: position || null,
+                duplicatedBy: { id: actingUserId, username: userName }
+            })
+        ]);
+
+        res.status(200).json({
+            message: 'Card berhasil diduplikasi',
+            cardId: newCardId,
+            fromListId,
+            fromListName,
+            toListId: listId,
+            toListName,
+            fromBoardId,
+            fromBoardName,
+            toBoardId,
+            toBoardName,
+            position: position || null,
+            duplicatedBy: { id: actingUserId, username: userName }
+        });
+
+
+    } catch (err) {
+        await client.query('ROLLBACK');
+        console.error('❌ Duplicate card error:', err); // ini cetak ke log server
+        res.status(500).json({ error: err.message, stack: err.stack }); // tampilkan detail error di response
+    }
+});
+
+
+
+// get data card archive + origin info
+app.get("/api/archive/detail-cards/:cardId", async (req, res) => {
+    const { cardId } = req.params;
+
+    try {
+        // 1️⃣ Ambil data archive
+        const archiveResult = await client.query(
+            `
+            SELECT data, archived_at, user_id
+            FROM archive_universal
+            WHERE entity_type = 'cards'
+              AND entity_id = $1
+            LIMIT 1
+            `,
+            [cardId]
+        );
+
+        if (archiveResult.rows.length === 0) {
+            return res.status(404).json({
+                message: "Archived card not found",
+                cardId
+            });
+        }
+
+        const archivedData = archiveResult.rows[0];
+        const cardData = archivedData.data;
+        const listId = cardData.list_id;
+
+        // Jika list_id tidak ada, bisa saja data lama
+        if (!listId) {
+            return res.status(200).json({
+                message: "Archived card detail retrieved successfully (no list origin)",
+                cardId,
+                archived_by: archivedData.user_id,
+                archived_at: archivedData.archived_at,
+                origin: null,
+                data: cardData
+            });
+        }
+
+        // 2️⃣ Ambil info list asal
+        const listResult = await client.query(
+            `SELECT id, board_id, name FROM lists WHERE id = $1`,
+            [listId]
+        );
+
+        if (listResult.rows.length === 0) {
+            return res.status(200).json({
+                message: "Archived card detail retrieved successfully (list not found)",
+                cardId,
+                archived_by: archivedData.user_id,
+                archived_at: archivedData.archived_at,
+                origin: null,
+                data: cardData
+            });
+        }
+
+        const listData = listResult.rows[0];
+        const boardId = listData.board_id;
+
+        // 3️⃣ Ambil info board asal
+        const boardResult = await client.query(
+            `SELECT id, workspace_id, name FROM boards WHERE id = $1`,
+            [boardId]
+        );
+
+        let boardData = null;
+        let workspaceData = null;
+
+        if (boardResult.rows.length > 0) {
+            boardData = boardResult.rows[0];
+
+            // 4️⃣ Ambil workspace asal
+            const workspaceResult = await client.query(
+                `SELECT id, name FROM workspaces WHERE id = $1`,
+                [boardData.workspace_id]
+            );
+
+            if (workspaceResult.rows.length > 0) {
+                workspaceData = workspaceResult.rows[0];
+            }
+        }
+
+        // 5️⃣ Kembalikan data lengkap
+        return res.status(200).json({
+            message: "Archived card detail retrieved successfully",
+            cardId,
+            archived_by: archivedData.user_id,
+            archived_at: archivedData.archived_at,
+
+            origin: {
+                list: listData || null,
+                board: boardData || null,
+                workspace: workspaceData || null
+            },
+
+            data: cardData
+        });
+
+    } catch (error) {
+        console.error("❌ Error fetching archived card:", error);
+        return res.status(500).json({ error: error.message });
+    }
+});
+
+
+
+
+
 
 // END TESTING ENDPOIN 
 
@@ -15787,7 +17349,7 @@ app.get("/api/testing_boards", async (req, res) => {
         res.status(500).json({ error: "Failed to fetch boards" });
     }
 });
-app.get('/api/marketing/summary/daily', async (req, res) => {
+app.get('/api/marketing/summary/daily-testing', async (req, res) => {
     try {
         const result = await client.query(`
       SELECT 
@@ -15821,6 +17383,39 @@ app.get('/api/marketing/summary/daily', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch marketing summary' });
     }
 });
+
+app.get('/api/marketing/summary/daily', async (req, res) => {
+    try {
+        const result = await client.query(`
+      SELECT 
+        DATE(create_at) AS date,
+        COUNT(*) AS total_orders,
+        SUM(
+          COALESCE(price_normal::numeric, 0)
+          - COALESCE(price_normal::numeric, 0) * 
+            COALESCE(NULLIF(REPLACE(discount_percentage, '%', ''), '')::numeric, 0)/100
+        ) AS total_income
+      FROM marketing_design
+      WHERE create_at IS NOT NULL
+        AND is_deleted = false
+      GROUP BY DATE(create_at)
+      ORDER BY DATE(create_at);
+    `);
+
+        // Format hasil biar frontend gampang pakai
+        const formatted = result.rows.map(row => ({
+            date: row.date,
+            total_orders: parseInt(row.total_orders, 10),
+            total_income: parseFloat(row.total_income)
+        }));
+
+        res.status(200).json(formatted);
+    } catch (error) {
+        console.error('Error fetching daily marketing summary:', error);
+        res.status(500).json({ error: 'Failed to fetch marketing summary' });
+    }
+});
+
 
 
 // ===== server.js =====
@@ -15946,4 +17541,5 @@ app.get('/api/marketing/summary/compare', async (req, res) => {
 
 
 // TESTING NEW FITUR  EDNPOIN 
+
 

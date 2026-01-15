@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react";
 import '../style/fitur/TabelDataMaster.css'
 import { FiSearch } from "react-icons/fi";
+import { TiExport } from "react-icons/ti";
 
 const TabelDataMasterDesign = ({
   title,
@@ -44,7 +45,7 @@ const TabelDataMasterDesign = ({
           
           {/* <button>+ Add New</button> */}
           {onAdd && <button className="add" onClick={onAdd}>+ Add New {btnName}</button>}
-          <button>Export Data</button>
+          <button><TiExport/> Export Data</button>
         </div>
       </div>
 

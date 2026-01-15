@@ -1,0 +1,115 @@
+/* ======================================================
+   GLOBAL STATUS BADGE
+====================================================== */
+
+.status-badge-container {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-weight: 600;
+    border-radius: 4px;
+    white-space: nowrap;
+    border: 1px solid green;
+}
+
+/* ===== SIZES ===== */
+.status-sm {
+    font-size: 9px;
+    /* boleh kecil */
+    line-height: 1;
+    padding: 4px;
+    margin-bottom: 4px;
+}
+
+.status-md {
+    font-size: 9px;
+    line-height: 1.1;
+    padding: 3px 6px;
+}
+
+.status-lg {
+    font-size: 12px;
+    line-height: 1.2;
+    padding: 6px 12px;
+}
+
+.status-badge svg {
+    width: 1em;
+    height: 1em;
+    flex-shrink: 0;
+}
+
+
+/* ===== DEFAULT FALLBACK ===== */
+.status-default {
+    background-color: var(--status-default-bg);
+    color: var(--status-default-text);
+    border-color: var(--status-default-border);
+}
+
+/* ===== STATUS VARIANTS ===== */
+.status-accepted {
+    background-color: var(--status-accepted-bg);
+    color: var(--status-accepted-text);
+    border-color: var(--status-accepted-border);
+}
+
+.status-hold {
+    background-color: var(--status-hold-bg);
+    color: var(--status-hold-text);
+    border-color: var(--status-hold-border);
+}
+
+.status-cancle {
+    background-color: var(--status-cancle-bg);
+    color: var(--status-cancle-text);
+    border-color: var(--status-cancle-border);
+}
+
+.status-on-progress {
+    background-color: var(--status-on-progress-bg);
+    color: var(--status-on-progress-text);
+    border-color: var(--status-on-progress-border);
+}
+
+.status-revisi {
+    background-color: var(--status-revisi-bg);
+    color: var(--status-revisi-text);
+    border-color: var(--status-revisi-border);
+}
+
+.status-one-hit {
+    background-color: var(--status-one-hit-bg);
+    color: var(--status-one-hit-text);
+    border-color: var(--status-one-hit-border);
+}
+
+.status-pindah-producer {
+    background-color: var(--status-pindah-producer-bg);
+    color: var(--status-pindah-producer-text);
+    border-color: var(--status-pindah-producer-border);
+}
+
+.status-revisi-chat-progress {
+    background-color: var(--status-revisi-chat-progress-bg);
+    color: var(--status-revisi-chat-progress-text);
+    border-color: var(--status-revisi-chat-progress-border);
+}
+
+.status-revisi-chat-accept {
+    background-color: var(--status-revisi-chat-accept-bg);
+    color: var(--status-revisi-chat-accept-text);
+    border-color: var(--status-revisi-chat-accept-border);
+}
+
+.status-finish {
+    background-color: var(--status-finish-bg);
+    color: var(--status-finish-text);
+    border-color: var(--status-finish-border);
+}
+
+/* ===== HOVER (OPTIONAL) ===== */
+.status-badge:hover {
+    filter: brightness(0.97);
+    transform: translateY(-0.5px);
+}

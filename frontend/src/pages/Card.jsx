@@ -1,45 +1,27 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { RxSwitch } from "react-icons/rx";
-import { deleteCard, getCardById, getCardByList,updateTitleCard , onCardMove, archiveCard, getCardPriority, getDueDateById, getAllDueDateByCardId, getStatusByCardId, getAllStatus, getStatusCard, getTotalMessageInCard, getTotalFile, getNotifications, patchReadNotification,checkHasNewChat, getTotalChecklistItemByCardId, getChecklistItemChecked, getCardMediaCount, updateCardActive, updateToggleShow} from '../services/ApiServices';
+import { deleteCard,updateTitleCard , getStatusCard,  getTotalFile, getNotifications, patchReadNotification,checkHasNewChat, getTotalChecklistItemByCardId, getChecklistItemChecked, updateCardActive, updateToggleShow, updateTitleCardTesting} from '../services/ApiServices';
 import '../style/pages/Card.css'
 import '../style/modules/BoxStatus.css'
 import {    HiOutlineEllipsisHorizontal,
-            HiOutlineChatBubbleLeftRight,
-            HiOutlinePaperClip,
-            HiOutlineClock,
-            HiOutlineUsers,
-            HiOutlineCreditCard,
             HiMiniArrowLeftStartOnRectangle,
             HiOutlineSquare2Stack,
             HiOutlineArchiveBox,
             HiOutlineTrash,
-            HiMiniLightBulb,
-            HiOutlineCheckCircle,
             HiMiniEye,
             HiMiniXCircle,
             HiCheckCircle,
             HiArrowUturnLeft,
-            HiChevronDown
         } from 'react-icons/hi2';
 import { GiCardExchange } from "react-icons/gi";
 import BootstrapTooltip from '../components/Tooltip';
-import CoverCard from '../modules/CoverCard';
-import CoverSelect from '../UI/CoverSelect';
-import SelectedLabels from '../UI/SelectedLabels';
 import SelectedLabelCard from '../UI/SelectedLabelCard';
-import SelectPriority from '../UI/SelectPriority';
-import CardDetail from '../pages/CardDetail'
-import CardDetailPopup from '../hook/CardDetailPopup';
-import StatusDisplay from '../UI/StatusDisplay';
 import OutsideClick from '../hook/OutsideClick';
 import DuplicateCard from '../fitur/DuplicateCard';
 import MoveCard from '../fitur/MoveCard';
-import CardMoveModal from '../modals/CardMoveModal';
 import { useSnackbar } from '../context/Snackbar';
 import CardDeleteConfirm from '../modals/CardDeleteConfirm';
-import DueDateDisplay from '../UI/DueDateDisplay';
-import CardDetailModals from '../modals/CardDetailModals';
 import CardSelectedProperties from '../modules/CardSelectedProperties';
 import CardCoverDisplay from '../modules/CardCoverDisplay';
 import CardDueDateDisplay from '../modules/CardDueDateDisplay';
@@ -57,13 +39,12 @@ import {
   verticalListSortingStrategy,
   arrayMove,
 } from "@dnd-kit/sortable";
-import { BsCreditCard2BackFill, BsCreditCard2FrontFill } from 'react-icons/bs';
+import { BsCreditCard2FrontFill } from 'react-icons/bs';
 import ToggleSwitch from '../fitur/ToggleSwitch';
+import StatusBadge from '../fitur/StatusBadge';
 
 const Card=({
     card,
-    boards,
-    lists,
     userId,
     listName,
     listId,
@@ -75,31 +56,21 @@ const Card=({
     cardPositionDropdown,
     setCardPositionDropdown,
     handleChangeCardPosition,
-    onDragStart,
-    onDragEnd,
-    cardsByList,
-    activeCard,
-    attributes,
-  listeners,
-  setNodeRef,
-  dragHandleCardProps,
-  onNavigateToCard,
+    dragHandleCardProps,
+    onNavigateToCard,
 })=> {
-    // console.log('cards diterima:', card)
     const { workspaceId, boardId} = useParams();
-    //DEBUG
-    // console.log('workspace id:', workspaceId);
-    // console.log('board id diterima pada file card', boardId)
-    // console.log('list id diterima:', listId);
     console.log('File card menerima userId:', userId);
     console.log('File Card menerima list name:',listName)
-    // const [cardId, setCardId] = useState([]);
     //edit card
-    const [editCardName, setEditCardName] = useState(null);
-    const [newCardName, setNewCardName] = useState('')
+    const [editingId, setEditingId] = useState(null);
+    const [newTitle, setNewTitle] = useState("");
+
     const [cardData, setCardData] = useState(card);
     const navigate = useNavigate();
     const [showDetail, setShowDetail] = useState(false)
+    const [cardTitle, setCardTitle] = useState(card.title);
+
     //show
     const [showSetting, setShowSetting] = useState({})
     const settingRef = OutsideClick(()=>setShowSetting(false))
@@ -153,11 +124,16 @@ const Card=({
     }, [card.id, userId]);
 
 
+    // SYNK CARD 
+    useEffect(() => {
+        setCardData(card);
+    }, [card]);
+
     // FUNGSI ON OFF CARDS 
     const toggleActive = async () => {
         await updateCardActive(card.id, !card.is_active);
-        // fetchBoardDetail()
         fetchCardList(listId);
+        showSnackbar('toggle active', 'success');
     };
 
 
@@ -245,11 +221,6 @@ const Card=({
             [cardId]: !prev[cardId],
         }))
     }
-
-    //navigate to newCardDetail
-    // const handleNavigateToCardDetail = () =>{
-    //     navigate(`/layout/workspaces/${workspaceId}/board/${boardId}/lists/${listId}/cards/${card.id} `)
-    // }
     
 
     const handleShowModal = () =>{
@@ -301,32 +272,51 @@ const Card=({
           }))
     }
 
+    
+    /* =======================
     //EDIT NAME CARD
-    const handleEditCardName = (e, cardId, currentName) => {
-        e.stopPropagation()
-        setEditCardName(cardId)
-        setNewCardName(currentName)
-    }
-    const handleSaveName = async(cardId)=>{
-        try{
-            await updateTitleCard(cardId, { title: newCardName.trim() });
-            setCardData(prevCard => ({
-                ...prevCard,
-                title: newCardName
-            }));
-            setEditCardName(null);
-            
-        }catch(error){
-            console.error('Error updating name card:', error)
-        }
-    }
+    ======================= */
+    
+const handleEditCardName = (e) => {
+  e.stopPropagation();
+  setEditingId(card.id);
+  setNewTitle(card.title);
+};
 
-    const handleKeyPressName = (e, cardId) =>{
-        if(e.key === 'Enter'){
-            handleSaveName(cardId)
-            e.stopPropagation();
-        }
-    }
+const handleSaveTitle = async () => {
+  const title = newTitle.trim();
+
+  if (!title || title === card.title) {
+    setEditingId(null);
+    return;
+  }
+
+  try {
+    await updateTitleCardTesting(card.id, userId, { title });
+
+    // 🔥 trigger parent refresh
+    await fetchCardList(listId);
+
+    setEditingId(null);
+    showSnackbar("Title card berhasil diupdate", "success");
+  } catch (err) {
+    console.error("UPDATE TITLE ERROR:", err);
+    showSnackbar("Gagal update title card", "error");
+  }
+};
+
+const handleKeyDown = (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    handleSaveTitle();
+  }
+
+  if (e.key === "Escape") {
+    setEditingId(null);
+  }
+};
+
+
 
     //fungsi delete card
     const handleDeleteClick = (cardId) =>{
@@ -433,19 +423,13 @@ const Card=({
                     <BsCreditCard2FrontFill className='mini-cctop'/>
                 </div>
                 <CardSelectedProperties cardId={card.id}/>
-                {currentStatus ?(
-                    <div className='status-cont'>
-                        <h5
-                            style={{
-                                backgroundColor:currentStatus.background_color,
-                                color:currentStatus.text_color,
-                            }}
-                        >
-                            {ICON_STATUS[currentStatus.status_name]}
-                            {currentStatus.status_name}</h5>
-                    </div>
-                ):(
-                    <div></div>
+                {currentStatus && (
+                <div className="status-cont" >
+                    <StatusBadge
+                    statusName={currentStatus.status_name}
+                    size="sm"
+                    />
+                </div>
                 )}
             </div>
             <div className="toogle-cont">
@@ -570,19 +554,19 @@ const Card=({
         </div>
         <div className="cc-header-card">
             <div className="cc-title">
-                {editCardName ? (
-                    <input
-                        type='text'
-                        value={newCardName}
-                        onChange={(e) => setNewCardName(e.target.value)}
-                        onBlur={()=> handleSaveName(card.id)}
-                        onKeyDown={(e)=> handleKeyPressName(e, card.id)}
-                        autoFocus
-                    />
-                ):(
-                    <h5 onClick={(e) => handleEditCardName(e, card.id, card.title)}>{cardData.title}</h5>
-                )}
-                {/* <h5>{card.title}</h5> */}
+            {editingId === card.id ? (
+                <input
+                value={newTitle}
+                onChange={(e) => setNewTitle(e.target.value)}
+                onKeyDown={handleKeyDown}
+                onBlur={() => setEditingId(null)} // cancel only
+                autoFocus
+                />
+            ) : (
+                <h5 onClick={handleEditCardName}>
+                {card.title}
+                </h5>
+            )}
             </div>
         </div>
         <div className="cc-label">
