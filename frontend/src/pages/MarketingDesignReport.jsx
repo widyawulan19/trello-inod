@@ -4,6 +4,7 @@ import DesignTenDaysReport from './DesignTenDaysReport';
 import DesignDayliReport from './DesignDayliReport';
 import { HiOutlineDocumentReport } from "react-icons/hi";
 import { useNavigate } from 'react-router-dom';
+import { HiCalendarDateRange, HiCalendarDays, HiOutlineCircleStack } from 'react-icons/hi2';
 
 const MarketingDesignReport =()=> {
     //STATE
@@ -43,19 +44,22 @@ const MarketingDesignReport =()=> {
                 <button
                     onClick={navigateToMarketingDesign}
                 >
-                    Marketing Design
+                    <HiOutlineCircleStack/>
+                    DATA MARKETING
                 </button>
                 <button
                     className={activeReport === 'today' ? 'active': ''}
                     onClick={()=> setActiveReport('today')}
                 >
-                    Report Today
+                    <HiCalendarDays/>
+                    DAILY REPORT
                 </button>
                 <button
                     className={activeReport === 'period' ? 'active' :''}
                     onClick={()=> setActiveReport('period')}
                 >
-                    Report Period
+                    <HiCalendarDateRange/>
+                    MONTHLY REPORT
                 </button>
                 
             </div>

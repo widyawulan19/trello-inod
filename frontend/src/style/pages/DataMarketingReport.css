@@ -179,7 +179,7 @@ DAILY REPORT
 
 .daily-container {
     /* border: 1px solid blue; */
-    /* width: 9%; */
+    width: 100%;
     padding: 5px;
 }
 
@@ -268,7 +268,7 @@ DAILY TABLE
     /* border: 1px solid orange; */
     font-family: Arial, sans-serif;
     height: 70%;
-    width: 100%;
+    width: 98%;
     position: relative !important;
     /* padding: 10px; */
     padding-top: 0px;
@@ -357,8 +357,9 @@ MONTHLY REPORT
     border-radius: 8px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    align-items: center !important;
+    justify-content: center !important;
+    /* border: 1px solid yellowgreen; */
 }
 
 .dp-title {
@@ -381,7 +382,7 @@ SELECT MONTH
 ======================= */
 .dp-select {
     /* border: 1px solid red; */
-    width: 50%;
+    width: 60%;
     gap: 10px;
     display: flex;
     align-items: center;
@@ -624,10 +625,17 @@ DATA TABEL MONTHLY REPORT
 ======================= */
 .data-report {
     /* border: 1px solid red; */
+    width: 100%;
+    height: 65vh;
+    /* height: 100%; */
+    overflow-y: auto;
+    margin-bottom: 10px;
+    padding-right: 10px;
 }
 
 .table-report-content {
     /* border: 1px solid green; */
+    padding: 10px 0px;
 }
 
 /* =======================
@@ -656,12 +664,14 @@ REPORT TABLE (2) MONTHLY
 
 .month-table {
     font-family: Arial, sans-serif;
-    height: 70%;
+    /* height: 70%; */
+    height: 55vh;
     width: 100%;
     position: relative !important;
     /* padding: 10px; */
     padding-top: 0px;
     overflow-x: auto;
+    /* border: 1px solid red; */
 }
 
 .month-table table {
@@ -678,7 +688,7 @@ REPORT TABLE (2) MONTHLY
     color: var(--text-white);
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: 100;
     white-space: nowrap;
 }
 
@@ -715,8 +725,8 @@ TABLE BOX MONTH
 ======================= */
 
 .jumlah-container {
-    width: 7vw;
-    min-width: 7vw;
-    max-width: 7vw;
+    width: 4vw;
+    min-width: 4vw;
+    max-width: 4vw;
     /* border: 1px solid red; */
 }
