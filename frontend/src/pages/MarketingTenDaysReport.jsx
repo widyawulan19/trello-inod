@@ -5,10 +5,12 @@ import BootstrapTooltip from '../components/Tooltip';
 import { IoEyeSharp } from 'react-icons/io5';
 import { HiOutlineArchiveBox, HiOutlinePencil, HiOutlineTrash } from 'react-icons/hi2';
 import { HiOutlineSearch } from 'react-icons/hi';
+import LoadingSpinnerDot from '../utils/LoadingSpinnerDot';
 
 const MarketingTenDaysReport=()=> {
     // STATE 
     const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(false);
     const [selectedMonth, setSelectedMonth] = useState(null);
     const [selectedPeriod, setSelectedPeriod] = useState(null);
     // month 
@@ -20,8 +22,10 @@ const MarketingTenDaysReport=()=> {
     // FUNCTION 
     useEffect(() => {
       const fetchData = async () => {
+        setLoading(true);
         const result = await getTenDaysMarketing();
         setData(result);
+        setLoading(false);
         if (result.length > 0) setSelectedMonth(result[0].month);
       };
       fetchData();
@@ -98,6 +102,7 @@ const filteredMonthData = data.filter((item) => {
     "UNKNOWN":"#9E9E9E",
   }
 
+  if (loading) return <LoadingSpinnerDot text='Sedang memuat data laporan. Mohon tunggu.'/>
 
   return (
     <div className='design-period-container'>

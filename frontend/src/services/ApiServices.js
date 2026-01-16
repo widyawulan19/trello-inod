@@ -898,8 +898,13 @@ export const updateMarketingDesign = (id, data) =>
   axios.put(`${API_URL}/marketing-design/joined/${id}`, data);
 
 // ✅ Get laporan hari ini
-export const getMarketingDesignReportToday = () =>
-  axios.get(`${API_URL}/marketing-design/reports/today`);
+// export const getMarketingDesignReportToday = () =>
+//   axios.get(`${API_URL}/marketing-design/reports/today`);
+
+export const getMarketingDesignReportToday = async () => {
+  const response = await axios.get(`${API_URL}/marketing-design/reports/daily`);
+  return response.data;
+};
 
 // ✅ Get laporan per 10 hari
 // export const getMarketingDesignReports = () =>
