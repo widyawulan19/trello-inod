@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-// const API_URL = 'https://trello-inod-production.up.railway.app/api'
-// const API_URL = 'https://trello-inod-production.up.railway.app/api';
+// REACT_APP_API_URL=https://inod-backend.up.railway.app/api
 
 const API_URL = process.env.REACT_APP_API_URL;
 
