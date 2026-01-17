@@ -1,7 +1,7 @@
 import React, { useState,useEffect } from 'react'
 import { useSnackbar } from '../context/Snackbar'
 import { getArchiveBoard, getArchiveCard, getArchiveList, getArchiveMarketing, getArchiveMarketingDesign, getArchiveWorkspace, getArchiveWorkspaceUser } from '../services/ApiServices'
-import '../style/pages/Archives.css'
+import '../style/pages/ArchiveStyle.css'
 import { CiSearch } from 'react-icons/ci'
 import { HiOutlineExternalLink, HiOutlineSearch } from 'react-icons/hi'
 import { HiArchiveBoxArrowDown } from "react-icons/hi2";
@@ -84,120 +84,96 @@ const Archives=()=> {
     
 
   return (
-    <div className='archive-container'>
-        <div className="archive-header">
-            <div className="ah-left">
-                <div className="header-title">
-                    {/* <HiArchiveBoxArrowDown/> */}
-                    <h4>ARCHIVE DATA {selectedType.charAt(0).toUpperCase() + selectedType.slice(1)}s</h4>
-                </div>
-                <div className="header-desc">
-                    <strong>
-                        Semua Aktivitas Terdokumentasi, Tersimpan dengan Aman
-                    </strong>
-                    <p>
-                        Selamat datang di halaman Arsip Data. Di sini, Anda dapat menelusuri seluruh riwayat aktivitas proyek, mulai dari Workspace, Board, List, Card, hingga detail lengkap dari Data Marketing yang pernah dibuat.
-                    </p>
-                </div>
+    <div className='archive-box-container'>
+        <div className="archive-box-header">
+            <div className="archive-header-left">
+                 <h4>ARCHIVE DATA {selectedType.charAt(0).toUpperCase() + selectedType.slice(1)}s</h4>
+                <p> <span>Semua Aktivitas Terdokumentasi, Tersimpan dengan Aman</span>
+                    Selamat datang di halaman Arsip Data. Di sini, Anda dapat menelusuri seluruh riwayat aktivitas proyek, mulai dari Workspace, Board, List, Card, hingga detail lengkap dari Data Marketing yang pernah dibuat.
+                </p>
             </div>
-            <div className="ah-btn">
-                <div className="btn-container">
-                    <div className='btn-ex'>
-                        <BootstrapTooltip title='Export data to excel' placement='top'>
-                            <button>
-                                <HiOutlineExternalLink size={15}/>
-                                Export
-                            </button>
-                        </BootstrapTooltip>
-                    </div>
-                    <div className="btn-show-archive">
-                        <BootstrapTooltip>
-                            <button onClick={handleShowDataArchive}>
-                                <HiChevronUpDown size={15}/>
-                                Show Data
-                            </button>
-                        </BootstrapTooltip>
-                    </div>
 
-                    {/* SHOW DATA  */}
-                    {showDataArchive && (
+            <div className="archive-header-btn">
+                <div className='data-search'>
+                    <HiOutlineSearch size={13}/>
+                    <input 
+                        type="text" 
+                        className='search-input'
+                        placeholder='search data archive...'
+                        value={searchQuery}
+                        onChange={(e)=> handleSearch(e.target.value)}
+                    />
+                </div>
+                
+                <div className="btn-container">
+                    <button>
+                        <HiOutlineExternalLink size={15}/>
+                        EXPORT
+                    </button>
+
+                    {/* WRAPPER PENTING */}
+                    <div className="archive-dropdown-wrapper">
+                        <button
+                            className="btn-show-archive"
+                            onClick={handleShowDataArchive}
+                        >
+                            <HiChevronUpDown size={15}/>
+                            SHOW DATA
+                        </button>
+
+                        {showDataArchive && (
                         <div className="archive-button" ref={showDataArchiveRef}>
                             <h5>Select Data:</h5>
-                        <BootstrapTooltip title='Workspace Data' placement='left'>
+
                             <button
-                                onClick={()=>{setSelectedType('workspace'); setActiveButton('workspace');}}
-                                className={activeButton === 'workspace' ? 'active':''}
+                                onClick={() => { setSelectedType('workspace'); setActiveButton('workspace'); }}
+                                className={activeButton === 'workspace' ? 'active' : ''}
                             >
-                                Workspace
+                             Workspace
                             </button>
-                        </BootstrapTooltip>
-                        <BootstrapTooltip title='Workspace User' placement='left'>
+
                             <button
-                                onClick={()=>{setSelectedType('workspace_user'); setActiveButton('workspace_user');}}
-                                className={activeButton === 'workspace workspace' ? 'active':''}
-                            >
-                                Workspace User
-                            </button>
-                        </BootstrapTooltip>
-                        <BootstrapTooltip title='Board Data' placement='left'>
-                            <button
-                                onClick={()=>{setSelectedType('board'); setActiveButton('board');}}
-                                className={activeButton === 'board' ? 'active':''}
+                                onClick={() => { setSelectedType('board'); setActiveButton('board'); }}
+                                className={activeButton === 'board' ? 'active' : ''}
                             >
                                 Board
                             </button>
-                        </BootstrapTooltip>
-                        <BootstrapTooltip title='List Data' placement='left'>
+
                             <button
-                                onClick={()=>{setSelectedType('list'); setActiveButton('list');}}
-                                className={activeButton === 'list' ? 'active':''}
+                                onClick={() => { setSelectedType('list'); setActiveButton('list'); }}
+                                className={activeButton === 'list' ? 'active' : ''}
                             >
                                 List
                             </button>
-                        </BootstrapTooltip>
-                        <BootstrapTooltip title='Card Data' placement='left'>
+
                             <button
-                                onClick={()=>{setSelectedType('card'); setActiveButton('card');}}
-                                className={activeButton === 'card' ? 'active':''}
+                                onClick={() => { setSelectedType('card'); setActiveButton('card'); }}
+                                className={activeButton === 'card' ? 'active' : ''}
                             >
                                 Card
                             </button>
-                        </BootstrapTooltip>
-                        <BootstrapTooltip title='Marketing Data' placement='left'>
+
                             <button
                                 onClick={()=>{setSelectedType('marketing'); setActiveButton('marketing');}}
                                 className={activeButton === 'marketing' ? 'active':''}
                             >
                                 Marketing
                             </button>
-                        </BootstrapTooltip>
-                        <BootstrapTooltip title='Marketing Data' placement='left'>                
+
                             <button
                                 onClick={()=>{setSelectedType('marketing design'); setActiveButton('marketing design');}}
                                 className={activeButton === 'marketing design' ? 'active':''}
                             >
                                 Marketing Design
-                            </button>
-                        </BootstrapTooltip>
-                        
+                            </button>                            
                         </div>
-                    )}
-                    {/* END SHOW DATA  */}
-                </div>
-                <div className="ah-btn-search">
-                    <div className='data-search'>
-                        <HiOutlineSearch className='ds-icon'/>
-                        <input 
-                            type="text" 
-                            placeholder='search data archive...'
-                            value={searchQuery}
-                            onChange={(e)=> handleSearch(e.target.value)}
-                        />
+                        )}
                     </div>
                 </div>
             </div>
+            
         </div>
-        <div className="archive-data">
+        <div className="archive-data-table">
             <div className="archive-show-data">
                 {filteredData.length === 0 ?(
                     <p>No archived {selectedType}s found.</p>
