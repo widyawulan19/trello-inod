@@ -13227,6 +13227,22 @@ app.get('/api/archive-board', async (req, res) => {
         res.status(500).send('Server error saat mengambil data dari database!')
     }
 })
+
+// testing  archive board
+app.get('/api/archive-board-testing', async (req, res) => {
+    try {
+        const result = await client.query('SELECT * FROM archive_universal WHERE entity_type = $1', ['board']);
+
+        if (result.rows.length > 0) {
+            res.status(200).json(result.rows);
+        } else {
+            res.status(404).send('Tidak ada data board yang ditemukan');
+        }
+    } catch (error) {
+        console.error('Error executing query:', error.stack);
+        res.status(500).send('Server error saat mengambil data dari database!')
+    }
+})
 //3. get all list archive
 app.get('/api/archive-list', async (req, res) => {
     try {
