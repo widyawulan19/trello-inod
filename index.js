@@ -13045,20 +13045,26 @@ app.post('/api/archive/:entity/:id/:userId', async (req, res) => {
         let parent_entity_id = null;
 
         const parentConfig = parentResolver[entity];
-        if (parentConfig && data[parentConfig.parent_field]) {
-            parent_entity_type = parentConfig.parent_entity_type;
-            parent_entity_id = data[parentConfig.parent_field];
+
+        if (parentConfig) {
+            const parentValue = data?.[parentConfig.parent_field];
+
+            if (parentValue !== undefined && parentValue !== null) {
+                parent_entity_type = parentConfig.parent_entity_type;
+                parent_entity_id = parentValue;
+            }
         }
+
 
         // ===============================
         // 4. INSERT KE ARCHIVE
         // ===============================
         await client.query(
             `
-      INSERT INTO archive_universal
-      (entity_type, entity_id, parent_entity_type, parent_entity_id, data, user_id)
-      VALUES ($1, $2, $3, $4, $5, $6)
-      `,
+            INSERT INTO archive_universal
+            (entity_type, entity_id, parent_entity_type, parent_entity_id, data, user_id)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            `,
             [
                 entity,
                 id,
