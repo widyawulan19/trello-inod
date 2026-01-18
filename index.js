@@ -13309,7 +13309,7 @@ app.get('/api/archive-card', async (req, res) => {
 })
 
 // archive card testing 
-app.get('/api/archive-card', async (req, res) => {
+app.get('/api/archive-card-testing', async (req, res) => {
     try {
         const result = await client.query('SELECT * FROM archive_universal WHERE entity_type = $1', ['cards']);
 
