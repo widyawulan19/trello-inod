@@ -13231,7 +13231,7 @@ app.get('/api/archive-board', async (req, res) => {
 // testing  archive board
 app.get('/api/archive-board-testing', async (req, res) => {
     try {
-        const result = await client.query('SELECT * FROM archive_universal WHERE entity_type = $1', ['board']);
+        const result = await client.query('SELECT * FROM archive_universal WHERE entity_type = $1', ['boards']);
 
         if (result.rows.length > 0) {
             res.status(200).json(result.rows);
