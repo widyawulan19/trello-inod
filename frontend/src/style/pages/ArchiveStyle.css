@@ -1,11 +1,12 @@
 .archive-box-container {
-    border: 1px solid red;
+    /* border: 1px solid red; */
     width: 100%;
     background-color: var(--bg);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    position: relative;
 }
 
 .archive-box-header {
@@ -43,7 +44,7 @@
 HEADER ACTION
 ======================= */
 .archive-header-btn {
-    width: 60%;
+    width: 70%;
     gap: 10px;
     /* border: 1px solid orange; */
     display: flex;
@@ -149,7 +150,7 @@ HEADER ACTION
     border-radius: 6px;
     padding: 10px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-    z-index: 100;
+    z-index: 1000;
 }
 
 .archive-button h5 {
@@ -192,24 +193,209 @@ HEADER ACTION
 DATA TABLE ARCHIVE
 ======================= */
 .archive-data-table {
-    border: 1px solid blue;
+    /* border: 1px solid blue; */
     width: 100%;
+    height: 75vh;
     margin: 5px;
+    overflow-y: auto;
+    table-layout: fixed;
 }
 
 .archive-data-table table {
-    width: 100%;
+    width: 95%;
+    /* border: 1px solid red; */
     position: relative;
+    margin: 0 auto;
 }
 
 .archive-data-table th {
     background: var(--primary);
-    /* background: linear-gradient(to bottom, #6E30DC, #5D12EB); */
     color: white;
     padding: 8px;
     font-size: 12px;
     font-weight: bold;
+    text-align: center;
     position: sticky;
-    z-index: 10;
+    z-index: 100;
     top: 0;
+}
+
+.archive-data-table td {
+    color: var(--sub-text);
+    padding: 5px 10px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: normal;
+    border: 1px solid var(--border);
+    /* border-bottom: 1px solid var(--border); */
+
+}
+
+.archive-data-table tr:nth-child(odd) td {
+    background-color: var(--bg-section);
+    color: var(--sub-text);
+}
+
+.archive-data-table tr:nth-child(even) td {
+    /* background-color: #ffffff; */
+    background-color: var(--bg-section);
+    color: var(--sub-text);
+}
+
+.archive-data-table tr:hover td {
+    background-color: var(--bg-section-hover);
+    cursor: pointer;
+}
+
+.archive-data-table .nomor-box {
+    width: 5vw;
+    min-width: 5vw;
+    max-width: 5vw;
+    white-space: normal;
+    text-align: center;
+}
+
+.archive-data-table .entity-box {
+    width: 13vw;
+    min-width: 13vw;
+    max-width: 13vw;
+    white-space: normal;
+    text-align: center;
+}
+
+.archive-data-table .name-box,
+.archive-data-table .action-box {
+    width: 15vw;
+    min-width: 15vw;
+    max-width: 15vw;
+    white-space: normal;
+}
+
+.archive-data-table .desc-box {
+    width: 50vw;
+    max-width: 50vw;
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.5;
+}
+
+/* =======================
+MODAL DETAIL 
+======================= */
+/* MODAL DETAIL CARD  */
+.archive-box-container .detail-card-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.detail-card-content {
+    background-color: var(--card-bg);
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* modal header  */
+.detail-archive-modal-header {
+    width: 100%;
+    padding-bottom: 5px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.detail-archive-modal-header h3 {
+    color: var(--text);
+    font-size: 13px;
+    font-weight: bold;
+    margin: 0px;
+}
+
+
+
+.close-archive-btn {
+    color: var(--sub-text);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.close-archive-btn:hover {
+    color: var(--primary);
+}
+
+/* modal hierarchy  */
+.archive-hierarchy {
+    width: 100%;
+    margin: 3px 0px;
+}
+
+.archive-modal-body {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+
+    gap: 3px;
+    color: var(--sub-text);
+}
+
+
+/* =======================
+ARHIVE BODY MODAL 
+======================= */
+
+
+
+/* ENTITY  */
+.entity-container {
+    /* border: 1px solid red; */
+    width: 100%;
+    padding: 5px;
+    gap: 5px;
+    font-weight: normal;
+    font-size: 12px;
+    color: var(--sub-text);
+}
+
+.detail-row {
+    /* border: 1px solid green; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    gap: 5px;
+}
+
+.detail-label {
+    font-size: 12px;
+    font-weight: bold;
+    width: 50% !important;
+
+    /* border: 1px solid blue; */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.detail-value {
+    width: 100%;
+    /* border: 1px solid yellow; */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
