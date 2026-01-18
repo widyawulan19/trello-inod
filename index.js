@@ -12853,9 +12853,106 @@ app.get('/api/archive-data', async (req, res) => {
     }
 });
 //2. archive data berdasarkan entity
+// app.post('/api/archive/:entity/:id/:userId', async (req, res) => {
+//     const { entity, id, userId } = req.params;
+
+//     const entityMap = {
+//         workspaces_user: { table: 'workspaces_users', idField: 'workspace_id' },
+//         workspaces: { table: 'workspaces', idField: 'id' },
+//         boards: { table: 'boards', idField: 'id' },
+//         lists: { table: 'lists', idField: 'id' },
+//         cards: { table: 'cards', idField: 'id' },
+//         data_marketing: { table: 'data_marketing', idField: 'marketing_id' },
+//         marketing_design: { table: 'marketing_design', idField: 'marketing_design_id' }
+//     };
+
+//     const config = entityMap[entity];
+//     if (!config) return res.status(400).json({ error: 'Entity tidak dikenali' });
+
+//     try {
+//         const { table, idField } = config;
+
+//         // 1. Ambil data utama
+//         const result = await client.query(
+//             `SELECT * FROM ${table} WHERE ${idField} = $1`,
+//             [id]
+//         );
+
+//         if (result.rows.length === 0) {
+//             return res.status(404).json({ error: `Data ${entity} dengan ID ${id} tidak ditemukan` });
+//         }
+
+//         let data = result.rows[0];
+
+//         // ======================================================
+//         // 2. Jika entity = cards → ambil seluruh relasi
+//         // ======================================================
+//         if (entity === "cards") {
+//             const relations = {};
+
+//             const relationTables = {
+//                 checklists: "card_checklists",
+//                 cover: "card_cover",
+//                 descriptions: "card_descriptions",
+//                 due_dates: "card_due_dates",
+//                 labels: "card_labels",
+//                 members: "card_members",
+//                 priorities: "card_priorities",
+//                 status: "card_status",
+//                 users: "card_users",
+//                 chats: "card_chats"
+//             };
+
+//             // 2a. Ambil relasi-relasi card
+//             for (const [key, tableName] of Object.entries(relationTables)) {
+//                 const q = await client.query(
+//                     `SELECT * FROM ${tableName} WHERE card_id = $1`,
+//                     [id]
+//                 );
+//                 relations[key] = q.rows;
+//             }
+
+//             // 2b. Gabungkan ke object data
+//             data = {
+//                 ...data,
+//                 ...relations
+//             };
+//         }
+
+//         // ======================================================
+//         // 3. SIMPAN SEMUA DATA KE ARCHIVE
+//         // ======================================================
+//         await client.query(
+//             `INSERT INTO archive_universal (entity_type, entity_id, data, user_id)
+//              VALUES ($1, $2, $3, $4)`,
+//             [entity, id, data, userId]
+//         );
+
+//         // ======================================================
+//         // 4. HAPUS HANYA DATA UTAMANYA (bukan relasi)
+//         // ======================================================
+//         await client.query(
+//             `DELETE FROM ${table} WHERE ${idField} = $1`,
+//             [id]
+//         );
+
+//         res.status(200).json({
+//             message: `Data ${entity} ID ${id} berhasil diarsipkan BESERTA relasinya (tanpa menghapus relasi dari tabel asli)`,
+//             archived_data: data
+//         });
+
+//     } catch (err) {
+//         console.error('Archive error:', err);
+//         res.status(500).json({ error: err.message });
+//     }
+// });
+
 app.post('/api/archive/:entity/:id/:userId', async (req, res) => {
     const { entity, id, userId } = req.params;
 
+    // ===============================
+    // ENTITY CONFIG
+    // ===============================
     const entityMap = {
         workspaces_user: { table: 'workspaces_users', idField: 'workspace_id' },
         workspaces: { table: 'workspaces', idField: 'id' },
@@ -12863,47 +12960,70 @@ app.post('/api/archive/:entity/:id/:userId', async (req, res) => {
         lists: { table: 'lists', idField: 'id' },
         cards: { table: 'cards', idField: 'id' },
         data_marketing: { table: 'data_marketing', idField: 'marketing_id' },
-        marketing_design: { table: 'marketing_design', idField: 'marketing_design_id' }
+        marketing_design: { table: 'marketing_design', idField: 'marketing_design_id' },
+    };
+
+    // ===============================
+    // PARENT RESOLVER
+    // ===============================
+    const parentResolver = {
+        boards: {
+            parent_entity_type: 'workspaces',
+            parent_field: 'workspace_id',
+        },
+        lists: {
+            parent_entity_type: 'boards',
+            parent_field: 'board_id',
+        },
+        cards: {
+            parent_entity_type: 'lists',
+            parent_field: 'list_id',
+        },
     };
 
     const config = entityMap[entity];
-    if (!config) return res.status(400).json({ error: 'Entity tidak dikenali' });
+    if (!config) {
+        return res.status(400).json({ error: 'Entity tidak dikenali' });
+    }
 
     try {
         const { table, idField } = config;
 
-        // 1. Ambil data utama
+        // ===============================
+        // 1. AMBIL DATA UTAMA
+        // ===============================
         const result = await client.query(
             `SELECT * FROM ${table} WHERE ${idField} = $1`,
             [id]
         );
 
         if (result.rows.length === 0) {
-            return res.status(404).json({ error: `Data ${entity} dengan ID ${id} tidak ditemukan` });
+            return res.status(404).json({
+                error: `Data ${entity} dengan ID ${id} tidak ditemukan`,
+            });
         }
 
         let data = result.rows[0];
 
-        // ======================================================
-        // 2. Jika entity = cards → ambil seluruh relasi
-        // ======================================================
-        if (entity === "cards") {
-            const relations = {};
-
+        // ===============================
+        // 2. AMBIL RELASI CARD (JIKA CARD)
+        // ===============================
+        if (entity === 'cards') {
             const relationTables = {
-                checklists: "card_checklists",
-                cover: "card_cover",
-                descriptions: "card_descriptions",
-                due_dates: "card_due_dates",
-                labels: "card_labels",
-                members: "card_members",
-                priorities: "card_priorities",
-                status: "card_status",
-                users: "card_users",
-                chats: "card_chats"
+                checklists: 'card_checklists',
+                cover: 'card_cover',
+                descriptions: 'card_descriptions',
+                due_dates: 'card_due_dates',
+                labels: 'card_labels',
+                members: 'card_members',
+                priorities: 'card_priorities',
+                status: 'card_status',
+                users: 'card_users',
+                chats: 'card_chats',
             };
 
-            // 2a. Ambil relasi-relasi card
+            const relations = {};
+
             for (const [key, tableName] of Object.entries(relationTables)) {
                 const q = await client.query(
                     `SELECT * FROM ${tableName} WHERE card_id = $1`,
@@ -12912,40 +13032,66 @@ app.post('/api/archive/:entity/:id/:userId', async (req, res) => {
                 relations[key] = q.rows;
             }
 
-            // 2b. Gabungkan ke object data
             data = {
                 ...data,
-                ...relations
+                ...relations,
             };
         }
 
-        // ======================================================
-        // 3. SIMPAN SEMUA DATA KE ARCHIVE
-        // ======================================================
+        // ===============================
+        // 3. RESOLVE PARENT
+        // ===============================
+        let parent_entity_type = null;
+        let parent_entity_id = null;
+
+        const parentConfig = parentResolver[entity];
+        if (parentConfig && data[parentConfig.parent_field]) {
+            parent_entity_type = parentConfig.parent_entity_type;
+            parent_entity_id = data[parentConfig.parent_field];
+        }
+
+        // ===============================
+        // 4. INSERT KE ARCHIVE
+        // ===============================
         await client.query(
-            `INSERT INTO archive_universal (entity_type, entity_id, data, user_id)
-             VALUES ($1, $2, $3, $4)`,
-            [entity, id, data, userId]
+            `
+      INSERT INTO archive_universal
+      (entity_type, entity_id, parent_entity_type, parent_entity_id, data, user_id)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      `,
+            [
+                entity,
+                id,
+                parent_entity_type,
+                parent_entity_id,
+                data,
+                userId,
+            ]
         );
 
-        // ======================================================
-        // 4. HAPUS HANYA DATA UTAMANYA (bukan relasi)
-        // ======================================================
+        // ===============================
+        // 5. DELETE DATA UTAMA
+        // ===============================
         await client.query(
             `DELETE FROM ${table} WHERE ${idField} = $1`,
             [id]
         );
 
         res.status(200).json({
-            message: `Data ${entity} ID ${id} berhasil diarsipkan BESERTA relasinya (tanpa menghapus relasi dari tabel asli)`,
-            archived_data: data
+            message: `Data ${entity} ID ${id} berhasil diarsipkan`,
+            archived: {
+                entity_type: entity,
+                entity_id: id,
+                parent_entity_type,
+                parent_entity_id,
+            },
         });
-
     } catch (err) {
         console.error('Archive error:', err);
         res.status(500).json({ error: err.message });
     }
 });
+
 
 
 //3. delete data archive by id
