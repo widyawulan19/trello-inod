@@ -979,6 +979,10 @@ export const getArchiveCard = () => axios.get(`${API_URL}/archive-card`)
 export const getArchiveMarketing = () => axios.get(`${API_URL}/archive-marketing`)
 export const getArchiveMarketingDesign = () => axios.get(`${API_URL}/archive-marketing-design`)
 
+// GET ARCHIVE TESTING 
+export const getWorkspaceArchive = () => axios.get(`${API_URL}/archive-workspace-testing`)
+export const getBoardArchive = () => axios.get(`${API_URL}/archive-board-testing`)
+
 //WORKSPACE USER SUMMARY
 export const getWorkspaceSummary = (userId) => axios.get(`${API_URL}/workspaces/${userId}/summary`)
 export const getWorkspaceSummaryByWorkspaceId = (userId, workspaceId) => axios.get(`${API_URL}/workspaces/${userId}/summary/${workspaceId}`)

@@ -297,7 +297,7 @@ MODAL DETAIL
 }
 
 .detail-card-content {
-    background-color: var(--card-bg);
+    background: var(--bg-section) !important;
     padding: 10px;
     border: 1px solid var(--border);
     border-radius: 8px;
@@ -331,6 +331,7 @@ MODAL DETAIL
     border-radius: 4px;
     cursor: pointer;
     font-size: 18px;
+    background-color: var(--bg-section);
 }
 
 .close-archive-btn:hover {
@@ -341,6 +342,11 @@ MODAL DETAIL
 .archive-hierarchy {
     width: 100%;
     margin: 3px 0px;
+}
+
+.hierarcy-box {
+    font-size: 10px;
+    color: grey;
 }
 
 .archive-modal-body {
@@ -363,13 +369,42 @@ ARHIVE BODY MODAL
 
 /* ENTITY  */
 .entity-container {
-    /* border: 1px solid red; */
+    border: 1px solid var(--border);
+    border-radius: 8px;
     width: 100%;
-    padding: 5px;
+    padding: 8px;
     gap: 5px;
     font-weight: normal;
     font-size: 12px;
     color: var(--sub-text);
+    background: var(--card-bg);
+    box-shadow: var(--box-shadow);
+}
+
+.detail-archive {
+    margin-bottom: 5px;
+}
+
+.detail-entity {
+    /* border-top: 1px solid var(--border); */
+    margin: 5px 0px;
+    padding-top: 5px;
+}
+
+.entity-container h4 {
+    font-weight: bold;
+    font-size: 12px;
+    color: var(--text);
+    margin: 0px;
+    /* text-decoration: underline; */
+}
+
+.entity-container p {
+    padding: 0px;
+    font-size: 10px;
+    font-weight: normal;
+    color: var(--sub-text-grey);
+    font-style: italic;
 }
 
 .detail-row {
@@ -384,6 +419,7 @@ ARHIVE BODY MODAL
 .detail-label {
     font-size: 12px;
     font-weight: bold;
+    color: var(--sub-text);
     width: 50% !important;
 
     /* border: 1px solid blue; */
@@ -394,6 +430,7 @@ ARHIVE BODY MODAL
 
 .detail-value {
     width: 100%;
+    color: var(--sub-text);
     /* border: 1px solid yellow; */
     white-space: nowrap;
     overflow: hidden;

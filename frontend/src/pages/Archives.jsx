@@ -1,8 +1,9 @@
 import React, { useState,useEffect } from 'react'
 import { useSnackbar } from '../context/Snackbar'
-import { deleteArchiveDataUniversalById, getArchiveBoard, getArchiveCard, getArchiveList, getArchiveMarketing, getArchiveMarketingDesign, getArchiveWorkspace, getArchiveWorkspaceUser } from '../services/ApiServices'
+import { deleteArchiveDataUniversalById, getArchiveBoard, getArchiveCard, getArchiveList, getArchiveMarketing, getArchiveMarketingDesign, getArchiveWorkspace, getArchiveWorkspaceUser, getBoardArchive, getWorkspaceArchive } from '../services/ApiServices'
 import '../style/pages/ArchiveStyle.css'
 import { IoIosCloseCircle } from "react-icons/io";
+import { FaCircle } from "react-icons/fa6";
 import { HiOutlineExternalLink, HiOutlineSearch } from 'react-icons/hi'
 import { HiArchiveBoxArrowDown, HiXMark } from "react-icons/hi2";
 import BootstrapTooltip from '../components/Tooltip'
@@ -97,6 +98,8 @@ const Archives=()=> {
     ======================= */
     const renderArchiveDetail = (archive) => {
     const { entity_type, entity_id, archived_at, data } = archive;
+    // const { entity_type, archived_at, data } = archive;
+
 
     switch (entity_type) {
         case 'card':
@@ -122,26 +125,52 @@ const Archives=()=> {
             </div>
         );
 
-        case 'board':
+        case 'boards':
         return (
             <div className='entity-container'>
-                <DetailRow label="Entity Type" value="Board" />
-                <DetailRow label="Name" value={archive.name || '-'} />
-                <DetailRow label="Board ID" value={entity_id} />
-                <DetailRow label="Archived At" value={formatDate(archived_at)} />
+                <div className="detail-archive">
+                    <h4>ARCHIVE INFORMATION</h4>
+                    <p>(Status & History)</p>
+                    <DetailRow label="Archive Type" value="Board" />
+                    <DetailRow label="Archived At" value={formatDate(archived_at)} />
+                </div>
+
+                <div className="detail-entity">
+                    <h4>DETAIL WORKSPACES</h4>
+                    <p>(Data workspace saat diarsipkan)</p>
+                    <DetailRow label="Board ID" value={entity_id} />
+                    <DetailRow label="Create At" value={data?.create_at ? formatDate(data.create_at) : '-'}/>
+                    <DetailRow label="Board Name" value={data?.name ?? '-'}/>
+                    <DetailRow label="Description" value={data?.description?.trim() || '-'} />
+                </div>
             </div>
         );
 
-        case 'workspace':
+    case 'workspace':
+    case 'workspaces': {
+
         return (
             <div className='entity-container'>
-                <DetailRow label="Entity Type" value="Workspace" />
-                {/* <DetailRow label="Workspace ID" value={entity_id} /> */}
-                <DetailRow label="Archive Name" value={archive.name || '-'} />
-                <DetailRow label="Description" value={archive.description || '-'} />
-                <DetailRow label="Archived At" value={formatDate(archived_at)} />
+                <div className="detail-archive">
+                    <h4>ARCHIVE INFORMATION</h4>
+                    <p>(Status & History)</p>
+                    <DetailRow label="Archive Type" value="Workspace" />
+                    <DetailRow label="Archived At" value={formatDate(archived_at)}/>
+                </div>
+                
+                <div className="detail-entity">
+                    <h4>DETAIL WORKSPACES</h4>
+                    <p>(Data workspace saat diarsipkan)</p>
+                    <DetailRow label="Workspace ID" value={entity_id}/>
+                    <DetailRow label="Create At" value={data?.create_at ? formatDate(data.create_at) : '-'}/>
+                    <DetailRow label="Workspace Name" value={data?.name ?? '-'}/>
+                    <DetailRow label="Description" value={data?.description?.trim() || '-'} />
+                </div>
             </div>
         );
+    }
+
+
 
 
         case 'marketing':
@@ -164,6 +193,7 @@ const Archives=()=> {
 
     const DetailRow = ({ label, value }) => (
         <div className="detail-row">
+            {/* <FaCircle/> */}
             <span className="detail-label"> {label}</span>
             :
             <span className="detail-value">{value}</span>
@@ -202,7 +232,7 @@ const Archives=()=> {
         const { entity_type, parent_type, parent_id, entity_id } = archive;
 
         return (
-            <div style={{ fontSize: '10px', color: '#6B7280' }}>
+            <div className='hierarcy-box'>
             {parent_type && parent_id && (
                 <div>↳ {parent_type.toUpperCase()} #{parent_id}</div>
             )}
@@ -224,11 +254,12 @@ const Archives=()=> {
         try{
             let response;
             if(type === 'workspace'){
-                response = await getArchiveWorkspace();
+                // response = await getArchiveWorkspace();
+                response = await getWorkspaceArchive();
             }else if(type === 'workspace_user'){
                 response = await getArchiveWorkspaceUser();
-            }else if(type === 'board'){
-                response = await getArchiveBoard();
+            }else if(type === 'boards'){
+                response = await getBoardArchive();
             }else if(type === 'list'){
                 response = await getArchiveList();
             }else if(type === 'card'){
@@ -247,6 +278,7 @@ const Archives=()=> {
             setLoading(false)
         }
     }
+
 
     //fungsi search
     const handleSearch = (query) =>{
@@ -319,8 +351,8 @@ const Archives=()=> {
                             </button>
 
                             <button
-                                onClick={() => { setSelectedType('board'); setActiveButton('board'); }}
-                                className={activeButton === 'board' ? 'active' : ''}
+                                onClick={() => { setSelectedType('boards'); setActiveButton('boards'); }}
+                                className={activeButton === 'boards' ? 'active' : ''}
                             >
                                 Board
                             </button>
@@ -379,9 +411,14 @@ const Archives=()=> {
                                 <tr key={item.entity_id}>
                                     <td className='nomor-box'>{archiveData.indexOf(item)+1}</td>
                                     <td className='entity-box'><EntityBadge type={item.entity_type} /></td>
-                                    {/* <td className='entity-box'>{item.entity_type}</td> */}
-                                    <td className='name-box'>{item.name}</td>
-                                    <td className='desc-box'>{item.description}</td>
+                
+                                    <td className='name-box'>
+                                     {item.data?.name || item.data?.title || '-'}
+                                    </td>
+
+                                    <td className="desc-box">
+                                        {item.data?.description?.trim() || '-'}
+                                    </td>
                                     <td className='action-box'>
                                         <div className="action-action" style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
                                     <BootstrapTooltip title='View Data' placement='top'>
@@ -420,30 +457,25 @@ const Archives=()=> {
         <div className="detail-card-modal">
             <div className="detail-card-content">
 
-            <div className="detail-archive-modal-header">
-                <div>
-                    <h3>ARCHIVE DETAIL</h3>
-                    <EntityBadge type={selectedArchive.entity_type} />
-                    {/* <div className="badge-archive">
-                        <EntityBadge type={selectedArchive.entity_type} />
-                        <button onClick={()=> openRestoreModal(selectedArchive.entity_type)}> <MdOutlineRestore/> RESTORE DATA </button>
-                    </div> */}
-                    
+                <div className="detail-archive-modal-header">
+                    <div>
+                        <h3>ARCHIVE DETAIL</h3>
+                        <EntityBadge type={selectedArchive.entity_type} /> 
+                    </div>
+
+                    <button className="close-archive-btn" onClick={closeDetailArchive}>
+                        <IoIosCloseCircle/>
+                    </button>
                 </div>
 
-                <button className="close-archive-btn" onClick={closeDetailArchive}>
-                    <IoIosCloseCircle/>
-                </button>
-            </div>
 
+                <div className="archive-hierarchy">
+                    {renderHierarchy(selectedArchive)}
+                </div>
 
-            <div className="archive-hierarchy">
-                {renderHierarchy(selectedArchive)}
-            </div>
-
-            <div className="archive-modal-body">
-                {renderArchiveDetail(selectedArchive)}
-            </div>
+                <div className="archive-modal-body">
+                    {renderArchiveDetail(selectedArchive)}
+                </div>
 
             </div>
         </div>

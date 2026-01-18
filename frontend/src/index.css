@@ -178,11 +178,11 @@ code {
   --due-normal-text: #22c55e;
 
   /* ARCHIVE BADGE  */
-  --badge-workspace-bg: #E0F2FE;
-  --badge-workspace-text: #0369A1;
+  --badge-workspaces-bg: #E0F2FE;
+  --badge-workspaces-text: #0369A1;
 
-  --badge-board-bg: #DCFCE7;
-  --badge-board-text: #166534;
+  --badge-boards-bg: #DCFCE7;
+  --badge-boards-text: #166534;
 
   --badge-list-bg: #FEF9C3;
   --badge-list-text: #854D0E;
@@ -363,11 +363,11 @@ code {
   --due-normal-text: #86efac;
 
   /* ARCHIVE BADGE  */
-  --badge-workspace-bg: #0C4A6E;
-  --badge-workspace-text: #E0F2FE;
+  --badge-workspaces-bg: #0C4A6E;
+  --badge-workspaces-text: #E0F2FE;
 
-  --badge-board-bg: #14532D;
-  --badge-board-text: #DCFCE7;
+  --badge-boards-bg: #14532D;
+  --badge-boards-text: #DCFCE7;
 
   --badge-list-bg: #713F12;
   --badge-list-text: #FEF9C3;
