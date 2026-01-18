@@ -13196,6 +13196,22 @@ app.get('/api/archive-workspace', async (req, res) => {
     }
 })
 
+// workspace testing 
+app.get('/api/archive-workspace-testing', async (req, res) => {
+    try {
+        const result = await client.query('SELECT * FROM archive_universal WHERE entity_type = $1', ['workspaces']);
+
+        if (result.rows.length > 0) {
+            res.status(200).json(result.rows);
+        } else {
+            res.status(404).send('Tidak ada data workspace yang ditemukan');
+        }
+    } catch (error) {
+        console.error('Error executing query:', error.stack);
+        res.status(500).send('Server error saat mengambil data dari database!')
+    }
+})
+
 // archive workspace user
 app.get('/api/archive-workspace-user', async (req, res) => {
     try {
@@ -13211,6 +13227,7 @@ app.get('/api/archive-workspace-user', async (req, res) => {
         res.status(500).send({ message: 'Server error saat mengambil data dari database' });
     }
 })
+
 
 //2. get all boards archive
 app.get('/api/archive-board', async (req, res) => {
@@ -13258,6 +13275,23 @@ app.get('/api/archive-list', async (req, res) => {
         res.status(500).send('Server error saat mengambil data dari database!')
     }
 })
+
+// list archive testing 
+app.get('/api/archive-list-testing', async (req, res) => {
+    try {
+        const result = await client.query('SELECT * FROM archive_universal WHERE entity_type = $1', ['lists']);
+
+        if (result.rows.length > 0) {
+            res.status(200).json(result.rows);
+        } else {
+            res.status(404).send('Tidak ada data list yang ditemukan');
+        }
+    } catch (error) {
+        console.error('Error executing query:', error.stack);
+        res.status(500).send('Server error saat mengambil data dari database!')
+    }
+})
+
 //4. get all card archive
 app.get('/api/archive-card', async (req, res) => {
     try {
@@ -13273,6 +13307,23 @@ app.get('/api/archive-card', async (req, res) => {
         res.status(500).send('Server error saat mengambil data dari database!')
     }
 })
+
+// archive card testing 
+app.get('/api/archive-card', async (req, res) => {
+    try {
+        const result = await client.query('SELECT * FROM archive_universal WHERE entity_type = $1', ['cards']);
+
+        if (result.rows.length > 0) {
+            res.status(200).json(result.rows);
+        } else {
+            res.status(404).send('Tidak ada data card yang ditemukan');
+        }
+    } catch (error) {
+        console.error('Error executing query:', error.stack);
+        res.status(500).send('Server error saat mengambil data dari database!')
+    }
+})
+
 //5. get all marketing data archive
 app.get('/api/archive-marketing', async (req, res) => {
     try {
@@ -13288,6 +13339,23 @@ app.get('/api/archive-marketing', async (req, res) => {
         res.status(500).send('Server error saat mengambil data dari database!')
     }
 })
+
+// archive data marketing testing 
+app.get('/api/archive-marketing', async (req, res) => {
+    try {
+        const result = await client.query('SELECT * FROM archive_universal WHERE entity_type = $1', ['marketing']);
+
+        if (result.rows.length > 0) {
+            res.status(200).json(result.rows);
+        } else {
+            res.status(404).send('Tidak ada data marketing yang ditemukan');
+        }
+    } catch (error) {
+        console.error('Error executing query:', error.stack);
+        res.status(500).send('Server error saat mengambil data dari database!')
+    }
+})
+
 //6. get all marketing design data archive
 app.get('/api/archive-marketing-design', async (req, res) => {
     try {
@@ -13304,38 +13372,23 @@ app.get('/api/archive-marketing-design', async (req, res) => {
     }
 })
 
+// archive marketing design testing 
+app.get('/api/archive-marketing-design-testing', async (req, res) => {
+    try {
+        const result = await client.query('SELECT * FROM archive_universal WHERE entity_type = $1', ['marketing_design']);
+
+        if (result.rows.length > 0) {
+            res.status(200).json(result.rows);
+        } else {
+            res.status(404).send('Tidak ada data marketing design yang ditemukan');
+        }
+    } catch (error) {
+        console.error('Error executing query:', error.stack);
+        res.status(500).send('Server error saat mengambil data dari database!')
+    }
+})
+
 //TABEL WORKSPACE SUMMARY
-// app.get('/api/workspaces/:userId/summary', async (req, res) => {
-//     const { userId } = req.params;
-
-//     const query = `
-//       SELECT 
-//         w.id AS workspace_id,
-//         w.name AS workspace_name,
-//         COUNT(DISTINCT b.id) AS board_count,
-//         COUNT(DISTINCT l.id) AS list_count,
-//         COUNT(c.id) AS card_count
-//       FROM workspaces_users wu
-//       JOIN workspaces w ON wu.workspace_id = w.id
-//       LEFT JOIN boards b ON b.workspace_id = w.id
-//       LEFT JOIN lists l ON l.board_id = b.id
-//       LEFT JOIN cards c ON c.list_id = l.id
-//       WHERE wu.user_id = $1
-//       GROUP BY w.id
-//       ORDER BY w.name
-//     `;
-
-//     try {
-//         const result = await client.query(query, [userId]);
-//         if (result.rows.length === 0) {
-//             return res.status(404).json({ message: 'No workspace summary found for this user' });
-//         }
-//         res.json(result.rows);
-//     } catch (err) {
-//         console.error('Error fetching workspace summary:', err);
-//         res.status(500).json({ error: 'Internal server error' });
-//     }
-// });
 
 app.get('/api/workspaces/:userId/summary', async (req, res) => {
     const { userId } = req.params;
