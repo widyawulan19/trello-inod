@@ -13341,7 +13341,7 @@ app.get('/api/archive-marketing', async (req, res) => {
 })
 
 // archive data marketing testing 
-app.get('/api/archive-marketing', async (req, res) => {
+app.get('/api/archive-marketing-testing', async (req, res) => {
     try {
         const result = await client.query('SELECT * FROM archive_universal WHERE entity_type = $1', ['marketing']);
 
