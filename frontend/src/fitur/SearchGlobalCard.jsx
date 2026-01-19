@@ -123,6 +123,30 @@ const SearchGlobalCard = ({ userId }) => {
     return highlightText(snippet, keyword);
   };
 
+  const handleSearchClick = (item) => {
+    const isArchived = item.status === "Archive";
+
+    if (!isArchived) {
+      // 👉 NORMAL CARD
+      navigate(
+        `/layout/workspaces/${item.workspace_id}/board/${item.board_id}/lists/${item.list_id}/cards/${item.card_id}`
+      );
+    } else {
+      // 👉 ARCHIVED CARD
+      navigate("archive", {
+        state: {
+          openArchive: true,
+          entity_type: "cards",
+          entity_id: item.card_id,
+        },
+      });
+    }
+
+    // optional: tutup search setelah klik
+    closeResult();
+  };
+
+
   return (
     <div className="search-global-container">
       <IoSearchOutline className="icon-search" />
@@ -141,7 +165,7 @@ const SearchGlobalCard = ({ userId }) => {
               <div className="sgh-icon">
                 <FaCreditCard />
               </div>
-              Search results
+              SEARCH RESULT
             </h2>
 
             <div className="search-close-btn" onClick={closeResult}>
@@ -178,17 +202,16 @@ const SearchGlobalCard = ({ userId }) => {
                     className={`search-result-item ${
                       isArchive ? "archive-card" : ""
                     }`}
-                    onClick={() => {
-                      if (isArchive) {
-                        navigate(`/archive/cards/${card.card_id}`);
-                      } else {
-                        navigate(
-                          `/layout/workspaces/${card.workspace_id}/board/${card.board_id}/lists/${card.list_id}/cards/${card.card_id}`
-                        );
-                      }
-                      setKeyword("");
-                    }}
+                    onClick={()=> handleSearchClick(card)}
+                  //                    <li
+                  //   key={card.card_id}
+                  //   className={`search-result-item ${
+                  //     isArchive ? "archive-card" : ""
+                  //   }`}
+                  //   onClick={()=> handleSearchClick}
+                  // >
                   >
+
                     <div className="result-icon">
                       {isArchive ? (
                         <HiArchiveBoxArrowDown className="ri" />

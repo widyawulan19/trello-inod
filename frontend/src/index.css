@@ -176,6 +176,25 @@ code {
   --due-normal-border: #22c55e;
   --due-normal-bg: #dcfce8;
   --due-normal-text: #22c55e;
+
+  /* ARCHIVE BADGE  */
+  --badge-workspaces-bg: #E0F2FE;
+  --badge-workspaces-text: #0369A1;
+
+  --badge-boards-bg: #DCFCE7;
+  --badge-boards-text: #166534;
+
+  --badge-lists-bg: #FEF9C3;
+  --badge-lists-text: #854D0E;
+
+  --badge-cards-bg: #FCE7F3;
+  --badge-cards-text: #9D174D;
+
+  --badge-data-marketing-bg: #F3E8FF;
+  --badge-data-marketing-text: #6B21A8;
+
+  --badge-marketing-design-bg: #E5E7EB;
+  --badge-marketing-design-text: #374151;
 }
 
 /* Dark Theme */
@@ -342,6 +361,25 @@ code {
   --due-normal-border: #4ade80;
   --due-normal-bg: rgba(34, 197, 94, 0.15);
   --due-normal-text: #86efac;
+
+  /* ARCHIVE BADGE  */
+  --badge-workspaces-bg: #0C4A6E;
+  --badge-workspaces-text: #E0F2FE;
+
+  --badge-boards-bg: #14532D;
+  --badge-boards-text: #DCFCE7;
+
+  --badge-lists-bg: #713F12;
+  --badge-lists-text: #FEF9C3;
+
+  --badge-cards-bg: #831843;
+  --badge-cards-text: #FCE7F3;
+
+  --badge-data-marketing-bg: #581C87;
+  --badge-data-marketing-text: #F3E8FF;
+
+  --badge-marketing-design-bg: #1F2933;
+  --badge-marketing-design-text: #E5E7EB;
 }
 
 

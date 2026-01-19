@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-// const API_URL = 'https://trello-inod-production.up.railway.app/api'
-// const API_URL = 'https://trello-inod-production.up.railway.app/api';
+// REACT_APP_API_URL=https://inod-backend.up.railway.app/api
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -979,6 +978,16 @@ export const getArchiveList = () => axios.get(`${API_URL}/archive-list`)
 export const getArchiveCard = () => axios.get(`${API_URL}/archive-card`)
 export const getArchiveMarketing = () => axios.get(`${API_URL}/archive-marketing`)
 export const getArchiveMarketingDesign = () => axios.get(`${API_URL}/archive-marketing-design`)
+
+// GET ARCHIVE TESTING 
+export const getWorkspaceArchive = () => axios.get(`${API_URL}/archive-workspace-testing`)
+export const getBoardArchive = () => axios.get(`${API_URL}/archive-board-testing`)
+export const getListArchive = () => axios.get(`${API_URL}/archive-list-testing`)
+export const getCardArchive = () => axios.get(`${API_URL}/archive-card-testing`)
+export const getMarketingArchive = () => axios.get(`${API_URL}/archive-marketing-testing`)
+export const getMarketingDesignArchive = () => axios.get(`${API_URL}/archive-marketing-design-testing`)
+
+// archive-marketing-testing
 
 //WORKSPACE USER SUMMARY
 export const getWorkspaceSummary = (userId) => axios.get(`${API_URL}/workspaces/${userId}/summary`)

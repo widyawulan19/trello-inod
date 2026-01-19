@@ -69,14 +69,16 @@ const Sidebar = () => {
             // { to: '/employee-data', icon: <HiOutlineCalendarDateRange className='icon' />, label: 'Member Schedule', name: 'schedule' },
             { to: 'data-marketing', icon: <HiOutlineCircleStack className='sidebar-icon' />, label: 'Data Marketing', name: 'marketing' },
             { to: 'marketing-design', icon: <HiOutlineChartBar className='sidebar-icon' />, label: 'Marketing Design', name: 'marketing-design' },
-            { to: 'archive-data', icon: <HiOutlineArchiveBoxArrowDown className='sidebar-icon' />, label: 'Archive Data', name: 'archive' },
+            { to: 'archive', icon: <HiOutlineArchiveBoxArrowDown className='sidebar-icon' />, label: 'Archive Data', name: 'archive' },
+            // { to: 'archive-data', icon: <HiOutlineArchiveBoxArrowDown className='sidebar-icon' />, label: 'Archive Data', name: 'archive' },
             { to: 'activity', icon: <HiOutlineCog8Tooth className='sidebar-icon' />, label: 'User Activity', name: 'User Activity' },
             { to: 'faq', icon: <HiAdjustmentsHorizontal className='sidebar-icon' />, label: 'FaQ', name: 'faq' },
             { to: 'data-delete', icon: <HiOutlineTrash className='sidebar-icon' />, label: 'Trash', name: 'Trash' },
             // { to: 'marketing-chart', icon: <MdDeveloperMode className='icon' />, label: 'Testing Fitur', name: 'Testing Fitur' },
 
+
             { to: 'loading-test', icon: <MdDeveloperMode className='sidebar-icon' />, label: 'Testing Fitur', name: 'Testing Fitur' },
-            // { to: 'card-list', icon: <HiAdjustmentsHorizontal className='icon' />, label: 'Development', name: 'Dev page' },
+            // { to: 'archive', icon: <MdDeveloperMode className='sidebar-icon' />, label: 'Testing Fitur', name: 'Testing Fitur' },
           ].map((item) => (
             <div
             // style={{border:'1px solid red'}}

@@ -23,6 +23,7 @@ import ResetCounter from "../fitur/ResetCounter";
 import LoadingSpinnerDot from "../utils/LoadingSpinnerDot";
 import { CgDatabase } from "react-icons/cg";
 import SearchSuggestionMarketing from "../fitur/SearchSuggestionMarketing";
+import { useUser } from "../context/UserContext";
 
 const DataMarketing = () => {
   const location = useLocation();
@@ -33,6 +34,8 @@ const DataMarketing = () => {
   const boardId = searchParams.get("boardId");
   const listId = searchParams.get("listId");
   const cardId = searchParams.get("cardId");
+  const {user} = useUser();
+  const userId = user?.id;
 
   const [marketingTransfile, setMarketingTransfile] = useState([]);
   const [isExported, setIsExported] = useState(false);
@@ -294,14 +297,15 @@ const fetchDataMarketing = async()=>{
   };
 
 //archive data
-const handleArchiveDataMarketing =(marketing_id)=>{
+const handleArchiveDataMarketing = useCallback((marketing_id)=>{
   handleArchive({
     entity:'data_marketing',
     id: marketing_id,
+    userId: userId,
     refetch: fetchDataMarketing,
     showSnackbar: showSnackbar,
   })
-}
+});
 
 
 //fungsi filtered data

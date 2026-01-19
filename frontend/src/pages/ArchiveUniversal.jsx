@@ -19,7 +19,9 @@ const ArchiveUniversal=()=> {
     const {showSnackbar} = useSnackbar();
     const [showDetailCard, setShowDetailCard] = useState(false);
 
-
+    //RESTORE MODAL
+    const [showRestoreModal, setShowRestoreModal] = useState(false);
+    const [restoreTarget, setRestoreTarget] = useState(null);
 
 
     //FUNCTION
@@ -94,6 +96,32 @@ const ArchiveUniversal=()=> {
   const handleShowDetailCard = (cardId) =>{
     setShowDetailCard(!showDetailCard);
   }
+
+  /* =======================
+  SHOW & CONFIRM RESTORE
+  ======================= */
+  const openRestoreModal = (item) =>{
+    setRestoreTarget(item);
+    setShowRestoreModal(true);
+  }
+
+  const closeRestoreModal = () =>{
+    setShowRestoreModal(false);
+    setRestoreTarget(null)
+  }
+
+    const confirmRestore = async () => {
+    if (!restoreTarget) return;
+
+    await handleRestoreArchive({
+        entity: restoreTarget.entity_type,
+        id: restoreTarget.entity_id,
+        refetch: fetchArchiveData,
+        showSnackbar,
+    });
+
+    closeRestoreModal();
+    };
 
   return (
     <div className="archive-container">
@@ -178,15 +206,11 @@ const ArchiveUniversal=()=> {
                             </button>
                         </BootstrapTooltip>
                         <BootstrapTooltip title='Restore data' placement="top">
-                            <button className='btn-action' onClick={()=>
-                                handleRestoreArchive({
-                                    entity: item.entity_type,
-                                    id: item.entity_id,
-                                    refetch:fetchArchiveData,
-                                    showSnackbar,
-                                })
-                                
-                            }>
+                            <button
+                                className='btn-action'
+                                onClick={() => openRestoreModal(item)}
+                            >
+
                                 <MdOutlineRestore/>
                             </button>
                         </BootstrapTooltip>
@@ -212,6 +236,33 @@ const ArchiveUniversal=()=> {
                 </div>
             </div>
         )}
+
+        {showRestoreModal && (
+        <div className="modal-overlay">
+            <div className="modal-box">
+                <h3>⚠️ RESTORE DATA</h3>
+
+                <p>
+                    Apakah kamu yakin ingin mengembalikan data
+                    <strong> "{restoreTarget?.entity_type}"</strong>?
+                </p>
+
+                <p >
+                    Data ini akan dikembalikan ke daftar aktif.
+                </p>
+
+                <div className="modal-actions">
+                    <button className="btn-cancel" onClick={closeRestoreModal}>
+                    Cancel
+                    </button>
+                    <button className="btn-confirm" onClick={confirmRestore}>
+                    Yes, Restore
+                    </button>
+                </div>
+            </div>
+        </div>
+        )}
+
 
     </div>
   );

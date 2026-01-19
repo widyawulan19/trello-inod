@@ -46,7 +46,8 @@
 }
 
 .table-report-content th {
-    background: linear-gradient(to bottom, #6E30DC, #5D12EB);
+    background: var(--primary);
+    /* background: linear-gradient(to bottom, #6E30DC, #5D12EB); */
     color: white;
     padding: 8px;
     font-size: 12px;
