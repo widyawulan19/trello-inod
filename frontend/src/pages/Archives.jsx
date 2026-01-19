@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from 'react'
 import { useSnackbar } from '../context/Snackbar'
-import { deleteArchiveDataUniversalById, getArchiveBoard, getArchiveCard, getArchiveList, getArchiveMarketing, getArchiveMarketingDesign, getArchiveWorkspace, getArchiveWorkspaceUser, getBoardArchive, getWorkspaceArchive } from '../services/ApiServices'
+import { deleteArchiveDataUniversalById, getArchiveBoard, getArchiveCard, getArchiveList, getArchiveMarketing, getArchiveMarketingDesign, getArchiveWorkspace, getArchiveWorkspaceUser, getBoardArchive, getCardArchive, getListArchive, getWorkspaceArchive } from '../services/ApiServices'
 import '../style/pages/ArchiveStyle.css'
 import { IoIosCloseCircle } from "react-icons/io";
 import { FaCircle } from "react-icons/fa6";
@@ -102,26 +102,48 @@ const Archives=()=> {
 
 
     switch (entity_type) {
-        case 'card':
+        case 'cards':
         return (
             <div className='entity-container'>
-                <DetailRow label="Entity Type" value="Card" />
-                {/* <DetailRow label="Card ID" value={entity_id} /> */}
-                <DetailRow label="Title" value={data?.title || '-'} />
-                <DetailRow label="Description" value={data?.description || '-'} />
-                <DetailRow label="List ID" value={data?.list_id || '-'} />
-                <DetailRow label="Archived At" value={formatDate(archived_at)} />
+                <div className="detail-archive">
+                    <h4>ARCHIVE INFORMATION</h4>
+                    <p>(Status & History)</p>
+                    <DetailRow label="Archive Type" value="Cards" />
+                    <DetailRow label="Archived At" value={formatDate(archived_at)} />
+                </div>
+                <div className="detail-entity">
+                    <h4>DETAIL CARD</h4>
+                    <p>(Data card saat diarsipkan)</p>
+                    <DetailRow label="Card Id" value={entity_id} />
+                    <DetailRow label="Create At" value={data?.create_at ? formatDate(data.create_at) : '-'}/>
+                    <DetailRow label="Card Name" value={data?.title ?? '-'}/>
+                    <DetailRow label="Description" value={entity_type === 'cards'
+                                            ? data?.description
+                                                ?.replace(/<[^>]+>/g, '')
+                                                ?.replace(/\s+/g, ' ')
+                                                ?.trim() || '-'
+                                            : data?.description?.trim() || '-'}/>
+                </div>
             </div>
         );
 
-        case 'list':
+        case 'lists':
         return (
             <div className='entity-container'>
-                <DetailRow label="Entity Type" value="List" />
-                {/* <DetailRow label="List ID" value={entity_id} /> */}
-                <DetailRow label="Name" value={data?.name || '-'} />
-                <DetailRow label="Board ID" value={data?.board_id || '-'} />
-                <DetailRow label="Archived At" value={formatDate(archived_at)} />
+                <div className="detail-archive">
+                    <h4>ARCHIVE INFORMATION</h4>
+                    <p>(Status & History)</p>
+                    <DetailRow label="Archive Type" value="Lists" />
+                    <DetailRow label="Archived At" value={formatDate(archived_at)} />
+                </div>
+                <div className="detail-entity">
+                    <h4>DETAIL LIST</h4>
+                    <p>(Data list saat diarsipkan)</p>
+                    <DetailRow label="List Id" value={entity_id} />
+                    <DetailRow label="Create At" value={data?.create_at ? formatDate(data.create_at) : '-'}/>
+                    <DetailRow label="List Name" value={data?.name ?? '-'}/>
+                    <DetailRow label="Description" value={'No Description'} />
+                </div>
             </div>
         );
 
@@ -136,8 +158,8 @@ const Archives=()=> {
                 </div>
 
                 <div className="detail-entity">
-                    <h4>DETAIL WORKSPACES</h4>
-                    <p>(Data workspace saat diarsipkan)</p>
+                    <h4>DETAIL BOARDS</h4>
+                    <p>(Data board saat diarsipkan)</p>
                     <DetailRow label="Board ID" value={entity_id} />
                     <DetailRow label="Create At" value={data?.create_at ? formatDate(data.create_at) : '-'}/>
                     <DetailRow label="Board Name" value={data?.name ?? '-'}/>
@@ -173,7 +195,7 @@ const Archives=()=> {
 
 
 
-        case 'marketing':
+        case 'data_marketing':
         case 'marketing_design':
         return (
             <div className='entity-container'>
@@ -229,12 +251,12 @@ const Archives=()=> {
 
 
      const renderHierarchy = (archive) => {
-        const { entity_type, parent_type, parent_id, entity_id } = archive;
+        const { entity_type, parent_entity_type, parent_entity_id, entity_id } = archive;
 
         return (
             <div className='hierarcy-box'>
-            {parent_type && parent_id && (
-                <div>↳ {parent_type.toUpperCase()} #{parent_id}</div>
+            {parent_entity_type && parent_entity_id && (
+                <div>↳ {parent_entity_type.toUpperCase()} #{parent_entity_id}</div>
             )}
             <div>
                 {entity_type.toUpperCase()} #{entity_id}
@@ -260,10 +282,10 @@ const Archives=()=> {
                 response = await getArchiveWorkspaceUser();
             }else if(type === 'boards'){
                 response = await getBoardArchive();
-            }else if(type === 'list'){
-                response = await getArchiveList();
-            }else if(type === 'card'){
-                response = await getArchiveCard();
+            }else if(type === 'lists'){
+                response = await getListArchive();
+            }else if(type === 'cards'){
+                response = await getCardArchive();
             }else if(type === 'marketing'){
                 response = await getArchiveMarketing();
             }else if(type === 'marketing_design'){
@@ -358,15 +380,15 @@ const Archives=()=> {
                             </button>
 
                             <button
-                                onClick={() => { setSelectedType('list'); setActiveButton('list'); }}
-                                className={activeButton === 'list' ? 'active' : ''}
+                                onClick={() => { setSelectedType('lists'); setActiveButton('lists'); }}
+                                className={activeButton === 'lists' ? 'active' : ''}
                             >
                                 List
                             </button>
 
                             <button
-                                onClick={() => { setSelectedType('card'); setActiveButton('card'); }}
-                                className={activeButton === 'card' ? 'active' : ''}
+                                onClick={() => { setSelectedType('cards'); setActiveButton('cards'); }}
+                                className={activeButton === 'cards' ? 'active' : ''}
                             >
                                 Card
                             </button>
@@ -415,10 +437,17 @@ const Archives=()=> {
                                     <td className='name-box'>
                                      {item.data?.name || item.data?.title || '-'}
                                     </td>
+                                    {/* <BootstrapTooltip title={item.data?.description?.trim()} placement='top'> */}
+                                        <td className="desc-box">
+                                        {item.entity_type === 'cards'
+                                            ? item.data?.description
+                                                ?.replace(/<[^>]+>/g, '')
+                                                ?.replace(/\s+/g, ' ')
+                                                ?.trim() || '-'
+                                            : item.data?.description?.trim() || '-'}
+                                        </td>
+                                    {/* </BootstrapTooltip> */}
 
-                                    <td className="desc-box">
-                                        {item.data?.description?.trim() || '-'}
-                                    </td>
                                     <td className='action-box'>
                                         <div className="action-action" style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
                                     <BootstrapTooltip title='View Data' placement='top'>
@@ -490,7 +519,7 @@ const Archives=()=> {
 
                 <p>
                     Apakah kamu yakin ingin mengembalikan data
-                    <strong> "{restoreTarget?.entity_type}" {restoreTarget?.name}</strong>?
+                    <strong> "{restoreTarget?.entity_type}" {restoreTarget?.data?.name || restoreTarget?.data?.title || '-'}</strong>?
                 </p>
 
                 <p >

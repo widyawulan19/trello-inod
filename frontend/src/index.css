@@ -184,11 +184,11 @@ code {
   --badge-boards-bg: #DCFCE7;
   --badge-boards-text: #166534;
 
-  --badge-list-bg: #FEF9C3;
-  --badge-list-text: #854D0E;
+  --badge-lists-bg: #FEF9C3;
+  --badge-lists-text: #854D0E;
 
-  --badge-card-bg: #FCE7F3;
-  --badge-card-text: #9D174D;
+  --badge-cards-bg: #FCE7F3;
+  --badge-cards-text: #9D174D;
 
   --badge-marketing-bg: #F3E8FF;
   --badge-marketing-text: #6B21A8;
@@ -369,11 +369,11 @@ code {
   --badge-boards-bg: #14532D;
   --badge-boards-text: #DCFCE7;
 
-  --badge-list-bg: #713F12;
-  --badge-list-text: #FEF9C3;
+  --badge-lists-bg: #713F12;
+  --badge-lists-text: #FEF9C3;
 
-  --badge-card-bg: #831843;
-  --badge-card-text: #FCE7F3;
+  --badge-cards-bg: #831843;
+  --badge-cards-text: #FCE7F3;
 
   --badge-marketing-bg: #581C87;
   --badge-marketing-text: #F3E8FF;
