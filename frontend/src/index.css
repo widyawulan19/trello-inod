@@ -190,8 +190,8 @@ code {
   --badge-cards-bg: #FCE7F3;
   --badge-cards-text: #9D174D;
 
-  --badge-marketing-bg: #F3E8FF;
-  --badge-marketing-text: #6B21A8;
+  --badge-data-marketing-bg: #F3E8FF;
+  --badge-data-marketing-text: #6B21A8;
 
   --badge-marketing-design-bg: #E5E7EB;
   --badge-marketing-design-text: #374151;
@@ -375,8 +375,8 @@ code {
   --badge-cards-bg: #831843;
   --badge-cards-text: #FCE7F3;
 
-  --badge-marketing-bg: #581C87;
-  --badge-marketing-text: #F3E8FF;
+  --badge-data-marketing-bg: #581C87;
+  --badge-data-marketing-text: #F3E8FF;
 
   --badge-marketing-design-bg: #1F2933;
   --badge-marketing-design-text: #E5E7EB;

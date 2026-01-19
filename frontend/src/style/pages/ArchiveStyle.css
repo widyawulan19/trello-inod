@@ -216,7 +216,7 @@ DATA TABLE ARCHIVE
     font-weight: bold;
     text-align: center;
     position: sticky;
-    z-index: 100;
+    z-index: 10;
     top: 0;
 }
 

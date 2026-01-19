@@ -1,4 +1,4 @@
- import React, { useEffect, useRef, useState } from 'react'
+ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { HiChatBubbleLeftRight, HiChevronDown, HiChevronUp, HiMiniArrowLeftStartOnRectangle, HiMiniListBullet, HiMiniPhoto, HiOutlineArchiveBox, HiOutlineCalendar, HiOutlineChevronRight, HiOutlineLockClosed, HiOutlineSquare2Stack, HiOutlineTrash, HiOutlineXMark, HiPlus, HiTag} from 'react-icons/hi2';
 import { useNavigate, useParams } from 'react-router-dom'
 import '../style/pages/NewCardDetail.css'
@@ -30,6 +30,7 @@ import CardDescriptionExample from '../modals/CardDescriptionExample';
 import NewCardActivity from '../modules/NewCardActivity';
 import CardDeleteConfirm from '../modals/CardDeleteConfirm';
 import { HiOutlineSave } from 'react-icons/hi';
+import { handleArchive } from '../utils/handleArchive';
 
 const NewCardDetail=({fetchBoardDetail})=> {
     
@@ -563,17 +564,6 @@ const NewCardDetail=({fetchBoardDetail})=> {
     /* =======================
     FECTH CARD STATUS
     ======================= */
-    // const fetchCardStatus = async() =>{
-    //     try{
-    //         const response = await getStatusByCardId(cardId);
-    //         if(response.data.length > 0){
-    //             setCurrentStatus(response.data[0]);
-    //             setSelectedStatus(response.data[0].status_id);
-    //         }
-    //     }catch(error){
-    //         console.error('Gagal mengambil status kartu:', error);
-    //     }
-    // };
     const fetchCardStatus = async () => {
         try {
             const response = await getStatusByCardId(cardId);
@@ -930,20 +920,29 @@ const NewCardDetail=({fetchBoardDetail})=> {
 
     // ARCHIVE CARD
     // ✅ Fungsi archive card
-    const handleArchiveCard = async (cardId) => {
-        try {
-        console.log('Archiving card:', cardId);
-        const response = await archiveData('cards', cardId);
-        console.log('Archive response:', response.data);
+    // const handleArchiveCard = async (cardId) => {
+    //     try {
+    //     console.log('Archiving card:', cardId);
+    //     const response = await archiveData('cards', cardId);
+    //     console.log('Archive response:', response.data);
 
-        showSnackbar('Card archived successfully', 'success');
-        navigate(-1);
+    //     showSnackbar('Card archived successfully', 'success');
+    //     navigate(-1);
         
-        } catch (error) {
-        console.error('Error archiving card:', error);
-        showSnackbar('Failed to archive card', 'error');
-        }
-    };
+    //     } catch (error) {
+    //     console.error('Error archiving card:', error);
+    //     showSnackbar('Failed to archive card', 'error');
+    //     }
+    // };
+
+    const handleArchiveCard = useCallback((cardId)=>{
+        handleArchive({
+            entity:'cards',
+            id:cardId,
+            userId:userId,
+            showSnackbar:showSnackbar
+        })
+    })
 
 
     // fetch card activity 

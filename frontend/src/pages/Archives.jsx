@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from 'react'
 import { useSnackbar } from '../context/Snackbar'
-import { deleteArchiveDataUniversalById, getArchiveBoard, getArchiveCard, getArchiveList, getArchiveMarketing, getArchiveMarketingDesign, getArchiveWorkspace, getArchiveWorkspaceUser, getBoardArchive, getCardArchive, getListArchive, getWorkspaceArchive } from '../services/ApiServices'
+import { deleteArchiveDataUniversalById, getAllAccountsMusic, getAllOrderTypesMusic, getArchiveBoard, getArchiveCard, getArchiveList, getArchiveMarketing, getArchiveMarketingDesign, getArchiveWorkspace, getArchiveWorkspaceUser, getBoardArchive, getCardArchive, getListArchive, getMarketingArchive, getMarketingDesignArchive, getWorkspaceArchive } from '../services/ApiServices'
 import '../style/pages/ArchiveStyle.css'
 import { IoIosCloseCircle } from "react-icons/io";
 import { FaCircle } from "react-icons/fa6";
@@ -13,6 +13,7 @@ import { IoEyeSharp, IoTrash } from 'react-icons/io5'
 import { MdOutlineRestore } from 'react-icons/md'
 import { handleRestoreArchive } from '../utils/handleRestoreArchive'
 import LoadingSpinnerDot from '../utils/LoadingSpinnerDot'
+import { useLocation } from 'react-router-dom';
 
 
 const Archives=()=> {
@@ -21,6 +22,7 @@ const Archives=()=> {
     const [selectedArchive, setSelectedArchive] = useState(null)
     const [archiveData, setArchiveData] = useState([])
     const [loading, setLoading] = useState(true)
+    const [loadingModal, setLoadingModal] = useState(false);
     const [error, setError] = useState(null);
     const [activeButton, setActiveButton] = useState('workspace')
     const {showSnackbar} = useSnackbar()
@@ -34,6 +36,27 @@ const Archives=()=> {
     // RESTORE MODAL 
     const [showRestoreModal, setShowRestoreModal] = useState(false)
     const [restoreTarget, setRestoreTarget] = useState(null);
+    // data marekting needed 
+    const [accountMusic, setAccountMusic] = useState([])
+    const [orderTypes, setOrderTypes] = useState([])
+    const location = useLocation();
+
+    useEffect(() => {
+  fetchAccountMusic()
+  fetchOrderTypes()
+}, [])
+
+const fetchAccountMusic = async () => {
+  const res = await getAllAccountsMusic()
+  setAccountMusic(res.data)
+}
+
+const fetchOrderTypes = async () => {
+  const res = await getAllOrderTypesMusic()
+  setOrderTypes(res.data)
+}
+
+
 
     const handleShowDataArchive = () =>{
         setShowDataArchive(!showDataArchive)
@@ -114,7 +137,7 @@ const Archives=()=> {
                 <div className="detail-entity">
                     <h4>DETAIL CARD</h4>
                     <p>(Data card saat diarsipkan)</p>
-                    <DetailRow label="Card Id" value={entity_id} />
+                    <DetailRow label="Card Id" value={`#${entity_id}`} />
                     <DetailRow label="Create At" value={data?.create_at ? formatDate(data.create_at) : '-'}/>
                     <DetailRow label="Card Name" value={data?.title ?? '-'}/>
                     <DetailRow label="Description" value={entity_type === 'cards'
@@ -139,7 +162,7 @@ const Archives=()=> {
                 <div className="detail-entity">
                     <h4>DETAIL LIST</h4>
                     <p>(Data list saat diarsipkan)</p>
-                    <DetailRow label="List Id" value={entity_id} />
+                    <DetailRow label="List Id" value={`#${entity_id}`}/>
                     <DetailRow label="Create At" value={data?.create_at ? formatDate(data.create_at) : '-'}/>
                     <DetailRow label="List Name" value={data?.name ?? '-'}/>
                     <DetailRow label="Description" value={'No Description'} />
@@ -160,7 +183,7 @@ const Archives=()=> {
                 <div className="detail-entity">
                     <h4>DETAIL BOARDS</h4>
                     <p>(Data board saat diarsipkan)</p>
-                    <DetailRow label="Board ID" value={entity_id} />
+                    <DetailRow label="Board ID" value={`#${entity_id}`} />
                     <DetailRow label="Create At" value={data?.create_at ? formatDate(data.create_at) : '-'}/>
                     <DetailRow label="Board Name" value={data?.name ?? '-'}/>
                     <DetailRow label="Description" value={data?.description?.trim() || '-'} />
@@ -183,7 +206,7 @@ const Archives=()=> {
                 <div className="detail-entity">
                     <h4>DETAIL WORKSPACES</h4>
                     <p>(Data workspace saat diarsipkan)</p>
-                    <DetailRow label="Workspace ID" value={entity_id}/>
+                    <DetailRow label="Workspace ID" value={`#${entity_id}`}/>
                     <DetailRow label="Create At" value={data?.create_at ? formatDate(data.create_at) : '-'}/>
                     <DetailRow label="Workspace Name" value={data?.name ?? '-'}/>
                     <DetailRow label="Description" value={data?.description?.trim() || '-'} />
@@ -192,26 +215,83 @@ const Archives=()=> {
         );
     }
 
+    case 'data_marketing':
+        return (
+            <div className='entity-container'>
+                <div className="detail-archive">
+                    <h4>ARCHIVE INFORMATION</h4>
+                    <p>(Status & History)</p>
+                    <DetailRow label="Archive Type" value="Marketing Musik" />
+                    <DetailRow label="Archived At" value={formatDate(archived_at)}/>
+                </div>
+                
+                <div className="detail-entity">
+                    <h4>DETAIL MARKETING MUSIK</h4>
+                    <p>(Data marketing saat diarsipkan)</p>
+                    <DetailRow label="Marketing ID" value={`#${entity_id}`}/>
+                    <DetailRow label="Create At" value={data?.create_at ? formatDate(data.create_at) : '-'}/>
+                    <DetailRow
+                        label="Marketing Name"
+                        value={[
+                            selectedArchive?.data?.buyer_name,
+                            selectedArchive?.data?.code_order,
+                        ].filter(Boolean).join(' - ')}
+                    />
 
 
+                    <DetailRow label="Description" value={entity_type === 'data_marketing'
+                                            ? data?.detail_project
+                                                ?.replace(/<[^>]+>/g, '')
+                                                ?.replace(/\s+/g, ' ')
+                                                ?.trim() || '-'
+                                            : data?.description?.trim() || '-'}/>
+                </div>
+            </div>
+        );
 
-        case 'data_marketing':
         case 'marketing_design':
         return (
             <div className='entity-container'>
-                <DetailRow label="Entity Type" value={entity_type} />
-                <DetailRow label="Buyer" value={data?.buyer_name || '-'} />
-                <DetailRow label="Account" value={data?.account || '-'} />
-                <DetailRow label="Order Number" value={data?.order_number || '-'} />
-                <DetailRow label="Status" value={data?.status_project || '-'} />
-                <DetailRow label="Archived At" value={formatDate(archived_at)} />
+                <div className="detail-archive">
+                    <h4>ARCHIVE INFORMATION</h4>
+                    <p>(Status & History)</p>
+                    <DetailRow label="Archive Type" value="Marketing Design" />
+                    <DetailRow label="Archived At" value={formatDate(archived_at)}/>
+                </div>
+                
+                <div className="detail-entity">
+                    <h4>DETAIL MARKETING DESIGN</h4>
+                    <p>(Data marketing saat diarsipkan)</p>
+                    <DetailRow label="Marketing ID" value={`#${entity_id}`}/>
+                    <DetailRow label="Create At" value={data?.create_at ? formatDate(data.create_at) : '-'}/>
+                    <DetailRow
+                        label="Marketing Name"
+                        value={[
+                            selectedArchive?.data?.buyer_name,
+                            selectedArchive?.data?.code_order,
+                        ].filter(Boolean).join(' - ')}
+                    />
+
+
+                    <DetailRow label="Description" value={entity_type === 'marketing_design'
+                                            ? data?.detail_project
+                                                ?.replace(/<[^>]+>/g, '')
+                                                ?.replace(/\s+/g, ' ')
+                                                ?.trim() || '-'
+                                            : data?.description?.trim() || '-'}/>
+                </div>
             </div>
         );
+
 
         default:
         return <p>Detail tidak tersedia untuk data arvhive ini.</p>;
     }
     };
+
+    const sortedData = [...filteredData].sort(
+        (a, b) => new Date(b.archived_at) - new Date(a.archived_at)
+        );
 
     const DetailRow = ({ label, value }) => (
         <div className="detail-row">
@@ -286,10 +366,10 @@ const Archives=()=> {
                 response = await getListArchive();
             }else if(type === 'cards'){
                 response = await getCardArchive();
-            }else if(type === 'marketing'){
-                response = await getArchiveMarketing();
+            }else if(type === 'data_marketing'){
+                response = await getMarketingArchive();
             }else if(type === 'marketing_design'){
-                response = await getArchiveMarketingDesign();
+                response = await getMarketingDesignArchive();
             }
             setArchiveData(response.data);
             setFilteredData(response.data);
@@ -300,6 +380,41 @@ const Archives=()=> {
             setLoading(false)
         }
     }
+
+    // memperlambat load 
+    useEffect(() => {
+    if (location.state?.openArchive && location.state.entity_type) {
+        setSelectedType(location.state.entity_type);
+        setActiveButton(location.state.entity_type);
+
+        // mulai spinner karena modal akan segera dibuka
+        setLoadingModal(true);
+    }
+    }, [location.state]);
+
+// useeffect untuk buka modal 
+    useEffect(() => {
+    if (!location.state?.openArchive) return;
+    if (archiveData.length === 0) return;
+
+    const target = archiveData.find(
+        item =>
+        item.entity_type === location.state.entity_type &&
+        item.entity_id === location.state.entity_id
+    );
+
+    if (target) {
+        setSelectedArchive(target);
+    }
+    }, [archiveData, location.state]);
+
+
+    // {loadingModal && (
+    // <div className="flex justify-center items-center h-[60vh]">
+    //     <LoadingSpinnerDot text="Loading archive detail..." />
+    // </div>
+    // )}
+
 
 
     //fungsi search
@@ -394,8 +509,8 @@ const Archives=()=> {
                             </button>
 
                             <button
-                                onClick={()=>{setSelectedType('marketing'); setActiveButton('marketing');}}
-                                className={activeButton === 'marketing' ? 'active':''}
+                                onClick={()=>{setSelectedType('data_marketing'); setActiveButton('data_marketing');}}
+                                className={activeButton === 'data_marketing' ? 'active':''}
                             >
                                 Marketing
                             </button>
@@ -429,54 +544,70 @@ const Archives=()=> {
                             </tr> 
                         </thead>
                         <tbody>
-                            {filteredData.map(item=>(
-                                <tr key={item.entity_id}>
-                                    <td className='nomor-box'>{archiveData.indexOf(item)+1}</td>
-                                    <td className='entity-box'><EntityBadge type={item.entity_type} /></td>
-                
-                                    <td className='name-box'>
-                                     {item.data?.name || item.data?.title || '-'}
-                                    </td>
-                                    {/* <BootstrapTooltip title={item.data?.description?.trim()} placement='top'> */}
-                                        <td className="desc-box">
-                                        {item.entity_type === 'cards'
-                                            ? item.data?.description
-                                                ?.replace(/<[^>]+>/g, '')
-                                                ?.replace(/\s+/g, ' ')
-                                                ?.trim() || '-'
-                                            : item.data?.description?.trim() || '-'}
-                                        </td>
-                                    {/* </BootstrapTooltip> */}
+                            {sortedData.map((item, index) => (
+                                <tr key={`${item.entity_type}-${item.entity_id}`}>
+                                <td className="nomor-box">{index + 1}</td>
 
-                                    <td className='action-box'>
-                                        <div className="action-action" style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
-                                    <BootstrapTooltip title='View Data' placement='top'>
-                                        {/* <button className='btn-action' onClick={()=> handleShowDetailCard(item)}>
-                                            <IoEyeSharp/>
-                                        </button> */}
-                                        <button className='btn-action' onClick={() => setSelectedArchive(item)}>
-                                            <IoEyeSharp/>
-                                        </button>
-                                    </BootstrapTooltip>
-                                    <BootstrapTooltip title='Restore data' placement="top">
+                                <td className="entity-box">
+                                    <EntityBadge type={item.entity_type} />
+                                </td>
+
+                                <td className="name-box">
+                                    {['data_marketing', 'marketing_design'].includes(item.entity_type)
+                                    ? [
+                                        item.data?.buyer_name,
+                                        item.data?.code_order,
+                                        ].filter(Boolean).join(' - ')
+                                    : item.data?.name || item.data?.title || '-'}
+                                </td>
+
+                                <td className="desc-box">
+                                    {['cards', 'data_marketing', 'marketing_design'].includes(item.entity_type)
+                                    ? (
+                                        item.entity_type === 'cards'
+                                            ? item.data?.description
+                                            : item.data?.detail_project
+                                        )
+                                        ?.replace(/<[^>]+>/g, '')
+                                        ?.replace(/\s+/g, ' ')
+                                        ?.trim() || '-'
+                                    : item.data?.description?.trim() || '-'}
+                                </td>
+
+                                <td className="action-box">
+                                    <div className="action-action">
+                                    <BootstrapTooltip title="View Data">
                                         <button
-                                            className='btn-action'
-                                            onClick={() => openRestoreModal(item)}
+                                        className="btn-action"
+                                        onClick={() => setSelectedArchive(item)}
                                         >
-            
-                                            <MdOutlineRestore/>
+                                        <IoEyeSharp />
                                         </button>
                                     </BootstrapTooltip>
-                                    <BootstrapTooltip title='Delete data' placement='top'>
-                                        <button className='btn-action' onClick={()=> handleDeleteArchive(item.entity_id)}>
-                                            <IoTrash/>
+
+                                    <BootstrapTooltip title="Restore data">
+                                        <button
+                                        className="btn-action"
+                                        onClick={() => openRestoreModal(item)}
+                                        >
+                                        <MdOutlineRestore />
+                                        </button>
+                                    </BootstrapTooltip>
+
+                                    <BootstrapTooltip title="Delete data">
+                                        <button
+                                        className="btn-action"
+                                        onClick={() => handleDeleteArchive(item.entity_id)}
+                                        >
+                                        <IoTrash />
                                         </button>
                                     </BootstrapTooltip>
                                     </div>
                                 </td>
                                 </tr>
-                                ))}
-                        </tbody>
+                            ))}
+                            </tbody>
+
                 </table>
                 )}
             </div>
