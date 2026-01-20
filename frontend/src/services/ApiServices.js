@@ -896,6 +896,9 @@ export const getMarketingDesignById = (id) =>
 export const updateMarketingDesign = (id, data) =>
   axios.put(`${API_URL}/marketing-design/joined/${id}`, data);
 
+export const updateMarketingDesignTesting = (id, data) =>
+  axios.put(`${API_URL}/marketing-design-testing/joined/${id}`, data);
+
 // ✅ Get laporan hari ini
 // export const getMarketingDesignReportToday = () =>
 //   axios.get(`${API_URL}/marketing-design/reports/today`);
