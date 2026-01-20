@@ -383,17 +383,6 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
                             />
                         </div>
 
-                        {/* Order Number */}
-                        {/* <div className="box-content">
-                            <label >Order Number</label>
-                            <input
-                                type="text"
-                                name="order_number"
-                                value={form.order_number}
-                                onChange={handleChange}
-                                placeholder="Order Number"
-                            />
-                        </div> */}
 
                         {/* Account */}
                         <div className="box-content">
@@ -430,7 +419,7 @@ const FormMarketingDesignExample = ({onClose, fetchMarketingDesign}) => {
 
                         {/* Jumlah Revisi */}
                         <div className="box-content">
-                            <label >Jumlah Revisi</label>
+                            <label >Jumlah Revisi <span className='label-span'> **jika data kosong isi '0'</span></label>
                             <input
                                 type="text"
                                 name="jumlah_revisi"

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { getDataMarketingDesignById, updateDataMarketingDesign,updateMarketingDesign,getMarketingDesignById } from '../services/ApiServices';
+import { getDataMarketingDesignById, updateDataMarketingDesign,updateMarketingDesign,getMarketingDesignById, updateMarketingDesignTesting } from '../services/ApiServices';
 import '../style/pages/EditMarketingDesign.css'
 import { HiOutlinePlus, HiOutlineXMark } from 'react-icons/hi2';
 import BootstrapTooltip from '../components/Tooltip';
@@ -27,7 +27,7 @@ import { FaXmark } from 'react-icons/fa6';
         resolution: '',
         price_normal: '',
         price_discount: '',
-        discount_precentage: '',
+        discount_percentage: '',
         required_files: '',
         project_type: '',
         reference: '',
@@ -83,7 +83,8 @@ import { FaXmark } from 'react-icons/fa6';
    const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const updateData = await updateMarketingDesign(marketingDesignId, formData);
+            // const updateData = await updateMarketingDesign(marketingDesignId, formData);
+            const updateData = await updateMarketingDesignTesting(marketingDesignId, formData);
             showSnackbar('Data Updated Successfully!', 'success');
             if (fetchMarketingDesign) {
                 fetchMarketingDesign();
@@ -216,7 +217,7 @@ import { FaXmark } from 'react-icons/fa6';
                 <div className="emd-box">
                     <label>Jumlah Revisi</label>
                     <input
-                        type="text"
+                        type="number"
                         name="jumlah_revisi"
                         value={formData.jumlah_revisi}
                         onChange={handleChange}
@@ -327,8 +328,8 @@ import { FaXmark } from 'react-icons/fa6';
                     <label>Discount Percentage</label>
                     <input
                         type="text"
-                        name="discount_precentage"
-                        value={formData.discount_precentage}
+                        name="discount_percentage"
+                        value={formData.discount_percentage}
                         onChange={handleChange}
                         // required
                     />
