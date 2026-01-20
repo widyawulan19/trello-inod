@@ -164,16 +164,30 @@
     border: 1px solid white;
 }
 
+/* tampil kebawah dan title tidak terpotong  */
 .cc-title h5 {
+    margin: 0;
+    font-size: 10px;
+    font-weight: bold;
+    color: var(--text);
+
+    /* penting untuk text panjang */
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+/* kesamping dan satu line  */
+/* .cc-title h5 {
     margin: 0px;
     font-size: 10px;
     font-weight: bold;
-    /* border: 1px solid #eee; */
     word-wrap: break-word;
     overflow-wrap: break-word;
     white-space: normal;
     color: var(--text);
-}
+} */
+
 
 .toogle-cont {
     /* border: 1px solid red; */

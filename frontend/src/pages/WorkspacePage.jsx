@@ -554,9 +554,11 @@ const handleNavigateToWorkspace = () =>{
                                   autoFocus
                                 />
                               ) : (
-                                <h5 onClick={(e) => handleEditName(e, board.id, board.name)}>
-                                  {board.name}
-                                </h5>
+                                <BootstrapTooltip title={board.name} placement='top'>
+                                  <h5 onClick={(e) => handleEditName(e, board.id, board.name)}>
+                                    {board.name}
+                                  </h5>
+                                </BootstrapTooltip>
                               )}
                             </div>
 
