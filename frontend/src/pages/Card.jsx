@@ -42,6 +42,7 @@ import {
 import { BsCreditCard2FrontFill } from 'react-icons/bs';
 import ToggleSwitch from '../fitur/ToggleSwitch';
 import StatusBadge from '../fitur/StatusBadge';
+import ToggleSwitchBox from '../fitur/ToggleSwitchBox';
 
 const Card=({
     card,
@@ -434,12 +435,12 @@ const handleKeyDown = (e) => {
             </div>
             <div className="toogle-cont">
                 {/* ToggleSwitch hanya muncul ketika show_toggle = true */}
-                {card.show_toggle && (
+                {/* {card.show_toggle && (
                     <ToggleSwitch
                     active={card.is_active}
                     onToggle={() => toggleActive(card.id, !card.is_active)}
                     />
-                )}
+                )} */}
 
                 <BootstrapTooltip title='Card setting' placement='top'>
                     <div className="cc-setting" onClick={(e)=> handleShowSetting(e, card.id)}>
@@ -544,6 +545,16 @@ const handleKeyDown = (e) => {
                 </div>
             )}
 
+        <div className="cc-toggle">
+            <div className="cc-toggle-box">
+                {card.show_toggle && (
+                    <ToggleSwitchBox
+                        active={card.is_active}
+                        onToggle={() => toggleActive(card.id, !card.is_active)}
+                    />
+                )}
+            </div>
+        </div>
         <div className="cc-cover">
             <div className="cc-cover">
                 <CardCoverDisplay cardId={card.id}/>
