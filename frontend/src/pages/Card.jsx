@@ -546,27 +546,24 @@ const handleKeyDown = (e) => {
 
         <div className="cc-cover">
             <div className="cc-cover">
-                {/* <p>contoh cover</p> */}
-                {/* <CoverSelect cardId={card.id}/> */}
                 <CardCoverDisplay cardId={card.id}/>
-                {/* <CoverCard cardId={card.id}/> */}
             </div>
         </div>
         <div className="cc-header-card">
             <div className="cc-title">
-            {editingId === card.id ? (
-                <input
-                value={newTitle}
-                onChange={(e) => setNewTitle(e.target.value)}
-                onKeyDown={handleKeyDown}
-                onBlur={() => setEditingId(null)} // cancel only
-                autoFocus
-                />
-            ) : (
-                <h5 onClick={handleEditCardName}>
-                {card.title}
-                </h5>
-            )}
+                {editingId === card.id ? (
+                    <input
+                    value={newTitle}
+                    onChange={(e) => setNewTitle(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    onBlur={() => setEditingId(null)} // cancel only
+                    autoFocus
+                    />
+                ) : (
+                    <h5 onClick={handleEditCardName}>
+                    {card.title}
+                    </h5>
+                )}
             </div>
         </div>
         <div className="cc-label">

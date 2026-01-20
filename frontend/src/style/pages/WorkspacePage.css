@@ -401,16 +401,15 @@
     font-size: 12px;
     font-weight: bold;
     color: var(--text);
-    /* width: 100%; */
-    max-width: 13vw;
-    /* batas ukuran kontainer */
+    max-width: 15vw;
+    width: 100%;
     white-space: nowrap;
-    /* biar teks tidak turun ke bawah */
     overflow: hidden;
-    /* sembunyikan teks yang keluar */
-    text-overflow: ellipsis;
-    /* kasih ... di akhir teks */
 
+    /* tidak memotong title  */
+    /* white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere; */
     /* border: 1px solid red; */
 }
 
@@ -423,6 +422,10 @@
     font-size: 12px;
     font-weight: bold;
     color: var(--text);
+
+    /* white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere; */
 }
 
 .wp-name-text input:focus {
