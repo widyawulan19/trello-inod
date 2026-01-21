@@ -2098,30 +2098,7 @@ app.put('/api/workspace/:id', async (req, res) => {
     }
 })
 //5. delete a workspace dan mengarsipkan workspace sebelum mendelete data 
-// app.delete('/api/workspace/:id', async (req, res) => {
-//     const { id } = req.params;
-//     const userId = req.user.id;
-//     try {
-//         // Salin workspace ke archive sebelum delete
-//         await client.query(`
-//             INSERT INTO archive (entity_type, entity_id, name, description, create_at, update_at)
-//             SELECT 'workspace', id, name, description, create_at, update_at
-//             FROM workspaces
-//             WHERE id = $1
-//         `, [id]);
 
-//         // Hapus workspace setelah disalin
-//         const result = await client.query("DELETE FROM workspaces WHERE id = $1 RETURNING *", [id]);
-
-//         if (result.rows.length === 0) {
-//             return res.status(404).json({ error: "Workspace not found" });
-//         }
-
-//         res.json({ message: "Workspace archived and deleted successfully" });
-//     } catch (err) {
-//         res.status(500).json({ error: err.message });
-//     }
-// })
 // 5. Soft delete workspace (arsipkan dan tandai sebagai terhapus)
 app.delete('/api/workspace/:id', async (req, res) => {
     const { id } = req.params;

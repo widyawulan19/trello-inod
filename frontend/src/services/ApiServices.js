@@ -482,7 +482,8 @@ export const markReminderAsSent = (cardId) => axios.put(`${API_URL}/card-due-dat
 // --- GET semua data soft deleted ---
 export const getDeletedItems = async () => {
   try {
-    const [boards, lists, cards, marketing, marketingDesign] = await Promise.all([
+    const [workspaces, boards, lists, cards, marketing, marketingDesign] = await Promise.all([
+      axios.get(`${API_URL}/workspaces?is_deleted=true`),
       axios.get(`${API_URL}/boards?is_deleted=true`),
       axios.get(`${API_URL}/lists?is_deleted=true`),
       axios.get(`${API_URL}/cards?is_deleted=true`),
@@ -491,6 +492,7 @@ export const getDeletedItems = async () => {
     ]);
 
     return {
+      workspaces: workspaces.data,
       boards: boards.data,
       lists: lists.data,
       cards: cards.data,

@@ -27,6 +27,7 @@ export default function DataDelete() {
     setLoading(true);
     try {
       const data = await getDeletedItems();
+      console.log("deleted data:", data);
       setDeletedData(data);
       setFilteredData(data);
     } catch (err) {
@@ -70,7 +71,7 @@ export default function DataDelete() {
   const handleRestore = async (type, id) => {
     try {
       switch (type) {
-        case "workspace":
+        case "workspaces":
           await restoreWorkspace(id);
           break;
         case "board":
