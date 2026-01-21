@@ -2097,31 +2097,7 @@ app.put('/api/workspace/:id', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 })
-//5. delete a workspace dan mengarsipkan workspace sebelum mendelete data 
-// app.delete('/api/workspace/:id', async (req, res) => {
-//     const { id } = req.params;
-//     const userId = req.user.id;
-//     try {
-//         // Salin workspace ke archive sebelum delete
-//         await client.query(`
-//             INSERT INTO archive (entity_type, entity_id, name, description, create_at, update_at)
-//             SELECT 'workspace', id, name, description, create_at, update_at
-//             FROM workspaces
-//             WHERE id = $1
-//         `, [id]);
 
-//         // Hapus workspace setelah disalin
-//         const result = await client.query("DELETE FROM workspaces WHERE id = $1 RETURNING *", [id]);
-
-//         if (result.rows.length === 0) {
-//             return res.status(404).json({ error: "Workspace not found" });
-//         }
-
-//         res.json({ message: "Workspace archived and deleted successfully" });
-//     } catch (err) {
-//         res.status(500).json({ error: err.message });
-//     }
-// })
 // 5. Soft delete workspace (arsipkan dan tandai sebagai terhapus)
 app.delete('/api/workspace/:id', async (req, res) => {
     const { id } = req.params;
@@ -2162,6 +2138,31 @@ app.delete('/api/workspace/:id', async (req, res) => {
         });
     } catch (err) {
         console.error("Error soft deleting workspace:", err);
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// FIXED DELETE SOFT WORKSPACE 
+app.get('/api/workspaces', async (req, res) => {
+    const { is_deleted } = req.query;
+
+    try {
+        let query = 'SELECT * FROM workspaces';
+        const params = [];
+
+        if (is_deleted === 'true') {
+            query += ' WHERE is_deleted = TRUE';
+        } else if (is_deleted === 'false') {
+            query += ' WHERE is_deleted = FALSE';
+        }
+
+        query += ' ORDER BY deleted_at DESC NULLS LAST';
+
+        const result = await client.query(query, params);
+
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Error fetching workspaces:', err);
         res.status(500).json({ success: false, error: err.message });
     }
 });
