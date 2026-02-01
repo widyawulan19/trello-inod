@@ -2869,65 +2869,32 @@ app.get('/api/boards', async (req, res) => {
     }
 });
 
-//1. get all board by workspace id
-// ✅ Get boards by workspace ID (hanya untuk user yang punya akses)
-app.get('/api/workspaces/:workspaceId/boards', async (req, res) => {
-    const { workspaceId } = req.params;
-    const { userId } = req.query;
+// TESTING BOARD GET ALL BOARD
+app.get('/api/boards-testing', async (req, res) => {
+    const { is_deleted } = req.query;
+
+    let whereClause = 'is_deleted = FALSE';
+    if (is_deleted === 'true') whereClause = 'is_deleted = TRUE';
 
     try {
         const result = await client.query(
-            `
-      SELECT b.*
-      FROM boards b
-      JOIN workspaces w ON w.id = b.workspace_id
-      LEFT JOIN workspaces_users wu ON wu.workspace_id = w.id
-      WHERE b.workspace_id = $1
-        AND wu.user_id = $2
-        AND b.is_deleted = FALSE
-      ORDER BY b.position ASC
-      `,
-            [workspaceId, userId]
+            `SELECT * FROM public.boards 
+                WHERE ${whereClause}
+                ORDER BY position ASC`
         );
 
-        res.json(result.rows);
-    } catch (error) {
-        console.error("Error fetching boards:", error);
-        res.status(500).json({ error: error.message });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'No boards found' });
+        }
+
+        return res.status(200).json(result.rows);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'Error fetching boards' });
     }
 });
 
-//get all board (testing)
-app.get('/api/workspaces/:workspaceId/boards-testing', async (req, res) => {
-    const { workspaceId } = req.params;
-    const { userId, is_deleted } = req.query;
-
-    const isDeleted = is_deleted === 'true';
-
-    try {
-        const result = await client.query(
-            `
-            SELECT b.*
-            FROM boards b
-            JOIN workspaces w ON w.id = b.workspace_id
-            LEFT JOIN workspaces_users wu ON wu.workspace_id = w.id
-            WHERE b.workspace_id = $1
-              AND wu.user_id = $2
-              AND b.is_deleted = $3
-            ORDER BY b.position ASC
-            `,
-            [workspaceId, userId, isDeleted]
-        );
-
-        res.json(result.rows);
-    } catch (error) {
-        console.error("Error fetching boards:", error);
-        res.status(500).json({ error: error.message });
-    }
-});
-
-
-
+// FIX GET BOARD BY WORKSPACE 
 app.get('/api/workspaces/:workspaceId/workspace-board', async (req, res) => {
     const { workspaceId } = req.params;
 

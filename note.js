@@ -926,3 +926,31 @@ app.get('/api/cards/:cardId/media/count', async (req, res) => {
     res.status(500).json({ error: "Failed to count media" });
   }
 });
+
+
+/* =======================
+BOARD
+======================= */
+app.get('/api/boards-testing', async (req, res) => {
+  const { is_deleted } = req.query;
+
+  let whereClause = 'is_deleted = FALSE';
+  if (is_deleted === 'true') whereClause = 'is_deleted = TRUE';
+
+  try {
+    const result = await client.query(
+      `SELECT * FROM public.boards 
+             WHERE ${whereClause}
+             ORDER BY position ASC`
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'No boards found' });
+    }
+
+    return res.status(200).json(result.rows);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Error fetching boards' });
+  }
+});
