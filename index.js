@@ -2869,30 +2869,6 @@ app.get('/api/boards', async (req, res) => {
     }
 });
 
-// TESTING BOARD GET ALL BOARD
-app.get('/api/boards-testing', async (req, res) => {
-    const { is_deleted } = req.query;
-
-    let whereClause = 'is_deleted = FALSE';
-    if (is_deleted === 'true') whereClause = 'is_deleted = TRUE';
-
-    try {
-        const result = await client.query(
-            `SELECT * FROM public.boards 
-                WHERE ${whereClause}
-                ORDER BY position ASC`
-        );
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({ message: 'No boards found' });
-        }
-
-        return res.status(200).json(result.rows);
-    } catch (err) {
-        console.error(err);
-        return res.status(500).json({ message: 'Error fetching boards' });
-    }
-});
 
 // FIX GET BOARD BY WORKSPACE 
 app.get('/api/workspaces/:workspaceId/workspace-board', async (req, res) => {
@@ -2917,6 +2893,21 @@ app.get('/api/workspaces/:workspaceId/workspace-board', async (req, res) => {
     }
 });
 
+//GET ALL RECICLE BOARDS DATA
+app.get('/api/recycle/boards', async (req, res) => {
+    try {
+        const result = await client.query(
+            `SELECT * FROM boards 
+             WHERE is_deleted = TRUE
+             ORDER BY deleted_at DESC`
+        );
+
+        res.json(result.rows);
+    } catch (error) {
+        console.error('❌ Error fetching deleted boards:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
 
 
 
