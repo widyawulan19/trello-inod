@@ -2897,6 +2897,36 @@ app.get('/api/workspaces/:workspaceId/boards', async (req, res) => {
     }
 });
 
+//get all board (testing)
+app.get('/api/workspaces/:workspaceId/boards-testing', async (req, res) => {
+    const { workspaceId } = req.params;
+    const { userId, is_deleted } = req.query;
+
+    const isDeleted = is_deleted === 'true';
+
+    try {
+        const result = await client.query(
+            `
+            SELECT b.*
+            FROM boards b
+            JOIN workspaces w ON w.id = b.workspace_id
+            LEFT JOIN workspaces_users wu ON wu.workspace_id = w.id
+            WHERE b.workspace_id = $1
+              AND wu.user_id = $2
+              AND b.is_deleted = $3
+            ORDER BY b.position ASC
+            `,
+            [workspaceId, userId, isDeleted]
+        );
+
+        res.json(result.rows);
+    } catch (error) {
+        console.error("Error fetching boards:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
 
 app.get('/api/workspaces/:workspaceId/workspace-board', async (req, res) => {
     const { workspaceId } = req.params;
