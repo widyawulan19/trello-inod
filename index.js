@@ -8576,6 +8576,29 @@ app.put('/api/employees/:id', async (req, res) => {
 
 //DATA MARKETING
 
+//GET ALL DATA CARD RECYCLE
+app.get('/api/recycle/data-marketing', async (req, res) => {
+    try {
+        const result = await client.query(`
+        SELECT 
+            dm.*,
+            mu.nama_marketing AS input_by_name,
+            kd.nama AS acc_by_name
+        FROM data_marketing dm
+        LEFT JOIN marketing_musik_user mu ON mu.id = dm.input_by
+        LEFT JOIN kepala_divisi kd ON kd.id = dm.acc_by
+        WHERE dm.is_deleted = TRUE
+        ORDER BY dm.deleted_at DESC
+        `);
+
+        res.json(result.rows);
+    } catch (error) {
+        console.error('❌ Error fetching deleted marketing data:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
 // ✅ Get laporan today berdasarkan create_at (full join)
 app.get('/api/marketing/reports/today', async (req, res) => {
     try {
