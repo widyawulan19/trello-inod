@@ -2854,6 +2854,32 @@ app.put('/api/boards/reorder', async (req, res) => {
     }
 });
 
+//get all workspace's board by userid
+app.get('/api/workspaces/:workspaceId/boards', async (req, res) => {
+    const { workspaceId } = req.params;
+    const { userId } = req.query;
+
+    try {
+        const result = await client.query(
+            `
+      SELECT b.*
+      FROM boards b
+      JOIN workspaces w ON w.id = b.workspace_id
+      LEFT JOIN workspaces_users wu ON wu.workspace_id = w.id
+      WHERE b.workspace_id = $1
+        AND wu.user_id = $2
+        AND b.is_deleted = FALSE
+      ORDER BY b.position ASC
+      `,
+            [workspaceId, userId]
+        );
+
+        res.json(result.rows);
+    } catch (error) {
+        console.error("Error fetching boards:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
 
 // Endpoint to get all boards
 app.get('/api/boards', async (req, res) => {
