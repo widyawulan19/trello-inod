@@ -10166,6 +10166,27 @@ app.get("/api/marketing-design/new-joined", async (req, res) => {
     }
 });
 
+//GET RECICLE MARKRIGN DESIGN DATA
+app.get('/api/recycle/marketing-design', async (req, res) => {
+    try {
+        const result = await client.query(`
+        SELECT 
+            md.*,
+            mdu.nama_marketing AS input_by_name,
+            kdd.nama AS acc_by_name
+        FROM marketing_design md
+        LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
+        LEFT JOIN kepala_divisi_design kdd ON md.acc_by = kdd.id
+        WHERE md.is_deleted = TRUE
+        ORDER BY md.deleted_at DESC
+        `);
+
+        res.json(result.rows);
+    } catch (error) {
+        console.error('❌ Error fetching deleted marketing design:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
 
 
 //MARKETING DESIGN JOINED
