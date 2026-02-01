@@ -3079,6 +3079,62 @@ app.delete('/api/boards/:id', async (req, res) => {
     }
 });
 
+// DELETE PERMANENT DATA 
+// 🗑️ Hard delete board (PERMANENT)
+app.delete('/api/recycle-delete/boards/:id', async (req, res) => {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    try {
+        await client.query('BEGIN');
+
+        // Pastikan board memang sudah di soft delete
+        const { rows } = await client.query(
+            `SELECT workspace_id 
+             FROM boards 
+             WHERE id = $1 AND is_deleted = TRUE`,
+            [id]
+        );
+
+        if (rows.length === 0) {
+            await client.query('ROLLBACK');
+            return res.status(404).json({
+                message: 'Board not found in recycle bin'
+            });
+        }
+
+        const { workspace_id } = rows[0];
+
+        // 🔥 HARD DELETE (hapus permanen)
+        await client.query(
+            `DELETE FROM boards WHERE id = $1`,
+            [id]
+        );
+
+        // Log activity
+        await logActivity(
+            'board',
+            id,
+            'hard_delete',
+            userId,
+            `Board with id ${id} permanently deleted`,
+            'workspace',
+            workspace_id
+        );
+
+        await client.query('COMMIT');
+
+        res.json({
+            message: 'Board permanently deleted'
+        });
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error('❌ Error hard deleting board:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
 //Restore soft deleted board
 app.patch('/api/boards/:id/restore', async (req, res) => {
     const { id } = req.params;
