@@ -954,3 +954,25 @@ app.get('/api/boards-testing', async (req, res) => {
     return res.status(500).json({ message: 'Error fetching boards' });
   }
 });
+
+export const getBoardsWorkspace = async (workspaceId, userId) => {
+  try {
+    const response = await axios.get(`${API_URL}/workspaces/${workspaceId}/boards`, {
+      params: { userId },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching boards:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const getBoardsWorkspaces = async (workspaceId) => {
+  try {
+    const response = await axios.get(`${API_URL}/workspaces/${workspaceId}/workspace-board`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching boards:', error.response?.data || error.message);
+    throw error;
+  }
+};
