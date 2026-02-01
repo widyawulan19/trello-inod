@@ -479,20 +479,25 @@ export const deleteReminder = (cardId) => axios.delete(`${API_URL}/card-due-date
 export const getAllReminders = () => axios.get(`${API_URL}/card-due-date`);
 export const markReminderAsSent = (cardId) => axios.put(`${API_URL}/card-due-date/${cardId}/mark-reminder-sent`);
 
-// --- GET semua data soft deleted ---
+
+// --- GET semua data recycle bin (soft deleted only) ---
 export const getDeletedItems = async () => {
   try {
-    const [boards, lists, cards, marketing, marketingDesign] = await Promise.all([
-      // axios.get(`${API_URL}/workspaces?is_deleted=true`),
-      axios.get(`${API_URL}/boards?is_deleted=true`),
-      axios.get(`${API_URL}/lists?is_deleted=true`),
-      axios.get(`${API_URL}/cards?is_deleted=true`),
-      axios.get(`${API_URL}/marketing?is_deleted=true`),
-      axios.get(`${API_URL}/marketing-design?is_deleted=true`)
+    const [
+      boards,
+      lists,
+      cards,
+      marketing,
+      marketingDesign
+    ] = await Promise.all([
+      axios.get(`${API_URL}/recycle/boards`),
+      axios.get(`${API_URL}/recycle/lists`),
+      axios.get(`${API_URL}/recycle/cards`),
+      axios.get(`${API_URL}/recycle/data-marketing`),
+      axios.get(`${API_URL}/recycle/marketing-design`)
     ]);
 
     return {
-      // workspaces: workspaces.data,
       boards: boards.data,
       lists: lists.data,
       cards: cards.data,
@@ -500,10 +505,11 @@ export const getDeletedItems = async () => {
       marketingDesign: marketingDesign.data
     };
   } catch (error) {
-    console.error("Error fetching deleted items:", error);
+    console.error("❌ Error fetching recycle bin data:", error);
     throw error;
   }
 };
+
 
 
 // --- Restore endpoints ---
