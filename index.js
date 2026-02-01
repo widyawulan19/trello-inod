@@ -4589,6 +4589,23 @@ app.get('/api/cards', async (req, res) => {
     }
 })
 
+//get all card recycle 
+app.get('/api/recycle/cards', async (req, res) => {
+    try {
+        const result = await client.query(
+            `SELECT * FROM cards 
+             WHERE is_deleted = TRUE
+             ORDER BY deleted_at DESC`
+        );
+
+        res.json(result.rows);
+    } catch (error) {
+        console.error('❌ Error fetching deleted cards:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
 //get card by id
 app.get('/api/cards/:id', async (req, res) => {
     const { id } = req.params;
