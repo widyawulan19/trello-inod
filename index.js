@@ -4146,38 +4146,7 @@ app.put('/api/lists/:id', async (req, res) => {
 
 
 
-//5. delete lists
-// app.delete('/api/lists/:id', async (req, res) => {
-//     const { id } = req.params;
-//     const userId = req.user.id;
-
-//     try {
-//         // tandai list sebagai terhapus
-//         const result = await client.query(
-//             "UPDATE lists SET is_deleted = true WHERE id = $1 RETURNING *",
-//             [id]
-//         );
-
-//         if (result.rows.length === 0) {
-//             return res.status(404).json({ error: "List not found" });
-//         }
-
-//         //add log activity
-//         await logActivity(
-//             'list',
-//             id,
-//             'delete',
-//             userId,
-//             `List with id '${id}' deleted`,
-//             'board',
-//             id
-//         )
-
-//         res.json({ message: "List deleted successfully" });
-//     } catch (error) {
-//         res.status(500).json({ error: error.message });
-//     }
-// })
+//5. delete lists(soft delete)
 app.delete('/api/lists/:id', async (req, res) => {
     const { id } = req.params;
     const userId = req.user?.id || null;
@@ -4215,6 +4184,53 @@ app.delete('/api/lists/:id', async (req, res) => {
     }
 });
 
+// 5.1 delete list (permanent)
+app.delete('/api/recicle/lists/:id/permanent', async (req, res) => {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    try {
+        await client.query('BEGIN');
+
+        //memastikan list ada dan sudah di soft delete
+        const { rows } = await client.query(
+            `
+            SELECT * FROM lists WHERE id = $1 AND is_deleted = TRUE
+            `, [id]
+        );
+
+        if (rows.length === 0) {
+            await client.query('ROLLBACK');
+            return res.status(404).json({ error: 'List not found or not deleted' });
+        }
+
+        const { board_id } = rows[0];
+
+        //hapus permanen list
+        await client.query(
+            `DELETE FROM lists WHERE id = $1
+            `, [id]
+        );
+
+        //log activity
+        await logActivity(
+            'list',
+            id,
+            'permanent_delete',
+            userId,
+            `List with id '${id}' permanently deleted`,
+            'board',
+            board_id
+        );
+
+        await client.query('COMMIT');
+        res.json({ message: 'List permanently deleted successfully' });
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error('❌ Error hard deleting board:', error);
+        res.status(500).json({ error: error.message });
+    }
+})
 
 
 
