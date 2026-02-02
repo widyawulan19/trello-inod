@@ -9219,7 +9219,7 @@ app.delete('/api/recycle/marketing/:id', async (req, res) => {
         // 🔍 Pastikan data ada, sudah soft delete, dan milik user
         const { rows } = await client.query(
             `
-            SELECT marketing_id, input_by
+            SELECT marketing_id
             FROM data_marketing
             WHERE marketing_id = $1
               AND is_deleted = TRUE
