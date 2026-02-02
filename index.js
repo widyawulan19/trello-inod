@@ -9102,6 +9102,8 @@ app.get('/api/marketing', async (req, res) => {
     }
 })
 
+
+
 //2. get data marketing by id
 app.get('/api/marketing/:id', async (req, res) => {
     const { id } = req.params;
@@ -9233,8 +9235,6 @@ app.delete('/api/recycle/marketing/:id', async (req, res) => {
                 message: 'Data tidak ditemukan di recycle bin'
             });
         }
-
-        const { input_by } = rows[0];
 
 
         // 💀 HARD DELETE
@@ -11561,7 +11561,7 @@ app.delete('/api/recycle/marketing-design/:id', async (req, res) => {
         const { rows } = await client.query(
             `SELECT marketing_design_id
             FROM marketing_design
-            WHERE id = $1 AND is_deleted = TRUE`,
+            WHERE marketing_design_id = $1 AND is_deleted = TRUE`,
             [id]
         );
 
@@ -11576,10 +11576,23 @@ app.delete('/api/recycle/marketing-design/:id', async (req, res) => {
             WHERE marketing_design_id = $1`,
             [id]
         );
+
+        //log activity
+        await logActivity(
+            'marketing_design',
+            id,
+            'DELETE_PERMANENT',
+            userId,
+            `Permanently deleted marketing design with ID ${id}`,
+            null,
+            null
+        );
+
         await client.query('COMMIT');
         res.json({ message: 'Data permanently deleted' });
     } catch (err) {
         await client.query('ROLLBACK');
+        console.error('Error deleting marketing design permanently:', err);
         res.status(500).json({ error: err.message });
     }
 })
