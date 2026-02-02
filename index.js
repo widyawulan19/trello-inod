@@ -9208,6 +9208,42 @@ app.delete("/api/marketing/:id", async (req, res) => {
     }
 });
 
+// 4.1 permanetn delete data marketing 
+app.delete('/api/recycle/marketing/:id', async (req, res) => {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    try {
+        await client.query('BEGIN');
+
+        //pastikan data marketing sudah di soft delete
+        const { rows } = await client.query(
+            `SELECT * FROM data_marketing WHERE marketing_id = $1 AND is_deleted = TRUE`,
+            [id]
+        );
+
+        if (rows.length === 0) {
+            await client.query('ROLLBACK');
+            return res.status(404).json({ error: 'Data tidak ditemukan atau belum dihapus secara permanen' });
+        }
+
+        const { marketing_id } = rows[0];
+
+        //hapus data marketing secara permanen
+        await client.query(
+            `DELETE FROM data_marketing WHERE marketing_id = $1`,
+            [marketing_id]
+        );
+        await client.query('COMMIT');
+        res.json({ message: 'Data marketing berhasil dihapus secara permanen' });
+
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error('❌ Error permanent delete marketing data:', error);
+        return res.status(500).json({ error: 'Gagal menghapus data secara permanen' });
+    }
+})
+
 // Restore data marketing
 app.patch("/api/marketing/:id/restore", async (req, res) => {
     const { id } = req.params;
