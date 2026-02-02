@@ -976,3 +976,119 @@ export const getBoardsWorkspaces = async (workspaceId) => {
     throw error;
   }
 };
+
+
+
+// 🗑️ Hard delete board (PERMANENT)
+app.delete('/api/recycle/boards/:id', async (req, res) => {
+  const { id } = req.params;
+  const userId = req.user.id;
+
+  try {
+    await client.query('BEGIN');
+
+    // Pastikan board memang sudah di soft delete
+    const { rows } = await client.query(
+      `SELECT workspace_id 
+             FROM boards 
+             WHERE id = $1 AND is_deleted = TRUE`,
+      [id]
+    );
+
+    if (rows.length === 0) {
+      await client.query('ROLLBACK');
+      return res.status(404).json({
+        message: 'Board not found in recycle bin'
+      });
+    }
+
+    const { workspace_id } = rows[0];
+
+    // 🔥 HARD DELETE (hapus permanen)
+    await client.query(
+      `DELETE FROM boards WHERE id = $1`,
+      [id]
+    );
+
+    // Log activity
+    await logActivity(
+      'board',
+      id,
+      'hard_delete',
+      userId,
+      `Board with id ${id} permanently deleted`,
+      'workspace',
+      workspace_id
+    );
+
+    await client.query('COMMIT');
+
+    res.json({
+      message: 'Board permanently deleted'
+    });
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('❌ Error hard deleting board:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+// 4.1🗑️ Permanent delete data marketing (Recycle Bin)
+app.delete('/api/recycle/marketing/:id', async (req, res) => {
+  const { id } = req.params;
+  const userId = req.user.id;
+
+  try {
+    await client.query('BEGIN');
+
+    // 🔍 Pastikan data ada, sudah soft delete, dan milik user
+    const { rows } = await client.query(
+      `
+            SELECT marketing_id
+            FROM data_marketing
+            WHERE marketing_id = $1
+              AND is_deleted = TRUE
+            `,
+      [id]
+    );
+
+    if (rows.length === 0) {
+      await client.query('ROLLBACK');
+      return res.status(404).json({
+        message: 'Data tidak ditemukan di recycle bin'
+      });
+    }
+
+
+    // 💀 HARD DELETE
+    await client.query(
+      `DELETE FROM data_marketing WHERE marketing_id = $1`,
+      [id]
+    );
+
+    // 🧾 Log activity (opsional tapi recommended)
+    await logActivity(
+      'data_marketing',
+      id,
+      'hard_delete',
+      userId,
+      `Marketing data ${id} permanently deleted`,
+      null,
+      null
+    );
+
+    await client.query('COMMIT');
+
+    res.json({
+      message: 'Data marketing berhasil dihapus secara permanen'
+    });
+
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('❌ Error permanent delete marketing data:', error);
+    res.status(500).json({
+      message: 'Gagal menghapus data secara permanen'
+    });
+  }
+});
