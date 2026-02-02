@@ -9236,13 +9236,6 @@ app.delete('/api/recycle/marketing/:id', async (req, res) => {
 
         const { input_by } = rows[0];
 
-        // 🔐 Validasi user
-        if (input_by !== userId) {
-            await client.query('ROLLBACK');
-            return res.status(403).json({
-                message: 'Kamu tidak punya izin menghapus data ini'
-            });
-        }
 
         // 💀 HARD DELETE
         await client.query(
