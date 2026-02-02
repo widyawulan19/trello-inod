@@ -9208,7 +9208,7 @@ app.delete("/api/marketing/:id", async (req, res) => {
     }
 });
 
-// 4.1 permanetn delete data marketing 
+// 4.1🗑️ Permanent delete data marketing (Recycle Bin)
 app.delete('/api/recycle/marketing/:id', async (req, res) => {
     const { id } = req.params;
     const userId = req.user.id;
@@ -9216,33 +9216,66 @@ app.delete('/api/recycle/marketing/:id', async (req, res) => {
     try {
         await client.query('BEGIN');
 
-        //pastikan data marketing sudah di soft delete
+        // 🔍 Pastikan data ada, sudah soft delete, dan milik user
         const { rows } = await client.query(
-            `SELECT * FROM data_marketing WHERE marketing_id = $1 AND is_deleted = TRUE`,
+            `
+            SELECT marketing_id, input_by
+            FROM data_marketing
+            WHERE marketing_id = $1
+              AND is_deleted = TRUE
+            `,
             [id]
         );
 
         if (rows.length === 0) {
             await client.query('ROLLBACK');
-            return res.status(404).json({ error: 'Data tidak ditemukan atau belum dihapus secara permanen' });
+            return res.status(404).json({
+                message: 'Data tidak ditemukan di recycle bin'
+            });
         }
 
-        const { marketing_id } = rows[0];
+        const { input_by } = rows[0];
 
-        //hapus data marketing secara permanen
+        // 🔐 Validasi user
+        if (input_by !== userId) {
+            await client.query('ROLLBACK');
+            return res.status(403).json({
+                message: 'Kamu tidak punya izin menghapus data ini'
+            });
+        }
+
+        // 💀 HARD DELETE
         await client.query(
             `DELETE FROM data_marketing WHERE marketing_id = $1`,
-            [marketing_id]
+            [id]
         );
+
+        // 🧾 Log activity (opsional tapi recommended)
+        await logActivity(
+            'data_marketing',
+            id,
+            'hard_delete',
+            userId,
+            `Marketing data ${id} permanently deleted`,
+            null,
+            null
+        );
+
         await client.query('COMMIT');
-        res.json({ message: 'Data marketing berhasil dihapus secara permanen' });
+
+        res.json({
+            message: 'Data marketing berhasil dihapus secara permanen'
+        });
 
     } catch (error) {
         await client.query('ROLLBACK');
         console.error('❌ Error permanent delete marketing data:', error);
-        return res.status(500).json({ error: 'Gagal menghapus data secara permanen' });
+        res.status(500).json({
+            message: 'Gagal menghapus data secara permanen'
+        });
     }
-})
+});
+
 
 // Restore data marketing
 app.patch("/api/marketing/:id/restore", async (req, res) => {
@@ -12846,100 +12879,6 @@ app.get('/api/archive-data', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
-//2. archive data berdasarkan entity
-// app.post('/api/archive/:entity/:id/:userId', async (req, res) => {
-//     const { entity, id, userId } = req.params;
-
-//     const entityMap = {
-//         workspaces_user: { table: 'workspaces_users', idField: 'workspace_id' },
-//         workspaces: { table: 'workspaces', idField: 'id' },
-//         boards: { table: 'boards', idField: 'id' },
-//         lists: { table: 'lists', idField: 'id' },
-//         cards: { table: 'cards', idField: 'id' },
-//         data_marketing: { table: 'data_marketing', idField: 'marketing_id' },
-//         marketing_design: { table: 'marketing_design', idField: 'marketing_design_id' }
-//     };
-
-//     const config = entityMap[entity];
-//     if (!config) return res.status(400).json({ error: 'Entity tidak dikenali' });
-
-//     try {
-//         const { table, idField } = config;
-
-//         // 1. Ambil data utama
-//         const result = await client.query(
-//             `SELECT * FROM ${table} WHERE ${idField} = $1`,
-//             [id]
-//         );
-
-//         if (result.rows.length === 0) {
-//             return res.status(404).json({ error: `Data ${entity} dengan ID ${id} tidak ditemukan` });
-//         }
-
-//         let data = result.rows[0];
-
-//         // ======================================================
-//         // 2. Jika entity = cards → ambil seluruh relasi
-//         // ======================================================
-//         if (entity === "cards") {
-//             const relations = {};
-
-//             const relationTables = {
-//                 checklists: "card_checklists",
-//                 cover: "card_cover",
-//                 descriptions: "card_descriptions",
-//                 due_dates: "card_due_dates",
-//                 labels: "card_labels",
-//                 members: "card_members",
-//                 priorities: "card_priorities",
-//                 status: "card_status",
-//                 users: "card_users",
-//                 chats: "card_chats"
-//             };
-
-//             // 2a. Ambil relasi-relasi card
-//             for (const [key, tableName] of Object.entries(relationTables)) {
-//                 const q = await client.query(
-//                     `SELECT * FROM ${tableName} WHERE card_id = $1`,
-//                     [id]
-//                 );
-//                 relations[key] = q.rows;
-//             }
-
-//             // 2b. Gabungkan ke object data
-//             data = {
-//                 ...data,
-//                 ...relations
-//             };
-//         }
-
-//         // ======================================================
-//         // 3. SIMPAN SEMUA DATA KE ARCHIVE
-//         // ======================================================
-//         await client.query(
-//             `INSERT INTO archive_universal (entity_type, entity_id, data, user_id)
-//              VALUES ($1, $2, $3, $4)`,
-//             [entity, id, data, userId]
-//         );
-
-//         // ======================================================
-//         // 4. HAPUS HANYA DATA UTAMANYA (bukan relasi)
-//         // ======================================================
-//         await client.query(
-//             `DELETE FROM ${table} WHERE ${idField} = $1`,
-//             [id]
-//         );
-
-//         res.status(200).json({
-//             message: `Data ${entity} ID ${id} berhasil diarsipkan BESERTA relasinya (tanpa menghapus relasi dari tabel asli)`,
-//             archived_data: data
-//         });
-
-//     } catch (err) {
-//         console.error('Archive error:', err);
-//         res.status(500).json({ error: err.message });
-//     }
-// });
 
 app.post('/api/archive/:entity/:id/:userId', async (req, res) => {
     const { entity, id, userId } = req.params;
