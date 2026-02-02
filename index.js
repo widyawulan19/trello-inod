@@ -11485,391 +11485,6 @@ app.patch("/api/marketing-design/:id/position", async (req, res) => {
 });
 
 
-
-
-// // Tambah data marketing_design baru (lengkap dengan order_type + project_number)
-// app.post("/api/marketing-design/joined", async (req, res) => {
-//     const {
-//         buyer_name,
-//         code_order,
-//         order_number,
-//         jumlah_design,
-//         deadline,
-//         jumlah_revisi,
-//         price_normal,
-//         price_discount,
-//         discount_percentage,
-//         required_files,
-//         file_and_chat,
-//         detail_project,
-//         input_by,
-//         acc_by,
-//         account,
-//         offer_type,
-//         order_type_id,
-//         resolution,
-//         reference,
-//         project_type_id,
-//         style_id,
-//         status_project_id
-//     } = req.body;
-
-//     try {
-//         // 🧠 Ambil bulan sekarang
-//         const createAt = new Date();
-//         const monthStart = dayjs(createAt).startOf("month").toDate();
-//         const monthEnd = dayjs(createAt).endOf("month").toDate();
-//         const monthName = dayjs(createAt).format("MMMM");
-
-//         // 🧾 Ambil project_number terakhir di bulan ini
-//         const lastProjectQuery = await client.query(
-//             `
-//             SELECT project_number 
-//             FROM marketing_design
-//             WHERE create_at BETWEEN $1 AND $2
-//             ORDER BY marketing_design_id DESC
-//             LIMIT 1;
-//             `,
-//             [monthStart, monthEnd]
-//         );
-
-//         let nextNumber;
-
-//         if (lastProjectQuery.rows.length > 0) {
-//             // 🔢 Ambil angka terakhir dari format "P035 Oktober"
-//             const lastNumberPart = lastProjectQuery.rows[0].project_number.match(/P(\d+)/);
-//             const lastNumber = lastNumberPart ? parseInt(lastNumberPart[1]) : 0;
-//             nextNumber = lastNumber + 1;
-//         } else {
-//             // 🔄 Kalau belum ada di bulan ini, mulai dari 1
-//             nextNumber = 1;
-//         }
-
-//         // 🧮 Buat format project number baru
-//         const projectNumber = `P${String(nextNumber).padStart(3, "0")} ${monthName}`;
-
-//         // 💾 Simpan ke DB
-//         const result = await client.query(
-//             `
-//             INSERT INTO marketing_design (
-//                 buyer_name,
-//                 code_order,
-//                 order_number,
-//                 jumlah_design,
-//                 deadline,
-//                 jumlah_revisi,
-//                 price_normal,
-//                 price_discount,
-//                 discount_percentage,
-//                 required_files,
-//                 file_and_chat,
-//                 detail_project,
-//                 input_by,
-//                 acc_by,
-//                 account,
-//                 offer_type,
-//                 order_type_id,
-//                 resolution,
-//                 reference,
-//                 project_type_id,
-//                 style_id,
-//                 status_project_id,
-//                 project_number,
-//                 create_at
-//             )
-//             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22, NOW())
-//             RETURNING *;
-//             `,
-//             [
-//                 buyer_name,
-//                 code_order,
-//                 order_number,
-//                 jumlah_design,
-//                 deadline,
-//                 jumlah_revisi,
-//                 price_normal,
-//                 price_discount,
-//                 discount_percentage,
-//                 required_files,
-//                 file_and_chat,
-//                 detail_project,
-//                 input_by,
-//                 acc_by,
-//                 account,
-//                 offer_type,
-//                 order_type_id,
-//                 resolution,
-//                 reference,
-//                 project_type_id,
-//                 style_id,
-//                 status_project_id,
-//                 projectNumber
-//             ]
-//         );
-
-//         // Ambil data dengan join biar langsung lengkap tampilannya
-//         const joined = await client.query(
-//             `
-//             SELECT 
-//                 md.marketing_design_id,
-//                 md.buyer_name,
-//                 md.code_order,
-//                 md.order_number,
-//                 md.jumlah_design,
-//                 md.deadline,
-//                 md.jumlah_revisi,
-//                 md.price_normal,
-//                 md.price_discount,
-//                 md.discount_percentage,
-//                 md.required_files,
-//                 md.file_and_chat,
-//                 md.detail_project,
-//                 md.resolution,
-//                 md.reference,
-//                 md.project_number,
-
-//                 mdu.id AS input_by,
-//                 mdu.nama_marketing AS input_by_name,
-//                 mdu.divisi AS input_by_divisi,
-
-//                 kdd.id AS acc_by,
-//                 kdd.nama AS acc_by_name,
-
-//                 ad.id AS account,
-//                 ad.nama_account AS account_name,
-
-//                 ot.id AS offer_type,
-//                 ot.offer_name AS offer_type_name,
-
-//                 pt.id AS project_type,
-//                 pt.project_name AS project_type_name,
-
-//                 sd.id AS style,
-//                 sd.style_name AS style_name,
-
-//                 sp.id AS status_project,
-//                 sp.status_name AS status_project_name,
-
-//                 dot.id AS order_type_id,
-//                 dot.order_name AS order_type_name
-//             FROM marketing_design md
-//             LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
-//             LEFT JOIN kepala_divisi_design kdd ON md.acc_by = kdd.id
-//             LEFT JOIN account_design ad ON md.account = ad.id
-//             LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
-//             LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
-//             LEFT JOIN style_design sd ON md.style_id = sd.id
-//             LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
-//             LEFT JOIN design_order_type dot ON md.order_type_id = dot.id
-//             WHERE md.marketing_design_id = $1
-//             `,
-//             [result.rows[0].marketing_design_id]
-//         );
-
-//         res.status(201).json({
-//             message: "✅ Marketing design created successfully",
-//             data: joined.rows[0],
-//         });
-//     } catch (err) {
-//         console.error("❌ Error creating marketing_design:", err);
-//         res.status(500).json({ error: "Failed to create marketing_design" });
-//     }
-// });
-
-
-
-//4. mengupdate data 
-// Titik awal nomor project (kalau kamu mau mulai dari angka tertentu)
-// let currentProjectNumberDesign = 35; // misal mau mulai dari P035
-
-// app.post("/api/marketing-design/joined", async (req, res) => {
-//     const {
-//         buyer_name,
-//         code_order,
-//         order_number, // tetap dikirim manual dari FE
-//         jumlah_design,
-//         deadline,
-//         jumlah_revisi,
-//         price_normal,
-//         price_discount,
-//         discount_percentage,
-//         required_files,
-//         file_and_chat,
-//         detail_project,
-//         input_by,
-//         acc_by,
-//         account,
-//         offer_type,
-//         order_type_id,
-//         resolution,
-//         reference,
-//         project_type_id,
-//         style_id,
-//         status_project_id
-//     } = req.body;
-
-//     try {
-//         // 🧠 Ambil bulan sekarang
-//         const createAt = new Date();
-//         const monthStart = dayjs(createAt).startOf("month").toDate();
-//         const monthEnd = dayjs(createAt).endOf("month").toDate();
-//         const monthName = dayjs(createAt).format("MMMM");
-
-//         // 🧾 Ambil project_number terakhir di bulan ini
-//         const lastProjectQuery = await client.query(
-//             `
-//             SELECT project_number 
-//             FROM marketing_design
-//             WHERE create_at BETWEEN $1 AND $2
-//             ORDER BY marketing_design_id DESC
-//             LIMIT 1;
-//             `,
-//             [monthStart, monthEnd]
-//         );
-
-//         let nextProjectNumber;
-//         if (lastProjectQuery.rows.length > 0) {
-//             // 🔢 Ambil angka terakhir dari format "P035 Oktober"
-//             const lastNumberPart = lastProjectQuery.rows[0].project_number.match(/P(\d+)/);
-//             const lastNumber = lastNumberPart ? parseInt(lastNumberPart[1]) : currentProjectNumberDesign;
-//             nextProjectNumber = lastNumber + 1;
-//         } else {
-//             // 🔄 Kalau bulan baru, mulai dari angka yang kamu set
-//             nextProjectNumber = currentProjectNumberDesign + 1;
-//         }
-
-//         // 🎨 Generate nomor otomatis (misal "P036 Oktober")
-//         const projectNumber = `P${String(nextProjectNumber).padStart(3, "0")} ${monthName}`;
-
-//         // 💾 Simpan ke DB
-//         const result = await client.query(
-//             `
-//             INSERT INTO marketing_design (
-//                 buyer_name,
-//                 code_order,
-//                 order_number,
-//                 jumlah_design,
-//                 deadline,
-//                 jumlah_revisi,
-//                 price_normal,
-//                 price_discount,
-//                 discount_percentage,
-//                 required_files,
-//                 file_and_chat,
-//                 detail_project,
-//                 input_by,
-//                 acc_by,
-//                 account,
-//                 offer_type,
-//                 order_type_id,
-//                 resolution,
-//                 reference,
-//                 project_type_id,
-//                 style_id,
-//                 status_project_id,
-//                 project_number,
-//                 create_at
-//             )
-//             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22, NOW())
-//             RETURNING *;
-//             `,
-//             [
-//                 buyer_name,
-//                 code_order,
-//                 order_number, // dikirim dari FE
-//                 jumlah_design,
-//                 deadline,
-//                 jumlah_revisi,
-//                 price_normal,
-//                 price_discount,
-//                 discount_percentage,
-//                 required_files,
-//                 file_and_chat,
-//                 detail_project,
-//                 input_by,
-//                 acc_by,
-//                 account,
-//                 offer_type,
-//                 order_type_id,
-//                 resolution,
-//                 reference,
-//                 project_type_id,
-//                 style_id,
-//                 status_project_id,
-//                 projectNumber
-//             ]
-//         );
-
-//         // 🔗 Ambil data lengkap hasil join
-//         const joined = await client.query(
-//             `
-//             SELECT 
-//                 md.marketing_design_id,
-//                 md.buyer_name,
-//                 md.code_order,
-//                 md.order_number,
-//                 md.jumlah_design,
-//                 md.deadline,
-//                 md.jumlah_revisi,
-//                 md.price_normal,
-//                 md.price_discount,
-//                 md.discount_percentage,
-//                 md.required_files,
-//                 md.file_and_chat,
-//                 md.detail_project,
-//                 md.resolution,
-//                 md.reference,
-//                 md.project_number,
-
-//                 mdu.id AS input_by,
-//                 mdu.nama_marketing AS input_by_name,
-//                 mdu.divisi AS input_by_divisi,
-
-//                 kdd.id AS acc_by,
-//                 kdd.nama AS acc_by_name,
-
-//                 ad.id AS account,
-//                 ad.nama_account AS account_name,
-
-//                 ot.id AS offer_type,
-//                 ot.offer_name AS offer_type_name,
-
-//                 pt.id AS project_type,
-//                 pt.project_name AS project_type_name,
-
-//                 sd.id AS style,
-//                 sd.style_name AS style_name,
-
-//                 sp.id AS status_project,
-//                 sp.status_name AS status_project_name,
-
-//                 dot.id AS order_type_id,
-//                 dot.order_name AS order_type_name
-//             FROM marketing_design md
-//             LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
-//             LEFT JOIN kepala_divisi_design kdd ON md.acc_by = kdd.id
-//             LEFT JOIN account_design ad ON md.account = ad.id
-//             LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
-//             LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
-//             LEFT JOIN style_design sd ON md.style_id = sd.id
-//             LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
-//             LEFT JOIN design_order_type dot ON md.order_type_id = dot.id
-//             WHERE md.marketing_design_id = $1
-//             `,
-//             [result.rows[0].marketing_design_id]
-//         );
-
-//         res.status(201).json({
-//             message: "✅ Marketing design created successfully",
-//             data: joined.rows[0],
-//         });
-//     } catch (err) {
-//         console.error("❌ Error creating marketing_design:", err);
-//         res.status(500).json({ error: "Failed to create marketing_design" });
-//     }
-// });
-
-
 app.put('/api/marketing-design/:id', async (req, res) => {
     const { id } = req.params;
     const { input_by, buyer_name, code_order, jumlah_design, order_number, account, deadline, jumlah_revisi, order_type, offer_type, style, resolution, price_normal, price_discount, discount_percentage, required_files, project_type, reference, file_and_chat, detail_project, acc_by, is_accepted } = req.body;
@@ -11907,6 +11522,41 @@ app.delete('/api/marketing-design/:id', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
+//5.1 delete permanetn marketing design
+app.delete('/api/recycle/marketing-design/:id', async (req, res) => {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    try {
+        await client.query('BEGIN');
+
+        //pastikan data marketing design sudah di soft delete
+        const { rows } = await client.query(
+            `SELECT marketing_design_id
+            FROM marketing_design
+            WHERE id = $1 AND is_deleted = TRUE`,
+            [id]
+        );
+
+        if (rows.length === 0) {
+            await client.query('ROLLBACK');
+            return res.status(404).json({ message: 'Data not found or not deleted' });
+        }
+
+        //hapus permanen data marketing design
+        await client.query(
+            `DELETE FROM marketing_design
+            WHERE marketing_design_id = $1`,
+            [id]
+        );
+        await client.query('COMMIT');
+        res.json({ message: 'Data permanently deleted' });
+    } catch (err) {
+        await client.query('ROLLBACK');
+        res.status(500).json({ error: err.message });
+    }
+})
 
 // Restore soft-deleted marketing design
 app.patch('/api/marketing-design/:id/restore', async (req, res) => {
