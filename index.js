@@ -13055,6 +13055,90 @@ app.delete('/api/archive-data/:id', async (req, res) => {
     }
 });
 
+//3. delete data entity and permanent from archive by entity and id
+// 3. delete archive + hard delete original data
+app.delete('/api/archive-data/:id', async (req, res) => {
+    const { id } = req.params;
+    const userId = req.user?.id;
+
+    try {
+        await client.query('BEGIN');
+
+        // 1️⃣ ambil data archive
+        const { rows } = await client.query(
+            `SELECT entity, entity_id
+             FROM archive_universal
+             WHERE id = $1`,
+            [id]
+        );
+
+        if (rows.length === 0) {
+            await client.query('ROLLBACK');
+            return res.status(404).json({ error: 'Archive data not found' });
+        }
+
+        const { entity, entity_id } = rows[0];
+
+        // 2️⃣ hard delete data asli berdasarkan entity
+        switch (entity) {
+            case 'boards':
+                await client.query(`DELETE FROM boards WHERE id = $1`, [entity_id]);
+                break;
+
+            case 'lists':
+                await client.query(`DELETE FROM lists WHERE id = $1`, [entity_id]);
+                break;
+
+            case 'cards':
+                await client.query(`DELETE FROM cards WHERE id = $1`, [entity_id]);
+                break;
+
+            case 'data_marketing':
+                await client.query(`DELETE FROM data_marketing WHERE marketing_id = $1`, [entity_id]);
+                break;
+
+            case 'marketing_design':
+                await client.query(`DELETE FROM marketing_design WHERE marketing_design_id = $1`, [entity_id]);
+                break;
+
+            default:
+                await client.query('ROLLBACK');
+                return res.status(400).json({ error: `Unsupported entity: ${entity}` });
+        }
+
+        // 3️⃣ hapus archive_universal
+        await client.query(
+            `DELETE FROM archive_universal WHERE id = $1`,
+            [id]
+        );
+
+        // (opsional) log activity
+        if (userId) {
+            await logActivity(
+                entity,
+                entity_id,
+                'DELETE_PERMANENT',
+                userId,
+                `Permanently deleted ${entity} with id ${entity_id}`,
+                null,
+                null
+            );
+        }
+
+        await client.query('COMMIT');
+
+        res.json({
+            message: 'Archive and original data permanently deleted'
+        });
+
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error('❌ Error deleting archive & original data:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
 
 //4. RESTORE UNIVERSAL
 app.post('/api/restore/:entity/:id', async (req, res) => {
