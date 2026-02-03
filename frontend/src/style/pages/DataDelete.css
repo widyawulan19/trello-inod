@@ -212,3 +212,11 @@ BODY DATA DELETE
 .rb-restore-btn:hover {
     /* background-color: #16a34a; */
 }
+
+.header-action {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    border: 1px solid red;
+}

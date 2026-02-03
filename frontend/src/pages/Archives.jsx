@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from 'react'
 import { useSnackbar } from '../context/Snackbar'
-import { deleteArchiveDataUniversalById, getAllAccountsMusic, getAllOrderTypesMusic, getArchiveBoard, getArchiveCard, getArchiveList, getArchiveMarketing, getArchiveMarketingDesign, getArchiveWorkspace, getArchiveWorkspaceUser, getBoardArchive, getCardArchive, getListArchive, getMarketingArchive, getMarketingDesignArchive, getWorkspaceArchive } from '../services/ApiServices'
+import { deleteArchiveDataUniversalById, deleteBoardPermanently, deleteCardPermanently, deleteListPermanently, deleteMarketingDesignPermanently, deleteMarketingPermanently, getAllAccountsMusic, getAllOrderTypesMusic, getArchiveBoard, getArchiveCard, getArchiveList, getArchiveMarketing, getArchiveMarketingDesign, getArchiveWorkspace, getArchiveWorkspaceUser, getBoardArchive, getCardArchive, getListArchive, getMarketingArchive, getMarketingDesignArchive, getWorkspaceArchive } from '../services/ApiServices'
 import '../style/pages/ArchiveStyle.css'
 import { IoIosCloseCircle } from "react-icons/io";
 import { FaCircle } from "react-icons/fa6";
@@ -40,6 +40,12 @@ const Archives=()=> {
     const [accountMusic, setAccountMusic] = useState([])
     const [orderTypes, setOrderTypes] = useState([])
     const location = useLocation();
+
+    //DELETE CONFIRM MODAL
+    const [deleteTargetId, setDeleteTargetId] = useState(null);
+    const [deleteTarget, setDeleteTarget] = useState(null);
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
   fetchAccountMusic()
@@ -104,17 +110,6 @@ const fetchOrderTypes = async () => {
         };
     
 
-    //3. fungsi delete data archive berdasarkan id
-    const handleDeleteArchive = async (id) =>{
-      try{
-          await deleteArchiveDataUniversalById(id);
-          showSnackbar('Successfully delete archive data:',"success");
-          fetchArchiveData();
-      }catch(error){
-          console.log('Failed to delete archive data:', error);
-          showSnackbar('Failed to delete archive data','error');
-      }
-    }
 
     /* =======================
     RENDER DATA DETAIL ARCHIVE
@@ -345,6 +340,53 @@ const fetchOrderTypes = async () => {
         );
         };
 
+
+    // FUNGSSI DELETE DATA BERDASARKAN ENTIY YANG DIPILIH
+    const deletePermanentByType = async (type, id) => {
+        switch (type) {
+            case 'boards':
+            return deleteBoardPermanently(id);
+
+            case 'lists':
+            return deleteListPermanently(id);
+
+            case 'cards':
+            return deleteCardPermanently(id);
+
+            case 'data_marketing':
+            return deleteMarketingPermanently(id);
+
+            case 'marketing_design':
+            return deleteMarketingDesignPermanently(id);
+
+            default:
+            throw new Error(`Unsupported archive type: ${type}`);
+    }
+    };
+
+
+
+    //3. fungsi delete data archive berdasarkan id
+    const handleDeleteArchive = async () => {
+        if (!deleteTargetId) return;
+
+        try {
+            setIsDeleting(true);
+
+            await deletePermanentByType(selectedType, deleteTargetId);
+
+            showSnackbar("Archive data deleted permanently 🗑️", "success");
+
+            fetchArchiveData(selectedType);
+        } catch (error) {
+            console.error("Failed to delete archive data:", error);
+            showSnackbar("Failed to delete archive data", "error");
+        } finally {
+            setIsDeleting(false);
+            setIsDeleteOpen(false);
+            setDeleteTargetId(null);
+        }
+    };
 
 
 
@@ -597,7 +639,10 @@ const fetchOrderTypes = async () => {
                                     <BootstrapTooltip title="Delete data">
                                         <button
                                         className="btn-action"
-                                        onClick={() => handleDeleteArchive(item.entity_id)}
+                                        onClick={() => {
+                                                setDeleteTargetId(item.entity_id);
+                                                setIsDeleteOpen(true);
+                                            }}
                                         >
                                         <IoTrash />
                                         </button>
@@ -668,6 +713,40 @@ const fetchOrderTypes = async () => {
             </div>
         </div>
         )}
+
+        {/* MODAL CONFIRM DELETE  */}
+        {isDeleteOpen && (
+            <div className="delete-modal-overlay">
+                <div className="modal-delete">
+                <h3>Delete archive data?</h3>
+
+                <p>
+                    This action will <strong>permanently delete</strong> this data.
+                    <br />
+                    You won’t be able to restore it.
+                </p>
+
+                <div className="modal-actions">
+                    <button
+                    className="btn-cancel"
+                    onClick={() => setIsDeleteOpen(false)}
+                    disabled={isDeleting}
+                    >
+                    Cancel
+                    </button>
+
+                    <button
+                    className="btn-danger"
+                    onClick={handleDeleteArchive}
+                    disabled={isDeleting}
+                    >
+                    {isDeleting ? "Deleting..." : "Delete permanently"}
+                    </button>
+                </div>
+                </div>
+            </div>
+         )}
+
     </div>
   )
 }

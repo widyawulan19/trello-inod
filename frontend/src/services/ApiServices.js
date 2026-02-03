@@ -1023,6 +1023,15 @@ export const getActivityCard = (cardId) => axios.get(`${API_URL}/activity-card/c
 
 //'/api/activity-logs/user/:userId'
 
+// DELETE PERMANENT ITEM
+export const deleteBoardPermanently = (id) => axios.delete(`${API_URL}/recycle-delete/boards/${id}`)
+export const deleteListPermanently = (id) => axios.delete(`${API_URL}/recycle/lists/${id}/permanent`)
+export const deleteCardPermanently = (id) => axios.delete(`${API_URL}/recycle/card/${id}`)
+export const deleteMarketingPermanently = (id) => axios.delete(`${API_URL}/recycle/marketing/${id}`)
+export const deleteMarketingDesignPermanently = (id) => axios.delete(`${API_URL}/recycle/marketing-design/${id}`)
+
+
+
 
 //CHAT ROOM
 export const getAllCardChat = (cardId) => axios.get(`${API_URL}/cards/${cardId}/chats`);

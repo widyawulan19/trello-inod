@@ -2097,7 +2097,6 @@ app.put('/api/workspace/:id', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 })
-//5. delete a workspace dan mengarsipkan workspace sebelum mendelete data 
 
 // 5. Soft delete workspace (arsipkan dan tandai sebagai terhapus)
 app.delete('/api/workspace/:id', async (req, res) => {
@@ -2139,6 +2138,31 @@ app.delete('/api/workspace/:id', async (req, res) => {
         });
     } catch (err) {
         console.error("Error soft deleting workspace:", err);
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// FIXED DELETE SOFT WORKSPACE 
+app.get('/api/workspaces', async (req, res) => {
+    const { is_deleted } = req.query;
+
+    try {
+        let query = 'SELECT * FROM workspaces';
+        const params = [];
+
+        if (is_deleted === 'true') {
+            query += ' WHERE is_deleted = TRUE';
+        } else if (is_deleted === 'false') {
+            query += ' WHERE is_deleted = FALSE';
+        }
+
+        query += ' ORDER BY deleted_at DESC NULLS LAST';
+
+        const result = await client.query(query, params);
+
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Error fetching workspaces:', err);
         res.status(500).json({ success: false, error: err.message });
     }
 });
@@ -2830,23 +2854,7 @@ app.put('/api/boards/reorder', async (req, res) => {
     }
 });
 
-
-// Endpoint to get all boards
-app.get('/api/boards', async (req, res) => {
-    try {
-        const result = await client.query('SELECT * FROM public.boards ORDER BY position ASC');
-        if (result.rows.length === 0) {
-            return res.status(404).json({ message: 'No boards found' });
-        }
-        return res.status(200).json(result.rows);
-    } catch (err) {
-        console.error(err);
-        return res.status(500).json({ message: 'Error fetching boards' });
-    }
-});
-
-//1. get all board by workspace id
-// ✅ Get boards by workspace ID (hanya untuk user yang punya akses)
+//get all workspace's board by userid
 app.get('/api/workspaces/:workspaceId/boards', async (req, res) => {
     const { workspaceId } = req.params;
     const { userId } = req.query;
@@ -2873,7 +2881,22 @@ app.get('/api/workspaces/:workspaceId/boards', async (req, res) => {
     }
 });
 
+// Endpoint to get all boards
+app.get('/api/boards', async (req, res) => {
+    try {
+        const result = await client.query('SELECT * FROM public.boards ORDER BY position ASC');
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'No boards found' });
+        }
+        return res.status(200).json(result.rows);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'Error fetching boards' });
+    }
+});
 
+
+// FIX GET BOARD BY WORKSPACE 
 app.get('/api/workspaces/:workspaceId/workspace-board', async (req, res) => {
     const { workspaceId } = req.params;
 
@@ -2896,6 +2919,21 @@ app.get('/api/workspaces/:workspaceId/workspace-board', async (req, res) => {
     }
 });
 
+//GET ALL RECICLE BOARDS DATA
+app.get('/api/recycle/boards', async (req, res) => {
+    try {
+        const result = await client.query(
+            `SELECT * FROM boards 
+             WHERE is_deleted = TRUE
+             ORDER BY deleted_at DESC`
+        );
+
+        res.json(result.rows);
+    } catch (error) {
+        console.error('❌ Error fetching deleted boards:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
 
 
 
@@ -3040,6 +3078,62 @@ app.delete('/api/boards/:id', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+// DELETE PERMANENT DATA 
+// 🗑️ Hard delete board (PERMANENT)
+app.delete('/api/recycle-delete/boards/:id', async (req, res) => {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    try {
+        await client.query('BEGIN');
+
+        // Pastikan board memang sudah di soft delete
+        const { rows } = await client.query(
+            `SELECT workspace_id 
+             FROM boards 
+             WHERE id = $1 AND is_deleted = TRUE`,
+            [id]
+        );
+
+        if (rows.length === 0) {
+            await client.query('ROLLBACK');
+            return res.status(404).json({
+                message: 'Board not found in recycle bin'
+            });
+        }
+
+        const { workspace_id } = rows[0];
+
+        // 🔥 HARD DELETE (hapus permanen)
+        await client.query(
+            `DELETE FROM boards WHERE id = $1`,
+            [id]
+        );
+
+        // Log activity
+        await logActivity(
+            'board',
+            id,
+            'hard_delete',
+            userId,
+            `Board with id ${id} permanently deleted`,
+            'workspace',
+            workspace_id
+        );
+
+        await client.query('COMMIT');
+
+        res.json({
+            message: 'Board permanently deleted'
+        });
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error('❌ Error hard deleting board:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 
 //Restore soft deleted board
 app.patch('/api/boards/:id/restore', async (req, res) => {
@@ -3795,63 +3889,6 @@ app.put('/api/lists/reorder-list', async (req, res) => {
     }
 });
 
-//reorder list lebih kompleks
-// PATCH satu list untuk ubah posisi semua list dalam board
-// app.patch('/api/lists/:listId/new-position', async (req, res) => {
-//     const { listId } = req.params;
-//     const { newPosition, boardId } = req.body;
-
-//     try {
-//         await client.query('BEGIN');
-
-//         // Ambil posisi lama dari list yang dipindah
-//         const { rows } = await client.query(
-//             `SELECT position FROM lists WHERE id = $1 AND board_id = $2`,
-//             [listId, boardId]
-//         );
-
-//         if (rows.length === 0) {
-//             await client.query('ROLLBACK');
-//             return res.status(404).json({ error: 'List not found' });
-//         }
-
-//         const oldPosition = rows[0].position;
-
-//         // Kalau posisi berubah
-//         if (newPosition > oldPosition) {
-//             // Geser semua list di antara old+1..new ke atas (pos -1)
-//             await client.query(
-//                 `UPDATE lists
-//          SET position = position - 1
-//          WHERE board_id = $1 AND position > $2 AND position <= $3`,
-//                 [boardId, oldPosition, newPosition]
-//             );
-//         } else if (newPosition < oldPosition) {
-//             // Geser semua list di antara new..old-1 ke bawah (pos +1)
-//             await client.query(
-//                 `UPDATE lists
-//          SET position = position + 1
-//          WHERE board_id = $1 AND position >= $2 AND position < $3`,
-//                 [boardId, newPosition, oldPosition]
-//             );
-//         }
-
-//         // Update posisi list yang dipindah
-//         await client.query(
-//             `UPDATE lists
-//        SET position = $1, update_at = NOW()
-//        WHERE id = $2 AND board_id = $3`,
-//             [newPosition, listId, boardId]
-//         );
-
-//         await client.query('COMMIT');
-//         res.json({ success: true, listId, newPosition });
-//     } catch (err) {
-//         await client.query('ROLLBACK');
-//         console.error('Error moving list:', err);
-//         res.status(500).json({ error: err.message });
-//     }
-// });
 
 // PATCH satu list untuk ubah posisi semua list dalam board
 app.patch('/api/lists/:listId/new-position', async (req, res) => {
@@ -4008,16 +4045,23 @@ app.get('/api/lists', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 })
-//2. get list by board_id
-// app.get('/api/lists/board/:board_id', async (req, res) => {
-//     const { board_id } = req.params;
-//     try {
-//         const result = await client.query("SELECT * FROM lists WHERE board_id = $1 AND is_deleted = FALSE ORDER BY position", [board_id]);
-//         res.json(result.rows);
-//     } catch (error) {
-//         res.status(500).json({ error: error.message });
-//     }
-// })
+
+//2. get all restore lists
+app.get('/api/recycle/lists', async (req, res) => {
+    try {
+        const result = await client.query(
+            `SELECT * FROM lists 
+             WHERE is_deleted = TRUE
+             ORDER BY deleted_at DESC`
+        );
+
+        res.json(result.rows);
+    } catch (error) {
+        console.error('❌ Error fetching deleted lists:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 
 //get list by id
 app.get('/api/lists/:listId', async (req, res) => {
@@ -4102,38 +4146,7 @@ app.put('/api/lists/:id', async (req, res) => {
 
 
 
-//5. delete lists
-// app.delete('/api/lists/:id', async (req, res) => {
-//     const { id } = req.params;
-//     const userId = req.user.id;
-
-//     try {
-//         // tandai list sebagai terhapus
-//         const result = await client.query(
-//             "UPDATE lists SET is_deleted = true WHERE id = $1 RETURNING *",
-//             [id]
-//         );
-
-//         if (result.rows.length === 0) {
-//             return res.status(404).json({ error: "List not found" });
-//         }
-
-//         //add log activity
-//         await logActivity(
-//             'list',
-//             id,
-//             'delete',
-//             userId,
-//             `List with id '${id}' deleted`,
-//             'board',
-//             id
-//         )
-
-//         res.json({ message: "List deleted successfully" });
-//     } catch (error) {
-//         res.status(500).json({ error: error.message });
-//     }
-// })
+//5. delete lists(soft delete)
 app.delete('/api/lists/:id', async (req, res) => {
     const { id } = req.params;
     const userId = req.user?.id || null;
@@ -4171,6 +4184,53 @@ app.delete('/api/lists/:id', async (req, res) => {
     }
 });
 
+// 5.1 delete list (permanent)
+app.delete('/api/recicle/lists/:id/permanent', async (req, res) => {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    try {
+        await client.query('BEGIN');
+
+        //memastikan list ada dan sudah di soft delete
+        const { rows } = await client.query(
+            `
+            SELECT * FROM lists WHERE id = $1 AND is_deleted = TRUE
+            `, [id]
+        );
+
+        if (rows.length === 0) {
+            await client.query('ROLLBACK');
+            return res.status(404).json({ error: 'List not found or not deleted' });
+        }
+
+        const { board_id } = rows[0];
+
+        //hapus permanen list
+        await client.query(
+            `DELETE FROM lists WHERE id = $1
+            `, [id]
+        );
+
+        //log activity
+        await logActivity(
+            'list',
+            id,
+            'permanent_delete',
+            userId,
+            `List with id '${id}' permanently deleted`,
+            'board',
+            board_id
+        );
+
+        await client.query('COMMIT');
+        res.json({ message: 'List permanently deleted successfully' });
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error('❌ Error hard deleting board:', error);
+        res.status(500).json({ error: error.message });
+    }
+})
 
 
 
@@ -4601,6 +4661,23 @@ app.get('/api/cards', async (req, res) => {
     }
 })
 
+//get all card recycle 
+app.get('/api/recycle/cards', async (req, res) => {
+    try {
+        const result = await client.query(
+            `SELECT * FROM cards 
+             WHERE is_deleted = TRUE
+             ORDER BY deleted_at DESC`
+        );
+
+        res.json(result.rows);
+    } catch (error) {
+        console.error('❌ Error fetching deleted cards:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
 //get card by id
 app.get('/api/cards/:id', async (req, res) => {
     const { id } = req.params;
@@ -4642,43 +4719,6 @@ app.get('/api/cards/:id', async (req, res) => {
     }
 });
 
-// app.get('/api/cards/:id', async (req, res) => {
-//     const { id } = req.params;
-
-//     try {
-//         const result = await client.query(`
-//       SELECT 
-//         c.id AS card_id,
-//         c.list_id,
-//         c.title,
-//         c.description,
-//         c.position,
-//         c.create_at, 
-//         c.due_date,
-//         json_agg(
-//           json_build_object(
-//             'id', l.id,
-//             'name', l.name,
-//             'color', l.color
-//           )
-//         ) FILTER (WHERE l.id IS NOT NULL) AS labels
-//       FROM cards c
-//       LEFT JOIN card_labels cl ON cl.card_id = c.id
-//       LEFT JOIN labels l ON l.id = cl.label_id
-//       WHERE c.id = $1
-//       GROUP BY c.id
-//     `, [id]);
-
-//         if (result.rows.length > 0) {
-//             res.json(result.rows[0]);
-//         } else {
-//             res.status(404).json({ message: 'Card not found' });
-//         }
-//     } catch (error) {
-//         console.error('Error fetching card:', error);
-//         res.status(500).json({ error: error.message });
-//     }
-// });
 
 //2. get card by list id
 app.get('/api/cards/list/:listId', async (req, res) => {
@@ -4790,6 +4830,54 @@ app.delete('/api/cards/:cardId', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+//4.1 DELETE PERMANENT DATA CARD
+app.delete('/api/recycle/card/:id', async (req, res) => {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    try {
+        await client.query('BEGIN');
+
+        //pastikan card memang sudah di soft delete
+        const { rows } = await client.query(
+            `SELECT * FROM cards WHERE id = $1 AND is_deleted = TRUE`,
+            [id]
+        );
+
+        if (rows.length === 0) {
+            await client.query('ROLLBACK');
+            return res.status(404).json({ error: 'Card not found or not deleted' });
+        }
+
+        const { card_id } = rows[0];
+
+        //Hard delete (hapus pemanent)
+        await client.query(
+            `DELETE FROM cards WHERE id = $1`,
+            [id]
+        );
+
+        //log activity
+        await logActivity(
+            'card',
+            id,
+            'permanent_delete',
+            userId,
+            `Card with id '${id}' permanently deleted`,
+            'list',
+            card_id
+        );
+
+        await client.query('COMMIT');
+        res.json({ message: 'Card permanently deleted successfully' });
+
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error('❌ Error hard deleting card:', error);
+        res.status(500).json({ error: error.message });
+    }
+})
 
 
 // restore soft-deleted card
@@ -8571,6 +8659,29 @@ app.put('/api/employees/:id', async (req, res) => {
 
 //DATA MARKETING
 
+//GET ALL DATA CARD RECYCLE
+app.get('/api/recycle/data-marketing', async (req, res) => {
+    try {
+        const result = await client.query(`
+        SELECT 
+            dm.*,
+            mu.nama_marketing AS input_by_name,
+            kd.nama AS acc_by_name
+        FROM data_marketing dm
+        LEFT JOIN marketing_musik_user mu ON mu.id = dm.input_by
+        LEFT JOIN kepala_divisi kd ON kd.id = dm.acc_by
+        WHERE dm.is_deleted = TRUE
+        ORDER BY dm.deleted_at DESC
+        `);
+
+        res.json(result.rows);
+    } catch (error) {
+        console.error('❌ Error fetching deleted marketing data:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
 // ✅ Get laporan today berdasarkan create_at (full join)
 app.get('/api/marketing/reports/today', async (req, res) => {
     try {
@@ -8991,6 +9102,8 @@ app.get('/api/marketing', async (req, res) => {
     }
 })
 
+
+
 //2. get data marketing by id
 app.get('/api/marketing/:id', async (req, res) => {
     const { id } = req.params;
@@ -9096,6 +9209,66 @@ app.delete("/api/marketing/:id", async (req, res) => {
         res.status(500).send("Server error");
     }
 });
+
+// 4.1🗑️ Permanent delete data marketing (Recycle Bin)
+app.delete('/api/recycle/marketing/:id', async (req, res) => {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    try {
+        await client.query('BEGIN');
+
+        // 🔍 Pastikan data ada, sudah soft delete, dan milik user
+        const { rows } = await client.query(
+            `
+            SELECT marketing_id
+            FROM data_marketing
+            WHERE marketing_id = $1
+              AND is_deleted = TRUE
+            `,
+            [id]
+        );
+
+        if (rows.length === 0) {
+            await client.query('ROLLBACK');
+            return res.status(404).json({
+                message: 'Data tidak ditemukan di recycle bin'
+            });
+        }
+
+
+        // 💀 HARD DELETE
+        await client.query(
+            `DELETE FROM data_marketing WHERE marketing_id = $1`,
+            [id]
+        );
+
+        // 🧾 Log activity (opsional tapi recommended)
+        await logActivity(
+            'data_marketing',
+            id,
+            'hard_delete',
+            userId,
+            `Marketing data ${id} permanently deleted`,
+            null,
+            null
+        );
+
+        await client.query('COMMIT');
+
+        res.json({
+            message: 'Data marketing berhasil dihapus secara permanen'
+        });
+
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error('❌ Error permanent delete marketing data:', error);
+        res.status(500).json({
+            message: 'Gagal menghapus data secara permanen'
+        });
+    }
+});
+
 
 // Restore data marketing
 app.patch("/api/marketing/:id/restore", async (req, res) => {
@@ -10138,6 +10311,27 @@ app.get("/api/marketing-design/new-joined", async (req, res) => {
     }
 });
 
+//GET RECICLE MARKRIGN DESIGN DATA
+app.get('/api/recycle/marketing-design', async (req, res) => {
+    try {
+        const result = await client.query(`
+        SELECT 
+            md.*,
+            mdu.nama_marketing AS input_by_name,
+            kdd.nama AS acc_by_name
+        FROM marketing_design md
+        LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
+        LEFT JOIN kepala_divisi_design kdd ON md.acc_by = kdd.id
+        WHERE md.is_deleted = TRUE
+        ORDER BY md.deleted_at DESC
+        `);
+
+        res.json(result.rows);
+    } catch (error) {
+        console.error('❌ Error fetching deleted marketing design:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
 
 
 //MARKETING DESIGN JOINED
@@ -10675,6 +10869,8 @@ app.put("/api/marketing-design-testing/joined/:id", async (req, res) => {
         });
     }
 });
+
+
 
 
 // ✅ UPDATE Data Marketing Design by ID
@@ -11315,391 +11511,6 @@ app.patch("/api/marketing-design/:id/position", async (req, res) => {
 });
 
 
-
-
-// // Tambah data marketing_design baru (lengkap dengan order_type + project_number)
-// app.post("/api/marketing-design/joined", async (req, res) => {
-//     const {
-//         buyer_name,
-//         code_order,
-//         order_number,
-//         jumlah_design,
-//         deadline,
-//         jumlah_revisi,
-//         price_normal,
-//         price_discount,
-//         discount_percentage,
-//         required_files,
-//         file_and_chat,
-//         detail_project,
-//         input_by,
-//         acc_by,
-//         account,
-//         offer_type,
-//         order_type_id,
-//         resolution,
-//         reference,
-//         project_type_id,
-//         style_id,
-//         status_project_id
-//     } = req.body;
-
-//     try {
-//         // 🧠 Ambil bulan sekarang
-//         const createAt = new Date();
-//         const monthStart = dayjs(createAt).startOf("month").toDate();
-//         const monthEnd = dayjs(createAt).endOf("month").toDate();
-//         const monthName = dayjs(createAt).format("MMMM");
-
-//         // 🧾 Ambil project_number terakhir di bulan ini
-//         const lastProjectQuery = await client.query(
-//             `
-//             SELECT project_number 
-//             FROM marketing_design
-//             WHERE create_at BETWEEN $1 AND $2
-//             ORDER BY marketing_design_id DESC
-//             LIMIT 1;
-//             `,
-//             [monthStart, monthEnd]
-//         );
-
-//         let nextNumber;
-
-//         if (lastProjectQuery.rows.length > 0) {
-//             // 🔢 Ambil angka terakhir dari format "P035 Oktober"
-//             const lastNumberPart = lastProjectQuery.rows[0].project_number.match(/P(\d+)/);
-//             const lastNumber = lastNumberPart ? parseInt(lastNumberPart[1]) : 0;
-//             nextNumber = lastNumber + 1;
-//         } else {
-//             // 🔄 Kalau belum ada di bulan ini, mulai dari 1
-//             nextNumber = 1;
-//         }
-
-//         // 🧮 Buat format project number baru
-//         const projectNumber = `P${String(nextNumber).padStart(3, "0")} ${monthName}`;
-
-//         // 💾 Simpan ke DB
-//         const result = await client.query(
-//             `
-//             INSERT INTO marketing_design (
-//                 buyer_name,
-//                 code_order,
-//                 order_number,
-//                 jumlah_design,
-//                 deadline,
-//                 jumlah_revisi,
-//                 price_normal,
-//                 price_discount,
-//                 discount_percentage,
-//                 required_files,
-//                 file_and_chat,
-//                 detail_project,
-//                 input_by,
-//                 acc_by,
-//                 account,
-//                 offer_type,
-//                 order_type_id,
-//                 resolution,
-//                 reference,
-//                 project_type_id,
-//                 style_id,
-//                 status_project_id,
-//                 project_number,
-//                 create_at
-//             )
-//             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22, NOW())
-//             RETURNING *;
-//             `,
-//             [
-//                 buyer_name,
-//                 code_order,
-//                 order_number,
-//                 jumlah_design,
-//                 deadline,
-//                 jumlah_revisi,
-//                 price_normal,
-//                 price_discount,
-//                 discount_percentage,
-//                 required_files,
-//                 file_and_chat,
-//                 detail_project,
-//                 input_by,
-//                 acc_by,
-//                 account,
-//                 offer_type,
-//                 order_type_id,
-//                 resolution,
-//                 reference,
-//                 project_type_id,
-//                 style_id,
-//                 status_project_id,
-//                 projectNumber
-//             ]
-//         );
-
-//         // Ambil data dengan join biar langsung lengkap tampilannya
-//         const joined = await client.query(
-//             `
-//             SELECT 
-//                 md.marketing_design_id,
-//                 md.buyer_name,
-//                 md.code_order,
-//                 md.order_number,
-//                 md.jumlah_design,
-//                 md.deadline,
-//                 md.jumlah_revisi,
-//                 md.price_normal,
-//                 md.price_discount,
-//                 md.discount_percentage,
-//                 md.required_files,
-//                 md.file_and_chat,
-//                 md.detail_project,
-//                 md.resolution,
-//                 md.reference,
-//                 md.project_number,
-
-//                 mdu.id AS input_by,
-//                 mdu.nama_marketing AS input_by_name,
-//                 mdu.divisi AS input_by_divisi,
-
-//                 kdd.id AS acc_by,
-//                 kdd.nama AS acc_by_name,
-
-//                 ad.id AS account,
-//                 ad.nama_account AS account_name,
-
-//                 ot.id AS offer_type,
-//                 ot.offer_name AS offer_type_name,
-
-//                 pt.id AS project_type,
-//                 pt.project_name AS project_type_name,
-
-//                 sd.id AS style,
-//                 sd.style_name AS style_name,
-
-//                 sp.id AS status_project,
-//                 sp.status_name AS status_project_name,
-
-//                 dot.id AS order_type_id,
-//                 dot.order_name AS order_type_name
-//             FROM marketing_design md
-//             LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
-//             LEFT JOIN kepala_divisi_design kdd ON md.acc_by = kdd.id
-//             LEFT JOIN account_design ad ON md.account = ad.id
-//             LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
-//             LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
-//             LEFT JOIN style_design sd ON md.style_id = sd.id
-//             LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
-//             LEFT JOIN design_order_type dot ON md.order_type_id = dot.id
-//             WHERE md.marketing_design_id = $1
-//             `,
-//             [result.rows[0].marketing_design_id]
-//         );
-
-//         res.status(201).json({
-//             message: "✅ Marketing design created successfully",
-//             data: joined.rows[0],
-//         });
-//     } catch (err) {
-//         console.error("❌ Error creating marketing_design:", err);
-//         res.status(500).json({ error: "Failed to create marketing_design" });
-//     }
-// });
-
-
-
-//4. mengupdate data 
-// Titik awal nomor project (kalau kamu mau mulai dari angka tertentu)
-// let currentProjectNumberDesign = 35; // misal mau mulai dari P035
-
-// app.post("/api/marketing-design/joined", async (req, res) => {
-//     const {
-//         buyer_name,
-//         code_order,
-//         order_number, // tetap dikirim manual dari FE
-//         jumlah_design,
-//         deadline,
-//         jumlah_revisi,
-//         price_normal,
-//         price_discount,
-//         discount_percentage,
-//         required_files,
-//         file_and_chat,
-//         detail_project,
-//         input_by,
-//         acc_by,
-//         account,
-//         offer_type,
-//         order_type_id,
-//         resolution,
-//         reference,
-//         project_type_id,
-//         style_id,
-//         status_project_id
-//     } = req.body;
-
-//     try {
-//         // 🧠 Ambil bulan sekarang
-//         const createAt = new Date();
-//         const monthStart = dayjs(createAt).startOf("month").toDate();
-//         const monthEnd = dayjs(createAt).endOf("month").toDate();
-//         const monthName = dayjs(createAt).format("MMMM");
-
-//         // 🧾 Ambil project_number terakhir di bulan ini
-//         const lastProjectQuery = await client.query(
-//             `
-//             SELECT project_number 
-//             FROM marketing_design
-//             WHERE create_at BETWEEN $1 AND $2
-//             ORDER BY marketing_design_id DESC
-//             LIMIT 1;
-//             `,
-//             [monthStart, monthEnd]
-//         );
-
-//         let nextProjectNumber;
-//         if (lastProjectQuery.rows.length > 0) {
-//             // 🔢 Ambil angka terakhir dari format "P035 Oktober"
-//             const lastNumberPart = lastProjectQuery.rows[0].project_number.match(/P(\d+)/);
-//             const lastNumber = lastNumberPart ? parseInt(lastNumberPart[1]) : currentProjectNumberDesign;
-//             nextProjectNumber = lastNumber + 1;
-//         } else {
-//             // 🔄 Kalau bulan baru, mulai dari angka yang kamu set
-//             nextProjectNumber = currentProjectNumberDesign + 1;
-//         }
-
-//         // 🎨 Generate nomor otomatis (misal "P036 Oktober")
-//         const projectNumber = `P${String(nextProjectNumber).padStart(3, "0")} ${monthName}`;
-
-//         // 💾 Simpan ke DB
-//         const result = await client.query(
-//             `
-//             INSERT INTO marketing_design (
-//                 buyer_name,
-//                 code_order,
-//                 order_number,
-//                 jumlah_design,
-//                 deadline,
-//                 jumlah_revisi,
-//                 price_normal,
-//                 price_discount,
-//                 discount_percentage,
-//                 required_files,
-//                 file_and_chat,
-//                 detail_project,
-//                 input_by,
-//                 acc_by,
-//                 account,
-//                 offer_type,
-//                 order_type_id,
-//                 resolution,
-//                 reference,
-//                 project_type_id,
-//                 style_id,
-//                 status_project_id,
-//                 project_number,
-//                 create_at
-//             )
-//             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22, NOW())
-//             RETURNING *;
-//             `,
-//             [
-//                 buyer_name,
-//                 code_order,
-//                 order_number, // dikirim dari FE
-//                 jumlah_design,
-//                 deadline,
-//                 jumlah_revisi,
-//                 price_normal,
-//                 price_discount,
-//                 discount_percentage,
-//                 required_files,
-//                 file_and_chat,
-//                 detail_project,
-//                 input_by,
-//                 acc_by,
-//                 account,
-//                 offer_type,
-//                 order_type_id,
-//                 resolution,
-//                 reference,
-//                 project_type_id,
-//                 style_id,
-//                 status_project_id,
-//                 projectNumber
-//             ]
-//         );
-
-//         // 🔗 Ambil data lengkap hasil join
-//         const joined = await client.query(
-//             `
-//             SELECT 
-//                 md.marketing_design_id,
-//                 md.buyer_name,
-//                 md.code_order,
-//                 md.order_number,
-//                 md.jumlah_design,
-//                 md.deadline,
-//                 md.jumlah_revisi,
-//                 md.price_normal,
-//                 md.price_discount,
-//                 md.discount_percentage,
-//                 md.required_files,
-//                 md.file_and_chat,
-//                 md.detail_project,
-//                 md.resolution,
-//                 md.reference,
-//                 md.project_number,
-
-//                 mdu.id AS input_by,
-//                 mdu.nama_marketing AS input_by_name,
-//                 mdu.divisi AS input_by_divisi,
-
-//                 kdd.id AS acc_by,
-//                 kdd.nama AS acc_by_name,
-
-//                 ad.id AS account,
-//                 ad.nama_account AS account_name,
-
-//                 ot.id AS offer_type,
-//                 ot.offer_name AS offer_type_name,
-
-//                 pt.id AS project_type,
-//                 pt.project_name AS project_type_name,
-
-//                 sd.id AS style,
-//                 sd.style_name AS style_name,
-
-//                 sp.id AS status_project,
-//                 sp.status_name AS status_project_name,
-
-//                 dot.id AS order_type_id,
-//                 dot.order_name AS order_type_name
-//             FROM marketing_design md
-//             LEFT JOIN marketing_desain_user mdu ON md.input_by = mdu.id
-//             LEFT JOIN kepala_divisi_design kdd ON md.acc_by = kdd.id
-//             LEFT JOIN account_design ad ON md.account = ad.id
-//             LEFT JOIN offer_type_design ot ON md.offer_type = ot.id
-//             LEFT JOIN project_type_design pt ON md.project_type_id = pt.id
-//             LEFT JOIN style_design sd ON md.style_id = sd.id
-//             LEFT JOIN status_project_design sp ON md.status_project_id = sp.id
-//             LEFT JOIN design_order_type dot ON md.order_type_id = dot.id
-//             WHERE md.marketing_design_id = $1
-//             `,
-//             [result.rows[0].marketing_design_id]
-//         );
-
-//         res.status(201).json({
-//             message: "✅ Marketing design created successfully",
-//             data: joined.rows[0],
-//         });
-//     } catch (err) {
-//         console.error("❌ Error creating marketing_design:", err);
-//         res.status(500).json({ error: "Failed to create marketing_design" });
-//     }
-// });
-
-
 app.put('/api/marketing-design/:id', async (req, res) => {
     const { id } = req.params;
     const { input_by, buyer_name, code_order, jumlah_design, order_number, account, deadline, jumlah_revisi, order_type, offer_type, style, resolution, price_normal, price_discount, discount_percentage, required_files, project_type, reference, file_and_chat, detail_project, acc_by, is_accepted } = req.body;
@@ -11737,6 +11548,54 @@ app.delete('/api/marketing-design/:id', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
+//5.1 delete permanetn marketing design
+app.delete('/api/recycle/marketing-design/:id', async (req, res) => {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    try {
+        await client.query('BEGIN');
+
+        //pastikan data marketing design sudah di soft delete
+        const { rows } = await client.query(
+            `SELECT marketing_design_id
+            FROM marketing_design
+            WHERE marketing_design_id = $1 AND is_deleted = TRUE`,
+            [id]
+        );
+
+        if (rows.length === 0) {
+            await client.query('ROLLBACK');
+            return res.status(404).json({ message: 'Data not found or not deleted' });
+        }
+
+        //hapus permanen data marketing design
+        await client.query(
+            `DELETE FROM marketing_design
+            WHERE marketing_design_id = $1`,
+            [id]
+        );
+
+        //log activity
+        await logActivity(
+            'marketing_design',
+            id,
+            'DELETE_PERMANENT',
+            userId,
+            `Permanently deleted marketing design with ID ${id}`,
+            null,
+            null
+        );
+
+        await client.query('COMMIT');
+        res.json({ message: 'Data permanently deleted' });
+    } catch (err) {
+        await client.query('ROLLBACK');
+        console.error('Error deleting marketing design permanently:', err);
+        res.status(500).json({ error: err.message });
+    }
+})
 
 // Restore soft-deleted marketing design
 app.patch('/api/marketing-design/:id/restore', async (req, res) => {
@@ -13026,10 +12885,13 @@ app.get('/api/archive-data', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
-//2. archive data berdasarkan entity
+
 app.post('/api/archive/:entity/:id/:userId', async (req, res) => {
     const { entity, id, userId } = req.params;
 
+    // ===============================
+    // ENTITY CONFIG
+    // ===============================
     const entityMap = {
         workspaces_user: { table: 'workspaces_users', idField: 'workspace_id' },
         workspaces: { table: 'workspaces', idField: 'id' },
@@ -13037,47 +12899,70 @@ app.post('/api/archive/:entity/:id/:userId', async (req, res) => {
         lists: { table: 'lists', idField: 'id' },
         cards: { table: 'cards', idField: 'id' },
         data_marketing: { table: 'data_marketing', idField: 'marketing_id' },
-        marketing_design: { table: 'marketing_design', idField: 'marketing_design_id' }
+        marketing_design: { table: 'marketing_design', idField: 'marketing_design_id' },
+    };
+
+    // ===============================
+    // PARENT RESOLVER
+    // ===============================
+    const parentResolver = {
+        boards: {
+            parent_entity_type: 'workspaces',
+            parent_field: 'workspace_id',
+        },
+        lists: {
+            parent_entity_type: 'boards',
+            parent_field: 'board_id',
+        },
+        cards: {
+            parent_entity_type: 'lists',
+            parent_field: 'list_id',
+        },
     };
 
     const config = entityMap[entity];
-    if (!config) return res.status(400).json({ error: 'Entity tidak dikenali' });
+    if (!config) {
+        return res.status(400).json({ error: 'Entity tidak dikenali' });
+    }
 
     try {
         const { table, idField } = config;
 
-        // 1. Ambil data utama
+        // ===============================
+        // 1. AMBIL DATA UTAMA
+        // ===============================
         const result = await client.query(
             `SELECT * FROM ${table} WHERE ${idField} = $1`,
             [id]
         );
 
         if (result.rows.length === 0) {
-            return res.status(404).json({ error: `Data ${entity} dengan ID ${id} tidak ditemukan` });
+            return res.status(404).json({
+                error: `Data ${entity} dengan ID ${id} tidak ditemukan`,
+            });
         }
 
         let data = result.rows[0];
 
-        // ======================================================
-        // 2. Jika entity = cards → ambil seluruh relasi
-        // ======================================================
-        if (entity === "cards") {
-            const relations = {};
-
+        // ===============================
+        // 2. AMBIL RELASI CARD (JIKA CARD)
+        // ===============================
+        if (entity === 'cards') {
             const relationTables = {
-                checklists: "card_checklists",
-                cover: "card_cover",
-                descriptions: "card_descriptions",
-                due_dates: "card_due_dates",
-                labels: "card_labels",
-                members: "card_members",
-                priorities: "card_priorities",
-                status: "card_status",
-                users: "card_users",
-                chats: "card_chats"
+                checklists: 'card_checklists',
+                cover: 'card_cover',
+                descriptions: 'card_descriptions',
+                due_dates: 'card_due_dates',
+                labels: 'card_labels',
+                members: 'card_members',
+                priorities: 'card_priorities',
+                status: 'card_status',
+                users: 'card_users',
+                chats: 'card_chats',
             };
 
-            // 2a. Ambil relasi-relasi card
+            const relations = {};
+
             for (const [key, tableName] of Object.entries(relationTables)) {
                 const q = await client.query(
                     `SELECT * FROM ${tableName} WHERE card_id = $1`,
@@ -13086,40 +12971,72 @@ app.post('/api/archive/:entity/:id/:userId', async (req, res) => {
                 relations[key] = q.rows;
             }
 
-            // 2b. Gabungkan ke object data
             data = {
                 ...data,
-                ...relations
+                ...relations,
             };
         }
 
-        // ======================================================
-        // 3. SIMPAN SEMUA DATA KE ARCHIVE
-        // ======================================================
+        // ===============================
+        // 3. RESOLVE PARENT
+        // ===============================
+        let parent_entity_type = null;
+        let parent_entity_id = null;
+
+        const parentConfig = parentResolver[entity];
+
+        if (parentConfig) {
+            const parentValue = data?.[parentConfig.parent_field];
+
+            if (parentValue !== undefined && parentValue !== null) {
+                parent_entity_type = parentConfig.parent_entity_type;
+                parent_entity_id = parentValue;
+            }
+        }
+
+
+        // ===============================
+        // 4. INSERT KE ARCHIVE
+        // ===============================
         await client.query(
-            `INSERT INTO archive_universal (entity_type, entity_id, data, user_id)
-             VALUES ($1, $2, $3, $4)`,
-            [entity, id, data, userId]
+            `
+            INSERT INTO archive_universal
+            (entity_type, entity_id, parent_entity_type, parent_entity_id, data, user_id)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            `,
+            [
+                entity,
+                id,
+                parent_entity_type,
+                parent_entity_id,
+                data,
+                userId,
+            ]
         );
 
-        // ======================================================
-        // 4. HAPUS HANYA DATA UTAMANYA (bukan relasi)
-        // ======================================================
+        // ===============================
+        // 5. DELETE DATA UTAMA
+        // ===============================
         await client.query(
             `DELETE FROM ${table} WHERE ${idField} = $1`,
             [id]
         );
 
         res.status(200).json({
-            message: `Data ${entity} ID ${id} berhasil diarsipkan BESERTA relasinya (tanpa menghapus relasi dari tabel asli)`,
-            archived_data: data
+            message: `Data ${entity} ID ${id} berhasil diarsipkan`,
+            archived: {
+                entity_type: entity,
+                entity_id: id,
+                parent_entity_type,
+                parent_entity_id,
+            },
         });
-
     } catch (err) {
         console.error('Archive error:', err);
         res.status(500).json({ error: err.message });
     }
 });
+
 
 
 //3. delete data archive by id
@@ -13137,6 +13054,8 @@ app.delete('/api/archive-data/:id', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+
 
 
 //4. RESTORE UNIVERSAL
@@ -13517,7 +13436,7 @@ app.get('/api/archive-marketing', async (req, res) => {
 // archive data marketing testing 
 app.get('/api/archive-marketing-testing', async (req, res) => {
     try {
-        const result = await client.query('SELECT * FROM archive_universal WHERE entity_type = $1', ['marketing']);
+        const result = await client.query('SELECT * FROM archive_universal WHERE entity_type = $1', ['data_marketing']);
 
         if (result.rows.length > 0) {
             res.status(200).json(result.rows);

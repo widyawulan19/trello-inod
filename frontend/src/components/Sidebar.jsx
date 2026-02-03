@@ -77,7 +77,8 @@ const Sidebar = () => {
             // { to: 'marketing-chart', icon: <MdDeveloperMode className='icon' />, label: 'Testing Fitur', name: 'Testing Fitur' },
 
 
-            { to: 'loading-test', icon: <MdDeveloperMode className='sidebar-icon' />, label: 'Testing Fitur', name: 'Testing Fitur' },
+            { to: 'data-delete-example', icon: <MdDeveloperMode className='sidebar-icon' />, label: 'Trash', name: 'Trash Page' },
+            // { to: 'loading-test', icon: <MdDeveloperMode className='sidebar-icon' />, label: 'Testing Fitur', name: 'Testing Fitur' },
             // { to: 'archive', icon: <MdDeveloperMode className='sidebar-icon' />, label: 'Testing Fitur', name: 'Testing Fitur' },
           ].map((item) => (
             <div
