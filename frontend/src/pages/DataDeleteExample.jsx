@@ -7,6 +7,11 @@ import {
   restoreMarketing,
   restoreMarketingDesign,
   restoreWorkspace,
+  deleteBoardPermanently,
+  deleteListPermanently,
+  deleteCardPermanently,
+  deleteMarketingPermanently,
+  deleteMarketingDesignPermanently,
 } from "../services/ApiServices";
 import "../style/pages/DeleteDataExample.css";
 import { FaTrashRestore } from "react-icons/fa";
@@ -23,6 +28,9 @@ export default function DataDelete() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedIds, setSelectedIds] = useState([]);
 
+  //DETAIL DELETE DATA
+  const [selectData, setSelectData] = useState(null);
+
   // 🔥 FILTER STATE
   const [typeFilter, setTypeFilter] = useState("all");
   const [dateFilter, setDateFilter] = useState("all");
@@ -30,6 +38,15 @@ export default function DataDelete() {
   const [typeOpen, setTypeOpen] = useState(false);
   const [dateOpen, setDateOpen] = useState(false);
 
+  //DELETE MODAL
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null)
+
+  //RESTORE DATA DELETE
+  const [showRestoreModal, setShowRestoreModal] = useState(false);
+  const [isRestoring, setIsRestoring] = useState(false);
+  const [restoreTarget, setRestoreTarget] = useState(null);
 
   const { showSnackbar } = useSnackbar();
 
@@ -157,11 +174,70 @@ export default function DataDelete() {
     }
   };
 
-  const handleRestore = async (row) => {
-    await restoreByType(row.type, row.id);
-    showSnackbar("Item restored ♻️", "success");
-    fetchDeletedData();
-  };
+    const handleRestore = async (row) => {
+      if(!restoreTarget) return;
+
+      try{
+        isRestoring(true);
+        await restoreByType(row.type, row.id);
+        showSnackbar("Item restored ♻️", "success");
+        fetchDeletedData();
+      }catch(error){
+        console.error("Restore error:", error);
+        showSnackbar("Failed to restore item ♻️", "error");
+      }finally{
+        setIsRestoring(false);
+        setShowRestoreModal(false);
+        setRestoreTarget(null);
+      }
+    };
+
+    const openRestoreModal = (row) => {
+      setRestoreTarget(row);
+      setShowRestoreModal(true);
+    }
+
+    const closeRestoreModal = () => {
+      setShowRestoreModal(false);
+      setRestoreTarget(null);
+    }
+
+    const confirmRestore = async () => {
+      try {
+        // 🔹 SINGLE RESTORE (dari modal / action)
+        if (restoreTarget) {
+          await restoreByType(restoreTarget.type, restoreTarget.id);
+
+          showSnackbar("Item restored ♻️", "success");
+          setRestoreTarget(null);
+          fetchDeletedData();
+          setShowRestoreModal(false);
+          return;
+        }
+
+        // 🔹 BULK RESTORE
+        if (selectedIds.length === 0) return;
+
+        for (const row of tableData.filter((r) =>
+          selectedIds.includes(r.id)
+        )) {
+          await restoreByType(row.type, row.id);
+        }
+
+        showSnackbar(
+          `${selectedIds.length} items restored ♻️`,
+          "success"
+        );
+
+        clearSelection();
+        fetchDeletedData();
+        
+
+      } catch (error) {
+        console.error("Restore error:", error);
+        showSnackbar("Restore gagal 😭", "error");
+      }
+    };
 
   const handleBulkRestore = async () => {
     try {
@@ -180,6 +256,64 @@ export default function DataDelete() {
       showSnackbar("Bulk restore gagal 😭", "error");
     }
   };
+
+  // DELETE DATA PERMANENT 
+  const deleteDataByType = async(type, id)=>{
+    switch(type){
+      case "boards":
+        return deleteBoardPermanently(id);
+      case "lists":
+        return deleteListPermanently(id);
+      case "cards":
+        return deleteCardPermanently(id);
+      case "marketing":
+        return deleteMarketingPermanently(id);
+      case "marketingDesign":
+        return deleteMarketingDesignPermanently(id);
+      default:
+        throw new Error("Unknown entity type");
+    }
+  }
+
+
+  const handlePermanentDelete = async()=>{
+    if(!deleteTarget) return;
+
+    try{
+      setIsDeleting(true);
+      await deleteDataByType(deleteTarget.type, deleteTarget.id);
+      showSnackbar("Item deleted permanently 🗑️", "success");
+      fetchDeletedData();
+    }catch(error){
+      console.error("Permanent delete error:", error);
+      showSnackbar("Failed to delete item permanently 🗑️", "error");
+    }finally{
+      setIsDeleting(false);
+      setIsDeleteOpen(false);
+      setDeleteTarget(null);
+    }
+  }
+
+  /* =======================
+  DETAI DATA DELETE
+  ======================= */
+  const closeDataDetail = () =>{
+    setSelectData(null);
+  }
+
+  // const renderDataDelete = () =>{
+  //   if(!selectData) return null;
+  //   switch(selectData.type){
+  //     case "boards":
+  //       return <div>
+  //         <h3>Detail Board Deleted</h3>
+  //         <p>Nama: {selectData.name}</p>
+  //         <p>Deleted at: {new Date(selectData.deleted_at).toLocaleString("id-ID")}</p>
+  //             </div>;
+  // }
+
+  
+
 
   if (loading)
     return (
@@ -352,13 +486,21 @@ export default function DataDelete() {
                 </td>
                 <td className="actions"> 
                   <div className="action-group">
-                    <button className="link" onClick={() => handleRestore(row)}>
+                    <button className="link" onClick={() => openRestoreModal(row)}>
                       <MdOutlineRestore/> Restore
                     </button>
                     |
                     <button> <IoEyeSharp/> Detail</button>
                     |
-                    <button> <IoTrash/> Delete</button>
+                    {/* <button onClick={()=> handlePermanentDelete(row)}>  */}
+                    <button 
+                      onClick={() => {
+                        setDeleteTarget(row);
+                        setIsDeleteOpen(true);
+                      }}
+                    > 
+                      <IoTrash/> Delete
+                    </button>
                   </div>
                 </td>
               </tr>
@@ -367,6 +509,67 @@ export default function DataDelete() {
         </tbody>
       </table>
       </div>
+
+      {/* MODAL RESTORE  */}
+      {showRestoreModal && (
+        <div className="modal-overlay">
+            <div className="modal-box">
+                <h3>⚠️ RESTORE DATA</h3>
+
+                <p>
+                    Apakah kamu yakin ingin mengembalikan data
+                    <strong> "#{restoreTarget?.id}" {restoreTarget?.name}</strong>?
+                </p>
+
+                <p >
+                    Data ini akan dikembalikan ke daftar aktif.
+                </p>
+
+                <div className="modal-actions">
+                    <button className="btn-cancel" onClick={closeRestoreModal} disabled={isRestoring}>
+                    Cancel
+                    </button>
+                    <button className="btn-confirm" onClick={confirmRestore} disabled={isRestoring}>
+                    Yes, Restore
+                    </button>
+                </div>
+            </div>
+        </div>
+        )}
+
+      {/* MODAL CONFIRM DELETE  */}
+        {isDeleteOpen && (
+            <div className="delete-modal-overlay">
+                <div className="modal-delete">
+                <h3>Delete archive data?</h3>
+
+                <p>
+                    This action will <strong>permanently delete</strong> this data.
+                    <br />
+                    You won’t be able to restore it.
+                </p>
+
+                <div className="modal-actions">
+                    <button
+                    className="btn-cancel"
+                    onClick={() => setIsDeleteOpen(false)}
+                    disabled={isDeleting}
+                    >
+                    Cancel
+                    </button>
+
+                    <button
+                    className="btn-danger"
+                    onClick={handlePermanentDelete}
+                    disabled={isDeleting}
+                    >
+                    {isDeleting ? "Deleting..." : "Delete permanently"}
+                    </button>
+                </div>
+                </div>
+            </div>
+         )}
+
     </div>
   );
 }

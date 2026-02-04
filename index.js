@@ -13057,7 +13057,7 @@ app.delete('/api/archive-data/:id', async (req, res) => {
 
 //3. delete data entity and permanent from archive by entity and id
 // 3. delete archive + hard delete original data
-app.delete('/api/archive-data/:id', async (req, res) => {
+app.delete('/api/archive-data-permanent/:id', async (req, res) => {
     const { id } = req.params;
     const userId = req.user?.id;
 
@@ -13066,21 +13066,20 @@ app.delete('/api/archive-data/:id', async (req, res) => {
 
         // 1️⃣ ambil data archive
         const { rows } = await client.query(
-            `SELECT entity, entity_id
-             FROM archive_universal
-             WHERE id = $1`,
+            `SELECT entity_type, entity_id
+       FROM archive_universal
+       WHERE id = $1`,
             [id]
         );
 
         if (rows.length === 0) {
-            await client.query('ROLLBACK');
-            return res.status(404).json({ error: 'Archive data not found' });
+            throw new Error('Archive data not found');
         }
 
-        const { entity, entity_id } = rows[0];
+        const { entity_type, entity_id } = rows[0];
 
-        // 2️⃣ hard delete data asli berdasarkan entity
-        switch (entity) {
+        // 2️⃣ hard delete data asli
+        switch (entity_type) {
             case 'boards':
                 await client.query(`DELETE FROM boards WHERE id = $1`, [entity_id]);
                 break;
@@ -13094,17 +13093,32 @@ app.delete('/api/archive-data/:id', async (req, res) => {
                 break;
 
             case 'data_marketing':
-                await client.query(`DELETE FROM data_marketing WHERE marketing_id = $1`, [entity_id]);
+                await client.query(
+                    `DELETE FROM data_marketing WHERE marketing_id = $1`,
+                    [entity_id]
+                );
                 break;
 
             case 'marketing_design':
-                await client.query(`DELETE FROM marketing_design WHERE marketing_design_id = $1`, [entity_id]);
-                break;
-            case 'workspace_user':
-                await client.query(`DELETE FROM workspaces_users WHERE workspace_id = $1`, [entity_id]);
+                await client.query(
+                    `DELETE FROM marketing_design WHERE marketing_design_id = $1`,
+                    [entity_id]
+                );
                 break;
 
-            case 'workspaces': // 🔥 jangan lupa ini juga
+            case 'workspace_user':
+                await client.query(
+                    `DELETE FROM workspace_users WHERE id = $1`,
+                    [entity_id]
+                );
+                break;
+
+            case 'workspaces':
+                // ⚠️ urutan penting kalau FK belum cascade
+                await client.query(
+                    `DELETE FROM workspace_users WHERE workspace_id = $1`,
+                    [entity_id]
+                );
                 await client.query(
                     `DELETE FROM workspaces WHERE id = $1`,
                     [entity_id]
@@ -13112,8 +13126,7 @@ app.delete('/api/archive-data/:id', async (req, res) => {
                 break;
 
             default:
-                await client.query('ROLLBACK');
-                return res.status(400).json({ error: `Unsupported entity: ${entity}` });
+                throw new Error(`Unsupported entity: ${entity_type}`);
         }
 
         // 3️⃣ hapus archive_universal
@@ -13122,14 +13135,14 @@ app.delete('/api/archive-data/:id', async (req, res) => {
             [id]
         );
 
-        // (opsional) log activity
+        // 4️⃣ log
         if (userId) {
             await logActivity(
-                entity,
+                entity_type,
                 entity_id,
                 'DELETE_PERMANENT',
                 userId,
-                `Permanently deleted ${entity} with id ${entity_id}`,
+                `Permanently deleted ${entity_type} with id ${entity_id}`,
                 null,
                 null
             );
@@ -13137,9 +13150,7 @@ app.delete('/api/archive-data/:id', async (req, res) => {
 
         await client.query('COMMIT');
 
-        res.json({
-            message: 'Archive and original data permanently deleted'
-        });
+        res.json({ message: 'Archive and original data permanently deleted' });
 
     } catch (error) {
         await client.query('ROLLBACK');
@@ -13147,6 +13158,7 @@ app.delete('/api/archive-data/:id', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
 
 
 

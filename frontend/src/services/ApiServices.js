@@ -980,7 +980,7 @@ export const getArchivedCardDetail = async (cardId) => {
     throw error;
   }
 };
-export const deleteDataArchivePermanent = (entity, id) =>
+export const deleteDataArchivePermanent = (id) =>
   axios.delete(`${API_URL}/archive-data/${id}`)
 
 

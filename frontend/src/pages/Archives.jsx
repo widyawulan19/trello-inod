@@ -367,30 +367,30 @@ const fetchOrderTypes = async () => {
 
 
     //3. fungsi delete data archive berdasarkan id
-const handleDeleteArchive = async () => {
-  if (!deleteTargetId) return;
+    const handleDeleteArchive = async () => {
+    if (!deleteTargetId) return;
 
-  try {
-    setIsDeleting(true);
+        try {
+            setIsDeleting(true);
 
-    await deleteDataArchivePermanent(deleteTargetId);
+            await deleteDataArchivePermanent(deleteTargetId);
 
-    showSnackbar(
-      'Archive & original data deleted permanently 🗑️',
-      'success'
-    );
+            showSnackbar(
+            'Archive & original data deleted permanently 🗑️',
+            'success'
+            );
 
-    fetchArchiveData(selectedType);
-  } catch (error) {
-    console.error('Failed to delete archive data:', error);
-    showSnackbar('Failed to delete archive data', 'error');
-  } finally {
-    setIsDeleting(false);
-    setIsDeleteOpen(false);
-    setDeleteTargetId(null);
-    setDeleteTarget(null);
-  }
-};
+            fetchArchiveData(selectedType);
+        } catch (error) {
+            console.error('Failed to delete archive data:', error);
+            showSnackbar('Failed to delete archive data', 'error');
+        } finally {
+            setIsDeleting(false);
+            setIsDeleteOpen(false);
+            setDeleteTargetId(null);
+            setDeleteTarget(null);
+        }
+    };
 
 
 
