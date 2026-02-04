@@ -2790,10 +2790,10 @@ app.get('/api/deleted-preview/:entity_type/:entity_id', async (req, res) => {
             case "boards":
                 result = await client.query(
                     `
-          SELECT id, name, description, create_at, deleted_at
-          FROM boards
-          WHERE id = $1 AND is_deleted = true
-          `,
+                    SELECT id, name, description, create_at, deleted_at
+                    FROM boards
+                    WHERE id = $1 AND is_deleted = true
+                    `,
                     [entity_id]
                 );
                 break;
@@ -2801,10 +2801,10 @@ app.get('/api/deleted-preview/:entity_type/:entity_id', async (req, res) => {
             case "lists":
                 result = await client.query(
                     `
-          SELECT id, name, board_id, deleted_at
-          FROM lists
-          WHERE id = $1 AND is_deleted = true
-          `,
+                    SELECT id, name, board_id,create_at, deleted_at
+                    FROM lists
+                    WHERE id = $1 AND is_deleted = true
+                    `,
                     [entity_id]
                 );
                 break;
@@ -2812,10 +2812,10 @@ app.get('/api/deleted-preview/:entity_type/:entity_id', async (req, res) => {
             case "cards":
                 result = await client.query(
                     `
-          SELECT id, title, description, list_id, deleted_at
-          FROM cards
-          WHERE id = $1 AND is_deleted = true
-          `,
+                    SELECT id, title, description, list_id,create_at, deleted_at
+                    FROM cards
+                    WHERE id = $1 AND is_deleted = true
+                    `,
                     [entity_id]
                 );
                 break;
@@ -2823,13 +2823,33 @@ app.get('/api/deleted-preview/:entity_type/:entity_id', async (req, res) => {
             case "workspaces":
                 result = await client.query(
                     `
-          SELECT id, name, deleted_at
-          FROM workspaces
-          WHERE id = $1 AND is_deleted = true
-          `,
+                    SELECT id, name, description, create_at, deleted_at
+                    FROM workspaces
+                    WHERE id = $1 AND is_deleted = true
+                    `,
                     [entity_id]
                 );
                 break;
+            
+                case "data_marketing":
+                    result = await client.query(
+                        `
+                        SELECT marketing_id, buyer_name, order_number, create_at, deleted_at
+                        FROM data_marketing
+                        WHERE id = $1 AND is_deleted = true
+                        `,
+                        [entity_id]
+                    );
+                break;
+
+                case "marketing_design":
+                    result = await client.query(
+                        `
+                        SELECT marketing_design_id, buyer_name, order_number, create_at, deleted_at
+                        FROM marketing_design
+                        WHERE id = $1 AND is_deleted = true;
+                        `
+                    )
 
             default:
                 return res.status(400).json({
