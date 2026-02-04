@@ -2848,8 +2848,9 @@ app.get('/api/deleted-preview/:entity_type/:entity_id', async (req, res) => {
                         SELECT marketing_design_id, buyer_name, order_number, create_at, deleted_at
                         FROM marketing_design
                         WHERE marketing_design_id = $1 AND is_deleted = true;
-                        `
-                )
+                        `,
+                    [entity_id]
+                );
 
             default:
                 return res.status(400).json({
@@ -2871,8 +2872,6 @@ app.get('/api/deleted-preview/:entity_type/:entity_id', async (req, res) => {
     } catch (err) {
         console.error("❌ Deleted preview error:", err);
         res.status(500).json({ error: "Failed to load deleted preview" });
-    } finally {
-        client.release();
     }
 });
 
