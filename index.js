@@ -13055,6 +13055,98 @@ app.delete('/api/archive-data/:id', async (req, res) => {
     }
 });
 
+//3. delete data entity and permanent from archive by entity and id
+// 3. delete archive + hard delete original data
+app.delete('/api/archive-data/:id', async (req, res) => {
+    const { id } = req.params;
+    const userId = req.user?.id;
+
+    try {
+        await client.query('BEGIN');
+
+        // 1️⃣ ambil data archive
+        const { rows } = await client.query(
+            `SELECT entity, entity_id
+             FROM archive_universal
+             WHERE id = $1`,
+            [id]
+        );
+
+        if (rows.length === 0) {
+            await client.query('ROLLBACK');
+            return res.status(404).json({ error: 'Archive data not found' });
+        }
+
+        const { entity, entity_id } = rows[0];
+
+        // 2️⃣ hard delete data asli berdasarkan entity
+        switch (entity) {
+            case 'boards':
+                await client.query(`DELETE FROM boards WHERE id = $1`, [entity_id]);
+                break;
+
+            case 'lists':
+                await client.query(`DELETE FROM lists WHERE id = $1`, [entity_id]);
+                break;
+
+            case 'cards':
+                await client.query(`DELETE FROM cards WHERE id = $1`, [entity_id]);
+                break;
+
+            case 'data_marketing':
+                await client.query(`DELETE FROM data_marketing WHERE marketing_id = $1`, [entity_id]);
+                break;
+
+            case 'marketing_design':
+                await client.query(`DELETE FROM marketing_design WHERE marketing_design_id = $1`, [entity_id]);
+                break;
+            case 'workspace_user':
+                await client.query(`DELETE FROM workspaces_users WHERE workspace_id = $1`, [entity_id]);
+                break;
+
+            case 'workspaces': // 🔥 jangan lupa ini juga
+                await client.query(
+                    `DELETE FROM workspaces WHERE id = $1`,
+                    [entity_id]
+                );
+                break;
+
+            default:
+                await client.query('ROLLBACK');
+                return res.status(400).json({ error: `Unsupported entity: ${entity}` });
+        }
+
+        // 3️⃣ hapus archive_universal
+        await client.query(
+            `DELETE FROM archive_universal WHERE id = $1`,
+            [id]
+        );
+
+        // (opsional) log activity
+        if (userId) {
+            await logActivity(
+                entity,
+                entity_id,
+                'DELETE_PERMANENT',
+                userId,
+                `Permanently deleted ${entity} with id ${entity_id}`,
+                null,
+                null
+            );
+        }
+
+        await client.query('COMMIT');
+
+        res.json({
+            message: 'Archive and original data permanently deleted'
+        });
+
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error('❌ Error deleting archive & original data:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
 
 
 
@@ -13517,41 +13609,6 @@ app.get('/api/workspaces/:userId/summary', async (req, res) => {
     }
 });
 
-
-//get summary form a workspace 
-// app.get('/api/workspaces/:userId/summary/:workspaceId', async (req, res) => {
-//     const { userId, workspaceId } = req.params;
-
-//     const query = `
-//     SELECT 
-//       w.id AS workspace_id,
-//       w.name AS workspace_name,
-//       COUNT(DISTINCT b.id) AS board_count,
-//       COUNT(DISTINCT l.id) AS list_count,
-//       COUNT(c.id) AS card_count
-//     FROM workspaces_users wu
-//     JOIN workspaces w ON wu.workspace_id = w.id
-//     LEFT JOIN boards b ON b.workspace_id = w.id
-//     LEFT JOIN lists l ON l.board_id = b.id
-//     LEFT JOIN cards c ON c.list_id = l.id
-//     WHERE wu.user_id = $1 AND w.id = $2
-//     GROUP BY w.id
-//     ORDER BY w.name
-//   `;
-
-//     try {
-//         const result = await client.query(query, [userId, workspaceId]);
-
-//         if (result.rows.length === 0) {
-//             return res.status(404).json({ message: 'Workspace summary not found for this user' });
-//         }
-
-//         res.json(result.rows[0]); // hanya satu workspace
-//     } catch (err) {
-//         console.error('Error fetching workspace summary by ID:', err);
-//         res.status(500).json({ error: 'Internal server error' });
-//     }
-// });
 
 // Get summary for a specific workspace
 app.get('/api/workspaces/:userId/summary/:workspaceId', async (req, res) => {

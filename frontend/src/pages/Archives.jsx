@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from 'react'
 import { useSnackbar } from '../context/Snackbar'
-import { deleteArchiveDataUniversalById, deleteBoardPermanently, deleteCardPermanently, deleteListPermanently, deleteMarketingDesignPermanently, deleteMarketingPermanently, getAllAccountsMusic, getAllOrderTypesMusic, getArchiveBoard, getArchiveCard, getArchiveList, getArchiveMarketing, getArchiveMarketingDesign, getArchiveWorkspace, getArchiveWorkspaceUser, getBoardArchive, getCardArchive, getListArchive, getMarketingArchive, getMarketingDesignArchive, getWorkspaceArchive } from '../services/ApiServices'
+import { deleteArchiveDataUniversalById, deleteBoardPermanently, deleteCardPermanently, deleteDataArchivePermanent, deleteListPermanently, deleteMarketingDesignPermanently, deleteMarketingPermanently, getAllAccountsMusic, getAllOrderTypesMusic, getArchiveBoard, getArchiveCard, getArchiveList, getArchiveMarketing, getArchiveMarketingDesign, getArchiveWorkspace, getArchiveWorkspaceUser, getBoardArchive, getCardArchive, getListArchive, getMarketingArchive, getMarketingDesignArchive, getWorkspaceArchive } from '../services/ApiServices'
 import '../style/pages/ArchiveStyle.css'
 import { IoIosCloseCircle } from "react-icons/io";
 import { FaCircle } from "react-icons/fa6";
@@ -367,26 +367,30 @@ const fetchOrderTypes = async () => {
 
 
     //3. fungsi delete data archive berdasarkan id
-    const handleDeleteArchive = async () => {
-        if (!deleteTargetId) return;
+const handleDeleteArchive = async () => {
+  if (!deleteTargetId) return;
 
-        try {
-            setIsDeleting(true);
+  try {
+    setIsDeleting(true);
 
-            await deletePermanentByType(selectedType, deleteTargetId);
+    await deleteDataArchivePermanent(deleteTargetId);
 
-            showSnackbar("Archive data deleted permanently 🗑️", "success");
+    showSnackbar(
+      'Archive & original data deleted permanently 🗑️',
+      'success'
+    );
 
-            fetchArchiveData(selectedType);
-        } catch (error) {
-            console.error("Failed to delete archive data:", error);
-            showSnackbar("Failed to delete archive data", "error");
-        } finally {
-            setIsDeleting(false);
-            setIsDeleteOpen(false);
-            setDeleteTargetId(null);
-        }
-    };
+    fetchArchiveData(selectedType);
+  } catch (error) {
+    console.error('Failed to delete archive data:', error);
+    showSnackbar('Failed to delete archive data', 'error');
+  } finally {
+    setIsDeleting(false);
+    setIsDeleteOpen(false);
+    setDeleteTargetId(null);
+    setDeleteTarget(null);
+  }
+};
 
 
 
@@ -637,14 +641,17 @@ const fetchOrderTypes = async () => {
                                     </BootstrapTooltip>
 
                                     <BootstrapTooltip title="Delete data">
-                                        <button
-                                        className="btn-action"
-                                        onClick={() => {
-                                                setDeleteTargetId(item.entity_id);
+                                       <button
+                                            className="btn-action"
+                                            onClick={() => {
+                                                console.log('DELETE CLICK ITEM:', item);
+                                                console.log('ARCHIVE ID:', item.id);
+                                                setDeleteTargetId(item.id); // 🔥 archive_universal.id
+                                                setDeleteTarget(item);
                                                 setIsDeleteOpen(true);
                                             }}
-                                        >
-                                        <IoTrash />
+                                            >
+                                            <IoTrash />
                                         </button>
                                     </BootstrapTooltip>
                                     </div>
