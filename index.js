@@ -13100,16 +13100,16 @@ app.delete('/api/archive-data-permanent/:id', async (req, res) => {
             case 'marketing_design':
                 await client.query(`DELETE FROM marketing_design WHERE marketing_design_id = $1`, [entity_id]);
                 break;
-            case 'workspace_user':
+            case 'workspaces':
                 await client.query(`DELETE FROM workspaces_users WHERE workspace_id = $1`, [entity_id]);
                 break;
 
-            case 'workspaces': // 🔥 jangan lupa ini juga
-                await client.query(
-                    `DELETE FROM workspaces WHERE id = $1`,
-                    [entity_id]
-                );
-                break;
+            // case 'workspaces': // 🔥 jangan lupa ini juga
+            //     await client.query(
+            //         `DELETE FROM workspaces WHERE id = $1`,
+            //         [entity_id]
+            //     );
+            //     break;
 
             default:
                 await client.query('ROLLBACK');
