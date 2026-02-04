@@ -2790,7 +2790,7 @@ app.get('/api/deleted-preview/:entity_type/:entity_id', async (req, res) => {
             case "boards":
                 result = await client.query(
                     `
-          SELECT id, name, description, deleted_at
+          SELECT id, name, description, create_at, deleted_at
           FROM boards
           WHERE id = $1 AND is_deleted = true
           `,
