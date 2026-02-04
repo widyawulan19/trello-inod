@@ -2851,6 +2851,7 @@ app.get('/api/deleted-preview/:entity_type/:entity_id', async (req, res) => {
                         `,
                     [entity_id]
                 );
+                break;
 
             default:
                 return res.status(400).json({
