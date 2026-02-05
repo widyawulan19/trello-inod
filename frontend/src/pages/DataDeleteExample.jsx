@@ -12,6 +12,7 @@ import {
   deleteCardPermanently,
   deleteMarketingPermanently,
   deleteMarketingDesignPermanently,
+  getPreviewDataDelete,
 } from "../services/ApiServices";
 import "../style/pages/DeleteDataExample.css";
 import { FaTrashRestore } from "react-icons/fa";
@@ -21,6 +22,7 @@ import { useSnackbar } from "../context/Snackbar";
 import LoadingSpinnerDot from "../utils/LoadingSpinnerDot";
 import { MdOutlineRestore } from "react-icons/md";
 import { BsCalendar2Week } from "react-icons/bs";
+import { IoIosCloseCircle } from "react-icons/io";
 
 export default function DataDelete() {
   const [deletedData, setDeletedData] = useState({});
@@ -30,7 +32,9 @@ export default function DataDelete() {
 
   //DETAIL DELETE DATA
   const [selectData, setSelectData] = useState(null);
-
+  const [previewData, setPreviewData] = useState(null);
+  const [previewLoading, setPreviewLoading] = useState(false);
+  
   // 🔥 FILTER STATE
   const [typeFilter, setTypeFilter] = useState("all");
   const [dateFilter, setDateFilter] = useState("all");
@@ -103,6 +107,8 @@ export default function DataDelete() {
     const rows = [];
 
     Object.entries(deletedData).forEach(([type, items]) => {
+      if (!Array.isArray(items)) return;
+
       items.forEach((item) => {
         rows.push({
           id:
@@ -119,7 +125,8 @@ export default function DataDelete() {
           deleted_at: item.deleted_at,
         });
       });
-    });
+});
+
 
     return rows.filter((row) => {
       const matchSearch = row.name
@@ -165,9 +172,9 @@ export default function DataDelete() {
         return restoreList(id);
       case "cards":
         return restoreCard(id);
-      case "marketing":
+      case "data_marketing":
         return restoreMarketing(id);
-      case "marketingDesign":
+      case "marketing_design":
         return restoreMarketingDesign(id);
       default:
         return null;
@@ -266,9 +273,9 @@ export default function DataDelete() {
         return deleteListPermanently(id);
       case "cards":
         return deleteCardPermanently(id);
-      case "marketing":
+      case "data_marketing":
         return deleteMarketingPermanently(id);
-      case "marketingDesign":
+      case "marketing_design":
         return deleteMarketingDesignPermanently(id);
       default:
         throw new Error("Unknown entity type");
@@ -301,18 +308,375 @@ export default function DataDelete() {
     setSelectData(null);
   }
 
-  // const renderDataDelete = () =>{
-  //   if(!selectData) return null;
-  //   switch(selectData.type){
-  //     case "boards":
-  //       return <div>
-  //         <h3>Detail Board Deleted</h3>
-  //         <p>Nama: {selectData.name}</p>
-  //         <p>Deleted at: {new Date(selectData.deleted_at).toLocaleString("id-ID")}</p>
-  //             </div>;
-  // }
+  const openDataDetail = async(row) =>{
+    try{
+      setPreviewLoading(true);
+      setSelectData(row);
 
-  
+      const res = await getPreviewDataDelete(row.type, row.id);
+      setPreviewData(res.data.preview);
+    }catch(err){
+      console.error(err);
+      showSnackbar("Failed to load preview data 🧐", "error");
+    }finally{
+      setPreviewLoading(false);
+    }
+  }
+
+  const formatDate = (date)=>{
+    return new Date(date).toLocaleString('id-ID', {
+      dateStyle:'medium',
+      timeStyle:'short'
+    })
+  }
+
+
+const renderDataDelete = () => {
+  if (!selectData) return null;
+  if (previewLoading) return <p>Loading preview...</p>;
+  if (!previewData) return <p>Preview tidak tersedia</p>;
+
+  switch (selectData.type) {
+    case "boards":
+      return (
+        <div className="entity">
+          <div className="entity-id">
+            BOARD #{previewData.id}
+          </div>
+          
+          <div className="entity-box-container">
+            <div className="entity-detail">
+              <h4>DELETE INFORMATION</h4>
+              <p className="sub-text">(Data Type & History)</p>
+              <div className="detail-data-box">
+                <strong>Data Type  </strong>
+                :
+                <p>BOARD</p>
+              </div>
+              <div className="detail-data-box">
+                <strong>Deleted At  </strong>
+                :
+                <p>{formatDate(previewData.deleted_at)}</p>
+              </div> 
+            </div>
+            
+            <div className="entity-detail">
+              <h4>DETAIL DATA DELETE</h4>
+              <p className="sub-text">(Detail data saat didelete)</p>
+              <div className="detail-data-box"> 
+                <strong>Board ID</strong>
+                : 
+                <p>#{previewData.id}</p> 
+              </div>
+              <div className="detail-data-box">
+                <strong>Created at</strong>
+                :
+                <p>{formatDate(previewData.create_at)}</p>
+              </div>
+              
+              <div className="detail-data-box"> 
+                <strong>Name</strong>
+                : 
+                <p>{previewData.name}</p> 
+              </div>
+              <div className="detail-data-box">
+                <strong>Description</strong>
+                :
+                <p>{previewData.description || "-"}</p>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      );
+     
+    case "lists":
+      return (
+        <div className="entity">
+          <div className="entity-id">
+            LIST #{previewData.id}
+          </div>
+          
+          <div className="entity-box-container">
+            <div className="entity-detail">
+              <h4>DELETE INFORMATION</h4>
+              <p className="sub-text">(Data Type & History)</p>
+              <div className="detail-data-box">
+                <strong>Data Type  </strong>
+                :
+                <p>LIST</p>
+              </div>
+              <div className="detail-data-box">
+                <strong>Deleted At  </strong>
+                :
+                <p>{formatDate(previewData.deleted_at)}</p>
+              </div> 
+            </div>
+            
+            <div className="entity-detail">
+              <h4>DETAIL DATA DELETE</h4>
+              <p className="sub-text">(Detail data saat didelete)</p>
+              <div className="detail-data-box"> 
+                <strong>List ID</strong>
+                : 
+                <p>#{previewData.id}</p> 
+              </div>
+              <div className="detail-data-box">
+                <strong>Created at</strong>
+                :
+                <p>{formatDate(previewData.create_at)}</p>
+              </div>
+              
+              <div className="detail-data-box"> 
+                <strong>Name</strong>
+                : 
+                <p>{previewData.name}</p> 
+              </div>
+              <div className="detail-data-box">
+                <strong>Description</strong>
+                :
+                <p>{previewData.description || "-"}</p>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      );
+
+
+    case "cards":
+      return (
+        <div className="entity">
+          <div className="entity-id">
+            CARD #{previewData.id}
+          </div>
+          
+          <div className="entity-box-container">
+            <div className="entity-detail">
+              <h4>DELETE INFORMATION</h4>
+              <p className="sub-text">(Data Type & History)</p>
+              <div className="detail-data-box">
+                <strong>Data Type  </strong>
+                :
+                <p>CARD</p>
+              </div>
+              <div className="detail-data-box">
+                <strong>Deleted At  </strong>
+                :
+                <p>{formatDate(previewData.deleted_at)}</p>
+              </div> 
+            </div>
+            
+            <div className="entity-detail">
+              <h4>DETAIL DATA DELETE</h4>
+              <p className="sub-text">(Detail data saat didelete)</p>
+              <div className="detail-data-box">
+                <strong>Card ID</strong>
+                :
+                <p>#{previewData.id}</p>
+              </div>
+              <div className="detail-data-box">
+                <strong>Created at</strong>
+                :
+                <p>{formatDate(previewData.create_at)}</p>
+              </div>
+              <div className="detail-data-box"> 
+                <strong>Name</strong>
+                : 
+                <p>{previewData.title}</p> 
+              </div>
+              <div className="detail-data-box">
+                <strong>Description</strong>
+                :
+                {/* <p>{previewData.description || "-"}</p> */}
+                <p>{previewData.description?.replace(/<[^>]+>/g, '')
+                                                ?.replace(/\s+/g, ' ')
+                                                ?.trim() || '-'}
+                </p>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      );
+
+    case "workspaces":
+      return (
+        <div className="entity">
+          <div className="entity-id">
+            WORKSPACE #{previewData.id}
+          </div>
+          
+          <div className="entity-box-container">
+            <div className="entity-detail">
+              <h4>DELETE INFORMATION</h4>
+              <p className="sub-text">(Data Type & History)</p>
+              <div className="detail-data-box">
+                <strong>Data Type  </strong>
+                :
+                <p>WORKSPACE</p>
+              </div>
+              <div className="detail-data-box">
+                <strong>Deleted At  </strong>
+                :
+                <p>{formatDate(previewData.deleted_at)}</p>
+              </div> 
+            </div>
+            
+            <div className="entity-detail">
+              <h4>DETAIL DATA DELETE</h4>
+              <p className="sub-text">(Detail data saat didelete)</p>
+              <div className="detail-data-box"> 
+                <strong>Name</strong>
+                : 
+                <p>{previewData.name}</p> 
+              </div>
+              <div className="detail-data-box">
+                <strong>Description</strong>
+                :
+                <p>{previewData.description || "-"}</p>
+              </div>
+              <div className="detail-data-box">
+                <strong>Created at</strong>
+                :
+                <p>{formatDate(previewData.created_at)}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+
+    case "data_marketing":
+      return (
+        <div className="entity">
+          <div className="entity-id">
+            MARKETING MUSIK #{previewData.marketing_id}
+          </div>
+          
+          <div className="entity-box-container">
+            <div className="entity-detail">
+              <h4>DELETE INFORMATION</h4>
+              <p className="sub-text">(Data Type & History)</p>
+              <div className="detail-data-box">
+                <strong>Data Type  </strong>
+                :
+                <p>MARKETING MUSIK</p>
+              </div>
+              <div className="detail-data-box">
+                <strong>Deleted At  </strong>
+                :
+                <p>{formatDate(previewData.deleted_at)}</p>
+              </div> 
+            </div>
+            
+            <div className="entity-detail">
+              <h4>DETAIL DATA DELETE</h4>
+              <p className="sub-text">(Detail data saat didelete)</p>
+              <div className="detail-data-box"> 
+                <strong>Name</strong>
+                : 
+                <p>{previewData.name}</p> 
+              </div>
+              <div className="detail-data-box">
+                <strong>Description</strong>
+                :
+               <p>
+                {previewData.buyer_name || "-"} | {previewData.order_number || "-"}
+              </p>
+              </div>
+              <div className="detail-data-box">
+                <strong>Created at</strong>
+                :
+                <p>{formatDate(previewData.create_at)}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+
+    case "marketing_design":
+      return (
+        <div className="entity">
+          <div className="entity-id">
+            MARKETING DESIGN #{previewData.marketing_design_id}
+          </div>
+          
+          <div className="entity-box-container">
+            <div className="entity-detail">
+              <h4>DELETE INFORMATION</h4>
+              <p className="sub-text">(Data Type & History)</p>
+              <div className="detail-data-box">
+                <strong>Data Type  </strong>
+                :
+                <p>MARKETING DESIGN</p>
+              </div>
+              <div className="detail-data-box">
+                <strong>Deleted At  </strong>
+                :
+                <p>{formatDate(previewData.deleted_at)}</p>
+              </div> 
+            </div>
+            
+            <div className="entity-detail">
+              <h4>DETAIL DATA DELETE</h4>
+              <p className="sub-text">(Detail data saat didelete)</p>
+              <div className="detail-data-box"> 
+                <strong>Marketing ID</strong>
+                : 
+                <p>#{previewData.marketing_design_id}</p> 
+              </div>
+              <div className="detail-data-box">
+                <strong>Created at</strong>
+                :
+                <p>{formatDate(previewData.create_at)}</p>
+              </div>
+              <div className="detail-data-box"> 
+                <strong>Name</strong>
+                : 
+                <p>
+                  {previewData.buyer_name || "-"} | {previewData.order_number || "-"}
+                </p>
+              </div>
+              <div className="detail-data-box">
+                <strong>Description</strong>
+                :
+                <p>
+                  {previewData.buyer_name || "-"} | {previewData.order_number || "-"}
+                </p>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      );
+
+    default:
+      return <p>Preview tidak didukung untuk tipe ini</p>;
+  }
+};
+
+
+  // BADGE TYPE
+  const EntityBadge = ({ type }) => {
+      const safeType = type.replace(/_/g, '-');
+      return (
+          <span
+          className="entity-badge"
+          style={{
+              backgroundColor: `var(--badge-${safeType}-bg)`,
+              color: `var(--badge-${safeType}-text)`,
+              padding: '4px 10px',
+              borderRadius: '999px',
+              fontSize: '12px',
+              fontWeight: '500',
+          }}
+          >
+          {type.replace(/_/g, ' ')}
+          </span>
+      );
+  };
+
+
 
 
   if (loading)
@@ -344,7 +708,7 @@ export default function DataDelete() {
                     setDateOpen(false);
                   }}
                 >
-                  {typeFilter === "all" ? "All types" : typeFilter}
+                  {typeFilter === "all" ? "All types" : typeFilter.replace(/_/g, " ")}
                   <span className="caret"><IoChevronDownOutline size={15}/></span>
                 </button>
               </div>
@@ -357,8 +721,8 @@ export default function DataDelete() {
                     { label: "Boards", value: "boards" },
                     { label: "Lists", value: "lists" },
                     { label: "Cards", value: "cards" },
-                    { label: "Marketing", value: "marketing" },
-                    { label: "Marketing Design", value: "marketingDesign" },
+                    { label: "Marketing", value: "data_marketing" },
+                    { label: "Marketing Design", value: "marketing_design" },
                   ].map((item) => (
                     <li
                       key={item.value}
@@ -478,7 +842,10 @@ export default function DataDelete() {
                   />
                 </td>
                 <td>{row.name}</td>
-                <td className="capitalize">{row.type}</td>
+                <td className="capitalize">
+                  <EntityBadge type={row.type} />
+                </td>
+                {/* <td className="capitalize">{row.type}</td> */}
                 <td>
                   {new Date(row.deleted_at).toLocaleString(
                     "id-ID"
@@ -490,7 +857,7 @@ export default function DataDelete() {
                       <MdOutlineRestore/> Restore
                     </button>
                     |
-                    <button> <IoEyeSharp/> Detail</button>
+                    <button onClick={()=> openDataDetail(row)}> <IoEyeSharp/> Detail</button>
                     |
                     {/* <button onClick={()=> handlePermanentDelete(row)}>  */}
                     <button 
@@ -569,6 +936,30 @@ export default function DataDelete() {
                 </div>
             </div>
          )}
+
+        {/* PREVIEW DETAIL DATA DELETE  */}
+         {selectData &&  (
+          <div className="detail-data-modal">
+              <div className="detail-data-content">
+  
+                  <div className="detail-archive-modal-header">
+                      <div>
+                          <h3>DATA DELETE DETAIL</h3>
+                          <EntityBadge type={selectData.type} /> 
+                      </div>
+  
+                      <button className="close-archive-btn" onClick={closeDataDetail}>
+                          <IoIosCloseCircle/>
+                      </button>
+                  </div>
+  
+                  <div className="archive-modal-body">
+                      {renderDataDelete()}
+                  </div>
+  
+              </div>
+          </div>
+        )}
 
     </div>
   );

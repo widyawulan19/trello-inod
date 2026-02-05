@@ -79,8 +79,7 @@ const fetchOrderTypes = async () => {
 
     const closeDetailArchive = () => {
         setSelectedArchive(null)
-        // setShowDetailCard(false);
-        // setSelectedDetailCard(null);
+
     };
 
     /* =======================
@@ -96,18 +95,18 @@ const fetchOrderTypes = async () => {
         setRestoreTarget(null)
     }
 
-       const confirmRestore = async () => {
-        if (!restoreTarget) return;
-    
-        await handleRestoreArchive({
-            entity: restoreTarget.entity_type,
-            id: restoreTarget.entity_id,
-            refetch: fetchArchiveData,
-            showSnackbar,
-        });
-    
-        closeRestoreModal();
-        };
+    const confirmRestore = async () => {
+     if (!restoreTarget) return;
+ 
+     await handleRestoreArchive({
+         entity: restoreTarget.entity_type,
+         id: restoreTarget.entity_id,
+         refetch: fetchArchiveData,
+         showSnackbar,
+     });
+ 
+     closeRestoreModal();
+    };
     
 
 

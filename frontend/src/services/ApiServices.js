@@ -487,8 +487,8 @@ export const getDeletedItems = async () => {
       boards,
       lists,
       cards,
-      marketing,
-      marketingDesign
+      data_marketing,
+      marketing_design
     ] = await Promise.all([
       axios.get(`${API_URL}/recycle/boards`),
       axios.get(`${API_URL}/recycle/lists`),
@@ -501,8 +501,10 @@ export const getDeletedItems = async () => {
       boards: boards.data,
       lists: lists.data,
       cards: cards.data,
-      marketing: marketing.data,
-      marketingDesign: marketingDesign.data
+      data_marketing: data_marketing.data?.data ?? data_marketing.data ?? [],
+      marketing_design: marketing_design.data?.data ?? marketing_design.data ?? []
+      // data_marketing: data_marketing.data,
+      // marketing_design: marketing_design.data
     };
   } catch (error) {
     console.error("❌ Error fetching recycle bin data:", error);
@@ -1033,6 +1035,8 @@ export const deleteCardPermanently = (id) => axios.delete(`${API_URL}/recycle/ca
 export const deleteMarketingPermanently = (id) => axios.delete(`${API_URL}/recycle/marketing/${id}`)
 export const deleteMarketingDesignPermanently = (id) => axios.delete(`${API_URL}/recycle/marketing-design/${id}`)
 
+// GET PREVIEW DATA DELETE 
+export const getPreviewDataDelete = (entity_type, entity_id) => axios.get(`${API_URL}/deleted-preview/${entity_type}/${entity_id}`)
 
 
 

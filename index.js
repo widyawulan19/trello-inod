@@ -2778,6 +2778,104 @@ app.get('/api/workspace/:workspaceId/user/:userId', async (req, res) => {
 })
 // END ASSIGN USER 
 
+// DELETE PREVIEW DATA 
+app.get('/api/deleted-preview/:entity_type/:entity_id', async (req, res) => {
+    const { entity_type, entity_id } = req.params;
+    //   const client = await pool.connect();
+
+    try {
+        let result;
+
+        switch (entity_type) {
+            case "boards":
+                result = await client.query(
+                    `
+                    SELECT id, name, description, create_at, deleted_at
+                    FROM boards
+                    WHERE id = $1 AND is_deleted = true
+                    `,
+                    [entity_id]
+                );
+                break;
+
+            case "lists":
+                result = await client.query(
+                    `
+                    SELECT id, name, board_id,create_at, deleted_at
+                    FROM lists
+                    WHERE id = $1 AND is_deleted = true
+                    `,
+                    [entity_id]
+                );
+                break;
+
+            case "cards":
+                result = await client.query(
+                    `
+                    SELECT id, title, description, list_id,create_at, deleted_at
+                    FROM cards
+                    WHERE id = $1 AND is_deleted = true
+                    `,
+                    [entity_id]
+                );
+                break;
+
+            case "workspaces":
+                result = await client.query(
+                    `
+                    SELECT id, name, description, create_at, deleted_at
+                    FROM workspaces
+                    WHERE id = $1 AND is_deleted = true
+                    `,
+                    [entity_id]
+                );
+                break;
+
+            case "data_marketing":
+                result = await client.query(
+                    `
+                        SELECT marketing_id, buyer_name, order_number, create_at, deleted_at
+                        FROM data_marketing
+                        WHERE marketing_id = $1 AND is_deleted = true
+                        `,
+                    [entity_id]
+                );
+                break;
+
+            case "marketing_design":
+                result = await client.query(
+                    `
+                        SELECT marketing_design_id, buyer_name, order_number, create_at, deleted_at
+                        FROM marketing_design
+                        WHERE marketing_design_id = $1 AND is_deleted = true;
+                        `,
+                    [entity_id]
+                );
+                break;
+
+            default:
+                return res.status(400).json({
+                    error: `Unsupported entity type: ${entity_type}`,
+                });
+        }
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({
+                error: "Deleted data not found or already permanently removed",
+            });
+        }
+
+        res.json({
+            entity_type,
+            entity_id,
+            preview: result.rows[0],
+        });
+    } catch (err) {
+        console.error("❌ Deleted preview error:", err);
+        res.status(500).json({ error: "Failed to load deleted preview" });
+    }
+});
+
 //BOARD
 //patch dan reorder board position in workspace
 // PATCH - reorder board position in workspace
