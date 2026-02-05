@@ -2834,7 +2834,7 @@ app.get('/api/deleted-preview/:entity_type/:entity_id', async (req, res) => {
             case "data_marketing":
                 result = await client.query(
                     `
-                        SELECT marketing_id, buyer_name, order_number, create_at, deleted_at
+                        SELECT marketing_id, buyer_name, order_number,code_order, create_at,detail_project, deleted_at
                         FROM data_marketing
                         WHERE marketing_id = $1 AND is_deleted = true
                         `,
@@ -2845,7 +2845,7 @@ app.get('/api/deleted-preview/:entity_type/:entity_id', async (req, res) => {
             case "marketing_design":
                 result = await client.query(
                     `
-                        SELECT marketing_design_id, buyer_name, order_number, create_at, deleted_at
+                        SELECT marketing_design_id, buyer_name, order_number,code_order, create_at,detail_project, deleted_at
                         FROM marketing_design
                         WHERE marketing_design_id = $1 AND is_deleted = true;
                         `,
