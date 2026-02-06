@@ -3,7 +3,8 @@
 ========================= */
 .rb-container {
     padding: 10px;
-    background: var(--card-bg);
+    /* background: var(--card-bg); */
+    background: var(--bg-section);
     margin-right: 10px;
     /* border: 1px solid var(--border); */
     /* min-height: 100vh; */
@@ -122,7 +123,8 @@
     border-collapse: separate;
     /* penting buat sticky + shadow */
     border-spacing: 0;
-    background: var(--card-bg);
+    background: var(--bg-section);
+    /* background: var(--card-bg); */
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
@@ -159,6 +161,22 @@
     color: var(--sub-text);
 }
 
+.rb-table .name-box {
+    /* width: 100%; */
+    color: var(--sub-text);
+    /* border: 1px solid yellow; */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rb-table .delete-date-box {
+    width: 15vw;
+    min-width: 15vw;
+    max-width: 15vw;
+    font-size: 10px;
+}
+
 /* hover row */
 .rb-table tbody tr:hover {
     background: var(--bg-section-hover);
@@ -176,7 +194,7 @@
     display: flex;
     align-items: center;
     text-align: center;
-    gap: 6px;
+    /* gap: 6px; */
     /* border: 1px solid red; */
 }
 
@@ -184,7 +202,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 3px;
     width: 100%;
     /* border: 1px solid blue; */
 }
@@ -193,7 +211,7 @@
    BUTTON STYLE
 ========================= */
 .rb-table td.actions button {
-    padding: 6px 8px;
+    padding: 3px 5px;
     /* border-radius: 6px; */
     font-size: 10px;
     cursor: pointer;
@@ -404,6 +422,10 @@
     cursor: pointer;
 }
 
+.dropdown-type .dropdown-trigger:hover {
+    background-color: var(--bg-section-hover);
+    box-shadow: none;
+}
 
 .caret {
     font-size: 20px;
@@ -416,30 +438,34 @@
     top: calc(100% + 6px);
     left: 0;
     min-width: 180px;
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
     border-radius: 10px;
     padding: 6px;
     list-style: none;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
     z-index: 50;
+    gap: 5px;
 }
 
 .dropdown-menu li {
-    padding: 8px 10px;
+    padding: 5px 10px;
     border-radius: 6px;
-    font-size: 14px;
+    font-size: 12px;
     cursor: pointer;
-    color: #374151;
+    color: var(--text);
+    border: 1px solid var(--card-bg);
 }
 
 .dropdown-menu li:hover {
-    background: #f3f4f6;
+    background: var(--bg-section-hover);
+    color: var(--text);
+    border: 1px solid var(--bg-section-hover);
 }
 
 .dropdown-menu li.active {
-    background: #eef2ff;
-    color: #4338ca;
+    background: var(--bg-section-hover);
+    color: var(--text);
     font-weight: 500;
 }
 
@@ -610,4 +636,138 @@ ARHIVE BODY MODAL
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+/* DELETE CONFIRM MODAL  */
+.delete-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+.modal-delete {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 24px;
+    width: 360px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-delete h3 {
+    margin: 0 0 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    width: 100%;
+    text-align: center;
+}
+
+.modal-delete p {
+    font-size: 14px;
+    color: var(--sub-text);
+    margin-bottom: 20px;
+}
+
+.modal-delete strong {
+    color: #dc2626;
+}
+
+.modal-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-cancel {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.btn-danger {
+    background: #dc2626;
+    color: #fff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    width: 100%;
+}
+
+.btn-danger:hover {
+    box-shadow: 0px 4px 8px #dc262679;
+}
+
+.btn-danger:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* MODAL RESTORE  */
+.modal-restore-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+.modal-restore-box {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 24px;
+    width: 360px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-restore-box h3 {
+    margin: 0 0 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    width: 100%;
+    text-align: center;
+}
+
+.modal-restore-box p {
+    font-size: 12px;
+    color: var(--sub-text);
+    margin-bottom: 20px;
+    width: 100%;
+    text-align: center;
+}
+
+.modal-restore-box strong {
+    color: var(--primary);
+}
+
+.btn-confirm {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    width: 100%;
+}
+
+.btn-confirm:hover {
+    box-shadow: 0px 4px 8px #5426dc79;
+}
+
+.btn-confirm:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }

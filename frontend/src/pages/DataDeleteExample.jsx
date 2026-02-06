@@ -575,14 +575,17 @@ const renderDataDelete = () => {
               <div className="detail-data-box"> 
                 <strong>Name</strong>
                 : 
-                <p>{previewData.name}</p> 
+                <p>
+                  {previewData.buyer_name || "-"} | {previewData.code_number || "-"}
+                </p>
               </div>
               <div className="detail-data-box">
                 <strong>Description</strong>
                 :
-               <p>
-                {previewData.buyer_name || "-"} | {previewData.order_number || "-"}
-              </p>
+               <p>{previewData.detail_project?.replace(/<[^>]+>/g, '')
+                                                ?.replace(/\s+/g, ' ')
+                                                ?.trim() || '-'}
+                </p>
               </div>
               <div className="detail-data-box">
                 <strong>Created at</strong>
@@ -640,8 +643,9 @@ const renderDataDelete = () => {
               <div className="detail-data-box">
                 <strong>Description</strong>
                 :
-                <p>
-                  {previewData.buyer_name || "-"} | {previewData.order_number || "-"}
+                <p>{previewData.detail_project?.replace(/<[^>]+>/g, '')
+                                  ?.replace(/\s+/g, ' ')
+                                  ?.trim() || '-'}
                 </p>
               </div>
               
@@ -841,15 +845,13 @@ const renderDataDelete = () => {
                     onChange={() => toggleSelect(row.id)}
                   />
                 </td>
-                <td>{row.name}</td>
+                <td className="name-box">{row.name}</td>
                 <td className="capitalize">
                   <EntityBadge type={row.type} />
                 </td>
                 {/* <td className="capitalize">{row.type}</td> */}
-                <td>
-                  {new Date(row.deleted_at).toLocaleString(
-                    "id-ID"
-                  )}
+                <td className="delete-date-box">
+                  {formatDate(row.deleted_at)}
                 </td>
                 <td className="actions"> 
                   <div className="action-group">
@@ -879,17 +881,14 @@ const renderDataDelete = () => {
 
       {/* MODAL RESTORE  */}
       {showRestoreModal && (
-        <div className="modal-overlay">
-            <div className="modal-box">
+        <div className="modal-restore-overlay">
+            <div className="modal-restore-box">
                 <h3>⚠️ RESTORE DATA</h3>
 
                 <p>
                     Apakah kamu yakin ingin mengembalikan data
-                    <strong> "#{restoreTarget?.id}" {restoreTarget?.name}</strong>?
-                </p>
-
-                <p >
-                    Data ini akan dikembalikan ke daftar aktif.
+                    <strong> "#{restoreTarget?.id}" {restoreTarget?.name}</strong>? <br />
+                     Data ini akan dikembalikan ke daftar aktif.
                 </p>
 
                 <div className="modal-actions">
@@ -908,7 +907,7 @@ const renderDataDelete = () => {
         {isDeleteOpen && (
             <div className="delete-modal-overlay">
                 <div className="modal-delete">
-                <h3>Delete archive data?</h3>
+                <h3> ⚠️ Delete ?</h3>
 
                 <p>
                     This action will <strong>permanently delete</strong> this data.
@@ -918,19 +917,19 @@ const renderDataDelete = () => {
 
                 <div className="modal-actions">
                     <button
-                    className="btn-cancel"
-                    onClick={() => setIsDeleteOpen(false)}
-                    disabled={isDeleting}
+                      className="btn-cancel"
+                      onClick={() => setIsDeleteOpen(false)}
+                      disabled={isDeleting}
                     >
-                    Cancel
+                      Cancel
                     </button>
 
                     <button
-                    className="btn-danger"
-                    onClick={handlePermanentDelete}
-                    disabled={isDeleting}
+                      className="btn-danger"
+                      onClick={handlePermanentDelete}
+                      disabled={isDeleting}
                     >
-                    {isDeleting ? "Deleting..." : "Delete permanently"}
+                      {isDeleting ? "Deleting..." : "Delete permanently"}
                     </button>
                 </div>
                 </div>

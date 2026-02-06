@@ -1,12 +1,19 @@
 .archive-box-container {
-    /* border: 1px solid red; */
-    width: 100%;
+    font-family: Inter, system-ui, sans-serif;
     background-color: var(--bg);
+    padding: 10px;
+}
+
+.archive-box {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     position: relative;
+    /* border: 1px solid red; */
+    border-radius: 8px;
+    padding: 5px;
+    background: var(--bg-section);
 }
 
 .archive-box-header {
@@ -14,7 +21,6 @@
     gap: 5px;
     padding: 10px;
     margin-bottom: 15px;
-    /* border: 1px solid green; */
     border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
@@ -197,8 +203,14 @@ DATA TABLE ARCHIVE
     width: 100%;
     height: 75vh;
     margin: 5px;
+    padding-top: 10px;
     overflow-y: auto;
     table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--bg-section);
+    /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); */
+
 }
 
 .archive-data-table table {
@@ -209,8 +221,10 @@ DATA TABLE ARCHIVE
 }
 
 .archive-data-table th {
-    background: var(--primary);
-    color: white;
+    background: var(--table-header-bg);
+    color: var(--table-header-text);
+    border-bottom: 1px solid var(--table-header-bg) !important;
+
     padding: 8px;
     font-size: 12px;
     font-weight: bold;
@@ -226,8 +240,8 @@ DATA TABLE ARCHIVE
     text-align: left;
     font-size: 12px;
     font-weight: normal;
-    border: 1px solid var(--border);
-    /* border-bottom: 1px solid var(--border); */
+    /* border: 1px solid var(--border); */
+    border-bottom: 1px solid var(--border);
 
 }
 
@@ -265,10 +279,61 @@ DATA TABLE ARCHIVE
 
 .archive-data-table .name-box,
 .archive-data-table .action-box {
-    width: 15vw;
-    min-width: 15vw;
-    max-width: 15vw;
+    width: 16vw;
+    min-width: 16vw;
+    max-width: 16vw;
     white-space: normal;
+}
+
+.action-box .action-action {
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+}
+
+/* =========================
+   BUTTON STYLE
+========================= */
+td.action-box button {
+    padding: 3px 5px;
+    /* border-radius: 6px; */
+    font-size: 10px;
+    cursor: pointer;
+    gap: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background-color: transparent;
+}
+
+/* detail & delete (neutral) */
+td.action-box button:not(.link) {
+    /* border: 1px solid #E5E7EB; */
+    /* background: #FFFFFF; */
+    color: var(--sub-text);
+}
+
+td.action-box button:not(.link):hover {
+    background: var(--bg-section-hover);
+}
+
+/* restore (primary action) */
+.link {
+    background: none;
+    border: none;
+    color: #16A34A;
+    font-weight: 500;
+}
+
+.action-group button:hover {
+    text-decoration: underline;
+}
+
+.link:hover {
+    text-decoration: underline;
 }
 
 .archive-data-table .desc-box {
