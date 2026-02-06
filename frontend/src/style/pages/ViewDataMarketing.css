@@ -1,5 +1,9 @@
 .view-dm-container {
     position: relative;
+    padding: 1px;
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    /* border: 1px solid red; */
 }
 
 /* =======================
@@ -14,10 +18,11 @@ HEADER
     border-top-right-radius: 8px;
     padding: 10px;
     gap: 5px;
-    width: 100%;
+    /* width: 100%; */
     font-size: 12px;
     position: sticky;
     color: white;
+    /* background: var(--table-header-bg); */
     background: var(--primary);
 }
 

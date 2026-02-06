@@ -725,7 +725,7 @@ const handleExportToSheets = async (marketingId) => {
                             : "-"}
                     </td>
                     <td className="project-type-box" >{item.project_type_name}</td>
-                    <td className="duration-box">{item.duration}</td>
+                    <td className="duration-cont">{item.duration}</td>
                     <td className="action-box">
                       <div className="action-data-marketing">
                         <BootstrapTooltip title='View Data' placement='top'>
@@ -738,7 +738,7 @@ const handleExportToSheets = async (marketingId) => {
                         </BootstrapTooltip>
                         <BootstrapTooltip title='Archive Data' placement='top'>
                              <button onClick={()=>handleArchiveDataMarketing(item.marketing_id)}>
-                               <HiOutlineArchiveBox style={{color:'white'}}/>
+                               <HiOutlineArchiveBox/>
                              </button>
                          </BootstrapTooltip>
                         <BootstrapTooltip title='Delete Data' placement='top'>
