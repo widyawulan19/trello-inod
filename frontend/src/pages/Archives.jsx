@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from 'react'
 import { useSnackbar } from '../context/Snackbar'
-import { deleteArchiveDataUniversalById, getAllAccountsMusic, getAllOrderTypesMusic, getArchiveBoard, getArchiveCard, getArchiveList, getArchiveMarketing, getArchiveMarketingDesign, getArchiveWorkspace, getArchiveWorkspaceUser, getBoardArchive, getCardArchive, getListArchive, getMarketingArchive, getMarketingDesignArchive, getWorkspaceArchive } from '../services/ApiServices'
+import { deleteArchiveDataUniversalById, deleteBoardPermanently, deleteCardPermanently, deleteDataArchivePermanent, deleteListPermanently, deleteMarketingDesignPermanently, deleteMarketingPermanently, getAllAccountsMusic, getAllOrderTypesMusic, getArchiveBoard, getArchiveCard, getArchiveList, getArchiveMarketing, getArchiveMarketingDesign, getArchiveWorkspace, getArchiveWorkspaceUser, getBoardArchive, getCardArchive, getListArchive, getMarketingArchive, getMarketingDesignArchive, getWorkspaceArchive } from '../services/ApiServices'
 import '../style/pages/ArchiveStyle.css'
 import { IoIosCloseCircle } from "react-icons/io";
 import { FaCircle } from "react-icons/fa6";
@@ -41,6 +41,12 @@ const Archives=()=> {
     const [orderTypes, setOrderTypes] = useState([])
     const location = useLocation();
 
+    //DELETE CONFIRM MODAL
+    const [deleteTargetId, setDeleteTargetId] = useState(null);
+    const [deleteTarget, setDeleteTarget] = useState(null);
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
+
     useEffect(() => {
   fetchAccountMusic()
   fetchOrderTypes()
@@ -73,8 +79,7 @@ const fetchOrderTypes = async () => {
 
     const closeDetailArchive = () => {
         setSelectedArchive(null)
-        // setShowDetailCard(false);
-        // setSelectedDetailCard(null);
+
     };
 
     /* =======================
@@ -90,31 +95,20 @@ const fetchOrderTypes = async () => {
         setRestoreTarget(null)
     }
 
-       const confirmRestore = async () => {
-        if (!restoreTarget) return;
-    
-        await handleRestoreArchive({
-            entity: restoreTarget.entity_type,
-            id: restoreTarget.entity_id,
-            refetch: fetchArchiveData,
-            showSnackbar,
-        });
-    
-        closeRestoreModal();
-        };
+    const confirmRestore = async () => {
+     if (!restoreTarget) return;
+ 
+     await handleRestoreArchive({
+         entity: restoreTarget.entity_type,
+         id: restoreTarget.entity_id,
+         refetch: fetchArchiveData,
+         showSnackbar,
+     });
+ 
+     closeRestoreModal();
+    };
     
 
-    //3. fungsi delete data archive berdasarkan id
-    const handleDeleteArchive = async (id) =>{
-      try{
-          await deleteArchiveDataUniversalById(id);
-          showSnackbar('Successfully delete archive data:',"success");
-          fetchArchiveData();
-      }catch(error){
-          console.log('Failed to delete archive data:', error);
-          showSnackbar('Failed to delete archive data','error');
-      }
-    }
 
     /* =======================
     RENDER DATA DETAIL ARCHIVE
@@ -346,6 +340,57 @@ const fetchOrderTypes = async () => {
         };
 
 
+    // FUNGSSI DELETE DATA BERDASARKAN ENTIY YANG DIPILIH
+    const deletePermanentByType = async (type, id) => {
+        switch (type) {
+            case 'boards':
+            return deleteBoardPermanently(id);
+
+            case 'lists':
+            return deleteListPermanently(id);
+
+            case 'cards':
+            return deleteCardPermanently(id);
+
+            case 'data_marketing':
+            return deleteMarketingPermanently(id);
+
+            case 'marketing_design':
+            return deleteMarketingDesignPermanently(id);
+
+            default:
+            throw new Error(`Unsupported archive type: ${type}`);
+    }
+    };
+
+
+
+    //3. fungsi delete data archive berdasarkan id
+    const handleDeleteArchive = async () => {
+    if (!deleteTargetId) return;
+
+        try {
+            setIsDeleting(true);
+
+            await deleteDataArchivePermanent(deleteTargetId);
+
+            showSnackbar(
+            'Archive & original data deleted permanently 🗑️',
+            'success'
+            );
+
+            fetchArchiveData(selectedType);
+        } catch (error) {
+            console.error('Failed to delete archive data:', error);
+            showSnackbar('Failed to delete archive data', 'error');
+        } finally {
+            setIsDeleting(false);
+            setIsDeleteOpen(false);
+            setDeleteTargetId(null);
+            setDeleteTarget(null);
+        }
+    };
+
 
 
 
@@ -440,176 +485,180 @@ const fetchOrderTypes = async () => {
 
   return (
     <div className='archive-box-container'>
-        <div className="archive-box-header">
-            <div className="archive-header-left">
-                 <h4>ARCHIVE DATA {selectedType.charAt(0).toUpperCase() + selectedType.slice(1)}s</h4>
-                <p> <span>Semua Aktivitas Terdokumentasi, Tersimpan dengan Aman</span>
-                    Selamat datang di halaman Arsip Data. Di sini, Anda dapat menelusuri seluruh riwayat aktivitas proyek, mulai dari Workspace, Board, List, Card, hingga detail lengkap dari Data Marketing yang pernah dibuat.
-                </p>
-            </div>
-
-            <div className="archive-header-btn">
-                <div className='data-search'>
-                    <HiOutlineSearch size={13}/>
-                    <input 
-                        type="text" 
-                        className='search-input'
-                        placeholder='search data archive...'
-                        value={searchQuery}
-                        onChange={(e)=> handleSearch(e.target.value)}
-                    />
+        <div className="archive-box">
+            <div className="archive-box-header">
+                <div className="archive-header-left">
+                    <h4>ARCHIVE DATA {selectedType.charAt(0).toUpperCase() + selectedType.slice(1)}s</h4>
+                    <p> <span>Semua Aktivitas Terdokumentasi, Tersimpan dengan Aman</span>
+                        Selamat datang di halaman Arsip Data. Di sini, Anda dapat menelusuri seluruh riwayat aktivitas proyek, mulai dari Workspace, Board, List, Card, hingga detail lengkap dari Data Marketing yang pernah dibuat.
+                    </p>
                 </div>
-                
-                <div className="btn-container">
-                    <button>
-                        <HiOutlineExternalLink size={15}/>
-                        EXPORT
-                    </button>
 
-                    {/* WRAPPER PENTING */}
-                    <div className="archive-dropdown-wrapper">
-                        <button
-                            className="btn-show-archive"
-                            onClick={handleShowDataArchive}
-                        >
-                            <HiChevronUpDown size={15}/>
-                            SHOW DATA
+                <div className="archive-header-btn">
+                    <div className='data-search'>
+                        <HiOutlineSearch size={13}/>
+                        <input 
+                            type="text" 
+                            className='search-input'
+                            placeholder='search data archive...'
+                            value={searchQuery}
+                            onChange={(e)=> handleSearch(e.target.value)}
+                        />
+                    </div>
+                    
+                    <div className="btn-container">
+                        <button>
+                            <HiOutlineExternalLink size={15}/>
+                            EXPORT
                         </button>
 
-                        {showDataArchive && (
-                        <div className="archive-button" ref={showDataArchiveRef}>
-                            <h5>Select Data:</h5>
-
+                        {/* WRAPPER PENTING */}
+                        <div className="archive-dropdown-wrapper">
                             <button
-                                onClick={() => { setSelectedType('workspace'); setActiveButton('workspace'); }}
-                                className={activeButton === 'workspace' ? 'active' : ''}
+                                className="btn-show-archive"
+                                onClick={handleShowDataArchive}
                             >
-                             Workspace
+                                <HiChevronUpDown size={15}/>
+                                SHOW DATA
                             </button>
 
-                            <button
-                                onClick={() => { setSelectedType('boards'); setActiveButton('boards'); }}
-                                className={activeButton === 'boards' ? 'active' : ''}
-                            >
-                                Board
-                            </button>
+                            {showDataArchive && (
+                            <div className="archive-button" ref={showDataArchiveRef}>
+                                <h5>Select Data:</h5>
 
-                            <button
-                                onClick={() => { setSelectedType('lists'); setActiveButton('lists'); }}
-                                className={activeButton === 'lists' ? 'active' : ''}
-                            >
-                                List
-                            </button>
+                                <button
+                                    onClick={() => { setSelectedType('workspace'); setActiveButton('workspace'); }}
+                                    className={activeButton === 'workspace' ? 'active' : ''}
+                                >
+                                Workspace
+                                </button>
 
-                            <button
-                                onClick={() => { setSelectedType('cards'); setActiveButton('cards'); }}
-                                className={activeButton === 'cards' ? 'active' : ''}
-                            >
-                                Card
-                            </button>
+                                <button
+                                    onClick={() => { setSelectedType('boards'); setActiveButton('boards'); }}
+                                    className={activeButton === 'boards' ? 'active' : ''}
+                                >
+                                    Board
+                                </button>
 
-                            <button
-                                onClick={()=>{setSelectedType('data_marketing'); setActiveButton('data_marketing');}}
-                                className={activeButton === 'data_marketing' ? 'active':''}
-                            >
-                                Marketing
-                            </button>
+                                <button
+                                    onClick={() => { setSelectedType('lists'); setActiveButton('lists'); }}
+                                    className={activeButton === 'lists' ? 'active' : ''}
+                                >
+                                    List
+                                </button>
 
-                            <button
-                                onClick={()=>{setSelectedType('marketing_design'); setActiveButton('marketing_design');}}
-                                className={activeButton === 'marketing_design' ? 'active':''}
-                            >
-                                Marketing Design
-                            </button>                            
+                                <button
+                                    onClick={() => { setSelectedType('cards'); setActiveButton('cards'); }}
+                                    className={activeButton === 'cards' ? 'active' : ''}
+                                >
+                                    Card
+                                </button>
+
+                                <button
+                                    onClick={()=>{setSelectedType('data_marketing'); setActiveButton('data_marketing');}}
+                                    className={activeButton === 'data_marketing' ? 'active':''}
+                                >
+                                    Marketing
+                                </button>
+
+                                <button
+                                    onClick={()=>{setSelectedType('marketing_design'); setActiveButton('marketing_design');}}
+                                    className={activeButton === 'marketing_design' ? 'active':''}
+                                >
+                                    Marketing Design
+                                </button>                            
+                            </div>
+                            )}
                         </div>
-                        )}
                     </div>
                 </div>
+                
             </div>
-            
-        </div>
-        <div className="archive-data-table">
-            <div className="archive-show-data">
-                {filteredData.length === 0 ?(
-                    <p>No archived {selectedType}s found.</p>
-                ):(
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>NO</th>
-                                <th>KATEGORI</th>
-                                <th>TITLE</th>
-                                <th>DESCRIPTION</th>
-                                <th>ACTION</th>
-                            </tr> 
-                        </thead>
-                        <tbody>
-                            {sortedData.map((item, index) => (
-                                <tr key={`${item.entity_type}-${item.entity_id}`}>
-                                <td className="nomor-box">{index + 1}</td>
+            <div className="archive-data-table">
+                <div className="archive-show-data">
+                    {filteredData.length === 0 ?(
+                        <p>No archived {selectedType}s found.</p>
+                    ):(
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>NO</th>
+                                    <th>KATEGORI</th>
+                                    <th>TITLE</th>
+                                    <th>DESCRIPTION</th>
+                                    <th>ACTION</th>
+                                </tr> 
+                            </thead>
+                            <tbody>
+                                {sortedData.map((item, index) => (
+                                    <tr key={`${item.entity_type}-${item.entity_id}`}>
+                                    <td className="nomor-box">{index + 1}</td>
 
-                                <td className="entity-box">
-                                    <EntityBadge type={item.entity_type} />
-                                </td>
+                                    <td className="entity-box">
+                                        <EntityBadge type={item.entity_type} />
+                                    </td>
 
-                                <td className="name-box">
-                                    {['data_marketing', 'marketing_design'].includes(item.entity_type)
-                                    ? [
-                                        item.data?.buyer_name,
-                                        item.data?.code_order,
-                                        ].filter(Boolean).join(' - ')
-                                    : item.data?.name || item.data?.title || '-'}
-                                </td>
+                                    <td className="name-box">
+                                        {['data_marketing', 'marketing_design'].includes(item.entity_type)
+                                        ? [
+                                            item.data?.buyer_name,
+                                            item.data?.code_order,
+                                            ].filter(Boolean).join(' - ')
+                                        : item.data?.name || item.data?.title || '-'}
+                                    </td>
 
-                                <td className="desc-box">
-                                    {['cards', 'data_marketing', 'marketing_design'].includes(item.entity_type)
-                                    ? (
-                                        item.entity_type === 'cards'
-                                            ? item.data?.description
-                                            : item.data?.detail_project
-                                        )
-                                        ?.replace(/<[^>]+>/g, '')
-                                        ?.replace(/\s+/g, ' ')
-                                        ?.trim() || '-'
-                                    : item.data?.description?.trim() || '-'}
-                                </td>
+                                    <td className="desc-box">
+                                        {['cards', 'data_marketing', 'marketing_design'].includes(item.entity_type)
+                                        ? (
+                                            item.entity_type === 'cards'
+                                                ? item.data?.description
+                                                : item.data?.detail_project
+                                            )
+                                            ?.replace(/<[^>]+>/g, '')
+                                            ?.replace(/\s+/g, ' ')
+                                            ?.trim() || '-'
+                                        : item.data?.description?.trim() || '-'}
+                                    </td>
 
-                                <td className="action-box">
-                                    <div className="action-action">
-                                    <BootstrapTooltip title="View Data">
-                                        <button
-                                        className="btn-action"
-                                        onClick={() => setSelectedArchive(item)}
-                                        >
-                                        <IoEyeSharp />
-                                        </button>
-                                    </BootstrapTooltip>
+                                    <td className="action-box">
+                                        <div className="action-action">
+                                       
+                                            <button
+                                                className="link"
+                                                onClick={() => openRestoreModal(item)}
+                                            >
+                                                <MdOutlineRestore /> Restore
+                                            </button>
+                                            |
+                                            <button
+                                                // className="btn-action"
+                                                onClick={() => setSelectedArchive(item)}
+                                            >
+                                                <IoEyeSharp /> Detail
+                                            </button>
+                                            |
+                                            <button
+                                                // className="btn-action"
+                                                onClick={() => {
+                                                    console.log('DELETE CLICK ITEM:', item);
+                                                    console.log('ARCHIVE ID:', item.id);
+                                                    setDeleteTargetId(item.id); // 🔥 archive_universal.id
+                                                    setDeleteTarget(item);
+                                                    setIsDeleteOpen(true);
+                                                }}
+                                                >
+                                                <IoTrash /> Delete
+                                            </button>
+                                        </div>
+                                    </td>
 
-                                    <BootstrapTooltip title="Restore data">
-                                        <button
-                                        className="btn-action"
-                                        onClick={() => openRestoreModal(item)}
-                                        >
-                                        <MdOutlineRestore />
-                                        </button>
-                                    </BootstrapTooltip>
+                                    </tr>
+                                ))}
+                                </tbody>
 
-                                    <BootstrapTooltip title="Delete data">
-                                        <button
-                                        className="btn-action"
-                                        onClick={() => handleDeleteArchive(item.entity_id)}
-                                        >
-                                        <IoTrash />
-                                        </button>
-                                    </BootstrapTooltip>
-                                    </div>
-                                </td>
-                                </tr>
-                            ))}
-                            </tbody>
-
-                </table>
-                )}
+                    </table>
+                    )}
+                </div>
             </div>
         </div>
         
@@ -668,6 +717,40 @@ const fetchOrderTypes = async () => {
             </div>
         </div>
         )}
+
+        {/* MODAL CONFIRM DELETE  */}
+        {isDeleteOpen && (
+            <div className="delete-modal-overlay">
+                <div className="modal-delete">
+                <h3>⚠️ Delete archive data?</h3>
+
+                <p>
+                    This action will <strong>permanently delete</strong> this data.
+                    <br />
+                    You won’t be able to restore it.
+                </p>
+
+                <div className="modal-actions">
+                    <button
+                    className="btn-cancel"
+                    onClick={() => setIsDeleteOpen(false)}
+                    disabled={isDeleting}
+                    >
+                    Cancel
+                    </button>
+
+                    <button
+                    className="btn-danger"
+                    onClick={handleDeleteArchive}
+                    disabled={isDeleting}
+                    >
+                    {isDeleting ? "Deleting..." : "Delete permanently"}
+                    </button>
+                </div>
+                </div>
+            </div>
+         )}
+
     </div>
   )
 }

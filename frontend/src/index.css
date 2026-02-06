@@ -33,10 +33,17 @@ code {
 
   --primary: #6D5FEA;
   --primary-soft: #afa6fc;
+  ;
   --icon-card-primary: #6D5FEA;
   --logo-bg: linear-gradient(135deg, #D5CCFF, #AFC6FF);
   --logo-bg-gradient: var(--bg-icon2);
   /* --logo-bg: #4B42A6; */
+
+  /* TABEL  */
+  --table-header-bg: #EEF2FF;
+  /* indigo-950-ish */
+  --table-header-text: #3730A3;
+  /* indigo-100 */
 
   --text-primary: #111827;
   --text-secondary: #6B7280;
@@ -221,6 +228,13 @@ code {
   --logo-bg: #171A1F;
   --logo-bg-gradient: #171A1F;
   /* --card-bg: #14171D; */
+
+  /* TABLE  */
+
+  --table-header-bg: #1E1B4B;
+  /* indigo-950-ish */
+  --table-header-text: #E0E7FF;
+  /* indigo-100 */
 
   --text-primary: #E5E7EB;
   --text-secondary: #9CA3AF;

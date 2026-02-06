@@ -73,11 +73,12 @@ const Sidebar = () => {
             // { to: 'archive-data', icon: <HiOutlineArchiveBoxArrowDown className='sidebar-icon' />, label: 'Archive Data', name: 'archive' },
             { to: 'activity', icon: <HiOutlineCog8Tooth className='sidebar-icon' />, label: 'User Activity', name: 'User Activity' },
             { to: 'faq', icon: <HiAdjustmentsHorizontal className='sidebar-icon' />, label: 'FaQ', name: 'faq' },
-            { to: 'data-delete', icon: <HiOutlineTrash className='sidebar-icon' />, label: 'Trash', name: 'Trash' },
+            { to: 'data-delete-example', icon: <HiOutlineTrash className='sidebar-icon' />, label: 'Trash', name: 'Trash' },
             // { to: 'marketing-chart', icon: <MdDeveloperMode className='icon' />, label: 'Testing Fitur', name: 'Testing Fitur' },
 
 
-            { to: 'loading-test', icon: <MdDeveloperMode className='sidebar-icon' />, label: 'Testing Fitur', name: 'Testing Fitur' },
+            // { to: 'data-delete-example', icon: <MdDeveloperMode className='sidebar-icon' />, label: 'Trash', name: 'Trash Page' },
+            // { to: 'loading-test', icon: <MdDeveloperMode className='sidebar-icon' />, label: 'Testing Fitur', name: 'Testing Fitur' },
             // { to: 'archive', icon: <MdDeveloperMode className='sidebar-icon' />, label: 'Testing Fitur', name: 'Testing Fitur' },
           ].map((item) => (
             <div

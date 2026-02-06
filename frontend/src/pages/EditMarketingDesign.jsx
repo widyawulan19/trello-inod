@@ -217,7 +217,7 @@ import { FaXmark } from 'react-icons/fa6';
                 <div className="emd-box">
                     <label>Jumlah Revisi</label>
                     <input
-                        type="text"
+                        type="number"
                         name="jumlah_revisi"
                         value={formData.jumlah_revisi}
                         onChange={handleChange}

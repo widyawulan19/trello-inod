@@ -479,29 +479,39 @@ export const deleteReminder = (cardId) => axios.delete(`${API_URL}/card-due-date
 export const getAllReminders = () => axios.get(`${API_URL}/card-due-date`);
 export const markReminderAsSent = (cardId) => axios.put(`${API_URL}/card-due-date/${cardId}/mark-reminder-sent`);
 
-// --- GET semua data soft deleted ---
+
+// --- GET semua data recycle bin (soft deleted only) ---
 export const getDeletedItems = async () => {
   try {
-    const [boards, lists, cards, marketing, marketingDesign] = await Promise.all([
-      axios.get(`${API_URL}/boards?is_deleted=true`),
-      axios.get(`${API_URL}/lists?is_deleted=true`),
-      axios.get(`${API_URL}/cards?is_deleted=true`),
-      axios.get(`${API_URL}/marketing?is_deleted=true`),
-      axios.get(`${API_URL}/marketing-design?is_deleted=true`)
+    const [
+      boards,
+      lists,
+      cards,
+      data_marketing,
+      marketing_design
+    ] = await Promise.all([
+      axios.get(`${API_URL}/recycle/boards`),
+      axios.get(`${API_URL}/recycle/lists`),
+      axios.get(`${API_URL}/recycle/cards`),
+      axios.get(`${API_URL}/recycle/data-marketing`),
+      axios.get(`${API_URL}/recycle/marketing-design`)
     ]);
 
     return {
       boards: boards.data,
       lists: lists.data,
       cards: cards.data,
-      marketing: marketing.data,
-      marketingDesign: marketingDesign.data
+      data_marketing: data_marketing.data?.data ?? data_marketing.data ?? [],
+      marketing_design: marketing_design.data?.data ?? marketing_design.data ?? []
+      // data_marketing: data_marketing.data,
+      // marketing_design: marketing_design.data
     };
   } catch (error) {
-    console.error("Error fetching deleted items:", error);
+    console.error("❌ Error fetching recycle bin data:", error);
     throw error;
   }
 };
+
 
 
 // --- Restore endpoints ---
@@ -972,6 +982,9 @@ export const getArchivedCardDetail = async (cardId) => {
     throw error;
   }
 };
+export const deleteDataArchivePermanent = (id) =>
+  axios.delete(`${API_URL}/archive-data/${id}`)
+
 
 //ARCHIVE
 export const getArchiveWorkspace = () => axios.get(`${API_URL}/archive-workspace`)
@@ -1014,6 +1027,17 @@ export const getActivityForUserId = (userId) => axios.get(`${API_URL}/user-log/$
 export const getActivityCard = (cardId) => axios.get(`${API_URL}/activity-card/card/${cardId}`)
 
 //'/api/activity-logs/user/:userId'
+
+// DELETE PERMANENT ITEM
+export const deleteBoardPermanently = (id) => axios.delete(`${API_URL}/recycle-delete/boards/${id}`)
+export const deleteListPermanently = (id) => axios.delete(`${API_URL}/recycle/lists/${id}/permanent`)
+export const deleteCardPermanently = (id) => axios.delete(`${API_URL}/recycle/card/${id}`)
+export const deleteMarketingPermanently = (id) => axios.delete(`${API_URL}/recycle/marketing/${id}`)
+export const deleteMarketingDesignPermanently = (id) => axios.delete(`${API_URL}/recycle/marketing-design/${id}`)
+
+// GET PREVIEW DATA DELETE 
+export const getPreviewDataDelete = (entity_type, entity_id) => axios.get(`${API_URL}/deleted-preview/${entity_type}/${entity_id}`)
+
 
 
 //CHAT ROOM

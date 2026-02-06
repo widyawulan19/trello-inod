@@ -288,3 +288,25 @@ export const uploadChatMedia = async (chatId, file) => {
     },
   });
 };
+
+app.get('/api/workspaces/:workspaceId/workspace-board', async (req, res) => {
+  const { workspaceId } = req.params;
+
+  try {
+    const result = await client.query(
+      `
+            SELECT *
+            FROM boards
+            WHERE workspace_id = $1
+              AND is_deleted = FALSE
+            ORDER BY position ASC
+            `,
+      [workspaceId]
+    );
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error fetching boards:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
