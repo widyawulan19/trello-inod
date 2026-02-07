@@ -1,29 +1,46 @@
 .view-dm-container {
     position: relative;
+    padding: 1px;
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    /* border: 1px solid red; */
 }
 
-.view-dm-container .vdm-header {
+/* =======================
+HEADER
+======================= */
+
+.view-dm-container .vmd-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
     padding: 10px;
+    padding-bottom: 5px;
+    gap: 5px;
+    /* width: 100%; */
     font-size: 12px;
     position: sticky;
-    color: white;
-    background: var(--primary);
+    color: var(--primary);
+    background: var(--table-header-bg);
+    /* background: var(--primary); */
 }
 
-.vdm-header .vdm-left {
-    color: var(--text-white);
-    border: 1px solid green !important;
+/* =======================
+HEADER LEFT
+======================= */
+
+.vmd-header .vdm-left {
+    /* color: var(--text-white); */
+    /* width: 50% !important; */
+    /* border: 1px solid green !important; */
 }
 
 .vdm-left h4 {
     margin: 0px;
     font-size: 12px;
-    color: var(--text-white);
+    /* color: var(--text-white); */
     font-weight: bold;
 }
 
@@ -32,100 +49,83 @@
     margin: 0px;
     font-size: 12px;
     font-weight: bold;
+    /* color: var(--text-white) !important; */
 }
 
-.vdm-center .cc-btn {
-    border: 1px solid var(--primary);
-    /* background: linear-gradient(to bottom, #042887, #051937); */
+/* =======================
+HEADER CENTER
+======================= */
+
+.vdm-center {
+    /* width: 100%; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0px;
+
+    position: relative;
+}
+
+.vdm-center .export-button {
+    /* border: 1px solid red; */
+    /* width: fit-content; */
+    /* width: 70%; */
+    display: flex;
+    justify-content: center;
+    gap: 0px;
+}
+
+
+/* TRANSFILE  */
+.btn-transfile {
+    /* border: 1px solid var(--primary);
+    border-radius: 6px; */
+
+    background: var(--table-header-bg);
+    border: 1px solid var(--border);
+    /* border: 1px solid var(--table-header-bg); */
+    color: var(--text);
+    /* font-weight: bold !important; */
+
+    padding: 3px 7px;
+    font-size: 12px;
+    /* width: 100%; */
+    gap: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* CREATE BTN  */
+.cc-btn {
+    /* border: 1px solid var(--primary);
     background-color: var(--primary);
     color: white;
-    font-weight: normal;
+    border-radius: 6px */
+
+    background: var(--table-header-bg);
+    border: 1px solid var(--border);
+    /* border: 1px solid var(--table-header-bg); */
+    color: var(--text);
+    /* font-weight: bold; */
     padding: 7px;
     gap: 2px;
     font-size: 12px;
-    border-radius: 6px;
+    ;
     cursor: pointer;
-    /* margin: ; */
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
 }
 
-.vdm-header .cc-btn:hover {
+.cc-btn:hover {
     box-shadow: var(--box-shadow);
     background-color: var(--primary-soft);
 }
 
-
-/* =======================
-BUTTON ACTION
-======================= */
-
-.vdm-center {
-    /* border: 1px solid red; */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0px;
-}
-
-/* =======================
-TRANSFILE BUTTON
-======================= */
-.vdm-center .export-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid red;
-    width: fit-content;
-}
-
-
-.export-button button {
-    padding: 5px 8px !important;
-    font-size: 10px !important;
-    font-weight: normal;
-    border: 1px solid var(--primary);
-    border-radius: 6px;
-    width: 100%;
-    gap: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.export-button .btn-transsile {
-    padding: 5px 8px !important;
-    font-size: 10px !important;
-    font-weight: normal;
-    border: 1px solid var(--primary);
-    border-radius: 6px;
-    width: 100% !important;
-    gap: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.vdm-right {
-    /* border: 1px solid red; */
-    display: flex;
-    /* flex-direction: column; */
-    align-items: center;
-    justify-content: center;
-}
-
-/* =======================
-CARD STATUS
-======================= */
-
-.export .card-status-musik {
-    /* border: 1px solid red; */
-}
-
-
-.card-status-musik .created {
+/* CARD STATUS  */
+.created {
     border: 1px solid var(--primary);
     border-radius: 6px;
     font-size: 12px;
@@ -140,19 +140,20 @@ CARD STATUS
     justify-content: center;
 }
 
-.card-status-musik .created:hover {
+.cc-btn .created:hover {
     box-shadow: var(--box-shadow);
     background-color: var(--primary-soft);
 }
 
-.card-status-musik .uncreated {
+.cc-btn .uncreated {
     border: 1px solid var(--status-rejected-border);
     padding: 5px 8px;
     gap: 5px;
     font-size: 12px;
     font-weight: normal;
     border-radius: 6px;
-    color: var(--status-rejected-border);
+    color: var(--text-white);
+    /* color: var(--status-rejected-border); */
     cursor: pointer;
     font-weight: bold;
     background: var(--status-rejected-bg);
@@ -162,183 +163,231 @@ CARD STATUS
     justify-content: center;
 }
 
+/* FORM CREATE CARD  */
 .vdm-form {
-    padding: 2px;
-    border-radius: 4px;
-    /* background-color: #333; */
     position: absolute;
-    z-index: 100;
+    top: 100%;
     right: 0;
-    top: 80%;
-    width: 400px;
-    height: 500px;
-    /* background-color: red; */
-}
-
-.vdm-icon {
-    cursor: pointer;
-    font-size: 20px;
-}
-
-.vdm-icon:hover {
-    color: #042887;
-}
-
-/* BODY  */
-.view-dm-container .vdm-body {
+    z-index: 100;
+    width: 100%;
     /* border: 1px solid red; */
+}
+
+/* =======================
+HEADER RIGHT    
+======================= */
+.vdm-right {
+    /* border: 1px solid red; */
+}
+
+.vdm-right .vdm-icon {
+    color: var(--text);
+    font-size: 15px;
+}
+
+/* =========================================================
+   BODY CONTAINER
+   ========================================================= */
+
+.view-dm-container .vdm-body {
+    /* Area utama body */
     height: 80vh;
     min-height: 50vh;
     max-height: 90vh;
+
     padding: 10px;
     padding-top: 5px;
+
+    /* Scroll vertikal */
     overflow-y: auto;
 }
 
+
+/* =========================================================
+   SECTION (SEC)
+   ========================================================= */
+
 .vdm-body .sec {
-    border: 1px solid #eee;
-    border-radius: 8px;
+    /* Container setiap section */
     padding: 15px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     margin: 15px 10px;
 }
 
-.sec .h5 {
-    font-weight: bold !important;
-    margin: 0px;
+.vdm-body h4 {
+    /* Judul section */
+    font-weight: bold;
+}
+
+.vdm-body h4,
+.vdm-body p {
+    /* Text default */
+    margin: 0;
     font-size: 12px;
-}
-
-.sec .sec-content-link {
-    /* border: 1px solid blue; */
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    padding: 5px;
-    gap: 5px;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
-
-.sec-content-link .box {
-    /* border: 1px solid red; */
-    width: 100%;
-    margin: 5px 0px;
-}
-
-.box .box1-ref {
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    padding: 5px;
-    margin-top: 3px;
-    font-size: 12px;
-    width: 100%;
-    max-width: 100%;
-    /* biar ga lebih dari container */
-    overflow-wrap: break-word;
-    /* pecah kata panjang */
-    word-wrap: break-word;
-    /* support lama */
-    word-break: break-word;
-    /* biar paksa turun */
-    white-space: normal;
-}
-
-.box1-ref a {
-    color: #1a73e8;
-    /* biru khas link */
-    text-decoration: underline;
-    /* kasih underline */
-    font-weight: 500;
-    /* opsional biar lebih jelas */
-}
-
-.box1-ref a:hover {
-    color: #0c47a1;
-    /* warna saat hover */
+    color: var(--sub-text);
 }
 
 
-.sec .sec-content {
-    border: 1px solid white;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    padding: 5px;
-    gap: 5px;
+/* =========================================================
+   SECTION CONTENT (GRID)
+   ========================================================= */
+
+.sec .sec-container {
+    /* Grid konten utama */
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    /* grid-column: 10px; */
-    /* margin-bottom: 10px; */
+    gap: 5px;
+
+    padding: 5px;
     height: 100%;
+
+    border: 1px solid var(--card-bg);
+    border-top: 1px solid var(--border);
 }
 
 
-.sec-content .box {
-    /* border: 1px solid yellow; */
-    margin: 5px;
+/* =========================================================
+   SECTION CONTENT - LINK (COLUMN)
+   ========================================================= */
+
+.sec .sec-container-link {
+    /* Khusus konten link */
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    padding: 5px;
+    /* border-radius: 4px; */
+    height: 100%;
+    border: 1px solid var(--card-bg);
+    border-top: 1px solid var(--border);
+}
+
+
+/* =========================================================
+   BOX (ITEM)
+   ========================================================= */
+
+.sec-container .box,
+.sec-container-link .box {
+    /* Item dalam section */
     width: 100%;
+    margin: 5px 0;
 }
 
 .box p {
+    /* Label text */
     font-size: 10px;
-    color: #333;
+    color: var(--sub-text);
 }
 
+
+/* =========================================================
+   BOX CONTENT (BOX1)
+   ========================================================= */
+
 .box .box1 {
-    border: 1px solid #ddd;
+    /* Box value biasa */
+    background-color: var(--bg-section-hover);
+    border: 1px solid var(--bg-section-hover);
     border-radius: 6px;
+
     padding: 5px;
     margin-top: 3px;
+
     width: 100%;
     max-width: 100%;
-    /* biar ga lebih dari container */
+
+    /* Biar text panjang tidak overflow */
     overflow-wrap: break-word;
-    /* pecah kata panjang */
     word-wrap: break-word;
-    /* support lama */
     word-break: break-word;
-    /* biar paksa turun */
     white-space: normal;
 }
 
-.box .box1-des {
-    /* border: 1px solid red; */
-    padding: 5px;
-    width: 100%;
+.box .box1:hover {
+    box-shadow: var(--box-shadow) !important;
 }
 
 .box1 p {
-    color: #333;
+    /* Text value */
     font-size: 12px;
+    color: var(--sub-text);
 }
 
+
+/* =========================================================
+   BOX CONTENT - LINK / REF
+   ========================================================= */
+
+.box .box1-ref {
+    /* Box untuk link */
+    background-color: var(--bg-section-hover);
+    border: 1px solid var(--bg-section-hover);
+    border-radius: 6px;
+
+    padding: 5px;
+    margin-top: 3px;
+
+    width: 100%;
+    max-width: 100%;
+    color: var(--sub-text);
+    font-size: 12px;
+
+    /* Biar text panjang tidak overflow */
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
+}
+
+.box1-ref a,
 .box1 a {
+    /* Link styling */
     color: #1a73e8;
-    /* biru khas link */
     text-decoration: underline;
-    /* kasih underline */
     font-weight: 500;
-    /* opsional biar lebih jelas */
 }
 
+.box1-ref a:hover,
 .box1 a:hover {
+    /* Hover link */
     color: #0c47a1;
-    /* warna saat hover */
 }
+
+
+/* =========================================================
+   HOVER EFFECT
+   ========================================================= */
 
 .box1:hover {
+    /* Hover efek box */
     border: 1px solid #6f30dc47;
     box-shadow: 0px 4px 8px #6f30dc54;
 }
 
+
+/* =========================================================
+   DESCRIPTION SECTION
+   ========================================================= */
+
 .sec-desc-content {
-    /* border: 1px solid red; */
-    border-radius: 4px;
+    /* Container deskripsi */
     padding: 5px;
-    padding-left: 0px;
+    padding-left: 0;
+    /* border-radius: 4px; */
+    border-top: 1px solid var(--border);
 }
+
+.box .box1-des {
+    /* Wrapper description lama */
+    padding: 5px;
+    width: 100%;
+}
+
+
+/* =======================
+END BODY MAIN
+======================= */
 
 /* FORM CREATE CARD MARKERING */
 
@@ -375,7 +424,7 @@ CARD STATUS
 
 /* ukuran handpone besar */
 @media (min-width: 576px) and (max-width: 767.98px) {
-    .sec .sec-content {
+    .sec .sec-container {
         grid-template-columns: repeat(2, 1fr);
         gap: 5px;
     }
@@ -410,7 +459,7 @@ CARD STATUS
         margin-bottom: 5px;
     }
 
-    .sec .sec-content {
+    .sec .sec-container {
         display: flex;
         flex-direction: column;
         align-items: center;

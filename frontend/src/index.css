@@ -39,6 +39,8 @@ code {
   --logo-bg-gradient: var(--bg-icon2);
   /* --logo-bg: #4B42A6; */
 
+  --icon1: var(--primary);
+
   /* TABEL  */
   --table-header-bg: #EEF2FF;
   /* indigo-950-ish */
@@ -215,7 +217,8 @@ code {
   --border: #2F3440;
   --border-sec: #5D12EB;
 
-  --text: #BBBEC2;
+  /* --text: #BBBEC2; */
+  --text: #FFFFFF;
   --sub-text: #DEE1E6;
   --sub-text2: #FFFFFF;
   --text-white: #FFFFFF;
@@ -228,6 +231,8 @@ code {
   --logo-bg: #171A1F;
   --logo-bg-gradient: #171A1F;
   /* --card-bg: #14171D; */
+
+  --icon1: #DEE1E6;
 
   /* TABLE  */
 
@@ -283,8 +288,8 @@ code {
   --status-progress-border: #FBBF24;
   --status-progress-text: #FEF3C7;
 
-  --status-rejected-bg: rgba(239, 68, 68, 0.2);
-  --status-rejected-border: #F87171;
+  --status-rejected-bg: rgba(132, 38, 38, 0.931);
+  --status-rejected-border: #ae3232;
   --status-rejected-text: #FECACA;
 
   --status-unknown-bg: rgba(156, 163, 175, 0.2);

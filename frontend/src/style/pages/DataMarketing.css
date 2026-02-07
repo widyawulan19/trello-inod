@@ -603,6 +603,76 @@
 
 /* END EDIT DATA MAREKTING  */
 
+/* =======================
+ARCHIVE MODAL
+======================= */
+.archive-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.archive-modal-overlay .archive-modal {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+
+  padding: 24px;
+  width: 360px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+
+.archive-modal h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+  font-weight: 600;
+  width: 100%;
+  color: var(--text);
+  text-align: center;
+}
+
+.archive-modal p {
+  font-size: 12px;
+  color: var(--sub-text);
+  margin-bottom: 20px;
+  text-align: center;
+  padding: 0px;
+}
+
+.modal-archive-action {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.btn-cancel {
+  background: #f3f4f6;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-danger {
+  background: #dc2626;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-danger:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
 
 /* DROPDOWN  */
 .show-data-container {

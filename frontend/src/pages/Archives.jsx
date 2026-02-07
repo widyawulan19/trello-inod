@@ -101,7 +101,7 @@ const fetchOrderTypes = async () => {
      await handleRestoreArchive({
          entity: restoreTarget.entity_type,
          id: restoreTarget.entity_id,
-         refetch: fetchArchiveData,
+         refetch: () => fetchArchiveData(selectedType),
          showSnackbar,
      });
  
@@ -399,6 +399,9 @@ const fetchOrderTypes = async () => {
     //1. fungsi untuk mengembil data berdasarkan entity yang dipilih
     const fetchArchiveData = async(type) =>{
         try{
+            setLoading(true);
+            setError(null);
+
             let response;
             if(type === 'workspace'){
                 // response = await getArchiveWorkspace();
@@ -416,11 +419,16 @@ const fetchOrderTypes = async () => {
             }else if(type === 'marketing_design'){
                 response = await getMarketingDesignArchive();
             }
-            setArchiveData(response.data);
-            setFilteredData(response.data);
+
+            const data = response?.data?? [];
+
+            setArchiveData(data);
+            setFilteredData(data);
         }catch(error){
-            setError('Error fetching archive data');
-            console.error(error)
+            console.error(error);
+            setError('Gagal mengambil data archive');
+            setArchiveData([]);
+            setFilteredData([]);
         }finally{
             setLoading(false)
         }
@@ -480,7 +488,7 @@ const fetchOrderTypes = async () => {
       }, [selectedType]);
     
       if (loading) return <LoadingSpinnerDot text='Load data archive, please wait'/>;
-      if (error) return <p>{error}</p>;
+
     
 
   return (
@@ -577,7 +585,7 @@ const fetchOrderTypes = async () => {
             <div className="archive-data-table">
                 <div className="archive-show-data">
                     {filteredData.length === 0 ?(
-                        <p>No archived {selectedType}s found.</p>
+                        <p className='no-data'>No archived {selectedType}s found.</p>
                     ):(
                         <table>
                             <thead>

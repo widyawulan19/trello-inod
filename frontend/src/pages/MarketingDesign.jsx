@@ -18,7 +18,7 @@ import {
 import '../style/pages/MarketingDesign.css'
 import BootstrapTooltip from '../components/Tooltip';
 import { CgDatabase, CgDollar } from "react-icons/cg";
-import { IoEyeSharp } from "react-icons/io5";
+import { IoCheckmarkDone, IoEyeSharp } from "react-icons/io5";
 import {
   HiAdjustmentsHorizontal,
   HiArrowsUpDown, HiChevronDown, HiChevronUp, HiChevronUpDown,
@@ -47,6 +47,8 @@ import { MdLockReset } from 'react-icons/md';
 import ResetCounterDesign from '../fitur/ResetCounterDesgin';
 import LoadingSpinnerDot from '../utils/LoadingSpinnerDot';
 import SearchSugesstion from '../fitur/SearchSugesstion';
+import { useUser } from '../context/UserContext';
+
 
 /* ---------------------------
   Memoized Row Component
@@ -54,6 +56,7 @@ import SearchSugesstion from '../fitur/SearchSugesstion';
    - expects stable props (useCallback in parent helps)
 ----------------------------*/
 const MarketingDesignRow = memo(({
+  userId,
   item,
   index,
   isExported,
@@ -61,9 +64,12 @@ const MarketingDesignRow = memo(({
   handleShowDetail,
   handleShowEdit,
   handleArchiveDataMarketingDesign,
+  handleArchiveConfirm,
   handleDeleteClick,
   hasCardId,
   STATUS_CLASS,
+  // handleShowArchiveModal ,
+  handleShowArchiveModal,
   STATUS_BG,
   STATUS_COLORS
 }) => {
@@ -122,10 +128,10 @@ const MarketingDesignRow = memo(({
         <button
           disabled={isExported}
           className={`check-btn ${
-            isExported ? "success" : "active"
+            isExported ? "success" : "unsuccess"
           } ${isExported ? "disabled" : ""}`}
         >
-          <AiFillCheckCircle />
+          <IoCheckmarkDone />
         </button>
 
         
@@ -179,7 +185,9 @@ const MarketingDesignRow = memo(({
           </BootstrapTooltip>
 
           <BootstrapTooltip title='Archive Data' placement='top'>
-            <button className='btn-action-icon' onClick={()=>handleArchiveDataMarketingDesign(item.marketing_design_id)}>
+            {/* <button className='btn-action-icon' onClick={()=>handleArchiveDataMarketingDesign(item.marketing_design_id)}> */}
+            <button className='btn-action-icon' onClick={() => handleShowArchiveModal(item.marketing_design_id)}>
+              
               <HiOutlineArchiveBox/>
             </button>
           </BootstrapTooltip>
@@ -199,6 +207,9 @@ const MarketingDesignRow = memo(({
   Main Component
 ----------------------------*/
 const MarketingDesign = () => {
+  //USER STATE
+  const {user} = useUser();
+  const userId = user?.id;
   // STATE
   const [dataMarketingDesign, setDataMarketingDesign] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
@@ -227,6 +238,37 @@ const MarketingDesign = () => {
   const [isExported, setIsExported] = useState(false);
   const [designTransfile, setDesignTransfile] = useState([]);
   const [showFormCounter, setShowFormCounter] = useState(false);
+
+  //ARCHIVE CONFIRM
+  // const [showArchiveModal, setShowArchiveModal] = useState(false);
+  const [archiveTarget, setArchiveTarget] = useState(null);
+  const [showArchiveModal, setShowArchiveModal] = useState(false);
+
+  const handleShowArchiveModal = (marketing_design_id) =>{
+    setArchiveTarget(marketing_design_id)
+    setShowArchiveModal(true)
+  }
+
+
+
+  const handleCloseArchiveModal = () =>{
+    setArchiveTarget(null);
+    setShowArchiveModal(false);
+  }
+
+  const handleArchiveConfirm = async(userId) =>{
+    if(!archiveTarget) return;
+
+    await handleArchive({
+      entity:'marketing_design',
+      id:archiveTarget,
+      userId: userId,
+      refetch: fetchData,
+      showSnackbar:showSnackbar,
+    });
+
+    handleCloseArchiveModal();
+  }
 
   // FILTER STATE
   const [filters, setFilters] = useState({
@@ -393,14 +435,14 @@ const MarketingDesign = () => {
     setSelectedMarketingDesign(null);
   }, []);
 
-  const handleArchiveDataMarketingDesign = useCallback((marketing_design_id) => {
-    handleArchive({
-      entity:'marketing_design',
-      id:marketing_design_id,
-      refetch: fetchData,
-      showSnackbar
-    });
-  }, [fetchData, showSnackbar]);
+  // const handleArchiveDataMarketingDesign = useCallback((marketing_design_id) => {
+  //   handleArchive({
+  //     entity:'marketing_design',
+  //     id:marketing_design_id,
+  //     refetch: fetchData,
+  //     showSnackbar
+  //   });
+  // }, [fetchData, showSnackbar]);
 
   // Stable handlers passed to rows
   const handleMove = useCallback(async (id, direction) => {
@@ -498,31 +540,6 @@ const MarketingDesign = () => {
     "CONFIRMED": "confirmed",
   };
 
-
-  // const STATUS_COLORS = useMemo(() => ({
-  //   "ACCEPTED ":'#2E7D32',
-  //   "NOT ACCEPTED":'#C62828',
-  //   "ON PROGRESS":'#C38D24',
-  //   "UNKNOWN":'#F5F5F5',
-  //   "CONFIRMED": "#1565C0"
-  // }), []);
-
-  // const STATUS_BG = useMemo(() => ({
-  //   "ACCEPTED ": "rgba(200, 230, 201, 0.4)",    // #C8E6C9
-  //   "NOT ACCEPTED": "rgba(255, 205, 210, 0.4)", // #FFCDD2
-  //   "ON PROGRESS": "rgba(255, 220, 179, 0.4)",  // #FFDCB3
-  //   "UNKNOWN": "rgba(158, 158, 158, 0.4)",      // #9E9E9E
-  //   "CONFIRMED": "rgba(187, 222, 251, 0.4)",    // #BBDEFB
-  //   }), []);
-
-
-  // const STATUS_BG = useMemo(() => ({
-  //   "ACCEPTED ":'#C8E6C9',
-  //   "NOT ACCEPTED":'#FFCDD2',
-  //   "ON PROGRESS":'#FFDCB3',
-  //   "UNKNOWN":"#9E9E9E",
-  //   "CONFIRMED": "#BBDEFB"
-  // }), []);
 
   // UI render
   return (
@@ -685,10 +702,11 @@ const MarketingDesign = () => {
                       handleMove={handleMove}
                       handleShowDetail={handleShowDetail}
                       handleShowEdit={handleShowEdit}
-                      handleArchiveDataMarketingDesign={handleArchiveDataMarketingDesign}
                       handleDeleteClick={(id) => { setSelectedMarketingDesign(id); setShowDeleteConfirm(true); }}
                       hasCardId={hasCardId}
                       STATUS_CLASS={STATUS_CLASS}
+                      handleArchiveConfirm={handleArchiveConfirm}
+                      handleShowArchiveModal={handleShowArchiveModal}
                       // STATUS_BG={STATUS_BG}
                       // STATUS_COLORS={STATUS_CLASS}
                     />
@@ -741,6 +759,26 @@ const MarketingDesign = () => {
                   <NewEditMarketingDesign marketingDesignId={selectedMarketingDesign} onClose={handleCloseEdit} fetchMarketingDesign={fetchData} />
                 </div>
               </div>
+            )}
+
+            {/* ARCHIVE CONFIRM  */}
+            {showArchiveModal && archiveTarget && (
+              <div className="archive-modal-overlay">
+                  <div className="archive-modal">
+                   <h3>Archive Data ?</h3>
+
+                   <p>
+                    Data ini akan dipindahkan ke <strong> Archive </strong> dan tidak lagi tampil di daftar aktif.
+                    Kamu masih bisa <strong>me-restore data ini kapan saja </strong>.
+                   </p>
+
+                   <div className="modal-archive-action">
+                    <button className='btn-cancel' onClick={handleCloseArchiveModal}>Tidak</button>
+                    <button className='btn-danger' onClick={() => handleArchiveConfirm(archiveTarget)}> Ya, Archive</button>
+                   </div>
+                    
+                  </div>
+                </div>
             )}
 
             <MarketingDesignDeleteConfirm

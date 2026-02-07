@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { isValidElement, useEffect, useState } from 'react'
 import { getAllLists, getDataMarketingById,getAllDataMarketingJoinedById, createCardFromMarketing, checkCardIdNullOrNot, exportDataMarketingToSheets, getMarketingWithExportStatus,checkMarketingExport ,addMarketingExport,addExportMarketing, getAllMarketingExports} from '../services/ApiServices';
 import { data, useNavigate, useParams } from 'react-router-dom';
 import '../style/pages/ViewDataMarketing.css'
@@ -7,14 +7,13 @@ import BootstrapTooltip from '../components/Tooltip';
 import OutsideClick from '../hook/OutsideClick';
 import FormCreateCardMarketing from '../fitur/FormCreateCardMarketing';
 import { useRouterContext } from '../context/RouteContext';
-import { FaXmark } from 'react-icons/fa6';
-import ExportDataMarketingId from '../exports/ExportDataMarketingId';
 import { useSnackbar } from '../context/Snackbar';
-import { AiFillCheckCircle } from 'react-icons/ai';
 import ReactQuill from 'react-quill-new';
 import "react-quill-new/dist/quill.snow.css";
 import { MdMarkEmailRead, MdMarkEmailUnread } from 'react-icons/md';
-import { IoCheckbox, IoCheckboxOutline } from 'react-icons/io5';
+import { TbArrowBigUpLines } from "react-icons/tb";
+import { IoCheckbox, IoCheckboxOutline, IoCheckmarkDone, IoCloseSharp } from "react-icons/io5";
+import { IoMdCloseCircle } from 'react-icons/io';
 
 
 const ViewDataMarketing=({marketingId, onClose, isExported, setIsExported,marketingTransfile, fetchDataTransfile,onExport})=> {
@@ -171,6 +170,17 @@ const modules = {
     "CONFIRMED": "#BBDEFB" 
   }
 
+  /* =======================
+  LINK HELPER
+  ======================= */
+  const idValidUrl = (string) =>{
+    try{
+      new URL(string);
+      return true;
+    }catch (_) {
+      return false;
+    }
+  }
 
 
   return (
@@ -184,56 +194,50 @@ const modules = {
           </p>
         </div>
         
-        <div className="vdm-center">
-          <div className="export-button">
-              <button
-              className='btn-transfile'
-                onClick={() => onExport(marketingId)}
-                disabled={marketingTransfile.some(exp => exp.marketing_id === marketingId)} // disable jika sudah di-transfile
-                style={{
-                  backgroundColor: marketingTransfile.some(exp => exp.marketing_id === marketingId) ? "#ccc" : "#1C7821",
-                  color: marketingTransfile.some(exp => exp.marketing_id === marketingId) ? "#666" : "#fff",
-                  cursor: marketingTransfile.some(exp => exp.marketing_id === marketingId) ? "not-allowed" : "pointer",
-                }}
-              >
-                {marketingTransfile.some(exp => exp.marketing_id === marketingId)
-                  ? <MdMarkEmailRead/>
-                  : <MdMarkEmailUnread/>
-                }
-                {marketingTransfile.some(exp => exp.marketing_id === marketingId)
-                  ? "SUDAH TRANSFILE"
-                  : "TRANSFILE TO SPREDSHEETs"}
-              </button>
-
-              <button className='cc-btn' onClick={()=> handleShowLists(marketingId)}>
-                <HiPlus/>
-                CREATE CARD
-              </button>
-
-              {/* CHECK CARD ID  */}
-              <div className="card-status-musik">
-                {loadingCardId ? (
-                  <p>Memeriksa...</p>
-                ): cardId ? (
-                  <button className='created'> <IoCheckbox/> CREATED</button>
-                ):(
-                  <button className='uncreated'> <IoCheckboxOutline/> NOT CREATED</button>
-                )}
-              </div>
-
-              {showList[marketingId]&& (
-                // <div ref={showListRef}>Marketing lists</div>
-                <div className='vdm-form'>
-                  <FormCreateCardMarketing marketingId={marketingId} onClose={() => handleShowClose(marketingId)}/>
-                </div>
-              )}
-          </div>
-        </div>
+       
         <div className="vdm-right">
-            <BootstrapTooltip title='Close' placement='top'>
-              <HiXMark onClick={onClose} className='vdm-icon'/>
+           <div className="vdm-action">
+                  <button 
+                    onClick={()=> handleShowLists(marketingId)}>
+                    {loadingCardId ? (
+                      <p>Memeriksa...</p>
+                    ): cardId ? (
+                      <p className='create-icon'><IoCheckmarkDone size={15}/> CREATED</p>
+                    ):(
+                      <p className='not-created-icon'> <IoCloseSharp size={15}/> NOT CREATED</p>
+                    )}
+                  </button>
+
+                  <button
+                      onClick={() => onExport(marketingId)}
+                      disabled={marketingTransfile.some(exp => exp.marketing_id === marketingId)} // disable jika sudah di-transfile
+                      style={{
+                        fontSize:'11px',
+                        cursor: marketingTransfile.some(exp => exp.marketing_id === marketingId) ? "not-allowed" : "pointer",
+                      }}
+                  >
+                    {marketingTransfile.some(exp => exp.marketing_id === marketingId)
+                      ? <IoCheckmarkDone size={15}/>
+                      : <TbArrowBigUpLines size={15}/>
+                    }
+                    {marketingTransfile.some(exp => exp.marketing_id === marketingId)
+                      ? "TRANSFERED "
+                      : "TRANSFER TO SPREADSHEET"}
+                  </button>
+
+                  {showList[marketingId]&& (
+                    // <div ref={showListRef}>Marketing lists</div>
+                    <div className='vdm-form'>
+                      <FormCreateCardMarketing marketingId={marketingId} onClose={() => handleShowClose(marketingId)}/>
+                    </div>
+                  )}
+            </div>
+          <div className="close-header-icon">
+             <BootstrapTooltip title='Close' placement='top'>
+              <IoMdCloseCircle onClick={onClose} className='vdm-icon'/>
             </BootstrapTooltip>
           </div>
+        </div>
       </div>
 
       
@@ -424,7 +428,32 @@ const modules = {
               <div className='box1-ref'>
                 <a href={dataMarketings.file_and_chat_link} target="_blank" rel="noopener noreferrer">{dataMarketings.file_and_chat_link}</a>
               </div>
-            </div>
+                {/* <div className="box-ref">
+                  {isValidElement(dataMarketings?.file_and_chat || "-") ? (
+                    <a
+                      href={dataMarketings?.file_and_chat || "-"}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        color: '#1d4ed8',        // biru-500 (Tailwind vibe)
+                        textDecoration: 'none',
+                        fontWeight: '500',
+                        fontSize:'12px',
+                        // border:'1px solid red',
+                        wordWrap:'break-word',
+                        whiteSpace:'normal',
+                        overflowWrap:'break-word'
+                      }}
+                      onMouseOver={(e) => e.currentTarget.style.textDecoration = 'underline'}
+                      onMouseOut={(e) => e.currentTarget.style.textDecoration = 'none'}
+                    >
+                      {dataMarketings?.file_and_chat || "-"}
+                    </a>
+                  ) : (
+                    <p>{dataMarketings?.file_and_chat || "-"}</p>
+                  )}
+                </div>*/}
+              </div> 
             
             <div className="box" style={{width:'100%', padding:'0px 5px'}}>
               <p>Reference Link</p>
@@ -446,22 +475,12 @@ const modules = {
           <h4>PROJECT DESCRIPTION</h4>
           <div className="sec-desc-content">
             <div className="box" style={{width:'100%', padding:'0px 5px', display:'flex', alignItems:'center', justifyContent:'center'}}>
-              
-              {/* <ReactQuill
-                className='my-editor'
-                value={dataMarketings.detail_project || ""}
-                readOnly={true}
-                theme="snow"
-                modules={{toolbar: false }}
-                style={{ minHeight: "150px", backgroundColor: "#f9f9f9", borderRadius: "6px" }}
-              /> */}
+   
               <ReactQuill
                 className='my-detail-editor'
                 value={dataMarketings.detail_project || ""}
-                // readOnly={true}
                 theme="snow"
                 modules={{toolbar: false }}
-                // style={{ minHeight: "150px", backgroundColor: "#f9f9f9", borderRadius: "6px" }}
               />
             </div>
           </div>

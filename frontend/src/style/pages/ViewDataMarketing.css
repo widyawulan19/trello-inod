@@ -16,14 +16,15 @@ HEADER
     justify-content: space-between;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
-    padding: 10px;
+    padding: 10px 15px;
+    padding-bottom: 5px;
     gap: 5px;
     /* width: 100%; */
     font-size: 12px;
     position: sticky;
-    color: white;
-    /* background: var(--table-header-bg); */
-    background: var(--primary);
+    color: var(--primary);
+    background: var(--table-header-bg);
+    /* background: var(--primary); */
 }
 
 /* =======================
@@ -31,15 +32,15 @@ HEADER LEFT
 ======================= */
 
 .vmd-header .vdm-left {
-    color: var(--text-white);
+    /* color: var(--text-white); */
     /* width: 50% !important; */
     /* border: 1px solid green !important; */
 }
 
 .vdm-left h4 {
     margin: 0px;
-    font-size: 12px;
-    color: var(--text-white);
+    font-size: 14px;
+    color: var(--text);
     font-weight: bold;
 }
 
@@ -48,115 +49,82 @@ HEADER LEFT
     margin: 0px;
     font-size: 12px;
     font-weight: bold;
+    /* color: var(--text-white) !important; */
 }
 
 /* =======================
-HEADER CENTER
+HEADEr RIGHT
 ======================= */
-
-.vdm-center {
-    /* width: 100%; */
+.vdm-right {
+    gap: 5px;
+    /* border: 1px solid blue; */
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 0px;
+    justify-content: flex-end;
 }
 
-.vdm-center .export-button {
+.vdm-action {
     /* border: 1px solid red; */
-    /* width: fit-content; */
-    /* width: 70%; */
+    margin-right: 10px;
+    gap: 3px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0px;
 }
 
-
-/* TRANSFILE  */
-.btn-transfile {
-    padding: 7px;
+.vdm-action button {
+    gap: 5px;
+    border: 1px solid var(--table-header-bg);
+    background-color: var(--table-header-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 12px;
-    font-weight: normal;
-    border: 1px solid var(--primary);
-    border-radius: 6px;
-    /* width: 100%; */
+    color: var(--text);
+}
+
+.vdm-action button:hover {
+    box-shadow: var(--box-shadow);
+    border: 1px solid var(--border);
+    background-color: var(--primary);
+    color: var(--text-white) !important;
+}
+
+.vdm-action p {
     gap: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-/* CREATE BTN  */
-.cc-btn {
-    border: 1px solid var(--primary);
-    background-color: var(--primary);
-    color: white;
-    font-weight: normal;
-    padding: 7px;
-    gap: 2px;
     font-size: 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
+    color: var(--icon1);
 }
 
-.cc-btn:hover {
-    box-shadow: var(--box-shadow);
-    background-color: var(--primary-soft);
+.vdm-action p:hover {
+    color: var(--text-white) !important;
 }
 
 /* CARD STATUS  */
-.card-status-musik .created {
-    border: 1px solid var(--primary);
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: normal;
-    padding: 5px 8px;
-    gap: 5px;
-    color: #fff;
+.create-icon {
+    color: var(--icon1);
     cursor: not-allowed;
-    background-color: var(--primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.card-status-musik .created:hover {
-    box-shadow: var(--box-shadow);
-    background-color: var(--primary-soft);
-}
-
-.card-status-musik .uncreated {
-    border: 1px solid var(--status-rejected-border);
-    padding: 5px 8px;
-    gap: 5px;
-    font-size: 12px;
-    font-weight: normal;
-    border-radius: 6px;
-    color: var(--status-rejected-border);
-    cursor: pointer;
-    font-weight: bold;
-    background: var(--status-rejected-bg);
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* =======================
-HEADER RIGHT    
-======================= */
-.vdm-right {
-    /* border: 1px solid red; */
-}
-
-.vdm-right .vdm-icon {
-    color: var(--text-white);
     font-size: 15px;
+}
+
+.create-icon:hover {
+    color: var(--text-white);
+}
+
+.not-created-icon {
+    cursor: pointer;
+    font-size: 15px;
+}
+
+
+/* CLOSE ICON  */
+.vdm-icon {
+    color: var(--icon1);
+    font-size: 20px;
+    cursor: pointer;
 }
 
 /* =========================================================
@@ -317,15 +285,19 @@ HEADER RIGHT
 .box1-ref a,
 .box1 a {
     /* Link styling */
-    color: #1a73e8;
+    color: #583ec4;
+    background-color: #c9cdfc;
     text-decoration: underline;
     font-weight: 500;
+    border-radius: 4px;
+    padding: 3px 5px;
+    cursor: pointer;
 }
 
 .box1-ref a:hover,
 .box1 a:hover {
     /* Hover link */
-    color: #0c47a1;
+    background-color: #e1e4fe;
 }
 
 

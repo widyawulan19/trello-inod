@@ -384,12 +384,12 @@
     font-size: 16px;
 }
 
-.check-btn.active {
-    color: var(--check-active);
-    background-color: none;
+.check-btn.unsuccess {
+    display: none;
 }
 
 .check-btn.success {
+    /* color: red; */
     color: var(--check-success);
 }
 
