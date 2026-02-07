@@ -12,7 +12,7 @@ import FormDataMarketing from "./FormDataMarketing";
 import { useSnackbar } from "../context/Snackbar";
 import DataMarketingDeleteConfirm from "../modals/DataMarketingDeleteConfirm";
 import OutsideClick from "../hook/OutsideClick";
-import { IoEyeSharp } from "react-icons/io5";
+import { IoCheckmarkDone, IoEyeSharp } from "react-icons/io5";
 import { handleArchive } from "../utils/handleArchive";
 import ExportDataMarketing from "../exports/ExportDataMarketing";
 import { FaXmark } from "react-icons/fa6";
@@ -75,6 +75,10 @@ const DataMarketing = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [shortType, setShortType] = useState('');
   const [showCounterReset, setShowCounterReset] = useState(false);
+
+  //ARCHIVE CONFIRM
+  const [showArchiveConfirmModal, setShowArchiveConfirmModal] = useState(false);
+  const [archiveTarget, setArchiveTarget] = useState(null);
 
   // FUNGSI SHOW FORM RESET COUNTER 
   const handleShowCounterReset = () =>{
@@ -296,16 +300,34 @@ const fetchDataMarketing = async()=>{
     }
   };
 
-//archive data
-const handleArchiveDataMarketing = useCallback((marketing_id)=>{
-  handleArchive({
+/* =======================
+ARCHIVE FUNCTION
+======================= */
+
+// MODAL ARCHIVE 
+const handleShowArchiveModal = (marketing_id) =>{
+  setArchiveTarget(marketing_id);
+  setShowArchiveConfirmModal(true)
+}
+
+const handleCloseArchiveModal = ()=>{
+  setArchiveTarget(null);
+  setShowArchiveConfirmModal(false)
+}
+
+const confirmArchive = async()=>{
+  if(!archiveTarget) return;
+  
+  await handleArchive({
     entity:'data_marketing',
-    id: marketing_id,
+    id: archiveTarget,
     userId: userId,
     refetch: fetchDataMarketing,
     showSnackbar: showSnackbar,
   })
-});
+
+  handleCloseArchiveModal();
+}
 
 
 //fungsi filtered data
@@ -688,10 +710,10 @@ const handleExportToSheets = async (marketingId) => {
                       <button
                         disabled={isExported}
                         className={`check-btn ${
-                          isExported ? "success" : "active"
+                          isExported ? "success" : "unsuccess"
                         } ${isExported ? "disabled" : ""}`}
                       >
-                        <AiFillCheckCircle />
+                        <IoCheckmarkDone />
                       </button>
                     </td>
 
@@ -725,7 +747,7 @@ const handleExportToSheets = async (marketingId) => {
                             : "-"}
                     </td>
                     <td className="project-type-box" >{item.project_type_name}</td>
-                    <td className="duration-box">{item.duration}</td>
+                    <td className="duration-cont">{item.duration}</td>
                     <td className="action-box">
                       <div className="action-data-marketing">
                         <BootstrapTooltip title='View Data' placement='top'>
@@ -737,8 +759,11 @@ const handleExportToSheets = async (marketingId) => {
                             <button onClick={() => handleShowEditForm(item.marketing_id)}><HiOutlinePencil/></button>
                         </BootstrapTooltip>
                         <BootstrapTooltip title='Archive Data' placement='top'>
-                             <button onClick={()=>handleArchiveDataMarketing(item.marketing_id)}>
-                               <HiOutlineArchiveBox style={{color:'white'}}/>
+                             {/* <button onClick={()=>handleArchiveDataMarketing(item.marketing_id)}>
+                               <HiOutlineArchiveBox/>
+                             </button> */}
+                             <button onClick={() => handleShowArchiveModal(item.marketing_id)}>
+                               <HiOutlineArchiveBox/>
                              </button>
                          </BootstrapTooltip>
                         <BootstrapTooltip title='Delete Data' placement='top'>
@@ -776,6 +801,25 @@ const handleExportToSheets = async (marketingId) => {
                             {/* <EditMarketingForm marketingId={selectedMarketingId} onClose={handleCloseEditForm} fetchDataMarketing={fetchDataMarketing}/> */}
                         </div>
                     </div>
+                )}
+                {/* ARCHIVE CONFIRM  */}
+                {showArchiveConfirmModal && archiveTarget && (
+                  <div className="archive-modal-overlay">
+                    <div className="archive-modal">
+                     <h3>Archive Data ?</h3>
+
+                     <p>
+                      Data ini akan dipindahkan ke <strong> Archive </strong> dan tidak lagi tampil di daftar aktif.
+                      Kamu masih bisa <strong>me-restore data ini kapan saja </strong>.
+                     </p>
+
+                     <div className="modal-archive-action">
+                      <button className='btn-cancel' onClick={handleCloseArchiveModal}>Tidak</button>
+                      <button className='btn-danger' onClick={() => confirmArchive(archiveTarget)}> Ya, Archive</button>
+                     </div>
+                      
+                    </div>
+                  </div>
                 )}
                 {/* DELETE CONFIRM */}
                 <DataMarketingDeleteConfirm

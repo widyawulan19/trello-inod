@@ -10,6 +10,7 @@ import CustomDropdownDesignEdit from '../marketing/CustomDropdownDesignEdit';
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import { HiXMark } from 'react-icons/hi2';
+import { IoMdCloseCircle } from 'react-icons/io';
 
 
 const initialFormState = {
@@ -275,6 +276,13 @@ console.log('data marketing design:', marketingDesignId);
     ],
   };
 
+  const linkify = (text) =>
+    text.replace(
+      /(https?:\/\/[^\s]+)/g,
+    '<a href="$1" target="_blank">$1</a>'
+  );
+
+
 
 
 
@@ -282,13 +290,17 @@ console.log('data marketing design:', marketingDesignId);
     <div className="em-container">
       <div className="em-header">
         <div className="em-left">
-          <RiEdit2Fill/>
-          <h4>EDIT DATA MARKETING DESIGN</h4> 
-           {form.style_id} | {form.buyer_name} | {form.account_name} | {get5LastChar(form.code_order)}
+          <div className="em-left-title">
+            <RiEdit2Fill/>
+            <h4>EDIT DATA MARKETING DESIGN</h4> 
+          </div>
+          <p>
+            {form.style_id} | {form.buyer_name} | {form.account_name} | {get5LastChar(form.code_order)}
+          </p>
         </div>
         <div className="em-right">
           <BootstrapTooltip title="Close Edit" placement='top'>
-               <HiXMark onClick={onClose} className='em-icon'/>
+               <IoMdCloseCircle onClick={onClose} className='em-icon'/>
            </BootstrapTooltip>
         </div>
       </div>
@@ -610,11 +622,20 @@ console.log('data marketing design:', marketingDesignId);
                     {/* FILE AND CHAT  */}
                     <div className="box-content">
                         <label>File and Chat</label>
-                        <input 
+                        {/* <input 
                             type="text" 
                             name='file_and_chat'
                             value={form.file_and_chat}
                             onChange={handleChange}
+                            // required
+                        /> */}
+                        <input 
+                            type="url" 
+                            name='file_and_chat'
+                            value={form.file_and_chat}
+                            onChange={handleChange}
+                            pattern="(https?://.*)?"
+                            placeholder="https://example.com"
                             // required
                         />
                     </div>

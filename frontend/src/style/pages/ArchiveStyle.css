@@ -213,6 +213,15 @@ DATA TABLE ARCHIVE
 
 }
 
+/* NO DATA  */
+.no-data {
+    font-size: 13px;
+    font-weight: bold;
+    width: 100%;
+    padding: 20px;
+    color: var(--sub-text);
+}
+
 .archive-data-table table {
     width: 95%;
     /* border: 1px solid red; */

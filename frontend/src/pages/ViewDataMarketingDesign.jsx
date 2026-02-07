@@ -10,7 +10,8 @@ import FormCreateCardDesign from '../fitur/FormCreateCardDesign'
 import ExportMarketingDesignById from '../exports/ExportMarketingDesignById';
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
-import { IoCheckbox, IoCheckboxOutline } from 'react-icons/io5';
+import { IoCheckbox, IoCheckboxOutline, IoCheckmarkDone, IoCloseSharp } from 'react-icons/io5';
+import { TbArrowBigUpLines } from 'react-icons/tb';
 
 
 const ViewDataMarketingDesign=({marketingDesignId, onClose, fetchMarketingDesign, handleExportToSheet, isExported,setIsExported, designTransfile, setDesignTransfile})=> {
@@ -186,6 +187,7 @@ const renderTextWithLinks = (text) => {
 
   return (
     <div className='view-md-container'>
+
       <div className="vmd-header">
         <div className="vmd-left">
           <h4>DETAIL DATA MARKETING DESIGN</h4>
@@ -193,54 +195,50 @@ const renderTextWithLinks = (text) => {
             {dataMarketingDesign.buyer_name} | {dataMarketingDesign.account_name} | {dataMarketingDesign.order_type_name} | {getLastFiveCodeOrder(dataMarketingDesign.code_order)}
           </p>
         </div>
-
-        {/* button action    */}
-        <div className="vmd-center">
-          <div className="export">
-            <button
-              onClick={() => handleExportToSheet(marketingDesignId)}
-              disabled={designTransfile.some(exp => exp.marketing_design_id === marketingDesignId)} 
-              style={{
-                backgroundColor: designTransfile.some(exp => exp.marketing_design_id === marketingDesignId) ? "#ccc" : "#1C7821",
-                color: designTransfile.some(exp => exp.marketing_design_id === marketingDesignId) ? "#666" : "#fff",
-                cursor: designTransfile.some(exp => exp.marketing_design_id === marketingDesignId) ? "not-allowed" : "pointer"
-              }}
-            >
-              {designTransfile.some(exp => exp.marketing_design_id === marketingDesignId)
-                ? <MdMarkEmailRead/>
-                : <MdMarkEmailUnread/>}
-              {designTransfile.some(exp => exp.marketing_design_id === marketingDesignId)
-                ? "SUDAH TRANSFILE"
-                : "TRANSFILE TO SPREDSHEET"}
-            </button>
-          </div>
-
-          <button className='create-btn-form' onClick={()=> showCreateForm(marketingDesignId)}>
-            <HiPlus/>
-            CREATE CARD
-          </button>
-          {showCardForm[marketingDesignId]&& (
-            <div className="vmd-form">
-              <FormCreateCardDesign marketingDesignId={marketingDesignId} onClose={()=> handleCloseForm(marketingDesignId)}/>
-            </div>
-          )}
-
-          <div className="card-status">
-              {loadingCardId ? (
-                <p>Memeriksa...</p>
-              ): cardId ? (
-                <button className='created-status'><IoCheckbox/> CREATED</button>
-              ):(
-                <button className='uncreated-status'><IoCheckboxOutline/> NOT CREATED</button>
-              )}
-          </div>
-        </div>
-        
           
         <div className="vmd-right">
-          <BootstrapTooltip title='Close' placement='top'>
-            <HiXMark onClick={onClose} className='vmd-icon'/>
-          </BootstrapTooltip>
+          {/* button action    */}
+            <div className="vmd-action">
+              <button className='create-btn-form' onClick={()=> showCreateForm(marketingDesignId)}>
+               {loadingCardId ? (
+                  <p>Memeriksa...</p>
+                ): cardId ? (
+                  <p className='create-icon'><IoCheckmarkDone size={15}/> CREATED</p>
+                ):(
+                  <p className='not-creates-icon'><IoCloseSharp size={15}/> NOT CREATED</p>
+                )}
+              </button>
+
+              <button
+                onClick={() => handleExportToSheet(marketingDesignId)}
+                disabled={designTransfile.some(exp => exp.marketing_design_id === marketingDesignId)} 
+                style={{
+                  fontSize:'11px',
+                  cursor: designTransfile.some(exp => exp.marketing_design_id === marketingDesignId) ? "not-allowed" : "pointer"
+                }}
+              >
+                {designTransfile.some(exp => exp.marketing_design_id === marketingDesignId)
+                  ? <IoCheckmarkDone size={15}/>
+                  : <TbArrowBigUpLines size={15}/>}
+                {designTransfile.some(exp => exp.marketing_design_id === marketingDesignId)
+                  ? "TRANSFERED"
+                  : "TRANSFER TO SPREADSHEET"}
+              </button>
+
+              {/* FORM CREATE CARD  */}
+              {showCardForm[marketingDesignId]&& (
+                <div className="vmd-form">
+                  <FormCreateCardDesign marketingDesignId={marketingDesignId} onClose={()=> handleCloseForm(marketingDesignId)}/>
+                </div>
+              )}
+            </div>
+
+          
+            <div className="close-header-icon">
+              <BootstrapTooltip title='Close' placement='top'>
+                <HiXMark onClick={onClose} className='vmd-icon'/>
+              </BootstrapTooltip>
+            </div>
         </div>
 
       </div>

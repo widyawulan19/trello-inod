@@ -32,7 +32,8 @@ import { useSnackbar } from "../context/Snackbar";
 import CustomDropdownEdit from "../marketing/CustomDropdownEdit";
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
-import { RiEdit2Fill } from "react-icons/ri";
+import { TbEdit } from "react-icons/tb";
+import { IoMdCloseCircle } from "react-icons/io";
 
 const initialFormState = {
   marketing_id: "",
@@ -359,14 +360,17 @@ console.log('data selcted acc:', selectedAccById);
     <div className="em-container">
       <div className="em-header">
         <div className="em-left">
-              <RiEdit2Fill/>
-              <h4 className='font-bold'>EDIT DATA MARKETING</h4> 
-              {form.genre} | {form.buyer_name} | {form.account_name} | {get5LastChar(form.code_order)}
+            <div className="em-left-title">
+              <TbEdit size={15}/>
+                  <h4 className='font-bold'>EDIT DATA MARKETING</h4> 
+            </div>  
+            <p>{form.genre} | {form.buyer_name} | {form.account_name} | {get5LastChar(form.code_order)}</p>
           </div>
+          
           <div className="em-right">
                 {/* <button type="submit">Update</button> */}
                 <BootstrapTooltip title="Close Edit" placement='top'>
-                    <FaXmark onClick={onClose} className='em-icon'/>
+                    <IoMdCloseCircle onClick={onClose} className='em-icon'/>
                 </BootstrapTooltip>
             </div>
       </div>

@@ -326,13 +326,18 @@
 
 .dm-table thead th {
   background-color: var(--primary);
+  color: var(--text-white);
+
+  /* background: var(--table-header-bg);
+  color: var(--table-header-text);
+  border: 1px solid var(--border); */
+
   font-size: 10px;
   /* ⬅️ INI BARU KEPAKE */
   font-weight: bold;
   padding: 14px;
   /* ⬅️ INI BARU KEPAKE */
   text-align: center;
-  color: var(--text-white);
   position: sticky;
   top: 0;
   z-index: 10;
@@ -444,7 +449,6 @@
 
 .project-number-box,
 .code-order-box,
-.duration-box,
 .input-box-container {
   width: 100%;
   min-width: 13vw;
@@ -474,6 +478,20 @@
   max-width: 10vw;
 }
 
+.project-type-box {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.duration-cont {
+  width: 100%;
+  min-width: 5vw !important;
+  max-width: 5vw !important;
+  text-align: center !important;
+  /* border: 1px solid red; */
+}
+
 .jumlah-track-box {
   width: 100%;
   min-width: 7vw;
@@ -497,16 +515,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 5px;
+  padding: 3px;
+  /* border: 1px solid red; */
 }
 
 .action-data-marketing button {
   border: 1px solid var(--bg-section);
   border-radius: 4px;
-  font-size: 12px;
-  color: var(--text-white);
+  font-size: 14px;
+  color: var(--text-white) !important;
   font-weight: bold;
-  background: var(--primary);
+  background: var(--primary) !important;
   /* background: linear-gradient(to bottom, #6E30DC, #5D12EB); */
   cursor: pointer;
 }
@@ -546,11 +565,12 @@
 }
 
 .detail-data-marketing .detail-data-box {
-  background-color: var(--card-bg);
-  border: 1px solid var(--card-border);
+  /* background-color: var(--card-bg); */
+  /* border: 1px solid var(--card-border); */
   border-radius: 8px;
-  width: 65% !important;
-  height: 90%;
+  width: 70% !important;
+  padding: 1px;
+  /* height: 90%; */
 }
 
 /* END DETAIL DATA  */
@@ -582,6 +602,76 @@
 }
 
 /* END EDIT DATA MAREKTING  */
+
+/* =======================
+ARCHIVE MODAL
+======================= */
+.archive-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.archive-modal-overlay .archive-modal {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+
+  padding: 24px;
+  width: 360px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+
+.archive-modal h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+  font-weight: 600;
+  width: 100%;
+  color: var(--text);
+  text-align: center;
+}
+
+.archive-modal p {
+  font-size: 12px;
+  color: var(--sub-text);
+  margin-bottom: 20px;
+  text-align: center;
+  padding: 0px;
+}
+
+.modal-archive-action {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.btn-cancel {
+  background: #f3f4f6;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-danger {
+  background: #dc2626;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-danger:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 
 
 /* DROPDOWN  */

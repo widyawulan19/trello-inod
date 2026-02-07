@@ -6,29 +6,54 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 5px 10px;
+    padding: 10px 15px;
     font-size: 12px;
     position: sticky;
-    color: var(--text-white);
+    /* color: var(--text-white); */
     /* background: linear-gradient(to bottom, #6E30DC, #5D12EB); */
-    border: 1px solid var(--primary);
-    background: var(--primary);
+
+    /* background: var(--primary); */
+    color: var(--table-header-text);
+    background: var(--table-header-bg);
+    /* border: 1px solid var(--primary); */
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
 }
 
 .em-header .em-left {
-    gap: 5px;
+    /* gap: 5px; */
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: space-between;
+    /* border: 1px solid red; */
+    width: 100%;
+}
+
+.em-left-title {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    gap: 10px;
+    /* border: 1px solid blue; */
 }
 
 .em-left h4 {
     margin: 0px;
     margin-right: 10px;
     font-size: 13px;
-    font-weight: normal;
+    font-weight: bold;
+    color: var(--icon1);
+    /* border: 1px solid blue; */
+}
+
+.em-left p {
+    width: 100%;
+    padding: 0px;
+    margin: 0px;
+    padding-left: 20px;
+    color: var(--sub-text);
 }
 
 .em-icon {
@@ -65,19 +90,16 @@ form h4 {
 
 
 .form-edit {
-    /* border: 1px solid blue; */
     width: 100%;
-    /* height: 100%; */
     padding: 5px 10px;
 }
 
 .form-edit .form-content {
-    /* border: 1px solid red; */
     border: 1px solid var(--card-bg);
     border-radius: 8px;
-    padding: 15px;
+    padding: 5px;
     /* box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); */
-    margin: 15px 10px;
+    margin: 10px;
 }
 
 .form-content .h4 {
