@@ -21,15 +21,18 @@ const { Client } = require('pg');
 // Buat client pakai DATABASE_URL
 const client = new Client({
   connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false,
-  },
+  // ssl: {
+  //   rejectUnauthorized: false,
+  // },
 });
 
+console.log('Trying to connect to Postgres...');
 client.connect()
   .then(() => console.log('Connected to Railway Postgres'))
-  .catch(err => console.error('Connection error', err.stack));
-
+  .catch(err => {
+    console.error('Connection error', err.stack);
+    process.exit(1); // supaya container fail fast kalau DB ga connect
+  });
 module.exports = client;
 
 
