@@ -21,9 +21,9 @@ const { Client } = require('pg');
 // Buat client pakai DATABASE_URL
 const client = new Client({
   connectionString: process.env.DATABASE_URL,
-  // ssl: {
-  //   rejectUnauthorized: false,
-  // },
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
 
 console.log('Trying to connect to Postgres...');
