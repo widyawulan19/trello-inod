@@ -34,6 +34,7 @@ const Login = () => {
 
     const handleLogin = async () => {
     // ✅ Cek input kosong
+    console.log("LOGIN CLICKED");
         if (!email.trim() || !password.trim()) {
             showSnackbar('Email dan Password wajib diisi', 'error');
             return;
