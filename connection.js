@@ -26,6 +26,17 @@ const client = new Client({
   },
 });
 
+(async () => {
+  try {
+    console.log("Trying to connect to Postgres...");
+    await client.connect();
+    console.log("✅ Connected to Railway Postgres");
+  } catch (err) {
+    console.error("❌ Connection error", err);
+    process.exit(1); // stop container kalau DB ga connect
+  }
+})();
+
 console.log('Trying to connect to Postgres...');
 client.connect()
   .then(() => console.log('Connected to Railway Postgres'))
