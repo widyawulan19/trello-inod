@@ -1077,8 +1077,8 @@ app.post("/api/auth/login", async (req, res) => {
             user: { id: user.rows[0].id, username: user.rows[0].username, email: user.rows[0].email },
         });
     } catch (err) {
-        console.error("Login error:", err);
-        res.status(500).json({ message: "Error logging in", error: err.message || err });
+        console.error("🔥 FULL LOGIN ERROR:", err);
+        res.status(500).json({ message: err.message });
     }
 });
 
