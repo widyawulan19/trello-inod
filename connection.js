@@ -1,19 +1,40 @@
-require('dotenv').config();
+// require('dotenv').config();
+// const { Client } = require('pg');
+
+// // Buat client pakai DATABASE_URL
+// const client = new Client({
+//   connectionString: process.env.DATABASE_URL,
+//   // ssl: {
+//   //   rejectUnauthorized: false, 
+//   // },
+// });
+
+// client.connect()
+//   .then(() => console.log('Connected to Railway Postgres'))
+//   .catch(err => console.error('Connection error', err.stack));
+
+// module.exports = client;
+
+
 const { Client } = require('pg');
 
-// Buat client pakai DATABASE_URL
 const client = new Client({
   connectionString: process.env.DATABASE_URL,
-  // ssl: {
-  //   rejectUnauthorized: false, 
-  // },
+  // jangan pakai ssl untuk internal Railway
 });
 
 client.connect()
   .then(() => console.log('Connected to Railway Postgres'))
-  .catch(err => console.error('Connection error', err.stack));
+  .catch(err => console.error('DB connection error:', err));
 
-module.exports = client;
+const express = require('express');
+const app = express();
+
+const PORT = process.env.PORT || 8080;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 
 
 // require('dotenv').config();
