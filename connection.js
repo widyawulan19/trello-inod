@@ -18,8 +18,10 @@
 
 
 // connection.js
-require('dotenv').config();
+require("dotenv").config();;
 const { Client } = require('pg');
+
+
 
 // Gunakan internal URL Railway
 const client = new Client({
