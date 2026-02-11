@@ -4,9 +4,9 @@ const { Client } = require('pg');
 // Buat client pakai DATABASE_URL
 const client = new Client({
   connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false, // Wajib untuk koneksi Railway
-  },
+  // ssl: {
+  //   rejectUnauthorized: false, 
+  // },
 });
 
 client.connect()
