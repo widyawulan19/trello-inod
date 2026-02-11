@@ -24,7 +24,7 @@ const { Client } = require('pg');
 // Gunakan internal URL Railway
 const client = new Client({
   connectionString: process.env.DATABASE_URL, // internal URL
-  // ssl tidak perlu untuk internal
+  ssl: false,
 });
 
 client.connect()
