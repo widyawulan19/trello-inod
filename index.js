@@ -222,7 +222,7 @@ app.use(express.urlencoded({ limit: '200mb', extended: true }));
 app.use(cors({
     // origin: "*",
     // origin: ["http://localhost:3000", "https://inodstudiomanagement.vercel.app"],
-    origin: ["http://localhost:3000", "https://trello-inod.vercel.app", "https://lightcyan-rhinoceros-611327.hostingersite.com", "https://inodstudiomanager.com"],
+    origin: ["http://localhost:3000", "https://trello-inod.vercel.app", "https://lightcyan-rhinoceros-611327.hostingersite.com", "https://inodstudiomanager.com", "https://www.inodstudiomanager.com"],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
