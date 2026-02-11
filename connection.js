@@ -21,17 +21,17 @@ const { Pool } = require('pg');
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.RAILWAY_ENVIRONMENT
-    ? { rejectUnauthorized: false }
-    : false,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
 pool.on('connect', () => {
-  console.log('✅ Connected to Railway Postgres');
+  console.log('✅ Connected to Postgres');
 });
 
 pool.on('error', (err) => {
-  console.error('❌ Unexpected DB error', err);
+  console.error('❌ DB error:', err);
 });
 
 module.exports = pool;
