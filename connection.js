@@ -18,12 +18,9 @@
 require('dotenv').config();
 const { Client } = require('pg');
 
-// Buat client pakai DATABASE_URL
 const client = new Client({
   connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false,
-  },
+  ssl: { rejectUnauthorized: false },
 });
 
 (async () => {
@@ -37,14 +34,39 @@ const client = new Client({
   }
 })();
 
-console.log('Trying to connect to Postgres...');
-client.connect()
-  .then(() => console.log('Connected to Railway Postgres'))
-  .catch(err => {
-    console.error('Connection error', err.stack);
-    process.exit(1); // supaya container fail fast kalau DB ga connect
-  });
 module.exports = client;
+
+
+// require('dotenv').config();
+// const { Client } = require('pg');
+
+// // Buat client pakai DATABASE_URL
+// const client = new Client({
+//   connectionString: process.env.DATABASE_URL,
+//   ssl: {
+//     rejectUnauthorized: false,
+//   },
+// });
+
+// (async () => {
+//   try {
+//     console.log("Trying to connect to Postgres...");
+//     await client.connect();
+//     console.log("✅ Connected to Railway Postgres");
+//   } catch (err) {
+//     console.error("❌ Connection error", err);
+//     process.exit(1); // stop container kalau DB ga connect
+//   }
+// })();
+
+// console.log('Trying to connect to Postgres...');
+// client.connect()
+//   .then(() => console.log('Connected to Railway Postgres'))
+//   .catch(err => {
+//     console.error('Connection error', err.stack);
+//     process.exit(1); // supaya container fail fast kalau DB ga connect
+//   });
+// module.exports = client;
 
 
 
