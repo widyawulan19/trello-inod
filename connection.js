@@ -17,22 +17,21 @@
 
 
 
-const { Client } = require('pg');
+// connection.js
 require('dotenv').config();
+const { Client } = require('pg');
 
+// Gunakan internal URL Railway
 const client = new Client({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: process.env.DATABASE_URL, // internal URL
+  // ssl tidak perlu untuk internal
 });
 
-(async () => {
-  try {
-    console.log("Trying to connect to Postgres...");
-    await client.connect();
-    console.log("✅ Connected to Railway Postgres (internal)");
-  } catch (err) {
-    console.error("❌ Connection error:", err);
-    process.exit(1);
-  }
-})();
+client.connect()
+  .then(() => console.log('✅ Connected to Railway Postgres (internal)'))
+  .catch(err => {
+    console.error('❌ Connection error:', err.stack);
+    process.exit(1); // stop server kalau DB gagal connect
+  });
 
 module.exports = client;
